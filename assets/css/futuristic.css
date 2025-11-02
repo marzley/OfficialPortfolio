@@ -1,0 +1,28 @@
+/* Contact form feedback + button */
+.php-email-form .loading{ display:none; align-items:center; gap:.6rem; color:var(--muted); font-weight:600; }
+.php-email-form .loading .loader-dot{
+  width:8px; height:8px; border-radius:50%; background:var(--accent-a);
+  box-shadow: 0 0 8px var(--accent-a); animation: loaderPulse 1s infinite;
+}
+@keyframes loaderPulse{ 0%{ transform:scale(.8); opacity:.6 } 50%{ transform:scale(1.2); opacity:1 } 100%{ transform:scale(.8); opacity:.6 } }
+
+.php-email-form .error-message{ color:#ff7b7b; margin:10px 0; display:block; }
+.php-email-form .sent-message{ color: #c6ffd9; margin:10px 0; display:none; }
+
+/* Neon submit button spinner */
+.btn-cta{ position:relative; overflow:hidden; }
+.btn-cta .btn-spinner{
+  display:none;
+  width:14px; height:14px; border-radius:50%;
+  border:2px solid rgba(255,255,255,0.12); border-top-color: var(--accent-a);
+  position:absolute; right:12px; top:50%; transform:translateY(-50%); animation: spin 0.9s linear infinite;
+}
+@keyframes spin{ 0%{ transform: translateY(-50%) rotate(0deg); } 100%{ transform: translateY(-50%) rotate(360deg); } }
+
+.btn-cta.btn-success{ box-shadow: 0 14px 50px rgba(0,220,170,0.08); transform: translateY(-2px); }
+
+/* small responsive tweaks */
+@media (max-width:576px){
+  .php-email-form .loading { font-size:13px; }
+  .btn-cta .btn-text { display:inline; }
+}
