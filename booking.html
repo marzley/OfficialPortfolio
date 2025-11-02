@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Marzley Tech Solutions — Book a Service</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta
+        content="Book a service, training or consultation with Marzley Tech Solutions — web & app development, UI/UX design and IT training in Murang'a County, Kenya."
+        name="description">
+
+    <!-- Favicon -->
+    <link href="img/k.jpg" rel="icon">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Roboto:wght@500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <style>
+        /* small tweaks for better responsiveness and card layout */
+        .pkg-card {
+            transition: transform .25s ease, box-shadow .25s ease;
+        }
+
+        .pkg-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, .12);
+        }
+
+        .service-cta {
+            min-height: 60px;
+        }
+
+        @media (max-width: 576px) {
+            .page-header .display-3 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Color variables */
+        :root {
+            --accent: #0d6efd;
+            --accent-2: #7c3aed;
+            --card-bg: #ffffff;
+            --muted: #6c757d;
+        }
+
+        /* Gradient header */
+        .bg-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        }
+
+        /* Package card styles */
+        .pkg-card {
+            border: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pkg-card::before {
+            content: "";
+            position: absolute;
+            right: -60px;
+            top: -60px;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle at 30% 30%, rgba(124, 58, 237, 0.08), transparent 40%),
+                radial-gradient(circle at 70% 70%, rgba(13, 110, 253, 0.06), transparent 40%);
+            transform: rotate(20deg);
+            pointer-events: none;
+        }
+
+        .pkg-card .rounded-circle {
+            box-shadow: 0 6px 18px rgba(13, 110, 253, 0.12);
+        }
+
+        .pkg-card h5 {
+            color: #111827;
+        }
+
+        .pkg-card ul li {
+            margin-bottom: .35rem;
+            color: var(--muted);
+        }
+
+         /* Page header blurred background */
+        .page-header {
+            position: relative;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .page-header::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: url('img/header.png'); /* put your image at img/header-bg.jpg */
+            background-size: cover;
+            background-position: center;
+            transform: scale(1.06);
+            filter: blur(0px) brightness(0.9);
+            z-index: 0;
+            will-change: transform, filter;
+        }
+        /* subtle dark overlay for readable text */
+        .page-header::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+             background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.45));
+            z-index: 1;
+        }
+        .page-header .container {
+            position: relative;
+            z-index: 2; /* bring text above the blurred bg */
+        }
+
+        /* smaller screens: reduce blur/scale for performance */
+        @media (max-width: 576px) {
+            .page-header::before { transform: scale(1.02); filter: blur(4px) brightness(0.65); }
+        }
+        /* Buttons & inputs */
+        .btn-outline-primary {
+            border-color: transparent;
+            background: linear-gradient(90deg, rgba(13, 110, 253, 0.06), rgba(124, 58, 237, 0.04));
+        }
+
+        .btn-gradient {
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            border: none;
+            color: #fff;
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(12, 46, 107, .18);
+        }
+
+        input.form-control:focus,
+        textarea.form-control:focus,
+        .form-select:focus {
+            box-shadow: 0 6px 18px rgba(13, 110, 253, 0.08) !important;
+            border-color: var(--accent) !important;
+            outline: none;
+        }
+
+        /* subtle floating animation for key CTAs */
+        @keyframes floaty {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-6px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        .service-cta .text-primary {
+            animation: floaty 6s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        /* animated badges */
+        .pkg-badge {
+            display: inline-block;
+            padding: .25rem .5rem;
+            border-radius: 999px;
+            font-size: .75rem;
+            color: #fff;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            box-shadow: 0 6px 18px rgba(124, 58, 237, 0.12);
+        }
+    </style>
+</head>
+
+<body>
+     <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+        var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+        (function () {
+            var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+            s1.async = true;
+            s1.src = 'https://embed.tawk.to/69050561b22c021953b68e3b/1j8tpq1k2';
+            s1.charset = 'UTF-8';
+            s1.setAttribute('crossorigin', '*');
+            s0.parentNode.insertBefore(s1, s0);
+        })();
+    </script>
+    <!--End of Tawk.to Script-->
+    <!-- Spinner Start -->
+    <div id="spinner"
+        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Topbar Start -->
+    <div class="container-fluid bg-light d-none d-lg-block">
+        <div class="row align-items-center top-bar">
+ <div class="col-lg-3 col-md-12 text-center text-lg-start">
+                <a href="index.html" class="navbar-brand d-inline-flex align-items-center m-0 p-0">
+                    <img src="img/logo1.png" alt="Marzley Tech" style="height:68px; width:auto; margin-right:8px;">
+                    <span class="h4 text-primary m-0" style="font-weight:700;">Marzley Tech</span>
+                </a>
+            </div>
+            <div class="col-lg-9 col-md-12 text-end">
+                <div class="h-100 d-inline-flex align-items-center me-4">
+                    <i class="fa fa-map-marker-alt text-primary me-2"></i>
+                    <p class="m-0">Murang'a County, Kenya</p>
+                </div>
+                <div class="h-100 d-inline-flex align-items-center me-4">
+                    <i class="far fa-envelope-open text-primary me-2"></i>
+                    <p class="m-0">sirkelvinwanyoike@gmail.com</p>
+                </div>
+                <!-- Social icons -->
+                <div class="h-100 d-inline-flex align-items-center">
+                    <a class="btn btn-sm-square bg-white text-success me-1"
+                        href="https://wa.me/254745789590?text=Hello%20Marzley%20Tech%20Solutions!%20I%20would%20like%20to%20know%20more%20about%20your%20services."
+                        target="_blank">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                    <a class="btn btn-sm-square bg-white text-primary me-1"
+                        href="https://www.facebook.com/marzleytechsolutions" target="_blank">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a class="btn btn-sm-square bg-white text-primary me-1"
+                        href="https://www.linkedin.com/in/kelvin-wanyoike-marzley" target="_blank">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a class="btn btn-sm-square bg-white text-primary me-1" href="https://github.com/marzley"
+                        target="_blank">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a class="btn btn-sm-square bg-white text-primary me-1" href="https://www.instagram.com/marzleytech"
+                        target="_blank">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a class="btn btn-sm-square bg-white text-primary me-0" href="https://www.tiktok.com/@marzleytech"
+                        target="_blank">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+
+    <!-- ...existing code... -->
+    <!-- Navbar Start -->
+    <div class="container-fluid nav-bar bg-light">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white p-3 py-lg-0 px-lg-4">
+            <a href="" class="navbar-brand d-flex align-items-center m-0 p-0 d-lg-none">
+                <h1 class="text-primary m-0"><h1 class="text-primary m-0"><img src="img/logo1.png" alt="Marzley Tech" style="height:68px; width:auto; margin-right:8px;">
+                    <span class="h4 text-primary m-0" style="font-weight:700;">Marzley Tech</h1>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="fa fa-bars"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav me-auto">
+                    <a href="index.html" class="nav-item nav-link active"><i class="fa fa-home me-2"></i>Home</a>
+                    <a href="about.html" class="nav-item nav-link"><i class="fa fa-user me-2"></i>About</a>
+                    <a href="service.html" class="nav-item nav-link"><i
+                            class="fa fa-concierge-bell me-2"></i>Services</a>
+                    <a href="booking.html" class="nav-item nav-link"><i class="fa fa-calendar-alt me-2"></i>Packages</a>
+
+                    <a href="marzley.html" class="nav-item nav-link"><i class="fa fa-users me-2"></i>marzley</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
+                                class="fa fa-briefcase me-2"></i>Portfolio</a>
+
+                        <div class="dropdown-menu fade-up m-0">
+                            <a href="testimonial.html" class="dropdown-item"><i
+                                    class="fa fa-comment-dots me-2"></i>Testimonials</a>
+                            <a href="404.html" class="dropdown-item"><i class="fa fa-exclamation-triangle me-2"></i>404
+                                Page</a>
+                        </div>
+                    </div>
+                    <a href="contact.html" class="nav-item nav-link"><i class="fa fa-envelope me-2"></i>Contact</a>
+                </div>
+                <div class="mt-4 mt-lg-0 me-lg-n4 py-3 px-4 bg-primary d-flex align-items-center">
+                    <div class="d-flex flex-shrink-0 align-items-center justify-content-center bg-white"
+                        style="width: 45px; height: 45px">
+                        <i class="fa fa-phone-alt text-primary"></i>
+                    </div>
+                    <div class="ms-3">
+                        <p class="mb-1 text-white"><i class="fa fa-briefcase me-2"></i>Available for hire</p>
+                        <h5 class="m-0 text-secondary">
+                            <a href="tel:+254745789590"></a>+254 745 789 590
+                        </h5>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!-- Navbar End -->
+
+     <!-- Page Header Start -->
+    <div class="container-fluid page-header mb-5 py-5">
+        <div class="container">
+            <h1 class="display-3 text-white mb-3 animated slideInDown">Our Packages</h1>
+            <nav aria-label="breadcrumb animated slideInDown">
+                <ol class="breadcrumb text-uppercase">
+                    <li class="breadcrumb-item"><a class="text-white" href="index.html">Home</a></li>
+                    <li class="breadcrumb-item text-white active" aria-current="page">Booking</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+    <!-- Booking / CTA Start -->
+    <div class="container-fluid my-5 px-0">
+        <div class="bg-primary py-5 text-center">
+            <h1 class="text-white mb-3">Book a Service or Training</h1>
+            <h4 class="text-white mb-0">Professional web, design and IT mentorship</h4>
+            <p class="text-white mt-3 mb-0">Tell me about your project or training needs and I’ll get back to you
+                quickly.</p>
+        </div>
+        <br><br>
+
+        <div class="container position-relative wow fadeInUp" data-wow-delay="0.1s" style="margin-top: -4rem;">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="bg-light text-center p-5 rounded shadow">
+                        <h2 class="mb-4 text-primary">Request Project Quotation or Training</h2>
+
+                        <!-- feedback -->
+                        <div id="booking-feedback" aria-live="polite" class="mb-3" style="min-height:38px;"></div>
+
+                        <!-- Formspree submission for reliability -->
+                        <form id="booking-form" action="https://formspree.io/f/myzbnvnb" method="POST" novalidate>
+                            <div class="row g-3">
+                                <div class="col-12 col-sm-6">
+                                    <input name="name" type="text" class="form-control border-0" placeholder="Your Name"
+                                        style="height: 55px;" required>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <input name="_replyto" type="email" class="form-control border-0"
+                                        placeholder="Your Email" style="height: 55px;" required>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <select name="service" class="form-select border-0" style="height: 55px;">
+                                        <option value="" selected>Select A Service</option>
+                                        <option value="development">Web & App Development</option>
+                                        <option value="design">UI/UX & Graphics</option>
+                                        <option value="training">IT Training & Mentorship</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <input name="phone" type="text" class="form-control border-0"
+                                        placeholder="Your Phone Number" style="height: 55px;">
+                                </div>
+                                <div class="col-12">
+                                    <textarea name="message" class="form-control border-0"
+                                        placeholder="Project details or training goals" rows="4"></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <button id="booking-submit" class="btn btn-primary w-100 py-3" type="submit"><i
+                                            class="fa fa-paper-plane me-2"></i>Request Now</button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="mt-4">
+                            <h5 class="mb-2 text-secondary">Need urgent help?</h5>
+                            <p class="mb-0"><i class="fa fa-phone-alt text-primary me-2"></i>+254 745 789 590</p>
+                            <p class="mb-0"><i
+                                    class="fa fa-envelope-open text-primary me-2"></i>marzleytechsolutions@gmail.com</p>
+                            <p class="mb-0"><i class="fa fa-whatsapp text-primary me-2"></i><a
+                                    href="https://wa.me/254745789590" target="_blank"
+                                    style="color:inherit; text-decoration:underline;">WhatsApp</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Packages Start -->
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                <h6 class="text-secondary text-uppercase">Website Packages</h6>
+                <h1 class="mb-5">Website Development Packages — Marzley Tech Solutions</h1>
+            </div>
+
+            <div class="row g-4">
+                <!-- Landing Page -->
+                <div class="col-md-6 col-lg-3 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="pkg-card bg-white rounded p-4 h-100 d-flex flex-column wow animate__animated animate__zoomIn"
+                        data-wow-duration="800ms">
+                        <div class="mb-3">
+                            <div class="d-flex align-items-center justify-content-center bg-primary rounded-circle text-white"
+                                style="width:64px;height:64px;">
+                                <i class="fa fa-bolt fa-2x"></i>
+                            </div>
+                        </div>
+                        <span class="pkg-badge mb-2">Popular</span>
+                        <h5 class="mb-2">Landing Page</h5>
+                        <p class="text-muted small mb-3">Ideal for startups, personal brands, or campaigns.</p>
+                        <ul class="text-sm ps-3 mb-3">
+                            <li>1–3 responsive pages</li>
+                            <li>Contact page</li>
+                            <li>Modern, mobile-friendly design</li>
+                        </ul>
+                        <div class="mt-auto">
+                            <div class="d-flex align-items-center justify-content-between service-cta">
+                                <strong class="text-primary">KSh 10,000+</strong>
+                                <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I'm%20interested%20in%20the%20Small%20Business%20Website%20package."
+                                    class="btn btn-gradient" target="_blank" rel="noopener noreferrer"
+                                    aria-label="Chat on WhatsApp">WhatsApp</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Small Business -->
+                <div class="col-md-6 col-lg-3 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="pkg-card bg-white rounded p-4 h-100 d-flex flex-column wow animate__animated animate__fadeInUp"
+                        data-wow-duration="900ms">
+                        <div class="mb-3">
+                            <div class="d-flex align-items-center justify-content-center bg-primary rounded-circle text-white"
+                                style="width:64px;height:64px;">
+                                <i class="fa fa-briefcase fa-2x"></i>
+                            </div>
+                        </div>
+                        <span class="pkg-badge mb-2">Best for SMEs</span>
+                        <h5 class="mb-2">Small Business Website</h5>
+                        <p class="text-muted small mb-3">Perfect to grow your digital footprint and attract customers.
+                        </p>
+                        <ul class="text-sm ps-3 mb-3">
+                            <li>Multiple pages (Home, About, Services, Contact)</li>
+                            <li>Social & Google integrations</li>
+                            <li>Analytics setup</li>
+                        </ul>
+                        <div class="mt-auto">
+                            <div class="d-flex align-items-center justify-content-between service-cta">
+                                <strong class="text-primary">KSh 20,000+</strong>
+                                <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I'm%20interested%20in%20the%20Small%20Business%20Website%20package."
+                                    class="btn btn-gradient" target="_blank" rel="noopener noreferrer"
+                                    aria-label="Chat on WhatsApp">WhatsApp</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- E-commerce -->
+                <div class="col-md-6 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="pkg-card bg-white rounded p-4 h-100 d-flex flex-column wow animate__animated animate__zoomIn"
+                        data-wow-duration="1000ms">
+                        <div class="mb-3">
+                            <div class="d-flex align-items-center justify-content-center bg-primary rounded-circle text-white"
+                                style="width:64px;height:64px;">
+                                <i class="fa fa-shopping-cart fa-2x"></i>
+                            </div>
+                        </div>
+                        <span class="pkg-badge mb-2">E-Commerce</span>
+                        <h5 class="mb-2">E-Commerce Website</h5>
+                        <p class="text-muted small mb-3">Ready to sell products & services online.</p>
+                        <ul class="text-sm ps-3 mb-3">
+                            <li>Product catalog & order management</li>
+                            <li>Live chat & delivery setup</li>
+                            <li>Payment integration (M-Pesa, PayPal)</li>
+                        </ul>
+                        <div class="mt-auto">
+                            <div class="d-flex align-items-center justify-content-between service-cta">
+                                <strong class="text-primary">KSh 35,000+</strong>
+                                <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I'm%20interested%20in%20the%20E-Commerce%20Website%20package."
+                                    class="btn btn-gradient" target="_blank" rel="noopener noreferrer"
+                                    aria-label="Chat on WhatsApp">WhatsApp</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Corporate -->
+                <div class="col-md-6 col-lg-3 wow fadeInUp" data-wow-delay="0.4s">
+                    <div class="pkg-card bg-white rounded p-4 h-100 d-flex flex-column wow animate__animated animate__fadeInUp"
+                        data-wow-duration="1100ms">
+                        <div class="mb-3">
+                            <div class="d-flex align-items-center justify-content-center bg-primary rounded-circle text-white"
+                                style="width:64px;height:64px;">
+                                <i class="fa fa-building fa-2x"></i>
+                            </div>
+                        </div>
+                        <span class="pkg-badge mb-2">Enterprise</span>
+                        <h5 class="mb-2">Corporate Website</h5>
+                        <p class="text-muted small mb-3">For organizations needing advanced, data-driven functionality.
+                        </p>
+                        <ul class="text-sm ps-3 mb-3">
+                            <li>Custom design & unlimited pages</li>
+                            <li>Database, CRM & system integrations</li>
+                            <li>Advanced functionality & population</li>
+                        </ul>
+                        <div class="mt-auto">
+                            <div class="d-flex align-items-center justify-content-between service-cta">
+                                <strong class="text-primary">KSh 45,000+</strong>
+                                <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I'm%20interested%20in%20the%20Corporate%20Website%20package."
+                                    class="btn btn-gradient" target="_blank" rel="noopener noreferrer"
+                                    aria-label="Chat on WhatsApp">WhatsApp</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ...existing code... -->
+            <!-- Add-ons -->
+            <div class="row mt-5">
+                <div class="col-12 text-center wow fadeInUp" data-wow-delay="0.5s">
+                    <h4>Optional Add-ons</h4>
+                    <p class="text-muted mb-3">Customize your project with additional services.</p>
+                </div>
+                <div class="col-md-3 col-sm-6 wow fadeInUp" data-wow-delay="0.6s">
+                    <div class="p-3 text-center rounded bg-white">
+                        <i class="fa fa-globe fa-2x text-primary mb-2"></i>
+                        <h6 class="mb-1">Domain & Hosting</h6>
+                        <small class="text-muted">KSh 3,000 / year</small>
+                        <div class="mt-2">
+                            <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I%20am%20interested%20in%20Domain%20%26%20Hosting%20setup%20for%20my%20project."
+                                class="btn btn-sm btn-success" target="_blank" rel="noopener noreferrer"><i
+                                    class="fab fa-whatsapp me-1"></i>WhatsApp</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
+                    <div class="p-3 text-center rounded bg-white">
+                        <i class="fa fa-pen-nib fa-2x text-primary mb-2"></i>
+                        <h6 class="mb-1">Logo & Branding</h6>
+                        <small class="text-muted">KSh 2,500</small>
+                        <div class="mt-2">
+                            <a href="https://wa.me/254745789590?text=Hi%20Marzley%2C%20I%20would%20like%20a%20logo%20%26%20branding%20package%20for%20my%20business."
+                                class="btn btn-sm btn-success" target="_blank" rel="noopener noreferrer"><i
+                                    class="fab fa-whatsapp me-1"></i>WhatsApp</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 wow fadeInUp" data-wow-delay="0.8s">
+                    <div class="p-3 text-center rounded bg-white">
+                        <i class="fa fa-search fa-2x text-primary mb-2"></i>
+                        <h6 class="mb-1">SEO Optimization</h6>
+                        <small class="text-muted">KSh 5,000</small>
+                        <div class="mt-2">
+                            <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I%27m%20interested%20in%20SEO%20optimization%20for%20my%20site."
+                                class="btn btn-sm btn-success" target="_blank" rel="noopener noreferrer"><i
+                                    class="fab fa-whatsapp me-1"></i>WhatsApp</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 wow fadeInUp" data-wow-delay="0.9s">
+                    <div class="p-3 text-center rounded bg-white">
+                        <i class="fa fa-shield-alt fa-2x text-primary mb-2"></i>
+                        <h6 class="mb-1">Security & Backups</h6>
+                        <small class="text-muted">KSh 3,500</small>
+                        <div class="mt-2">
+                            <a href="https://wa.me/254745789590?text=Hi%20Marzley%2C%20I%20need%20security%20%26%20backup%20services%20for%20my%20website."
+                                class="btn btn-sm btn-success" target="_blank" rel="noopener noreferrer"><i
+                                    class="fab fa-whatsapp me-1"></i>WhatsApp</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ...existing code... -->
+
+            <!-- Footer Start -->
+            <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+                <div class="container py-5">
+                    <div class="row g-5">
+                        <div class="col-lg-3 col-md-6">
+                            <h4 class="text-light mb-4">Contact</h4>
+                            <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>Murang'a County, Kenya</p>
+                            <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+254 745 789 590</p>
+                            <p class="mb-2"><i class="fa fa-envelope me-3"></i>marzleytechsolutions@gmail.com</p>
+                            <div class="d-flex pt-2">
+                                <a class="btn btn-outline-light btn-social" href="https://www.twitter.com/marzleytech"
+                                    target="_blank"><i class="fab fa-twitter"></i></a>
+                                <a class="btn btn-outline-light btn-social"
+                                    href="https://www.facebook.com/marzleytechsolutions" target="_blank"><i
+                                        class="fab fa-facebook-f"></i></a>
+                                <a class="btn btn-outline-light btn-social"
+                                    href="https://www.linkedin.com/in/kelvin-wanyoike-marzley" target="_blank"><i
+                                        class="fab fa-linkedin-in"></i></a>
+                                <a class="btn btn-outline-light btn-social" href="https://www.instagram.com/marzleytech"
+                                    target="_blank"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-6">
+                            <h4 class="text-light mb-4">Working Hours</h4>
+                            <h6 class="text-light">Monday - Friday:</h6>
+                            <p class="mb-4">08.00 AM - 07.00 PM</p>
+                            <h6 class="text-light">Saturday:</h6>
+                            <p class="mb-0">09.00 AM - 05.00 PM</p>
+                            <h6 class="text-light">Sunday:</h6>
+                            <p class="mb-0">Closed / By Appointment</p>
+                        </div>
+
+                        <div class="col-lg-3 col-md-6">
+                            <h4 class="text-light mb-4">Services</h4>
+                            <a class="btn btn-link" href="service.html#development">Development</a>
+                            <a class="btn btn-link" href="service.html#design">Design</a>
+                            <a class="btn btn-link" href="training.html">Training</a>
+                            <a class="btn btn-link" href="service.html#integration">API & Packages</a>
+                            <a class="btn btn-link" href="contact.html">Support</a>
+                        </div>
+
+                        <div class="col-lg-3 col-md-6">
+                            <h4 class="text-light mb-4">Connect</h4>
+                            <p>Visit the website or send a message — let’s build something great.</p>
+                            <div class="position-relative mx-auto" style="max-width: 400px;">
+                                <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text"
+                                    placeholder="Your email">
+                                <button type="button"
+                                    class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container">
+                    <div class="copyright">
+                        <div class="row">
+                            <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                                &copy; <a class="border-bottom" href="https://marzleytechsolutions.co.ke"
+                                    target="_blank">Marzley Tech Solutions</a>, All Rights Reserved.
+                            </div>
+                            <div class="col-md-6 text-center text-md-end">
+                                Designed & Developed by <a class="border-bottom" href="https://github.com/marzley"
+                                    target="_blank">Marzley</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Back to Top -->
+                <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-0 back-to-top"><i
+                        class="bi bi-arrow-up"></i></a>
+            </div>
+            <!-- Footer End -->
+
+            <!-- JavaScript Libraries -->
+            <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="lib/wow/wow.min.js"></script>
+            <script src="lib/easing/easing.min.js"></script>
+            <script src="lib/waypoints/waypoints.min.js"></script>
+            <script src="lib/counterup/counterup.min.js"></script>
+            <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+            <script src="lib/tempusdominus/js/moment.min.js"></script>
+            <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+            <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+            <!-- Template Javascript -->
+            <script src="js/main.js"></script>
+
+            <!-- Local form handler & init animations -->
+            <script>
+                // init wow
+                if (window.WOW) new WOW().init();
+
+                // hide spinner after load
+                window.addEventListener('load', function () {
+                    const spinner = document.getElementById('spinner');
+                    if (spinner) spinner.classList.remove('show');
+                });
+
+                // Booking form submission (Formspree) with user feedback
+                (function () {
+                    const form = document.getElementById('booking-form');
+                    const feedback = document.getElementById('booking-feedback');
+                    const submitBtn = document.getElementById('booking-submit');
+
+                    if (!form) return;
+
+                    form.addEventListener('submit', function (e) {
+                        e.preventDefault();
+                        feedback.innerHTML = '';
+                        submitBtn.disabled = true;
+                        submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin me-2"></i>Sending...';
+
+                        const data = new FormData(form);
+
+                        fetch(form.action, {
+                            method: 'POST',
+                            headers: { 'Accept': 'application/json' },
+                            body: data
+                        })
+                            .then(response => {
+                                submitBtn.disabled = false;
+                                submitBtn.innerHTML = '<i class="fa fa-paper-plane me-2"></i>Request Now';
+                                if (response.ok) {
+                                    form.reset();
+                                    feedback.innerHTML = '<div class="alert alert-success mb-0"><i class="fa fa-check-circle me-2"></i>Request sent. I will contact you shortly.</div>';
+                                } else {
+                                    return response.json().then(err => {
+                                        const msg = (err && err.errors) ? err.errors.map(i => i.message).join(', ') : 'An error occurred. Please try again later.';
+                                        feedback.innerHTML = '<div class="alert alert-danger mb-0"><i class="fa fa-exclamation-triangle me-2"></i>' + msg + '</div>';
+                                    });
+                                }
+                            })
+                            .catch(() => {
+                                submitBtn.disabled = false;
+                                submitBtn.innerHTML = '<i class="fa fa-paper-plane me-2"></i>Request Now';
+                                feedback.innerHTML = '<div class="alert alert-danger mb-0"><i class="fa fa-exclamation-triangle me-2"></i>Network error. Please try again.</div>';
+                            });
+                    });
+                })();
+            </script>
+
+            <!-- ensure animate.css classes are used by WOW: add animate.css CDN if not already present -->
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+            <script>
+                // small enhancement: add subtle hover tilt on package cards (mobile-friendly)
+                document.addEventListener('DOMContentLoaded', function () {
+                    document.querySelectorAll('.pkg-card').forEach(function (card) {
+                        card.addEventListener('mousemove', function (e) {
+                            const rect = card.getBoundingClientRect();
+                            const x = (e.clientX - rect.left) / rect.width - 0.5;
+                            const y = (e.clientY - rect.top) / rect.height - 0.5;
+                            card.style.transform = `perspective(800px) rotateX(${-y * 3}deg) rotateY(${x * 6}deg) translateY(-6px)`;
+                        });
+                        card.addEventListener('mouseleave', function () {
+                            card.style.transform = '';
+                        });
+                    });
+                });
+            </script>
+</body>
+
+</html>
