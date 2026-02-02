@@ -509,7 +509,44 @@
                     <div class="d-flex justify-content-around">
 
                         <!-- Paystack -->
-                        <button class="btn btn-primary" onclick="handlePaystackPayment()">Paystack</button>
+                        <button class="btn btn-primary paystack-btn" onclick="handlePaystackPayment()">
+                            <i class="fab fa-cc-stripe me-1"></i> Paystack
+                        </button>
+                        <style>
+                            .paystack-btn {
+                                width: 200px;
+                                /* Set a fixed width */
+                                height: 100px;
+                                /* Set a fixed height */
+                                font-size: 1rem;
+                                /* Adjust font size */
+                                font-weight: 600;
+                                /* Make the text bold */
+                                padding: 0.5rem 1rem;
+                                /* Add padding */
+                                border-radius: 10px;
+                                /* Add rounded edges */
+                                background-color: #007bff;
+                                /* Blue background */
+                                color: #fff;
+                                /* White text */
+                                text-align: center;
+                                border: none;
+                                transition: transform 0.2s ease, box-shadow 0.2s ease;
+                            }
+
+                            .paystack-btn i {
+                                margin-right: 0.5rem;
+                                /* Add spacing between the icon and text */
+                            }
+
+                            .paystack-btn:hover {
+                                transform: translateY(-3px);
+                                /* Add hover effect */
+                                box-shadow: 0 8px 20px rgba(0, 123, 255, 0.2);
+                                /* Add shadow on hover */
+                            }
+                        </style>
                         <!-- PayPal -->
                         <div id="paypal-button-container"></div>
                     </div>
@@ -755,6 +792,7 @@
                                             </button>
                                         </form>
 
+
                                         <!-- PayPal and Paystack Button -->
                                         <button type="button" class="btn btn-primary payment-btn"
                                             onclick="openPaymentModal(60000)">
@@ -781,7 +819,7 @@
                             <small class="text-muted" data-amount="3000">KSh 3,000 / year</small>
                             <div class="mt-2">
                                 <!-- WhatsApp Button -->
-                                <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I%20am%20interested%20in%20Domain%20%26%20Hosting%20setup%20for%20my%20project."
+                                <a href="https://wa.me/254745789590?text=Hi%20Marzley%2C%20I%20would%20like%20a%20logo%20%26%20branding%20package%20for%20my%20business."
                                     class="btn btn-sm btn-success whatsapp-btn" target="_blank"
                                     rel="noopener noreferrer">
                                     <i class="fab fa-whatsapp me-1"></i>WhatsApp
@@ -789,18 +827,6 @@
 
                                 <!-- Add spacing between WhatsApp and payment buttons -->
                                 <div class="mt-3 payment-buttons">
-                                    <!-- M-PESA Option -->
-                                    <form action="stkpush.php" method="POST" style="display:inline;"
-                                        onsubmit="return handlePayDeposit(event, this)">
-                                        <input type="hidden" name="phone" id="phone-input">
-                                        <input type="hidden" name="amount" class="amount-input">
-                                        <button type="submit" class="btn btn-success payment-btn"
-                                            aria-label="Pay Deposit">
-                                            <i class="fa fa-mobile-alt me-1"></i><span class="pay-via-text">Pay
-                                                via</span> M-PESA
-                                        </button>
-                                    </form>
-
                                     <!-- PayPal and Paystack Button -->
                                     <button type="button" class="btn btn-primary payment-btn"
                                         onclick="openPaymentModal(3000)">
@@ -811,6 +837,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-md-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
                         <div class="p-3 text-center rounded bg-white">
                             <i class="fa fa-pen-nib fa-2x text-primary mb-2"></i>
@@ -826,18 +853,6 @@
 
                                 <!-- Add spacing between WhatsApp and payment buttons -->
                                 <div class="mt-3 payment-buttons">
-                                    <!-- M-PESA Option -->
-                                    <form action="stkpush.php" method="POST" style="display:inline;"
-                                        onsubmit="return handlePayDeposit(event, this)">
-                                        <input type="hidden" name="phone" id="phone-input">
-                                        <input type="hidden" name="amount" class="amount-input">
-                                        <button type="submit" class="btn btn-success payment-btn"
-                                            aria-label="Pay Deposit">
-                                            <i class="fa fa-mobile-alt me-1"></i><span class="pay-via-text">Pay
-                                                via</span> M-PESA
-                                        </button>
-                                    </form>
-
                                     <!-- PayPal and Paystack Button -->
                                     <button type="button" class="btn btn-primary payment-btn"
                                         onclick="openPaymentModal(2500)">
@@ -855,7 +870,7 @@
                             <small class="text-muted" data-amount="5000">KSh 5,000</small>
                             <div class="mt-2">
                                 <!-- WhatsApp Button -->
-                                <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I%27m%20interested%20in%20SEO%20optimization%20for%20my%20site."
+                                <a href="https://wa.me/254745789590?text=Hi%20Marzley%2C%20I%20would%20like%20a%20logo%20%26%20branding%20package%20for%20my%20business."
                                     class="btn btn-sm btn-success whatsapp-btn" target="_blank"
                                     rel="noopener noreferrer">
                                     <i class="fab fa-whatsapp me-1"></i>WhatsApp
@@ -863,18 +878,6 @@
 
                                 <!-- Add spacing between WhatsApp and payment buttons -->
                                 <div class="mt-3 payment-buttons">
-                                    <!-- M-PESA Option -->
-                                    <form action="stkpush.php" method="POST" style="display:inline;"
-                                        onsubmit="return handlePayDeposit(event, this)">
-                                        <input type="hidden" name="phone" id="phone-input">
-                                        <input type="hidden" name="amount" class="amount-input">
-                                        <button type="submit" class="btn btn-success payment-btn"
-                                            aria-label="Pay Deposit">
-                                            <i class="fa fa-mobile-alt me-1"></i><span class="pay-via-text">Pay
-                                                via</span> M-PESA
-                                        </button>
-                                    </form>
-
                                     <!-- PayPal and Paystack Button -->
                                     <button type="button" class="btn btn-primary payment-btn"
                                         onclick="openPaymentModal(5000)">
@@ -889,10 +892,10 @@
                         <div class="p-3 text-center rounded bg-white">
                             <i class="fa fa-shield-alt fa-2x text-primary mb-2"></i>
                             <h6 class="mb-1">Security & Backups</h6>
-                            <small class="text-muted" data-amount="3500">KSh 3,500</small>
+                            <small class="text-muted" data-amount="35000">KSh 3,500</small>
                             <div class="mt-2">
                                 <!-- WhatsApp Button -->
-                                <a href="https://wa.me/254745789590?text=Hi%20Marzley%2C%20I%20need%20security%20%26%20backup%20services%20for%20my%20website."
+                                <a href="https://wa.me/254745789590?text=Hi%20Marzley%2C%20I%20would%20like%20a%20logo%20%26%20branding%20package%20for%20my%20business."
                                     class="btn btn-sm btn-success whatsapp-btn" target="_blank"
                                     rel="noopener noreferrer">
                                     <i class="fab fa-whatsapp me-1"></i>WhatsApp
@@ -900,18 +903,6 @@
 
                                 <!-- Add spacing between WhatsApp and payment buttons -->
                                 <div class="mt-3 payment-buttons">
-                                    <!-- M-PESA Option -->
-                                    <form action="stkpush.php" method="POST" style="display:inline;"
-                                        onsubmit="return handlePayDeposit(event, this)">
-                                        <input type="hidden" name="phone" id="phone-input">
-                                        <input type="hidden" name="amount" class="amount-input">
-                                        <button type="submit" class="btn btn-success payment-btn"
-                                            aria-label="Pay Deposit">
-                                            <i class="fa fa-mobile-alt me-1"></i><span class="pay-via-text">Pay
-                                                via</span> M-PESA
-                                        </button>
-                                    </form>
-
                                     <!-- PayPal and Paystack Button -->
                                     <button type="button" class="btn btn-primary payment-btn"
                                         onclick="openPaymentModal(3500)">
@@ -921,287 +912,286 @@
                                 </div>
                             </div>
                         </div>
+                        </form>
                     </div>
-                    </form>
-                </div>
 
-                <!-- Footer Start -->
-                <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
-                    <div class="container py-5">
-                        <div class="row g-5">
-                            <div class="col-lg-3 col-md-6">
-                                <h4 class="text-light mb-4">Contact</h4>
-                                <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>Murang'a County, Kenya</p>
-                                <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+254 745 789 590</p>
-                                <p class="mb-2"><i class="fa fa-envelope me-3"></i><a
-                                        href="mailto:marzleytechsolutions@gmail.com">Marzley</a></p>
-                                <div class="d-flex pt-2">
-                                    <a class="btn btn-outline-light btn-social"
-                                        href="https://www.twitter.com/marzleytech" target="_blank"><i
-                                            class="fab fa-twitter"></i></a>
-                                    <a class="btn btn-outline-light btn-social"
-                                        href="https://www.facebook.com/marzleytechsolutions" target="_blank"><i
-                                            class="fab fa-facebook-f"></i></a>
-                                    <a class="btn btn-outline-light btn-social"
-                                        href="https://www.linkedin.com/in/kelvin-wanyoike-marzley" target="_blank"><i
-                                            class="fab fa-linkedin-in"></i></a>
-                                    <a class="btn btn-outline-light btn-social"
-                                        href="https://www.instagram.com/marzleytech" target="_blank"><i
-                                            class="fab fa-instagram"></i></a>
+                    <!-- Footer Start -->
+                    <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+                        <div class="container py-5">
+                            <div class="row g-5">
+                                <div class="col-lg-3 col-md-6">
+                                    <h4 class="text-light mb-4">Contact</h4>
+                                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>Murang'a County, Kenya</p>
+                                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+254 745 789 590</p>
+                                    <p class="mb-2"><i class="fa fa-envelope me-3"></i><a
+                                            href="mailto:marzleytechsolutions@gmail.com">Marzley</a></p>
+                                    <div class="d-flex pt-2">
+                                        <a class="btn btn-outline-light btn-social"
+                                            href="https://www.twitter.com/marzleytech" target="_blank"><i
+                                                class="fab fa-twitter"></i></a>
+                                        <a class="btn btn-outline-light btn-social"
+                                            href="https://www.facebook.com/marzleytechsolutions" target="_blank"><i
+                                                class="fab fa-facebook-f"></i></a>
+                                        <a class="btn btn-outline-light btn-social"
+                                            href="https://www.linkedin.com/in/kelvin-wanyoike-marzley"
+                                            target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                                        <a class="btn btn-outline-light btn-social"
+                                            href="https://www.instagram.com/marzleytech" target="_blank"><i
+                                                class="fab fa-instagram"></i></a>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="col-lg-3 col-md-6">
-                                <h4 class="text-light mb-4">Working Hours</h4>
-                                <h6 class="text-light">Monday - Friday:</h6>
-                                <p class="mb-4">08.00 AM - 07.00 PM</p>
-                                <h6 class="text-light">Saturday:</h6>
-                                <p class="mb-0">09.00 AM - 05.00 PM</p>
-                                <h6 class="text-light">Sunday:</h6>
-                                <p class="mb-0">Closed / By Appointment</p>
-                            </div>
+                                <div class="col-lg-3 col-md-6">
+                                    <h4 class="text-light mb-4">Working Hours</h4>
+                                    <h6 class="text-light">Monday - Friday:</h6>
+                                    <p class="mb-4">08.00 AM - 07.00 PM</p>
+                                    <h6 class="text-light">Saturday:</h6>
+                                    <p class="mb-0">09.00 AM - 05.00 PM</p>
+                                    <h6 class="text-light">Sunday:</h6>
+                                    <p class="mb-0">Closed / By Appointment</p>
+                                </div>
 
-                            <div class="col-lg-3 col-md-6">
-                                <h4 class="text-light mb-4">Services</h4>
-                                <a class="btn btn-link" href="service.html#development">Development</a>
-                                <a class="btn btn-link" href="service.html#design">Design</a>
-                                <a class="btn btn-link" href="training.html">Training</a>
-                                <a class="btn btn-link" href="service.html#integration">API & Packages</a>
-                                <a class="btn btn-link" href="contact.html">Support</a>
-                            </div>
+                                <div class="col-lg-3 col-md-6">
+                                    <h4 class="text-light mb-4">Services</h4>
+                                    <a class="btn btn-link" href="service.html#development">Development</a>
+                                    <a class="btn btn-link" href="service.html#design">Design</a>
+                                    <a class="btn btn-link" href="training.html">Training</a>
+                                    <a class="btn btn-link" href="service.html#integration">API & Packages</a>
+                                    <a class="btn btn-link" href="contact.html">Support</a>
+                                </div>
 
-                            <div class="col-lg-3 col-md-6">
-                                <h4 class="text-light mb-4">Connect</h4>
-                                <p>Visit the website or send a message — let’s build something great.</p>
-                                <div class="position-relative mx-auto" style="max-width: 400px;">
-                                    <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text"
-                                        placeholder="Your email">
-                                    <button type="button"
-                                        class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
+                                <div class="col-lg-3 col-md-6">
+                                    <h4 class="text-light mb-4">Connect</h4>
+                                    <p>Visit the website or send a message — let’s build something great.</p>
+                                    <div class="position-relative mx-auto" style="max-width: 400px;">
+                                        <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text"
+                                            placeholder="Your email">
+                                        <button type="button"
+                                            class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="container">
-                        <div class="copyright">
-                            <div class="row">
-                                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                                    &copy; <a class="border-bottom" href="https://marzleytechsolutions.co.ke"
-                                        target="_blank">Marzley Tech Solutions</a>, All Rights Reserved.
-                                </div>
-                                <div class="col-md-6 text-center text-md-end">
-                                    Designed & Developed by <a class="border-bottom" href="https://github.com/marzley"
-                                        target="_blank">Marzley</a>
+                        <div class="container">
+                            <div class="copyright">
+                                <div class="row">
+                                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                                        &copy; <a class="border-bottom" href="https://marzleytechsolutions.co.ke"
+                                            target="_blank">Marzley Tech Solutions</a>, All Rights Reserved.
+                                    </div>
+                                    <div class="col-md-6 text-center text-md-end">
+                                        Designed & Developed by <a class="border-bottom"
+                                            href="https://github.com/marzley" target="_blank">Marzley</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Back to Top -->
+                        <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-0 back-to-top"><i
+                                class="bi bi-arrow-up"></i></a>
                     </div>
+                    <!-- Footer End -->
 
-                    <!-- Back to Top -->
-                    <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-0 back-to-top"><i
-                            class="bi bi-arrow-up"></i></a>
-                </div>
-                <!-- Footer End -->
+                    <!-- JavaScript Libraries -->
+                    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+                    <script src="lib/wow/wow.min.js"></script>
+                    <script src="lib/easing/easing.min.js"></script>
+                    <script src="lib/waypoints/waypoints.min.js"></script>
+                    <script src="lib/counterup/counterup.min.js"></script>
+                    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+                    <script src="lib/tempusdominus/js/moment.min.js"></script>
+                    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+                    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
-                <!-- JavaScript Libraries -->
-                <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-                <script src="lib/wow/wow.min.js"></script>
-                <script src="lib/easing/easing.min.js"></script>
-                <script src="lib/waypoints/waypoints.min.js"></script>
-                <script src="lib/counterup/counterup.min.js"></script>
-                <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-                <script src="lib/tempusdominus/js/moment.min.js"></script>
-                <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-                <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+                    <!-- Template Javascript -->
+                    <script src="js/main.js"></script>
 
-                <!-- Template Javascript -->
-                <script src="js/main.js"></script>
+                    <!-- Local form handler & init animations -->
+                    <script>
+                        // init wow
+                        if (window.WOW) new WOW().init();
 
-                <!-- Local form handler & init animations -->
-                <script>
-                    // init wow
-                    if (window.WOW) new WOW().init();
+                        // hide spinner after load
+                        window.addEventListener('load', function () {
+                            const spinner = document.getElementById('spinner');
+                            if (spinner) spinner.classList.remove('show');
+                        });
 
-                    // hide spinner after load
-                    window.addEventListener('load', function () {
-                        const spinner = document.getElementById('spinner');
-                        if (spinner) spinner.classList.remove('show');
-                    });
+                        // Booking form submission (Formspree) with user feedback
+                        (function () {
+                            const form = document.getElementById('booking-form');
+                            const feedback = document.getElementById('booking-feedback');
+                            const submitBtn = document.getElementById('booking-submit');
 
-                    // Booking form submission (Formspree) with user feedback
-                    (function () {
-                        const form = document.getElementById('booking-form');
-                        const feedback = document.getElementById('booking-feedback');
-                        const submitBtn = document.getElementById('booking-submit');
+                            if (!form) return;
 
-                        if (!form) return;
+                            form.addEventListener('submit', function (e) {
+                                e.preventDefault();
+                                feedback.innerHTML = '';
+                                submitBtn.disabled = true;
+                                submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin me-2"></i>Sending...';
 
-                        form.addEventListener('submit', function (e) {
-                            e.preventDefault();
-                            feedback.innerHTML = '';
-                            submitBtn.disabled = true;
-                            submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin me-2"></i>Sending...';
+                                const data = new FormData(form);
 
-                            const data = new FormData(form);
-
-                            fetch(form.action, {
-                                method: 'POST',
-                                headers: { 'Accept': 'application/json' },
-                                body: data
-                            })
-                                .then(response => {
-                                    submitBtn.disabled = false;
-                                    submitBtn.innerHTML = '<i class="fa fa-paper-plane me-2"></i>Request Now';
-                                    if (response.ok) {
-                                        form.reset();
-                                        feedback.innerHTML = '<div class="alert alert-success mb-0"><i class="fa fa-check-circle me-2"></i>Request sent. I will contact you shortly.</div>';
-                                    } else {
-                                        return response.json().then(err => {
-                                            const msg = (err && err.errors) ? err.errors.map(i => i.message).join(', ') : 'An error occurred. Please try again later.';
-                                            feedback.innerHTML = '<div class="alert alert-danger mb-0"><i class="fa fa-exclamation-triangle me-2"></i>' + msg + '</div>';
-                                        });
-                                    }
+                                fetch(form.action, {
+                                    method: 'POST',
+                                    headers: { 'Accept': 'application/json' },
+                                    body: data
                                 })
-                                .catch(() => {
-                                    submitBtn.disabled = false;
-                                    submitBtn.innerHTML = '<i class="fa fa-paper-plane me-2"></i>Request Now';
-                                    feedback.innerHTML = '<div class="alert alert-danger mb-0"><i class="fa fa-exclamation-triangle me-2"></i>Network error. Please try again.</div>';
-                                });
-                        });
-                    })();
-
-                    function handlePayDeposit(event, form) {
-                        event.preventDefault(); // Prevent the default form submission
-
-                        // Prompt the user for their phone number
-                        const phone = prompt('Please enter your phone number (e.g., 07xxxxxxxx, 01xxxxxxxx, 2547xxxxxxxx, +2547xxxxxxxx):');
-                        if (!phone) {
-                            alert('Phone number is required.');
-                            return false; // Prevent form submission
-                        }
-
-                        // Normalize the phone number to the format 2547xxxxxxxx
-                        const normalizedPhone = normalizePhoneNumber(phone);
-                        if (!normalizedPhone) {
-                            alert('Invalid phone number. Please enter a valid phone number.');
-                            return false; // Prevent form submission
-                        }
-
-                        // Get the amount from the package
-                        const amount = form.closest('.service-cta').querySelector('[data-amount]').getAttribute('data-amount');
-
-                        // Populate the hidden fields in the form
-                        form.querySelector('#phone-input').value = normalizedPhone;
-                        form.querySelector('.amount-input').value = amount;
-
-                        // Submit the form programmatically
-                        form.submit();
-                    }
-
-                    // Normalize phone number to the format 2547xxxxxxxx
-                    function normalizePhoneNumber(phone) {
-                        // Remove any non-numeric characters
-                        const cleanedPhone = phone.replace(/[^0-9]/g, '');
-
-                        // Check and normalize the phone number
-                        if (cleanedPhone.startsWith('07') || cleanedPhone.startsWith('01')) {
-                            return '254' + cleanedPhone.slice(1); // Convert 07xxxxxxx or 01xxxxxxx to 2547xxxxxxx
-                        } else if (cleanedPhone.startsWith('254') && cleanedPhone.length === 12) {
-                            return cleanedPhone; // Already in the correct format
-                        } else if (cleanedPhone.startsWith('7') && cleanedPhone.length === 9) {
-                            return '254' + cleanedPhone; // Convert 7xxxxxxx to 2547xxxxxxx
-                        } else if (cleanedPhone.startsWith('+254') && cleanedPhone.length === 13) {
-                            return cleanedPhone.slice(1); // Convert +2547xxxxxxx to 2547xxxxxxx
-                        } else {
-                            return null; // Invalid phone number
-                        }
-                    }
-                </script>
-
-                <!-- ensure animate.css classes are used by WOW: add animate.css CDN if not already present -->
-                <link rel="stylesheet"
-                    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-                <script>
-                    // small enhancement: add subtle hover tilt on package cards (mobile-friendly)
-                    document.addEventListener('DOMContentLoaded', function () {
-                        document.querySelectorAll('.pkg-card').forEach(function (card) {
-                            card.addEventListener('mousemove', function (e) {
-                                const rect = card.getBoundingClientRect();
-                                const x = (e.clientX - rect.left) / rect.width - 0.5;
-                                const y = (e.clientY - rect.top) / rect.height - 0.5;
-                                card.style.transform = `perspective(800px) rotateX(${-y * 3}deg) rotateY(${x * 6}deg) translateY(-6px)`;
-                            });
-                            card.addEventListener('mouseleave', function () {
-                                card.style.transform = '';
-                            });
-                        });
-                    });
-                </script>
-
-
-                <script>
-                    let selectedAmount = 0;
-
-                    // Open the payment modal and set the amount
-                    function handlePaystackPayment() {
-                        const email = prompt('Please enter your email address:');
-                        if (!email || !email.includes('@')) {
-                            alert('Invalid email address. Please enter a valid email.');
-                            return;
-                        }
-
-                        const amountInCents = selectedAmount * 100; // Convert KSh to cents (Paystack uses cents for KES)
-                        const handler = PaystackPop.setup({
-                            key: 'pk_live_60a185fa3aad8a497acdd0013d119219ca5a19c2', // Replace with your Paystack live public key
-                            email: email,
-                            amount: amountInCents,
-                            currency: 'KES', // Set currency to KES (Kenyan Shillings)
-                            callback: function (response) {
-                                alert('Payment successful. Transaction reference: ' + response.reference);
-                                // Add your backend verification logic here
-                            },
-                            onClose: function () {
-                                alert('Transaction was not completed.');
-                            }
-                        });
-
-                        handler.openIframe();
-                    }
-
-                    // Handle PayPal Payment
-                    function openPaymentModal(amount) {
-                        selectedAmount = amount;
-                        document.getElementById('paymentAmount').textContent = amount.toLocaleString(); // Format amount
-                        const modal = new bootstrap.Modal(document.getElementById('paymentOptionsModal'));
-                        modal.show();
-
-                        // Render PayPal Button
-                        const paypalContainer = document.getElementById('paypal-button-container');
-                        paypalContainer.innerHTML = ''; // Clear previous button
-                        paypal.Buttons({
-                            createOrder: function (data, actions) {
-                                return actions.order.create({
-                                    purchase_units: [{
-                                        amount: {
-                                            value: (selectedAmount / 100).toFixed(2) // Convert KSh to USD
+                                    .then(response => {
+                                        submitBtn.disabled = false;
+                                        submitBtn.innerHTML = '<i class="fa fa-paper-plane me-2"></i>Request Now';
+                                        if (response.ok) {
+                                            form.reset();
+                                            feedback.innerHTML = '<div class="alert alert-success mb-0"><i class="fa fa-check-circle me-2"></i>Request sent. I will contact you shortly.</div>';
+                                        } else {
+                                            return response.json().then(err => {
+                                                const msg = (err && err.errors) ? err.errors.map(i => i.message).join(', ') : 'An error occurred. Please try again later.';
+                                                feedback.innerHTML = '<div class="alert alert-danger mb-0"><i class="fa fa-exclamation-triangle me-2"></i>' + msg + '</div>';
+                                            });
                                         }
-                                    }]
-                                });
-                            },
-                            onApprove: function (data, actions) {
-                                return actions.order.capture().then(function (details) {
-                                    alert('Transaction completed by ' + details.payer.name.given_name + '!');
-                                });
-                            },
-                            onError: function (err) {
-                                console.error('PayPal Error:', err);
-                                alert('An error occurred with PayPal. Please try again.');
+                                    })
+                                    .catch(() => {
+                                        submitBtn.disabled = false;
+                                        submitBtn.innerHTML = '<i class="fa fa-paper-plane me-2"></i>Request Now';
+                                        feedback.innerHTML = '<div class="alert alert-danger mb-0"><i class="fa fa-exclamation-triangle me-2"></i>Network error. Please try again.</div>';
+                                    });
+                            });
+                        })();
+
+                        function handlePayDeposit(event, form) {
+                            event.preventDefault(); // Prevent the default form submission
+
+                            // Prompt the user for their phone number
+                            const phone = prompt('Please enter your phone number (e.g., 07xxxxxxxx, 01xxxxxxxx, 2547xxxxxxxx, +2547xxxxxxxx):');
+                            if (!phone) {
+                                alert('Phone number is required.');
+                                return false; // Prevent form submission
                             }
-                        }).render('#paypal-button-container');
-                    }
-                </script>
+
+                            // Normalize the phone number to the format 2547xxxxxxxx
+                            const normalizedPhone = normalizePhoneNumber(phone);
+                            if (!normalizedPhone) {
+                                alert('Invalid phone number. Please enter a valid phone number.');
+                                return false; // Prevent form submission
+                            }
+
+                            // Get the amount from the package
+                            const amount = form.closest('.service-cta').querySelector('[data-amount]').getAttribute('data-amount');
+
+                            // Populate the hidden fields in the form
+                            form.querySelector('#phone-input').value = normalizedPhone;
+                            form.querySelector('.amount-input').value = amount;
+
+                            // Submit the form programmatically
+                            form.submit();
+                        }
+
+                        // Normalize phone number to the format 2547xxxxxxxx
+                        function normalizePhoneNumber(phone) {
+                            // Remove any non-numeric characters
+                            const cleanedPhone = phone.replace(/[^0-9]/g, '');
+
+                            // Check and normalize the phone number
+                            if (cleanedPhone.startsWith('07') || cleanedPhone.startsWith('01')) {
+                                return '254' + cleanedPhone.slice(1); // Convert 07xxxxxxx or 01xxxxxxx to 2547xxxxxxx
+                            } else if (cleanedPhone.startsWith('254') && cleanedPhone.length === 12) {
+                                return cleanedPhone; // Already in the correct format
+                            } else if (cleanedPhone.startsWith('7') && cleanedPhone.length === 9) {
+                                return '254' + cleanedPhone; // Convert 7xxxxxxx to 2547xxxxxxx
+                            } else if (cleanedPhone.startsWith('+254') && cleanedPhone.length === 13) {
+                                return cleanedPhone.slice(1); // Convert +2547xxxxxxx to 2547xxxxxxx
+                            } else {
+                                return null; // Invalid phone number
+                            }
+                        }
+                    </script>
+
+                    <!-- ensure animate.css classes are used by WOW: add animate.css CDN if not already present -->
+                    <link rel="stylesheet"
+                        href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+                    <script>
+                        // small enhancement: add subtle hover tilt on package cards (mobile-friendly)
+                        document.addEventListener('DOMContentLoaded', function () {
+                            document.querySelectorAll('.pkg-card').forEach(function (card) {
+                                card.addEventListener('mousemove', function (e) {
+                                    const rect = card.getBoundingClientRect();
+                                    const x = (e.clientX - rect.left) / rect.width - 0.5;
+                                    const y = (e.clientY - rect.top) / rect.height - 0.5;
+                                    card.style.transform = `perspective(800px) rotateX(${-y * 3}deg) rotateY(${x * 6}deg) translateY(-6px)`;
+                                });
+                                card.addEventListener('mouseleave', function () {
+                                    card.style.transform = '';
+                                });
+                            });
+                        });
+                    </script>
+
+
+                    <script>
+                        let selectedAmount = 0;
+
+                        // Open the payment modal and set the amount
+                        function handlePaystackPayment() {
+                            const email = prompt('Please enter your email address:');
+                            if (!email || !email.includes('@')) {
+                                alert('Invalid email address. Please enter a valid email.');
+                                return;
+                            }
+
+                            const amountInCents = selectedAmount * 100; // Convert KSh to cents (Paystack uses cents for KES)
+                            const handler = PaystackPop.setup({
+                                key: 'pk_live_60a185fa3aad8a497acdd0013d119219ca5a19c2', // Replace with your Paystack live public key
+                                email: email,
+                                amount: amountInCents,
+                                currency: 'KES', // Set currency to KES (Kenyan Shillings)
+                                callback: function (response) {
+                                    alert('Payment successful. Transaction reference: ' + response.reference);
+                                    // Add your backend verification logic here
+                                },
+                                onClose: function () {
+                                    alert('Transaction was not completed.');
+                                }
+                            });
+
+                            handler.openIframe();
+                        }
+
+                        // Handle PayPal Payment
+                        function openPaymentModal(amount) {
+                            selectedAmount = amount;
+                            document.getElementById('paymentAmount').textContent = amount.toLocaleString(); // Format amount
+                            const modal = new bootstrap.Modal(document.getElementById('paymentOptionsModal'));
+                            modal.show();
+
+                            // Render PayPal Button
+                            const paypalContainer = document.getElementById('paypal-button-container');
+                            paypalContainer.innerHTML = ''; // Clear previous button
+                            paypal.Buttons({
+                                createOrder: function (data, actions) {
+                                    return actions.order.create({
+                                        purchase_units: [{
+                                            amount: {
+                                                value: (selectedAmount / 100).toFixed(2) // Convert KSh to USD
+                                            }
+                                        }]
+                                    });
+                                },
+                                onApprove: function (data, actions) {
+                                    return actions.order.capture().then(function (details) {
+                                        alert('Transaction completed by ' + details.payer.name.given_name + '!');
+                                    });
+                                },
+                                onError: function (err) {
+                                    console.error('PayPal Error:', err);
+                                    alert('An error occurred with PayPal. Please try again.');
+                                }
+                            }).render('#paypal-button-container');
+                        }
+                    </script>
 
 </body>
 
