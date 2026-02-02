@@ -809,6 +809,70 @@
                 <!-- Add-ons -->
                 <div class="row mt-5">
                     <div class="col-12 text-center wow fadeInUp" data-wow-delay="0.5s">
+                        <!-- Donate Button -->
+                    <div class="text-center mt-4">
+                        <button class="btn btn-primary donate-btn" onclick="handleDonate()"><i class="fa fa-heart"></i>
+                            Donate</button>
+                        <p class="mt-2">Your support helps me create more content and improve my skills.</p>
+                        <a href="https://www.buymeacoffee.com/marzley" target="_blank"
+                            class="btn btn-outline-primary mt-2">Buy me a coffee</a>
+                        <script>
+                            function handleDonate() {
+                                // Prompt the user to enter the donation amount
+                                const amount = prompt('Enter the amount you want to donate (in KSh):');
+                                if (!amount || isNaN(amount) || amount <= 0) {
+                                    alert('Please enter a valid amount.');
+                                    return;
+                                }
+
+                                // Prompt the user to enter their email address
+                                const email = prompt('Please enter your email address:');
+                                if (!email || !email.includes('@')) {
+                                    alert('Invalid email address. Please enter a valid email.');
+                                    return;
+                                }
+
+                                // Convert the amount to cents (Paystack uses cents for KES)
+                                const amountInCents = amount * 100;
+
+                                // Initialize Paystack payment
+                                const handler = PaystackPop.setup({
+                                    key: 'pk_live_60a185fa3aad8a497acdd0013d119219ca5a19c2', // Replace with your Paystack live public key
+                                    email: email,
+                                    amount: amountInCents,
+                                    currency: 'KES', // Set currency to KES (Kenyan Shillings)
+                                    callback: function (response) {
+                                        alert('Thank you for your donation! Transaction reference: ' + response.reference);
+                                        // Add your backend verification logic here
+                                    },
+                                    onClose: function () {
+                                        alert('Transaction was not completed.');
+                                    }
+                                });
+
+                                handler.openIframe();
+                            }
+                        </script>
+
+                        <style>
+                            .donate-btn {
+                                font-size: 1rem;
+                                font-weight: 600;
+                                padding: 0.75rem 1.5rem;
+                                border-radius: 10px;
+                                background-color: #007bff;
+                                color: #fff;
+                                border: none;
+                                transition: transform 0.2s ease, box-shadow 0.2s ease;
+                            }
+
+                            .donate-btn:hover {
+                                transform: translateY(-3px);
+                                box-shadow: 0 8px 20px rgba(0, 123, 255, 0.2);
+                            }
+                        </style>
+                    </div>
+                    <br><br>
                         <h4>Optional Add-ons</h4>
                         <p class="text-muted mb-3">Customize your project with additional services.</p>
                     </div>
