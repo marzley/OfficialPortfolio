@@ -33,18 +33,21 @@
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+    <script src="https://js.paystack.co/v1/inline.js"></script>
     <style>
-                 /* Page header blurred background */
+        /* Page header blurred background */
         .page-header {
             position: relative;
             overflow: hidden;
             z-index: 0;
         }
+
         .page-header::before {
             content: "";
             position: absolute;
             inset: 0;
-            background-image: url('img/header.png'); /* put your image at img/header-bg.jpg */
+            background-image: url('img/header.png');
+            /* put your image at img/header-bg.jpg */
             background-size: cover;
             background-position: center;
             transform: scale(1.06);
@@ -52,22 +55,28 @@
             z-index: 0;
             will-change: transform, filter;
         }
+
         /* subtle dark overlay for readable text */
         .page-header::after {
             content: "";
             position: absolute;
             inset: 0;
-             background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.45));
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.45));
             z-index: 1;
         }
+
         .page-header .container {
             position: relative;
-            z-index: 2; /* bring text above the blurred bg */
+            z-index: 2;
+            /* bring text above the blurred bg */
         }
 
         /* smaller screens: reduce blur/scale for performance */
         @media (max-width: 576px) {
-            .page-header::before { transform: scale(1.02); filter: blur(4px) brightness(0.65); }
+            .page-header::before {
+                transform: scale(1.02);
+                filter: blur(4px) brightness(0.65);
+            }
         }
     </style>
 
@@ -102,12 +111,13 @@
             <div class="col-lg-3 col-md-12 text-center text-lg-start">
                 <div class="col-lg-3 col-md-12 text-center text-lg-start">
                     <!-- changed: use logo image with accessible alt and fallback text -->
-                     <div class="col-lg-3 col-md-12 text-center text-lg-start">
-                <a href="index.html" class="navbar-brand d-inline-flex align-items-center m-0 p-0">
-                    <img src="img/logo1.png" alt="Marzley Tech" style="height:68px; width:auto; margin-right:8px;">
-                    <span class="h4 text-primary m-0" style="font-weight:700;">Marzley Tech</span>
-                </a>
-            </div>
+                    <div class="col-lg-3 col-md-12 text-center text-lg-start">
+                        <a href="index.html" class="navbar-brand d-inline-flex align-items-center m-0 p-0">
+                            <img src="img/logo1.png" alt="Marzley Tech"
+                                style="height:68px; width:auto; margin-right:8px;">
+                            <span class="h4 text-primary m-0" style="font-weight:700;">Marzley Tech</span>
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-9 col-md-12 text-end">
@@ -117,7 +127,7 @@
                 </div>
                 <div class="h-100 d-inline-flex align-items-center me-4">
                     <i class="far fa-envelope-open text-primary me-2"></i>
-                    <p class="m-0">sirkelvinwanyoike@gmail.com</p>
+                    <p class="m-0"><a href="mailto:sirkelvinwanyoike@gmail.com">sirkelvinwanyoike@gmail.com</a></p>
                 </div>
                 <!-- Social icons -->
                 <div class="h-100 d-inline-flex align-items-center">
@@ -158,8 +168,11 @@
     <div class="container-fluid nav-bar bg-light">
         <nav class="navbar navbar-expand-lg navbar-light bg-white p-3 py-lg-0 px-lg-4">
             <a href="" class="navbar-brand d-flex align-items-center m-0 p-0 d-lg-none">
-                <h1 class="text-primary m-0"><h1 class="text-primary m-0"><img src="img/logo1.png" alt="Marzley Tech" style="height:68px; width:auto; margin-right:8px;">
-                    <span class="h4 text-primary m-0" style="font-weight:700;">Marzley Tech</h1>
+                <h1 class="text-primary m-0">
+                    <h1 class="text-primary m-0"><img src="img/logo1.png" alt="Marzley Tech"
+                            style="height:68px; width:auto; margin-right:8px;">
+                        <span class="h4 text-primary m-0" style="font-weight:700;">Marzley Tech
+                    </h1>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                 <span class="fa fa-bars"></span>
@@ -171,7 +184,6 @@
                     <a href="service.html" class="nav-item nav-link"><i
                             class="fa fa-concierge-bell me-2"></i>Services</a>
                     <a href="booking.html" class="nav-item nav-link"><i class="fa fa-calendar-alt me-2"></i>Packages</a>
-                    <a href="marzley.html" class="nav-item nav-link"><i class="fa fa-users me-2"></i>marzley</a>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
                                 class="fa fa-briefcase me-2"></i>Portfolio</a>
@@ -180,6 +192,7 @@
                                     class="fa fa-comment-dots me-2"></i>Testimonials</a>
                             <a href="404.html" class="dropdown-item"><i class="fa fa-exclamation-triangle me-2"></i>404
                                 Page</a>
+                            <a href="marzley.html" class="dropdown-item"><i class="fa fa-users me-2"></i>marzley</a>
                         </div>
                     </div>
                     <a href="contact.html" class="nav-item nav-link"><i class="fa fa-envelope me-2"></i>Contact</a>
@@ -226,6 +239,71 @@
                         teaching, I explore frameworks, watch tech documentaries, and design interfaces.
                     </p>
 
+                    <!-- Donate Button -->
+                    <div class="text-center mt-4">
+                        <button class="btn btn-primary donate-btn" onclick="handleDonate()"><i class="fa fa-heart"></i>
+                            Donate</button>
+                        <p class="mt-2">Your support helps me create more content and improve my skills.</p>
+                        <a href="https://www.buymeacoffee.com/marzley" target="_blank"
+                            class="btn btn-outline-primary mt-2">Buy me a coffee</a>
+                        <script>
+                            function handleDonate() {
+                                // Prompt the user to enter the donation amount
+                                const amount = prompt('Enter the amount you want to donate (in KSh):');
+                                if (!amount || isNaN(amount) || amount <= 0) {
+                                    alert('Please enter a valid amount.');
+                                    return;
+                                }
+
+                                // Prompt the user to enter their email address
+                                const email = prompt('Please enter your email address:');
+                                if (!email || !email.includes('@')) {
+                                    alert('Invalid email address. Please enter a valid email.');
+                                    return;
+                                }
+
+                                // Convert the amount to cents (Paystack uses cents for KES)
+                                const amountInCents = amount * 100;
+
+                                // Initialize Paystack payment
+                                const handler = PaystackPop.setup({
+                                    key: 'pk_live_60a185fa3aad8a497acdd0013d119219ca5a19c2', // Replace with your Paystack live public key
+                                    email: email,
+                                    amount: amountInCents,
+                                    currency: 'KES', // Set currency to KES (Kenyan Shillings)
+                                    callback: function (response) {
+                                        alert('Thank you for your donation! Transaction reference: ' + response.reference);
+                                        // Add your backend verification logic here
+                                    },
+                                    onClose: function () {
+                                        alert('Transaction was not completed.');
+                                    }
+                                });
+
+                                handler.openIframe();
+                            }
+                        </script>
+
+                        <style>
+                            .donate-btn {
+                                font-size: 1rem;
+                                font-weight: 600;
+                                padding: 0.75rem 1.5rem;
+                                border-radius: 10px;
+                                background-color: #007bff;
+                                color: #fff;
+                                border: none;
+                                transition: transform 0.2s ease, box-shadow 0.2s ease;
+                            }
+
+                            .donate-btn:hover {
+                                transform: translateY(-3px);
+                                box-shadow: 0 8px 20px rgba(0, 123, 255, 0.2);
+                            }
+                        </style>
+
+                    </div>
+
                     <h5 class="text-primary">Mission</h5>
                     <p>To empower individuals and businesses with digital solutions that bridge ideas to innovation —
                         one line of code at a time.</p>
@@ -256,7 +334,7 @@
                         <img class="position-absolute img-fluid w-100 h-100" src="img/job (1).jpg"
                             style="object-fit: cover; padding: 0 0 50px 100px;" alt="Marzley Tech">
                         <img class="position-absolute start-0 bottom-0 img-fluid bg-white pt-2 pe-2 w-50 h-50"
-                            src="img/6.jpg" style="object-fit: cover;" alt="Kelvin Wanyoike">
+                            src="img/D1.jpg" style="object-fit: cover;" alt="Kelvin Wanyoike">
                     </div>
                 </div>
             </div>
@@ -385,10 +463,11 @@
                 <h6 class="text-secondary text-uppercase">Testimonials</h6>
                 <h1 class="mb-5">What Clients Say</h1>
             </div>
-           <div class="owl-carousel testimonial-carousel position-relative wow fadeInUp" data-wow-delay="0.1s">
+            <div class="owl-carousel testimonial-carousel position-relative wow fadeInUp" data-wow-delay="0.1s">
                 <div class="testimonial-item text-center">
                     <div class="testimonial-text bg-light text-center p-4 mb-4">
-                        <p class="mb-0">"Marzley built our clinic management system — professional, timely and reliable, we couldn't be happier with the results!"</p>
+                        <p class="mb-0">"Marzley built our clinic management system — professional, timely and reliable,
+                            we couldn't be happier with the results!"</p>
                     </div>
                     <img class="bg-light rounded-circle p-2 mx-auto mb-2" src="img/cc.jpg"
                         style="width: 80px; height: 80px;">
@@ -404,7 +483,8 @@
                 </div>
                 <div class="testimonial-item text-center">
                     <div class="testimonial-text bg-light text-center p-4 mb-4">
-                        <p class="mb-0">"Excellent training sessions — practical and project-focused. Also very engaging and informative, highly recommend!"</p>
+                        <p class="mb-0">"Excellent training sessions — practical and project-focused. Also very engaging
+                            and informative, highly recommend!"</p>
                     </div>
                     <img class="bg-light rounded-circle p-2 mx-auto mb-2" src="img/gtvc.jpg"
                         style="width: 80px; height: 80px;">
@@ -418,9 +498,10 @@
                     <h5 class="mb-1">Student</h5>
                     <p class="m-0">Gatanga Technical College</p>
                 </div>
-                 <div class="testimonial-item text-center">
+                <div class="testimonial-item text-center">
                     <div class="testimonial-text bg-light text-center p-4 mb-4">
-                        <p class="mb-0">"my website developed by Marzley tech solutions has boosted my online presence significantly. Highly recommend!"
+                        <p class="mb-0">"my website developed by Marzley tech solutions has boosted my online presence
+                            significantly. Highly recommend!"
                         </p>
                     </div>
                     <img class="bg-light rounded-circle p-2 mx-auto mb-2" src="img/m.jpg"
@@ -435,10 +516,11 @@
                     <h5 class="mb-1">Sir. Patrick</h5>
                     <p class="m-0">ICT Technician</p>
                 </div>
-    
+
                 <div class="testimonial-item text-center">
                     <div class="testimonial-text bg-light text-center p-4 mb-4">
-                        <p class="mb-0">"Marzley tech solutions provided us with a great experience, delivering a website that exceeded our expectations."
+                        <p class="mb-0">"Marzley tech solutions provided us with a great experience, delivering a
+                            website that exceeded our expectations."
                         </p>
                     </div>
                     <img class="bg-light rounded-circle p-2 mx-auto mb-2" src="img/job1.png"
@@ -453,9 +535,10 @@
                     <h5 class="mb-1">Job K.</h5>
                     <p class="m-0">Cyber Services Provider</p>
                 </div>
-                 <div class="testimonial-item text-center">
+                <div class="testimonial-item text-center">
                     <div class="testimonial-text bg-light text-center p-4 mb-4">
-                        <p class="mb-0">"Marzley tech solutions helped me grow my YouTube channel with a stunning website. Highly recommend!"
+                        <p class="mb-0">"Marzley tech solutions helped me grow my YouTube channel with a stunning
+                            website. Highly recommend!"
                         </p>
                     </div>
                     <img class="bg-light rounded-circle p-2 mx-auto mb-2" src="img/model.jpg"
@@ -472,7 +555,8 @@
                 </div>
                 <div class="testimonial-item text-center">
                     <div class="testimonial-text bg-light text-center p-4 mb-4">
-                        <p class="mb-0">"Marzley tech solutions provided me with a stunning website that helped me grow my YouTube channel. Highly recommend!"
+                        <p class="mb-0">"Marzley tech solutions provided me with a stunning website that helped me grow
+                            my YouTube channel. Highly recommend!"
                         </p>
                     </div>
                     <img class="bg-light rounded-circle p-2 mx-auto mb-2" src="img/sniper.jpg"
@@ -501,8 +585,8 @@
                     <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>Murang'a County, Kenya</p>
                     <p class="mb-2"><i class="fa fa-phone-alt me-3"></i><a href="tel:+254745789590">+254 745 789 590</a>
                     </p>
-                    <p class="mb-2"><i class="fa fa-envelope me-3"></i><a
-                            href="mailto:marzleytechsolutions@gmail.com">marzleytechsolutions@gmail.com</a></p>
+                    <p class="mb-2"><i class="fa fa-envelope me-3"></i><a href="mailto:marzleytechsolutions@gmail.com"
+                            style="font-size: 12px;">marzleytechsolutions@gmail.com</a></p>
                     <div class="d-flex pt-2">
                         <a class="btn btn-outline-light btn-social" href="https://www.twitter.com/marzleytech"
                             target="_blank"><i class="fab fa-twitter"></i></a>
