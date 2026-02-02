@@ -31,6 +31,14 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- PayPal SDK -->
+    <script
+        src="https://www.paypal.com/sdk/js?client-id=AfHzl2uOad12uQ0hCb7rSc-CBmq7oC1ekbEKvgJ6qoEj9TbMmEdzj8THWpJUgrGuGIfpHMXluDGgxFrr&currency=USD"></script>
+
+    <script src="https://js.paystack.co/v1/inline.js"></script>
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
@@ -102,17 +110,19 @@
             color: var(--muted);
         }
 
-         /* Page header blurred background */
+        /* Page header blurred background */
         .page-header {
             position: relative;
             overflow: hidden;
             z-index: 0;
         }
+
         .page-header::before {
             content: "";
             position: absolute;
             inset: 0;
-            background-image: url('img/header.png'); /* put your image at img/header-bg.jpg */
+            background-image: url('img/header.png');
+            /* put your image at img/header-bg.jpg */
             background-size: cover;
             background-position: center;
             transform: scale(1.06);
@@ -120,23 +130,30 @@
             z-index: 0;
             will-change: transform, filter;
         }
+
         /* subtle dark overlay for readable text */
         .page-header::after {
             content: "";
             position: absolute;
             inset: 0;
-             background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.45));
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.45));
             z-index: 1;
         }
+
         .page-header .container {
             position: relative;
-            z-index: 2; /* bring text above the blurred bg */
+            z-index: 2;
+            /* bring text above the blurred bg */
         }
 
         /* smaller screens: reduce blur/scale for performance */
         @media (max-width: 576px) {
-            .page-header::before { transform: scale(1.02); filter: blur(4px) brightness(0.65); }
+            .page-header::before {
+                transform: scale(1.02);
+                filter: blur(4px) brightness(0.65);
+            }
         }
+
         /* Buttons & inputs */
         .btn-outline-primary {
             border-color: transparent;
@@ -194,11 +211,81 @@
             box-shadow: 0 6px 18px rgba(124, 58, 237, 0.12);
         }
     </style>
+
+    <style>
+        .payment-options-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .whatsapp-btn {
+            width: 100%;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #25d366, #128c7e);
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .whatsapp-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.2);
+        }
+
+        .payment-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .mpesa-btn,
+        .other-options-btn {
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            width: 48%;
+            /* Make buttons smaller and fit side by side */
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .mpesa-btn {
+            background: #28a745;
+            color: #fff;
+            border: none;
+        }
+
+        .mpesa-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.2);
+        }
+
+        .other-options-btn {
+            background: #0d6efd;
+            color: #fff;
+            border: none;
+        }
+
+        .other-options-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(13, 110, 253, 0.2);
+        }
+    </style>
+
 </head>
 
 <body>
-    
-     <!--Start of Tawk.to Script-->
+
+    <!--Start of Tawk.to Script-->
     <script type="text/javascript">
         var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
         (function () {
@@ -223,7 +310,7 @@
     <!-- Topbar Start -->
     <div class="container-fluid bg-light d-none d-lg-block">
         <div class="row align-items-center top-bar">
- <div class="col-lg-3 col-md-12 text-center text-lg-start">
+            <div class="col-lg-3 col-md-12 text-center text-lg-start">
                 <a href="index.html" class="navbar-brand d-inline-flex align-items-center m-0 p-0">
                     <img src="img/logo1.png" alt="Marzley Tech" style="height:68px; width:auto; margin-right:8px;">
                     <span class="h4 text-primary m-0" style="font-weight:700;">Marzley Tech</span>
@@ -236,7 +323,7 @@
                 </div>
                 <div class="h-100 d-inline-flex align-items-center me-4">
                     <i class="far fa-envelope-open text-primary me-2"></i>
-                    <p class="m-0">sirkelvinwanyoike@gmail.com</p>
+                    <p class="m-0"><a href="mailto:sirkevinwanyoike@gmail.com">sirkevinwanyoike@gmail.com</a></p>
                 </div>
                 <!-- Social icons -->
                 <div class="h-100 d-inline-flex align-items-center">
@@ -276,8 +363,11 @@
     <div class="container-fluid nav-bar bg-light">
         <nav class="navbar navbar-expand-lg navbar-light bg-white p-3 py-lg-0 px-lg-4">
             <a href="" class="navbar-brand d-flex align-items-center m-0 p-0 d-lg-none">
-                <h1 class="text-primary m-0"><h1 class="text-primary m-0"><img src="img/logo1.png" alt="Marzley Tech" style="height:68px; width:auto; margin-right:8px;">
-                    <span class="h4 text-primary m-0" style="font-weight:700;">Marzley Tech</h1>
+                <h1 class="text-primary m-0">
+                    <h1 class="text-primary m-0"><img src="img/logo1.png" alt="Marzley Tech"
+                            style="height:68px; width:auto; margin-right:8px;">
+                        <span class="h4 text-primary m-0" style="font-weight:700;">Marzley Tech
+                    </h1>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                 <span class="fa fa-bars"></span>
@@ -290,7 +380,6 @@
                             class="fa fa-concierge-bell me-2"></i>Services</a>
                     <a href="booking.html" class="nav-item nav-link"><i class="fa fa-calendar-alt me-2"></i>Packages</a>
 
-                    <a href="marzley.html" class="nav-item nav-link"><i class="fa fa-users me-2"></i>marzley</a>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
                                 class="fa fa-briefcase me-2"></i>Portfolio</a>
@@ -300,6 +389,8 @@
                                     class="fa fa-comment-dots me-2"></i>Testimonials</a>
                             <a href="404.html" class="dropdown-item"><i class="fa fa-exclamation-triangle me-2"></i>404
                                 Page</a>
+                            <a href="marzley.html" class="dropdown-item"><i class="fa fa-users me-2"></i>marzley</a>
+
                         </div>
                     </div>
                     <a href="contact.html" class="nav-item nav-link"><i class="fa fa-envelope me-2"></i>Contact</a>
@@ -321,7 +412,7 @@
     </div>
     <!-- Navbar End -->
 
-     <!-- Page Header Start -->
+    <!-- Page Header Start -->
     <div class="container-fluid page-header mb-5 py-5">
         <div class="container">
             <h1 class="display-3 text-white mb-3 animated slideInDown">Our Packages</h1>
@@ -404,15 +495,39 @@
         </div>
     </div>
 
+    <!-- Payment Options Modal -->
+    <div class="modal fade" id="paymentOptionsModal" tabindex="-1" aria-labelledby="paymentOptionsModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="paymentOptionsModalLabel">Choose Payment Method</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p id="paymentAmountText">Amount: KSh <span id="paymentAmount"></span></p>
+                    <div class="d-flex justify-content-around">
+
+                        <!-- Paystack -->
+                        <button class="btn btn-primary" onclick="handlePaystackPayment()">Paystack</button>
+                        <!-- PayPal -->
+                        <div id="paypal-button-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
     <!-- Packages Start -->
 
     <div class="container-xxl py-5">
-            <input type="hidden" name="phone" id="phone-input">
-            <div class="container">
-                <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                    <h6 class="text-secondary text-uppercase">Website Packages</h6>
-                    <h1 class="mb-5">Website Development Packages — Marzley Tech Solutions</h1>
-                </div>
+        <input type="hidden" name="phone" id="phone-input">
+        <div class="container">
+            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                <h6 class="text-secondary text-uppercase">Website Packages</h6>
+                <h1 class="mb-5">Website Development Packages — Marzley Tech Solutions</h1>
+            </div>
 
             <div class="row g-4">
                 <!-- Landing Page -->
@@ -426,7 +541,7 @@
                             </div>
                         </div>
                         <span class="pkg-badge mb-2">Popular</span>
-                        <h5 class="mb-2">Landing Page</h5>
+                        <h5 class="mb-2">Landing Page (15,000)</h5>
                         <p class="text-muted small mb-3">Ideal for startups, personal brands, or campaigns.</p>
                         <ul class="text-sm ps-3 mb-3">
                             <li>1–3 responsive pages</li>
@@ -435,17 +550,53 @@
                         </ul>
                         <div class="mt-auto">
                             <div class="d-flex align-items-center justify-content-between service-cta">
-                                <strong class="text-primary" data-amount="15000">KSh 15,000+</strong>
-                                <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I'm%20interested%20in%20the%20Small%20Business%20Website%20package."
-                                    class="btn btn-gradient" target="_blank" rel="noopener noreferrer"
-                                    aria-label="Chat on WhatsApp">WhatsApp</a>
-                                <form action="stkpush.php" method="POST" style="display:inline;" onsubmit="return handlePayDeposit(event, this)">
-                                    <input type="hidden" name="phone" id="phone-input">
-                                    <input type="hidden" name="amount" class="amount-input">
-                                    <button type="submit" class="btn btn-success" aria-label="Pay Deposit">PAY</button>
-                                </form>
+                                <strong class="text-primary" data-amount="15000"></strong>
+                                <div class="payment-options-container">
+                                    <!-- WhatsApp Button -->
+                                    <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I'm%20interested%20in%20the%20Landing%20Page%20package."
+                                        class="btn btn-gradient whatsapp-btn" target="_blank" rel="noopener noreferrer"
+                                        aria-label="Chat on WhatsApp">
+                                        WhatsApp
+                                    </a>
+
+                                    <!-- Payment Options -->
+                                    <div class="payment-buttons">
+                                        <!-- M-PESA Option -->
+                                        <form action="stkpush.php" method="POST" style="display:inline;"
+                                            onsubmit="return handlePayDeposit(event, this)">
+                                            <input type="hidden" name="phone" id="phone-input">
+                                            <input type="hidden" name="amount" class="amount-input">
+                                            <button type="submit" class="btn btn-success payment-btn"
+                                                aria-label="Pay Deposit">
+                                                <i class="fa fa-mobile-alt me-1"></i><span class="pay-via-text">Pay
+                                                    via</span> M-PESA
+                                            </button>
+                                        </form>
+
+                                        <!-- PayPal and Paystack Button -->
+                                        <button type="button" class="btn btn-primary payment-btn"
+                                            onclick="openPaymentModal(15000)">
+                                            <i class="fab fa-paypal me-1"></i><span class="pay-via-text">Pay via</span>
+                                            PayPal or Paystack
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <style>
+                            .pay-via-text {
+                                color: #ffcc00;
+                                /* Change text color to yellow */
+                                font-weight: bold;
+                                /* Make the text bold */
+                                font-size: 1rem;
+                                /* Adjust font size */
+                                text-transform: uppercase;
+                                /* Make the text uppercase */
+                                margin-right: 0.5rem;
+                                /* Add spacing between "Pay via" and the icon */
+                            }
+                        </style>
                     </div>
                 </div>
 
@@ -460,7 +611,7 @@
                             </div>
                         </div>
                         <span class="pkg-badge mb-2">Best for SMEs</span>
-                        <h5 class="mb-2">Small Business Website</h5>
+                        <h5 class="mb-2">Small Business (25,000)</h5>
                         <p class="text-muted small mb-3">Perfect to grow your digital footprint and attract customers.
                         </p>
                         <ul class="text-sm ps-3 mb-3">
@@ -470,20 +621,41 @@
                         </ul>
                         <div class="mt-auto">
                             <div class="d-flex align-items-center justify-content-between service-cta">
-                                <strong class="text-primary" data-amount="25000">KSh 25,000+</strong>
-                                <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I'm%20interested%20in%20the%20Small%20Business%20Website%20package."
-                                    class="btn btn-gradient" target="_blank" rel="noopener noreferrer"
-                                    aria-label="Chat on WhatsApp">WhatsApp</a>
-                                <form action="stkpush.php" method="POST" style="display:inline;" onsubmit="return handlePayDeposit(event, this)">
-                                    <input type="hidden" name="phone" id="phone-input">
-                                    <input type="hidden" name="amount" class="amount-input">
-                                    <button type="submit" class="btn btn-success" aria-label="Pay Deposit">PAY</button>
-                                </form>
+                                <strong class="text-primary" data-amount="25000"></strong>
+                                <div class="payment-options-container">
+                                    <!-- WhatsApp Button -->
+                                    <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I'm%20interested%20in%20the%20Small%20Business%20package."
+                                        class="btn btn-gradient whatsapp-btn" target="_blank" rel="noopener noreferrer"
+                                        aria-label="Chat on WhatsApp">
+                                        WhatsApp
+                                    </a>
+
+                                    <!-- Payment Options -->
+                                    <div class="payment-buttons">
+                                        <!-- M-PESA Option -->
+                                        <form action="stkpush.php" method="POST" style="display:inline;"
+                                            onsubmit="return handlePayDeposit(event, this)">
+                                            <input type="hidden" name="phone" id="phone-input">
+                                            <input type="hidden" name="amount" class="amount-input">
+                                            <button type="submit" class="btn btn-success payment-btn"
+                                                aria-label="Pay Deposit">
+                                                <i class="fa fa-mobile-alt me-1"></i><span class="pay-via-text">Pay
+                                                    via</span> M-PESA
+                                            </button>
+                                        </form>
+
+                                        <!-- PayPal and Paystack Button -->
+                                        <button type="button" class="btn btn-primary payment-btn"
+                                            onclick="openPaymentModal(25000)">
+                                            <i class="fab fa-paypal me-1"></i><span class="pay-via-text">Pay via</span>
+                                            PayPal or Paystack
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <!-- E-commerce -->
                 <div class="col-md-6 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
                     <div class="pkg-card bg-white rounded p-4 h-100 d-flex flex-column wow animate__animated animate__zoomIn"
@@ -504,20 +676,41 @@
                         </ul>
                         <div class="mt-auto">
                             <div class="d-flex align-items-center justify-content-between service-cta">
-                                <strong class="text-primary" data-amount="40000">KSh 40,000+</strong>
-                                <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I'm%20interested%20in%20the%20E-Commerce%20Website%20package."
-                                    class="btn btn-gradient" target="_blank" rel="noopener noreferrer"
-                                    aria-label="Chat on WhatsApp">WhatsApp</a>
-                                <form action="https://marzleytechsolutions.app/stkpush.php" method="POST" style="display:inline;" onsubmit="return handlePayDeposit(event, this)">
-                                    <input type="hidden" name="phone" id="phone-input">
-                                    <input type="hidden" name="amount" class="amount-input">
-                                    <button type="submit" class="btn btn-success" aria-label="Pay Deposit">PAY</button>
-                                </form>
+                                <strong class="text-primary" data-amount="40000"></strong>
+                                <div class="payment-options-container">
+                                    <!-- WhatsApp Button -->
+                                    <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I'm%20interested%20in%20the%20E-Commerce%20Website%20package."
+                                        class="btn btn-gradient whatsapp-btn" target="_blank" rel="noopener noreferrer"
+                                        aria-label="Chat on WhatsApp">
+                                        WhatsApp
+                                    </a>
+
+                                    <!-- Payment Options -->
+                                    <div class="payment-buttons">
+                                        <!-- M-PESA Option -->
+                                        <form action="stkpush.php" method="POST" style="display:inline;"
+                                            onsubmit="return handlePayDeposit(event, this)">
+                                            <input type="hidden" name="phone" id="phone-input">
+                                            <input type="hidden" name="amount" class="amount-input">
+                                            <button type="submit" class="btn btn-success payment-btn"
+                                                aria-label="Pay Deposit">
+                                                <i class="fa fa-mobile-alt me-1"></i><span class="pay-via-text">Pay
+                                                    via</span> M-PESA
+                                            </button>
+                                        </form>
+
+                                        <!-- PayPal and Paystack Button -->
+                                        <button type="button" class="btn btn-primary payment-btn"
+                                            onclick="openPaymentModal(40000)">
+                                            <i class="fab fa-paypal me-1"></i><span class="pay-via-text">Pay via</span>
+                                            PayPal or Paystack
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <!-- Corporate -->
                 <div class="col-md-6 col-lg-3 wow fadeInUp" data-wow-delay="0.4s">
                     <div class="pkg-card bg-white rounded p-4 h-100 d-flex flex-column wow animate__animated animate__fadeInUp"
@@ -539,258 +732,477 @@
                         </ul>
                         <div class="mt-auto">
                             <div class="d-flex align-items-center justify-content-between service-cta">
-                                <strong class="text-primary" data-amount="60000">KSh 60,000+</strong>
-                                <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I'm%20interested%20in%20the%20Corporate%20Website%20package."
-                                    class="btn btn-gradient" target="_blank" rel="noopener noreferrer"
-                                    aria-label="Chat on WhatsApp">WhatsApp</a>
-                                <form action="https://marzleytechsolutions.app/stkpush.php" method="POST" style="display:inline;" onsubmit="return handlePayDeposit(event, this)">
-                                    <input type="hidden" name="phone" id="phone-input">
-                                    <input type="hidden" name="amount" class="amount-input">
-                                    <button type="submit" class="btn btn-success" aria-label="Pay Deposit">PAY</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                                <strong class="text-primary" data-amount="60000"></strong>
+                                <div class="payment-options-container">
+                                    <!-- WhatsApp Button -->
+                                    <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I'm%20interested%20in%20the%20Corporate%20Website%20package."
+                                        class="btn btn-gradient whatsapp-btn" target="_blank" rel="noopener noreferrer"
+                                        aria-label="Chat on WhatsApp">
+                                        WhatsApp
+                                    </a>
 
-            <!-- Add-ons -->
-            <div class="row mt-5">
-                <div class="col-12 text-center wow fadeInUp" data-wow-delay="0.5s">
-                    <h4>Optional Add-ons</h4>
-                    <p class="text-muted mb-3">Customize your project with additional services.</p>
-                </div>
-                <div class="col-md-3 col-sm-6 wow fadeInUp" data-wow-delay="0.6s">
-                    <div class="p-3 text-center rounded bg-white">
-                        <i class="fa fa-globe fa-2x text-primary mb-2"></i>
-                        <h6 class="mb-1">Domain & Hosting</h6>
-                        <small class="text-muted">KSh 3,000 / year</small>
-                        <div class="mt-2">
-                            <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I%20am%20interested%20in%20Domain%20%26%20Hosting%20setup%20for%20my%20project."
-                                class="btn btn-sm btn-success" target="_blank" rel="noopener noreferrer"><i
-                                    class="fab fa-whatsapp me-1"></i>WhatsApp</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
-                    <div class="p-3 text-center rounded bg-white">
-                        <i class="fa fa-pen-nib fa-2x text-primary mb-2"></i>
-                        <h6 class="mb-1">Logo & Branding</h6>
-                        <small class="text-muted">KSh 2,500</small>
-                        <div class="mt-2">
-                            <a href="https://wa.me/254745789590?text=Hi%20Marzley%2C%20I%20would%20like%20a%20logo%20%26%20branding%20package%20for%20my%20business."
-                                class="btn btn-sm btn-success" target="_blank" rel="noopener noreferrer"><i
-                                    class="fab fa-whatsapp me-1"></i>WhatsApp</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6 wow fadeInUp" data-wow-delay="0.8s">
-                    <div class="p-3 text-center rounded bg-white">
-                        <i class="fa fa-search fa-2x text-primary mb-2"></i>
-                        <h6 class="mb-1">SEO Optimization</h6>
-                        <small class="text-muted">KSh 5,000</small>
-                        <div class="mt-2">
-                            <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I%27m%20interested%20in%20SEO%20optimization%20for%20my%20site."
-                                class="btn btn-sm btn-success" target="_blank" rel="noopener noreferrer"><i
-                                    class="fab fa-whatsapp me-1"></i>WhatsApp</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6 wow fadeInUp" data-wow-delay="0.9s">
-                    <div class="p-3 text-center rounded bg-white">
-                        <i class="fa fa-shield-alt fa-2x text-primary mb-2"></i>
-                        <h6 class="mb-1">Security & Backups</h6>
-                        <small class="text-muted">KSh 3,500</small>
-                        <div class="mt-2">
-                            <a href="https://wa.me/254745789590?text=Hi%20Marzley%2C%20I%20need%20security%20%26%20backup%20services%20for%20my%20website."
-                                class="btn btn-sm btn-success" target="_blank" rel="noopener noreferrer"><i
-                                    class="fab fa-whatsapp me-1"></i>WhatsApp</a>
-                        </div>
-                    </div>
-                </div>
-                </form>
-            </div>
+                                    <!-- Payment Options -->
+                                    <div class="payment-buttons">
+                                        <!-- M-PESA Option -->
+                                        <form action="stkpush.php" method="POST" style="display:inline;"
+                                            onsubmit="return handlePayDeposit(event, this)">
+                                            <input type="hidden" name="phone" id="phone-input">
+                                            <input type="hidden" name="amount" class="amount-input">
+                                            <button type="submit" class="btn btn-success payment-btn"
+                                                aria-label="Pay Deposit">
+                                                <i class="fa fa-mobile-alt me-1"></i><span class="pay-via-text">Pay
+                                                    via</span> M-PESA
+                                            </button>
+                                        </form>
 
-            <!-- Footer Start -->
-            <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
-                <div class="container py-5">
-                    <div class="row g-5">
-                        <div class="col-lg-3 col-md-6">
-                            <h4 class="text-light mb-4">Contact</h4>
-                            <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>Murang'a County, Kenya</p>
-                            <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+254 745 789 590</p>
-                            <p class="mb-2"><i class="fa fa-envelope me-3"></i>marzleytechsolutions@gmail.com</p>
-                            <div class="d-flex pt-2">
-                                <a class="btn btn-outline-light btn-social" href="https://www.twitter.com/marzleytech"
-                                    target="_blank"><i class="fab fa-twitter"></i></a>
-                                <a class="btn btn-outline-light btn-social"
-                                    href="https://www.facebook.com/marzleytechsolutions" target="_blank"><i
-                                        class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-outline-light btn-social"
-                                    href="https://www.linkedin.com/in/kelvin-wanyoike-marzley" target="_blank"><i
-                                        class="fab fa-linkedin-in"></i></a>
-                                <a class="btn btn-outline-light btn-social" href="https://www.instagram.com/marzleytech"
-                                    target="_blank"><i class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-3 col-md-6">
-                            <h4 class="text-light mb-4">Working Hours</h4>
-                            <h6 class="text-light">Monday - Friday:</h6>
-                            <p class="mb-4">08.00 AM - 07.00 PM</p>
-                            <h6 class="text-light">Saturday:</h6>
-                            <p class="mb-0">09.00 AM - 05.00 PM</p>
-                            <h6 class="text-light">Sunday:</h6>
-                            <p class="mb-0">Closed / By Appointment</p>
-                        </div>
-
-                        <div class="col-lg-3 col-md-6">
-                            <h4 class="text-light mb-4">Services</h4>
-                            <a class="btn btn-link" href="service.html#development">Development</a>
-                            <a class="btn btn-link" href="service.html#design">Design</a>
-                            <a class="btn btn-link" href="training.html">Training</a>
-                            <a class="btn btn-link" href="service.html#integration">API & Packages</a>
-                            <a class="btn btn-link" href="contact.html">Support</a>
-                        </div>
-
-                        <div class="col-lg-3 col-md-6">
-                            <h4 class="text-light mb-4">Connect</h4>
-                            <p>Visit the website or send a message — let’s build something great.</p>
-                            <div class="position-relative mx-auto" style="max-width: 400px;">
-                                <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text"
-                                    placeholder="Your email">
-                                <button type="button"
-                                    class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
+                                        <!-- PayPal and Paystack Button -->
+                                        <button type="button" class="btn btn-primary payment-btn"
+                                            onclick="openPaymentModal(60000)">
+                                            <i class="fab fa-paypal me-1"></i><span class="pay-via-text">Pay via</span>
+                                            PayPal or Paystack
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="container">
-                    <div class="copyright">
-                        <div class="row">
-                            <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                                &copy; <a class="border-bottom" href="https://marzleytechsolutions.co.ke"
-                                    target="_blank">Marzley Tech Solutions</a>, All Rights Reserved.
-                            </div>
-                            <div class="col-md-6 text-center text-md-end">
-                                Designed & Developed by <a class="border-bottom" href="https://github.com/marzley"
-                                    target="_blank">Marzley</a>
+                <!-- Add-ons -->
+                <div class="row mt-5">
+                    <div class="col-12 text-center wow fadeInUp" data-wow-delay="0.5s">
+                        <h4>Optional Add-ons</h4>
+                        <p class="text-muted mb-3">Customize your project with additional services.</p>
+                    </div>
+                    <div class="col-md-3 col-sm-6 wow fadeInUp" data-wow-delay="0.6s">
+                        <div class="p-3 text-center rounded bg-white">
+                            <i class="fa fa-globe fa-2x text-primary mb-2"></i>
+                            <h6 class="mb-1">Domain & Hosting</h6>
+                            <small class="text-muted" data-amount="3000">KSh 3,000 / year</small>
+                            <div class="mt-2">
+                                <!-- WhatsApp Button -->
+                                <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I%20am%20interested%20in%20Domain%20%26%20Hosting%20setup%20for%20my%20project."
+                                    class="btn btn-sm btn-success whatsapp-btn" target="_blank"
+                                    rel="noopener noreferrer">
+                                    <i class="fab fa-whatsapp me-1"></i>WhatsApp
+                                </a>
+
+                                <!-- Add spacing between WhatsApp and payment buttons -->
+                                <div class="mt-3 payment-buttons">
+                                    <!-- M-PESA Option -->
+                                    <form action="stkpush.php" method="POST" style="display:inline;"
+                                        onsubmit="return handlePayDeposit(event, this)">
+                                        <input type="hidden" name="phone" id="phone-input">
+                                        <input type="hidden" name="amount" class="amount-input">
+                                        <button type="submit" class="btn btn-success payment-btn"
+                                            aria-label="Pay Deposit">
+                                            <i class="fa fa-mobile-alt me-1"></i><span class="pay-via-text">Pay
+                                                via</span> M-PESA
+                                        </button>
+                                    </form>
+
+                                    <!-- PayPal and Paystack Button -->
+                                    <button type="button" class="btn btn-primary payment-btn"
+                                        onclick="openPaymentModal(3000)">
+                                        <i class="fab fa-paypal me-1"></i><span class="pay-via-text">Pay via</span>
+                                        PayPal or Paystack
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
+                        <div class="p-3 text-center rounded bg-white">
+                            <i class="fa fa-pen-nib fa-2x text-primary mb-2"></i>
+                            <h6 class="mb-1">Logo & Branding</h6>
+                            <small class="text-muted" data-amount="2500">KSh 2,500</small>
+                            <div class="mt-2">
+                                <!-- WhatsApp Button -->
+                                <a href="https://wa.me/254745789590?text=Hi%20Marzley%2C%20I%20would%20like%20a%20logo%20%26%20branding%20package%20for%20my%20business."
+                                    class="btn btn-sm btn-success whatsapp-btn" target="_blank"
+                                    rel="noopener noreferrer">
+                                    <i class="fab fa-whatsapp me-1"></i>WhatsApp
+                                </a>
+
+                                <!-- Add spacing between WhatsApp and payment buttons -->
+                                <div class="mt-3 payment-buttons">
+                                    <!-- M-PESA Option -->
+                                    <form action="stkpush.php" method="POST" style="display:inline;"
+                                        onsubmit="return handlePayDeposit(event, this)">
+                                        <input type="hidden" name="phone" id="phone-input">
+                                        <input type="hidden" name="amount" class="amount-input">
+                                        <button type="submit" class="btn btn-success payment-btn"
+                                            aria-label="Pay Deposit">
+                                            <i class="fa fa-mobile-alt me-1"></i><span class="pay-via-text">Pay
+                                                via</span> M-PESA
+                                        </button>
+                                    </form>
+
+                                    <!-- PayPal and Paystack Button -->
+                                    <button type="button" class="btn btn-primary payment-btn"
+                                        onclick="openPaymentModal(2500)">
+                                        <i class="fab fa-paypal me-1"></i><span class="pay-via-text">Pay via</span>
+                                        PayPal or Paystack
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 wow fadeInUp" data-wow-delay="0.8s">
+                        <div class="p-3 text-center rounded bg-white">
+                            <i class="fa fa-search fa-2x text-primary mb-2"></i>
+                            <h6 class="mb-1">SEO Optimization</h6>
+                            <small class="text-muted" data-amount="5000">KSh 5,000</small>
+                            <div class="mt-2">
+                                <!-- WhatsApp Button -->
+                                <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I%27m%20interested%20in%20SEO%20optimization%20for%20my%20site."
+                                    class="btn btn-sm btn-success whatsapp-btn" target="_blank"
+                                    rel="noopener noreferrer">
+                                    <i class="fab fa-whatsapp me-1"></i>WhatsApp
+                                </a>
+
+                                <!-- Add spacing between WhatsApp and payment buttons -->
+                                <div class="mt-3 payment-buttons">
+                                    <!-- M-PESA Option -->
+                                    <form action="stkpush.php" method="POST" style="display:inline;"
+                                        onsubmit="return handlePayDeposit(event, this)">
+                                        <input type="hidden" name="phone" id="phone-input">
+                                        <input type="hidden" name="amount" class="amount-input">
+                                        <button type="submit" class="btn btn-success payment-btn"
+                                            aria-label="Pay Deposit">
+                                            <i class="fa fa-mobile-alt me-1"></i><span class="pay-via-text">Pay
+                                                via</span> M-PESA
+                                        </button>
+                                    </form>
+
+                                    <!-- PayPal and Paystack Button -->
+                                    <button type="button" class="btn btn-primary payment-btn"
+                                        onclick="openPaymentModal(5000)">
+                                        <i class="fab fa-paypal me-1"></i><span class="pay-via-text">Pay via</span>
+                                        PayPal or Paystack
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 wow fadeInUp" data-wow-delay="0.9s">
+                        <div class="p-3 text-center rounded bg-white">
+                            <i class="fa fa-shield-alt fa-2x text-primary mb-2"></i>
+                            <h6 class="mb-1">Security & Backups</h6>
+                            <small class="text-muted" data-amount="3500">KSh 3,500</small>
+                            <div class="mt-2">
+                                <!-- WhatsApp Button -->
+                                <a href="https://wa.me/254745789590?text=Hi%20Marzley%2C%20I%20need%20security%20%26%20backup%20services%20for%20my%20website."
+                                    class="btn btn-sm btn-success whatsapp-btn" target="_blank"
+                                    rel="noopener noreferrer">
+                                    <i class="fab fa-whatsapp me-1"></i>WhatsApp
+                                </a>
+
+                                <!-- Add spacing between WhatsApp and payment buttons -->
+                                <div class="mt-3 payment-buttons">
+                                    <!-- M-PESA Option -->
+                                    <form action="stkpush.php" method="POST" style="display:inline;"
+                                        onsubmit="return handlePayDeposit(event, this)">
+                                        <input type="hidden" name="phone" id="phone-input">
+                                        <input type="hidden" name="amount" class="amount-input">
+                                        <button type="submit" class="btn btn-success payment-btn"
+                                            aria-label="Pay Deposit">
+                                            <i class="fa fa-mobile-alt me-1"></i><span class="pay-via-text">Pay
+                                                via</span> M-PESA
+                                        </button>
+                                    </form>
+
+                                    <!-- PayPal and Paystack Button -->
+                                    <button type="button" class="btn btn-primary payment-btn"
+                                        onclick="openPaymentModal(3500)">
+                                        <i class="fab fa-paypal me-1"></i><span class="pay-via-text">Pay via</span>
+                                        PayPal or Paystack
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
                 </div>
 
-                <!-- Back to Top -->
-                <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-0 back-to-top"><i
-                        class="bi bi-arrow-up"></i></a>
-            </div>
-            <!-- Footer End -->
+                <!-- Footer Start -->
+                <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+                    <div class="container py-5">
+                        <div class="row g-5">
+                            <div class="col-lg-3 col-md-6">
+                                <h4 class="text-light mb-4">Contact</h4>
+                                <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>Murang'a County, Kenya</p>
+                                <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+254 745 789 590</p>
+                                <p class="mb-2"><i class="fa fa-envelope me-3"></i><a
+                                        href="mailto:marzleytechsolutions@gmail.com">Marzley</a></p>
+                                <div class="d-flex pt-2">
+                                    <a class="btn btn-outline-light btn-social"
+                                        href="https://www.twitter.com/marzleytech" target="_blank"><i
+                                            class="fab fa-twitter"></i></a>
+                                    <a class="btn btn-outline-light btn-social"
+                                        href="https://www.facebook.com/marzleytechsolutions" target="_blank"><i
+                                            class="fab fa-facebook-f"></i></a>
+                                    <a class="btn btn-outline-light btn-social"
+                                        href="https://www.linkedin.com/in/kelvin-wanyoike-marzley" target="_blank"><i
+                                            class="fab fa-linkedin-in"></i></a>
+                                    <a class="btn btn-outline-light btn-social"
+                                        href="https://www.instagram.com/marzleytech" target="_blank"><i
+                                            class="fab fa-instagram"></i></a>
+                                </div>
+                            </div>
 
-            <!-- JavaScript Libraries -->
-            <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-            <script src="lib/wow/wow.min.js"></script>
-            <script src="lib/easing/easing.min.js"></script>
-            <script src="lib/waypoints/waypoints.min.js"></script>
-            <script src="lib/counterup/counterup.min.js"></script>
-            <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-            <script src="lib/tempusdominus/js/moment.min.js"></script>
-            <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-            <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+                            <div class="col-lg-3 col-md-6">
+                                <h4 class="text-light mb-4">Working Hours</h4>
+                                <h6 class="text-light">Monday - Friday:</h6>
+                                <p class="mb-4">08.00 AM - 07.00 PM</p>
+                                <h6 class="text-light">Saturday:</h6>
+                                <p class="mb-0">09.00 AM - 05.00 PM</p>
+                                <h6 class="text-light">Sunday:</h6>
+                                <p class="mb-0">Closed / By Appointment</p>
+                            </div>
 
-            <!-- Template Javascript -->
-            <script src="js/main.js"></script>
+                            <div class="col-lg-3 col-md-6">
+                                <h4 class="text-light mb-4">Services</h4>
+                                <a class="btn btn-link" href="service.html#development">Development</a>
+                                <a class="btn btn-link" href="service.html#design">Design</a>
+                                <a class="btn btn-link" href="training.html">Training</a>
+                                <a class="btn btn-link" href="service.html#integration">API & Packages</a>
+                                <a class="btn btn-link" href="contact.html">Support</a>
+                            </div>
 
-            <!-- Local form handler & init animations -->
-            <script>
-                // init wow
-                if (window.WOW) new WOW().init();
+                            <div class="col-lg-3 col-md-6">
+                                <h4 class="text-light mb-4">Connect</h4>
+                                <p>Visit the website or send a message — let’s build something great.</p>
+                                <div class="position-relative mx-auto" style="max-width: 400px;">
+                                    <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text"
+                                        placeholder="Your email">
+                                    <button type="button"
+                                        class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                // hide spinner after load
-                window.addEventListener('load', function () {
-                    const spinner = document.getElementById('spinner');
-                    if (spinner) spinner.classList.remove('show');
-                });
+                    <div class="container">
+                        <div class="copyright">
+                            <div class="row">
+                                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                                    &copy; <a class="border-bottom" href="https://marzleytechsolutions.co.ke"
+                                        target="_blank">Marzley Tech Solutions</a>, All Rights Reserved.
+                                </div>
+                                <div class="col-md-6 text-center text-md-end">
+                                    Designed & Developed by <a class="border-bottom" href="https://github.com/marzley"
+                                        target="_blank">Marzley</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                // Booking form submission (Formspree) with user feedback
-                (function () {
-                    const form = document.getElementById('booking-form');
-                    const feedback = document.getElementById('booking-feedback');
-                    const submitBtn = document.getElementById('booking-submit');
+                    <!-- Back to Top -->
+                    <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-0 back-to-top"><i
+                            class="bi bi-arrow-up"></i></a>
+                </div>
+                <!-- Footer End -->
 
-                    if (!form) return;
+                <!-- JavaScript Libraries -->
+                <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+                <script src="lib/wow/wow.min.js"></script>
+                <script src="lib/easing/easing.min.js"></script>
+                <script src="lib/waypoints/waypoints.min.js"></script>
+                <script src="lib/counterup/counterup.min.js"></script>
+                <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+                <script src="lib/tempusdominus/js/moment.min.js"></script>
+                <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+                <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
-                    form.addEventListener('submit', function (e) {
-                        e.preventDefault();
-                        feedback.innerHTML = '';
-                        submitBtn.disabled = true;
-                        submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin me-2"></i>Sending...';
+                <!-- Template Javascript -->
+                <script src="js/main.js"></script>
 
-                        const data = new FormData(form);
+                <!-- Local form handler & init animations -->
+                <script>
+                    // init wow
+                    if (window.WOW) new WOW().init();
 
-                        fetch(form.action, {
-                            method: 'POST',
-                            headers: { 'Accept': 'application/json' },
-                            body: data
-                        })
-                            .then(response => {
-                                submitBtn.disabled = false;
-                                submitBtn.innerHTML = '<i class="fa fa-paper-plane me-2"></i>Request Now';
-                                if (response.ok) {
-                                    form.reset();
-                                    feedback.innerHTML = '<div class="alert alert-success mb-0"><i class="fa fa-check-circle me-2"></i>Request sent. I will contact you shortly.</div>';
-                                } else {
-                                    return response.json().then(err => {
-                                        const msg = (err && err.errors) ? err.errors.map(i => i.message).join(', ') : 'An error occurred. Please try again later.';
-                                        feedback.innerHTML = '<div class="alert alert-danger mb-0"><i class="fa fa-exclamation-triangle me-2"></i>' + msg + '</div>';
-                                    });
-                                }
+                    // hide spinner after load
+                    window.addEventListener('load', function () {
+                        const spinner = document.getElementById('spinner');
+                        if (spinner) spinner.classList.remove('show');
+                    });
+
+                    // Booking form submission (Formspree) with user feedback
+                    (function () {
+                        const form = document.getElementById('booking-form');
+                        const feedback = document.getElementById('booking-feedback');
+                        const submitBtn = document.getElementById('booking-submit');
+
+                        if (!form) return;
+
+                        form.addEventListener('submit', function (e) {
+                            e.preventDefault();
+                            feedback.innerHTML = '';
+                            submitBtn.disabled = true;
+                            submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin me-2"></i>Sending...';
+
+                            const data = new FormData(form);
+
+                            fetch(form.action, {
+                                method: 'POST',
+                                headers: { 'Accept': 'application/json' },
+                                body: data
                             })
-                            .catch(() => {
-                                submitBtn.disabled = false;
-                                submitBtn.innerHTML = '<i class="fa fa-paper-plane me-2"></i>Request Now';
-                                feedback.innerHTML = '<div class="alert alert-danger mb-0"><i class="fa fa-exclamation-triangle me-2"></i>Network error. Please try again.</div>';
-                            });
-                    });
-                })();
+                                .then(response => {
+                                    submitBtn.disabled = false;
+                                    submitBtn.innerHTML = '<i class="fa fa-paper-plane me-2"></i>Request Now';
+                                    if (response.ok) {
+                                        form.reset();
+                                        feedback.innerHTML = '<div class="alert alert-success mb-0"><i class="fa fa-check-circle me-2"></i>Request sent. I will contact you shortly.</div>';
+                                    } else {
+                                        return response.json().then(err => {
+                                            const msg = (err && err.errors) ? err.errors.map(i => i.message).join(', ') : 'An error occurred. Please try again later.';
+                                            feedback.innerHTML = '<div class="alert alert-danger mb-0"><i class="fa fa-exclamation-triangle me-2"></i>' + msg + '</div>';
+                                        });
+                                    }
+                                })
+                                .catch(() => {
+                                    submitBtn.disabled = false;
+                                    submitBtn.innerHTML = '<i class="fa fa-paper-plane me-2"></i>Request Now';
+                                    feedback.innerHTML = '<div class="alert alert-danger mb-0"><i class="fa fa-exclamation-triangle me-2"></i>Network error. Please try again.</div>';
+                                });
+                        });
+                    })();
 
-                function handlePayDeposit(event, form) {
-                    event.preventDefault(); // Prevent the default form submission
-                    const phone = prompt('Please enter your phone number (e.g., 254712345678):');
-                    if (!phone || !/^\d{12}$/.test(phone)) {
-                        alert('Invalid phone number. Please enter a valid 12-digit phone number starting with 254.');
-                        return false; // Prevent form submission
+                    function handlePayDeposit(event, form) {
+                        event.preventDefault(); // Prevent the default form submission
+
+                        // Prompt the user for their phone number
+                        const phone = prompt('Please enter your phone number (e.g., 07xxxxxxxx, 01xxxxxxxx, 2547xxxxxxxx, +2547xxxxxxxx):');
+                        if (!phone) {
+                            alert('Phone number is required.');
+                            return false; // Prevent form submission
+                        }
+
+                        // Normalize the phone number to the format 2547xxxxxxxx
+                        const normalizedPhone = normalizePhoneNumber(phone);
+                        if (!normalizedPhone) {
+                            alert('Invalid phone number. Please enter a valid phone number.');
+                            return false; // Prevent form submission
+                        }
+
+                        // Get the amount from the package
+                        const amount = form.closest('.service-cta').querySelector('[data-amount]').getAttribute('data-amount');
+
+                        // Populate the hidden fields in the form
+                        form.querySelector('#phone-input').value = normalizedPhone;
+                        form.querySelector('.amount-input').value = amount;
+
+                        // Submit the form programmatically
+                        form.submit();
                     }
-                    const amount = form.closest('.service-cta').querySelector('[data-amount]').getAttribute('data-amount');
-                    form.querySelector('#phone-input').value = phone;
-                    form.querySelector('.amount-input').value = amount;
-                    form.submit(); // Submit the form programmatically
-                }
-            </script>
 
-            <!-- ensure animate.css classes are used by WOW: add animate.css CDN if not already present -->
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-            <script>
-                // small enhancement: add subtle hover tilt on package cards (mobile-friendly)
-                document.addEventListener('DOMContentLoaded', function () {
-                    document.querySelectorAll('.pkg-card').forEach(function (card) {
-                        card.addEventListener('mousemove', function (e) {
-                            const rect = card.getBoundingClientRect();
-                            const x = (e.clientX - rect.left) / rect.width - 0.5;
-                            const y = (e.clientY - rect.top) / rect.height - 0.5;
-                            card.style.transform = `perspective(800px) rotateX(${-y * 3}deg) rotateY(${x * 6}deg) translateY(-6px)`;
-                        });
-                        card.addEventListener('mouseleave', function () {
-                            card.style.transform = '';
+                    // Normalize phone number to the format 2547xxxxxxxx
+                    function normalizePhoneNumber(phone) {
+                        // Remove any non-numeric characters
+                        const cleanedPhone = phone.replace(/[^0-9]/g, '');
+
+                        // Check and normalize the phone number
+                        if (cleanedPhone.startsWith('07') || cleanedPhone.startsWith('01')) {
+                            return '254' + cleanedPhone.slice(1); // Convert 07xxxxxxx or 01xxxxxxx to 2547xxxxxxx
+                        } else if (cleanedPhone.startsWith('254') && cleanedPhone.length === 12) {
+                            return cleanedPhone; // Already in the correct format
+                        } else if (cleanedPhone.startsWith('7') && cleanedPhone.length === 9) {
+                            return '254' + cleanedPhone; // Convert 7xxxxxxx to 2547xxxxxxx
+                        } else if (cleanedPhone.startsWith('+254') && cleanedPhone.length === 13) {
+                            return cleanedPhone.slice(1); // Convert +2547xxxxxxx to 2547xxxxxxx
+                        } else {
+                            return null; // Invalid phone number
+                        }
+                    }
+                </script>
+
+                <!-- ensure animate.css classes are used by WOW: add animate.css CDN if not already present -->
+                <link rel="stylesheet"
+                    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+                <script>
+                    // small enhancement: add subtle hover tilt on package cards (mobile-friendly)
+                    document.addEventListener('DOMContentLoaded', function () {
+                        document.querySelectorAll('.pkg-card').forEach(function (card) {
+                            card.addEventListener('mousemove', function (e) {
+                                const rect = card.getBoundingClientRect();
+                                const x = (e.clientX - rect.left) / rect.width - 0.5;
+                                const y = (e.clientY - rect.top) / rect.height - 0.5;
+                                card.style.transform = `perspective(800px) rotateX(${-y * 3}deg) rotateY(${x * 6}deg) translateY(-6px)`;
+                            });
+                            card.addEventListener('mouseleave', function () {
+                                card.style.transform = '';
+                            });
                         });
                     });
-                });
-            </script>
+                </script>
+
+
+                <script>
+                    let selectedAmount = 0;
+
+                    // Open the payment modal and set the amount
+                    function handlePaystackPayment() {
+                        const email = prompt('Please enter your email address:');
+                        if (!email || !email.includes('@')) {
+                            alert('Invalid email address. Please enter a valid email.');
+                            return;
+                        }
+
+                        const amountInCents = selectedAmount * 100; // Convert KSh to cents (Paystack uses cents for KES)
+                        const handler = PaystackPop.setup({
+                            key: 'pk_live_60a185fa3aad8a497acdd0013d119219ca5a19c2', // Replace with your Paystack live public key
+                            email: email,
+                            amount: amountInCents,
+                            currency: 'KES', // Set currency to KES (Kenyan Shillings)
+                            callback: function (response) {
+                                alert('Payment successful. Transaction reference: ' + response.reference);
+                                // Add your backend verification logic here
+                            },
+                            onClose: function () {
+                                alert('Transaction was not completed.');
+                            }
+                        });
+
+                        handler.openIframe();
+                    }
+
+                    // Handle PayPal Payment
+                    function openPaymentModal(amount) {
+                        selectedAmount = amount;
+                        document.getElementById('paymentAmount').textContent = amount.toLocaleString(); // Format amount
+                        const modal = new bootstrap.Modal(document.getElementById('paymentOptionsModal'));
+                        modal.show();
+
+                        // Render PayPal Button
+                        const paypalContainer = document.getElementById('paypal-button-container');
+                        paypalContainer.innerHTML = ''; // Clear previous button
+                        paypal.Buttons({
+                            createOrder: function (data, actions) {
+                                return actions.order.create({
+                                    purchase_units: [{
+                                        amount: {
+                                            value: (selectedAmount / 100).toFixed(2) // Convert KSh to USD
+                                        }
+                                    }]
+                                });
+                            },
+                            onApprove: function (data, actions) {
+                                return actions.order.capture().then(function (details) {
+                                    alert('Transaction completed by ' + details.payer.name.given_name + '!');
+                                });
+                            },
+                            onError: function (err) {
+                                console.error('PayPal Error:', err);
+                                alert('An error occurred with PayPal. Please try again.');
+                            }
+                        }).render('#paypal-button-container');
+                    }
+                </script>
+
 </body>
 
 </html>
-
-
-
-
