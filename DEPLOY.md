@@ -17,6 +17,12 @@
 are built from the sections of `index.html`. After editing `index.html`, run
 `python3 tools/build_pages.py` and upload the homepage and those six files together.
 
+## Offline page
+`sw.js` shows `offline.html`, or a saved copy of a page the visitor already opened, when the
+connection is down or a page takes more than 10 seconds. If you change `offline.html` or
+`sw.js`, change `VERSION` at the top of `sw.js` (for example `marzley-v2`) so visitors get
+the new copy.
+
 ## Upload
 Upload the whole folder into `public_html`, including the hidden `.htaccess` file.
 

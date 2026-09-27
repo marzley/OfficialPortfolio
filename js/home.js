@@ -1270,6 +1270,36 @@
     });
   });
 
+  /* ---------- offline support ---------- */
+  // The service worker shows offline.html (or a saved copy of the page) when
+  // the connection is down or too slow. Only on the real site and localhost.
+  if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1") &&
+      /(^|\.)marzleytechsolutions\.co\.ke$|^localhost$|^127\.0\.0\.1$/.test(location.hostname)) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js").catch(function () {});
+    });
+  }
+
+  var netBanner = document.createElement("div");
+  netBanner.className = "net-banner";
+  netBanner.setAttribute("role", "status");
+  netBanner.setAttribute("aria-live", "polite");
+  netBanner.hidden = true;
+  document.body.appendChild(netBanner);
+  var netTimer;
+  var showNet = function (online) {
+    clearTimeout(netTimer);
+    netBanner.classList.toggle("is-online", online);
+    netBanner.innerHTML = online
+      ? '<i class="fa-solid fa-wifi" aria-hidden="true"></i><span>You’re back online.</span>'
+      : '<i class="fa-solid fa-plane" aria-hidden="true"></i><span>You’re offline. Some things won’t work until your connection is back.</span>';
+    netBanner.hidden = false;
+    if (online) netTimer = setTimeout(function () { netBanner.hidden = true; }, 3000);
+  };
+  window.addEventListener("offline", function () { showNet(false); });
+  window.addEventListener("online", function () { showNet(true); });
+  if (navigator.onLine === false) showNet(false);
+
   /* ---------- footer year ---------- */
   var year = document.getElementById("year");
   if (year) year.textContent = String(new Date().getFullYear());

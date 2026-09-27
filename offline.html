@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>You’re offline | Marzley Tech Solutions</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#0b1b35" />
+    <link rel="icon" type="image/png" sizes="32x32" href="img/brand/favicon-32.png" />
+    <script>
+        try { if (localStorage.getItem("marzley-theme") === "dark") document.documentElement.setAttribute("data-theme", "dark"); } catch (e) {}
+    </script>
+    <style>
+        :root {
+            --navy: #0b1b35;
+            --amber: #ffb800;
+            --amber-text: #a16207;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --fg: #0f172a;
+            --muted: #475569;
+            --line: #e2e8f0;
+            --ring: rgba(255, 184, 0, 0.35);
+            --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        }
+
+        [data-theme="dark"] {
+            --bg: #08111f;
+            --card: #0f1b31;
+            --fg: #e2e8f0;
+            --muted: #a5b3c7;
+            --line: #1e2e4a;
+            --amber-text: #ffb800;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body { height: 100%; }
+
+        body {
+            margin: 0;
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--fg);
+            display: grid;
+            place-items: center;
+            padding: 24px 16px;
+            line-height: 1.55;
+            overflow-x: hidden;
+        }
+
+        .glow {
+            position: fixed;
+            inset: auto;
+            width: 520px;
+            height: 520px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 184, 0, 0.18), transparent 65%);
+            top: -160px;
+            right: -160px;
+            pointer-events: none;
+        }
+
+        .glow.b {
+            top: auto;
+            right: auto;
+            bottom: -200px;
+            left: -200px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.14), transparent 65%);
+        }
+
+        main {
+            position: relative;
+            width: min(560px, 100%);
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            padding: clamp(28px, 6vw, 48px);
+            box-shadow: 0 20px 50px rgba(11, 27, 53, 0.12);
+            text-align: center;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 17px;
+            color: var(--fg);
+            text-decoration: none;
+        }
+
+        .brand img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fff;
+        }
+
+        .brand span { color: var(--amber); }
+
+        .signal {
+            width: 132px;
+            height: 132px;
+            margin: 32px auto 8px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: rgba(255, 184, 0, 0.12);
+            position: relative;
+        }
+
+        .signal::before {
+            content: "";
+            position: absolute;
+            inset: -10px;
+            border-radius: 50%;
+            border: 2px solid var(--ring);
+            animation: pulse 2.4s ease-out infinite;
+        }
+
+        .signal svg { width: 64px; height: 64px; }
+
+        .signal .bar { fill: var(--line); }
+        .signal .bar.on { fill: var(--amber); animation: blink 1.6s ease-in-out infinite; }
+        .signal .cross { stroke: #dc2626; }
+
+        @keyframes pulse {
+            from { transform: scale(0.9); opacity: 1; }
+            to { transform: scale(1.25); opacity: 0; }
+        }
+
+        @keyframes blink {
+            50% { opacity: 0.35; }
+        }
+
+        .label {
+            margin: 18px 0 6px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--amber-text);
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            font-size: clamp(30px, 7vw, 42px);
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            color: var(--fg);
+        }
+
+        p { margin: 0 auto; max-width: 42ch; color: var(--muted); }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        .status i {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #dc2626;
+        }
+
+        .status.is-on i { background: #059669; }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 28px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 48px;
+            padding: 0 22px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: transparent;
+            color: var(--fg);
+            font: 700 15px var(--font);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn svg { width: 18px; height: 18px; }
+
+        .btn-solid {
+            border-color: var(--navy);
+            background: var(--navy);
+            color: #fff;
+        }
+
+        [data-theme="dark"] .btn-solid {
+            border-color: var(--amber);
+            background: var(--amber);
+            color: var(--navy);
+        }
+
+        .btn:focus-visible {
+            outline: 3px solid var(--amber);
+            outline-offset: 3px;
+        }
+
+        .tips {
+            margin: 32px 0 0;
+            padding: 20px 0 0;
+            border-top: 1px solid var(--line);
+            list-style: none;
+            display: grid;
+            gap: 10px;
+            text-align: left;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .tips li {
+            display: flex;
+            gap: 10px;
+            align-items: baseline;
+        }
+
+        .tips li::before {
+            content: "";
+            flex: none;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--amber);
+            transform: translateY(-2px);
+        }
+
+        .saved {
+            margin-top: 24px;
+            text-align: left;
+        }
+
+        .saved h2 {
+            margin: 0 0 10px;
+            font-size: 14px;
+            color: var(--fg);
+        }
+
+        .saved ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .saved a {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: rgba(255, 184, 0, 0.14);
+            color: var(--fg);
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .saved a:hover { background: rgba(255, 184, 0, 0.28); }
+
+        .foot {
+            margin-top: 28px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .foot a { color: var(--amber-text); font-weight: 700; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .signal::before, .signal .bar.on { animation: none; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="glow" aria-hidden="true"></div>
+    <div class="glow b" aria-hidden="true"></div>
+
+    <main>
+        <a class="brand" href="./"><img src="img/brand/logo-96.webp" alt="" width="40" height="40" /><b>Marzley<span>Tech</span></b></a>
+
+        <div class="signal" aria-hidden="true">
+            <svg viewBox="0 0 64 64">
+                <rect class="bar on" x="8" y="42" width="8" height="14" rx="2" />
+                <rect class="bar" x="22" y="32" width="8" height="24" rx="2" />
+                <rect class="bar" x="36" y="22" width="8" height="34" rx="2" />
+                <rect class="bar" x="50" y="10" width="8" height="46" rx="2" />
+                <path class="cross" d="M40 6 L58 24 M58 6 L40 24" stroke-width="4" stroke-linecap="round" fill="none" />
+            </svg>
+        </div>
+
+        <p class="label">No connection</p>
+        <h1>You’re offline</h1>
+        <p id="message">Your internet connection is down or too slow to load this page. Check your data or Wi-Fi and try again.</p>
+
+        <div class="status" id="status" role="status" aria-live="polite"><i aria-hidden="true"></i><span id="status-text">Waiting for a connection…</span></div>
+
+        <div class="actions">
+            <button class="btn btn-solid" type="button" id="retry">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7" /><path d="M21 3v6h-6" /></svg>
+                Try again
+            </button>
+            <a class="btn" href="tel:+254745789590">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z" /></svg>
+                Call us
+            </a>
+        </div>
+
+        <div class="saved" id="saved" hidden>
+            <h2>Pages you can still open</h2>
+            <ul id="saved-list"></ul>
+        </div>
+
+        <ul class="tips">
+            <li>Turn mobile data or Wi-Fi off and on again.</li>
+            <li>Move closer to your router, or somewhere with better signal.</li>
+            <li>This page reloads by itself as soon as you’re back online.</li>
+        </ul>
+
+        <p class="foot">Need us now? Call <a href="tel:+254745789590">+254 745 789 590</a>. We’re available 24/7.</p>
+    </main>
+
+    <script>
+        (function () {
+            var statusBox = document.getElementById("status");
+            var statusText = document.getElementById("status-text");
+            var retry = document.getElementById("retry");
+
+            var goBack = function () { window.location.reload(); };
+
+            var setOnline = function () {
+                statusBox.classList.add("is-on");
+                statusText.textContent = "Back online. Reloading…";
+                setTimeout(goBack, 800);
+            };
+
+            retry.addEventListener("click", function () {
+                statusText.textContent = "Checking your connection…";
+                goBack();
+            });
+            window.addEventListener("online", setOnline);
+
+            // Pages this visitor opened before are saved and still work offline
+            var names = { "": "Home", "work": "Work", "about": "About", "services": "Services", "process": "Process", "pricing": "Pricing", "contact": "Contact" };
+            if ("caches" in window) {
+                caches.keys().then(function (keys) {
+                    return Promise.all(keys.map(function (k) { return caches.open(k).then(function (c) { return c.keys(); }); }));
+                }).then(function (lists) {
+                    var seen = {};
+                    var list = document.getElementById("saved-list");
+                    lists.forEach(function (reqs) {
+                        reqs.forEach(function (req) {
+                            var url = new URL(req.url);
+                            if (url.origin !== location.origin) return;
+                            var slug = url.pathname.replace(/^\//, "").replace(/\.html$/, "");
+                            if (slug === "index") slug = "";
+                            if (!(slug in names) || seen[slug]) return;
+                            seen[slug] = true;
+                            var li = document.createElement("li");
+                            var a = document.createElement("a");
+                            a.href = "/" + slug;
+                            a.textContent = names[slug];
+                            li.appendChild(a);
+                            list.appendChild(li);
+                        });
+                    });
+                    if (list.children.length) document.getElementById("saved").hidden = false;
+                }).catch(function () {});
+            }
+        })();
+    </script>
+</body>
+
+</html>
