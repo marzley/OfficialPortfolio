@@ -466,46 +466,77 @@
       moveGuide(r.top + r.height / 2);
     });
 
-    // Read aloud (browser speech)
+    // Read on hover (browser speech): reads only the text the visitor points at, taps or focuses
     var readBtn = document.getElementById("a11y-read");
     var hint = document.getElementById("a11y-hint");
     var synth = window.speechSynthesis;
-    var speaking = false;
+    var hoverReading = false;
+    var readTimer = null;
+    var lastSpoken = null;
+    var READABLE = "h1, h2, h3, h4, h5, h6, p, li, dt, dd, summary, blockquote, figcaption, label, legend, a, button, output, .name, .desc, .cat, .badge, .price, .stat";
     var setReading = function (on) {
-      speaking = on;
+      hoverReading = on;
       readBtn.setAttribute("aria-pressed", String(on));
-      readBtn.querySelector("span").textContent = on ? "Stop reading" : "Read aloud";
+      htmlEl.classList.toggle("a11y-reading", on);
+      if (!on) {
+        if (synth) synth.cancel();
+        clearTimeout(readTimer);
+        if (lastSpoken) lastSpoken.classList.remove("is-speaking");
+        lastSpoken = null;
+      }
     };
-    var pageText = function () {
-      var parts = [];
-      document.querySelectorAll("main h1, main h2, main h3, main p, main li .name, main li .desc, main summary").forEach(function (el) {
-        if (el.closest("[aria-hidden='true'], [hidden]")) return;
-        var t = el.innerText.replace(/\s+/g, " ").trim();
-        if (t) parts.push(t);
-      });
-      return parts.join(". ");
+    var textOf = function (el) {
+      var label = el.getAttribute("aria-label");
+      var t = (label || el.innerText || el.textContent || "").replace(/\s+/g, " ").trim();
+      if (!t && el.tagName === "IMG") t = el.alt || "";
+      return t.slice(0, 600);
+    };
+    var speakElement = function (el) {
+      if (!el || el === lastSpoken) return;
+      var text = textOf(el);
+      if (!text) return;
+      synth.cancel();
+      if (lastSpoken) lastSpoken.classList.remove("is-speaking");
+      lastSpoken = el;
+      el.classList.add("is-speaking");
+      var utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "en-GB";
+      utter.onend = utter.onerror = function () {
+        el.classList.remove("is-speaking");
+        if (lastSpoken === el) lastSpoken = null;
+      };
+      synth.speak(utter);
+    };
+    var targetFrom = function (node) {
+      if (!node || !node.closest) return null;
+      if (node.closest("[aria-hidden='true'], .reading-guide")) return null;
+      var el = node.closest(READABLE);
+      return el;
     };
     if (!synth || typeof SpeechSynthesisUtterance === "undefined") {
       readBtn.disabled = true;
-      hint.textContent = "Read aloud isn't supported in this browser.";
+      hint.textContent = "Read on hover isn't supported in this browser.";
     } else {
-      var lastSelection = "";
-      document.addEventListener("selectionchange", function () {
-        var sel = String(window.getSelection() || "").trim();
-        if (sel && !a11yPanel.contains(document.activeElement)) lastSelection = sel;
-      });
       readBtn.addEventListener("click", function () {
-        if (speaking) { synth.cancel(); setReading(false); return; }
-        var text = String(window.getSelection() || "").trim() || lastSelection || pageText();
-        lastSelection = "";
-        var utter = new SpeechSynthesisUtterance(text.slice(0, 12000));
-        utter.lang = "en-GB";
-        utter.rate = 1;
-        utter.onend = function () { setReading(false); };
-        utter.onerror = function () { setReading(false); };
-        synth.cancel();
-        synth.speak(utter);
-        setReading(true);
+        setReading(!hoverReading);
+        if (hoverReading) {
+          var intro = new SpeechSynthesisUtterance("Read on hover is on. Point at any text to hear it.");
+          intro.lang = "en-GB";
+          synth.cancel();
+          synth.speak(intro);
+        }
+      });
+      document.addEventListener("mouseover", function (e) {
+        if (!hoverReading) return;
+        var el = targetFrom(e.target);
+        clearTimeout(readTimer);
+        if (el) readTimer = setTimeout(function () { speakElement(el); }, 350);
+      });
+      document.addEventListener("pointerdown", function (e) {
+        if (hoverReading && e.pointerType !== "mouse") speakElement(targetFrom(e.target));
+      });
+      document.addEventListener("focusin", function (e) {
+        if (hoverReading) speakElement(targetFrom(e.target) || e.target);
       });
       window.addEventListener("pagehide", function () { synth.cancel(); });
     }
@@ -522,9 +553,108 @@
       a11yToggle.setAttribute("aria-expanded", "false");
       if (returnFocus) a11yToggle.focus();
     };
-    a11yToggle.addEventListener("click", function () {
-      if (a11yPanel.hidden) openPanel(); else closePanel(false);
+    // ----- movable button: drag (or arrow keys) along any screen edge -----
+    var DOCK_KEY = "marzley-a11y-dock";
+    var BTN = 52, HEADER = 72, GAP = 8;
+    var dock = { edge: "left", pos: 0.5 };
+    try {
+      var savedDock = JSON.parse(localStorage.getItem(DOCK_KEY) || "null");
+      if (savedDock && /^(left|right|top|bottom)$/.test(savedDock.edge)) dock = savedDock;
+    } catch (e) {}
+    var clamp = function (v, lo, hi) { return Math.max(lo, Math.min(hi, v)); };
+    var placeToggle = function () {
+      var vw = window.innerWidth, vh = window.innerHeight;
+      var left, top;
+      if (dock.edge === "left" || dock.edge === "right") {
+        top = clamp(dock.pos * vh - BTN / 2, HEADER + GAP, vh - BTN - GAP);
+        left = dock.edge === "left" ? 0 : vw - BTN;
+      } else {
+        left = clamp(dock.pos * vw - BTN / 2, GAP, vw - BTN - GAP);
+        top = dock.edge === "top" ? HEADER : vh - BTN;
+      }
+      a11yToggle.style.left = left + "px";
+      a11yToggle.style.top = top + "px";
+      a11yToggle.style.transform = "";
+      a11yToggle.classList.remove("edge-left", "edge-right", "edge-top", "edge-bottom");
+      a11yToggle.classList.add("edge-" + dock.edge);
+    };
+    var saveDock = function () { try { localStorage.setItem(DOCK_KEY, JSON.stringify(dock)); } catch (e) {} };
+    var positionPanel = function () {
+      if (a11yPanel.hidden || window.innerWidth <= 700) return;
+      var r = a11yToggle.getBoundingClientRect();
+      var vw = window.innerWidth, vh = window.innerHeight;
+      var pw = a11yPanel.offsetWidth, ph = a11yPanel.offsetHeight;
+      var left, top;
+      if (dock.edge === "left") { left = r.right + 12; top = r.top + r.height / 2 - ph / 2; }
+      else if (dock.edge === "right") { left = r.left - pw - 12; top = r.top + r.height / 2 - ph / 2; }
+      else if (dock.edge === "top") { top = r.bottom + 12; left = r.left + r.width / 2 - pw / 2; }
+      else { top = r.top - ph - 12; left = r.left + r.width / 2 - pw / 2; }
+      a11yPanel.style.left = clamp(left, 12, vw - pw - 12) + "px";
+      a11yPanel.style.top = clamp(top, HEADER, Math.max(HEADER, vh - ph - 12)) + "px";
+    };
+    var snapTo = function (x, y) {
+      var vw = window.innerWidth, vh = window.innerHeight;
+      var d = { left: x, right: vw - x, top: y - HEADER, bottom: vh - y };
+      var edge = Object.keys(d).reduce(function (a, b) { return d[a] <= d[b] ? a : b; });
+      dock = { edge: edge, pos: edge === "left" || edge === "right" ? y / vh : x / vw };
+      placeToggle();
+      saveDock();
+      positionPanel();
+    };
+
+    var drag = null, suppressClick = false;
+    a11yToggle.addEventListener("pointerdown", function (e) {
+      if (e.button !== undefined && e.button !== 0) return;
+      drag = { x: e.clientX, y: e.clientY, moved: false, id: e.pointerId };
     });
+    document.addEventListener("pointermove", function (e) {
+      if (!drag || e.pointerId !== drag.id) return;
+      if (!drag.moved && Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) < 8) return;
+      if (!drag.moved) {
+        drag.moved = true;
+        try { a11yToggle.setPointerCapture(e.pointerId); } catch (err) {}
+        a11yToggle.classList.add("is-dragging");
+        if (!a11yPanel.hidden) closePanel(false);
+      }
+      a11yToggle.style.left = clamp(e.clientX - BTN / 2, 0, window.innerWidth - BTN) + "px";
+      a11yToggle.style.top = clamp(e.clientY - BTN / 2, 0, window.innerHeight - BTN) + "px";
+    });
+    var endDrag = function (e) {
+      if (!drag) return;
+      if (drag.moved) {
+        a11yToggle.classList.remove("is-dragging");
+        snapTo(e.clientX, e.clientY);
+        suppressClick = true;
+        setTimeout(function () { suppressClick = false; }, 0);
+      }
+      drag = null;
+    };
+    document.addEventListener("pointerup", endDrag);
+    document.addEventListener("pointercancel", function () {
+      if (drag && drag.moved) { a11yToggle.classList.remove("is-dragging"); placeToggle(); }
+      drag = null;
+    });
+    a11yToggle.addEventListener("click", function (e) {
+      if (suppressClick) { e.preventDefault(); return; }
+      if (a11yPanel.hidden) { openPanel(); positionPanel(); } else closePanel(false);
+    });
+    // Keyboard: arrows slide along the edge; pressing toward the opposite side jumps to that edge
+    a11yToggle.addEventListener("keydown", function (e) {
+      var step = 0.06, handled = true, vertical = dock.edge === "left" || dock.edge === "right";
+      if (e.key === "ArrowUp") { if (vertical) dock.pos -= step; else dock.edge = "top"; }
+      else if (e.key === "ArrowDown") { if (vertical) dock.pos += step; else dock.edge = "bottom"; }
+      else if (e.key === "ArrowLeft") { if (vertical) dock.edge = "left"; else dock.pos -= step; }
+      else if (e.key === "ArrowRight") { if (vertical) dock.edge = "right"; else dock.pos += step; }
+      else handled = false;
+      if (!handled) return;
+      e.preventDefault();
+      dock.pos = clamp(dock.pos, 0, 1);
+      placeToggle();
+      saveDock();
+      positionPanel();
+    });
+    window.addEventListener("resize", function () { placeToggle(); positionPanel(); });
+    placeToggle();
     closeBtn.addEventListener("click", function () { closePanel(true); });
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape" && !a11yPanel.hidden) closePanel(true);
@@ -783,46 +913,20 @@
     render();
   }
 
-  /* ---------- open / closed status (Kenya time) ---------- */
+  /* ---------- 24/7 availability with live Kenya time ---------- */
   var openBox = document.getElementById("open-status");
   if (openBox) {
-    var HOURS = { 1: [8, 19], 2: [8, 19], 3: [8, 19], 4: [8, 19], 5: [8, 19], 6: [9, 17] };
-    var DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    var kenyaNow = function () {
+    var openDetail = document.getElementById("open-detail");
+    var updateOpen = function () {
+      var clock;
       try {
-        var parts = new Intl.DateTimeFormat("en-GB", { timeZone: "Africa/Nairobi", weekday: "short", hour: "2-digit", minute: "2-digit", hour12: false }).formatToParts(new Date());
-        var get = function (t) { return (parts.filter(function (p) { return p.type === t; })[0] || {}).value; };
-        var day = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(get("weekday"));
-        return { day: day, h: Number(get("hour")) % 24, m: Number(get("minute")) };
+        clock = new Intl.DateTimeFormat("en-GB", { timeZone: "Africa/Nairobi", hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date());
       } catch (e) {
         var d = new Date(Date.now() + (3 * 60 + new Date().getTimezoneOffset()) * 60000);
-        return { day: d.getDay(), h: d.getHours(), m: d.getMinutes() };
+        clock = ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
       }
-    };
-    var fmtHour = function (h) { return (h % 12 || 12) + ":00 " + (h < 12 ? "AM" : "PM"); };
-    var updateOpen = function () {
-      var now = kenyaNow();
-      var clock = ("0" + now.h).slice(-2) + ":" + ("0" + now.m).slice(-2);
-      var today = HOURS[now.day];
-      var mins = now.h * 60 + now.m;
-      var label = document.getElementById("open-label");
-      var detail = document.getElementById("open-detail");
-      if (today && mins >= today[0] * 60 && mins < today[1] * 60) {
-        openBox.className = "open-status is-open";
-        label.textContent = "Open now";
-        detail.textContent = "It's " + clock + " in Kenya · open until " + fmtHour(today[1]);
-      } else {
-        openBox.className = "open-status is-closed";
-        var d = now.day, next = null;
-        if (today && mins < today[0] * 60) next = { day: d, h: today[0] };
-        for (var i = 1; !next && i <= 7; i++) {
-          var nd = (d + i) % 7;
-          if (HOURS[nd]) next = { day: nd, h: HOURS[nd][0] };
-        }
-        var when = next.day === d ? "today" : (next.day === (d + 1) % 7 ? "tomorrow" : DAYS[next.day]);
-        label.textContent = "Closed now";
-        detail.textContent = "It's " + clock + " in Kenya · opens " + when + " at " + fmtHour(next.h) + ". WhatsApp messages are welcome anytime.";
-      }
+      openBox.className = "open-status is-open";
+      openDetail.textContent = "It's " + clock + " in Kenya and we're available. We offer our services 24 hours, 7 days a week. Contact us online anytime.";
     };
     updateOpen();
     setInterval(updateOpen, 60000);

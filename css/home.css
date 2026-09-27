@@ -2540,28 +2540,52 @@ a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
   border: 0;
   border-radius: 0 14px 14px 0;
   background: var(--navy);
   color: var(--amber);
   font-size: 24px;
-  cursor: pointer;
-  transform: translateY(-50%);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
   box-shadow: 0 10px 30px rgba(11, 27, 53, 0.3);
-  transition: width 0.2s ease;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
+
+.a11y-toggle.edge-right { border-radius: 14px 0 0 14px; }
+.a11y-toggle.edge-top { border-radius: 0 0 14px 14px; }
+.a11y-toggle.edge-bottom { border-radius: 14px 14px 0 0; }
 
 .a11y-toggle:hover,
 .a11y-toggle[aria-expanded="true"] {
-  width: 56px;
+  box-shadow: 0 0 0 4px rgba(255, 184, 0, 0.45), 0 10px 30px rgba(11, 27, 53, 0.3);
+}
+
+.a11y-toggle.is-dragging {
+  cursor: grabbing;
+  border-radius: 14px;
+  transform: scale(1.08);
+  transition: none;
+  box-shadow: 0 0 0 4px rgba(255, 184, 0, 0.6), 0 18px 40px rgba(11, 27, 53, 0.4);
+}
+
+.a11y-toggle .drag-grip {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 184, 0, 0.55);
+  transform: translateX(-50%);
 }
 
 .a11y-panel {
   position: fixed;
   left: 68px;
-  top: 50%;
+  top: 80px;
   z-index: 80;
   width: min(360px, calc(100vw - 88px));
   max-height: calc(100vh - 40px);
@@ -2571,7 +2595,6 @@ a {
   background: var(--card);
   border: 1px solid var(--line);
   box-shadow: 0 30px 70px rgba(11, 27, 53, 0.3);
-  transform: translateY(-50%);
   color: var(--fg);
 }
 
@@ -2717,21 +2740,27 @@ a {
 }
 
 @media (max-width: 700px) {
-  .a11y-toggle {
-    top: auto;
-    bottom: 160px;
-    transform: none;
-  }
-
   .a11y-panel {
-    left: 12px;
-    right: 12px;
-    top: auto;
-    bottom: 12px;
+    left: 12px !important;
+    right: 12px !important;
+    top: auto !important;
+    bottom: 12px !important;
     width: auto;
     max-height: 75vh;
-    transform: none;
   }
+}
+
+/* ---------- read on hover ---------- */
+html.a11y-reading main,
+html.a11y-reading .site-footer {
+  cursor: help;
+}
+
+.is-speaking {
+  outline: 3px solid var(--amber) !important;
+  outline-offset: 3px;
+  background-color: var(--current-bg);
+  border-radius: 6px;
 }
 
 /* ---------- text size (zooms page content, not the fixed controls) ---------- */
