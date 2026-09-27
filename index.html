@@ -41,6 +41,12 @@
     <link rel="stylesheet" href="css/home.css" />
     <script>
         try { if (localStorage.getItem("marzley-theme") === "dark") document.documentElement.setAttribute("data-theme", "dark"); } catch (e) {}
+        try {
+            var a11y = JSON.parse(localStorage.getItem("marzley-a11y") || "{}");
+            var root = document.documentElement;
+            Object.keys(a11y).forEach(function (k) { if (a11y[k] === true) root.classList.add("a11y-" + k); });
+            if (a11y.size) root.setAttribute("data-a11y-size", a11y.size);
+        } catch (e) {}
     </script>
 
     <script src="https://js.paystack.co/v1/inline.js" defer></script>
@@ -899,6 +905,41 @@
             </div>
         </section>
     </main>
+
+    <!-- Accessibility menu -->
+    <button class="a11y-toggle" type="button" id="a11y-toggle" aria-controls="a11y-panel" aria-expanded="false">
+        <i class="fa-solid fa-universal-access" aria-hidden="true"></i>
+        <span class="sr-only">Accessibility options</span>
+    </button>
+    <div class="a11y-panel" id="a11y-panel" role="dialog" aria-modal="false" aria-labelledby="a11y-title" hidden>
+        <div class="a11y-head">
+            <h2 id="a11y-title"><i class="fa-solid fa-universal-access" aria-hidden="true"></i> Accessibility</h2>
+            <button type="button" class="a11y-close" id="a11y-close" aria-label="Close accessibility options">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="a11y-size" role="group" aria-labelledby="a11y-size-label">
+            <span id="a11y-size-label">Text size</span>
+            <div class="a11y-size-row">
+                <button type="button" data-size-step="-1" aria-label="Smaller text">A−</button>
+                <output id="a11y-size-value" aria-live="polite">100%</output>
+                <button type="button" data-size-step="1" aria-label="Larger text">A+</button>
+            </div>
+        </div>
+        <div class="a11y-grid">
+            <button type="button" class="a11y-opt" data-a11y="contrast" aria-pressed="false"><i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i><span>High contrast</span></button>
+            <button type="button" class="a11y-opt" data-a11y="font" aria-pressed="false"><i class="fa-solid fa-font" aria-hidden="true"></i><span>Readable font</span></button>
+            <button type="button" class="a11y-opt" data-a11y="spacing" aria-pressed="false"><i class="fa-solid fa-text-width" aria-hidden="true"></i><span>Wider spacing</span></button>
+            <button type="button" class="a11y-opt" data-a11y="links" aria-pressed="false"><i class="fa-solid fa-link" aria-hidden="true"></i><span>Highlight links</span></button>
+            <button type="button" class="a11y-opt" data-a11y="still" aria-pressed="false"><i class="fa-solid fa-circle-pause" aria-hidden="true"></i><span>Stop animations</span></button>
+            <button type="button" class="a11y-opt" data-a11y="guide" aria-pressed="false"><i class="fa-solid fa-ruler-horizontal" aria-hidden="true"></i><span>Reading guide</span></button>
+            <button type="button" class="a11y-opt" data-a11y="cursor" aria-pressed="false"><i class="fa-solid fa-arrow-pointer" aria-hidden="true"></i><span>Bigger cursor</span></button>
+            <button type="button" class="a11y-opt" id="a11y-read" aria-pressed="false"><i class="fa-solid fa-volume-high" aria-hidden="true"></i><span>Read aloud</span></button>
+        </div>
+        <p class="a11y-hint" id="a11y-hint">Tip: select any text first, then press Read aloud to hear just that part.</p>
+        <button type="button" class="a11y-reset" id="a11y-reset"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Reset all</button>
+    </div>
+    <div class="reading-guide" id="reading-guide" aria-hidden="true"></div>
 
     <a class="wa-float" href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I%27d%20like%20to%20discuss%20a%20project."
         target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">

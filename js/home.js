@@ -8,6 +8,10 @@
   document.documentElement.classList.remove("no-js");
 
   var reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  // Motion is off when the visitor's device asks for it or they chose "Stop animations".
+  var motionOff = function () {
+    return reduceMotionQuery.matches || document.documentElement.classList.contains("a11y-still");
+  };
   var hoverQuery = window.matchMedia("(hover: hover) and (pointer: fine) and (min-width: 901px)");
 
   /* ---------- mobile nav ---------- */
@@ -28,7 +32,7 @@
 
   /* ---------- reveal on scroll ---------- */
   var revealEls = document.querySelectorAll(".reveal");
-  if (!("IntersectionObserver" in window) || reduceMotionQuery.matches) {
+  if (!("IntersectionObserver" in window) || motionOff()) {
     revealEls.forEach(function (el) { el.classList.add("is-in"); });
   } else {
     var io = new IntersectionObserver(function (entries) {
@@ -81,7 +85,7 @@
     var current = { x: 0, y: 0 };
     var frame = null;
 
-    function reduceMotion() { return reduceMotionQuery.matches; }
+    function reduceMotion() { return motionOff(); }
 
     function resetPreviews() {
       previews.forEach(function (el) {
@@ -384,6 +388,164 @@
     startGoogle();
   }
 
+  /* ---------- accessibility menu ---------- */
+  var a11yToggle = document.getElementById("a11y-toggle");
+  var a11yPanel = document.getElementById("a11y-panel");
+  if (a11yToggle && a11yPanel) {
+    var htmlEl = document.documentElement;
+    var A11Y_KEY = "marzley-a11y";
+    var SIZES = { "-1": "90%", "0": "100%", "1": "112%", "2": "125%", "3": "140%" };
+    var a11yState = {};
+    try { a11yState = JSON.parse(localStorage.getItem(A11Y_KEY) || "{}") || {}; } catch (e) { a11yState = {}; }
+
+    var saveA11y = function () {
+      try { localStorage.setItem(A11Y_KEY, JSON.stringify(a11yState)); } catch (e) {}
+    };
+
+    var loadReadableFont = function () {
+      if (document.getElementById("a11y-font-link")) return;
+      var link = document.createElement("link");
+      link.id = "a11y-font-link";
+      link.rel = "stylesheet";
+      link.href = "https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap";
+      document.head.appendChild(link);
+    };
+
+    var sizeValue = document.getElementById("a11y-size-value");
+    var sizeButtons = a11yPanel.querySelectorAll("[data-size-step]");
+    var applySize = function () {
+      var size = Number(a11yState.size || 0);
+      if (size === 0) htmlEl.removeAttribute("data-a11y-size");
+      else htmlEl.setAttribute("data-a11y-size", String(size));
+      sizeValue.textContent = SIZES[String(size)];
+      sizeButtons.forEach(function (b) {
+        var step = Number(b.getAttribute("data-size-step"));
+        b.disabled = (step < 0 && size <= -1) || (step > 0 && size >= 3);
+      });
+    };
+
+    var optionButtons = a11yPanel.querySelectorAll("[data-a11y]");
+    var applyOptions = function () {
+      optionButtons.forEach(function (btn) {
+        var key = btn.getAttribute("data-a11y");
+        var on = a11yState[key] === true;
+        htmlEl.classList.toggle("a11y-" + key, on);
+        btn.setAttribute("aria-pressed", String(on));
+      });
+      if (a11yState.font) loadReadableFont();
+    };
+
+    optionButtons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var key = btn.getAttribute("data-a11y");
+        a11yState[key] = !a11yState[key];
+        if (!a11yState[key]) delete a11yState[key];
+        applyOptions();
+        saveA11y();
+      });
+    });
+
+    sizeButtons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var next = Math.max(-1, Math.min(3, Number(a11yState.size || 0) + Number(btn.getAttribute("data-size-step"))));
+        if (next === 0) delete a11yState.size; else a11yState.size = next;
+        applySize();
+        saveA11y();
+      });
+    });
+
+    // Reading guide follows the pointer (and the focused element for keyboard users)
+    var guide = document.getElementById("reading-guide");
+    var moveGuide = function (y) { if (guide) guide.style.transform = "translateY(" + Math.max(0, y - 23) + "px)"; };
+    document.addEventListener("mousemove", function (e) {
+      if (htmlEl.classList.contains("a11y-guide")) moveGuide(e.clientY);
+    }, { passive: true });
+    document.addEventListener("focusin", function (e) {
+      if (!htmlEl.classList.contains("a11y-guide") || !e.target.getBoundingClientRect) return;
+      var r = e.target.getBoundingClientRect();
+      moveGuide(r.top + r.height / 2);
+    });
+
+    // Read aloud (browser speech)
+    var readBtn = document.getElementById("a11y-read");
+    var hint = document.getElementById("a11y-hint");
+    var synth = window.speechSynthesis;
+    var speaking = false;
+    var setReading = function (on) {
+      speaking = on;
+      readBtn.setAttribute("aria-pressed", String(on));
+      readBtn.querySelector("span").textContent = on ? "Stop reading" : "Read aloud";
+    };
+    var pageText = function () {
+      var parts = [];
+      document.querySelectorAll("main h1, main h2, main h3, main p, main li .name, main li .desc, main summary").forEach(function (el) {
+        if (el.closest("[aria-hidden='true'], [hidden]")) return;
+        var t = el.innerText.replace(/\s+/g, " ").trim();
+        if (t) parts.push(t);
+      });
+      return parts.join(". ");
+    };
+    if (!synth || typeof SpeechSynthesisUtterance === "undefined") {
+      readBtn.disabled = true;
+      hint.textContent = "Read aloud isn't supported in this browser.";
+    } else {
+      var lastSelection = "";
+      document.addEventListener("selectionchange", function () {
+        var sel = String(window.getSelection() || "").trim();
+        if (sel && !a11yPanel.contains(document.activeElement)) lastSelection = sel;
+      });
+      readBtn.addEventListener("click", function () {
+        if (speaking) { synth.cancel(); setReading(false); return; }
+        var text = String(window.getSelection() || "").trim() || lastSelection || pageText();
+        lastSelection = "";
+        var utter = new SpeechSynthesisUtterance(text.slice(0, 12000));
+        utter.lang = "en-GB";
+        utter.rate = 1;
+        utter.onend = function () { setReading(false); };
+        utter.onerror = function () { setReading(false); };
+        synth.cancel();
+        synth.speak(utter);
+        setReading(true);
+      });
+      window.addEventListener("pagehide", function () { synth.cancel(); });
+    }
+
+    // Open / close with focus handling
+    var closeBtn = document.getElementById("a11y-close");
+    var openPanel = function () {
+      a11yPanel.hidden = false;
+      a11yToggle.setAttribute("aria-expanded", "true");
+      closeBtn.focus();
+    };
+    var closePanel = function (returnFocus) {
+      a11yPanel.hidden = true;
+      a11yToggle.setAttribute("aria-expanded", "false");
+      if (returnFocus) a11yToggle.focus();
+    };
+    a11yToggle.addEventListener("click", function () {
+      if (a11yPanel.hidden) openPanel(); else closePanel(false);
+    });
+    closeBtn.addEventListener("click", function () { closePanel(true); });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !a11yPanel.hidden) closePanel(true);
+    });
+    document.addEventListener("click", function (e) {
+      if (!a11yPanel.hidden && !a11yPanel.contains(e.target) && !a11yToggle.contains(e.target)) closePanel(false);
+    });
+
+    document.getElementById("a11y-reset").addEventListener("click", function () {
+      a11yState = {};
+      saveA11y();
+      if (synth) synth.cancel();
+      if (readBtn) setReading(false);
+      applySize();
+      applyOptions();
+    });
+
+    applySize();
+    applyOptions();
+  }
+
   /* ---------- donate (Paystack) ---------- */
   var donate = document.getElementById("donate-btn");
   if (donate) {
@@ -450,7 +612,7 @@
 
   /* ---------- count-up stats ---------- */
   var counters = document.querySelectorAll("[data-count]");
-  if (counters.length && !reduceMotionQuery.matches) {
+  if (counters.length && !motionOff()) {
     counters.forEach(function (el) { el.textContent = "0"; });
     var start = null;
     var DURATION_MS = 1600;
@@ -534,9 +696,10 @@
   /* ---------- hero role rotator ---------- */
   var roleEl = document.getElementById("role-word");
   var roles = ["web developer", "UI/UX designer", "systems builder", "IT trainer"];
-  if (roleEl && !reduceMotionQuery.matches) {
+  if (roleEl) {
     var roleIndex = 0;
     setInterval(function () {
+      if (motionOff()) return;
       roleEl.classList.add("is-out");
       setTimeout(function () {
         roleIndex = (roleIndex + 1) % roles.length;
@@ -581,7 +744,7 @@
     var MAX = el.classList.contains("hero-photo-wrap") ? 12 : 7;
     var frame = null;
     el.addEventListener("mousemove", function (event) {
-      if (!tiltQuery.matches || reduceMotionQuery.matches) return;
+      if (!tiltQuery.matches || motionOff()) return;
       var box = el.getBoundingClientRect();
       var px = (event.clientX - box.left) / box.width;
       var py = (event.clientY - box.top) / box.height;
