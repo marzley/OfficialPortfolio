@@ -222,6 +222,70 @@
                 </div>
             </div>
         </section>
+        <!-- Book a call -->
+        <section class="section" id="booking" aria-labelledby="booking-title">
+            <div class="wrap booking-grid">
+                <div class="booking-copy reveal">
+                    <p class="label">Free consultation</p>
+                    <h2 id="booking-title">Book a free 15-minute call</h2>
+                    <p>Talk through your idea, get honest advice and a clear next step. Pick a day and time that suits you. We’re available 24/7, including evenings and weekends.</p>
+                    <ul class="deposit-points">
+                        <li><i class="fa-solid fa-phone" aria-hidden="true"></i>Phone, WhatsApp or Google Meet</li>
+                        <li><i class="fa-solid fa-clock" aria-hidden="true"></i>We confirm your slot within the hour</li>
+                        <li><i class="fa-solid fa-calendar-plus" aria-hidden="true"></i>Add it to your calendar in one tap</li>
+                    </ul>
+                </div>
+
+                <form class="form reveal" id="booking-call" action="https://formspree.io/f/myzbnvnb" method="POST" data-formspree data-kind="booking" novalidate>
+                    <input type="hidden" name="_subject" value="New call booking from the website" />
+                    <input type="hidden" name="form" value="Book a call" />
+                    <div class="field">
+                        <label for="b-name">Name</label>
+                        <input id="b-name" name="name" type="text" autocomplete="name" required />
+                    </div>
+                    <div class="field">
+                        <label for="b-phone">Phone or WhatsApp</label>
+                        <input id="b-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required />
+                    </div>
+                    <div class="field">
+                        <label for="b-date">Day</label>
+                        <input id="b-date" name="date" type="date" required />
+                    </div>
+                    <div class="field">
+                        <label for="b-time">Time</label>
+                        <select id="b-time" name="time" required>
+                            <option value="">Choose a time</option>
+                            <option value="09:00">Morning (9 am)</option>
+                            <option value="11:00">Late morning (11 am)</option>
+                            <option value="14:00">Afternoon (2 pm)</option>
+                            <option value="16:00">Late afternoon (4 pm)</option>
+                            <option value="18:30">Evening (6:30 pm)</option>
+                            <option value="20:30">Night (8:30 pm)</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="b-type">How should we call?</label>
+                        <select id="b-type" name="call_type">
+                            <option>Phone call</option>
+                            <option>WhatsApp call</option>
+                            <option>Google Meet</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="b-email">Email <small>(optional, for a Meet link)</small></label>
+                        <input id="b-email" name="_replyto" type="email" autocomplete="email" />
+                    </div>
+                    <div class="field full">
+                        <label for="b-topic">What would you like to discuss?</label>
+                        <textarea id="b-topic" name="topic" rows="3"></textarea>
+                    </div>
+                    <div class="form-foot">
+                        <button class="btn btn-solid" type="submit">Book my call</button>
+                    </div>
+                    <div class="form-status" data-form-status role="status" aria-live="polite" hidden></div>
+                </form>
+            </div>
+        </section>
         <!-- FAQ -->
         <section class="section" id="faq" aria-labelledby="faq-title">
             <div class="wrap faq-grid">
@@ -344,6 +408,7 @@
                         <li><a href="services">Services</a></li>
                         <li><a href="process">Process</a></li>
                         <li><a href="pricing">Packages &amp; pricing</a></li>
+                        <li><a href="training">Training courses</a></li>
                         <li><a href="blog">Blog</a></li>
                         <li><a href="contact">Contact</a></li>
                     </ul>
@@ -352,6 +417,7 @@
                     <h4>Work</h4>
                     <ul>
                         <li><a href="work">Selected projects</a></li>
+                        <li><a href="work#cases">Case studies</a></li>
                         <li><a href="https://github.com/marzley" target="_blank" rel="noopener noreferrer">GitHub</a></li>
                         <li><a href="download/Marzley.apk" data-app-download>Download the app</a></li>
                     </ul>

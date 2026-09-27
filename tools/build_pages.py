@@ -17,6 +17,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 POSTS_DIR = ROOT / "content" / "blog"
+CASES_DIR = ROOT / "content" / "case-studies"
+EXTRA_SECTIONS = ROOT / "content" / "sections.html"
 SITE = "https://marzleytechsolutions.co.ke/"
 
 PAGES = [
@@ -25,7 +27,7 @@ PAGES = [
         "label": "Work",
         "title": "Projects & Portfolio | Marzley Tech Solutions",
         "description": "Websites and systems built by Kelvin Wanyoike (Marzley): CBET Planner, hospital systems, college websites and e-commerce with M-Pesa and Paystack.",
-        "sections": ["work", "testimonials"],
+        "sections": ["work", "cases", "testimonials"],
     },
     {
         "slug": "about",
@@ -53,14 +55,21 @@ PAGES = [
         "label": "Pricing",
         "title": "Website Packages & Prices in Kenya | Marzley Tech Solutions",
         "description": "Website packages from KSh 15,000: landing pages, small business, e-commerce and corporate sites, plus hosting, SEO and branding add-ons.",
-        "sections": ["pricing", "faq"],
+        "sections": ["pricing", "deposit", "faq"],
     },
     {
         "slug": "contact",
         "label": "Contact",
         "title": "Contact Marzley Tech Solutions | Hire a Web Developer in Kenya",
         "description": "Contact Marzley Tech Solutions on WhatsApp, phone or email. We offer our services 24 hours a day, 7 days a week.",
-        "sections": ["contact", "faq"],
+        "sections": ["contact", "booking", "faq"],
+    },
+    {
+        "slug": "training",
+        "label": "Training",
+        "title": "IT Training & Mentorship in Kenya: Web Development, Programming, Design | Marzley Tech",
+        "description": "Practical, project-based training in web development, programming and graphic design, in person and online. Over 200 students trained.",
+        "sections": ["training", "testimonials"],
     },
 ]
 
@@ -69,7 +78,8 @@ HOME_OF = {
     "work": "work", "redesign": "work#redesign", "testimonials": "work#testimonials", "about": "about",
     "services": "services", "demo": "services#demo", "process": "process",
     "planner": "process#planner", "pricing": "pricing", "faq": "contact#faq",
-    "contact": "contact",
+    "contact": "contact", "cases": "work#cases", "deposit": "pricing#deposit",
+    "booking": "contact#booking", "training": "training",
 }
 
 
@@ -164,9 +174,9 @@ def build(page, html, sections):
 
 # ---------- blog ----------
 
-def read_posts():
+def read_posts(folder=POSTS_DIR):
     posts = []
-    for path in sorted(POSTS_DIR.glob("*.html")):
+    for path in sorted(folder.glob("*.html")):
         text = path.read_text(encoding="utf-8")
         m = re.match(r"\s*<!--(.*?)-->\s*(.*)", text, re.S)
         assert m, "%s needs a header comment" % path.name
@@ -182,6 +192,8 @@ def read_posts():
             "date": datetime.date.fromisoformat(info["date"]),
             "tag": info.get("tag", "Guide"),
             "minutes": max(1, math.ceil(words / 200)),
+            "image": info.get("image"),
+            "live": info.get("live"),
             "body": m.group(2).strip(),
         })
     posts.sort(key=lambda p: (p["date"], p["title"]), reverse=True)
@@ -248,29 +260,40 @@ def build_blog(html, posts):
     return make_page(html, "blog", BLOG["title"], BLOG["description"], body, nodes, "blog", ["blog"])
 
 
-def build_post(html, post, posts):
+def build_post(html, post, posts, kind="blog"):
+    """A blog post, or a case study when kind is "case"."""
     e = htmllib.escape
+    case = kind == "case"
+    parent_name, parent_slug = ("Work", "work") if case else ("Blog", "blog")
     others = [p for p in posts if p["slug"] != post["slug"]][:3]
     more = ""
     if others:
         more = (
             '                <section class="post-more" aria-labelledby="more-title">\n'
-            '                    <h2 id="more-title">More from the blog</h2>\n'
+            '                    <h2 id="more-title">%s</h2>\n' % ("More case studies" if case else "More from the blog") +
             '                    <div class="post-grid">\n' + "".join(post_card(p) for p in others) +
             '                    </div>\n'
             '                </section>\n'
         )
+    hero = ""
+    if post.get("image"):
+        hero += ('                        <figure class="post-hero"><img src="%s" alt="%s" loading="eager" /></figure>\n'
+                 % (e(post["image"]), e(post["title"].split(":")[0] + " screenshot")))
+    if post.get("live"):
+        hero += ('                        <p class="post-live"><a class="btn btn-solid" href="%s" target="_blank" rel="noopener noreferrer">'
+                 'Visit the live site <span aria-hidden="true">↗</span></a></p>\n' % e(post["live"]))
     body = (
         '        <section class="section post-section" id="post" aria-labelledby="post-title">\n'
         '            <div class="wrap">\n'
         '                <nav class="crumbs" aria-label="Breadcrumb"><a href="./">Home</a><span aria-hidden="true">/</span>'
-        '<a href="blog">Blog</a><span aria-hidden="true">/</span><span aria-current="page">{title}</span></nav>\n'
+        '<a href="{parent_slug}">{parent_name}</a><span aria-hidden="true">/</span><span aria-current="page">{title}</span></nav>\n'
         '                <article class="post">\n'
         '                    <header class="post-head">\n'
         '                        <p class="label">{tag}</p>\n'
         '                        <h1 id="post-title">{h1}</h1>\n'
         '                        <p class="post-meta"><img src="img/kelvin/headshot.jpg" alt="" width="36" height="36" loading="lazy" />'
         '<span>By <strong>Kelvin Wanyoike</strong> · <time datetime="{iso}">{date}</time> · {mins} min read</span></p>\n'
+        '{hero}'
         '                    </header>\n'
         '                    <div class="post-body">\n{body}\n                    </div>\n'
         '                    <aside class="post-cta" aria-label="Work with Marzley Tech">\n'
@@ -288,6 +311,7 @@ def build_post(html, post, posts):
         '        </section>\n'
     ).format(title=e(post["title"]), tag=e(post["tag"]), iso=post["date"].isoformat(), date=nice_date(post["date"]),
              mins=post["minutes"], more=more, h1=keep_together(e(post["title"])),
+             parent_slug=parent_slug, parent_name=parent_name, hero=hero,
              body=re.sub(r"<h2>(.*?)</h2>", lambda m: "<h2>%s</h2>" % keep_together(m.group(1)), post["body"]),
              wa="Hello%20Marzley%2C%20I%20read%20your%20article%20and%20I%27d%20like%20to%20discuss%20a%20project.")
     url = SITE + post["slug"]
@@ -300,27 +324,30 @@ def build_post(html, post, posts):
         "dateModified": post["date"].isoformat(),
         "author": {"@id": SITE + "#kelvin", "@type": "Person", "name": "Kelvin Wanyoike", "url": SITE + "about"},
         "publisher": {"@id": SITE + "#business"},
-        "image": SITE + "img/brand/og-image.jpg",
+        "image": SITE + (post.get("image") or "img/brand/og-image.jpg"),
         "mainEntityOfPage": url,
         "inLanguage": "en-KE",
     }
+    if case:
+        article["@type"] = "Article"
+        article["articleSection"] = "Case study"
     nodes = [web_page(post["slug"], post["title"], post["description"]), article,
-             breadcrumbs(("Blog", "blog"), (post["title"], post["slug"]))]
+             breadcrumbs((parent_name, parent_slug), (post["title"], post["slug"]))]
     page = make_page(html, post["slug"], post["title"] + " | Marzley Tech Solutions", post["description"],
-                     body, nodes, "blog", ["post"])
+                     body, nodes, parent_slug, ["post"])
     return page.replace('<meta property="og:type" content="website" />', '<meta property="og:type" content="article" />', 1)
 
 
 # ---------- sitemap ----------
 
-def write_sitemap(posts):
+def write_sitemap(posts, cases=()):
     today = datetime.date.today().isoformat()
     urls = [
         ("", "weekly", "1.0", ["img/brand/og-image.jpg", "img/kelvin/office.jpg", "img/kelvin/office-square.jpg"]),
         ("work", "weekly", "0.9", []), ("services", "monthly", "0.9", []), ("pricing", "monthly", "0.9", []),
         ("about", "monthly", "0.8", []), ("contact", "monthly", "0.8", []), ("process", "monthly", "0.7", []),
-        ("blog", "weekly", "0.8", []),
-    ] + [(p["slug"], "monthly", "0.7", []) for p in posts]
+        ("training", "monthly", "0.8", []), ("blog", "weekly", "0.8", []),
+    ] + [(p["slug"], "monthly", "0.8", []) for p in cases] + [(p["slug"], "monthly", "0.7", []) for p in posts]
     out = ['<?xml version="1.0" encoding="UTF-8"?>',
            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',
            '        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">']
@@ -347,6 +374,7 @@ def write(name, text):
 def main():
     home = (ROOT / "index.html").read_text(encoding="utf-8")
     sections = sections_of(home)
+    sections.update(sections_of(EXTRA_SECTIONS.read_text(encoding="utf-8")))
     for page in PAGES:
         missing = [s for s in page["sections"] if s not in sections]
         assert not missing, missing
@@ -355,7 +383,10 @@ def main():
     write("blog.html", build_blog(home, posts))
     for post in posts:
         write(post["slug"] + ".html", build_post(home, post, posts))
-    write_sitemap(posts)
+    cases = read_posts(CASES_DIR)
+    for case in cases:
+        write(case["slug"] + ".html", build_post(home, case, cases, kind="case"))
+    write_sitemap(posts, cases)
     print("wrote sitemap.xml")
 
 

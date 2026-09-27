@@ -1400,6 +1400,195 @@
     });
   });
 
+  /* ---------- project deposit by M-Pesa ---------- */
+  var depForm = document.getElementById("deposit-form");
+  if (depForm) {
+    var depOtherWrap = document.getElementById("deposit-other-wrap");
+    var depOther = document.getElementById("deposit-other");
+    var depName = document.getElementById("deposit-name");
+    var depPhone = document.getElementById("deposit-phone");
+    var depError = document.getElementById("deposit-error");
+    var depPay = document.getElementById("deposit-pay");
+    var depPayText = document.getElementById("deposit-pay-text");
+    var depStatus = document.getElementById("deposit-status");
+    var depTimer = null;
+    var ksh = function (n) { return "KSh " + Number(n).toLocaleString("en-KE"); };
+    var depAmount = function () {
+      var picked = depForm.querySelector('input[name="deposit-amount"]:checked');
+      if (!picked) return 0;
+      return picked.value === "other" ? Math.round(Number(depOther.value) || 0) : Number(picked.value);
+    };
+    var depSync = function () {
+      var picked = depForm.querySelector('input[name="deposit-amount"]:checked');
+      depOtherWrap.hidden = !picked || picked.value !== "other";
+      var amount = depAmount();
+      depPayText.textContent = amount >= 1000 ? "Pay " + ksh(amount) + " with M-Pesa" : "Pay deposit with M-Pesa";
+    };
+    depForm.addEventListener("change", depSync);
+    depOther.addEventListener("input", depSync);
+    depSync();
+
+    var depNormalise = function (raw) {
+      var digits = raw.replace(/\D/g, "");
+      if (/^0[17]\d{8}$/.test(digits)) return "254" + digits.slice(1);
+      if (/^254[17]\d{8}$/.test(digits)) return digits;
+      if (/^[17]\d{8}$/.test(digits)) return "254" + digits;
+      return null;
+    };
+    var DEP_REASONS = {
+      1: "The payment didn't go through because the M-Pesa balance is too low.",
+      1032: "The M-Pesa prompt was cancelled. No money was deducted.",
+      1037: "The prompt timed out before a PIN was entered. No money was deducted.",
+      2001: "The PIN entered was wrong. No money was deducted."
+    };
+    var depShow = function (kind, html) {
+      depStatus.hidden = false;
+      depStatus.className = "deposit-status is-" + kind;
+      depStatus.innerHTML = html;
+    };
+    var depDone = function () { depPay.disabled = false; };
+    var waLink = function (text) {
+      return "https://wa.me/254745789590?text=" + encodeURIComponent(text);
+    };
+    var depPoll = function (id, tries, amount, name) {
+      fetch("status.php?id=" + encodeURIComponent(id), { headers: { Accept: "application/json" }, cache: "no-store" })
+        .then(function (r) { return r.json(); })
+        .then(function (s) {
+          if (s.status === "paid") {
+            var receipt = s.receipt || "";
+            depShow("ok", '<i class="fa-solid fa-circle-check" aria-hidden="true"></i><div><strong>Deposit received. Thank you!</strong>' +
+              "<span>M-Pesa receipt " + receipt.replace(/[^A-Z0-9]/gi, "") + " for " + ksh(s.amount || amount) + ". We’ll be in touch shortly to schedule your project.</span>" +
+              '<a class="btn btn-wa" target="_blank" rel="noopener noreferrer" href="' +
+              waLink("Hello Marzley, I've paid my project deposit of " + ksh(s.amount || amount) + " (receipt " + receipt + "). Name: " + name + ".") +
+              '"><i class="fab fa-whatsapp" aria-hidden="true"></i> Let us know on WhatsApp</a></div>');
+            depDone();
+          } else if (s.status === "failed") {
+            depShow("fail", '<i class="fa-solid fa-circle-xmark" aria-hidden="true"></i><div><strong>Payment not completed</strong><span>' +
+              (DEP_REASONS[s.code] || "The payment didn't go through. No money was deducted.") + " You can try again.</span></div>");
+            depDone();
+          } else if (tries > 0) {
+            depTimer = setTimeout(function () { depPoll(id, tries - 1, amount, name); }, 3000);
+          } else {
+            depShow("fail", '<i class="fa-solid fa-clock" aria-hidden="true"></i><div><strong>Still waiting for confirmation</strong>' +
+              "<span>If you entered your PIN, you’ll get the M-Pesa SMS and we’ll see the payment. Otherwise, try again.</span></div>");
+            depDone();
+          }
+        })
+        .catch(function () {
+          if (tries > 0) depTimer = setTimeout(function () { depPoll(id, tries - 1, amount, name); }, 3000);
+          else { depShow("fail", "<div><strong>We couldn't check the payment.</strong><span>If you paid, you'll get the M-Pesa SMS.</span></div>"); depDone(); }
+        });
+    };
+
+    depForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      depError.textContent = "";
+      var amount = depAmount();
+      var name = depName.value.trim();
+      var msisdn = depNormalise(depPhone.value);
+      if (amount < 1000 || amount > 150000) { depError.textContent = "Enter a deposit between KSh 1,000 and KSh 150,000."; (depOtherWrap.hidden ? depPay : depOther).focus(); return; }
+      if (!name) { depError.textContent = "Enter your name or business so we can match your payment."; depName.focus(); return; }
+      if (!msisdn) { depError.textContent = "Enter a Safaricom number like 0712 345 678."; depPhone.focus(); return; }
+      clearTimeout(depTimer);
+      depPay.disabled = true;
+      depShow("wait", '<span class="spinner" aria-hidden="true"></span><div><strong>Sending the M-Pesa prompt…</strong></div>');
+      var body = new FormData();
+      body.append("phone", "0" + msisdn.slice(3));
+      body.append("amount", String(amount));
+      body.append("purpose", "deposit");
+      fetch("stkpush.php", { method: "POST", body: body, headers: { Accept: "application/json" } })
+        .then(function (res) { return res.json().then(function (d) { return { ok: res.ok, d: d }; }); })
+        .then(function (r) {
+          if (r.ok && String(r.d.ResponseCode) === "0" && r.d.CheckoutRequestID) {
+            depShow("wait", '<span class="spinner" aria-hidden="true"></span><div><strong>Check your phone</strong><span>Enter your M-Pesa PIN to pay ' +
+              ksh(amount) + " to Marzley Tech Solutions.</span></div>");
+            depPoll(r.d.CheckoutRequestID, 30, amount, name);
+          } else {
+            depShow("fail", '<i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><div><strong>Couldn’t send the prompt</strong><span>' +
+              String(r.d.error || r.d.errorMessage || "Please try again, or pay to Till 6095737 directly.").replace(/</g, "&lt;") + "</span></div>");
+            depDone();
+          }
+        })
+        .catch(function () {
+          depShow("fail", '<i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><div><strong>Online payment is unavailable right now</strong>' +
+            "<span>You can pay to <b>Till 6095737</b> (Buy Goods) and send us the M-Pesa message on WhatsApp.</span></div>");
+          depDone();
+        });
+    });
+  }
+
+  /* ---------- booking and training forms (Formspree) ---------- */
+  var bookDate = document.getElementById("b-date");
+  if (bookDate) {
+    var today = new Date();
+    var iso = function (d) { return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); };
+    bookDate.min = iso(today);
+    bookDate.max = iso(new Date(today.getTime() + 60 * 24 * 3600 * 1000));
+  }
+  var icsFor = function (data) {
+    var start = data.date.replace(/-/g, "") + "T" + data.time.replace(":", "") + "00";
+    var endDate = new Date(data.date + "T" + data.time + ":00");
+    endDate.setMinutes(endDate.getMinutes() + 15);
+    var end = data.date.replace(/-/g, "") + "T" + ("0" + endDate.getHours()).slice(-2) + ("0" + endDate.getMinutes()).slice(-2) + "00";
+    var stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+/, "");
+    return ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Marzley Tech Solutions//Booking//EN", "BEGIN:VEVENT",
+      "UID:" + stamp + "-" + Math.floor(Math.random() * 1e6) + "@marzleytechsolutions.co.ke", "DTSTAMP:" + stamp,
+      "DTSTART;TZID=Africa/Nairobi:" + start, "DTEND;TZID=Africa/Nairobi:" + end,
+      "SUMMARY:Call with Marzley Tech Solutions", "DESCRIPTION:" + data.type + ". Questions? WhatsApp +254 745 789 590.",
+      "END:VEVENT", "END:VCALENDAR"].join("\r\n");
+  };
+  document.querySelectorAll("form[data-formspree]").forEach(function (f) {
+    var statusEl = f.querySelector("[data-form-status]");
+    var btn = f.querySelector('button[type="submit"]');
+    f.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!f.checkValidity()) { f.reportValidity(); return; }
+      var data = new FormData(f);
+      var booking = f.getAttribute("data-kind") === "booking";
+      var summary = booking
+        ? "Hello Marzley, I've booked a call for " + data.get("date") + " at " + data.get("time") + " (" + data.get("call_type") + "). Name: " + data.get("name") + "."
+        : "Hello Marzley, I'd like to enrol in " + data.get("course") + " (" + data.get("mode") + "). Name: " + data.get("name") + ".";
+      btn.disabled = true;
+      var label = btn.textContent;
+      btn.textContent = "Sending…";
+      var done = function (ok) {
+        btn.disabled = false;
+        btn.textContent = label;
+        statusEl.hidden = false;
+        statusEl.innerHTML = "";
+        var p = document.createElement("p");
+        p.className = "form-feedback " + (ok ? "ok" : "err");
+        p.textContent = ok
+          ? (booking ? "Booked! We’ll confirm your call shortly." : "Thank you! We’ll send you the fees and next start date shortly.")
+          : "Sorry, that didn't send. Please send it on WhatsApp instead:";
+        statusEl.appendChild(p);
+        var row = document.createElement("div");
+        row.className = "form-fallback";
+        var wa = document.createElement("a");
+        wa.className = "btn btn-wa";
+        wa.target = "_blank";
+        wa.rel = "noopener noreferrer";
+        wa.href = waLinkFor(summary);
+        wa.innerHTML = '<i class="fab fa-whatsapp" aria-hidden="true"></i> ' + (ok ? "Also message us on WhatsApp" : "Send on WhatsApp");
+        row.appendChild(wa);
+        if (ok && booking) {
+          var cal = document.createElement("a");
+          cal.className = "btn btn-ghost";
+          cal.download = "marzley-call.ics";
+          cal.href = "data:text/calendar;charset=utf-8," + encodeURIComponent(icsFor({ date: data.get("date"), time: data.get("time"), type: data.get("call_type") }));
+          cal.innerHTML = '<i class="fa-solid fa-calendar-plus" aria-hidden="true"></i> Add to calendar';
+          row.appendChild(cal);
+        }
+        statusEl.appendChild(row);
+        if (ok) f.reset();
+      };
+      fetch(f.action, { method: "POST", body: data, headers: { Accept: "application/json" } })
+        .then(function (res) { done(res.ok); })
+        .catch(function () { done(false); });
+    });
+  });
+  function waLinkFor(text) { return "https://wa.me/254745789590?text=" + encodeURIComponent(text); }
+
   /* ---------- before/after slider ---------- */
   document.querySelectorAll(".compare-frame").forEach(function (frame) {
     var range = frame.querySelector(".compare-range");

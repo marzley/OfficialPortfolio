@@ -257,6 +257,47 @@
                 </form>
             </div>
         </section>
+        <!-- Deposit -->
+        <section class="section" id="deposit" aria-labelledby="deposit-title">
+            <div class="wrap deposit-grid">
+                <div class="deposit-copy reveal">
+                    <p class="label">Ready to start?</p>
+                    <h2 id="deposit-title">Pay your project deposit by <span class="nobreak">M-Pesa</span></h2>
+                    <p>Agreed on a package? Secure your start date with a deposit. The rest is paid in stages as your project progresses.</p>
+                    <ul class="deposit-points">
+                        <li><i class="fa-solid fa-shield-halved" aria-hidden="true"></i>Paid straight to Marzley Tech Solutions, Till 6095737</li>
+                        <li><i class="fa-solid fa-receipt" aria-hidden="true"></i>You get an M-Pesa receipt by SMS instantly</li>
+                        <li><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i>The deposit counts toward your final price</li>
+                    </ul>
+                    <p class="deposit-note">Not sure how much to pay? <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I%27d%20like%20to%20confirm%20my%20project%20deposit." target="_blank" rel="noopener noreferrer">Confirm it with us on WhatsApp</a> first.</p>
+                </div>
+
+                <form class="deposit-form reveal" id="deposit-form" novalidate>
+                    <fieldset class="deposit-amounts">
+                        <legend>Deposit amount</legend>
+                        <label class="amount-chip"><input type="radio" name="deposit-amount" value="5000" checked /><span>KSh 5,000</span></label>
+                        <label class="amount-chip"><input type="radio" name="deposit-amount" value="10000" /><span>KSh 10,000</span></label>
+                        <label class="amount-chip"><input type="radio" name="deposit-amount" value="20000" /><span>KSh 20,000</span></label>
+                        <label class="amount-chip"><input type="radio" name="deposit-amount" value="other" /><span>Other</span></label>
+                    </fieldset>
+                    <div class="field" id="deposit-other-wrap" hidden>
+                        <label for="deposit-other">Amount (KSh)</label>
+                        <input id="deposit-other" type="number" inputmode="numeric" min="1000" max="150000" step="100" placeholder="e.g. 15000" />
+                    </div>
+                    <div class="field">
+                        <label for="deposit-name">Your name or business</label>
+                        <input id="deposit-name" type="text" autocomplete="organization" maxlength="80" required />
+                    </div>
+                    <div class="field">
+                        <label for="deposit-phone">M-Pesa phone number</label>
+                        <input id="deposit-phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="0712 345 678" required />
+                    </div>
+                    <p class="demo-error" id="deposit-error" role="alert"></p>
+                    <button type="submit" class="btn btn-mpesa" id="deposit-pay"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> <span id="deposit-pay-text">Pay KSh 5,000 with M-Pesa</span></button>
+                    <div class="deposit-status" id="deposit-status" role="status" aria-live="polite" hidden></div>
+                </form>
+            </div>
+        </section>
         <!-- FAQ -->
         <section class="section" id="faq" aria-labelledby="faq-title">
             <div class="wrap faq-grid">
@@ -379,6 +420,7 @@
                         <li><a href="services">Services</a></li>
                         <li><a href="process">Process</a></li>
                         <li><a href="pricing">Packages &amp; pricing</a></li>
+                        <li><a href="training">Training courses</a></li>
                         <li><a href="blog">Blog</a></li>
                         <li><a href="contact">Contact</a></li>
                     </ul>
@@ -387,6 +429,7 @@
                     <h4>Work</h4>
                     <ul>
                         <li><a href="work">Selected projects</a></li>
+                        <li><a href="work#cases">Case studies</a></li>
                         <li><a href="https://github.com/marzley" target="_blank" rel="noopener noreferrer">GitHub</a></li>
                         <li><a href="download/Marzley.apk" data-app-download>Download the app</a></li>
                     </ul>

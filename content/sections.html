@@ -1,0 +1,246 @@
+<!-- Sections used on inner pages but not on the homepage. tools/build_pages.py reads this file. -->
+
+        <!-- Case studies -->
+        <section class="section" id="cases" aria-labelledby="cases-title">
+            <div class="wrap">
+                <div class="section-head reveal">
+                    <div>
+                        <p class="label">Case studies</p>
+                        <h2 id="cases-title">How the live projects were built</h2>
+                    </div>
+                    <p>The problem, the approach and what each system does today.</p>
+                </div>
+                <div class="case-grid">
+                    <a class="case-card reveal" href="case-study-cbet-planner">
+                        <span class="case-img"><img src="img/projects/web/cbet-planner.webp" alt="CBET Planner dashboard" loading="lazy" /></span>
+                        <span class="case-body">
+                            <span class="label">Education SaaS</span>
+                            <strong>CBET Planner</strong>
+                            <span>An online platform that drafts CBET documentation for TVET trainers from their curriculum.</span>
+                            <span class="case-more">Read the case study <span aria-hidden="true">→</span></span>
+                        </span>
+                    </a>
+                    <a class="case-card reveal" href="case-study-gatanga-tvc">
+                        <span class="case-img"><img src="img/projects/web/gtvc.webp" alt="Gatanga TVC website homepage" loading="lazy" /></span>
+                        <span class="case-body">
+                            <span class="label">Education</span>
+                            <strong>Gatanga TVC website</strong>
+                            <span>The institutional website for a technical and vocational college: courses, student information and news.</span>
+                            <span class="case-more">Read the case study <span aria-hidden="true">→</span></span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Deposit -->
+        <section class="section" id="deposit" aria-labelledby="deposit-title">
+            <div class="wrap deposit-grid">
+                <div class="deposit-copy reveal">
+                    <p class="label">Ready to start?</p>
+                    <h2 id="deposit-title">Pay your project deposit by <span class="nobreak">M-Pesa</span></h2>
+                    <p>Agreed on a package? Secure your start date with a deposit. The rest is paid in stages as your project progresses.</p>
+                    <ul class="deposit-points">
+                        <li><i class="fa-solid fa-shield-halved" aria-hidden="true"></i>Paid straight to Marzley Tech Solutions, Till 6095737</li>
+                        <li><i class="fa-solid fa-receipt" aria-hidden="true"></i>You get an M-Pesa receipt by SMS instantly</li>
+                        <li><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i>The deposit counts toward your final price</li>
+                    </ul>
+                    <p class="deposit-note">Not sure how much to pay? <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I%27d%20like%20to%20confirm%20my%20project%20deposit." target="_blank" rel="noopener noreferrer">Confirm it with us on WhatsApp</a> first.</p>
+                </div>
+
+                <form class="deposit-form reveal" id="deposit-form" novalidate>
+                    <fieldset class="deposit-amounts">
+                        <legend>Deposit amount</legend>
+                        <label class="amount-chip"><input type="radio" name="deposit-amount" value="5000" checked /><span>KSh 5,000</span></label>
+                        <label class="amount-chip"><input type="radio" name="deposit-amount" value="10000" /><span>KSh 10,000</span></label>
+                        <label class="amount-chip"><input type="radio" name="deposit-amount" value="20000" /><span>KSh 20,000</span></label>
+                        <label class="amount-chip"><input type="radio" name="deposit-amount" value="other" /><span>Other</span></label>
+                    </fieldset>
+                    <div class="field" id="deposit-other-wrap" hidden>
+                        <label for="deposit-other">Amount (KSh)</label>
+                        <input id="deposit-other" type="number" inputmode="numeric" min="1000" max="150000" step="100" placeholder="e.g. 15000" />
+                    </div>
+                    <div class="field">
+                        <label for="deposit-name">Your name or business</label>
+                        <input id="deposit-name" type="text" autocomplete="organization" maxlength="80" required />
+                    </div>
+                    <div class="field">
+                        <label for="deposit-phone">M-Pesa phone number</label>
+                        <input id="deposit-phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="0712 345 678" required />
+                    </div>
+                    <p class="demo-error" id="deposit-error" role="alert"></p>
+                    <button type="submit" class="btn btn-mpesa" id="deposit-pay"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> <span id="deposit-pay-text">Pay KSh 5,000 with M-Pesa</span></button>
+                    <div class="deposit-status" id="deposit-status" role="status" aria-live="polite" hidden></div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Book a call -->
+        <section class="section" id="booking" aria-labelledby="booking-title">
+            <div class="wrap booking-grid">
+                <div class="booking-copy reveal">
+                    <p class="label">Free consultation</p>
+                    <h2 id="booking-title">Book a free 15-minute call</h2>
+                    <p>Talk through your idea, get honest advice and a clear next step. Pick a day and time that suits you. We’re available 24/7, including evenings and weekends.</p>
+                    <ul class="deposit-points">
+                        <li><i class="fa-solid fa-phone" aria-hidden="true"></i>Phone, WhatsApp or Google Meet</li>
+                        <li><i class="fa-solid fa-clock" aria-hidden="true"></i>We confirm your slot within the hour</li>
+                        <li><i class="fa-solid fa-calendar-plus" aria-hidden="true"></i>Add it to your calendar in one tap</li>
+                    </ul>
+                </div>
+
+                <form class="form reveal" id="booking-call" action="https://formspree.io/f/myzbnvnb" method="POST" data-formspree data-kind="booking" novalidate>
+                    <input type="hidden" name="_subject" value="New call booking from the website" />
+                    <input type="hidden" name="form" value="Book a call" />
+                    <div class="field">
+                        <label for="b-name">Name</label>
+                        <input id="b-name" name="name" type="text" autocomplete="name" required />
+                    </div>
+                    <div class="field">
+                        <label for="b-phone">Phone or WhatsApp</label>
+                        <input id="b-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required />
+                    </div>
+                    <div class="field">
+                        <label for="b-date">Day</label>
+                        <input id="b-date" name="date" type="date" required />
+                    </div>
+                    <div class="field">
+                        <label for="b-time">Time</label>
+                        <select id="b-time" name="time" required>
+                            <option value="">Choose a time</option>
+                            <option value="09:00">Morning (9 am)</option>
+                            <option value="11:00">Late morning (11 am)</option>
+                            <option value="14:00">Afternoon (2 pm)</option>
+                            <option value="16:00">Late afternoon (4 pm)</option>
+                            <option value="18:30">Evening (6:30 pm)</option>
+                            <option value="20:30">Night (8:30 pm)</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="b-type">How should we call?</label>
+                        <select id="b-type" name="call_type">
+                            <option>Phone call</option>
+                            <option>WhatsApp call</option>
+                            <option>Google Meet</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="b-email">Email <small>(optional, for a Meet link)</small></label>
+                        <input id="b-email" name="_replyto" type="email" autocomplete="email" />
+                    </div>
+                    <div class="field full">
+                        <label for="b-topic">What would you like to discuss?</label>
+                        <textarea id="b-topic" name="topic" rows="3"></textarea>
+                    </div>
+                    <div class="form-foot">
+                        <button class="btn btn-solid" type="submit">Book my call</button>
+                    </div>
+                    <div class="form-status" data-form-status role="status" aria-live="polite" hidden></div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Training -->
+        <section class="section" id="training" aria-labelledby="training-title">
+            <div class="wrap">
+                <div class="section-head reveal">
+                    <div>
+                        <p class="label">Training &amp; mentorship</p>
+                        <h2 id="training-title">Learn to build real projects</h2>
+                    </div>
+                    <p>Practical, project-based training for students and professionals. Over 200 students trained, in person and online.</p>
+                </div>
+                <div class="course-grid">
+                    <article class="course reveal">
+                        <span class="course-icon"><i class="fa-solid fa-code" aria-hidden="true"></i></span>
+                        <h3>Web development</h3>
+                        <p>Build and publish real websites, from the first page to a live site on your own domain.</p>
+                        <ul>
+                            <li>HTML, CSS and responsive design</li>
+                            <li>JavaScript for interactive pages</li>
+                            <li>PHP and MySQL for forms and databases</li>
+                            <li>Hosting, domains and going live</li>
+                        </ul>
+                    </article>
+                    <article class="course reveal">
+                        <span class="course-icon"><i class="fa-solid fa-terminal" aria-hidden="true"></i></span>
+                        <h3>Programming</h3>
+                        <p>Learn to think like a programmer and solve problems with code.</p>
+                        <ul>
+                            <li>Programming logic and problem solving</li>
+                            <li>JavaScript and PHP fundamentals</li>
+                            <li>Working with data and APIs</li>
+                            <li>Projects you can show employers</li>
+                        </ul>
+                    </article>
+                    <article class="course reveal">
+                        <span class="course-icon"><i class="fa-solid fa-pen-ruler" aria-hidden="true"></i></span>
+                        <h3>Graphic design &amp; UI/UX</h3>
+                        <p>Design logos, posters and clean, user-friendly interfaces.</p>
+                        <ul>
+                            <li>Design principles, colour and typography</li>
+                            <li>Logos, posters and social media graphics</li>
+                            <li>Interface and user experience design</li>
+                            <li>Photo editing and effects</li>
+                        </ul>
+                    </article>
+                    <article class="course reveal">
+                        <span class="course-icon"><i class="fa-solid fa-user-graduate" aria-hidden="true"></i></span>
+                        <h3>Mentorship</h3>
+                        <p>One-to-one guidance for your studies, projects or tech career.</p>
+                        <ul>
+                            <li>Help with school and personal projects</li>
+                            <li>Career guidance in tech</li>
+                            <li>Code and portfolio reviews</li>
+                            <li>ICT consultation for institutions</li>
+                        </ul>
+                    </article>
+                </div>
+
+                <div class="enrol reveal">
+                    <div class="enrol-copy">
+                        <h3>Enrol or ask about the next class</h3>
+                        <p>Classes run in person and online, with flexible weekday, evening and weekend options. Send your details and we’ll share the current fees and next start date.</p>
+                    </div>
+                    <form class="form" id="enrol-form" action="https://formspree.io/f/myzbnvnb" method="POST" data-formspree data-kind="enrol" novalidate>
+                        <input type="hidden" name="_subject" value="New training enquiry from the website" />
+                        <input type="hidden" name="form" value="Training enrolment" />
+                        <div class="field">
+                            <label for="e-name">Name</label>
+                            <input id="e-name" name="name" type="text" autocomplete="name" required />
+                        </div>
+                        <div class="field">
+                            <label for="e-phone">Phone or WhatsApp</label>
+                            <input id="e-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required />
+                        </div>
+                        <div class="field">
+                            <label for="e-course">Course</label>
+                            <select id="e-course" name="course" required>
+                                <option value="">Choose a course</option>
+                                <option>Web development</option>
+                                <option>Programming</option>
+                                <option>Graphic design &amp; UI/UX</option>
+                                <option>Mentorship</option>
+                                <option>Not sure yet</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="e-mode">Learning mode</label>
+                            <select id="e-mode" name="mode">
+                                <option>In person</option>
+                                <option>Online</option>
+                                <option>Either</option>
+                            </select>
+                        </div>
+                        <div class="field full">
+                            <label for="e-email">Email <small>(optional)</small></label>
+                            <input id="e-email" name="_replyto" type="email" autocomplete="email" />
+                        </div>
+                        <div class="form-foot">
+                            <button class="btn btn-solid" type="submit">Send enquiry</button>
+                        </div>
+                        <div class="form-status" data-form-status role="status" aria-live="polite" hidden></div>
+                    </form>
+                </div>
+            </div>
+        </section>

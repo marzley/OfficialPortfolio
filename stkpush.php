@@ -45,6 +45,8 @@ $logFile        = $logDir . '/stk_request.log';
 
 // INPUT
 $rawPhone = $_POST['phone'] ?? '';
+// What the payment is for (shown on the M-Pesa statement); only known values are accepted
+$transactionDesc = (($_POST['purpose'] ?? '') === 'deposit') ? 'Project deposit' : 'STK Push';
 $amount   = isset($_POST['amount']) ? (int)$_POST['amount'] : 0;
 if ($amount <= 0) $amount = 1;
 if ($amount > 150000) {
@@ -184,7 +186,7 @@ $stkPayload = [
     'PhoneNumber' => $phone,
     'CallBackURL' => $callbackUrl,
     'AccountReference' => 'MarzleyTech',
-    'TransactionDesc' => 'STK Push'
+    'TransactionDesc' => $transactionDesc
 ];
 
 $dataString = json_encode($stkPayload);
