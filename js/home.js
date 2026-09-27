@@ -318,6 +318,72 @@
     });
   }
 
+  /* ---------- "Continue with Google" to fill the contact form ---------- */
+  // Uses Google Identity Services with the public client ID only. The token is
+  // decoded in the browser just to read the name and email; it is not stored or sent anywhere.
+  var googleBox = document.getElementById("google-fill");
+  var clientIdMeta = document.querySelector('meta[name="google-signin-client_id"]');
+  if (googleBox && clientIdMeta && location.protocol === "https:") {
+    var googleStatus = document.getElementById("google-fill-status");
+    var googleClear = document.getElementById("google-clear");
+    var nameInput = document.getElementById("f-name");
+    var emailInput = document.getElementById("f-email");
+
+    var decodeJwt = function (token) {
+      var part = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+      while (part.length % 4) part += "=";
+      var json = decodeURIComponent(atob(part).split("").map(function (c) {
+        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(""));
+      return JSON.parse(json);
+    };
+
+    var fire = function (el) { el.dispatchEvent(new Event("input", { bubbles: true })); };
+
+    var onCredential = function (response) {
+      try {
+        var data = decodeJwt(response.credential);
+        if (data.name) { nameInput.value = data.name; fire(nameInput); }
+        if (data.email) { emailInput.value = data.email; fire(emailInput); }
+        googleStatus.textContent = "Filled in as " + (data.name || data.email) + ". Add your project details below.";
+        googleClear.hidden = false;
+        var message = document.getElementById("f-message");
+        if (message) message.focus();
+      } catch (e) {
+        googleStatus.textContent = "Couldn't read your Google details. Please type them in.";
+      }
+    };
+
+    googleClear.addEventListener("click", function () {
+      nameInput.value = ""; emailInput.value = "";
+      fire(nameInput); fire(emailInput);
+      googleClear.hidden = true;
+      googleStatus.textContent = "Fill in your name and email with your Google account.";
+      if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect();
+      nameInput.focus();
+    });
+
+    var tries = 0;
+    var startGoogle = function () {
+      if (!(window.google && google.accounts && google.accounts.id)) {
+        if (++tries < 40) setTimeout(startGoogle, 250);
+        return;
+      }
+      google.accounts.id.initialize({
+        client_id: clientIdMeta.content,
+        callback: onCredential,
+        auto_select: false,
+        cancel_on_tap_outside: true,
+        context: "use"
+      });
+      google.accounts.id.renderButton(document.getElementById("google-button"), {
+        type: "standard", theme: "outline", size: "large", text: "continue_with", shape: "pill", logo_alignment: "left"
+      });
+      googleBox.hidden = false;
+    };
+    startGoogle();
+  }
+
   /* ---------- donate (Paystack) ---------- */
   var donate = document.getElementById("donate-btn");
   if (donate) {

@@ -46,6 +46,8 @@
     <script src="https://js.paystack.co/v1/inline.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
     <script src="js/home.js" defer></script>
+    <meta name="google-signin-client_id" content="532239575183-c335bvpq88npc06qnc9e05srqlr96f71.apps.googleusercontent.com" />
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <script type="application/ld+json">
     {
@@ -847,6 +849,14 @@
                     </div>
 
                     <form class="form reveal" id="booking-form" action="https://formspree.io/f/myzbnvnb" method="POST" novalidate>
+                        <div class="google-fill" id="google-fill" hidden>
+                            <div class="google-fill-text">
+                                <strong>Save time</strong>
+                                <span id="google-fill-status">Fill in your name and email with your Google account.</span>
+                            </div>
+                            <div id="google-button"></div>
+                            <button type="button" class="google-clear" id="google-clear" hidden>Not you? Clear</button>
+                        </div>
                         <div class="field">
                             <label for="f-name">Name</label>
                             <input id="f-name" name="name" type="text" autocomplete="name" required />
