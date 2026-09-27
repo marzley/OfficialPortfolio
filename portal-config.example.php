@@ -55,8 +55,11 @@ return [
     // 'chat' => ['api_key' => 'sk-ant-…', 'model' => 'claude-opus-5', 'effort' => 'low', 'per_visitor_hour' => 20, 'daily_limit' => 400],
     'chat' => null,
 
-    // Text this number when someone asks for a call back (needs the 'sms' settings above)
+    // Text this number when someone asks for a call back or pays on the website (needs the 'sms' settings above)
     'sms_alert_phone' => '',
+
+    // Referral reward paid when a referred client pays (KSh)
+    'referral_reward' => 2000,
 
     // Invoice numbers: MT-2026-0001, MT-2026-0002 … (a new series each year)
     'invoice_prefix' => 'MT',

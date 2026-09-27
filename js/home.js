@@ -745,6 +745,7 @@
         .then(function (r) { return r.json(); })
         .then(function (s) {
           if (s.status === "paid") {
+            track("demo_payment");
             smsText.textContent = (s.receipt || "Payment") + " Confirmed. Ksh" + (s.amount || 1) +
               ".00 paid to MARZLEY TECH SOLUTIONS. Thank you for trying a live M-Pesa checkout!";
             show("sms");
@@ -789,6 +790,7 @@
       var body = new FormData();
       body.append("phone", "0" + msisdn.slice(3));
       body.append("amount", "1");
+      body.append("purpose", "demo");
       var controller = "AbortController" in window ? new AbortController() : null;
       var timer = setTimeout(function () { if (controller) controller.abort(); }, 35000);
 
@@ -1481,6 +1483,7 @@
         .then(function (r) { return r.json(); })
         .then(function (s) {
           if (s.status === "paid") {
+            track(carePlan ? "care_plan_paid" : "deposit_paid", { value: Number(s.amount || amount), currency: "KES" });
             var receipt = s.receipt || "";
             depShow("ok", '<i class="fa-solid fa-circle-check" aria-hidden="true"></i><div><strong>Deposit received. Thank you!</strong>' +
               "<span>M-Pesa receipt " + receipt.replace(/[^A-Z0-9]/gi, "") + " for " + ksh(s.amount || amount) + ". We’ll be in touch shortly to schedule your project.</span>" +
@@ -1522,6 +1525,9 @@
       body.append("phone", "0" + msisdn.slice(3));
       body.append("amount", String(amount));
       body.append("purpose", carePlan ? "care" : "deposit");
+      body.append("name", name);
+      if (carePlan) body.append("plan", carePlan.name);
+      try { var rb = JSON.parse(localStorage.getItem("marzley-ref") || "null"); if (rb && rb.code) body.append("referred_by", rb.code); } catch (err) {}
       fetch("stkpush.php", { method: "POST", body: body, headers: { Accept: "application/json" } })
         .then(function (res) { return res.json().then(function (d) { return { ok: res.ok, d: d }; }); })
         .then(function (r) {
@@ -1624,6 +1630,83 @@
     update();
   });
 
+  /* ---------- Google Analytics events (only sent when the visitor accepted analytics) ---------- */
+  function track(name, params) {
+    try { if (window.__gaLoaded && window.gtag) window.gtag("event", name, params || {}); } catch (e) {}
+  }
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest ? e.target.closest("a, button") : null;
+    if (!a) return;
+    var href = a.getAttribute("href") || "";
+    if (a.id === "calc-send") track("quote_sent", { method: "whatsapp" });
+    else if (a.id === "calc-pdf") track("quote_sent", { method: "pdf" });
+    else if (/wa\.me\//.test(href)) track("whatsapp_click", { location: a.closest("section, footer, .chat") ? (a.closest("section, footer, .chat").id || a.closest("section, footer, .chat").className.split(" ")[0]) : "page" });
+    else if (/^tel:/.test(href)) track("call_click");
+    else if (/^mailto:/.test(href)) track("email_click");
+    else if (/(^|\/)portal\/?$/.test(href)) track("portal_click");
+    else if (a.classList.contains("wa-float")) track("chat_open");
+  }, true);
+
+  /* ---------- verified client reviews (ticked "you may show my comment" and approved by us) ---------- */
+  var quoteBox = document.querySelector("#testimonials .quotes");
+  if (quoteBox && window.fetch) {
+    fetch("/portal/testimonials.php", { headers: { Accept: "application/json" } }).then(function (r) { return r.ok ? r.json() : { reviews: [] }; }).then(function (d) {
+      (d.reviews || []).slice(0, 6).reverse().forEach(function (rv) {
+        var fig = document.createElement("figure");
+        fig.className = "quote quote-verified";
+        var stars = document.createElement("p");
+        stars.className = "quote-stars";
+        stars.setAttribute("aria-label", rv.rating + " out of 5 stars");
+        stars.textContent = "★★★★★".slice(0, rv.rating);
+        var bq = document.createElement("blockquote");
+        bq.textContent = rv.comment;
+        var cap = document.createElement("figcaption");
+        var ini = document.createElement("span");
+        ini.className = "avatar-initials";
+        ini.setAttribute("aria-hidden", "true");
+        ini.textContent = String(rv.name).split(/\s+/).map(function (w) { return w.charAt(0); }).join("").slice(0, 2).toUpperCase();
+        var who = document.createElement("div");
+        var nm = document.createElement("strong");
+        nm.textContent = rv.name;
+        var sub = document.createElement("span");
+        sub.innerHTML = '<i class="fa-solid fa-circle-check" aria-hidden="true"></i> ';
+        sub.appendChild(document.createTextNode("Verified client · " + rv.project));
+        who.appendChild(nm);
+        who.appendChild(sub);
+        cap.appendChild(ini);
+        cap.appendChild(who);
+        fig.appendChild(stars);
+        fig.appendChild(bq);
+        fig.appendChild(cap);
+        quoteBox.insertBefore(fig, quoteBox.firstChild);
+      });
+    }).catch(function () {});
+  }
+
+  /* ---------- newsletter sign-up (footer) ---------- */
+  var newsForm = document.getElementById("news-form");
+  if (newsForm) {
+    newsForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var msg = document.getElementById("news-msg");
+      var email = newsForm.querySelector('input[type="email"]');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) { msg.textContent = "Please enter a valid email address."; email.focus(); return; }
+      var btn = newsForm.querySelector("button");
+      btn.disabled = true;
+      msg.textContent = "";
+      fetch("/portal/subscribe.php", { method: "POST", body: new FormData(newsForm), headers: { Accept: "application/json" } })
+        .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+        .then(function (r) {
+          if (!r.ok) throw new Error(r.d.error || "");
+          msg.textContent = r.d.already ? "You’re already subscribed. Thank you!" : "Almost done: check your email and tap the confirm link.";
+          newsForm.reset();
+          track("sign_up", { method: "newsletter" });
+        })
+        .catch(function (err) { msg.textContent = err.message || "That didn’t go through. Please try again later."; })
+        .then(function () { btn.disabled = false; });
+    });
+  }
+
   /* ---------- copy every enquiry to the Leads board in the client portal ---------- */
   document.addEventListener("submit", function (e) {
     var f = e.target;
@@ -1635,6 +1718,7 @@
       var fd = new FormData(f);
       fd.append("_source", callback ? "Call-back request" : ({ "booking-form": "Booking", "contact-form": "Contact form", "enrol-form": "Training enquiry" }[f.id] || f.getAttribute("data-kind") || "Website form"));
       fd.append("page", location.pathname);
+      track("generate_lead", { form: f.id || f.getAttribute("data-kind") || "form" });
       if (navigator.sendBeacon) navigator.sendBeacon("/portal/lead.php", fd);
       else fetch("/portal/lead.php", { method: "POST", body: fd, keepalive: true }).catch(function () {});
     } catch (err) {}
@@ -1844,6 +1928,11 @@
       document.getElementById("ref-share").href = "https://wa.me/?text=" + encodeURIComponent("Need a website, online shop or system? I recommend Marzley Tech Solutions: " + link);
       document.getElementById("ref-result").hidden = false;
       fetch(refForm.action, { method: "POST", body: new FormData(refForm), headers: { Accept: "application/json" } }).catch(function () {});
+      var rf = new FormData();
+      rf.append("name", name);
+      rf.append("phone", "0" + msisdn.slice(3));
+      fetch("/portal/refer.php", { method: "POST", body: rf }).catch(function () {});
+      track("referral_signup");
     });
     document.getElementById("ref-copy").addEventListener("click", function () {
       var input = document.getElementById("ref-link");
@@ -2010,6 +2099,8 @@
       });
     };
     var fallback = function (q) {
+      try { fetch("/portal/chat-log.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ q: q }), keepalive: true }).catch(function () {}); } catch (e) {}
+      track("chat_unanswered");
       return ["Good question. Our team can answer that properly: send it on WhatsApp or ask for a call back and we’ll get right back to you (24/7).",
         [["Ask on WhatsApp", WA + "?text=" + encodeURIComponent(q)], ["Call me back", "#callback"]]];
     };
@@ -2056,7 +2147,7 @@
         var best = ranked[0];
         var sure = best && best.s >= 3.5 && (!ranked[1] || best.s >= ranked[1].s * 1.3);
         var related = ranked.slice(1, 5).map(function (r) { return r.e; });
-        if (sure) return done(best.e.a, best.e.l, related);
+        if (sure) { track("chat_question", { answered_by: "knowledge_base", topic: best.e.id }); return done(best.e.a, best.e.l, related); }
         aiEnabled().then(function (on) {
           if (!on) {
             if (best && best.s >= 1.8) return done(best.e.a, best.e.l, related);
@@ -2064,7 +2155,7 @@
             return done(fb[0], fb[1], KB.filter(function (e) { return e.chip; }));
           }
           askAI().then(function (d) {
-            if (d) return done(d.reply, d.links, best ? [best.e].concat(related) : null);
+            if (d) { track("chat_question", { answered_by: "ai" }); return done(d.reply, d.links, best ? [best.e].concat(related) : null); }
             if (best && best.s >= 1.8) return done(best.e.a, best.e.l, related);
             var fb2 = fallback(q);
             done(fb2[0], fb2[1], null);
@@ -2140,6 +2231,7 @@
         btn.disabled = true;
         btn.textContent = "Sending…";
         var success = function () {
+          track("generate_lead", { form: "call_back" });
           f.remove();
           say("bot", "Thanks, " + name + "! We’ve got your request and will call you on " + phone + " shortly. For anything urgent, WhatsApp us too.", [["WhatsApp us", WA]]);
         };

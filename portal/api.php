@@ -21,7 +21,7 @@ if ($method === 'POST' && !in_array($action, ['login', 'dev_login', 'logout', 'l
 }
 
 // Every change needs POST with the session's CSRF token (sign-in gets one afterwards).
-if ($method === 'POST' && !in_array($action, ['login', 'dev_login'], true)) check_csrf();
+if ($method === 'POST' && !in_array($action, ['login', 'dev_login', 'code_request', 'code_verify'], true)) check_csrf();
 if ($method !== 'POST' && !in_array($action, ['me', 'data', 'download', 'payment_status', 'export', 'proof'], true)) fail(405, 'Use POST.');
 
 switch ($action) {
@@ -127,7 +127,15 @@ switch ($action) {
             $extra['recurring'] = $money ? q('SELECT * FROM recurring_invoices ORDER BY active DESC, next_date')->fetchAll() : [];
             $extra['quotes'] = $money ? q('SELECT * FROM quotes ORDER BY id DESC')->fetchAll() : [];
             $extra['leads'] = $all('leads') ? q('SELECT * FROM leads ORDER BY updated_at DESC')->fetchAll() : [];
-            $extra['feedback'] = q('SELECT project_id, rating, comment, submitted_at FROM feedback WHERE submitted_at IS NOT NULL ORDER BY submitted_at DESC')->fetchAll();
+            $extra['feedback'] = q('SELECT f.id, f.project_id, f.rating, f.comment, f.submitted_at, f.publish_ok, f.published, c.name AS client FROM feedback f JOIN clients c ON c.id = f.client_id WHERE f.submitted_at IS NOT NULL ORDER BY f.submitted_at DESC')->fetchAll();
+            $extra['site_payments'] = $money ? q("SELECT * FROM site_payments WHERE purpose <> 'demo' OR status = 'paid' ORDER BY id DESC LIMIT 200")->fetchAll() : [];
+            if ($all('leads')) {
+                $extra['referrals'] = q('SELECT * FROM referrals ORDER BY status, id DESC')->fetchAll();
+                $extra['referrers'] = (int)q('SELECT COUNT(*) AS n FROM referrers')->fetch()['n'];
+                $extra['chat_questions'] = q('SELECT * FROM chat_questions ORDER BY last_at DESC LIMIT 200')->fetchAll();
+                $extra['subscribers'] = q('SELECT id, email, name, source, status, created_at FROM subscribers ORDER BY id DESC LIMIT 500')->fetchAll();
+                $extra['campaigns'] = q('SELECT * FROM campaigns ORDER BY id DESC LIMIT 20')->fetchAll();
+            }
             if ($u['role'] === 'admin') {
                 $extra['audit'] = q('SELECT * FROM audit_log ORDER BY id DESC LIMIT 300')->fetchAll();
                 $extra['staff'] = q('SELECT id, email, name, perms, created_at FROM staff ORDER BY name')->fetchAll();
@@ -258,7 +266,8 @@ switch ($action) {
         $d = body();
         $id = (int)($d['id'] ?? 0);
         $need = ['update' => 'projects', 'file' => 'projects', 'approval' => 'projects', 'invoice' => 'money', 'recurring' => 'money', 'quote' => 'money',
-                 'domain' => 'money', 'lesson' => 'courses', 'enrollment' => 'courses', 'lead' => 'leads', 'staff' => 'owner'][$d['type'] ?? ''] ?? null;
+                 'domain' => 'money', 'lesson' => 'courses', 'enrollment' => 'courses', 'lead' => 'leads', 'staff' => 'owner',
+                 'chat_question' => 'leads', 'subscriber' => 'leads'][$d['type'] ?? ''] ?? null;
         if (!$need) fail(400, 'Unknown item.');
         $need === 'owner' ? require_admin() : require_perm($need);
         switch ($d['type']) {
@@ -270,6 +279,8 @@ switch ($action) {
             case 'quote': q('DELETE FROM quotes WHERE id = ?', [$id]); break;
             case 'domain': q('DELETE FROM site_checks WHERE domain_id = ?', [$id]); q('DELETE FROM domains WHERE id = ?', [$id]); break;
             case 'lead': q('DELETE FROM leads WHERE id = ?', [$id]); break;
+            case 'chat_question': q('DELETE FROM chat_questions WHERE id = ?', [$id]); break;
+            case 'subscriber': q("UPDATE subscribers SET status = 'unsubscribed' WHERE id = ?", [$id]); break;
             case 'staff':
                 $st = q('SELECT email FROM staff WHERE id = ?', [$id])->fetch();
                 q('DELETE FROM staff WHERE id = ?', [$id]);
@@ -708,6 +719,116 @@ switch ($action) {
         $next = date('Y-m-d', strtotime($dm['expires_on'] . ' +1 year'));
         q('UPDATE domains SET expires_on = ? WHERE id = ?', [$next, $dm['id']]);
         out(['ok' => true, 'expires_on' => $next]);
+
+
+    // ---------- sign in with a one-time code (clients without Google) ----------
+
+    case 'code_request':
+        $d = body();
+        $who = strtolower(trim((string)($d['who'] ?? '')));
+        $generic = ['ok' => true, 'message' => 'If that matches a client account, we’ve sent a 6-digit code. It works for 10 minutes.'];
+        if ($who === '' || !rate_ok('code_ip', 10, 3600) || !rate_ok('code_who:' . $who, 3, 900)) out($generic);
+        $client = null;
+        if (filter_var($who, FILTER_VALIDATE_EMAIL)) $client = q('SELECT id, name, email, phone FROM clients WHERE email = ?', [$who])->fetch();
+        elseif ($msisdn = normalise_phone($who)) {
+            foreach (q("SELECT id, name, email, phone FROM clients WHERE phone <> ''")->fetchAll() as $c) if (normalise_phone($c['phone']) === $msisdn) { $client = $c; break; }
+        }
+        if ($client) {
+            $code = str_pad((string)random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            q('UPDATE login_codes SET used_at = ? WHERE client_id = ? AND used_at IS NULL', [now(), $client['id']]);
+            q('INSERT INTO login_codes (client_id, code_hash, attempts, expires_at, created_at) VALUES (?, ?, 0, ?, ?)',
+                [$client['id'], hash('sha256', $client['id'] . ':' . $code), date('Y-m-d H:i:s', time() + 600), now()]);
+            $text = "Your Marzley Tech portal sign-in code is $code. It works for 10 minutes. Never share it with anyone, including us.";
+            if (filter_var($who, FILTER_VALIDATE_EMAIL)) send_mail($client['email'], "Your sign-in code: $code", "Hello {$client['name']},\n\n$text\n\nIf you didn't ask for it, you can ignore this email.", false);
+            else { if (!send_sms($client['phone'], $text)) send_mail($client['email'], "Your sign-in code: $code", "Hello {$client['name']},\n\n$text", false); }
+            audit('code_sent', filter_var($who, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone', $client['email']);
+        }
+        out($generic);
+
+    case 'code_verify':
+        $d = body();
+        $who = strtolower(trim((string)($d['who'] ?? '')));
+        $code = preg_replace('/\D/', '', (string)($d['code'] ?? ''));
+        if (!rate_ok('verify_ip', 20, 3600)) fail(429, 'Too many tries. Please wait an hour or sign in with Google.');
+        $client = null;
+        if (filter_var($who, FILTER_VALIDATE_EMAIL)) $client = q('SELECT id, name, email FROM clients WHERE email = ?', [$who])->fetch();
+        elseif ($msisdn = normalise_phone($who)) {
+            foreach (q("SELECT id, name, email, phone FROM clients WHERE phone <> ''")->fetchAll() as $c) if (normalise_phone($c['phone']) === $msisdn) { $client = $c; break; }
+        }
+        $row = $client ? q('SELECT * FROM login_codes WHERE client_id = ? AND used_at IS NULL AND expires_at > ? ORDER BY id DESC LIMIT 1', [$client['id'], now()])->fetch() : null;
+        if (!$row || strlen($code) !== 6) fail(401, 'That code is wrong or has expired. Ask for a new one.');
+        if ((int)$row['attempts'] >= 5) { q('UPDATE login_codes SET used_at = ? WHERE id = ?', [now(), $row['id']]); fail(401, 'Too many wrong tries. Ask for a new code.'); }
+        if (!hash_equals($row['code_hash'], hash('sha256', $client['id'] . ':' . $code))) {
+            q('UPDATE login_codes SET attempts = attempts + 1 WHERE id = ?', [$row['id']]);
+            fail(401, 'That code is wrong or has expired. Ask for a new one.');
+        }
+        q('UPDATE login_codes SET used_at = ? WHERE id = ?', [now(), $row['id']]);
+        $user = sign_in($client['email'], $client['name']);
+        out(['user' => $user, 'csrf' => csrf_token()]);
+
+    // ---------- growth: website payments, referrals, reviews, chat questions, mailing list ----------
+
+    case 'site_payment_link':
+        $u = require_perm('money');
+        $d = body();
+        $sp = q("SELECT * FROM site_payments WHERE id = ? AND status = 'paid' AND invoice_id IS NULL", [(int)($d['id'] ?? 0)])->fetch();
+        if (!$sp) fail(404, 'Payment not found or already attached.');
+        $clientId = (int)($d['client_id'] ?? 0);
+        if (!q('SELECT id FROM clients WHERE id = ?', [$clientId])->fetch()) fail(400, 'Choose a client.');
+        $projectId = (int)($d['project_id'] ?? 0) ?: null;
+        if ($projectId && !q('SELECT id FROM projects WHERE id = ? AND client_id = ?', [$projectId, $clientId])->fetch()) fail(400, 'That project belongs to another client.');
+        $what = $sp['purpose'] === 'care' ? 'Care plan' . ($sp['plan'] ? " ({$sp['plan']})" : '') : 'Project deposit';
+        $amount = (int)($sp['paid_amount'] ?: $sp['amount']);
+        [$invId] = create_invoice($clientId, $projectId, "$what paid on the website", $amount, null, 'unpaid', false);
+        apply_payment($invId, $amount, 'mpesa', (string)$sp['receipt'], $u['email']);
+        q('UPDATE site_payments SET invoice_id = ? WHERE id = ?', [$invId, $sp['id']]);
+        out(['ok' => true]);
+
+    case 'referral_paid':
+        $u = require_perm('leads');
+        $d = body();
+        $r = q("SELECT * FROM referrals WHERE id = ? AND status = 'due'", [(int)($d['id'] ?? 0)])->fetch();
+        if (!$r) fail(404, 'Nothing due.');
+        $note = str_in($d, 'note', 300, false);
+        q("UPDATE referrals SET status = 'paid', note = ?, paid_at = ? WHERE id = ?", [$note, now(), $r['id']]);
+        send_sms($r['referrer_phone'], "Marzley Tech: thank you for referring {$r['referred_name']}! We've sent your KSh " . number_format((int)$r['amount']) . " reward." . ($note ? " Ref $note." : ''));
+        out(['ok' => true]);
+
+    case 'referral_void':
+        require_perm('leads');
+        $d = body();
+        q("UPDATE referrals SET status = 'void', note = ? WHERE id = ? AND status = 'due'", [str_in($d, 'note', 300, false), (int)($d['id'] ?? 0)]);
+        out(['ok' => true]);
+
+    case 'feedback_publish':
+        require_perm('leads');
+        $d = body();
+        $f = q('SELECT * FROM feedback WHERE id = ?', [(int)($d['id'] ?? 0)])->fetch();
+        if (!$f) fail(404, 'Not found.');
+        if (!empty($d['published']) && (!(int)$f['publish_ok'] || (int)$f['rating'] < 4 || trim((string)$f['comment']) === '')) fail(400, 'Only 4–5 star reviews with a comment, where the client agreed, can be shown on the website.');
+        q('UPDATE feedback SET published = ? WHERE id = ?', [empty($d['published']) ? 0 : 1, $f['id']]);
+        out(['ok' => true]);
+
+    case 'campaign_send':
+        $u = require_perm('leads');
+        $d = body();
+        $subject = str_in($d, 'subject', 200);
+        $text = str_in($d, 'body', 20000);
+        $aud = is_array($d['audience'] ?? null) ? $d['audience'] : [];
+        $list = [];
+        foreach (q("SELECT email, name FROM subscribers WHERE status = 'subscribed'")->fetchAll() as $r) $list[$r['email']] = $r['name'];
+        if (in_array('clients', $aud, true)) foreach (q('SELECT DISTINCT c.email, c.name FROM clients c JOIN projects p ON p.client_id = c.id')->fetchAll() as $r) $list[$r['email']] = $list[$r['email']] ?? $r['name'];
+        if (in_array('students', $aud, true)) foreach (q('SELECT DISTINCT c.email, c.name FROM clients c JOIN enrollments e ON e.client_id = c.id')->fetchAll() as $r) $list[$r['email']] = $list[$r['email']] ?? $r['name'];
+        $unsub = array_flip(q("SELECT email FROM subscribers WHERE status = 'unsubscribed'")->fetchAll(PDO::FETCH_COLUMN));
+        $list = array_diff_key($list, $unsub);
+        if (!$list) fail(400, 'Nobody to send to yet.');
+        if (!empty($d['test'])) { send_mail($u['email'], "[TEST] $subject", "Hello,\n\n$text\n\n—\n(Test copy: only you received this.)", false); out(['ok' => true, 'test' => true]); }
+        q('INSERT INTO campaigns (subject, body, audience, created_by, total, sent, created_at) VALUES (?, ?, ?, ?, ?, 0, ?)', [$subject, $text, implode(',', $aud ?: ['subscribers']), $u['email'], count($list), now()]);
+        $cid = (int)db()->lastInsertId();
+        foreach ($list as $email => $name) q('INSERT INTO campaign_queue (campaign_id, email, name) VALUES (?, ?, ?)', [$cid, $email, (string)$name]);
+        @set_time_limit(120);
+        $sent = send_campaign_queue(40);        // the rest go out with the hourly job
+        out(['ok' => true, 'total' => count($list), 'sent_now' => $sent]);
 
     // ---------- team ----------
 

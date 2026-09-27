@@ -5864,3 +5864,39 @@ html.a11y-cursor * {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---------- Newsletter sign-up and verified reviews ---------- */
+.news-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 12px 28px;
+  align-items: center;
+  margin: 8px 0 28px;
+  padding: 22px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.04);
+}
+.news-title { margin: 0; font-size: 17px; font-weight: 800; color: #fff; }
+.news-sub { margin: 4px 0 0; font-size: 14px; color: var(--on-navy-muted, #cbd5e1); }
+.news-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.news-row input[type="email"] {
+  flex: 1 1 200px;
+  min-height: 46px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font: inherit;
+}
+.news-row input[type="email"]::placeholder { color: #cbd5e1; }
+.news-row .btn { min-height: 46px; }
+.news-msg { grid-column: 1 / -1; margin: 0; min-height: 1em; font-size: 14px; font-weight: 600; color: var(--amber); }
+.news-msg:empty { display: none; }
+@media (max-width: 720px) { .news-form { grid-template-columns: 1fr; } }
+
+.quote-verified { border-color: rgba(5, 150, 105, 0.35); }
+.quote-stars { margin: 0 0 8px; color: #b45309; font-size: 16px; letter-spacing: 2px; }
+[data-theme="dark"] .quote-stars { color: #fbbf24; }
+.quote-verified figcaption span i { color: var(--green); }

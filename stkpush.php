@@ -46,7 +46,8 @@ $logFile        = $logDir . '/stk_request.log';
 // INPUT
 $rawPhone = $_POST['phone'] ?? '';
 // What the payment is for (shown on the M-Pesa statement); only known values are accepted
-$transactionDesc = ['deposit' => 'Project deposit', 'care' => 'Care plan'][$_POST['purpose'] ?? ''] ?? 'STK Push';
+$purpose = in_array($_POST['purpose'] ?? '', ['deposit', 'care', 'demo'], true) ? $_POST['purpose'] : 'deposit';
+$transactionDesc = ['deposit' => 'Project deposit', 'care' => 'Care plan', 'demo' => 'Live demo'][$purpose];
 $amount   = isset($_POST['amount']) ? (int)$_POST['amount'] : 0;
 if ($amount <= 0) $amount = 1;
 if ($amount > 150000) {
@@ -227,6 +228,22 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 
 // Log and return success response
 file_put_contents($logFile, date('c') . " - stk_response:" . json_encode($respObj) . "\n", FILE_APPEND);
+
+// Remember this prompt so the payment can be announced to the team and put on the Leads board
+if (($respObj['ResponseCode'] ?? '') === '0' && !empty($respObj['CheckoutRequestID'])) {
+    $portalConfig = array_filter([getenv('PORTAL_CONFIG') ?: ($_SERVER['PORTAL_CONFIG'] ?? null), dirname(__DIR__) . '/portal-config.php', __DIR__ . '/portal-config.php'], 'is_readable');
+    if ($portalConfig) {
+        define('MARZLEY_PORTAL', true);
+        define('MARZLEY_NO_EXIT', true);
+        require __DIR__ . '/portal/lib.php';
+        try {
+            record_site_payment((string)$respObj['CheckoutRequestID'], $purpose, $amount, (string)$rawPhone,
+                trim((string)($_POST['name'] ?? '')), trim((string)($_POST['plan'] ?? '')), (string)($_POST['referred_by'] ?? ''));
+        } catch (Throwable $e) {
+            error_log('site payment record: ' . $e->getMessage());
+        }
+    }
+}
 http_response_code(200);
 echo json_encode($respObj);
 exit;

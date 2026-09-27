@@ -419,7 +419,10 @@ SW_FOOTER = [
     (">Email</a>", ">Barua pepe</a>"), (">Support our work ☕</button>", ">Unga mkono kazi yetu ☕</button>"),
     ("All rights reserved.", "Haki zote zimehifadhiwa."), (">Back to top ↑</a>", ">Rudi juu ↑</a>"),
     (">Cookie settings</button>", ">Mipangilio ya vidakuzi</button>"),
-    ('href="privacy">Privacy</a>', 'href="privacy">Faragha</a>'), ('href="terms">Terms</a>', 'href="terms">Masharti</a>'),
+    ('href="privacy">Privacy</a>', 'href="privacy">Faragha</a>'),
+    (">Tips &amp; offers by email</p>", ">Vidokezo na ofa kwa barua pepe</p>"),
+    (">Practical website and M-Pesa tips, new courses and offers. At most twice a month.</p>", ">Vidokezo vya tovuti na M-Pesa, kozi mpya na ofa. Mara mbili kwa mwezi, zaidi.</p>"),
+    ('placeholder="Your email address"', 'placeholder="Barua pepe yako"'), (">Subscribe</button>", ">Jiandikishe</button>"), ('href="terms">Terms</a>', 'href="terms">Masharti</a>'),
     ('<a href="kiswahili" hreflang="sw" lang="sw">Kiswahili</a>', '<a href="./" hreflang="en" lang="en">English</a>'),
 ]
 

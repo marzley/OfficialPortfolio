@@ -60,7 +60,7 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   const cid = one("SELECT id FROM clients WHERE email = 'client@example.com'").id;
 
   // ---------- database upgrade ----------
-  ok("database upgraded to version 3", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "3");
+  ok("database upgraded to version 4", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "4");
 
   // ---------- sequential invoice numbers ----------
   r = await admin("invoice_save", { client_id: cid, description: "Website build", amount: 10000, status: "unpaid" });
@@ -326,6 +326,117 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   r = await admin2("logout_all", {});
   r = await admin("data");
   ok("sign out everywhere ends other sessions", r.s === 401 && /all devices/.test(r.j.error));
+
+  // ---------- round 4: website payments, referrals, reviews, mailing list, chat log, code sign-in ----------
+  const admin3 = await login("admin@example.com");
+  // referrer joins on the website
+  let fr = new FormData(); fr.append("name", "Mercy Referrer"); fr.append("phone", "0711223344");
+  let rr = await (await fetch(BASE + "/portal/refer.php", { method: "POST", body: fr })).json();
+  ok("referrer sign-up saved with their code", rr.ok && /^MT[0-9A-Z]+$/.test(rr.code), rr);
+  const code = rr.code;
+  // website deposit (as stkpush.php records it), paid through the callback
+  sql(`INSERT INTO site_payments (checkout_id, purpose, plan, amount, phone, name, referred_by, status, created_at) VALUES ('ws_SITE1', 'deposit', '', 5000, '0722555666', 'Amani Bakery', '${code}', 'pending', datetime('now'))`);
+  clearMail();
+  await callback("ws_SITE1", 5000, "SITE000001");
+  await sleep(400);
+  const sp1 = one("SELECT * FROM site_payments WHERE checkout_id = 'ws_SITE1'");
+  ok("website deposit recorded as paid", sp1.status === "paid" && sp1.receipt === "SITE000001", sp1);
+  ok("team emailed about the website payment", subjects().some((x) => /^Payment received: KSh 5,000 from Amani Bakery/.test(x)), subjects());
+  const bakery = one("SELECT * FROM leads WHERE phone = '0722555666'");
+  ok("website payment put on the Leads board as Won", bakery && bakery.status === "won" && +bakery.value === 5000, bakery);
+  ok("referral reward due for the referrer", one(`SELECT COUNT(*) AS n FROM referrals WHERE code = '${code}' AND status = 'due'`).n == 1 && subjects().some((x) => /^Referral reward due/.test(x)));
+  sql(`INSERT INTO site_payments (checkout_id, purpose, amount, phone, name, status, created_at) VALUES ('ws_SITE2', 'deposit', 5000, '0722555777', 'Short Payer', 'pending', datetime('now'))`);
+  await callback("ws_SITE2", 100, "SITE000002");
+  await sleep(300);
+  ok("underpaid website deposit is not announced", one("SELECT status FROM site_payments WHERE checkout_id = 'ws_SITE2'").status === "pending");
+  sql(`INSERT INTO site_payments (checkout_id, purpose, amount, phone, name, status, created_at) VALUES ('ws_DEMO1', 'demo', 1, '0722555888', '', 'pending', datetime('now'))`);
+  clearMail();
+  await callback("ws_DEMO1", 1, "DEMO000001");
+  await sleep(300);
+  ok("demo payments are recorded quietly", one("SELECT status FROM site_payments WHERE checkout_id = 'ws_DEMO1'").status === "paid" && !subjects().some((x) => /Payment received/.test(x)));
+  // attach the deposit to a client account
+  r = await admin3("client_save", { name: "Amani Bakery", email: "amani@example.com", phone: "0722555666" });
+  const amani = one("SELECT id FROM clients WHERE email = 'amani@example.com'").id;
+  r = await admin3("site_payment_link", { id: sp1.id, client_id: amani });
+  const amInv = one(`SELECT * FROM invoices WHERE client_id = ${amani}`);
+  ok("website payment attached as a paid invoice with its M-Pesa code", r.s === 200 && amInv.status === "paid" && amInv.mpesa_receipt === "SITE000001", amInv);
+  r = await admin3("referral_paid", { id: one("SELECT id FROM referrals WHERE status = 'due'").id, note: "RWD1234567" });
+  ok("referral reward marked paid", r.s === 200 && one("SELECT status FROM referrals").status === "paid");
+  // referral through a lead that becomes a client and pays an invoice
+  let lf = new FormData(); lf.append("name", "Juma Hardware"); lf.append("phone", "0733444555"); lf.append("email", "juma@example.com"); lf.append("referred_by", code); lf.append("_source", "Contact form");
+  await fetch(BASE + "/portal/lead.php", { method: "POST", body: lf });
+  const jl = one("SELECT * FROM leads WHERE email = 'juma@example.com'");
+  ok("referral code kept on the lead", jl.referred_by === code, jl);
+  r = await admin3("quick_start", { name: "Juma Hardware", email: "juma@example.com", phone: "0733444555", title: "Shop site", total: 20000, deposit_percent: 50, due_days: 7, lead_id: jl.id });
+  const jInv = one(`SELECT * FROM invoices WHERE number = '${r.j.invoice}'`);
+  await admin3("payment_record", { invoice_id: jInv.id, amount: 10000, method: "mpesa", reference: "JUMA000001" });
+  ok("client's first payment makes the referral due", one(`SELECT COUNT(*) AS n FROM referrals WHERE referred_name = 'Juma Hardware' AND status = 'due'`).n == 1);
+  let self = new FormData(); self.append("name", "Mercy Referrer"); self.append("phone", "0711223344"); self.append("email", "mercy@example.com"); self.append("referred_by", code);
+  await fetch(BASE + "/portal/lead.php", { method: "POST", body: self });
+  const ml = one("SELECT * FROM leads WHERE email = 'mercy@example.com'");
+  r = await admin3("quick_start", { name: "Mercy", email: "mercy@example.com", phone: "0711223344", title: "Blog", total: 2000, deposit_percent: 100, due_days: 1, lead_id: ml.id });
+  await admin3("payment_record", { invoice_id: one(`SELECT id FROM invoices WHERE number = '${r.j.invoice}'`).id, amount: 2000, method: "cash", reference: "" });
+  ok("self-referrals earn nothing", one("SELECT COUNT(*) AS n FROM referrals WHERE referred_name = 'Mercy'").n == 0);
+
+  // chat questions log (personal details removed)
+  await fetch(BASE + "/portal/chat-log.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ q: "Do you do drone videos? call me 0712 345 678 or me@x.com" }) });
+  await fetch(BASE + "/portal/chat-log.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ q: "Do you do drone videos? call me 0712 345 678 or me@x.com" }) });
+  const cq = one("SELECT * FROM chat_questions");
+  ok("unanswered chat question saved without personal details", cq && cq.question === "Do you do drone videos? call me [number] or [email]" && +cq.times === 2, cq);
+
+  // reviews for the website
+  await admin3("project_save", { client_id: amani, title: "Bakery site", status: "planning", progress: 0 });
+  const bp = one("SELECT id FROM projects WHERE title = 'Bakery site'").id;
+  await admin3("project_save", { id: bp, client_id: amani, title: "Bakery site", status: "live", progress: 100 });
+  const bfb = one(`SELECT * FROM feedback WHERE project_id = ${bp}`);
+  await fetch(BASE + "/portal/feedback.php", { method: "POST", body: new URLSearchParams({ t: bfb.token, rating: "5", comment: "Our orders doubled!", publish_ok: "1" }), redirect: "manual" });
+  let tj = await (await fetch(BASE + "/portal/testimonials.php")).json();
+  ok("reviews stay hidden until approved", tj.reviews.length === 0);
+  r = await admin3("feedback_publish", { id: bfb.id, published: true });
+  tj = await (await fetch(BASE + "/portal/testimonials.php")).json();
+  ok("approved review appears on the website", r.s === 200 && tj.reviews.length === 1 && tj.reviews[0].comment === "Our orders doubled!" && tj.reviews[0].rating === 5, tj);
+  const low = one("SELECT id FROM feedback WHERE rating <= 3 LIMIT 1");
+  if (low) { r = await admin3("feedback_publish", { id: low.id, published: true }); ok("low ratings can't be published", r.s === 400); }
+
+  // mailing list
+  clearMail();
+  let sf = new FormData(); sf.append("email", "reader@example.com");
+  let sj = await (await fetch(BASE + "/portal/subscribe.php", { method: "POST", body: sf })).json();
+  const conf = (fs.readFileSync(WORK + "/mail.txt", "utf8").match(/subscribe\.php\?c=([a-f0-9]{48})/) || [])[1];
+  ok("sign-up sends a confirmation link", sj.ok && conf && one("SELECT status FROM subscribers WHERE email = 'reader@example.com'").status === "pending");
+  await fetch(BASE + "/portal/subscribe.php?c=" + conf);
+  ok("confirming subscribes them", one("SELECT status FROM subscribers WHERE email = 'reader@example.com'").status === "subscribed");
+  clearMail();
+  r = await admin3("campaign_send", { subject: "November class", body: "A new class starts soon.", audience: ["clients"] });
+  const sentTo = [...fs.readFileSync(WORK + "/mail.txt", "utf8").matchAll(/^To: <?([^>\s]+)>?/gm)].map((m) => m[1]);
+  ok("newsletter goes to subscribers and chosen clients", r.s === 200 && sentTo.includes("reader@example.com") && sentTo.includes("amani@example.com"), { r: r.j, sentTo });
+  ok("every newsletter has an unsubscribe link", /Unsubscribe: .*subscribe\.php\?u=[a-f0-9]{48}/.test(fs.readFileSync(WORK + "/mail.txt", "utf8")));
+  const unsub = fs.readFileSync(WORK + "/mail.txt", "utf8").match(/To: <?amani@example\.com[\s\S]*?subscribe\.php\?u=([a-f0-9]{48})/)[1];
+  await fetch(BASE + "/portal/subscribe.php?u=" + unsub);
+  clearMail();
+  await admin3("campaign_send", { subject: "Second", body: "Hello again.", audience: ["clients"] });
+  ok("unsubscribed people aren't emailed again", !/amani@example\.com/.test(fs.readFileSync(WORK + "/mail.txt", "utf8")));
+
+  // sign in with a one-time code
+  clearMail();
+  const anon = session();
+  r = await anon("code_request", { who: "nobody@example.com" });
+  ok("code request gives the same answer for unknown people", r.s === 200 && /If that matches/.test(r.j.message) && fs.readFileSync(WORK + "/mail.txt", "utf8") === "");
+  r = await anon("code_request", { who: "AMANI@example.com" });
+  const mailed = fs.readFileSync(WORK + "/mail.txt", "utf8");
+  const theCode = (mailed.match(/sign-in code is (\d{6})/) || [])[1];
+  ok("client gets a 6-digit code by email", !!theCode);
+  r = await anon("code_verify", { who: "amani@example.com", code: theCode === "000000" ? "111111" : "000000" });
+  ok("wrong code refused", r.s === 401);
+  r = await anon("code_verify", { who: "amani@example.com", code: theCode });
+  ok("right code signs the client in", r.s === 200 && r.j.user.email === "amani@example.com" && r.j.user.role === "client");
+  r = await anon("data");
+  ok("signed-in client sees their own account", r.s === 200 && r.j.invoices.every((i) => +i.client_id === +amani));
+  const anon2 = session();
+  r = await anon2("code_verify", { who: "amani@example.com", code: theCode });
+  ok("a code works only once", r.s === 401);
+  r = await anon2("code_request", { who: "0722555666" });
+  ok("code can be requested with a phone number", r.s === 200);
 
   // ---------- backups, off-site copy, uptime endpoint ----------
   const out = cron("backup");

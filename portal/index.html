@@ -37,6 +37,17 @@
             <h1 id="signin-title" data-i18n>Client portal</h1>
             <p data-i18n>See your project’s progress, updates, files and invoices, and pay by M-Pesa. Sign in with the Google account you gave us.</p>
             <div id="google-signin"></div>
+            <div class="code-signin">
+                <button type="button" class="linklike" id="code-toggle" aria-expanded="false" aria-controls="code-form" data-i18n>No Google account? Sign in with a code</button>
+                <form class="code-form" id="code-form" hidden novalidate>
+                    <div class="field"><label for="code-who" data-i18n>Your email or phone number (the one you gave us)</label>
+                        <input id="code-who" autocomplete="username" maxlength="190" required /></div>
+                    <div class="field" id="code-step2" hidden><label for="code-code" data-i18n>6-digit code</label>
+                        <input id="code-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" /></div>
+                    <p class="portal-meta" id="code-msg" role="status" aria-live="polite"></p>
+                    <button type="submit" class="btn btn-solid" id="code-btn" data-i18n>Send me a code</button>
+                </form>
+            </div>
             <p class="portal-error" id="signin-error" role="alert"></p>
             <p class="portal-help"><span data-i18n>No access yet?</span> <a data-i18n href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I%27d%20like%20access%20to%20the%20client%20portal." target="_blank" rel="noopener noreferrer">Message us on WhatsApp</a>.</p>
         </section>
@@ -65,9 +76,10 @@
                     <p class="admin-nav-label" data-area="overview">Console</p>
                     <button type="button" role="tab" id="tab-overview" aria-controls="panel-overview" aria-selected="true"><i class="fa-solid fa-table-cells-large" aria-hidden="true"></i><span>Overview</span></button>
                     <button type="button" role="tab" id="tab-reports" aria-controls="panel-reports" aria-selected="false"><i class="fa-solid fa-chart-line" aria-hidden="true"></i><span>Reports</span></button>
-                    <p class="admin-nav-label" data-area="leads quotes">Sales</p>
+                    <p class="admin-nav-label" data-area="leads quotes growth">Sales</p>
                     <button type="button" role="tab" id="tab-leads" aria-controls="panel-leads" aria-selected="false"><i class="fa-solid fa-user-plus" aria-hidden="true"></i><span>Leads</span><b class="nav-badge badge-blue" id="count-leads" hidden></b></button>
                     <button type="button" role="tab" id="tab-quotes" aria-controls="panel-quotes" aria-selected="false"><i class="fa-solid fa-file-signature" aria-hidden="true"></i><span>Quotes</span><b class="nav-badge badge-cyan" id="count-quotes" hidden></b></button>
+                    <button type="button" role="tab" id="tab-growth" aria-controls="panel-growth" aria-selected="false"><i class="fa-solid fa-seedling" aria-hidden="true"></i><span>Growth</span><b class="nav-badge badge-amber" id="count-growth" hidden></b></button>
                     <p class="admin-nav-label" data-area="projects clients invoices domains support courses">Management</p>
                     <button type="button" role="tab" id="tab-projects" aria-controls="panel-projects" aria-selected="false"><i class="fa-solid fa-diagram-project" aria-hidden="true"></i><span>Projects</span><b class="nav-badge badge-blue" id="count-projects" hidden></b></button>
                     <button type="button" role="tab" id="tab-clients" aria-controls="panel-clients" aria-selected="false"><i class="fa-solid fa-users" aria-hidden="true"></i><span>People</span><b class="nav-badge badge-cyan" id="count-clients" hidden></b></button>
@@ -96,6 +108,7 @@
                     <div role="tabpanel" id="panel-reports" aria-labelledby="tab-reports" hidden></div>
                     <div role="tabpanel" id="panel-leads" aria-labelledby="tab-leads" hidden></div>
                     <div role="tabpanel" id="panel-quotes" aria-labelledby="tab-quotes" hidden></div>
+                    <div role="tabpanel" id="panel-growth" aria-labelledby="tab-growth" hidden></div>
                     <div role="tabpanel" id="panel-projects" aria-labelledby="tab-projects" hidden></div>
                     <div role="tabpanel" id="panel-clients" aria-labelledby="tab-clients" hidden></div>
                     <div role="tabpanel" id="panel-invoices" aria-labelledby="tab-invoices" hidden></div>

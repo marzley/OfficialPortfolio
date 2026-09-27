@@ -5,7 +5,7 @@ if (!defined('MARZLEY_PORTAL')) {
     exit;
 }
 
-const SCHEMA_VERSION = 3;
+const SCHEMA_VERSION = 4;
 const STAFF_PERMS = ['projects' => 'Projects & files', 'clients' => 'People', 'support' => 'Support', 'courses' => 'Courses', 'money' => 'Invoices, payments & quotes', 'leads' => 'Leads'];
 const PROJECT_STATUSES = ['planning', 'design', 'build', 'review', 'live', 'on_hold'];
 const INVOICE_STATUSES = ['unpaid', 'paid', 'cancelled'];
@@ -101,6 +101,15 @@ function migrate(PDO $pdo): void {
         "CREATE TABLE IF NOT EXISTS audit_log (id $id, actor VARCHAR(190) NOT NULL, action VARCHAR(60) NOT NULL, detail VARCHAR(500) NOT NULL DEFAULT '', ip VARCHAR(45) NOT NULL DEFAULT '', created_at DATETIME NOT NULL)$end",
         "CREATE TABLE IF NOT EXISTS recurring_invoices (id $id, client_id $uint NOT NULL, project_id $uint NULL, description VARCHAR(300) NOT NULL, amount $uint NOT NULL, day_of_month $uint NOT NULL DEFAULT 1, due_days $uint NOT NULL DEFAULT 7, next_date DATE NOT NULL, active $uint NOT NULL DEFAULT 1, created_at DATETIME NOT NULL)$end",
         "CREATE TABLE IF NOT EXISTS reminders (id $id, kind VARCHAR(30) NOT NULL, ref_id $uint NOT NULL, stage VARCHAR(30) NOT NULL, sent_at DATETIME NOT NULL, UNIQUE (kind, ref_id, stage))$end",
+        // v4
+        "CREATE TABLE IF NOT EXISTS site_payments (id $id, checkout_id VARCHAR(100) NOT NULL UNIQUE, purpose VARCHAR(20) NOT NULL, plan VARCHAR(60) NOT NULL DEFAULT '', amount $uint NOT NULL, phone VARCHAR(30) NOT NULL, name VARCHAR(120) NOT NULL DEFAULT '', referred_by VARCHAR(20) NOT NULL DEFAULT '', status VARCHAR(20) NOT NULL DEFAULT 'pending', receipt VARCHAR(30) NULL, paid_amount $uint NULL, invoice_id $uint NULL, created_at DATETIME NOT NULL, paid_at DATETIME NULL)$end",
+        "CREATE TABLE IF NOT EXISTS referrers (id $id, code VARCHAR(20) NOT NULL UNIQUE, name VARCHAR(120) NOT NULL, phone VARCHAR(30) NOT NULL, created_at DATETIME NOT NULL)$end",
+        "CREATE TABLE IF NOT EXISTS referrals (id $id, code VARCHAR(20) NOT NULL, referrer_name VARCHAR(120) NOT NULL, referrer_phone VARCHAR(30) NOT NULL, client_id $uint NULL, lead_id $uint NULL, site_payment_id $uint NULL, referred_name VARCHAR(120) NOT NULL, referred_phone VARCHAR(30) NOT NULL DEFAULT '', amount $uint NOT NULL, status VARCHAR(20) NOT NULL DEFAULT 'due', note VARCHAR(300) NOT NULL DEFAULT '', created_at DATETIME NOT NULL, paid_at DATETIME NULL)$end",
+        "CREATE TABLE IF NOT EXISTS chat_questions (id $id, question VARCHAR(300) NOT NULL, times $uint NOT NULL DEFAULT 1, first_at DATETIME NOT NULL, last_at DATETIME NOT NULL)$end",
+        "CREATE TABLE IF NOT EXISTS login_codes (id $id, client_id $uint NOT NULL, code_hash VARCHAR(64) NOT NULL, attempts $uint NOT NULL DEFAULT 0, expires_at DATETIME NOT NULL, used_at DATETIME NULL, created_at DATETIME NOT NULL)$end",
+        "CREATE TABLE IF NOT EXISTS subscribers (id $id, email VARCHAR(190) NOT NULL UNIQUE, name VARCHAR(120) NOT NULL DEFAULT '', source VARCHAR(40) NOT NULL DEFAULT '', status VARCHAR(20) NOT NULL DEFAULT 'pending', token VARCHAR(64) NOT NULL UNIQUE, created_at DATETIME NOT NULL, confirmed_at DATETIME NULL)$end",
+        "CREATE TABLE IF NOT EXISTS campaigns (id $id, subject VARCHAR(200) NOT NULL, body TEXT NOT NULL, audience VARCHAR(60) NOT NULL, created_by VARCHAR(190) NOT NULL, total $uint NOT NULL DEFAULT 0, sent $uint NOT NULL DEFAULT 0, created_at DATETIME NOT NULL)$end",
+        "CREATE TABLE IF NOT EXISTS campaign_queue (id $id, campaign_id $uint NOT NULL, email VARCHAR(190) NOT NULL, name VARCHAR(120) NOT NULL DEFAULT '', sent_at DATETIME NULL)$end",
         // v3
         "CREATE TABLE IF NOT EXISTS payments (id $id, invoice_id $uint NOT NULL, amount $uint NOT NULL, method VARCHAR(20) NOT NULL, reference VARCHAR(60) NOT NULL DEFAULT '', status VARCHAR(20) NOT NULL DEFAULT 'confirmed', note VARCHAR(500) NOT NULL DEFAULT '', proof_file VARCHAR(80) NULL, checkout_id VARCHAR(100) NULL, created_by VARCHAR(190) NOT NULL DEFAULT '', created_at DATETIME NOT NULL, decided_at DATETIME NULL)$end",
         "CREATE TABLE IF NOT EXISTS leads (id $id, name VARCHAR(120) NOT NULL, email VARCHAR(190) NOT NULL DEFAULT '', phone VARCHAR(30) NOT NULL DEFAULT '', source VARCHAR(60) NOT NULL DEFAULT '', message TEXT NOT NULL, status VARCHAR(20) NOT NULL DEFAULT 'new', value $uint NOT NULL DEFAULT 0, notes TEXT NOT NULL, client_id $uint NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL)$end",
@@ -118,11 +127,14 @@ function migrate(PDO $pdo): void {
         ['approvals', 'bill_amount', "$uint NULL"],
         ['approvals', 'invoice_id', "$uint NULL"],
         ['files', 'uploaded_by', "VARCHAR(10) NOT NULL DEFAULT 'admin'"],
+        ['leads', 'referred_by', "VARCHAR(20) NOT NULL DEFAULT ''"],
+        ['feedback', 'publish_ok', "$uint NOT NULL DEFAULT 0"],
+        ['feedback', 'published', "$uint NOT NULL DEFAULT 0"],
     ];
     foreach ($columns as [$table, $col, $def]) {
         try { $pdo->exec("ALTER TABLE $table ADD COLUMN $col $def"); } catch (PDOException $e) { /* already there */ }
     }
-    foreach (['CREATE INDEX audit_created ON audit_log (created_at)', 'CREATE INDEX payments_invoice ON payments (invoice_id)', 'CREATE INDEX payments_ref ON payments (reference)', 'CREATE UNIQUE INDEX payments_checkout ON payments (checkout_id)',
+    foreach (['CREATE INDEX audit_created ON audit_log (created_at)', 'CREATE INDEX payments_invoice ON payments (invoice_id)', 'CREATE INDEX payments_ref ON payments (reference)', 'CREATE UNIQUE INDEX payments_checkout ON payments (checkout_id)', 'CREATE INDEX queue_pending ON campaign_queue (sent_at)', 'CREATE UNIQUE INDEX referral_once ON referrals (code, referred_phone, client_id)',
               'CREATE INDEX checks_domain ON site_checks (domain_id, checked_at)'] as $sql) {
         try { $pdo->exec($sql); } catch (PDOException $e) { /* already there */ }
     }
@@ -514,6 +526,7 @@ function apply_payment(int $invoiceId, int $amount, string $method, string $refe
     q('UPDATE invoices SET amount_paid = amount_paid + ? WHERE id = ?', [$amount, $invoiceId]);
     $paidNow = q("UPDATE invoices SET status = 'paid', paid_at = ?, mpesa_receipt = ? WHERE id = ? AND status = 'unpaid' AND amount_paid >= amount", [now(), $reference ?: null, $invoiceId])->rowCount() > 0;
     if ($own) $pdo->commit();
+    try { referral_check_client((int)$inv['client_id']); } catch (Throwable $e) { error_log('referral check: ' . $e->getMessage()); }
     $label = ['mpesa' => 'M-Pesa', 'card' => 'card', 'bank' => 'bank transfer', 'till' => 'M-Pesa (till)', 'manual' => 'payment'][$method] ?? $method;
     $balance = max(0, (int)$inv['amount'] - (int)$inv['amount_paid'] - $amount);
     audit($paidNow ? 'invoice_paid' : 'part_payment', "{$inv['number']} KSh $amount by $label" . ($reference ? " $reference" : '') . ($paidNow ? '' : ", balance KSh $balance"), $by);
@@ -560,6 +573,130 @@ function settle_payment(string $checkoutId, array $r): string {
     if ($pay['status'] !== 'unpaid') return 'paid';
     apply_payment((int)$pay['invoice_id'], $expected, 'mpesa', $receipt, 'M-Pesa', $checkoutId);
     return 'paid';
+}
+
+// ---------- referrals ----------
+
+/** Who owns a referral code: a registered referrer or a client (codes come from their phone). */
+function find_referrer(string $code): ?array {
+    $code = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $code));
+    if ($code === '') return null;
+    $r = q('SELECT name, phone FROM referrers WHERE code = ?', [$code])->fetch();
+    if ($r) return $r + ['code' => $code];
+    foreach (q("SELECT name, phone FROM clients WHERE phone <> ''")->fetchAll() as $c) {
+        if (referral_code($c['phone']) === $code) return $c + ['code' => $code];
+    }
+    return null;
+}
+
+/**
+ * Someone who came through a referral link has paid: the referrer's reward is now due.
+ * Once per referred person. Self-referrals are ignored.
+ */
+function referral_due(string $code, string $referredName, string $referredPhone, ?int $clientId, ?int $leadId, ?int $sitePaymentId = null): void {
+    $ref = find_referrer($code);
+    if (!$ref) return;
+    $a = normalise_phone($ref['phone']);
+    if ($a && $a === normalise_phone($referredPhone)) return;           // self-referral
+    $key = normalise_phone($referredPhone) ?: '';
+    $dupe = $clientId ? q('SELECT id FROM referrals WHERE code = ? AND client_id = ?', [$ref['code'], $clientId])->fetch()
+                      : q('SELECT id FROM referrals WHERE code = ? AND referred_phone = ?', [$ref['code'], $key])->fetch();
+    if ($dupe) return;
+    $amount = (int)(config()['referral_reward'] ?? 2000);
+    q('INSERT INTO referrals (code, referrer_name, referrer_phone, client_id, lead_id, site_payment_id, referred_name, referred_phone, amount, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [$ref['code'], $ref['name'], $ref['phone'], $clientId, $leadId, $sitePaymentId, $referredName, $key, $amount, 'due', now()]);
+    audit('referral_due', "{$ref['name']} ({$ref['code']}) referred $referredName", 'system');
+    notify_admins("Referral reward due: KSh " . number_format($amount) . " to {$ref['name']}",
+        "$referredName, referred by {$ref['name']} ({$ref['phone']}, code {$ref['code']}), has paid. Send KSh " . number_format($amount) .
+        " to {$ref['name']} by M-Pesa, then mark it paid in the portal (Growth → Referrals).");
+}
+
+/** After any payment by a client: if they came through a referral, the reward is due. */
+function referral_check_client(int $clientId): void {
+    $lead = q("SELECT id, name, phone, referred_by FROM leads WHERE client_id = ? AND referred_by <> '' ORDER BY id LIMIT 1", [$clientId])->fetch();
+    if (!$lead) return;
+    $c = q('SELECT name, phone FROM clients WHERE id = ?', [$clientId])->fetch();
+    referral_due($lead['referred_by'], $c['name'] ?? $lead['name'], $c['phone'] ?: $lead['phone'], $clientId, (int)$lead['id']);
+}
+
+// ---------- payments made on the public website (deposit, care plan, demo) ----------
+
+/** Record an M-Pesa prompt sent from the website, so the payment can be matched and announced. */
+function record_site_payment(string $checkoutId, string $purpose, int $amount, string $phone, string $name, string $plan, string $referredBy): void {
+    q('INSERT INTO site_payments (checkout_id, purpose, plan, amount, phone, name, referred_by, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [$checkoutId, $purpose, mb_substr($plan, 0, 60), $amount, $phone, mb_substr($name, 0, 120), strtoupper(substr(preg_replace('/[^A-Za-z0-9]/', '', $referredBy), 0, 20)), 'pending', now()]);
+}
+
+/**
+ * A website payment result arrived: check it like invoice payments (amount, receipt not reused,
+ * Safaricom confirms), then tell the team and put it on the Leads board. Returns the new status.
+ */
+function settle_site_payment(string $checkoutId, array $r): string {
+    $sp = q('SELECT * FROM site_payments WHERE checkout_id = ?', [$checkoutId])->fetch();
+    if (!$sp) return 'mismatch';
+    if ($sp['status'] !== 'pending') return $sp['status'];
+    if ((int)($r['result_code'] ?? -1) !== 0) { q("UPDATE site_payments SET status = 'failed' WHERE id = ?", [$sp['id']]); return 'failed'; }
+    $amount = (int)($r['amount'] ?? 0);
+    $receipt = strtoupper(preg_replace('/[^A-Z0-9]/i', '', (string)($r['receipt'] ?? '')));
+    if ($amount < (int)$sp['amount'] || $receipt === '' || reference_used($receipt) || q('SELECT id FROM site_payments WHERE receipt = ?', [$receipt])->fetch()) {
+        audit('payment_rejected', "Website {$sp['purpose']}: amount $amount, receipt '$receipt'", 'M-Pesa');
+        return 'mismatch';
+    }
+    if (empty(mpesa_config()['skip_confirm'])) {
+        $code = stk_query($checkoutId);
+        if ($code === null) return 'pending';
+        if ($code !== '0') { q("UPDATE site_payments SET status = 'failed' WHERE id = ?", [$sp['id']]); return 'failed'; }
+    }
+    if (!q("UPDATE site_payments SET status = 'paid', receipt = ?, paid_amount = ?, paid_at = ? WHERE id = ? AND status = 'pending'", [$receipt, $amount, now(), $sp['id']])->rowCount()) return 'paid';
+    if ($sp['purpose'] === 'demo') { audit('demo_paid', "KSh $amount M-Pesa $receipt", 'M-Pesa'); return 'paid'; }
+
+    $what = $sp['purpose'] === 'care' ? 'Care plan' . ($sp['plan'] ? " ({$sp['plan']})" : '') : 'Project deposit';
+    $who = $sp['name'] ?: 'Someone';
+    audit('website_payment', "$what KSh $amount from $who {$sp['phone']} M-Pesa $receipt", 'M-Pesa');
+    // On the Leads board: add to their lead (same phone) or start a new one
+    $phone = $sp['phone'];
+    $variants = array_values(array_unique(array_filter([$phone, normalise_phone($phone), '0' . substr((string)normalise_phone($phone), 3)])));
+    $marks = implode(',', array_fill(0, count($variants), '?'));
+    $lead = q("SELECT id, message FROM leads WHERE phone IN ($marks) ORDER BY id DESC LIMIT 1", $variants)->fetch();
+    $note = "$what paid on the website: KSh " . number_format($amount) . ", M-Pesa $receipt, " . date('j M Y H:i');
+    if ($lead) q("UPDATE leads SET message = ?, status = CASE WHEN status IN ('new', 'contacted', 'quoted') THEN 'won' ELSE status END, value = CASE WHEN value = 0 THEN ? ELSE value END, updated_at = ? WHERE id = ?",
+        [mb_substr($lead['message'] . "\n\n" . $note, 0, 12000), $amount, now(), $lead['id']]);
+    else q('INSERT INTO leads (name, email, phone, source, message, status, value, notes, referred_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [$who, '', $phone, 'Website payment', $note, 'won', $amount, '', $sp['referred_by'], now(), now()]);
+    $subject = "Payment received: KSh " . number_format($amount) . " from $who";
+    notify_admins($subject, "$what paid on the website.\n\nName: $who\nPhone: $phone\nAmount: KSh " . number_format($amount) . "\nM-Pesa code: $receipt\n\n" .
+        "It's on the Leads board (marked Won). To attach it to a client's account, open Invoices → Website payments.");
+    if (!empty(config()['sms_alert_phone'])) send_sms(config()['sms_alert_phone'], "Marzley: $subject ($phone) ref $receipt");
+    if ($sp['referred_by'] !== '') referral_due($sp['referred_by'], $who, $phone, null, $lead ? (int)$lead['id'] : null, (int)$sp['id']);
+    return 'paid';
+}
+
+// ---------- mailing list ----------
+
+function unsubscribe_link(string $email): string {
+    $row = q('SELECT token FROM subscribers WHERE email = ?', [$email])->fetch();
+    if (!$row) {
+        $token = bin2hex(random_bytes(24));
+        q("INSERT INTO subscribers (email, name, source, status, token, created_at) VALUES (?, '', 'client', 'subscribed', ?, ?)", [$email, $token, now()]);
+    } else $token = $row['token'];
+    return portal_url() . 'subscribe.php?u=' . $token;
+}
+
+/** Send up to $max queued newsletter emails. Returns how many were sent. */
+function send_campaign_queue(int $max): int {
+    $sent = 0;
+    foreach (q('SELECT q.*, c.subject, c.body FROM campaign_queue q JOIN campaigns c ON c.id = q.campaign_id WHERE q.sent_at IS NULL ORDER BY q.id LIMIT ' . max(1, $max))->fetchAll() as $item) {
+        $status = q('SELECT status FROM subscribers WHERE email = ?', [$item['email']])->fetch()['status'] ?? '';
+        if ($status !== 'unsubscribed') {
+            $hello = $item['name'] !== '' ? "Hello {$item['name']},\n\n" : "Hello,\n\n";
+            send_mail($item['email'], $item['subject'], $hello . $item['body'] . "\n\n—\nMarzley Tech Solutions · +254 745 789 590 · marzleytechsolutions.co.ke\n" .
+                "You get these emails because you subscribed or work with us. Unsubscribe: " . unsubscribe_link($item['email']), false);
+            $sent++;
+        }
+        q('UPDATE campaign_queue SET sent_at = ? WHERE id = ?', [now(), $item['id']]);
+        q('UPDATE campaigns SET sent = sent + 1 WHERE id = ?', [$item['campaign_id']]);
+    }
+    return $sent;
 }
 
 // ---------- card payments (Paystack) ----------

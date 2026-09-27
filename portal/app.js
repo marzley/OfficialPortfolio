@@ -38,7 +38,9 @@
     "Write a reply…": "Andika jibu…", "You": "Wewe", "Send us a file (logo, photos, documents)": "Tutumie faili (nembo, picha, nyaraka)", "Upload": "Pakia", "Uploaded.": "Imepakiwa.",
     "expires": "inaisha", "Monthly report": "Ripoti ya mwezi", "Website status": "Hali ya tovuti", "Online": "Iko hewani", "Down": "Haifanyi kazi",
     "is live! How did we do?": "iko hewani! Tulifanyaje?", "Rate us": "Tupe alama", "Payment received. Thank you!": "Malipo yamepokelewa. Asante!",
-    "Sections": "Sehemu", "Pay": "Lipa", "Choose a file first.": "Chagua faili kwanza."
+    "Sections": "Sehemu", "Pay": "Lipa", "Choose a file first.": "Chagua faili kwanza.",
+    "No Google account? Sign in with a code": "Huna akaunti ya Google? Ingia kwa nambari ya siri", "Your email or phone number (the one you gave us)": "Barua pepe au nambari ya simu (uliyotupa)",
+    "6-digit code": "Nambari ya tarakimu 6", "Send me a code": "Nitumie nambari", "Sign in": "Ingia"
   };
   var t = function (s) { return LANG === "sw" && SW[s] ? SW[s] : s; };
   function translateStatic() {
@@ -488,7 +490,7 @@
     if (current && !tabAllowed(current)) selectTab("overview");
     renderOverview();
     if (can("money")) { renderReports(); renderAdminInvoices(); renderQuotes(); renderDomains(); }
-    if (can("leads")) renderLeads();
+    if (can("leads")) { renderLeads(); renderGrowth(); }
     if (can("projects")) renderAdminProjects();
     if (can("clients")) renderAdminClients();
     if (can("support")) renderSupport($("panel-support"), true);
@@ -510,6 +512,7 @@
     badge("count-activity", me.role === "admin" ? (stale(sys.last_cron) ? 1 : 0) + (stale(sys.last_backup) ? 1 : 0) : 0);
     badge("count-leads", (data.leads || []).filter(function (l) { return l.status === "new"; }).length);
     badge("count-quotes", (data.quotes || []).filter(function (q) { return q.status === "sent"; }).length);
+    badge("count-growth", (data.referrals || []).filter(function (r) { return r.status === "due"; }).length + (data.feedback || []).filter(function (f) { return +f.publish_ok && !+f.published && +f.rating >= 4 && f.comment; }).length);
     var soonDays = function (d) { return (new Date(d.expires_on + "T00:00:00") - Date.now()) / 864e5; };
     badge("count-domains", (data.domains || []).filter(function (d) { return soonDays(d) <= 30 || d.last_status === "down"; }).length);
     var pendPay = (data.payments || []).filter(function (x) { return x.status === "pending"; }).length;
@@ -644,12 +647,43 @@
     inf.run();
     panel.appendChild(h("div", { className: "admin-quick" }, exportLink("invoices", "Download invoices (CSV)"), exportLink("receipts", "Download payments received (CSV)")));
     panel.appendChild(renderRecurring());
+    var sp = sitePayments();
+    if (sp) panel.insertBefore(sp, panel.firstChild);
   }
 
-  var TABS = ["overview", "reports", "leads", "quotes", "projects", "clients", "invoices", "domains", "support", "courses", "activity"];
-  var TAB_NAMES = { overview: "Overview", reports: "Reports", leads: "Leads", quotes: "Quotes", projects: "Projects", clients: "People", invoices: "Invoices", domains: "Domains & hosting", support: "Support", courses: "Courses", activity: "Activity & system" };
+  // ---------- payments made on the public website (deposits, care plans) ----------
+  function sitePayments() {
+    var list = (data.site_payments || []).filter(function (p) { return p.purpose !== "demo"; });
+    if (!list.length) return null;
+    var ul = h("ul", { className: "admin-list" });
+    list.slice(0, 30).forEach(function (p) {
+      var what = p.purpose === "care" ? "Care plan" + (p.plan ? " (" + p.plan + ")" : "") : "Deposit";
+      var inv = p.invoice_id ? data.invoices.find(function (i) { return +i.id === +p.invoice_id; }) : null;
+      var actions = h("span", { className: "row-actions" });
+      if (p.status === "paid" && !p.invoice_id && data.clients.length) {
+        var who = select([["", "Attach to client…"]].concat(clientOptions()));
+        who.setAttribute("aria-label", "Client who made this payment");
+        actions.appendChild(who);
+        actions.appendChild(h("button", { type: "button", className: "btn btn-solid btn-sm", onclick: function () {
+          if (!who.value) return toast("Choose the client first.", true);
+          save("site_payment_link", { id: p.id, client_id: who.value });
+        }, text: "Attach" }));
+      }
+      ul.appendChild(h("li", null,
+        h("div", null, h("strong", { text: what + " · " + ksh(p.paid_amount || p.amount) + " · " + (p.name || "No name") }),
+          h("span", { className: "portal-meta", text: p.phone + " · " + day(p.created_at) + (p.receipt ? " · M-Pesa " + p.receipt : "") + (inv ? " · on invoice " + inv.number : "") + (p.referred_by ? " · referred " + p.referred_by : "") })),
+        h("span", { className: "pill pill-" + (p.status === "paid" ? "paid" : p.status === "failed" ? "unpaid" : "review"), text: p.status === "paid" ? (p.invoice_id ? "Paid · attached" : "Paid") : p.status === "failed" ? "Not paid" : "Waiting" }),
+        actions));
+    });
+    return h("section", { className: "admin-panel", "aria-labelledby": "sp-title" },
+      h("div", { className: "admin-panel-head" }, h("h2", { id: "sp-title", text: "Website payments" })),
+      h("p", { className: "portal-meta", text: "Deposits and care plans paid with the M-Pesa forms on the website. Attach a paid one to a client to give them a receipt and keep it in their account." }), ul);
+  }
+
+  var TABS = ["overview", "reports", "leads", "quotes", "growth", "projects", "clients", "invoices", "domains", "support", "courses", "activity"];
+  var TAB_NAMES = { overview: "Overview", reports: "Reports", leads: "Leads", quotes: "Quotes", growth: "Growth", projects: "Projects", clients: "People", invoices: "Invoices", domains: "Domains & hosting", support: "Support", courses: "Courses", activity: "Activity & system" };
   // Which area each tab belongs to (staff only see the areas the owner gave them)
-  var TAB_PERM = { reports: "money", leads: "leads", quotes: "money", projects: "projects", clients: "clients", invoices: "money", domains: "money", support: "support", courses: "courses", activity: "owner" };
+  var TAB_PERM = { reports: "money", leads: "leads", quotes: "money", growth: "leads", projects: "projects", clients: "clients", invoices: "money", domains: "money", support: "support", courses: "courses", activity: "owner" };
   var tabAllowed = function (name) { var p = TAB_PERM[name]; return !p || (p === "owner" ? me.role === "admin" : can(p)); };
   var KINDS = { domain: "Domain", hosting: "Hosting", ssl: "SSL certificate", email: "Email", other: "Other" };
 
@@ -740,6 +774,93 @@
       form, rec.length ? list : h("p", { className: "portal-empty", text: "No monthly invoices yet." }));
   }
 
+
+
+  // ---------- growth: referrals, website reviews, mailing list, chat questions ----------
+  function renderGrowth() {
+    var panel = $("panel-growth");
+    panel.textContent = "";
+    // Referrals
+    var refs = data.referrals || [];
+    var rl = h("ul", { className: "admin-list" });
+    refs.forEach(function (r) {
+      rl.appendChild(h("li", null,
+        h("div", null, h("strong", { text: r.referrer_name + " → " + r.referred_name + " · " + ksh(r.amount) }),
+          h("span", { className: "portal-meta", text: "Send to " + r.referrer_phone + " · code " + r.code + " · " + day(r.created_at) + (r.note ? " · " + r.note : "") })),
+        h("span", { className: "pill pill-" + (r.status === "paid" ? "paid" : r.status === "due" ? "unpaid" : "on_hold"), text: r.status === "due" ? "Reward due" : r.status === "paid" ? "Paid " + day(r.paid_at) : "Not due" }),
+        r.status === "due" ? h("span", { className: "row-actions" },
+          h("button", { type: "button", className: "btn btn-solid btn-sm", onclick: function () {
+            var ref = prompt("M-Pesa code of the reward you sent to " + r.referrer_name + " (optional):", "");
+            if (ref !== null) save("referral_paid", { id: r.id, note: ref });
+          }, text: "Mark paid" }),
+          h("button", { type: "button", className: "linklike danger", onclick: function () {
+            var why = prompt("Why is no reward due?", "Not a genuine referral");
+            if (why) save("referral_void", { id: r.id, note: why });
+          }, text: "Not due" })) : null));
+    });
+    panel.appendChild(h("section", { className: "admin-panel", "aria-labelledby": "ref-title" },
+      h("div", { className: "admin-panel-head" }, h("h2", { id: "ref-title", text: "Referrals" }), h("span", { className: "portal-meta", text: (data.referrers || 0) + " people have a referral link" })),
+      h("p", { className: "portal-meta", text: "When someone who came through a referral link pays, the reward shows here as due and you get an email. Send it by M-Pesa, then mark it paid (the referrer gets an SMS if SMS is set up)." }),
+      refs.length ? rl : h("p", { className: "portal-empty", text: "No referral rewards yet." })));
+
+    // Reviews for the website
+    var fb = (data.feedback || []).filter(function (f) { return +f.rating >= 4 && f.comment; });
+    var fl = h("ul", { className: "admin-list" });
+    fb.forEach(function (f) {
+      var p = data.projects.find(function (x) { return +x.id === +f.project_id; }) || {};
+      fl.appendChild(h("li", null,
+        h("div", null, h("strong", { text: "★★★★★".slice(0, +f.rating) + " " + f.client + " · " + (p.title || "") }), h("span", { className: "lead-msg", text: "“" + f.comment + "”" })),
+        +f.publish_ok ? h("label", { className: "check" }, h("input", { type: "checkbox", checked: +f.published === 1, onchange: function (e) { save("feedback_publish", { id: f.id, published: e.target.checked }); } }), h("span", { text: " Show on website" }))
+          : h("span", { className: "portal-meta", text: "Client didn’t agree to show it" })));
+    });
+    panel.appendChild(h("section", { className: "admin-panel", "aria-labelledby": "rev-title" },
+      h("div", { className: "admin-panel-head" }, h("h2", { id: "rev-title", text: "Reviews for the website" })),
+      h("p", { className: "portal-meta", text: "4–5 star ratings with a comment. Tick “Show on website” and the review appears in the testimonials, marked “Verified client”. Only possible when the client agreed." }),
+      fb.length ? fl : h("p", { className: "portal-empty", text: "Reviews appear here after projects go live and clients rate them." })));
+
+    // Mailing list
+    var subs = data.subscribers || [];
+    var active = subs.filter(function (x) { return x.status === "subscribed"; }).length;
+    var subj = h("input", { maxlength: "200", placeholder: "e.g. New web development class starts 3 November" });
+    var body = h("textarea", { rows: "7", maxlength: "20000", placeholder: "Write your message. Keep it short and useful. An unsubscribe link is added automatically." });
+    var aC = h("input", { type: "checkbox", value: "clients" }), aS = h("input", { type: "checkbox", value: "students" });
+    var sendMail = function (test) {
+      var aud = [aC, aS].filter(function (x) { return x.checked; }).map(function (x) { return x.value; });
+      if (!test && !confirm("Send this email now?")) return;
+      api("campaign_send", { method: "POST", body: { subject: subj.value, body: body.value, audience: aud, test: !!test } })
+        .then(function (r) { toast(r.test ? "Test sent to your email." : "Sending to " + r.total + " people (" + r.sent_now + " now, the rest within the hour)."); if (!r.test) load(); })
+        .catch(function (e) { toast(e.message, true); });
+    };
+    var camp = (data.campaigns || []).map(function (c) { return h("li", null, h("div", null, h("strong", { text: c.subject }), h("span", { className: "portal-meta", text: day(c.created_at) + " · sent " + c.sent + " of " + c.total + " · " + c.audience })) ); });
+    panel.appendChild(h("section", { className: "admin-panel", "aria-labelledby": "mail-title" },
+      h("div", { className: "admin-panel-head" }, h("h2", { id: "mail-title", text: "Mailing list" }), h("span", { className: "portal-meta", text: active + " subscribed" })),
+      h("p", { className: "portal-meta", text: "People join from the sign-up box in the website footer and confirm by email. Every email includes a one-click unsubscribe link." }),
+      h("form", { className: "form", onsubmit: function (e) { e.preventDefault(); sendMail(false); } },
+        field("Subject", subj), h("div", { className: "field full" }, h("label", { for: "mail-body", text: "Message" }), body),
+        h("fieldset", { className: "field full perm-list" }, h("legend", { text: "Also send to" }),
+          h("label", { className: "check" }, aC, h("span", { text: " Clients with projects" })), h("label", { className: "check" }, aS, h("span", { text: " Students" }))),
+        h("div", { className: "form-foot" }, h("button", { type: "submit", className: "btn btn-solid", text: "Send" }),
+          h("button", { type: "button", className: "btn btn-ghost", onclick: function () { sendMail(true); }, text: "Send me a test" }))),
+      camp.length ? h("ul", { className: "admin-list" }, camp) : null,
+      subs.length ? h("details", null, h("summary", { className: "panel-summary", text: "Subscribers (" + subs.length + ")" }),
+        h("ul", { className: "admin-list" }, subs.map(function (x) {
+          return h("li", null, h("div", null, h("strong", { text: x.email }), h("span", { className: "portal-meta", text: (x.name ? x.name + " · " : "") + x.status + " · " + day(x.created_at) })),
+            x.status !== "unsubscribed" ? h("button", { type: "button", className: "linklike danger", onclick: function () { if (confirm("Unsubscribe " + x.email + "?")) remove("subscriber", x.id); }, text: "Unsubscribe" }) : null);
+        }))) : null));
+    body.id = "mail-body";
+
+    // Questions the chat couldn't answer
+    var qs = data.chat_questions || [];
+    var ql = h("ul", { className: "admin-list" });
+    qs.forEach(function (x) {
+      ql.appendChild(h("li", null, h("div", null, h("strong", { text: x.question }), h("span", { className: "portal-meta", text: "Asked " + x.times + (+x.times === 1 ? " time" : " times") + " · last " + day(x.last_at) })),
+        h("button", { type: "button", className: "linklike", onclick: function () { remove("chat_question", x.id); }, text: "Done" })));
+    });
+    panel.appendChild(h("section", { className: "admin-panel", "aria-labelledby": "cq-title" },
+      h("div", { className: "admin-panel-head" }, h("h2", { id: "cq-title", text: "Questions the chat couldn’t answer" })),
+      h("p", { className: "portal-meta", text: "Add answers for common ones to data/knowledge.json on the server, then tick them off here. Names, numbers and emails are removed before saving." }),
+      qs.length ? ql : h("p", { className: "portal-empty", text: "Nothing yet. The chat is answering everything." })));
+  }
 
   // ---------- leads ----------
   var LEAD_STAGES = [["new", "New"], ["contacted", "Contacted"], ["quoted", "Quoted"], ["won", "Won"], ["lost", "Lost"]];
@@ -990,7 +1111,9 @@
     quick_start: "Quick start", "export": "Downloaded a CSV", backup: "Backup made", part_payment: "Part payment", payment_record: "Recorded a payment",
     payment_claim: "Client reported a payment", payment_decide: "Confirmed or rejected a payment", card_started: "Card payment started", lead_received: "New website lead",
     lead_save: "Saved a lead", lead_status: "Moved a lead", quote_save: "Saved a quote", quote_send: "Sent a quote", quote_accepted: "Quote accepted",
-    domain_save: "Saved a domain or hosting", domain_renewed: "Marked renewed", staff_save: "Changed team access", feedback: "Client feedback"
+    domain_save: "Saved a domain or hosting", website_payment: "Website payment", demo_paid: "Demo payment", referral_due: "Referral reward due",
+    referral_paid: "Paid a referral reward", referral_void: "Referral not due", referrer_joined: "New referrer", feedback_publish: "Review shown/hidden",
+    campaign_send: "Sent a newsletter", site_payment_link: "Attached a website payment", code_sent: "Sign-in code sent", domain_renewed: "Marked renewed", staff_save: "Changed team access", feedback: "Client feedback"
   };
   function renderActivity() {
     var panel = $("panel-activity");
@@ -1567,6 +1690,34 @@
   }
 
   // ---------- start ----------
+  // ---------- sign in with a one-time code ----------
+  var codeForm = $("code-form"), codeToggle = $("code-toggle");
+  if (codeForm) {
+    codeToggle.addEventListener("click", function () {
+      codeForm.hidden = !codeForm.hidden;
+      codeToggle.setAttribute("aria-expanded", String(!codeForm.hidden));
+      if (!codeForm.hidden) $("code-who").focus();
+    });
+    codeForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var who = $("code-who").value.trim(), msg = $("code-msg"), btn = $("code-btn");
+      if (!who) { msg.textContent = t("Your email or phone number (the one you gave us)"); return; }
+      btn.disabled = true;
+      if ($("code-step2").hidden) {
+        api("code_request", { method: "POST", body: { who: who } }).then(function (r) {
+          msg.textContent = r.message;
+          $("code-step2").hidden = false;
+          btn.textContent = t("Sign in");
+          $("code-code").focus();
+        }).catch(function (x) { msg.textContent = x.message; }).then(function () { btn.disabled = false; });
+      } else {
+        api("code_verify", { method: "POST", body: { who: who, code: $("code-code").value } })
+          .then(function (d) { csrf = d.csrf; me = d.user; load(); })
+          .catch(function (x) { msg.textContent = x.message; btn.disabled = false; });
+      }
+    });
+  }
+
   translateStatic();
   var lt0 = $("lang-toggle");
   if (lt0) lt0.addEventListener("click", function () {

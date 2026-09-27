@@ -258,7 +258,37 @@ Send these (or add them yourself) so every placeholder is replaced:
 - **Content**: two new blog posts are live, and `content/google-business-posts.md` now has ten
   ready-to-paste Google Business posts. Post one or two a week.
 
-**Automated tests**: `sh tests/run.sh` checks 79 things in the portal (payments, permissions,
+**New in round 4**
+- **Website payments are announced.** Deposits and care plans paid with the M-Pesa forms on the
+  website now email you straight away (and SMS if `sms_alert_phone` is set), appear on the Leads
+  board as Won, and are listed under *Invoices → Website payments*. Choose the client and press
+  **Attach** to give them a receipt and keep the payment in their account. The KSh 1 demo
+  payments are recorded quietly (no email).
+- **Referrals are tracked.** People who sign up on the Referrals page, and every client (whose
+  portal link uses the same code), are recognised. When someone who came through their link pays
+  (a website deposit, or any invoice), *Growth → Referrals* shows the reward as due and you get an
+  email. Send it by M-Pesa and press **Mark paid**. Self-referrals are ignored. Change the amount
+  with `referral_reward` in `portal-config.php`.
+- **Reviews on the website.** The after-launch rating page now has a "you may show my comment"
+  box. In *Growth → Reviews for the website*, tick **Show on website** and the review appears in
+  the testimonials, marked "Verified client". Only 4–5 star reviews with the client's permission
+  can be shown.
+- **Mailing list.** A "Tips & offers by email" box is in every page footer. People confirm by
+  email before they're added. Write and send newsletters in *Growth → Mailing list* (to
+  subscribers, and optionally clients and students). Every email has a one-click unsubscribe;
+  large sends finish within the hour through the `monitor` cron job. Use **Send me a test** first.
+- **Chat questions.** Questions the chat couldn't answer are listed in *Growth* (names, numbers
+  and emails removed). Add answers for common ones to `data/knowledge.json`, then press **Done**.
+- **Sign in with a code.** Clients without a Google account can sign in with a 6-digit code sent
+  to the email or phone number saved in *People* (by SMS if SMS is set up, otherwise email). Codes
+  work once, for 10 minutes, with 5 tries. Staff and owners still sign in with Google.
+- **Google Analytics events** (only for visitors who accept cookies): `whatsapp_click`,
+  `call_click`, `email_click`, `portal_click`, `chat_open`, `chat_question`, `chat_unanswered`,
+  `generate_lead`, `quote_sent`, `deposit_paid`, `care_plan_paid`, `demo_payment`,
+  `referral_signup`, `sign_up`. In GA4 go to *Admin → Events* and mark `generate_lead`,
+  `deposit_paid` and `whatsapp_click` as **key events** so they show as conversions.
+
+**Automated tests**: `sh tests/run.sh` checks 119 things in the portal (payments, permissions,
 quotes, backups…) against a throwaway database. GitHub runs it on every push once the push works
 (`.github/workflows/tests.yml`). The `tests/` folder is not needed on the server.
 

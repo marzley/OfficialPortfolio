@@ -93,7 +93,9 @@ if ($id !== '' && (int)$entry['result_code'] === 0) {
         define('MARZLEY_NO_EXIT', true);
         require __DIR__ . '/portal/lib.php';
         try {
-            settle_payment($id, json_decode((string)file_get_contents($store . '/' . $id . '.json'), true) ?: []);
+            $result = json_decode((string)file_get_contents($store . '/' . $id . '.json'), true) ?: [];
+            // A portal invoice, or else a payment made on the public website (deposit, care plan, demo)
+            if (settle_payment($id, $result) === 'mismatch') settle_site_payment($id, $result);
         } catch (Throwable $e) {
             report_error('M-Pesa callback', $e->getMessage());
         }

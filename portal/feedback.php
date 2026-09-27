@@ -21,7 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$fb['submitted_at']) {
     $rating = (int)($_POST['rating'] ?? 0);
     $comment = mb_substr(trim((string)($_POST['comment'] ?? '')), 0, 4000);
     if ($rating >= 1 && $rating <= 5 && rate_ok('feedback', 10, 3600)) {
-        $saved = q('UPDATE feedback SET rating = ?, comment = ?, submitted_at = ? WHERE id = ? AND submitted_at IS NULL', [$rating, $comment, now(), $fb['id']])->rowCount();
+        $ok = !empty($_POST['publish_ok']) ? 1 : 0;
+        $saved = q('UPDATE feedback SET rating = ?, comment = ?, publish_ok = ?, submitted_at = ? WHERE id = ? AND submitted_at IS NULL', [$rating, $comment, $ok, now(), $fb['id']])->rowCount();
         if ($saved) {
             audit('feedback', "{$fb['title']}: $rating/5", 'client');
             notify_admins(($rating <= 3 ? 'Needs attention: ' : '') . "{$fb['name']} rated “{$fb['title']}” $rating/5",
@@ -55,6 +56,7 @@ page_open('How did we do?');
             <?php endfor; ?>
         </fieldset>
         <div class="field"><label for="fb-comment">Anything you’d like to tell us? (optional)</label><textarea id="fb-comment" name="comment" rows="4" maxlength="4000"></textarea></div>
+        <label class="check"><input type="checkbox" name="publish_ok" value="1" /> <span>You may show my comment and name (<?= h($fb['name']) ?>) on your website.</span></label>
         <button type="submit" class="btn btn-solid">Send</button>
     </form>
 </section>

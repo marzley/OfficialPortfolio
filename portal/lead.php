@@ -27,6 +27,7 @@ $source = $get(['_source', 'form', '_subject'], 60) ?: 'Website';
 if ($name === '' || ($email === '' && strlen(preg_replace('/\D/', '', $phone)) < 9)) $reply(400, ['ok' => false, 'error' => 'Please enter your name and a phone number or email.']);
 
 // Everything else they typed becomes the message, one line per field
+$referredBy = strtoupper(substr(preg_replace('/[^A-Za-z0-9]/', '', (string)($_POST['referred_by'] ?? '')), 0, 20));
 $skip = ['name', 'Name', 'full_name', 'email', '_replyto', 'Email', 'phone', 'Phone', 'tel', '_gotcha', 'form', '_source', '_subject', '_next'];
 $lines = [];
 foreach ($_POST as $k => $v) {
@@ -64,10 +65,10 @@ try {
     $existing = q("SELECT id, message FROM leads WHERE status = 'new' AND created_at > ? AND ((email <> '' AND email = ?) OR (phone <> '' AND phone = ?))",
         [date('Y-m-d H:i:s', time() - 86400), $email, $phone])->fetch();
     if ($existing) {
-        q('UPDATE leads SET message = ?, updated_at = ? WHERE id = ?', [mb_substr($existing['message'] . "\n\n— $source —\n" . $message, 0, 12000), now(), $existing['id']]);
+        q("UPDATE leads SET message = ?, referred_by = CASE WHEN referred_by = '' THEN ? ELSE referred_by END, updated_at = ? WHERE id = ?", [mb_substr($existing['message'] . "\n\n— $source —\n" . $message, 0, 12000), $referredBy, now(), $existing['id']]);
     } else {
-        q('INSERT INTO leads (name, email, phone, source, message, status, value, notes, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, ?)',
-            [$name, $email, $phone, $source, $message, 'new', '', now(), now()]);
+        q('INSERT INTO leads (name, email, phone, source, message, status, value, notes, referred_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?)',
+            [$name, $email, $phone, $source, $message, 'new', '', $referredBy, now(), now()]);
         audit('lead_received', "$source: $name", 'website');
     }
     $saved = true;

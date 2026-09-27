@@ -63,6 +63,12 @@ function run_daily(callable $log): void {
         if ($r && (int)$r['result_code'] === 0 && settle_payment($p['checkout_id'], $r) === 'paid') $summary[] = 'Settled a payment that was not marked paid';
     }
 
+    // 2b. Website payments (deposits, care plans) whose result came in but wasn't processed
+    foreach (q("SELECT checkout_id FROM site_payments WHERE status = 'pending' AND created_at > ?", [date('Y-m-d H:i:s', time() - 3 * 86400)])->fetchAll() as $p) {
+        $r = mpesa_result($p['checkout_id']);
+        if ($r && settle_site_payment($p['checkout_id'], $r) === 'paid') $summary[] = 'Recorded a website payment that was not announced';
+    }
+
     // 3. Payment reminders: 3 days before, on the day, then 3, 7 and 14 days late
     $overdue = [];
     foreach (q("SELECT i.*, c.name FROM invoices i JOIN clients c ON c.id = i.client_id WHERE i.status = 'unpaid' AND i.due_date IS NOT NULL")->fetchAll() as $inv) {
@@ -238,6 +244,9 @@ function run_monitor(callable $log): void {
     }
     // Keep 13 months of checks for the care reports
     q('DELETE FROM site_checks WHERE checked_at < ?', [date('Y-m-d', strtotime('-13 months'))]);
+    // Newsletter emails still waiting to go out
+    $mailed = send_campaign_queue(300);
+    if ($mailed) $log("newsletter: sent $mailed");
     set_setting('last_monitor', now());
     $log('monitor: checked ' . count($sites) . ' sites');
 }
