@@ -363,6 +363,81 @@
     });
   }
 
+  /* ---------- dark mode toggle ---------- */
+  var themeBtn = document.querySelector(".theme-toggle");
+  var root = document.documentElement;
+  var syncThemeBtn = function () {
+    if (!themeBtn) return;
+    var dark = root.getAttribute("data-theme") === "dark";
+    themeBtn.setAttribute("aria-pressed", String(dark));
+    themeBtn.setAttribute("aria-label", dark ? "Light mode" : "Dark mode");
+    var icon = themeBtn.querySelector("i");
+    if (icon) icon.className = dark ? "fa-solid fa-sun" : "fa-solid fa-moon";
+  };
+  if (themeBtn) {
+    themeBtn.addEventListener("click", function () {
+      var dark = root.getAttribute("data-theme") !== "dark";
+      if (dark) root.setAttribute("data-theme", "dark");
+      else root.removeAttribute("data-theme");
+      try { localStorage.setItem("marzley-theme", dark ? "dark" : "light"); } catch (e) {}
+      syncThemeBtn();
+    });
+    syncThemeBtn();
+  }
+
+  /* ---------- scroll progress + back to top ---------- */
+  var bar = document.querySelector(".scroll-progress span");
+  var toTop = document.querySelector(".to-top");
+  var onProgress = function () {
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    var p = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+    if (bar) bar.style.transform = "scaleX(" + p + ")";
+    if (toTop) toTop.classList.toggle("is-visible", window.scrollY > window.innerHeight);
+  };
+  window.addEventListener("scroll", onProgress, { passive: true });
+  window.addEventListener("resize", onProgress);
+  onProgress();
+
+  /* ---------- hero role rotator ---------- */
+  var roleEl = document.getElementById("role-word");
+  var roles = ["web developer", "UI/UX designer", "systems builder", "IT trainer"];
+  if (roleEl && !reduceMotionQuery.matches) {
+    var roleIndex = 0;
+    setInterval(function () {
+      roleEl.classList.add("is-out");
+      setTimeout(function () {
+        roleIndex = (roleIndex + 1) % roles.length;
+        roleEl.textContent = roles[roleIndex];
+        roleEl.classList.remove("is-out");
+      }, 300);
+    }, 2600);
+  }
+
+  /* ---------- quote calculator ---------- */
+  var calc = document.getElementById("quote-calc");
+  if (calc) {
+    var totalEl = document.getElementById("calc-total");
+    var sendEl = document.getElementById("calc-send");
+    var fmt = function (n) { return "KSh " + n.toLocaleString("en-KE"); };
+    var updateCalc = function () {
+      var pkg = calc.querySelector('input[name="pkg"]:checked');
+      var addons = calc.querySelectorAll('input[name="addon"]:checked');
+      var total = pkg ? Number(pkg.value) : 0;
+      var lines = [];
+      if (pkg) lines.push("- " + pkg.getAttribute("data-name") + " (" + fmt(Number(pkg.value)) + ")");
+      addons.forEach(function (a) {
+        total += Number(a.value);
+        lines.push("- " + a.getAttribute("data-name") + " (" + fmt(Number(a.value)) + ")");
+      });
+      totalEl.textContent = fmt(total);
+      var msg = "Hello Marzley, I'd like a quote for:\n" + lines.join("\n") + "\nEstimated from " + fmt(total) + ".";
+      sendEl.href = "https://wa.me/254745789590?text=" + encodeURIComponent(msg);
+    };
+    calc.addEventListener("change", updateCalc);
+    calc.addEventListener("submit", function (e) { e.preventDefault(); });
+    updateCalc();
+  }
+
   /* ---------- footer year ---------- */
   var year = document.getElementById("year");
   if (year) year.textContent = String(new Date().getFullYear());

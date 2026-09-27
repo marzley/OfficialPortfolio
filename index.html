@@ -21,6 +21,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link rel="stylesheet" href="css/home.css" />
+    <script>
+        try { if (localStorage.getItem("marzley-theme") === "dark") document.documentElement.setAttribute("data-theme", "dark"); } catch (e) {}
+    </script>
 
     <script src="https://js.paystack.co/v1/inline.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
@@ -86,9 +89,15 @@
                 <a href="#pricing">Pricing</a>
                 <a href="#contact">Contact</a>
             </nav>
-            <a class="status" href="#contact"><span class="dot" aria-hidden="true"></span>Available for hire</a>
-            <button class="menu-toggle" type="button" aria-controls="site-nav" aria-expanded="false">Menu</button>
+            <div class="header-actions">
+                <a class="status" href="#contact"><span class="dot" aria-hidden="true"></span>Available for hire</a>
+                <button class="theme-toggle" type="button" aria-pressed="false" aria-label="Dark mode">
+                    <i class="fa-solid fa-moon" aria-hidden="true"></i>
+                </button>
+                <button class="menu-toggle" type="button" aria-controls="site-nav" aria-expanded="false">Menu</button>
+            </div>
         </div>
+        <div class="scroll-progress" aria-hidden="true"><span></span></div>
     </header>
 
     <main id="main">
@@ -111,6 +120,7 @@
 
                 <div class="hero-bottom">
                     <div>
+                        <p class="hero-role">Kelvin is a <span class="role-word" id="role-word">web developer</span></p>
                         <p class="hero-lede">
                             I build responsive websites, custom business systems and payment integrations, from
                             e-commerce to hospital management. I also train the next generation of developers.
@@ -529,6 +539,35 @@
                                 target="_blank" rel="noopener noreferrer"><span>Security &amp; backups</span><span>KSh 3,500</span><span class="arrow" aria-hidden="true">→</span></a></li>
                     </ul>
                 </div>
+
+                <form class="quote-calc reveal" id="quote-calc" aria-labelledby="calc-title">
+                    <div class="calc-head">
+                        <h3 id="calc-title">Build your quote</h3>
+                        <p>Pick a package and any add-ons to see a starting estimate, then send it to me on WhatsApp.</p>
+                    </div>
+                    <div class="calc-body">
+                        <fieldset>
+                            <legend>Package</legend>
+                            <label class="opt"><input type="radio" name="pkg" id="pkg-landing" value="15000" data-name="Landing page" /><span>Landing page</span><b>KSh 15,000</b></label>
+                            <label class="opt"><input type="radio" name="pkg" id="pkg-business" value="25000" data-name="Small business website" checked /><span>Small business</span><b>KSh 25,000</b></label>
+                            <label class="opt"><input type="radio" name="pkg" id="pkg-ecommerce" value="40000" data-name="E-commerce website" /><span>E-commerce</span><b>KSh 40,000</b></label>
+                            <label class="opt"><input type="radio" name="pkg" id="pkg-corporate" value="60000" data-name="Corporate website" /><span>Corporate</span><b>KSh 60,000</b></label>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Add-ons</legend>
+                            <label class="opt"><input type="checkbox" name="addon" id="add-hosting" value="3000" data-name="Domain & hosting (1st year)" /><span>Domain &amp; hosting <small>first year</small></span><b>KSh 3,000</b></label>
+                            <label class="opt"><input type="checkbox" name="addon" id="add-logo" value="2500" data-name="Logo & branding" /><span>Logo &amp; branding</span><b>KSh 2,500</b></label>
+                            <label class="opt"><input type="checkbox" name="addon" id="add-seo" value="5000" data-name="SEO optimization" /><span>SEO optimization</span><b>KSh 5,000</b></label>
+                            <label class="opt"><input type="checkbox" name="addon" id="add-security" value="3500" data-name="Security & backups" /><span>Security &amp; backups</span><b>KSh 3,500</b></label>
+                        </fieldset>
+                        <div class="calc-total">
+                            <span class="label">Estimated from</span>
+                            <output id="calc-total" for="quote-calc" aria-live="polite">KSh 25,000</output>
+                            <p>Final price depends on your exact needs.</p>
+                            <a class="btn btn-solid" id="calc-send" href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer"><i class="fab fa-whatsapp" aria-hidden="true"></i> Send quote on WhatsApp</a>
+                        </div>
+                    </div>
+                </form>
             </div>
         </section>
 
@@ -571,12 +610,51 @@
             </div>
         </section>
 
+        <!-- FAQ -->
+        <section class="section" id="faq" aria-labelledby="faq-title">
+            <div class="wrap faq-grid">
+                <div class="section-head faq-head reveal">
+                    <div>
+                        <p class="label">07 — FAQ</p>
+                        <h2 id="faq-title">Questions clients ask</h2>
+                    </div>
+                    <p>Can’t find your answer? <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">Ask me on WhatsApp</a>.</p>
+                </div>
+                <div class="faq reveal">
+                    <details open>
+                        <summary>How much does a website cost?</summary>
+                        <p>Packages start at KSh 15,000 for a landing page, KSh 25,000 for a small business site, KSh 40,000 for e-commerce and KSh 60,000 for a corporate site. Every project is quoted to its scope. Use the quote builder above for an estimate.</p>
+                    </details>
+                    <details>
+                        <summary>Can you add M-Pesa or card payments?</summary>
+                        <p>Yes. I integrate M-Pesa, Paystack and PayPal. The Marzley E-Commerce shop and the Wi-Fi hotspot billing system in my work both take payments this way.</p>
+                    </details>
+                    <details>
+                        <summary>Do you set up the domain and hosting?</summary>
+                        <p>Yes. Domain and hosting setup is available from KSh 3,000 per year, and I deploy the site for you so it’s live on your own address.</p>
+                    </details>
+                    <details>
+                        <summary>Do you build systems as well as websites?</summary>
+                        <p>Yes. Past work includes hospital management systems, a Wi-Fi billing system and online stores with admin tools, alongside business and institutional websites.</p>
+                    </details>
+                    <details>
+                        <summary>Do you offer training?</summary>
+                        <p>Yes. I run practical, project-based training in web development, programming and design for students and professionals, and I’ve trained over 200 students.</p>
+                    </details>
+                    <details>
+                        <summary>When can I reach you?</summary>
+                        <p>Monday to Friday 8am–7pm and Saturday 9am–5pm. Sunday is by appointment. WhatsApp is the fastest way to reach me.</p>
+                    </details>
+                </div>
+            </div>
+        </section>
+
         <!-- Contact -->
         <section class="section" id="contact" aria-labelledby="contact-title">
             <div class="wrap">
                 <div class="section-head reveal">
                     <div>
-                        <p class="label">07 — Contact</p>
+                        <p class="label">08 — Contact</p>
                         <h2 id="contact-title">Let’s build something</h2>
                     </div>
                     <p>Tell me about your project or training needs and I’ll get back to you quickly.</p>
@@ -641,6 +719,8 @@
         target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
         <i class="fab fa-whatsapp" aria-hidden="true"></i><span>Chat on WhatsApp</span>
     </a>
+
+    <a class="to-top" href="#top" aria-label="Back to top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i></a>
 
     <footer class="site-footer">
         <div class="wrap">
