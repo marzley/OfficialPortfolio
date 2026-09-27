@@ -1335,6 +1335,15 @@
     });
   });
 
+  /* ---------- before/after slider ---------- */
+  document.querySelectorAll(".compare-frame").forEach(function (frame) {
+    var range = frame.querySelector(".compare-range");
+    if (!range) return;
+    var update = function () { frame.style.setProperty("--pos", range.value + "%"); };
+    range.addEventListener("input", update);
+    update();
+  });
+
   /* ---------- offline support ---------- */
   // The service worker shows offline.html (or a saved copy of the page) when
   // the connection is down or too slow. Only on the real site and localhost.

@@ -60,7 +60,7 @@ PAGES = [
 
 # Where each homepage section lives when it is not on the current page
 HOME_OF = {
-    "work": "work", "testimonials": "work#testimonials", "about": "about",
+    "work": "work", "redesign": "work#redesign", "testimonials": "work#testimonials", "about": "about",
     "services": "services", "demo": "services#demo", "process": "process",
     "planner": "process#planner", "pricing": "pricing", "faq": "contact#faq",
     "contact": "contact",

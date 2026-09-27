@@ -1749,6 +1749,110 @@ a {
 }
 
 /* ---------- floating WhatsApp ---------- */
+/* ---------- before/after slider ---------- */
+.compare {
+  margin-top: clamp(48px, 7vw, 88px);
+}
+
+.compare-head {
+  margin-bottom: 20px;
+}
+
+.compare-head h3 {
+  margin: 0 0 6px;
+  font-size: clamp(22px, 3vw, 30px);
+  letter-spacing: -0.02em;
+  color: var(--heading);
+}
+
+.compare-head p {
+  margin: 0;
+  color: var(--fg-muted);
+}
+
+.compare-frame {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  aspect-ratio: 1365 / 767;
+  background: var(--card);
+  user-select: none;
+}
+
+.compare-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.compare-before {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 calc(100% - var(--pos)) 0 0);
+}
+
+.compare-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--pos);
+  width: 3px;
+  background: var(--amber);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.compare-handle i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--amber);
+  color: var(--navy);
+  font-size: 16px;
+  box-shadow: var(--shadow-lg);
+  transform: translate(-50%, -50%);
+}
+
+.compare-tag {
+  position: absolute;
+  top: 14px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(11, 27, 53, 0.78);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.compare-tag-before { left: 14px; }
+.compare-tag-after { right: 14px; }
+
+.compare-range {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+}
+
+.compare-frame:has(.compare-range:focus-visible) .compare-handle i {
+  outline: 3px solid var(--heading);
+  outline-offset: 3px;
+}
+
 .install-card {
   position: fixed;
   right: 20px;
