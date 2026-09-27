@@ -4,9 +4,11 @@
 1. **Rotate the M-Pesa (Daraja) credentials.** Older versions of `stkpush.php` in this
    repository's git history contain the live consumer key, secret and passkey. Generate new
    ones in the Safaricom Daraja portal and stop using the old ones.
-2. Copy `mpesa-config.example.php` to `mpesa-config.php`, fill in the **new** values, and
-   upload it **one folder above `public_html`** (for example `/home/USERNAME/mpesa-config.php`).
-   Never commit it; `.gitignore` already excludes it.
+2. Upload your private `mpesa-config.php` **one folder above `public_html`** (for example
+   `/home/USERNAME/mpesa-config.php`). Never put it inside `public_html` and never commit it;
+   `.gitignore` already excludes it. The callback URL in it must be
+   `https://marzleytechsolutions.co.ke/callback.php` (handled by `callback.php`, which logs each
+   payment result to `mpesa_callbacks.log` outside the public folder).
 3. Add `img/projects/Supreme hms.png` (the Supreme HMS screenshot). Until it exists, that
    project hides itself on the homepage.
 

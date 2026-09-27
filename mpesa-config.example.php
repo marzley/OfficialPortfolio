@@ -10,5 +10,5 @@ return [
     'shortcode'       => 'YOUR_BUSINESS_SHORTCODE',
     'till_number'     => 'YOUR_TILL_NUMBER',
     'passkey'         => 'YOUR_PASSKEY',
-    'callback_url'    => 'https://pixel.gatangatvc.ac.ke/callback.php', // your current callback
+    'callback_url'    => 'https://marzleytechsolutions.co.ke/callback.php',
 ];

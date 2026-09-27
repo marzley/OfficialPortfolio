@@ -34,6 +34,11 @@ $shortcode      = $mpesa['shortcode'] ?? '';
 $tillNumber     = $mpesa['till_number'] ?? '';
 $passkey        = $mpesa['passkey'];
 $callbackUrl    = $mpesa['callback_url'] ?? '';
+if ($callbackUrl === '' || stripos($callbackUrl, 'https://') !== 0) {
+    http_response_code(503);
+    echo json_encode(['error' => 'Payments are not configured yet (missing https callback URL). Please contact us on WhatsApp: +254 745 789 590.']);
+    exit;
+}
 // Keep the log outside the public web folder when possible (it contains phone numbers).
 $logDir         = is_writable(dirname(__DIR__)) ? dirname(__DIR__) : __DIR__;
 $logFile        = $logDir . '/stk_request.log';
