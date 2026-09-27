@@ -1720,6 +1720,65 @@ a {
 }
 
 /* ---------- floating WhatsApp ---------- */
+.app-soon {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: min(440px, calc(100vw - 32px));
+  padding: 14px 14px 14px 18px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 184, 0, 0.55);
+  background: var(--navy);
+  color: var(--on-navy);
+  box-shadow: var(--shadow-lg);
+  transform: translateX(-50%);
+  animation: app-soon-in 0.35s var(--ease);
+}
+
+.app-soon > i {
+  flex: none;
+  font-size: 22px;
+  color: var(--amber);
+}
+
+.app-soon div {
+  display: grid;
+  gap: 2px;
+  flex: 1;
+  font-size: 14px;
+}
+
+.app-soon span {
+  color: var(--on-navy-muted);
+}
+
+.app-soon-close {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: inherit;
+  cursor: pointer;
+}
+
+.app-soon-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@keyframes app-soon-in {
+  from { opacity: 0; transform: translate(-50%, 12px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-soon { animation: none; }
+}
+
 .wa-float {
   position: fixed;
   left: 20px;

@@ -1051,6 +1051,31 @@
     });
   }
 
+  /* ---------- app download: "coming soon" until the APK is uploaded ---------- */
+  var appSoon = document.getElementById("app-soon");
+  var appSoonTimer;
+  var showAppSoon = function () {
+    if (!appSoon) return;
+    appSoon.hidden = false;
+    clearTimeout(appSoonTimer);
+    appSoonTimer = setTimeout(function () { appSoon.hidden = true; }, 6000);
+  };
+  var appSoonClose = document.getElementById("app-soon-close");
+  if (appSoonClose) appSoonClose.addEventListener("click", function () { appSoon.hidden = true; });
+  document.querySelectorAll("[data-app-download]").forEach(function (link) {
+    link.addEventListener("click", function (e) {
+      e.preventDefault();
+      var href = link.getAttribute("href");
+      fetch(href, { method: "HEAD", cache: "no-store" })
+        .then(function (res) {
+          var type = res.headers.get("content-type") || "";
+          if (res.ok && type.indexOf("text/html") === -1) window.location.href = href;
+          else showAppSoon();
+        })
+        .catch(showAppSoon);
+    });
+  });
+
   /* ---------- hide projects whose screenshot is missing ---------- */
   var updateChipCounts = function () {
     var items = document.querySelectorAll(".work-list li");
