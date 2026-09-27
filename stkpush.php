@@ -47,6 +47,26 @@ $logFile        = $logDir . '/stk_request.log';
 $rawPhone = $_POST['phone'] ?? '';
 $amount   = isset($_POST['amount']) ? (int)$_POST['amount'] : 0;
 if ($amount <= 0) $amount = 1;
+if ($amount > 150000) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Amount is above the M-Pesa limit.']);
+    exit;
+}
+
+// Basic abuse protection: at most 5 payment requests per visitor (IP) every 10 minutes
+$rlDir  = (is_writable(dirname(__DIR__)) ? dirname(__DIR__) : sys_get_temp_dir()) . '/mpesa_ratelimit';
+if (!is_dir($rlDir)) { @mkdir($rlDir, 0750, true); }
+$rlFile = $rlDir . '/' . md5($_SERVER['REMOTE_ADDR'] ?? 'unknown') . '.json';
+$now    = time();
+$hits   = is_readable($rlFile) ? (json_decode((string)file_get_contents($rlFile), true) ?: []) : [];
+$hits   = array_values(array_filter($hits, function ($t) use ($now) { return $t > $now - 600; }));
+if (count($hits) >= 5) {
+    http_response_code(429);
+    echo json_encode(['error' => 'Too many payment requests. Please wait a few minutes and try again.']);
+    exit;
+}
+$hits[] = $now;
+@file_put_contents($rlFile, json_encode($hits));
 
 ////////////////////////////////////////////////////////////
 // CHANGED: Try to detect logged-in user and override phone
@@ -163,7 +183,7 @@ $stkPayload = [
     'PartyB' => $tillNumber, // use till number as PartyB per Safaricom
     'PhoneNumber' => $phone,
     'CallBackURL' => $callbackUrl,
-    'AccountReference' => 'Payment',
+    'AccountReference' => 'MarzleyTech',
     'TransactionDesc' => 'STK Push'
 ];
 

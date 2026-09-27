@@ -44,4 +44,20 @@ $entry = [
 ];
 file_put_contents($logFile, json_encode($entry) . "\n", FILE_APPEND);
 
+// Save the result so status.php can tell the website whether this payment went through
+$id = preg_replace('/[^A-Za-z0-9_-]/', '', (string)($entry['checkout_request'] ?? ''));
+if ($id !== '') {
+    $store = $logDir . '/mpesa_results';
+    if (!is_dir($store)) {
+        @mkdir($store, 0750, true);
+    }
+    @file_put_contents($store . '/' . $id . '.json', json_encode([
+        'result_code' => $entry['result_code'],
+        'result_desc' => $entry['result_desc'],
+        'amount'      => $entry['amount'],
+        'receipt'     => $entry['receipt'],
+        'time'        => $entry['time'],
+    ]));
+}
+
 echo json_encode(['ResultCode' => 0, 'ResultDesc' => 'Accepted']);

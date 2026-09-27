@@ -676,14 +676,16 @@
     applyOptions();
   }
 
-  /* ---------- M-Pesa checkout demo (simulation only, nothing is sent) ---------- */
+  /* ---------- live M-Pesa test payment (KSh 1) with simulation fallback ---------- */
   var demoForm = document.getElementById("demo-checkout");
   if (demoForm) {
     var demoPhone = document.getElementById("demo-phone");
     var demoError = document.getElementById("demo-error");
     var demoPay = document.getElementById("demo-pay");
+    var demoSimBtn = document.getElementById("demo-sim");
     var screens = {
       idle: document.getElementById("phone-idle"),
+      live: document.getElementById("phone-live"),
       stk: document.getElementById("phone-stk"),
       processing: document.getElementById("phone-processing"),
       sms: document.getElementById("phone-sms"),
@@ -709,14 +711,65 @@
       if (/^[17]\d{8}$/.test(digits)) return "254" + digits;
       return null;
     };
-    var masked = "";
+    var maskOf = function (msisdn) { return "0" + msisdn.slice(3, 6) + " ••• " + msisdn.slice(-3); };
+    var smsText = document.getElementById("sms-text");
+    var cancelText = document.getElementById("cancel-text");
+    var pollTimer = null;
+    var busy = false;
+
+    var finish = function () { busy = false; demoPay.disabled = false; };
     var resetDemo = function () {
-      demoPay.disabled = false;
+      clearTimeout(pollTimer);
+      finish();
       show("idle");
+    };
+    var failWith = function (message) {
+      cancelText.textContent = message;
+      show("cancelled");
+      finish();
+      document.getElementById("demo-again-2").focus();
+    };
+    var REASONS = {
+      1: "The payment didn't go through because the M-Pesa balance is too low.",
+      1032: "You cancelled the M-Pesa prompt. No money was deducted.",
+      1037: "The prompt timed out before a PIN was entered. No money was deducted.",
+      2001: "The PIN entered was wrong. No money was deducted."
+    };
+
+    var pollStatus = function (id, tries) {
+      fetch("status.php?id=" + encodeURIComponent(id), { headers: { Accept: "application/json" }, cache: "no-store" })
+        .then(function (r) { return r.json(); })
+        .then(function (s) {
+          if (s.status === "paid") {
+            smsText.textContent = (s.receipt || "Payment") + " Confirmed. Ksh" + (s.amount || 1) +
+              ".00 paid to MARZLEY TECH SOLUTIONS. Thank you for trying a live M-Pesa checkout!";
+            show("sms");
+            finish();
+            document.getElementById("demo-again").focus();
+          } else if (s.status === "failed") {
+            failWith(REASONS[s.code] || s.message || "The payment didn't go through. No money was deducted.");
+          } else if (tries > 0) {
+            pollTimer = setTimeout(function () { pollStatus(id, tries - 1); }, 3000);
+          } else {
+            failWith("We haven't received a confirmation yet. If you entered your PIN, you'll still get the M-Pesa SMS.");
+          }
+        })
+        .catch(function () {
+          if (tries > 0) pollTimer = setTimeout(function () { pollStatus(id, tries - 1); }, 3000);
+          else failWith("We couldn't check the payment status. If you paid, you'll get the M-Pesa SMS.");
+        });
+    };
+
+    var unavailable = function (message) {
+      demoError.textContent = message;
+      demoSimBtn.hidden = false;
+      show("idle");
+      finish();
     };
 
     demoForm.addEventListener("submit", function (e) {
       e.preventDefault();
+      if (busy) return;
       var msisdn = normalise(demoPhone.value);
       if (!msisdn) {
         demoError.textContent = "Enter a Safaricom number like 0712 345 678.";
@@ -724,36 +777,78 @@
         return;
       }
       demoError.textContent = "";
-      masked = "0" + msisdn.slice(3, 6) + " ••• " + msisdn.slice(-3);
+      demoSimBtn.hidden = true;
+      busy = true;
+      demoPay.disabled = true;
+      show("processing");
+
+      var body = new FormData();
+      body.append("phone", "0" + msisdn.slice(3));
+      body.append("amount", "1");
+      var controller = "AbortController" in window ? new AbortController() : null;
+      var timer = setTimeout(function () { if (controller) controller.abort(); }, 35000);
+
+      fetch("stkpush.php", { method: "POST", body: body, headers: { Accept: "application/json" }, signal: controller ? controller.signal : undefined })
+        .then(function (r) {
+          return r.text().then(function (t) {
+            var data = null;
+            try { data = JSON.parse(t); } catch (err) { data = null; }
+            return { ok: r.ok, data: data };
+          });
+        })
+        .then(function (res) {
+          clearTimeout(timer);
+          var d = res.data;
+          if (!d) return unavailable("Live payments aren't available on this page right now.");
+          if (res.ok && String(d.ResponseCode) === "0" && d.CheckoutRequestID) {
+            document.getElementById("live-msg").textContent = "A KSh 1 M-Pesa prompt was sent to " + maskOf(msisdn) +
+              ". Enter your PIN on your phone to pay.";
+            show("live");
+            pollStatus(d.CheckoutRequestID, 30);
+            return;
+          }
+          unavailable(d.error || d.errorMessage || d.CustomerMessage || "M-Pesa couldn't send the prompt. Please try again.");
+        })
+        .catch(function () {
+          clearTimeout(timer);
+          unavailable("Couldn't reach the payment service. Check your connection and try again.");
+        });
+    });
+
+    // ----- simulation (used when live payments aren't available) -----
+    var simulate = function () {
+      var msisdn = normalise(demoPhone.value) || "254712345678";
+      demoError.textContent = "";
+      demoSimBtn.hidden = true;
+      busy = true;
       demoPay.disabled = true;
       document.getElementById("stk-dots").textContent = "____";
       show("processing");
       setTimeout(function () {
         show("stk");
         document.getElementById("stk-send").focus();
-      }, 1200);
-    });
-
+        document.getElementById("stk-send").setAttribute("data-mask", maskOf(msisdn));
+      }, 1000);
+    };
+    demoSimBtn.addEventListener("click", simulate);
     document.getElementById("stk-send").addEventListener("click", function () {
+      var masked = this.getAttribute("data-mask") || "your number";
       document.getElementById("stk-dots").textContent = "••••";
       setTimeout(function () {
         show("processing");
         setTimeout(function () {
           var letters = "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789", code = "T";
           for (var i = 0; i < 9; i++) code += letters.charAt(Math.floor(Math.random() * letters.length));
-          var now = new Date();
-          var when = now.toLocaleDateString("en-KE", { day: "numeric", month: "numeric", year: "2-digit", timeZone: "Africa/Nairobi" }) +
-            " at " + now.toLocaleTimeString("en-KE", { hour: "numeric", minute: "2-digit", timeZone: "Africa/Nairobi" });
-          document.getElementById("sms-text").textContent = code + " Confirmed. Ksh100.00 paid to MARZLEY TECH on " + when +
-            " from " + masked + ". This is a demo: no money was moved.";
+          smsText.textContent = code + " Confirmed. Ksh1.00 paid to MARZLEY TECH SOLUTIONS from " + masked +
+            ". This was a simulation: no money was moved.";
           show("sms");
+          finish();
           document.getElementById("demo-again").focus();
-        }, 1500);
+        }, 1400);
       }, 400);
     });
     document.getElementById("stk-cancel").addEventListener("click", function () {
-      show("cancelled");
-      document.getElementById("demo-again-2").focus();
+      failWith("Request cancelled by user. No money was deducted.");
     });
     ["demo-again", "demo-again-2"].forEach(function (id) {
       document.getElementById(id).addEventListener("click", function () { resetDemo(); demoPhone.focus(); });

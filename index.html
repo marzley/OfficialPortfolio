@@ -503,32 +503,34 @@
             <div class="wrap demo-grid">
                 <div class="demo-copy reveal">
                     <p class="label">02 — Try it</p>
-                    <h2 id="demo-title">See an M-Pesa checkout in action</h2>
-                    <p>This is the payment flow I build into online shops and systems: the customer enters their number,
-                        gets the M-Pesa prompt on their phone, and both of you get instant confirmation.</p>
+                    <h2 id="demo-title">Try a real M-Pesa payment</h2>
+                    <p>This is the same payment flow I build into online shops and systems. Enter your Safaricom number
+                        and you’ll get a real M-Pesa prompt on your phone; the page confirms the moment you pay.</p>
                     <ol class="demo-steps">
                         <li><strong>Checkout</strong> sends an STK push request to Safaricom.</li>
                         <li><strong>The phone</strong> shows the M-Pesa PIN prompt.</li>
                         <li><strong>Confirmation</strong> arrives by SMS and the order updates automatically.</li>
                     </ol>
-                    <p class="demo-note"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Demo only: no money
-                        moves and nothing you type leaves this page. Never enter a real M-Pesa PIN on a website.</p>
+                    <p class="demo-note"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><span>This is a real
+                        payment of <strong>KSh 1</strong> to Marzley Tech Solutions (Till 6095737). Enter your PIN only in the
+                        M-Pesa prompt on your own phone, never on a website.</span></p>
                 </div>
 
                 <div class="demo-stage reveal">
                     <form class="demo-checkout" id="demo-checkout" novalidate>
                         <div class="demo-shop">
-                            <span class="demo-shop-logo" aria-hidden="true"><i class="fa-solid fa-bag-shopping"></i></span>
+                            <span class="demo-shop-logo" aria-hidden="true"><i class="fa-solid fa-bolt"></i></span>
                             <div>
-                                <strong>Organic Coffee Beans</strong>
-                                <span>Single origin · 250g</span>
+                                <strong>Live M-Pesa test</strong>
+                                <span>Paid to Marzley Tech · Till 6095737</span>
                             </div>
-                            <b>KSh 100</b>
+                            <b>KSh 1</b>
                         </div>
                         <label for="demo-phone">M-Pesa phone number</label>
                         <input id="demo-phone" type="tel" inputmode="numeric" placeholder="0712 345 678" autocomplete="off" />
                         <p class="demo-error" id="demo-error" role="alert"></p>
-                        <button type="submit" class="btn btn-mpesa" id="demo-pay"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> Pay KSh 100 with M-Pesa</button>
+                        <button type="submit" class="btn btn-mpesa" id="demo-pay"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> Pay KSh 1 with M-Pesa</button>
+                        <button type="button" class="demo-sim" id="demo-sim" hidden>See a simulation instead</button>
                     </form>
 
                     <div class="phone" aria-live="polite">
@@ -547,6 +549,12 @@
                                     <button type="button" id="stk-send">Send (demo PIN)</button>
                                 </div>
                             </div>
+                            <div class="phone-live" id="phone-live" hidden>
+                                <i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i>
+                                <p><strong>Check your phone</strong></p>
+                                <p id="live-msg">Enter your M-Pesa PIN in the prompt on your phone to pay KSh 1.</p>
+                                <span class="spinner" aria-hidden="true"></span>
+                            </div>
                             <div class="phone-processing" id="phone-processing" hidden>
                                 <span class="spinner" aria-hidden="true"></span>
                                 <span>Processing payment…</span>
@@ -558,7 +566,7 @@
                             </div>
                             <div class="sms sms-cancel" id="phone-cancelled" hidden>
                                 <p class="sms-from">MPESA</p>
-                                <p>Request cancelled by user. No money was deducted.</p>
+                                <p id="cancel-text">Request cancelled by user. No money was deducted.</p>
                                 <button type="button" class="sms-again" id="demo-again-2">Try again</button>
                             </div>
                         </div>
