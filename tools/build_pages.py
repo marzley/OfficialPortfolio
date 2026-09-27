@@ -56,7 +56,7 @@ PAGES = [
         "label": "Pricing",
         "title": "Website Packages & Prices in Kenya | Marzley Tech Solutions",
         "description": "Website packages from KSh 15,000: landing pages, small business, e-commerce and corporate sites, plus hosting, SEO and branding add-ons.",
-        "sections": ["pricing", "deposit", "faq"],
+        "sections": ["pricing", "compare", "care", "deposit", "faq"],
     },
     {
         "slug": "contact",
@@ -80,7 +80,7 @@ HOME_OF = {
     "services": "services", "demo": "services#demo", "process": "process",
     "planner": "process#planner", "pricing": "pricing", "faq": "contact#faq",
     "contact": "contact", "cases": "work#cases", "deposit": "pricing#deposit",
-    "booking": "contact#booking", "training": "training",
+    "booking": "contact#booking", "training": "training", "compare": "pricing#compare", "care": "pricing#care",
 }
 
 

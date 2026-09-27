@@ -1952,6 +1952,143 @@ a {
   color: var(--blue);
 }
 
+/* ---------- package comparison ---------- */
+.compare-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.compare-table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.compare-table th,
+.compare-table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  text-align: center;
+}
+
+.compare-table tbody th,
+.compare-table tfoot th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.compare-table thead th {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--heading);
+}
+
+.compare-table .is-featured {
+  background: var(--current-bg);
+}
+
+.compare-table td .fa-check {
+  color: var(--green);
+  font-size: 17px;
+}
+
+.compare-table .dash {
+  color: var(--fg-faint);
+}
+
+.compare-table tfoot td,
+.compare-table tfoot th {
+  border-bottom: 0;
+  font-weight: 800;
+  color: var(--heading);
+}
+
+/* ---------- care plans ---------- */
+.care-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+.care-plan {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.care-plan.is-featured {
+  border: 2px solid var(--amber);
+}
+
+.care-plan .tag {
+  position: absolute;
+  top: -12px;
+  left: 24px;
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: var(--amber);
+  color: var(--navy);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.care-plan h3 {
+  margin: 0;
+  font-size: 21px;
+  color: var(--heading);
+}
+
+.care-price {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--heading);
+}
+
+.care-price small {
+  margin-left: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--fg-muted);
+}
+
+.care-plan ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--fg);
+}
+
+.care-plan li::before {
+  content: "✓";
+  margin-right: 8px;
+  font-weight: 800;
+  color: var(--green);
+}
+
+.deposit-for {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--current-bg);
+  color: var(--heading);
+  font-weight: 700;
+}
+
 /* ---------- deposit ---------- */
 .deposit-grid,
 .booking-grid {

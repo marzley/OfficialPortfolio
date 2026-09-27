@@ -1424,6 +1424,28 @@
       var amount = depAmount();
       depPayText.textContent = amount >= 1000 ? "Pay " + ksh(amount) + " with M-Pesa" : "Pay deposit with M-Pesa";
     };
+    // Care plans: "Start plan" fills this form with the plan's first month
+    var depFor = document.getElementById("deposit-for");
+    var carePlan = null;
+    document.querySelectorAll("[data-care-plan]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        carePlan = { name: btn.getAttribute("data-care-plan"), amount: Number(btn.getAttribute("data-care-amount")) };
+        depForm.querySelector('input[name="deposit-amount"][value="other"]').checked = true;
+        depOther.value = String(carePlan.amount);
+        depFor.textContent = "Paying for: " + carePlan.name + ", first month (" + ksh(carePlan.amount) + ")";
+        depFor.hidden = false;
+        depSync();
+        document.getElementById("deposit").scrollIntoView({ behavior: motionOff() ? "auto" : "smooth", block: "start" });
+        setTimeout(function () { depName.focus({ preventScroll: true }); }, motionOff() ? 0 : 600);
+      });
+    });
+    var clearPlan = function () {
+      if (!carePlan) return;
+      if (depAmount() !== carePlan.amount) { carePlan = null; depFor.hidden = true; }
+    };
+    depForm.addEventListener("change", clearPlan);
+    depOther.addEventListener("input", clearPlan);
+
     depForm.addEventListener("change", depSync);
     depOther.addEventListener("input", depSync);
     depSync();
@@ -1459,7 +1481,7 @@
             depShow("ok", '<i class="fa-solid fa-circle-check" aria-hidden="true"></i><div><strong>Deposit received. Thank you!</strong>' +
               "<span>M-Pesa receipt " + receipt.replace(/[^A-Z0-9]/gi, "") + " for " + ksh(s.amount || amount) + ". We’ll be in touch shortly to schedule your project.</span>" +
               '<a class="btn btn-wa" target="_blank" rel="noopener noreferrer" href="' +
-              waLink("Hello Marzley, I've paid my project deposit of " + ksh(s.amount || amount) + " (receipt " + receipt + "). Name: " + name + ".") +
+              waLink("Hello Marzley, I've paid " + (carePlan ? "the first month of " + carePlan.name : "my project deposit") + " (" + ksh(s.amount || amount) + ", receipt " + receipt + "). Name: " + name + ".") +
               '"><i class="fab fa-whatsapp" aria-hidden="true"></i> Let us know on WhatsApp</a></div>');
             depDone();
           } else if (s.status === "failed") {
@@ -1495,7 +1517,7 @@
       var body = new FormData();
       body.append("phone", "0" + msisdn.slice(3));
       body.append("amount", String(amount));
-      body.append("purpose", "deposit");
+      body.append("purpose", carePlan ? "care" : "deposit");
       fetch("stkpush.php", { method: "POST", body: body, headers: { Accept: "application/json" } })
         .then(function (res) { return res.json().then(function (d) { return { ok: res.ok, d: d }; }); })
         .then(function (r) {
