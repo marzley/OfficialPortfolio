@@ -226,46 +226,92 @@
 
   initWorkList();
 
-  /* ---------- contact form (Formspree) ---------- */
+  /* ---------- contact form (Formspree, with WhatsApp / email fallback) ---------- */
   var form = document.getElementById("booking-form");
   if (form) {
+    var statusBox = document.getElementById("booking-status");
     var feedback = document.getElementById("booking-feedback");
+    var fallback = document.getElementById("booking-fallback");
     var submit = document.getElementById("booking-submit");
+    var waLinks = [document.getElementById("booking-wa"), document.getElementById("fallback-wa")];
+    var mailLink = document.getElementById("fallback-mail");
+    var WA_NUMBER = "254745789590";
+    var EMAIL = "marzleytechsolutions@gmail.com";
+
+    var fieldValue = function (name) {
+      var el = form.elements[name];
+      return el && el.value ? el.value.trim() : "";
+    };
+
+    var buildMessage = function () {
+      var lines = ["Hello Marzley, I'd like to request a service."];
+      if (fieldValue("name")) lines.push("Name: " + fieldValue("name"));
+      if (fieldValue("_replyto")) lines.push("Email: " + fieldValue("_replyto"));
+      if (fieldValue("phone")) lines.push("Phone: " + fieldValue("phone"));
+      if (fieldValue("service")) lines.push("Service: " + fieldValue("service"));
+      if (fieldValue("message")) lines.push("", fieldValue("message"));
+      return lines.join("\n");
+    };
+
+    var refreshLinks = function () {
+      var text = encodeURIComponent(buildMessage());
+      waLinks.forEach(function (a) { if (a) a.href = "https://wa.me/" + WA_NUMBER + "?text=" + text; });
+      if (mailLink) {
+        var subject = encodeURIComponent("Service request" + (fieldValue("service") ? ": " + fieldValue("service") : ""));
+        mailLink.href = "mailto:" + EMAIL + "?subject=" + subject + "&body=" + text;
+      }
+    };
+
+    var showStatus = function (text, kind, withFallback) {
+      statusBox.hidden = false;
+      feedback.textContent = text;
+      feedback.className = "form-feedback" + (kind ? " " + kind : "");
+      fallback.hidden = !withFallback;
+      if (waLinks[0]) waLinks[0].hidden = !!withFallback;
+    };
+
+    form.addEventListener("input", refreshLinks);
+    form.addEventListener("change", refreshLinks);
+    refreshLinks();
+
     form.addEventListener("submit", function (event) {
       event.preventDefault();
       if (!form.checkValidity()) {
         form.reportValidity();
         return;
       }
-      feedback.textContent = "";
-      feedback.className = "form-feedback";
+      refreshLinks();
+      statusBox.hidden = true;
+      if (waLinks[0]) waLinks[0].hidden = false;
       submit.disabled = true;
       submit.textContent = "Sending…";
+
+      var controller = "AbortController" in window ? new AbortController() : null;
+      var timer = setTimeout(function () { if (controller) controller.abort(); }, 15000);
 
       fetch(form.action, {
         method: "POST",
         body: new FormData(form),
-        headers: { Accept: "application/json" }
+        headers: { Accept: "application/json" },
+        signal: controller ? controller.signal : undefined
       })
         .then(function (response) {
           if (response.ok) {
             form.reset();
-            feedback.textContent = "Request sent. I will contact you shortly.";
-            feedback.className = "form-feedback ok";
+            refreshLinks();
+            showStatus("Request sent. I'll get back to you shortly.", "ok", false);
             return;
           }
-          return response.json().then(function (err) {
-            feedback.textContent = err && err.errors
-              ? err.errors.map(function (e) { return e.message; }).join(", ")
-              : "Something went wrong. Please try again or reach me on WhatsApp.";
-            feedback.className = "form-feedback err";
+          return response.json().catch(function () { return null; }).then(function (err) {
+            var detail = err && err.errors ? err.errors.map(function (e) { return e.message; }).join(", ") + ". " : "";
+            showStatus(detail + "The form couldn't send your request. Your message is still here, so send it on WhatsApp or by email instead:", "err", true);
           });
         })
         .catch(function () {
-          feedback.textContent = "Network error. Check your connection and try again.";
-          feedback.className = "form-feedback err";
+          showStatus("The form couldn't connect. Your message is still here, so send it on WhatsApp or by email instead:", "err", true);
         })
         .then(function () {
+          clearTimeout(timer);
           submit.disabled = false;
           submit.textContent = "Send request";
         });
