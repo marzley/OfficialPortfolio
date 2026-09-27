@@ -519,6 +519,11 @@ a {
   padding: clamp(56px, 8vw, 110px) 0;
 }
 
+/* Inner pages have no hero, so the first section clears the fixed header */
+.subpage main > .section:first-child {
+  padding-top: calc(clamp(56px, 8vw, 110px) + 64px);
+}
+
 .section + .section {
   border-top: 1px solid var(--line);
 }
@@ -535,7 +540,8 @@ a {
   margin: 0 0 10px;
 }
 
-.section-head h2 {
+.section-head h2,
+.section-head h1 {
   margin: 0;
   font-size: clamp(30px, 4vw, 52px);
   font-weight: 800;

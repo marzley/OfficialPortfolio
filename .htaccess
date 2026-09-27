@@ -2,7 +2,7 @@
 # Needs an active SSL certificate (cPanel > SSL/TLS Status > Run AutoSSL)
 # before the HTTPS redirect below is switched on.
 
-Options -Indexes
+Options -Indexes -MultiViews
 DirectoryIndex index.html
 ErrorDocument 404 /index.html
 
@@ -21,18 +21,22 @@ ErrorDocument 404 /index.html
     RewriteCond %{THE_REQUEST} \s/index\.html[\s?] [NC]
     RewriteRule ^index\.html$ / [L,R=301]
 
-    # The site is one page now; send old page addresses (still in Google and
-    # old links) to the matching section of the homepage
-    RewriteRule ^about(\.html|/)?$ /#about [NE,L,R=301]
-    RewriteRule ^service(\.html|/)?$ /#services [NE,L,R=301]
-    RewriteRule ^booking(\.html|/)?$ /#pricing [NE,L,R=301]
-    RewriteRule ^testimonial(\.html|/)?$ /#testimonials [NE,L,R=301]
-    RewriteRule ^contact(\.html|/)?$ /#contact [NE,L,R=301]
+    # Clean page addresses: /about serves about.html, and about.html or
+    # /about/ redirect to /about so each page has one address
+    RewriteCond %{THE_REQUEST} \s/(work|about|services|process|pricing|contact)\.html[\s?] [NC]
+    RewriteRule ^ /%1 [L,R=301]
+    RewriteRule ^(work|about|services|process|pricing|contact)/$ /$1 [L,R=301]
+    RewriteRule ^(work|about|services|process|pricing|contact)$ $1.html [L]
+
+    # Old page addresses (still in Google and old links)
+    RewriteRule ^service(\.html|/)?$ /services [L,R=301]
+    RewriteRule ^booking(\.html|/)?$ /pricing [L,R=301]
+    RewriteRule ^testimonial(\.html|/)?$ /work#testimonials [NE,L,R=301]
     RewriteRule ^(marzley|training|404)(\.html|/)?$ / [L,R=301]
 </IfModule>
 
 # ---------- Keep private files private ----------
-<FilesMatch "\.(log|md|scss|ini|sh|bak|sql|exe)$">
+<FilesMatch "\.(log|md|scss|ini|sh|bak|sql|exe|py)$">
     Require all denied
 </FilesMatch>
 <FilesMatch "^(\.git.*|\.env.*|mpesa-config.*\.php)$">

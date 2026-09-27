@@ -12,6 +12,11 @@
 3. Add `img/projects/Supreme hms.png` (the Supreme HMS screenshot). Until it exists, that
    project hides itself on the homepage.
 
+## Editing pages
+`work.html`, `about.html`, `services.html`, `process.html`, `pricing.html` and `contact.html`
+are built from the sections of `index.html`. After editing `index.html`, run
+`python3 tools/build_pages.py` and upload the homepage and those six files together.
+
 ## Upload
 Upload the whole folder into `public_html`, including the hidden `.htaccess` file.
 
@@ -23,7 +28,8 @@ Upload the whole folder into `public_html`, including the hidden `.htaccess` fil
    - https://marzleytechsolutions.co.ke/robots.txt
    - https://marzleytechsolutions.co.ke/sitemap.xml
    - https://marzleytechsolutions.co.ke/some-missing-page (should show the homepage)
-   - https://marzleytechsolutions.co.ke/about.html (should jump to the About section)
+   - https://marzleytechsolutions.co.ke/about (and /work, /services, /process, /pricing, /contact)
+   - https://marzleytechsolutions.co.ke/about.html (should redirect to /about)
 3. **Google Search Console** (https://search.google.com/search-console): add the domain,
    verify it with the DNS TXT record Google gives you, then submit `sitemap.xml`.
 4. **Google Business Profile** (https://business.google.com): create or claim

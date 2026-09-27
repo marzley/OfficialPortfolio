@@ -880,9 +880,9 @@
       corporate: { name: "Corporate website or custom system", price: 60000, items: ["Custom design, unlimited pages", "Database, CRM & system integrations", "Admin tools and dashboards"] }
     };
     var EXAMPLES = {
-      landing: { name: "Personal Portfolio", href: "#work" },
-      business: { name: "Job Cyber", href: "#work" },
-      ecommerce: { name: "Marzley E-Commerce", href: "#work" },
+      landing: { name: "Personal Portfolio", href: "work" },
+      business: { name: "Job Cyber", href: "work" },
+      ecommerce: { name: "Marzley E-Commerce", href: "work" },
       corporate: { name: "CBET Planner", href: "https://cbetplanner.co.ke/" }
     };
 
