@@ -1303,6 +1303,71 @@
     calc.addEventListener("change", updateCalc);
     calc.addEventListener("submit", function (e) { e.preventDefault(); });
     updateCalc();
+
+    // Printable quote: opens in a new tab, where Print > Save as PDF saves it
+    var pdfBtn = document.getElementById("calc-pdf");
+    var nameEl = document.getElementById("calc-name");
+    var esc = function (v) {
+      return String(v).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; });
+    };
+    if (pdfBtn) pdfBtn.addEventListener("click", function () {
+      var pkg = calc.querySelector('input[name="pkg"]:checked');
+      var items = [];
+      if (pkg) items.push({ name: pkg.getAttribute("data-name"), price: Number(pkg.value) });
+      calc.querySelectorAll('input[name="addon"]:checked').forEach(function (a) {
+        items.push({ name: a.getAttribute("data-name"), price: Number(a.value) });
+      });
+      var total = items.reduce(function (sum, i) { return sum + i.price; }, 0);
+      var now = new Date();
+      var valid = new Date(now.getTime() + 30 * 24 * 3600 * 1000);
+      var day = function (d) { return d.toLocaleDateString("en-KE", { day: "numeric", month: "long", year: "numeric" }); };
+      var pad = function (n) { return (n < 10 ? "0" : "") + n; };
+      var number = "MTS-" + String(now.getFullYear()).slice(2) + pad(now.getMonth() + 1) + pad(now.getDate()) + "-" +
+        String(Math.floor(1000 + Math.random() * 9000));
+      var client = (nameEl && nameEl.value.trim()) || "Valued client";
+      var logo = new URL("img/brand/logo-256.webp", document.baseURI).href;
+      var rows = items.map(function (i) {
+        return "<tr><td>" + esc(i.name) + "</td><td class=\"r\">" + esc(fmt(i.price)) + "</td></tr>";
+      }).join("");
+      var doc = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">" +
+        "<title>Quote " + number + " | Marzley Tech Solutions</title><style>" +
+        "*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#0f172a;background:#f1f5f9}" +
+        ".page{max-width:800px;margin:24px auto;background:#fff;padding:48px;border-radius:14px;box-shadow:0 10px 30px rgba(11,27,53,.12)}" +
+        ".top{display:flex;justify-content:space-between;align-items:center;gap:24px;border-bottom:4px solid #ffb800;padding-bottom:24px}" +
+        ".brand{display:flex;align-items:center;gap:14px}.brand img{width:64px;height:64px;border-radius:50%}" +
+        ".brand b{font-size:22px;color:#0b1b35}.brand b span{color:#d49a00}.brand small{display:block;color:#475569;font-size:13px}" +
+        "h1{margin:0;font-size:30px;color:#0b1b35;text-align:right}.muted{color:#475569;font-size:14px}" +
+        ".meta{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:28px 0}.meta div{background:#f8fafc;border-radius:10px;padding:14px 16px}" +
+        ".meta b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#a16207;margin-bottom:4px}" +
+        "table{width:100%;border-collapse:collapse;margin-top:8px}th,td{padding:14px 12px;border-bottom:1px solid #e2e8f0;text-align:left}" +
+        "th{background:#0b1b35;color:#fff;font-size:13px;letter-spacing:.06em;text-transform:uppercase}.r{text-align:right;white-space:nowrap}" +
+        "tfoot td{font-weight:800;font-size:20px;border-bottom:0;color:#0b1b35}tfoot td.r{color:#0b1b35;background:#fff7e0}" +
+        ".notes{margin-top:28px;font-size:14px;color:#475569;line-height:1.6}.notes li{margin-bottom:6px}" +
+        ".foot{margin-top:32px;padding-top:18px;border-top:1px solid #e2e8f0;display:flex;flex-wrap:wrap;gap:8px 24px;font-size:13px;color:#475569}" +
+        ".bar{max-width:800px;margin:16px auto 0;display:flex;gap:10px;justify-content:flex-end;padding:0 16px}" +
+        ".bar button{border:0;border-radius:999px;padding:12px 22px;font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;background:#ffb800;color:#0b1b35}" +
+        "@media(max-width:600px){.page{margin:12px;padding:24px}.top{flex-direction:column;align-items:flex-start}h1{text-align:left}.meta{grid-template-columns:1fr}}" +
+        "@media print{body{background:#fff}.page{box-shadow:none;margin:0;max-width:none;border-radius:0}.bar{display:none}th{-webkit-print-color-adjust:exact;print-color-adjust:exact}tfoot td.r{-webkit-print-color-adjust:exact;print-color-adjust:exact}}" +
+        "</style></head><body>" +
+        "<div class=\"bar\"><button type=\"button\" onclick=\"window.print()\">Save as PDF / Print</button></div>" +
+        "<div class=\"page\"><div class=\"top\"><div class=\"brand\"><img src=\"" + esc(logo) + "\" alt=\"\">" +
+        "<div><b>Marzley<span>Tech</span> Solutions</b><small>Technology for real solutions</small></div></div>" +
+        "<div><h1>Quote</h1><div class=\"muted\">" + number + "</div></div></div>" +
+        "<div class=\"meta\"><div><b>Prepared for</b>" + esc(client) + "</div><div><b>Date</b>" + day(now) +
+        "<br><span class=\"muted\">Valid until " + day(valid) + "</span></div></div>" +
+        "<table><thead><tr><th>Item</th><th class=\"r\">Price</th></tr></thead><tbody>" + rows + "</tbody>" +
+        "<tfoot><tr><td>Estimated total (from)</td><td class=\"r\">" + esc(fmt(total)) + "</td></tr></tfoot></table>" +
+        "<ul class=\"notes\"><li>This is a starting estimate. The final price depends on your exact requirements and is confirmed before work begins.</li>" +
+        "<li>Domain and hosting renew yearly. Other add-ons are one-off costs.</li>" +
+        "<li>Payment by M-Pesa (Till 6095737), bank transfer or card.</li></ul>" +
+        "<div class=\"foot\"><span>+254 745 789 590</span><span>marzleytechsolutionltd@gmail.com</span><span>marzleytechsolutions.co.ke</span><span>Kenya · Open 24/7</span></div>" +
+        "</div><script>window.addEventListener(\"load\",function(){setTimeout(function(){window.focus();window.print();},300);});<\/script></body></html>";
+      var w = window.open("", "_blank");
+      if (!w) { alert("Please allow pop-ups for this site to download your quote."); return; }
+      w.document.open();
+      w.document.write(doc);
+      w.document.close();
+    });
   }
 
   /* ---------- 3D tilt with glare ---------- */
