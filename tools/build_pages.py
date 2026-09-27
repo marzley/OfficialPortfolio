@@ -80,6 +80,14 @@ PAGES = [
         "sections": ["referral", "testimonials"],
     },
     {
+        "slug": "faq",
+        "label": "FAQ",
+        "title": "FAQ: Websites, M-Pesa, Systems & Training | Marzley Tech Solutions",
+        "description": "Answers to common questions about website timelines, ownership, M-Pesa payments, custom systems, training certificates and support in Kenya.",
+        "sections": ["faqs"],
+        "faq_schema": True,
+    },
+    {
         "slug": "training",
         "label": "Training",
         "title": "IT Training & Mentorship in Kenya: Web Development, Programming, Design | Marzley Tech",
@@ -94,7 +102,7 @@ HOME_OF = {
     "services": "services", "demo": "services#demo", "process": "process",
     "planner": "process#planner", "pricing": "pricing", "faq": "contact#faq",
     "contact": "contact", "cases": "work#cases", "deposit": "pricing#deposit",
-    "booking": "contact#booking", "training": "training", "compare": "pricing#compare", "care": "pricing#care", "safe": "services#safe", "integrations": "services#integrations", "check": "website-check", "referral": "referrals",
+    "booking": "contact#booking", "training": "training", "compare": "pricing#compare", "care": "pricing#care", "safe": "services#safe", "integrations": "services#integrations", "check": "website-check", "referral": "referrals", "faqs": "faq",
 }
 
 
@@ -184,6 +192,12 @@ def build(page, html, sections):
     body = re.sub(r'(<p class="label">)\d+ — ', r'\1', body)
     nodes = [web_page(page["slug"], page["title"], page["description"]),
              breadcrumbs((page["label"], page["slug"]))]
+    if page.get("faq_schema"):
+        strip = lambda x: htmllib.unescape(re.sub(r"<[^>]+>", "", x)).strip()
+        pairs = re.findall(r"<details data-faq>\s*<summary>(.*?)</summary>\s*<p>(.*?)</p>", body, re.S)
+        nodes.append({"@type": "FAQPage", "@id": SITE + page["slug"] + "#faq",
+                      "mainEntity": [{"@type": "Question", "name": strip(q),
+                                      "acceptedAnswer": {"@type": "Answer", "text": strip(a)}} for q, a in pairs]})
     return make_page(html, page["slug"], page["title"], page["description"], body, nodes,
                      page["slug"], page["sections"])
 
@@ -400,7 +414,7 @@ def write_sitemap(posts, cases=()):
         ("", "weekly", "1.0", ["img/brand/og-image.jpg", "img/kelvin/office.jpg", "img/kelvin/office-square.jpg"]),
         ("work", "weekly", "0.9", []), ("services", "monthly", "0.9", []), ("pricing", "monthly", "0.9", []),
         ("about", "monthly", "0.8", []), ("contact", "monthly", "0.8", []), ("process", "monthly", "0.7", []),
-        ("training", "monthly", "0.8", []), ("website-check", "monthly", "0.8", []), ("referrals", "monthly", "0.6", []), ("blog", "weekly", "0.8", []), ("kiswahili", "monthly", "0.7", []),
+        ("training", "monthly", "0.8", []), ("website-check", "monthly", "0.8", []), ("faq", "monthly", "0.7", []), ("referrals", "monthly", "0.6", []), ("blog", "weekly", "0.8", []), ("kiswahili", "monthly", "0.7", []),
     ] + [(p["slug"], "monthly", "0.8", []) for p in cases] + [(p["slug"], "monthly", "0.7", []) for p in posts]
     out = ['<?xml version="1.0" encoding="UTF-8"?>',
            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',

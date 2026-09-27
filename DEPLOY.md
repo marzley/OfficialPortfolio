@@ -29,12 +29,21 @@ the new copy.
   with a cookie banner; `googleReviewUrl` and `googleProfileUrl` show a "Leave a Google review"
   prompt under the testimonials. Leave them empty to keep these off.
 
+- `data/site.json` `banner`: a short offer shown at the top of every page, e.g.
+  `{"text": "Back-to-school offer: 20% off college websites", "link": "pricing", "until": "2026-12-31"}`.
+- `data/videos.json`: YouTube IDs of client video testimonials (shown under What people say).
+- `data/certifications.json`: your real certificates (shown in About).
+- `data/showcase.json`: student projects (shown on the Training page).
+- Care plan prices are in `content/sections.html` (search for "Care plans"); the referral
+  reward (KSh 2,000) is on the Referrals page and in the portal.
+
 ## Blog, case studies and pages
 - New blog post: add a file to `content/blog/` (copy an existing one: the comment at the top
   holds the title, description, date and tag), then run `python3 tools/build_pages.py`.
 - Case studies live in `content/case-studies/`, the Kiswahili page in `content/kiswahili.html`,
   and the deposit, booking and training sections in `content/sections.html`.
-- `content/` and `tools/` do not need uploading.
+- `content/` and `tools/` do not need uploading. `content/google-business-posts.md` has six
+  ready-to-paste Google Business Profile posts.
 
 ## Client portal (/portal)
 1. cPanel > MySQL Databases: create a database and user, and give the user all privileges.
@@ -44,9 +53,16 @@ the new copy.
    `public_html`, next to `mpesa-config.php`.
 4. Google Cloud Console > your OAuth client: under Authorized JavaScript origins add
    `https://marzleytechsolutions.co.ke`.
-5. Open https://marzleytechsolutions.co.ke/portal/ and sign in with an admin email. Add each
+5. For email alerts, create an email account such as portal@marzleytechsolutions.co.ke in
+   cPanel > Email Accounts and put it in `mail_from`.
+6. Open https://marzleytechsolutions.co.ke/portal/ and sign in with an admin email. Add each
    client with the Google email they use; they can then sign in and see only their own projects,
    updates, files and invoices, and pay invoices by M-Pesa.
+7. Staff can also: request approvals, answer support requests, create courses with lessons,
+   enrol students (add them under People first) and issue certificates. Anyone can check a
+   certificate at /portal/verify.php.
+
+The portal and website check need PHP 8 or newer (cPanel > Select PHP Version).
 
 ## Upload
 Upload the whole folder into `public_html`, including the hidden `.htaccess` file.
