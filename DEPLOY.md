@@ -12,6 +12,20 @@
 3. Add `img/projects/Supreme hms.png` (the Supreme HMS screenshot). Until it exists, that
    project hides itself on the homepage.
 
+## Building after edits
+Run `python3 tools/build_pages.py` after changing `index.html`, `css/home.css`, `js/home.js` or
+anything in `content/`. It rebuilds every page, the sitemap, and the minified
+`css/home.min.css` and `js/home.min.js` the pages load. Install esbuild (`npm i -g esbuild`) so
+those are minified; without it they are plain copies, which still work.
+To refresh the share images after adding pages: `npm i -D playwright`, then
+`node tools/make_og_images.js`, then run the build again.
+
+## Security policy
+`.htaccess` sends a Content-Security-Policy: pages may only load scripts from this site, Google
+sign-in, Paystack and Google Analytics, and connect to Formspree. If you add another outside
+service (a chat widget, a map, a new form service), add its address to that line or it will be
+blocked. Don't put `<script>` code directly inside pages; put it in a file in `js/`.
+
 ## Editing pages
 `work.html`, `about.html`, `services.html`, `process.html`, `pricing.html` and `contact.html`
 are built from the sections of `index.html`. After editing `index.html`, run

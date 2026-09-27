@@ -12,7 +12,7 @@
   --navy: #0b1b35;
   --navy-2: #1e3a7a;
   --amber: #ffb800;
-  --amber-text: #a16207; /* amber that passes contrast on white for small text */
+  --amber-text: #955a06; /* amber that passes contrast (4.5:1+) on white and light grey for small text */
   --blue: #2563eb;
   --green: #059669;
   --bg: #f1f5f9;
@@ -169,6 +169,10 @@ a {
 }
 
 .brand .accent {
+  color: var(--amber-text);
+}
+
+[data-theme="dark"] .brand .accent {
   color: var(--amber);
 }
 
@@ -1861,6 +1865,10 @@ a {
   max-width: 720px;
 }
 
+.sw-contact .k {
+  color: var(--amber-text);
+}
+
 @media (max-width: 900px) {
   .sw-hero-grid {
     grid-template-columns: 1fr;
@@ -3119,7 +3127,7 @@ a.cert-title {
   margin-top: 6px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--fg-faint);
+  color: var(--fg-muted);
 }
 
 .crumbs {
@@ -3913,11 +3921,11 @@ body:not(.subpage) .work-list > li:nth-child(n + 7) {
   min-height: 52px;
   padding: 0 20px 0 16px;
   border-radius: 999px;
-  background: #25d366;
+  background: #0d7a3c;
   color: #fff;
   font-weight: 700;
   font-size: 15px;
-  box-shadow: 0 12px 30px rgba(37, 211, 102, 0.35);
+  box-shadow: 0 12px 30px rgba(13, 122, 60, 0.35);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -3927,7 +3935,7 @@ body:not(.subpage) .work-list > li:nth-child(n + 7) {
 
 .wa-float:hover {
   transform: translateY(-2px);
-  box-shadow: 0 16px 36px rgba(37, 211, 102, 0.45);
+  box-shadow: 0 16px 36px rgba(13, 122, 60, 0.45);
 }
 
 @media (max-width: 700px) {
@@ -4687,13 +4695,13 @@ body:not(.subpage) .work-list > li:nth-child(n + 7) {
 
 /* ---------- contact form: WhatsApp button + fallback ---------- */
 .btn-wa {
-  background: #25d366;
+  background: #0d7a3c;
   color: #fff;
 }
 
 .btn-wa:hover,
 .btn-wa:focus-visible {
-  background: #1ebe5b;
+  background: #0a6431;
   color: #fff;
 }
 
@@ -5268,13 +5276,13 @@ html.a11y-cursor * {
 }
 
 .btn-mpesa {
-  background: #16a34a;
+  background: #15803d;
   color: #fff;
 }
 
 .btn-mpesa:hover,
 .btn-mpesa:focus-visible {
-  background: #15803d;
+  background: #116631;
 }
 
 .btn-mpesa:disabled {
