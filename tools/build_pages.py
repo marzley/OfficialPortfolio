@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parent.parent
 POSTS_DIR = ROOT / "content" / "blog"
 CASES_DIR = ROOT / "content" / "case-studies"
 EXTRA_SECTIONS = ROOT / "content" / "sections.html"
+KISWAHILI = ROOT / "content" / "kiswahili.html"
 SITE = "https://marzleytechsolutions.co.ke/"
 
 PAGES = [
@@ -113,6 +114,7 @@ def make_page(html, slug, title, description, main_html, ld_nodes, current, on_p
     meta(r'(<meta name="twitter:title" content=")[^"]*(")', title_a)
     meta(r'(<meta name="twitter:description" content=")[^"]*(")', desc_a)
     html = re.sub(r' *<link rel="preload" as="image"[^>]*>\n', "", html)
+    html = re.sub(r' *<link rel="alternate" hreflang="[^"]*"[^>]*>\n', "", html)
 
     graph = {"@context": "https://schema.org", "@graph": ld_nodes}
     ld = json.dumps(graph, indent=4, ensure_ascii=False).replace("\n", "\n    ")
@@ -338,6 +340,44 @@ def build_post(html, post, posts, kind="blog"):
     return page.replace('<meta property="og:type" content="website" />', '<meta property="og:type" content="article" />', 1)
 
 
+# ---------- Kiswahili ----------
+
+SW_NAV = [("Home", "Nyumbani"), ("Work", "Kazi"), ("About", "Kuhusu"), ("Services", "Huduma"),
+          ("Process", "Mchakato"), ("Pricing", "Bei"), ("Blog", "Blogu"), ("Contact", "Wasiliana")]
+
+
+def build_kiswahili(html):
+    text = KISWAHILI.read_text(encoding="utf-8")
+    m = re.match(r"\s*<!--(.*?)-->\s*(.*)", text, re.S)
+    info = {k.strip(): v.strip() for k, v in (line.split(":", 1) for line in m.group(1).strip().splitlines() if ":" in line)}
+    main_html = m.group(2).rstrip() + "\n"
+    ids = re.findall(r'<section class="section[^"]*" id="([a-z]+)"', main_html)
+    nodes = [dict(web_page("kiswahili", info["title"], info["description"]), inLanguage="sw-KE"),
+             breadcrumbs(("Kiswahili", "kiswahili"))]
+    page = make_page(html, "kiswahili", info["title"], info["description"], main_html, nodes, None, ids)
+    page = page.replace('<html lang="en"', '<html lang="sw"', 1)
+    page = page.replace('<meta property="og:locale" content="en_KE" />', '<meta property="og:locale" content="sw_KE" />', 1)
+    page = page.replace('    <link rel="canonical" href="%skiswahili" />\n' % SITE,
+                        '    <link rel="canonical" href="%skiswahili" />\n'
+                        '    <link rel="alternate" hreflang="en" href="%s" />\n'
+                        '    <link rel="alternate" hreflang="sw" href="%skiswahili" />\n'
+                        '    <link rel="alternate" hreflang="x-default" href="%s" />\n' % (SITE, SITE, SITE, SITE), 1)
+    nav_start = page.index('<nav class="nav" id="site-nav"')
+    nav_end = page.index("</nav>", nav_start)
+    nav = page[nav_start:nav_end]
+    for en, sw in SW_NAV:
+        nav = nav.replace(">%s</a>" % en, ">%s</a>" % sw, 1)
+    nav = nav.replace('aria-label="Main"', 'aria-label="Menyu kuu"', 1)
+    page = page[:nav_start] + nav + page[nav_end:]
+    page = page.replace(">Skip to content</a>", ">Ruka hadi maudhui</a>", 1)
+    page = page.replace('<span class="dot"></span>Available for hire</a>', '<span class="dot"></span>Tunapatikana</a>', 1)
+    page = page.replace('<span class="dot" aria-hidden="true"></span>Available for hire</a>',
+                        '<span class="dot" aria-hidden="true"></span>Tunapatikana</a>', 1)
+    page = page.replace('<button class="menu-toggle" type="button" aria-controls="site-nav" aria-expanded="false">Menu</button>',
+                        '<button class="menu-toggle" type="button" aria-controls="site-nav" aria-expanded="false">Menyu</button>', 1)
+    return page
+
+
 # ---------- sitemap ----------
 
 def write_sitemap(posts, cases=()):
@@ -346,7 +386,7 @@ def write_sitemap(posts, cases=()):
         ("", "weekly", "1.0", ["img/brand/og-image.jpg", "img/kelvin/office.jpg", "img/kelvin/office-square.jpg"]),
         ("work", "weekly", "0.9", []), ("services", "monthly", "0.9", []), ("pricing", "monthly", "0.9", []),
         ("about", "monthly", "0.8", []), ("contact", "monthly", "0.8", []), ("process", "monthly", "0.7", []),
-        ("training", "monthly", "0.8", []), ("blog", "weekly", "0.8", []),
+        ("training", "monthly", "0.8", []), ("blog", "weekly", "0.8", []), ("kiswahili", "monthly", "0.7", []),
     ] + [(p["slug"], "monthly", "0.8", []) for p in cases] + [(p["slug"], "monthly", "0.7", []) for p in posts]
     out = ['<?xml version="1.0" encoding="UTF-8"?>',
            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',
@@ -386,6 +426,7 @@ def main():
     cases = read_posts(CASES_DIR)
     for case in cases:
         write(case["slug"] + ".html", build_post(home, case, cases, kind="case"))
+    write("kiswahili.html", build_kiswahili(home))
     write_sitemap(posts, cases)
     print("wrote sitemap.xml")
 

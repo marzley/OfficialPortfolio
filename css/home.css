@@ -1749,6 +1749,119 @@ a {
 }
 
 /* ---------- floating WhatsApp ---------- */
+/* ---------- Kiswahili page ---------- */
+.sw-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
+}
+
+.sw-hero h1 {
+  margin: 10px 0 18px;
+  font-size: clamp(36px, 5.5vw, 64px);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  color: var(--heading);
+  text-wrap: balance;
+}
+
+.sw-lede {
+  max-width: 56ch;
+  margin: 0 0 28px;
+  font-size: 18px;
+  color: var(--fg-muted);
+}
+
+.sw-switch {
+  margin: 24px 0 0;
+  font-size: 14px;
+}
+
+.sw-switch a,
+.sw-note a {
+  color: var(--blue);
+  font-weight: 700;
+}
+
+.sw-photo {
+  margin: 0;
+  position: relative;
+  overflow: hidden;
+  border: 3px solid var(--amber);
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
+}
+
+.sw-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+.sw-photo figcaption {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.sw-prices {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.sw-prices li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--line);
+  color: var(--fg);
+}
+
+.sw-prices li:last-child {
+  border-bottom: 0;
+}
+
+.sw-prices strong {
+  white-space: nowrap;
+  color: var(--heading);
+}
+
+.sw-note {
+  margin-top: 16px;
+  color: var(--fg-muted);
+}
+
+.sw-contact {
+  max-width: 720px;
+}
+
+@media (max-width: 900px) {
+  .sw-hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sw-photo {
+    max-width: 360px;
+  }
+}
+
 /* ---------- case studies ---------- */
 .case-grid {
   display: grid;
