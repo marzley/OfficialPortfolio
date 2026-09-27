@@ -23,10 +23,13 @@ ErrorDocument 404 /index.html
 
     # Clean page addresses: /about serves about.html, and about.html or
     # /about/ redirect to /about so each page has one address
-    RewriteCond %{THE_REQUEST} \s/(work|about|services|process|pricing|contact)\.html[\s?] [NC]
+    RewriteCond %{THE_REQUEST} \s/([a-z0-9-]+)\.html[\s?] [NC]
+    RewriteCond %1 !^(index|offline)$
     RewriteRule ^ /%1 [L,R=301]
-    RewriteRule ^(work|about|services|process|pricing|contact)/$ /$1 [L,R=301]
-    RewriteRule ^(work|about|services|process|pricing|contact)$ $1.html [L]
+    RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+    RewriteRule ^([a-z0-9-]+)/$ /$1 [L,R=301]
+    RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+    RewriteRule ^([a-z0-9-]+)$ $1.html [L]
 
     # Old page addresses (still in Google and old links)
     RewriteRule ^service(\.html|/)?$ /services [L,R=301]
@@ -36,6 +39,7 @@ ErrorDocument 404 /index.html
 </IfModule>
 
 # ---------- Keep private files private ----------
+RedirectMatch 404 ^/(content|tools)/
 <FilesMatch "\.(log|md|scss|ini|sh|bak|sql|exe|py)$">
     Require all denied
 </FilesMatch>

@@ -1,16 +1,22 @@
-"""Build the inner pages (work.html, about.html, ...) from index.html.
+"""Build the inner pages, the blog and sitemap.xml from index.html.
 
-Each page reuses sections of the homepage, so edit index.html and then run:
+Each inner page reuses sections of the homepage. Blog posts are written as
+simple files in content/blog/ (a comment with title, description, date and tag,
+then the article HTML). After editing index.html or adding a post, run:
 
     python3 tools/build_pages.py
 
 Google shows separate pages like these as sitelinks under the main result.
 """
+import datetime
+import html as htmllib
 import json
+import math
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+POSTS_DIR = ROOT / "content" / "blog"
 SITE = "https://marzleytechsolutions.co.ke/"
 
 PAGES = [
@@ -78,47 +84,27 @@ def sections_of(html):
     return found
 
 
-def build(page, html, sections):
-    url = SITE + page["slug"]
-    title, desc = attr(page["title"]), attr(page["description"])
+def make_page(html, slug, title, description, main_html, ld_nodes, current, on_page=()):
+    """Turn a copy of the homepage into another page with its own meta, schema and main content."""
+    url = SITE + slug
+    title_a, desc_a = attr(title), attr(description)
 
     def meta(pattern, value):
         nonlocal html
         html, n = re.subn(pattern, lambda m: m.group(1) + value + m.group(2), html, count=1)
         assert n == 1, pattern
 
-    meta(r'(<title>)[^<]*(</title>)', title)
-    meta(r'(<meta name="description" content=")[^"]*(")', desc)
+    meta(r'(<title>)[^<]*(</title>)', title_a)
+    meta(r'(<meta name="description" content=")[^"]*(")', desc_a)
     meta(r'(<link rel="canonical" href=")[^"]*(")', url)
-    meta(r'(<meta property="og:title" content=")[^"]*(")', title)
-    meta(r'(<meta property="og:description" content=")[^"]*(")', desc)
+    meta(r'(<meta property="og:title" content=")[^"]*(")', title_a)
+    meta(r'(<meta property="og:description" content=")[^"]*(")', desc_a)
     meta(r'(<meta property="og:url" content=")[^"]*(")', url)
-    meta(r'(<meta name="twitter:title" content=")[^"]*(")', title)
-    meta(r'(<meta name="twitter:description" content=")[^"]*(")', desc)
+    meta(r'(<meta name="twitter:title" content=")[^"]*(")', title_a)
+    meta(r'(<meta name="twitter:description" content=")[^"]*(")', desc_a)
     html = re.sub(r' *<link rel="preload" as="image"[^>]*>\n', "", html)
 
-    graph = {
-        "@context": "https://schema.org",
-        "@graph": [
-            {
-                "@type": "WebPage",
-                "@id": url + "#webpage",
-                "url": url,
-                "name": page["title"],
-                "description": page["description"],
-                "isPartOf": {"@id": SITE + "#website"},
-                "about": {"@id": SITE + "#business"},
-                "inLanguage": "en-KE",
-            },
-            {
-                "@type": "BreadcrumbList",
-                "itemListElement": [
-                    {"@type": "ListItem", "position": 1, "name": "Home", "item": SITE},
-                    {"@type": "ListItem", "position": 2, "name": page["label"], "item": url},
-                ],
-            },
-        ],
-    }
+    graph = {"@context": "https://schema.org", "@graph": ld_nodes}
     ld = json.dumps(graph, indent=4, ensure_ascii=False).replace("\n", "\n    ")
     html, n = re.subn(r'(<script type="application/ld\+json">\n).*?(\n *</script>)',
                       lambda m: m.group(1) + "    " + ld + m.group(2), html, count=1, flags=re.S)
@@ -129,22 +115,233 @@ def build(page, html, sections):
     html = html.replace('<a class="brand" href="#top" aria-label="Marzley Tech Solutions, back to top">',
                         '<a class="brand" href="./" aria-label="Marzley Tech Solutions home">', 1)
     html = html.replace('<a href="./" class="is-current" aria-current="page">Home</a>', '<a href="./">Home</a>', 1)
-    html = html.replace('                <a href="%s">' % page["slug"],
-                        '                <a href="%s" class="is-current" aria-current="page">' % page["slug"], 1)
+    if current:
+        html = html.replace('                <a href="%s">' % current,
+                            '                <a href="%s" class="is-current" aria-current="page">' % current, 1)
 
+    html, n = re.subn(r'(<main id="main">\n).*?(    </main>)', lambda m: m.group(1) + main_html + m.group(2),
+                      html, count=1, flags=re.S)
+    assert n == 1
+
+    keep = set(on_page) | {"main", "top"}
+    html = re.sub(r'href="#([a-z]+)"',
+                  lambda m: m.group(0) if m.group(1) in keep or m.group(1) not in HOME_OF
+                  else 'href="%s"' % HOME_OF[m.group(1)], html)
+    return html
+
+
+def web_page(slug, title, description):
+    url = SITE + slug
+    return {
+        "@type": "WebPage",
+        "@id": url + "#webpage",
+        "url": url,
+        "name": title,
+        "description": description,
+        "isPartOf": {"@id": SITE + "#website"},
+        "about": {"@id": SITE + "#business"},
+        "inLanguage": "en-KE",
+    }
+
+
+def breadcrumbs(*trail):
+    items = [{"@type": "ListItem", "position": 1, "name": "Home", "item": SITE}]
+    for i, (name, slug) in enumerate(trail, start=2):
+        items.append({"@type": "ListItem", "position": i, "name": name, "item": SITE + slug})
+    return {"@type": "BreadcrumbList", "itemListElement": items}
+
+
+def build(page, html, sections):
     body = "".join(sections[s] for s in page["sections"])
     # The first section's heading is the page's only h1
     body = re.sub(r'<h2( id="[a-z]+-title">)(.*?)</h2>', r'<h1\1\2</h1>', body, count=1, flags=re.S)
     body = re.sub(r'(<p class="label">)\d+ — ', r'\1', body)
-    html, n = re.subn(r'(<main id="main">\n).*?(    </main>)', lambda m: m.group(1) + body + m.group(2),
-                      html, count=1, flags=re.S)
-    assert n == 1
+    nodes = [web_page(page["slug"], page["title"], page["description"]),
+             breadcrumbs((page["label"], page["slug"]))]
+    return make_page(html, page["slug"], page["title"], page["description"], body, nodes,
+                     page["slug"], page["sections"])
 
-    on_page = set(page["sections"]) | {"main", "top"}
-    html = re.sub(r'href="#([a-z]+)"',
-                  lambda m: m.group(0) if m.group(1) in on_page or m.group(1) not in HOME_OF
-                  else 'href="%s"' % HOME_OF[m.group(1)], html)
-    return html
+
+# ---------- blog ----------
+
+def read_posts():
+    posts = []
+    for path in sorted(POSTS_DIR.glob("*.html")):
+        text = path.read_text(encoding="utf-8")
+        m = re.match(r"\s*<!--(.*?)-->\s*(.*)", text, re.S)
+        assert m, "%s needs a header comment" % path.name
+        info = dict(line.split(":", 1) for line in m.group(1).strip().splitlines() if ":" in line)
+        info = {k.strip(): v.strip() for k, v in info.items()}
+        for key in ("title", "description", "date"):
+            assert info.get(key), "%s is missing %s" % (path.name, key)
+        words = len(re.sub(r"<[^>]+>", " ", m.group(2)).split())
+        posts.append({
+            "slug": path.stem,
+            "title": info["title"],
+            "description": info["description"],
+            "date": datetime.date.fromisoformat(info["date"]),
+            "tag": info.get("tag", "Guide"),
+            "minutes": max(1, math.ceil(words / 200)),
+            "body": m.group(2).strip(),
+        })
+    posts.sort(key=lambda p: (p["date"], p["title"]), reverse=True)
+    return posts
+
+
+def keep_together(text):
+    """Stop "M-Pesa" breaking across two lines in headings."""
+    return text.replace("M-Pesa", '<span class="nobreak">M-Pesa</span>')
+
+
+def nice_date(d):
+    return "%d %s %d" % (d.day, d.strftime("%b"), d.year)
+
+
+def post_card(post):
+    e = htmllib.escape
+    return (
+        '                    <a class="post-card reveal" href="{slug}">\n'
+        '                        <span class="label">{tag}</span>\n'
+        '                        <h3>{title}</h3>\n'
+        '                        <p>{desc}</p>\n'
+        '                        <span class="post-card-meta"><time datetime="{iso}">{date}</time> · {mins} min read</span>\n'
+        '                    </a>\n'
+    ).format(slug=post["slug"], tag=e(post["tag"]), title=e(post["title"]), desc=e(post["description"]),
+             iso=post["date"].isoformat(), date=nice_date(post["date"]), mins=post["minutes"]).replace(
+        "<h3>%s</h3>" % e(post["title"]), "<h3>%s</h3>" % keep_together(e(post["title"])))
+
+
+BLOG = {
+    "slug": "blog",
+    "label": "Blog",
+    "title": "Blog: Web, M-Pesa & Tech Tips for Kenyan Businesses | Marzley Tech Solutions",
+    "description": "Practical guides on website costs in Kenya, M-Pesa payment integration, CBET documentation and running your business online.",
+}
+
+
+def build_blog(html, posts):
+    cards = "".join(post_card(p) for p in posts)
+    body = (
+        '        <section class="section" id="blog" aria-labelledby="blog-title">\n'
+        '            <div class="wrap">\n'
+        '                <div class="section-head reveal">\n'
+        '                    <div>\n'
+        '                        <p class="label">Blog</p>\n'
+        '                        <h1 id="blog-title">Tips &amp; guides</h1>\n'
+        '                    </div>\n'
+        '                    <p>Practical, plain-language guides on websites, M-Pesa payments and technology for Kenyan businesses and institutions.</p>\n'
+        '                </div>\n'
+        '                <div class="post-grid">\n' + cards +
+        '                </div>\n'
+        '            </div>\n'
+        '        </section>\n'
+    )
+    blog_node = {
+        "@type": "Blog",
+        "@id": SITE + "blog#blog",
+        "url": SITE + "blog",
+        "name": "Marzley Tech Solutions Blog",
+        "publisher": {"@id": SITE + "#business"},
+        "blogPost": [{"@type": "BlogPosting", "headline": p["title"], "url": SITE + p["slug"]} for p in posts],
+    }
+    nodes = [web_page("blog", BLOG["title"], BLOG["description"]), blog_node, breadcrumbs(("Blog", "blog"))]
+    return make_page(html, "blog", BLOG["title"], BLOG["description"], body, nodes, "blog", ["blog"])
+
+
+def build_post(html, post, posts):
+    e = htmllib.escape
+    others = [p for p in posts if p["slug"] != post["slug"]][:3]
+    more = ""
+    if others:
+        more = (
+            '                <section class="post-more" aria-labelledby="more-title">\n'
+            '                    <h2 id="more-title">More from the blog</h2>\n'
+            '                    <div class="post-grid">\n' + "".join(post_card(p) for p in others) +
+            '                    </div>\n'
+            '                </section>\n'
+        )
+    body = (
+        '        <section class="section post-section" id="post" aria-labelledby="post-title">\n'
+        '            <div class="wrap">\n'
+        '                <nav class="crumbs" aria-label="Breadcrumb"><a href="./">Home</a><span aria-hidden="true">/</span>'
+        '<a href="blog">Blog</a><span aria-hidden="true">/</span><span aria-current="page">{title}</span></nav>\n'
+        '                <article class="post">\n'
+        '                    <header class="post-head">\n'
+        '                        <p class="label">{tag}</p>\n'
+        '                        <h1 id="post-title">{h1}</h1>\n'
+        '                        <p class="post-meta"><img src="img/kelvin/headshot.jpg" alt="" width="36" height="36" loading="lazy" />'
+        '<span>By <strong>Kelvin Wanyoike</strong> · <time datetime="{iso}">{date}</time> · {mins} min read</span></p>\n'
+        '                    </header>\n'
+        '                    <div class="post-body">\n{body}\n                    </div>\n'
+        '                    <aside class="post-cta" aria-label="Work with Marzley Tech">\n'
+        '                        <h2>Need help with your project?</h2>\n'
+        '                        <p>Tell me what you need and get a clear quote. We’re available 24/7.</p>\n'
+        '                        <div class="cta-row">\n'
+        '                            <a class="btn btn-solid" href="contact">Start a project <span aria-hidden="true">→</span></a>\n'
+        '                            <a class="btn btn-ghost" href="https://wa.me/254745789590?text={wa}" target="_blank" rel="noopener noreferrer">'
+        '<i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp</a>\n'
+        '                        </div>\n'
+        '                    </aside>\n'
+        '                </article>\n'
+        '{more}'
+        '            </div>\n'
+        '        </section>\n'
+    ).format(title=e(post["title"]), tag=e(post["tag"]), iso=post["date"].isoformat(), date=nice_date(post["date"]),
+             mins=post["minutes"], more=more, h1=keep_together(e(post["title"])),
+             body=re.sub(r"<h2>(.*?)</h2>", lambda m: "<h2>%s</h2>" % keep_together(m.group(1)), post["body"]),
+             wa="Hello%20Marzley%2C%20I%20read%20your%20article%20and%20I%27d%20like%20to%20discuss%20a%20project.")
+    url = SITE + post["slug"]
+    article = {
+        "@type": "BlogPosting",
+        "@id": url + "#article",
+        "headline": post["title"],
+        "description": post["description"],
+        "datePublished": post["date"].isoformat(),
+        "dateModified": post["date"].isoformat(),
+        "author": {"@id": SITE + "#kelvin", "@type": "Person", "name": "Kelvin Wanyoike", "url": SITE + "about"},
+        "publisher": {"@id": SITE + "#business"},
+        "image": SITE + "img/brand/og-image.jpg",
+        "mainEntityOfPage": url,
+        "inLanguage": "en-KE",
+    }
+    nodes = [web_page(post["slug"], post["title"], post["description"]), article,
+             breadcrumbs(("Blog", "blog"), (post["title"], post["slug"]))]
+    page = make_page(html, post["slug"], post["title"] + " | Marzley Tech Solutions", post["description"],
+                     body, nodes, "blog", ["post"])
+    return page.replace('<meta property="og:type" content="website" />', '<meta property="og:type" content="article" />', 1)
+
+
+# ---------- sitemap ----------
+
+def write_sitemap(posts):
+    today = datetime.date.today().isoformat()
+    urls = [
+        ("", "weekly", "1.0", ["img/brand/og-image.jpg", "img/kelvin/office.jpg", "img/kelvin/office-square.jpg"]),
+        ("work", "weekly", "0.9", []), ("services", "monthly", "0.9", []), ("pricing", "monthly", "0.9", []),
+        ("about", "monthly", "0.8", []), ("contact", "monthly", "0.8", []), ("process", "monthly", "0.7", []),
+        ("blog", "weekly", "0.8", []),
+    ] + [(p["slug"], "monthly", "0.7", []) for p in posts]
+    out = ['<?xml version="1.0" encoding="UTF-8"?>',
+           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',
+           '        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">']
+    for slug, freq, prio, images in urls:
+        out.append("  <url>")
+        out.append("    <loc>%s%s</loc>" % (SITE, slug))
+        out.append("    <lastmod>%s</lastmod>" % today)
+        out.append("    <changefreq>%s</changefreq>" % freq)
+        out.append("    <priority>%s</priority>" % prio)
+        for img in images:
+            out.append("    <image:image>")
+            out.append("      <image:loc>%s%s</image:loc>" % (SITE, img))
+            out.append("    </image:image>")
+        out.append("  </url>")
+    out.append("</urlset>")
+    (ROOT / "sitemap.xml").write_text("\n".join(out) + "\n", encoding="utf-8", newline="")
+
+
+def write(name, text):
+    (ROOT / name).write_text(text, encoding="utf-8", newline="")
+    print("wrote", name)
 
 
 def main():
@@ -153,9 +350,13 @@ def main():
     for page in PAGES:
         missing = [s for s in page["sections"] if s not in sections]
         assert not missing, missing
-        out = build(page, home, sections)
-        (ROOT / (page["slug"] + ".html")).write_text(out, encoding="utf-8", newline="")
-        print("wrote", page["slug"] + ".html")
+        write(page["slug"] + ".html", build(page, home, sections))
+    posts = read_posts()
+    write("blog.html", build_blog(home, posts))
+    for post in posts:
+        write(post["slug"] + ".html", build_post(home, post, posts))
+    write_sitemap(posts)
+    print("wrote sitemap.xml")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,39 @@
+<!--
+title: How to add M-Pesa payments to your website
+description: How M-Pesa STK push works on a website, what you need from Safaricom Daraja, and the mistakes to avoid when accepting M-Pesa online in Kenya.
+date: 2026-09-27
+tag: Payments
+-->
+<p>Most Kenyan customers would rather pay with M-Pesa than a card. If your website can send the payment prompt straight to their phone, you’ll close more sales. Here’s how it works, in plain language.</p>
+
+<h2>What is an M-Pesa STK push?</h2>
+<p>An STK push is the pop-up that appears on a customer’s phone asking for their M-Pesa PIN. On a website, it works like this:</p>
+<ol>
+    <li>The customer enters their phone number at checkout.</li>
+    <li>Your website asks Safaricom to send a payment request to that number.</li>
+    <li>The customer sees the prompt on their phone and enters their PIN.</li>
+    <li>Safaricom tells your website whether the payment succeeded, and your site confirms the order automatically.</li>
+</ol>
+<p>You can <a href="services#demo">try a real KSh 1 payment on my site</a> to see exactly what your customers would experience.</p>
+
+<h2>What you need</h2>
+<ul>
+    <li><strong>A till or paybill number.</strong> Payments go straight to your business account.</li>
+    <li><strong>A Safaricom Daraja account.</strong> Daraja is Safaricom’s system that lets websites connect to M-Pesa. It gives you the keys your website uses.</li>
+    <li><strong>A website with SSL (https).</strong> Safaricom only sends payment results to secure addresses.</li>
+    <li><strong>A server-side script.</strong> The part that talks to Safaricom must run on your server, never in the visitor’s browser, so your keys stay secret.</li>
+</ul>
+
+<h2>Mistakes to avoid</h2>
+<ul>
+    <li><strong>Putting your keys in the website code.</strong> Anyone can read them and misuse your account. Keep them in a private file on the server.</li>
+    <li><strong>Trusting the browser.</strong> Only mark an order as paid when Safaricom confirms it, never just because the customer clicked a button.</li>
+    <li><strong>No handling for failed payments.</strong> Customers cancel, enter the wrong PIN or have low balance. Your site should explain what happened and let them try again.</li>
+    <li><strong>No record of payments.</strong> Save every M-Pesa receipt number with the order, so you can match payments and handle disputes.</li>
+</ul>
+
+<h2>M-Pesa, cards or both?</h2>
+<p>For most Kenyan businesses, M-Pesa should come first. If you also sell to customers abroad or corporate clients, add card payments through a gateway like Paystack or PayPal alongside it.</p>
+
+<h2>Can I add it to my existing website?</h2>
+<p>Usually, yes. Whether your site is custom-built or on WordPress, an M-Pesa checkout can be added without rebuilding everything. I’ve built it into online shops and a Wi-Fi hotspot billing system that connects customers automatically once they pay.</p>
