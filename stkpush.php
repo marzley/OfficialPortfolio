@@ -8,13 +8,35 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 // CONFIG
-$consumerKey    = "bIMElZm58IevlA8fU560lYyXRta3pblC2aBGyoGdAMFIaAXm";
-$consumerSecret = "MXi9gOMaccGJYJ68evZbARlxt0i6xkUJpKqI2tRXTiNcDensdXBBTfvlYvYWjlCV";
-$shortcode      = "9410588";        // Go Live Shortcode (updated to Safaricom value)
-$tillNumber     = "6095737";        // Till Number (PartyB) - use if you want a till
-$passkey        = "e926ebb4d8b79c5dfb5de5385ffeb5bba92f81c6b3345254f981da5ca33697ae";
-$callbackUrl    = "https://pixel.gatangatvc.ac.ke/callback.php"; // Update to your callback URL
-$logFile        = __DIR__ . '/stk_request.log';
+// Credentials live in mpesa-config.php, which is NOT committed to git.
+// Best place: one folder ABOVE public_html (e.g. /home/USER/mpesa-config.php).
+// Copy mpesa-config.example.php, fill in your Daraja values, and upload it there.
+$configCandidates = array_filter([
+    getenv('MPESA_CONFIG') ?: null,
+    dirname(__DIR__) . '/mpesa-config.php',
+    __DIR__ . '/mpesa-config.php',
+]);
+$mpesa = null;
+foreach ($configCandidates as $candidate) {
+    if (is_readable($candidate)) {
+        $mpesa = include $candidate;
+        break;
+    }
+}
+if (!is_array($mpesa) || empty($mpesa['consumer_key']) || empty($mpesa['consumer_secret']) || empty($mpesa['passkey'])) {
+    http_response_code(503);
+    echo json_encode(['error' => 'Payments are not configured yet. Please contact us on WhatsApp: +254 745 789 590.']);
+    exit;
+}
+$consumerKey    = $mpesa['consumer_key'];
+$consumerSecret = $mpesa['consumer_secret'];
+$shortcode      = $mpesa['shortcode'] ?? '';
+$tillNumber     = $mpesa['till_number'] ?? '';
+$passkey        = $mpesa['passkey'];
+$callbackUrl    = $mpesa['callback_url'] ?? '';
+// Keep the log outside the public web folder when possible (it contains phone numbers).
+$logDir         = is_writable(dirname(__DIR__)) ? dirname(__DIR__) : __DIR__;
+$logFile        = $logDir . '/stk_request.log';
 
 // INPUT
 $rawPhone = $_POST['phone'] ?? '';

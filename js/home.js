@@ -342,9 +342,30 @@
     });
   }
 
+  /* ---------- hide projects whose screenshot is missing ---------- */
+  var updateChipCounts = function () {
+    var items = document.querySelectorAll(".work-list li");
+    document.querySelectorAll(".work-filters .chip").forEach(function (chip) {
+      var f = chip.getAttribute("data-filter");
+      var n = 0;
+      items.forEach(function (li) { if (f === "all" || li.getAttribute("data-cat") === f) n += 1; });
+      var badge = chip.querySelector("span");
+      if (badge) badge.textContent = String(n);
+      chip.hidden = n === 0;
+    });
+    var nums = document.querySelectorAll(".work-list .num");
+    nums.forEach(function (el, i) { el.textContent = (i + 1 < 10 ? "0" : "") + (i + 1); });
+  };
+  document.querySelectorAll(".work-list li").forEach(function (li) {
+    var row = li.querySelector(".work-row");
+    if (!row) return;
+    var probe = new Image();
+    probe.onerror = function () { li.remove(); updateChipCounts(); };
+    probe.src = row.getAttribute("data-img");
+  });
+
   /* ---------- project filters ---------- */
   var chips = document.querySelectorAll(".work-filters .chip");
-  var workItems = document.querySelectorAll(".work-list li");
   var workList = document.querySelector(".work-list");
   chips.forEach(function (chip) {
     chip.addEventListener("click", function () {
@@ -355,7 +376,7 @@
         c.setAttribute("aria-pressed", String(on));
       });
       if (workList) workList.dispatchEvent(new Event("mouseleave"));
-      workItems.forEach(function (li) {
+      document.querySelectorAll(".work-list li").forEach(function (li) {
         li.hidden = filter !== "all" && li.getAttribute("data-cat") !== filter;
       });
     });
