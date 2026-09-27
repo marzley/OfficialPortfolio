@@ -1158,9 +1158,10 @@
     });
   });
 
-  /* ---------- count-up stats ---------- */
+  /* ---------- count-up stats (numbers come from data/stats.json) ---------- */
   var counters = document.querySelectorAll("[data-count]");
-  if (counters.length && !motionOff()) {
+  var countUp = function () {
+    if (!counters.length || motionOff()) return;
     counters.forEach(function (el) { el.textContent = "0"; });
     var start = null;
     var DURATION_MS = 1600;
@@ -1174,6 +1175,28 @@
       if (t < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
+  };
+  var statBoxes = document.querySelectorAll("[data-stat]");
+  if (statBoxes.length && window.fetch) {
+    fetch("data/stats.json", { cache: "no-cache" })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (data) {
+        var stats = data && data.stats;
+        if (!stats) return;
+        statBoxes.forEach(function (box) {
+          var s = stats[box.getAttribute("data-stat")];
+          if (!s || typeof s.value !== "number") return;
+          var num = box.querySelector("[data-count]");
+          num.setAttribute("data-count", String(s.value));
+          num.textContent = String(s.value);
+          if (typeof s.label === "string") box.querySelector("dt").textContent = s.label;
+          if (typeof s.suffix === "string") box.querySelector(".stat-suffix").textContent = s.suffix;
+        });
+      })
+      .catch(function () {})
+      .then(countUp);
+  } else {
+    countUp();
   }
 
   /* ---------- header shadow + current section in nav ---------- */
