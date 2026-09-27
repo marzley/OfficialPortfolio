@@ -1062,6 +1062,48 @@
   };
   var appSoonClose = document.getElementById("app-soon-close");
   if (appSoonClose) appSoonClose.addEventListener("click", function () { appSoon.hidden = true; });
+  /* ---------- install as an app (PWA) ---------- */
+  var installCard = document.getElementById("install-card");
+  var installYes = document.getElementById("install-yes");
+  var installNo = document.getElementById("install-no");
+  var installText = document.getElementById("install-text");
+  var soonInstall = document.getElementById("app-soon-install");
+  var deferredInstall = null;
+  var INSTALL_KEY = "marzley-install-dismissed";
+  var standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  var ios = /iphone|ipad|ipod/i.test(navigator.userAgent) && !/crios|fxios/i.test(navigator.userAgent);
+  var dismissedRecently = function () {
+    try { return Date.now() - Number(localStorage.getItem(INSTALL_KEY) || 0) < 30 * 24 * 3600 * 1000; } catch (e) { return false; }
+  };
+  var hideInstall = function (remember) {
+    if (installCard) installCard.hidden = true;
+    if (remember) { try { localStorage.setItem(INSTALL_KEY, String(Date.now())); } catch (e) {} }
+  };
+  var offerInstall = function () {
+    if (!installCard || standalone || dismissedRecently()) return;
+    setTimeout(function () { if (deferredInstall || ios) installCard.hidden = false; }, 15000);
+  };
+  var runInstall = function () {
+    if (!deferredInstall) return;
+    deferredInstall.prompt();
+    deferredInstall.userChoice.then(function () { deferredInstall = null; hideInstall(true); if (soonInstall) soonInstall.hidden = true; });
+  };
+  window.addEventListener("beforeinstallprompt", function (e) {
+    e.preventDefault();
+    deferredInstall = e;
+    if (soonInstall) soonInstall.hidden = false;
+    offerInstall();
+  });
+  window.addEventListener("appinstalled", function () { deferredInstall = null; hideInstall(true); });
+  if (ios && !standalone && installText && installYes) {
+    installText.textContent = "On iPhone: tap the Share button, then “Add to Home Screen”.";
+    installYes.textContent = "Got it";
+    offerInstall();
+  }
+  if (installYes) installYes.addEventListener("click", function () { if (deferredInstall) runInstall(); else hideInstall(true); });
+  if (installNo) installNo.addEventListener("click", function () { hideInstall(true); });
+  if (soonInstall) soonInstall.addEventListener("click", runInstall);
+
   document.querySelectorAll("[data-app-download]").forEach(function (link) {
     link.addEventListener("click", function (e) {
       e.preventDefault();

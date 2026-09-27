@@ -1749,6 +1749,93 @@ a {
 }
 
 /* ---------- floating WhatsApp ---------- */
+.install-card {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 65;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px 14px;
+  align-items: center;
+  width: min(380px, calc(100vw - 32px));
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow-lg);
+  animation: install-in 0.4s var(--ease);
+}
+
+.install-card img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.install-copy {
+  display: grid;
+  gap: 2px;
+  font-size: 14px;
+  color: var(--fg-muted);
+}
+
+.install-copy strong {
+  color: var(--heading);
+  font-size: 15px;
+}
+
+.install-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.install-actions .btn {
+  min-height: 42px;
+  padding: 0 20px;
+}
+
+.install-later {
+  border: 0;
+  background: none;
+  color: var(--fg-muted);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 10px 8px;
+}
+
+.app-soon-install {
+  justify-self: start;
+  margin-top: 8px;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--amber);
+  color: var(--navy);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@keyframes install-in {
+  from { opacity: 0; transform: translateY(16px); }
+}
+
+@media (max-width: 600px) {
+  .install-card {
+    right: 16px;
+    bottom: 84px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .install-card { animation: none; }
+}
+
 .net-banner {
   position: fixed;
   top: 76px;
