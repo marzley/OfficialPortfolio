@@ -22,7 +22,8 @@ Upload the whole folder into `public_html`, including the hidden `.htaccess` fil
    - https://marzleytechsolutions.co.ke/
    - https://marzleytechsolutions.co.ke/robots.txt
    - https://marzleytechsolutions.co.ke/sitemap.xml
-   - https://marzleytechsolutions.co.ke/some-missing-page (should show the 404 page)
+   - https://marzleytechsolutions.co.ke/some-missing-page (should show the homepage)
+   - https://marzleytechsolutions.co.ke/about.html (should jump to the About section)
 3. **Google Search Console** (https://search.google.com/search-console): add the domain,
    verify it with the DNS TXT record Google gives you, then submit `sitemap.xml`.
 4. **Google Business Profile** (https://business.google.com): create or claim
