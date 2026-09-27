@@ -546,6 +546,288 @@
     applyOptions();
   }
 
+  /* ---------- M-Pesa checkout demo (simulation only, nothing is sent) ---------- */
+  var demoForm = document.getElementById("demo-checkout");
+  if (demoForm) {
+    var demoPhone = document.getElementById("demo-phone");
+    var demoError = document.getElementById("demo-error");
+    var demoPay = document.getElementById("demo-pay");
+    var screens = {
+      idle: document.getElementById("phone-idle"),
+      stk: document.getElementById("phone-stk"),
+      processing: document.getElementById("phone-processing"),
+      sms: document.getElementById("phone-sms"),
+      cancelled: document.getElementById("phone-cancelled")
+    };
+    var show = function (name) {
+      Object.keys(screens).forEach(function (k) { screens[k].hidden = k !== name; });
+    };
+    var phoneTime = document.getElementById("phone-time");
+    var tickPhone = function () {
+      try {
+        phoneTime.textContent = new Intl.DateTimeFormat("en-KE", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Africa/Nairobi" }).format(new Date());
+      } catch (e) {
+        var d = new Date(); phoneTime.textContent = ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+      }
+    };
+    tickPhone(); setInterval(tickPhone, 30000);
+
+    var normalise = function (raw) {
+      var digits = raw.replace(/\D/g, "");
+      if (/^0[17]\d{8}$/.test(digits)) return "254" + digits.slice(1);
+      if (/^254[17]\d{8}$/.test(digits)) return digits;
+      if (/^[17]\d{8}$/.test(digits)) return "254" + digits;
+      return null;
+    };
+    var masked = "";
+    var resetDemo = function () {
+      demoPay.disabled = false;
+      show("idle");
+    };
+
+    demoForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var msisdn = normalise(demoPhone.value);
+      if (!msisdn) {
+        demoError.textContent = "Enter a Safaricom number like 0712 345 678.";
+        demoPhone.focus();
+        return;
+      }
+      demoError.textContent = "";
+      masked = "0" + msisdn.slice(3, 6) + " ••• " + msisdn.slice(-3);
+      demoPay.disabled = true;
+      document.getElementById("stk-dots").textContent = "____";
+      show("processing");
+      setTimeout(function () {
+        show("stk");
+        document.getElementById("stk-send").focus();
+      }, 1200);
+    });
+
+    document.getElementById("stk-send").addEventListener("click", function () {
+      document.getElementById("stk-dots").textContent = "••••";
+      setTimeout(function () {
+        show("processing");
+        setTimeout(function () {
+          var letters = "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789", code = "T";
+          for (var i = 0; i < 9; i++) code += letters.charAt(Math.floor(Math.random() * letters.length));
+          var now = new Date();
+          var when = now.toLocaleDateString("en-KE", { day: "numeric", month: "numeric", year: "2-digit", timeZone: "Africa/Nairobi" }) +
+            " at " + now.toLocaleTimeString("en-KE", { hour: "numeric", minute: "2-digit", timeZone: "Africa/Nairobi" });
+          document.getElementById("sms-text").textContent = code + " Confirmed. Ksh100.00 paid to MARZLEY TECH on " + when +
+            " from " + masked + ". This is a demo: no money was moved.";
+          show("sms");
+          document.getElementById("demo-again").focus();
+        }, 1500);
+      }, 400);
+    });
+    document.getElementById("stk-cancel").addEventListener("click", function () {
+      show("cancelled");
+      document.getElementById("demo-again-2").focus();
+    });
+    ["demo-again", "demo-again-2"].forEach(function (id) {
+      document.getElementById(id).addEventListener("click", function () { resetDemo(); demoPhone.focus(); });
+    });
+  }
+
+  /* ---------- project planner ---------- */
+  var planner = document.getElementById("planner-app");
+  if (planner) {
+    var steps = Array.prototype.slice.call(planner.querySelectorAll(".planner-step"));
+    var bar = document.getElementById("planner-bar");
+    var countEl = document.getElementById("planner-count");
+    var backBtn = document.getElementById("planner-back");
+    var nextBtn = document.getElementById("planner-next");
+    var navBox = document.getElementById("planner-nav");
+    var resultBox = document.getElementById("planner-result");
+    var current = 0;
+    var fmtKsh = function (n) { return "KSh " + n.toLocaleString("en-KE"); };
+    var EXTRAS = {
+      hosting: { label: "Domain & hosting (first year)", price: 3000 },
+      logo: { label: "Logo & branding", price: 2500 },
+      seo: { label: "SEO so you show up on Google", price: 5000 },
+      security: { label: "Security & backups", price: 3500 }
+    };
+    var PACKAGES = {
+      landing: { name: "Landing page", price: 15000, items: ["1–3 responsive pages", "Contact page", "Modern, mobile-first design"] },
+      business: { name: "Small business website", price: 25000, items: ["Home, About, Services and Contact pages", "Social & Google integrations", "Analytics setup"] },
+      ecommerce: { name: "E-commerce website", price: 40000, items: ["Product catalog & order management", "Live chat & delivery setup", "M-Pesa & PayPal payments"] },
+      corporate: { name: "Corporate website or custom system", price: 60000, items: ["Custom design, unlimited pages", "Database, CRM & system integrations", "Admin tools and dashboards"] }
+    };
+    var EXAMPLES = {
+      landing: { name: "Personal Portfolio", href: "#work" },
+      business: { name: "Job Cyber", href: "#work" },
+      ecommerce: { name: "Marzley E-Commerce", href: "#work" },
+      corporate: { name: "CBET Planner", href: "https://cbetplanner.co.ke/" }
+    };
+
+    var val = function (name) {
+      var el = planner.querySelector('input[name="' + name + '"]:checked');
+      return el ? el.value : null;
+    };
+    // Step 2 (size) and 3 (payments) don't apply to "learn"; size doesn't apply to "shop"/"system".
+    var applicable = function (i) {
+      var goal = val("goal");
+      if (i === 1) return goal === "showcase" || goal === "simple";
+      if (i === 2) return goal !== "learn";
+      if (i === 3) return goal !== "learn";
+      return true;
+    };
+    var visibleSteps = function () {
+      return steps.map(function (_, i) { return i; }).filter(applicable);
+    };
+    var answered = function (i) {
+      if (i === 3) return true; // extras are optional
+      var name = ["goal", "size", "pay"][i];
+      return !!val(name);
+    };
+
+    var render = function () {
+      var order = visibleSteps();
+      var pos = order.indexOf(current);
+      steps.forEach(function (s, i) { s.hidden = i !== current; });
+      resultBox.hidden = true;
+      navBox.hidden = false;
+      countEl.hidden = false;
+      countEl.textContent = "Question " + (pos + 1) + " of " + order.length;
+      bar.style.width = ((pos + 1) / (order.length + 1) * 100) + "%";
+      backBtn.disabled = pos === 0;
+      nextBtn.disabled = !answered(current);
+      nextBtn.textContent = pos === order.length - 1 ? "See my plan" : "Next";
+    };
+
+    var recommend = function () {
+      var goal = val("goal"), size = val("size"), pay = val("pay");
+      if (goal === "learn") return null;
+      if (goal === "shop") return "ecommerce";
+      if (goal === "system") return "corporate";
+      if (goal === "simple") return size === "large" ? "business" : "landing";
+      if (size === "large") return "corporate";
+      if (size === "small" && pay === "none") return "landing";
+      return "business";
+    };
+
+    var showResult = function () {
+      steps.forEach(function (s) { s.hidden = true; });
+      navBox.hidden = true;
+      countEl.hidden = true;
+      bar.style.width = "100%";
+      var list = document.getElementById("result-list");
+      list.innerHTML = "";
+      var addItem = function (t) { var li = document.createElement("li"); li.textContent = t; list.appendChild(li); };
+      var pay = val("pay");
+      var extras = Array.prototype.map.call(planner.querySelectorAll('input[name="extra"]:checked'), function (x) { return x.value; });
+      var key = recommend();
+      var lines = ["Hello Marzley, I used the project planner on your website."];
+      var example = document.getElementById("result-example");
+
+      if (!key) {
+        document.getElementById("result-title").textContent = "Training & mentorship";
+        document.getElementById("result-price").textContent = "Ask about the next class";
+        ["Practical, project-based lessons", "Web development, programming and design", "Mentorship from a working developer"].forEach(addItem);
+        example.textContent = "Over 200 students trained so far.";
+        lines.push("I'm interested in training and mentorship.");
+      } else {
+        var pkg = PACKAGES[key];
+        var total = pkg.price;
+        pkg.items.forEach(addItem);
+        if (pay !== "none" && key !== "ecommerce") addItem(pay === "all" ? "M-Pesa and card payments (quoted with your project)" : "M-Pesa payments (quoted with your project)");
+        extras.forEach(function (x) { total += EXTRAS[x].price; addItem(EXTRAS[x].label + " · " + fmtKsh(EXTRAS[x].price)); });
+        document.getElementById("result-title").textContent = pkg.name;
+        document.getElementById("result-price").textContent = "Estimated from " + fmtKsh(total);
+        var ex = EXAMPLES[key];
+        example.innerHTML = "";
+        example.appendChild(document.createTextNode("Similar project I've built: "));
+        var a = document.createElement("a");
+        a.href = ex.href; a.textContent = ex.name;
+        if (/^https?:/.test(ex.href)) { a.target = "_blank"; a.rel = "noopener noreferrer"; }
+        example.appendChild(a);
+        lines.push("Recommended: " + pkg.name + " (from " + fmtKsh(pkg.price) + ").");
+        if (pay && pay !== "none") lines.push("Payments: " + (pay === "all" ? "M-Pesa and cards" : "M-Pesa"));
+        if (extras.length) lines.push("Extras: " + extras.map(function (x) { return EXTRAS[x].label; }).join(", "));
+        lines.push("Estimated from " + fmtKsh(total) + ".");
+      }
+      document.getElementById("result-wa").href = "https://wa.me/254745789590?text=" + encodeURIComponent(lines.join("\n"));
+      resultBox.hidden = false;
+      resultBox.focus();
+    };
+
+    planner.addEventListener("change", function (e) {
+      if (e.target.name === "goal") {
+        // changing the goal resets later answers that may no longer apply
+        planner.querySelectorAll('input[name="size"], input[name="pay"]').forEach(function (x) { x.checked = false; });
+      }
+      render();
+    });
+    nextBtn.addEventListener("click", function () {
+      var order = visibleSteps();
+      var pos = order.indexOf(current);
+      if (pos === order.length - 1) { showResult(); return; }
+      current = order[pos + 1];
+      render();
+      var first = steps[current].querySelector("input");
+      if (first) first.focus();
+    });
+    backBtn.addEventListener("click", function () {
+      var order = visibleSteps();
+      var pos = order.indexOf(current);
+      if (pos > 0) { current = order[pos - 1]; render(); }
+    });
+    document.getElementById("planner-restart").addEventListener("click", function () {
+      planner.querySelectorAll("input").forEach(function (x) { x.checked = false; });
+      current = 0;
+      render();
+      var first = steps[0].querySelector("input");
+      if (first) first.focus();
+    });
+    render();
+  }
+
+  /* ---------- open / closed status (Kenya time) ---------- */
+  var openBox = document.getElementById("open-status");
+  if (openBox) {
+    var HOURS = { 1: [8, 19], 2: [8, 19], 3: [8, 19], 4: [8, 19], 5: [8, 19], 6: [9, 17] };
+    var DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    var kenyaNow = function () {
+      try {
+        var parts = new Intl.DateTimeFormat("en-GB", { timeZone: "Africa/Nairobi", weekday: "short", hour: "2-digit", minute: "2-digit", hour12: false }).formatToParts(new Date());
+        var get = function (t) { return (parts.filter(function (p) { return p.type === t; })[0] || {}).value; };
+        var day = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(get("weekday"));
+        return { day: day, h: Number(get("hour")) % 24, m: Number(get("minute")) };
+      } catch (e) {
+        var d = new Date(Date.now() + (3 * 60 + new Date().getTimezoneOffset()) * 60000);
+        return { day: d.getDay(), h: d.getHours(), m: d.getMinutes() };
+      }
+    };
+    var fmtHour = function (h) { return (h % 12 || 12) + ":00 " + (h < 12 ? "AM" : "PM"); };
+    var updateOpen = function () {
+      var now = kenyaNow();
+      var clock = ("0" + now.h).slice(-2) + ":" + ("0" + now.m).slice(-2);
+      var today = HOURS[now.day];
+      var mins = now.h * 60 + now.m;
+      var label = document.getElementById("open-label");
+      var detail = document.getElementById("open-detail");
+      if (today && mins >= today[0] * 60 && mins < today[1] * 60) {
+        openBox.className = "open-status is-open";
+        label.textContent = "Open now";
+        detail.textContent = "It's " + clock + " in Kenya · open until " + fmtHour(today[1]);
+      } else {
+        openBox.className = "open-status is-closed";
+        var d = now.day, next = null;
+        if (today && mins < today[0] * 60) next = { day: d, h: today[0] };
+        for (var i = 1; !next && i <= 7; i++) {
+          var nd = (d + i) % 7;
+          if (HOURS[nd]) next = { day: nd, h: HOURS[nd][0] };
+        }
+        var when = next.day === d ? "today" : (next.day === (d + 1) % 7 ? "tomorrow" : DAYS[next.day]);
+        label.textContent = "Closed now";
+        detail.textContent = "It's " + clock + " in Kenya · opens " + when + " at " + fmtHour(next.h) + ". WhatsApp messages are welcome anytime.";
+      }
+    };
+    updateOpen();
+    setInterval(updateOpen, 60000);
+  }
+
   /* ---------- donate (Paystack) ---------- */
   var donate = document.getElementById("donate-btn");
   if (donate) {

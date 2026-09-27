@@ -24,7 +24,7 @@ Upload the whole folder into `public_html`, including the hidden `.htaccess` fil
 3. **Google Search Console** (https://search.google.com/search-console): add the domain,
    verify it with the DNS TXT record Google gives you, then submit `sitemap.xml`.
 4. **Google Business Profile** (https://business.google.com): create or claim
-   "Marzley Tech Solutions" in Murang'a so you appear in Maps and local searches.
+   "Marzley Tech Solutions" so you appear in Maps and local searches.
 5. Test the share preview by pasting the link into WhatsApp, or use
    https://www.opengraph.xyz.
 6. Send a test message through the contact form and confirm it arrives from Formspree.
