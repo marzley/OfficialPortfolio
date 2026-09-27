@@ -303,7 +303,7 @@
           if (response.ok) {
             form.reset();
             refreshLinks();
-            showStatus("Request sent. I'll get back to you shortly.", "ok", false);
+            showStatus("Request sent. We'll get back to you shortly.", "ok", false);
             return;
           }
           return response.json().catch(function () { return null; }).then(function (err) {
@@ -962,7 +962,7 @@
         document.getElementById("result-price").textContent = "Estimated from " + fmtKsh(total);
         var ex = EXAMPLES[key];
         example.innerHTML = "";
-        example.appendChild(document.createTextNode("Similar project I've built: "));
+        example.appendChild(document.createTextNode("Similar project we've built: "));
         var a = document.createElement("a");
         a.href = ex.href; a.textContent = ex.name;
         if (/^https?:/.test(ex.href)) { a.target = "_blank"; a.rel = "noopener noreferrer"; }
@@ -1883,13 +1883,13 @@
         a: "Most landing pages take about a week and business websites a few weeks. Shops and systems depend on the features. You’ll get a clear timeline with your quote.",
         l: [["Book a free call", "contact#booking"]] },
       { k: /m-?pesa|mpesa|paystack|paypal|payment|pay|till|stk/i, chip: "M-Pesa payments",
-        a: "Yes, I add M-Pesa (STK push), Paystack cards and PayPal to websites and systems. You can try a real KSh 1 M-Pesa payment on the Services page.",
+        a: "Yes, we add M-Pesa (STK push), Paystack cards and PayPal to websites and systems. You can try a real KSh 1 M-Pesa payment on the Services page.",
         l: [["Try the M-Pesa demo", "services#demo"]] },
       { k: /host|domain|\.co\.ke|email address|server/i, chip: "Domain & hosting",
-        a: "Domain and hosting setup is from KSh 3,000 a year, and I deploy your site so it’s live on your own address.",
+        a: "Domain and hosting setup is from KSh 3,000 a year, and we deploy your site so it’s live on your own address.",
         l: [["Pricing & add-ons", "pricing"]] },
       { k: /train|course|learn|class|student|mentor|mafunzo/i, chip: "Training",
-        a: "I run practical training in web development, programming and design, in person and online. Over 200 students trained so far.",
+        a: "We run practical training in web development, programming and design, in person and online. Over 200 students trained so far.",
         l: [["See the courses", "training"]] },
       { k: /seo|google|rank|search|slow|speed|check/i, chip: "Is my site OK?",
         a: "Run the free website health check: it tests security, speed, mobile and Google basics in seconds, with tips to fix each issue.",
@@ -1907,14 +1907,14 @@
         a: "Refer a client and get KSh 2,000 by M-Pesa when they become a client.",
         l: [["Get your referral link", "referrals"]] },
       { k: /^(hi|hello|hey|habari|mambo|niaje|good (morning|afternoon|evening))\b/i,
-        a: "Hello! 👋 How can I help? You can ask about prices, timelines, M-Pesa payments, hosting or training." }
+        a: "Hello! 👋 How can we help? You can ask about prices, timelines, M-Pesa payments, hosting or training." }
     ];
     var answer = function (q) {
       say("me", q);
       var hit = KB.filter(function (e) { return e.k.test(q); })[0];
       setTimeout(function () {
         if (hit) say("bot", hit.a, hit.l);
-        else say("bot", "Good question. Kelvin can answer that directly. Send it on WhatsApp or ask for a call back.",
+        else say("bot", "Good question. Our team can answer that directly. Send it on WhatsApp or ask for a call back.",
           [["Ask on WhatsApp", WA + "?text=" + encodeURIComponent(q)]]);
       }, 350);
     };
@@ -1929,7 +1929,7 @@
     var openChat = function (focus) {
       chat.hidden = false;
       waFloat.setAttribute("aria-expanded", "true");
-      if (!greeted) { greeted = true; say("bot", "Hi! I’m the Marzley Tech assistant. Ask me anything, or pick a topic below."); }
+      if (!greeted) { greeted = true; say("bot", "Hi! This is the Marzley Tech assistant. Ask us anything, or pick a topic below."); }
       if (focus !== false) qInput.focus();
     };
     var closeChat = function () { chat.hidden = true; waFloat.setAttribute("aria-expanded", "false"); waFloat.focus(); };
