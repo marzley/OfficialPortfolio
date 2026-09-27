@@ -317,7 +317,7 @@
         .then(function () {
           clearTimeout(timer);
           submit.disabled = false;
-          submit.textContent = "Send request";
+          submit.textContent = "Get my free quote";
         });
     });
   }

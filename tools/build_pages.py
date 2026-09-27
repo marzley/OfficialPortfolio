@@ -330,7 +330,7 @@ def build_post(html, post, posts, kind="blog"):
         '                        <h2>Need help with your project?</h2>\n'
         '                        <p>Tell me what you need and get a clear quote. We’re available 24/7.</p>\n'
         '                        <div class="cta-row">\n'
-        '                            <a class="btn btn-solid" href="contact">Start a project <span aria-hidden="true">→</span></a>\n'
+        '                            <a class="btn btn-solid" href="contact">Get a free quote <span aria-hidden="true">→</span></a>\n'
         '                            <a class="btn btn-ghost" href="https://wa.me/254745789590?text={wa}" target="_blank" rel="noopener noreferrer">'
         '<i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp</a>\n'
         '                        </div>\n'
