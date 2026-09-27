@@ -28,6 +28,21 @@ if (str_starts_with($path, '/paystack/')) {
     }
 }
 
+// Claude Messages API stand-in: records the request, answers with a canned reply
+if (str_starts_with($path, '/v1/messages')) {
+    $raw = file_get_contents('php://input');
+    file_put_contents("$dir/claude-last.json", json_encode(['headers' => ['x-api-key' => $_SERVER['HTTP_X_API_KEY'] ?? '', 'anthropic-beta' => $_SERVER['HTTP_ANTHROPIC_BETA'] ?? '',
+        'anthropic-version' => $_SERVER['HTTP_ANTHROPIC_VERSION'] ?? ''], 'path' => $_SERVER['REQUEST_URI'], 'body' => json_decode($raw, true)]));
+    if (($_SERVER['HTTP_X_API_KEY'] ?? '') !== 'sk-ant-test') { http_response_code(401); echo '{"type":"error","error":{"type":"authentication_error","message":"invalid x-api-key"}}'; return; }
+    $mode = @file_get_contents("$dir/claude-mode") ?: 'ok';
+    if ($mode === 'overloaded') { http_response_code(529); echo '{"type":"error","error":{"type":"overloaded_error","message":"Overloaded"}}'; return; }
+    $text = "**We** build websites from KSh 15,000, and online shops from KSh 40,000.\nLINK: See packages & prices | pricing\nLINK: Evil site | https://evil.example/";
+    echo json_encode(['id' => 'msg_test', 'type' => 'message', 'role' => 'assistant', 'model' => 'claude-opus-5', 'container' => null, 'context_management' => null,
+        'content' => [['type' => 'text', 'text' => $text, 'citations' => null]], 'stop_reason' => $mode === 'refusal' ? 'refusal' : 'end_turn', 'stop_sequence' => null, 'stop_details' => null,
+        'usage' => ['input_tokens' => 20, 'output_tokens' => 12, 'cache_creation_input_tokens' => 0, 'cache_read_input_tokens' => 0, 'cache_creation' => null, 'server_tool_use' => null, 'service_tier' => 'standard']]);
+    return;
+}
+
 // S3: PUT /bucket/key with a valid Signature V4
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     define('MARZLEY_PORTAL', true);

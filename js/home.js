@@ -1624,8 +1624,9 @@
   document.addEventListener("submit", function (e) {
     var f = e.target;
     if (!f || f.tagName !== "FORM" || f.id === "ref-form") return;
-    var callback = f.classList.contains("chat-callback");
-    if (!callback && !/formspree\.io/.test(f.getAttribute("action") || "")) return;
+    if (f.classList.contains("chat-callback")) return;   // the chat sends its own
+    var callback = false;
+    if (!/formspree\.io/.test(f.getAttribute("action") || "")) return;
     try {
       var fd = new FormData(f);
       fd.append("_source", callback ? "Call-back request" : ({ "booking-form": "Booking", "contact-form": "Contact form", "enrol-form": "Training enquiry" }[f.id] || f.getAttribute("data-kind") || "Website form"));
@@ -1873,78 +1874,218 @@
     var log = chat.querySelector(".chat-log");
     var chips = chat.querySelector(".chat-chips");
     var qInput = chat.querySelector("#chat-q");
-    var say = function (who, text, links) {
+    var STORE = "marzley-chat";
+    var history = [];   // [{role, content, links}] kept for this browser session
+    var saveHistory = function () { try { sessionStorage.setItem(STORE, JSON.stringify(history.slice(-30))); } catch (e) {} };
+    var render = function (who, text, links) {
       var b = document.createElement("div");
       b.className = "chat-msg chat-" + who;
-      var p = document.createElement("p");
-      p.textContent = text;
-      b.appendChild(p);
-      (links || []).forEach(function (l) {
-        var a = document.createElement("a");
-        a.href = l[1];
-        a.textContent = l[0];
-        if (/^https?:/.test(l[1])) { a.target = "_blank"; a.rel = "noopener noreferrer"; }
-        b.appendChild(a);
+      String(text).split(/\n{2,}/).forEach(function (para) {
+        var p = document.createElement("p");
+        p.textContent = para;
+        b.appendChild(p);
       });
+      if (links && links.length) {
+        var row = document.createElement("div");
+        row.className = "chat-links";
+        links.forEach(function (l) {
+          var a;
+          if (l[1] === "#callback") {
+            a = document.createElement("button");
+            a.type = "button";
+            a.addEventListener("click", function () { showCallback(); });
+          } else {
+            a = document.createElement("a");
+            a.href = l[1];
+            if (/^https?:/.test(l[1])) { a.target = "_blank"; a.rel = "noopener noreferrer"; }
+          }
+          a.textContent = l[0];
+          row.appendChild(a);
+        });
+        b.appendChild(row);
+      }
       log.appendChild(b);
       log.scrollTop = log.scrollHeight;
       return b;
     };
-    var KB = [
-      { k: /price|cost|how much|charge|budget|bei|pesa ngapi|package/i, chip: "Prices",
-        a: "Websites start at KSh 15,000 for a landing page, KSh 25,000 for a business site, KSh 40,000 for an online shop and KSh 60,000 for corporate sites.",
-        l: [["See all packages", "pricing"], ["Build a quote", "pricing#pricing"]] },
-      { k: /how long|time|weeks|days|duration|fast|quick|deadline/i, chip: "How long does it take?",
-        a: "Most landing pages take about a week and business websites a few weeks. Shops and systems depend on the features. You’ll get a clear timeline with your quote.",
-        l: [["Book a free call", "contact#booking"]] },
-      { k: /m-?pesa|mpesa|paystack|paypal|payment|pay|till|stk/i, chip: "M-Pesa payments",
-        a: "Yes, we add M-Pesa (STK push), Paystack cards and PayPal to websites and systems. You can try a real KSh 1 M-Pesa payment on the Services page.",
-        l: [["Try the M-Pesa demo", "services#demo"]] },
-      { k: /host|domain|\.co\.ke|email address|server/i, chip: "Domain & hosting",
-        a: "Domain and hosting setup is from KSh 3,000 a year, and we deploy your site so it’s live on your own address.",
-        l: [["Pricing & add-ons", "pricing"]] },
-      { k: /train|course|learn|class|student|mentor|mafunzo/i, chip: "Training",
-        a: "We run practical training in web development, programming and design, in person and online. Over 200 students trained so far.",
-        l: [["See the courses", "training"]] },
-      { k: /seo|google|rank|search|slow|speed|check/i, chip: "Is my site OK?",
-        a: "Run the free website health check: it tests security, speed, mobile and Google basics in seconds, with tips to fix each issue.",
-        l: [["Check my website", "website-check"]] },
-      { k: /maint|update|backup|care|support|hack|broken/i,
-        a: "Care plans keep your site backed up, secure and up to date, from KSh 1,500 a month.",
-        l: [["See care plans", "pricing#care"]] },
-      { k: /portal|login|log in|sign in|my project|invoice/i,
-        a: "Clients can follow their project, download files and pay invoices in the client portal.",
-        l: [["Open the client portal", "portal/"]] },
-      { k: /where|location|located|office|nairobi|murang|town/i,
-        a: "We’re in Kenya and work with clients across the country, online and 24/7.",
-        l: [["Contact us", "contact"]] },
-      { k: /refer|reward|commission/i,
-        a: "Refer a client and get KSh 2,000 by M-Pesa when they become a client.",
-        l: [["Get your referral link", "referrals"]] },
-      { k: /^(hi|hello|hey|habari|mambo|niaje|good (morning|afternoon|evening))\b/i,
-        a: "Hello! 👋 How can we help? You can ask about prices, timelines, M-Pesa payments, hosting or training." }
-    ];
-    var answer = function (q) {
-      say("me", q);
-      var hit = KB.filter(function (e) { return e.k.test(q); })[0];
-      setTimeout(function () {
-        if (hit) say("bot", hit.a, hit.l);
-        else say("bot", "Good question. Our team can answer that directly. Send it on WhatsApp or ask for a call back.",
-          [["Ask on WhatsApp", WA + "?text=" + encodeURIComponent(q)]]);
-      }, 350);
+    var say = function (who, text, links) {
+      history.push({ role: who === "me" ? "user" : "assistant", content: text, links: links || [] });
+      saveHistory();
+      return render(who, text, links);
     };
-    KB.filter(function (e) { return e.chip; }).forEach(function (e) {
-      var c = document.createElement("button");
-      c.type = "button";
-      c.textContent = e.chip;
-      c.addEventListener("click", function () { answer(e.chip); });
-      chips.appendChild(c);
-    });
+    var typing = function () {
+      var t = document.createElement("div");
+      t.className = "chat-msg chat-bot chat-typing";
+      t.setAttribute("aria-label", "Typing");
+      t.innerHTML = "<span></span><span></span><span></span>";
+      log.appendChild(t);
+      log.scrollTop = log.scrollHeight;
+      return t;
+    };
+
+    // ---------- knowledge base (data/knowledge.json) and matching ----------
+    var KB = null, kbLoading = null;
+    var loadKB = function () {
+      if (KB) return Promise.resolve(KB);
+      if (!kbLoading) kbLoading = fetch("/data/knowledge.json", { cache: "no-cache" }).then(function (r) { return r.json(); })
+        .then(function (d) { KB = d.entries || []; return KB; }).catch(function () { kbLoading = null; return []; });
+      return kbLoading;
+    };
+    var SYN = [[/\bwebsites?\b|\bsites?\b|\bwebpages?\b|\btovuti\b/g, " website "], [/\bm\W?pesa\b/g, " mpesa "], [/\bshops?\b|\bstores?\b|\bduka\b/g, " shop "],
+      [/\bkshs?\b|\bshillings?\b|\bbob\b|\bdoh\b/g, " ksh "], [/\bhow much\b|\bcharges?\b|\bcosts?\b|\bbei\b|\bgharama\b|\bprices?\b|\brates?\b/g, " price "], [/\bclasses\b|\bkozi\b|\bmafunzo\b/g, " course "],
+      [/\bapps?\b/g, " app "], [/\be\W?commerce\b/g, " ecommerce "], [/\bwi\W?fi\b/g, " wifi "], [/\bschools?\b|\bshule\b|\bcolleges?\b|\bchuo\b/g, " school "], [/\bhospitals?\b|\bclinics?\b|\bhospitali\b/g, " hospital "],
+      [/\bsimu\b|\bphone number\b/g, " phone "], [/\bnipigie\b|\bpiga\b/g, " call "], [/\binstal+ments?\b/g, " stages "]];
+    var stem = function (w) {
+      if (w.length > 5 && /ing$/.test(w)) return w.slice(0, -3);
+      if (w.length > 4 && /ies$/.test(w)) return w.slice(0, -3) + "y";
+      if (w.length > 3 && /[^s]s$/.test(w)) return w.slice(0, -1);
+      if (w.length > 4 && /ed$/.test(w)) return w.slice(0, -2);
+      return w;
+    };
+    var norm = function (t) {
+      t = " " + String(t).toLowerCase().replace(/[’']/g, "").replace(/[^a-z0-9À-ɏ+#. ]/g, " ") + " ";
+      SYN.forEach(function (r) { t = t.replace(r[0], r[1]); });
+      return " " + t.trim().split(/\s+/).map(stem).join(" ") + " ";
+    };
+    var STOP = " a an the is are am i me my we you your to for of on in and or it do does can could how what which who when where why please with about have has get need want would like be this that there any some our us kindly just will after myself mine from by at as so if not no yes".split(" ");
+    var tokens = function (t) { return norm(t).trim().split(" ").filter(function (w) { return w && STOP.indexOf(w) < 0; }); };
+    var IDX = null;
+    var index = function () {
+      // For each entry: unique phrases and words (normalised), and how rare each word is across entries
+      var df = {};
+      IDX = KB.map(function (e) {
+        var phrases = {}, words = {}, text = {};
+        e.keys.forEach(function (k) {
+          var kn = norm(k).trim();
+          if (!kn) return;
+          if (kn.indexOf(" ") > 0) phrases[kn] = 1; else if (STOP.indexOf(kn) < 0) words[kn] = 1;
+        });
+        tokens(e.title + " " + (e.q || []).join(" ")).forEach(function (w) { text[w] = 1; });
+        Object.keys(words).concat(Object.keys(text)).concat(Object.keys(phrases).join(" ").split(" ")).forEach(function (w) { df[w] = df[w] || {}; df[w][e.id] = 1; });
+        return { e: e, phrases: Object.keys(phrases), words: Object.keys(words), text: Object.keys(text) };
+      });
+      var n = KB.length;
+      IDX.idf = function (w) { var d = df[w] ? Object.keys(df[w]).length : 0; return Math.log((n + 1) / (d + 0.5)); };
+    };
+    var match = function (q) {
+      if (!KB || !KB.length) return [];
+      if (!IDX) index();
+      var qn = norm(q), qt = tokens(q).filter(function (w, i, all) { return all.indexOf(w) === i; });
+      return IDX.map(function (x) {
+        var s = 0, used = {};
+        x.phrases.forEach(function (ph) {
+          if (qn.indexOf(" " + ph + " ") < 0) return;
+          s += 1.5;
+          ph.split(" ").forEach(function (w) { if (!used[w]) s += 1.2 * Math.max(0.5, IDX.idf(w)); used[w] = 1; });
+        });
+        qt.forEach(function (w) {
+          if (used[w]) return;
+          var wt = IDX.idf(w);
+          if (x.words.indexOf(w) >= 0) s += 1.2 * wt;
+          else if (w.length > 3 && x.words.some(function (k) { return k.length > 3 && (k.indexOf(w) === 0 || w.indexOf(k) === 0); })) s += 0.5 * wt;
+          if (x.text.indexOf(w) >= 0) s += 0.6 * wt;
+        });
+        return { e: x.e, s: s };
+      }).filter(function (r) { return r.s > 0; }).sort(function (a, b) { return b.s - a.s; });
+    };
+    var SMALL = [
+      [/^(hi+|hello+|hey+|habari|mambo|niaje|sasa|hujambo|good (morning|afternoon|evening)|greetings)\b/i, "Hello! 👋 How can we help today? Ask about prices, timelines, M-Pesa payments, hosting, systems or training."],
+      [/^(thanks?|thank you|asante|thx|nice|great|cool|ok(ay)?|sawa|poa)\b/i, "You’re welcome! Anything else we can help with?"],
+      [/^(bye|goodbye|kwaheri|see you)\b/i, "Thanks for chatting. We’re here 24/7 whenever you need us. 👋"],
+      [/how are you|habari yako|uko aje/i, "We’re doing great, thanks for asking! How can we help you today?"],
+      [/are you (a )?(bot|robot|human|real|ai)/i, "I’m the Marzley Tech assistant. For anything I can’t answer, a real person replies quickly on WhatsApp or by phone."]
+    ];
+    var chipRow = function (entries) {
+      chips.textContent = "";
+      entries.slice(0, 4).forEach(function (e) {
+        var c = document.createElement("button");
+        c.type = "button";
+        c.textContent = e.title;
+        c.addEventListener("click", function () { ask(e.title, e); });
+        chips.appendChild(c);
+      });
+    };
+    var fallback = function (q) {
+      return ["Good question. Our team can answer that properly: send it on WhatsApp or ask for a call back and we’ll get right back to you (24/7).",
+        [["Ask on WhatsApp", WA + "?text=" + encodeURIComponent(q)], ["Call me back", "#callback"]]];
+    };
+
+    // ---------- AI answers (portal/chat.php), used when the knowledge base isn’t sure ----------
+    var aiState = null;
+    var aiEnabled = function () {
+      if (aiState === null) aiState = fetch("/portal/chat.php", { headers: { Accept: "application/json" } }).then(function (r) { return r.ok ? r.json() : {}; })
+        .then(function (d) { return !!d.enabled; }).catch(function () { return false; });
+      return aiState;
+    };
+    var askAI = function () {
+      var msgs = history.slice(-8).map(function (m) { return { role: m.role, content: m.content }; });
+      var ctrl = window.AbortController ? new AbortController() : null;
+      var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 35000);
+      return fetch("/portal/chat.php", { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ messages: msgs }), signal: ctrl ? ctrl.signal : undefined })
+        .then(function (r) { clearTimeout(timer); return r.ok ? r.json() : null; })
+        .then(function (d) { return d && d.reply ? d : null; })
+        .catch(function () { clearTimeout(timer); return null; });
+    };
+
+    var busy = false;
+    var ask = function (q, picked) {
+      if (busy) return;
+      busy = true;
+      say("me", q);
+      var dots = typing();
+      var done = function (text, links, next) {
+        setTimeout(function () {
+          dots.remove();
+          say("bot", text, links);
+          if (next) chipRow(next);
+          busy = false;
+          qInput.focus();
+        }, 300);
+      };
+      loadKB().then(function () {
+        if (picked) {
+          var rel = match(picked.title + " " + picked.keys.slice(0, 3).join(" ")).map(function (r) { return r.e; }).filter(function (e) { return e !== picked; });
+          return done(picked.a, picked.l, rel);
+        }
+        for (var i = 0; i < SMALL.length; i++) if (SMALL[i][0].test(q.trim())) return done(SMALL[i][1], null, KB.filter(function (e) { return e.chip; }));
+        var ranked = match(q);
+        var best = ranked[0];
+        var sure = best && best.s >= 3.5 && (!ranked[1] || best.s >= ranked[1].s * 1.3);
+        var related = ranked.slice(1, 5).map(function (r) { return r.e; });
+        if (sure) return done(best.e.a, best.e.l, related);
+        aiEnabled().then(function (on) {
+          if (!on) {
+            if (best && best.s >= 1.8) return done(best.e.a, best.e.l, related);
+            var fb = fallback(q);
+            return done(fb[0], fb[1], KB.filter(function (e) { return e.chip; }));
+          }
+          askAI().then(function (d) {
+            if (d) return done(d.reply, d.links, best ? [best.e].concat(related) : null);
+            if (best && best.s >= 1.8) return done(best.e.a, best.e.l, related);
+            var fb2 = fallback(q);
+            done(fb2[0], fb2[1], null);
+          });
+        });
+      });
+    };
+    var answer = ask;
     var greeted = false;
     var openChat = function (focus) {
       chat.hidden = false;
       waFloat.setAttribute("aria-expanded", "true");
-      if (!greeted) { greeted = true; say("bot", "Hi! This is the Marzley Tech assistant. Ask us anything, or pick a topic below."); }
+      if (!greeted) {
+        greeted = true;
+        var saved = [];
+        try { saved = JSON.parse(sessionStorage.getItem(STORE) || "[]"); } catch (e) {}
+        if (saved.length) {
+          history = saved;
+          saved.forEach(function (m) { render(m.role === "user" ? "me" : "bot", m.content, m.links); });
+        } else {
+          say("bot", "Hi! 👋 I’m the Marzley Tech assistant. Ask me anything about websites, prices, M-Pesa payments, hosting, systems or training, in English or Kiswahili.");
+        }
+        loadKB().then(function (kb) { chipRow(kb.filter(function (e) { return e.chip; })); });
+        aiEnabled();
+      }
       if (focus !== false) qInput.focus();
     };
     var closeChat = function () { chat.hidden = true; waFloat.setAttribute("aria-expanded", "false"); waFloat.focus(); };
@@ -1960,43 +2101,57 @@
     chat.querySelector(".chat-input").addEventListener("submit", function (e) {
       e.preventDefault();
       var q = qInput.value.trim();
-      if (!q) return;
+      if (!q || busy) return;
       qInput.value = "";
       answer(q);
     });
-    // Call me back
+    // Call me back: saved on our own server first (and emailed to the team at once),
+    // then Formspree as a backup, then WhatsApp as the last resort.
     var showCallback = function () {
       openChat(false);
-      var box = say("bot", "Leave your number and we’ll call you back.");
+      var box = say("bot", "Leave your name and number and we’ll call you back shortly.");
       var f = document.createElement("form");
       f.className = "chat-callback";
-      f.innerHTML = '<label class="sr-only" for="cb-name">Name</label><input id="cb-name" name="name" placeholder="Your name" required maxlength="80" />' +
-        '<label class="sr-only" for="cb-phone">Phone</label><input id="cb-phone" name="phone" type="tel" inputmode="tel" placeholder="Phone number" required maxlength="20" />' +
+      f.noValidate = true;
+      f.innerHTML = '<label class="sr-only" for="cb-name">Name</label><input id="cb-name" name="name" placeholder="Your name" required maxlength="80" autocomplete="name" />' +
+        '<label class="sr-only" for="cb-phone">Phone</label><input id="cb-phone" name="phone" type="tel" inputmode="tel" placeholder="Phone number, e.g. 0712 345 678" required maxlength="20" autocomplete="tel" />' +
+        '<label class="sr-only" for="cb-when">Best time</label><select id="cb-when" name="best_time"><option value="As soon as possible">As soon as possible</option><option value="Morning">Morning</option><option value="Afternoon">Afternoon</option><option value="Evening">Evening</option></select>' +
+        '<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="sr-only" aria-hidden="true" />' +
         '<button type="submit" class="btn btn-solid">Call me back</button>';
       box.appendChild(f);
       f.querySelector("input").focus();
       f.addEventListener("submit", function (ev) {
         ev.preventDefault();
         var fd = new FormData(f);
-        if (!String(fd.get("name")).trim() || !refNormalise(fd.get("phone")) && String(fd.get("phone")).replace(/\D/g, "").length < 9) {
-          say("bot", "Please enter your name and a valid phone number.");
+        var name = String(fd.get("name")).trim(), phone = String(fd.get("phone")).trim();
+        if (!name || String(phone).replace(/\D/g, "").length < 9) {
+          say("bot", "Please enter your name and a valid phone number, like 0712 345 678.");
           return;
         }
+        fd.append("_source", "Call-back request");
         fd.append("_subject", "Call-back request from the website");
-        fd.append("form", "Call me back");
         fd.append("page", location.pathname);
         if (referredBy) fd.append("referred_by", referredBy);
-        f.querySelector("button").disabled = true;
-        fetch("https://formspree.io/f/myzbnvnb", { method: "POST", body: fd, headers: { Accept: "application/json" } })
-          .then(function (r) {
-            if (!r.ok) throw new Error();
-            f.remove();
-            say("bot", "Thanks, " + String(fd.get("name")).trim() + "! We’ll call you shortly.");
+        var btn = f.querySelector("button");
+        btn.disabled = true;
+        btn.textContent = "Sending…";
+        var success = function () {
+          f.remove();
+          say("bot", "Thanks, " + name + "! We’ve got your request and will call you on " + phone + " shortly. For anything urgent, WhatsApp us too.", [["WhatsApp us", WA]]);
+        };
+        var post = function (url, headers) {
+          return fetch(url, { method: "POST", body: fd, headers: headers }).then(function (r) { if (!r.ok) throw new Error(r.status); return r; });
+        };
+        post("/portal/lead.php", { Accept: "application/json" })
+          .then(success)
+          .catch(function () {
+            return post("https://formspree.io/f/myzbnvnb", { Accept: "application/json" }).then(success);
           })
           .catch(function () {
-            f.querySelector("button").disabled = false;
-            say("bot", "That didn't send. Please message us on WhatsApp instead.",
-              [["Open WhatsApp", WA + "?text=" + encodeURIComponent("Please call me back on " + fd.get("phone") + ". Name: " + fd.get("name"))]]);
+            btn.disabled = false;
+            btn.textContent = "Call me back";
+            say("bot", "Sorry, that didn’t go through (it may be the connection). Tap below to send it on WhatsApp, or call us directly.",
+              [["Send on WhatsApp", WA + "?text=" + encodeURIComponent("Hello Marzley, please call me back. Name: " + name + ", phone: " + phone + ", best time: " + fd.get("best_time"))], ["Call +254 745 789 590", "tel:+254745789590"]]);
           });
       });
     };

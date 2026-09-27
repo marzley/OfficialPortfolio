@@ -144,6 +144,34 @@ approval nudges. Their phone number must be saved in *People*.
 Clients then see **Pay by card** next to Pay with M-Pesa. A card payment is only recorded after
 the portal asks Paystack directly and the amount and currency (KES) match.
 
+## 7c. Website chat
+
+The chat answers on its own from `data/knowledge.json` (about 70 topics, English and Kiswahili):
+prices, packages, timelines, M-Pesa, hosting, care plans, systems, training, portal, contacts…
+To change an answer or add a topic, edit that file (each entry has a title, keywords, the answer
+and up to two links) and upload it. No rebuild needed.
+
+**Call me back** now saves the request on the Leads board and emails you immediately (it works
+even before the portal is set up), with Formspree and WhatsApp as backups. Add
+`'sms_alert_phone' => '07…'` in `portal-config.php` to also get an SMS (needs SMS set up).
+
+**Optional: AI answers for anything else (Claude).**
+- [ ] Create an account at https://platform.claude.com, add a payment method, and under
+      *Settings → Limits* set a monthly spend limit you're comfortable with.
+- [ ] *Settings → API keys* → **Create key**. Put it in `portal-config.php`:
+      `'chat' => ['api_key' => 'sk-ant-…'],`
+- [ ] Make sure the `phpvendor/` folder from the zip is uploaded (it holds the official Anthropic
+      PHP library; the web can't open it).
+- [ ] Ask the chat something unusual, e.g. "what is SSL and does my blog need it?"
+
+How it behaves: common questions are still answered instantly from the knowledge base (free);
+only questions it isn't sure about go to Claude, together with the knowledge base so answers stay
+true to your prices and policies. It replies in the visitor's language, never invents prices, and
+suggests WhatsApp or a call back when it doesn't know. Limits: 20 AI answers per visitor per hour
+and 400 per day in total (change `per_visitor_hour` / `daily_limit`). It uses Claude Opus 5 at low
+effort; you can set `'model' => 'claude-sonnet-5'` for a cheaper model. If the key stops working
+you get an email, and the chat falls back to its own answers.
+
 ## 8. Legal and tax
 
 - [ ] Read `/privacy` and `/terms` (linked in every page footer) and correct anything that does

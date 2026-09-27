@@ -43,7 +43,10 @@ RedirectMatch 404 ^/(content|tools)/
 <FilesMatch "\.(log|md|scss|ini|sh|bak|sql|exe|py)$">
     Require all denied
 </FilesMatch>
-<FilesMatch "^(\.git.*|\.env.*|(mpesa|portal)-config.*\.php)$">
+# Private folders: PHP libraries, tests and CI settings are never served
+RedirectMatch 404 ^/(phpvendor|tests|\.github)(/|$)
+
+<FilesMatch "^(\.git.*|\.env.*|(mpesa|portal)-config.*\.php|composer\.(json|lock))$">
     Require all denied
 </FilesMatch>
 RedirectMatch 404 /\.git

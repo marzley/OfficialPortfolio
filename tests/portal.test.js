@@ -190,18 +190,45 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   lead.append("name", "Peter Otieno"); lead.append("email", "peter@example.com"); lead.append("phone", "0733111222");
   lead.append("message", "I need a school website"); lead.append("_source", "Booking");
   let lr = await fetch(BASE + "/portal/lead.php", { method: "POST", body: lead });
-  ok("website enquiry becomes a lead", lr.status === 204 && one("SELECT COUNT(*) AS n FROM leads WHERE email = 'peter@example.com'").n == 1);
+  ok("website enquiry becomes a lead", lr.status === 200 && (await lr.json()).ok === true && one("SELECT COUNT(*) AS n FROM leads WHERE email = 'peter@example.com'").n == 1);
   lr = await fetch(BASE + "/portal/lead.php", { method: "POST", body: lead });
   ok("a repeat enquiry is added to the same lead", one("SELECT COUNT(*) AS n FROM leads WHERE email = 'peter@example.com'").n == 1);
   const spam = new FormData(); spam.append("name", "Bot"); spam.append("email", "bot@example.com"); spam.append("_gotcha", "x");
   lr = await fetch(BASE + "/portal/lead.php", { method: "POST", body: spam });
-  ok("spam (honeypot) is ignored", lr.status === 204 && one("SELECT COUNT(*) AS n FROM leads WHERE email = 'bot@example.com'").n == 0);
+  ok("spam (honeypot) is ignored", lr.status === 200 && one("SELECT COUNT(*) AS n FROM leads WHERE email = 'bot@example.com'").n == 0);
   const empty = new FormData(); empty.append("name", "No contact");
   lr = await fetch(BASE + "/portal/lead.php", { method: "POST", body: empty });
   ok("a lead needs an email or phone", lr.status === 400);
   const leadId = one("SELECT id FROM leads WHERE email = 'peter@example.com'").id;
   r = await admin("lead_status", { id: leadId, status: "contacted" });
   ok("move a lead", r.s === 200 && one(`SELECT status FROM leads WHERE id = ${leadId}`).status === "contacted");
+
+  clearMail();
+  const cb = new FormData(); cb.append("name", "Kelvin Test"); cb.append("phone", "0756781458"); cb.append("best_time", "Evening"); cb.append("_source", "Call-back request");
+  lr = await fetch(BASE + "/portal/lead.php", { method: "POST", body: cb, headers: { Accept: "application/json" } });
+  ok("chat call-back is saved and answers ok", lr.status === 200 && (await lr.json()).ok === true && one("SELECT COUNT(*) AS n FROM leads WHERE phone = '0756781458'").n == 1);
+  ok("call-back emailed to the team at once", subjects().some((x) => /^CALL BACK: Kelvin Test \(0756781458\)/.test(x)), subjects());
+
+  // ---------- AI chat (Claude, through the official SDK) ----------
+  let cr2 = await (await fetch(BASE + "/portal/chat.php")).json();
+  ok("chat reports AI switched on", cr2.enabled === true, cr2);
+  let ch = await fetch(BASE + "/portal/chat.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: [{ role: "assistant", content: "Hi!" }, { role: "user", content: "How much is an online shop?" }] }) });
+  let cj = await ch.json();
+  ok("AI answer returned as plain text", ch.status === 200 && cj.reply.startsWith("We build websites") && !cj.reply.includes("**") && !cj.reply.includes("LINK:"), cj);
+  ok("only links from the knowledge base are kept", JSON.stringify(cj.links) === JSON.stringify([["See packages & prices", "pricing"]]), cj.links);
+  const sent = JSON.parse(fs.readFileSync(WORK + "/fake/claude-last.json", "utf8"));
+  ok("request uses claude-opus-5 with low effort", sent.body.model === "claude-opus-5" && sent.body.output_config.effort === "low", sent.body.output_config);
+  ok("system prompt holds the knowledge base and is cached", sent.body.system[0].cache_control.type === "ephemeral" && sent.body.system[0].text.includes("KSh 1,500/month"));
+  ok("conversation starts with the visitor", sent.body.messages[0].role === "user" && sent.body.messages.length === 1);
+  ok("refusal fallbacks switched on", sent.body.fallbacks === "default" && /server-side-fallback-2026-07-01/.test(sent.headers["anthropic-beta"]), sent.headers);
+  fs.writeFileSync(WORK + "/fake/claude-mode", "overloaded");
+  ch = await fetch(BASE + "/portal/chat.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: [{ role: "user", content: "hello" }] }) });
+  ok("when Claude is busy the page is told to use its own answers", ch.status === 503);
+  fs.writeFileSync(WORK + "/fake/claude-mode", "ok");
+  ch = await fetch(BASE + "/portal/chat.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: [] }) });
+  ok("empty chat is refused", ch.status === 400);
+  for (let i = 0; i < 4; i++) ch = await fetch(BASE + "/portal/chat.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: [{ role: "user", content: "hi" }] }) });
+  ok("each visitor has an hourly limit", ch.status === 429);
 
   // ---------- online quotes ----------
   r = await admin("quote_save", { lead_id: leadId, client_name: "Peter Otieno", client_email: "peter@example.com", client_phone: "0733111222", title: "School website",

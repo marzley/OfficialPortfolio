@@ -16,8 +16,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+      - name: PHP libraries (Anthropic SDK for the chat)
+        run: composer install --no-dev --prefer-dist --no-interaction --no-progress
       - name: PHP syntax
-        run: find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l
+        run: find . -name '*.php' -not -path './vendor/*' -not -path './phpvendor/*' -print0 | xargs -0 -n1 php -l
       - name: JavaScript syntax
         run: for f in js/home.js js/offline.js js/theme-init.js js/print-page.js js/print-button.js portal/app.js sw.js; do node --check "$f"; done
       - name: Portal tests

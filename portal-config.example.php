@@ -49,6 +49,15 @@ return [
     'backup_dir' => '/home/CPANELUSER/portal-backups',
     'backup_keep_days' => 14,
 
+    // AI answers in the website chat (optional). Without this the chat still answers from
+    // data/knowledge.json. Get a key at https://platform.claude.com (Settings > API keys) and set a
+    // monthly spend limit there. daily_limit caps AI answers per day across all visitors.
+    // 'chat' => ['api_key' => 'sk-ant-…', 'model' => 'claude-opus-5', 'effort' => 'low', 'per_visitor_hour' => 20, 'daily_limit' => 400],
+    'chat' => null,
+
+    // Text this number when someone asks for a call back (needs the 'sms' settings above)
+    'sms_alert_phone' => '',
+
     // Invoice numbers: MT-2026-0001, MT-2026-0002 … (a new series each year)
     'invoice_prefix' => 'MT',
 
