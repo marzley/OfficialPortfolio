@@ -26,7 +26,7 @@
     "Invoice": "Ankara", "Description": "Maelezo", "Amount": "Kiasi", "Due": "Mwisho", "Status": "Hali", "Paid": "Imelipwa", "Unpaid": "Haijalipwa", "Cancelled": "Imeghairiwa",
     "Part paid": "Imelipwa sehemu", "Balance": "Salio", "Receipt": "Risiti", "PDF": "PDF", "Pay with M-Pesa": "Lipa kwa M-Pesa", "Pay by card": "Lipa kwa kadi",
     "I’ve already paid": "Nimeshalipa", "No invoices yet.": "Bado hakuna ankara.", "Waiting for confirmation": "Inasubiri kuthibitishwa",
-    "M-Pesa phone number": "Nambari ya simu ya M-Pesa", "Send M-Pesa prompt": "Tuma ombi la M-Pesa", "Amount to pay (KSh)": "Kiasi cha kulipa (KSh)", "Close": "Funga",
+    "M-Pesa phone number": "Nambari ya simu ya M-Pesa", "Enter your phone number": "Weka nambari yako ya simu", "Send M-Pesa prompt": "Tuma ombi la M-Pesa", "Amount to pay (KSh)": "Kiasi cha kulipa (KSh)", "Close": "Funga",
     "Check your phone and enter your M-Pesa PIN to pay ": "Angalia simu yako na uweke PIN ya M-Pesa kulipa ", "Paid. Thank you! M-Pesa receipt ": "Imelipwa. Asante! Risiti ya M-Pesa ",
     "The payment didn't go through. No money was deducted. You can try again.": "Malipo hayakufanikiwa. Hakuna pesa iliyokatwa. Unaweza kujaribu tena.",
     "How did you pay?": "Ulilipaje?", "M-Pesa (Till 6095737)": "M-Pesa (Till 6095737)", "Bank transfer": "Uhamisho wa benki", "M-Pesa code or bank reference": "Nambari ya M-Pesa au ya benki",
@@ -405,7 +405,7 @@
     var dlg = h("dialog", { className: "portal-dialog", "aria-labelledby": "pay-title" });
     var err = h("p", { className: "portal-error", role: "alert" });
     var status = h("div", { className: "deposit-status", role: "status", "aria-live": "polite", hidden: true });
-    var phone = h("input", { id: "pay-phone", type: "tel", inputmode: "numeric", autocomplete: "tel", placeholder: "0712 345 678", required: true, value: (data.me && data.me.phone) || "" });
+    var phone = h("input", { id: "pay-phone", type: "tel", inputmode: "numeric", autocomplete: "tel", placeholder: t("Enter your phone number"), required: true });
     var balance = Math.max(0, +inv.amount - (+inv.amount_paid || 0));
     var amount = h("input", { id: "pay-amount", type: "number", min: "1", max: String(Math.min(balance, 150000)), value: String(Math.min(balance, 150000)) });
     var btn = h("button", { type: "submit", className: "btn btn-mpesa", text: t("Send M-Pesa prompt") });

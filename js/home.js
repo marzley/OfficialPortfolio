@@ -680,6 +680,10 @@
   var demoForm = document.getElementById("demo-checkout");
   if (demoForm) {
     var demoPhone = document.getElementById("demo-phone");
+    // Never show a number typed on an earlier visit: start empty, also when the page is restored from the back button
+    var clearPhones = function () { ["demo-phone", "deposit-phone"].forEach(function (id) { var el = document.getElementById(id); if (el) el.value = ""; }); };
+    clearPhones();
+    window.addEventListener("pageshow", clearPhones);
     var demoError = document.getElementById("demo-error");
     var demoPay = document.getElementById("demo-pay");
     var demoSimBtn = document.getElementById("demo-sim");
@@ -2114,7 +2118,7 @@
       f.className = "chat-callback";
       f.noValidate = true;
       f.innerHTML = '<label class="sr-only" for="cb-name">Name</label><input id="cb-name" name="name" placeholder="Your name" required maxlength="80" autocomplete="name" />' +
-        '<label class="sr-only" for="cb-phone">Phone</label><input id="cb-phone" name="phone" type="tel" inputmode="tel" placeholder="Phone number, e.g. 0712 345 678" required maxlength="20" autocomplete="tel" />' +
+        '<label class="sr-only" for="cb-phone">Phone</label><input id="cb-phone" name="phone" type="tel" inputmode="tel" placeholder="Enter your phone number" required maxlength="20" autocomplete="tel" />' +
         '<label class="sr-only" for="cb-when">Best time</label><select id="cb-when" name="best_time"><option value="As soon as possible">As soon as possible</option><option value="Morning">Morning</option><option value="Afternoon">Afternoon</option><option value="Evening">Evening</option></select>' +
         '<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="sr-only" aria-hidden="true" />' +
         '<button type="submit" class="btn btn-solid">Call me back</button>';
