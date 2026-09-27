@@ -1,0 +1,302 @@
+/* Marzley homepage interactions.
+   The work list is a vanilla-JS port of the "interactive list preview" component:
+   a white highlight bar follows the hovered row, the row's screenshot reveals from
+   its centre (clip-path) and drifts with the cursor. */
+(function () {
+  "use strict";
+
+  document.documentElement.classList.remove("no-js");
+
+  var reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var hoverQuery = window.matchMedia("(hover: hover) and (pointer: fine) and (min-width: 901px)");
+
+  /* ---------- mobile nav ---------- */
+  var toggle = document.querySelector(".menu-toggle");
+  var nav = document.getElementById("site-nav");
+  if (toggle && nav) {
+    toggle.addEventListener("click", function () {
+      var open = nav.classList.toggle("is-open");
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.textContent = open ? "Close" : "Menu";
+    });
+    nav.addEventListener("click", function (event) {
+      if (event.target.closest("a") && nav.classList.contains("is-open")) {
+        toggle.click();
+      }
+    });
+  }
+
+  /* ---------- reveal on scroll ---------- */
+  var revealEls = document.querySelectorAll(".reveal");
+  if (!("IntersectionObserver" in window) || reduceMotionQuery.matches) {
+    revealEls.forEach(function (el) { el.classList.add("is-in"); });
+  } else {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-in");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: "0px 0px -10% 0px" });
+    revealEls.forEach(function (el) { io.observe(el); });
+  }
+
+  /* ---------- work list hover preview ---------- */
+  function initWorkList() {
+    var work = document.querySelector(".work");
+    if (!work || typeof window.gsap === "undefined") return;
+
+    var gsap = window.gsap;
+    var list = work.querySelector(".work-list");
+    var highlight = work.querySelector(".work-highlight");
+    var layer = work.querySelector(".work-previews");
+    var rows = Array.prototype.slice.call(work.querySelectorAll(".work-row"));
+
+    var DURATION = 0.6;
+    var SMOOTHNESS = 0.35;
+    var LERP = 0.18;
+    var OFFSET = 20;
+    var HIDDEN = "inset(50%)";
+    var VISIBLE = "inset(0%)";
+
+    // Build one preview image per row from its data-img attribute.
+    var previews = rows.map(function (row) {
+      var box = document.createElement("div");
+      box.className = "work-preview";
+      var img = document.createElement("img");
+      img.src = row.getAttribute("data-img");
+      img.alt = "";
+      img.decoding = "async";
+      box.appendChild(img);
+      layer.appendChild(box);
+      return box;
+    });
+
+    var generation = previews.map(function () { return 0; });
+    var pendingLeave = previews.map(function () { return false; });
+    var activeIndex = null;
+    var zIndex = 10;
+    var target = { x: 0, y: 0 };
+    var current = { x: 0, y: 0 };
+    var frame = null;
+
+    function reduceMotion() { return reduceMotionQuery.matches; }
+
+    function resetPreviews() {
+      previews.forEach(function (el) {
+        gsap.killTweensOf(el);
+        gsap.set(el, reduceMotion()
+          ? { clipPath: VISIBLE, opacity: 0, visibility: "hidden" }
+          : { clipPath: HIDDEN, opacity: 1, visibility: "hidden" });
+      });
+      gsap.set(highlight, { opacity: 0, y: 0, height: 0 });
+      gsap.set(layer, { x: 0, y: 0 });
+      target = { x: 0, y: 0 };
+      current = { x: 0, y: 0 };
+    }
+
+    function tick() {
+      if (!reduceMotion()) {
+        current.x += (target.x - current.x) * LERP;
+        current.y += (target.y - current.y) * LERP;
+        gsap.set(layer, { x: current.x, y: current.y });
+      }
+      frame = requestAnimationFrame(tick);
+    }
+
+    function hideImage(index) {
+      var el = previews[index];
+      var gen = ++generation[index];
+      var rm = reduceMotion();
+      gsap.killTweensOf(el);
+      gsap.to(el, {
+        clipPath: rm ? VISIBLE : HIDDEN,
+        opacity: 0,
+        duration: rm ? SMOOTHNESS : DURATION,
+        ease: rm ? "power2.out" : "power3.inOut",
+        onComplete: function () {
+          if (generation[index] === gen) gsap.set(el, { visibility: "hidden" });
+        }
+      });
+    }
+
+    function moveHighlight(row) {
+      var listBox = list.getBoundingClientRect();
+      var rowBox = row.getBoundingClientRect();
+      gsap.to(highlight, {
+        y: rowBox.top - listBox.top,
+        height: rowBox.height,
+        opacity: 1,
+        duration: SMOOTHNESS,
+        ease: "power3.out",
+        overwrite: "auto"
+      });
+    }
+
+    function activate(index) {
+      var el = previews[index];
+      var rm = reduceMotion();
+      var previous = activeIndex;
+
+      pendingLeave[index] = false;
+
+      if (rm && previous !== null && previous !== index) {
+        pendingLeave[previous] = false;
+        hideImage(previous);
+      }
+
+      zIndex += 1;
+      var gen = ++generation[index];
+      gsap.killTweensOf(el);
+      gsap.set(el, {
+        zIndex: zIndex,
+        visibility: "visible",
+        clipPath: rm ? VISIBLE : HIDDEN,
+        opacity: rm ? 0 : 1
+      });
+      gsap.to(el, {
+        clipPath: VISIBLE,
+        opacity: 1,
+        duration: rm ? SMOOTHNESS : DURATION,
+        ease: rm ? "power2.out" : "power2.inOut",
+        onComplete: function () {
+          if (generation[index] !== gen || !pendingLeave[index]) return;
+          pendingLeave[index] = false;
+          hideImage(index);
+        }
+      });
+
+      if (previous !== null && previous !== index) rows[previous].classList.remove("is-active");
+      rows[index].classList.add("is-active");
+      activeIndex = index;
+      moveHighlight(rows[index]);
+    }
+
+    function deactivate(index) {
+      if (gsap.isTweening(previews[index])) {
+        pendingLeave[index] = true;
+        return;
+      }
+      hideImage(index);
+    }
+
+    function clearActive() {
+      if (activeIndex !== null) rows[activeIndex].classList.remove("is-active");
+      activeIndex = null;
+      gsap.to(highlight, { opacity: 0, duration: SMOOTHNESS, ease: "power2.out", overwrite: "auto" });
+      target = { x: 0, y: 0 };
+    }
+
+    rows.forEach(function (row, index) {
+      row.addEventListener("mouseenter", function () { if (hoverQuery.matches) activate(index); });
+      row.addEventListener("mouseleave", function () { if (hoverQuery.matches) deactivate(index); });
+      // Keyboard users get the same preview when tabbing through projects.
+      row.addEventListener("focus", function () { if (hoverQuery.matches) activate(index); });
+      row.addEventListener("blur", function () {
+        if (!hoverQuery.matches) return;
+        deactivate(index);
+        if (!list.contains(document.activeElement)) clearActive();
+      });
+    });
+
+    list.addEventListener("mouseleave", function () { if (hoverQuery.matches) clearActive(); });
+
+    work.addEventListener("mousemove", function (event) {
+      if (reduceMotion() || !hoverQuery.matches) return;
+      var box = work.getBoundingClientRect();
+      target = {
+        x: ((event.clientX - box.left) / box.width - 0.5) * OFFSET,
+        y: ((event.clientY - box.top) / box.height - 0.5) * OFFSET
+      };
+    });
+
+    function onModeChange() {
+      if (activeIndex !== null) rows[activeIndex].classList.remove("is-active");
+      activeIndex = null;
+      resetPreviews();
+    }
+
+    reduceMotionQuery.addEventListener && reduceMotionQuery.addEventListener("change", onModeChange);
+    hoverQuery.addEventListener && hoverQuery.addEventListener("change", onModeChange);
+
+    resetPreviews();
+    frame = requestAnimationFrame(tick);
+  }
+
+  initWorkList();
+
+  /* ---------- contact form (Formspree) ---------- */
+  var form = document.getElementById("booking-form");
+  if (form) {
+    var feedback = document.getElementById("booking-feedback");
+    var submit = document.getElementById("booking-submit");
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      feedback.textContent = "";
+      feedback.className = "form-feedback";
+      submit.disabled = true;
+      submit.textContent = "Sending…";
+
+      fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+        headers: { Accept: "application/json" }
+      })
+        .then(function (response) {
+          if (response.ok) {
+            form.reset();
+            feedback.textContent = "Request sent. I will contact you shortly.";
+            feedback.className = "form-feedback ok";
+            return;
+          }
+          return response.json().then(function (err) {
+            feedback.textContent = err && err.errors
+              ? err.errors.map(function (e) { return e.message; }).join(", ")
+              : "Something went wrong. Please try again or reach me on WhatsApp.";
+            feedback.className = "form-feedback err";
+          });
+        })
+        .catch(function () {
+          feedback.textContent = "Network error. Check your connection and try again.";
+          feedback.className = "form-feedback err";
+        })
+        .then(function () {
+          submit.disabled = false;
+          submit.textContent = "Send request";
+        });
+    });
+  }
+
+  /* ---------- donate (Paystack) ---------- */
+  var donate = document.getElementById("donate-btn");
+  if (donate) {
+    donate.addEventListener("click", function () {
+      if (typeof window.PaystackPop === "undefined") {
+        window.open("https://paystack.shop/pay/yxq9x-qg6d", "_blank", "noopener");
+        return;
+      }
+      var amount = Number(prompt("Enter the amount you want to donate (KSh):"));
+      if (!amount || amount <= 0) return;
+      var email = prompt("Your email address (for the receipt):");
+      if (!email || email.indexOf("@") === -1) return;
+      window.PaystackPop.setup({
+        key: "pk_live_60a185fa3aad8a497acdd0013d119219ca5a19c2",
+        email: email,
+        amount: Math.round(amount * 100),
+        currency: "KES",
+        callback: function (response) {
+          alert("Thank you for your support! Reference: " + response.reference);
+        }
+      }).openIframe();
+    });
+  }
+
+  /* ---------- footer year ---------- */
+  var year = document.getElementById("year");
+  if (year) year.textContent = String(new Date().getFullYear());
+})();
