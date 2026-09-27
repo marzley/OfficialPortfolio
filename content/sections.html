@@ -162,6 +162,65 @@
             </div>
         </section>
 
+        <!-- Website health check -->
+        <section class="section" id="check" aria-labelledby="check-title">
+            <div class="wrap">
+                <div class="section-head reveal">
+                    <div>
+                        <p class="label">Free tool</p>
+                        <h2 id="check-title">Free website health check</h2>
+                    </div>
+                    <p>Enter your website’s address for an instant report on security, speed, mobile and Google basics, with tips to fix each issue.</p>
+                </div>
+                <form class="check-form reveal" id="check-form" novalidate>
+                    <label for="check-url" class="sr-only">Website address</label>
+                    <input id="check-url" type="text" inputmode="url" autocomplete="url" placeholder="yourbusiness.co.ke" required />
+                    <button type="submit" class="btn btn-solid" id="check-go"><i class="fa-solid fa-stethoscope" aria-hidden="true"></i> Check my website</button>
+                </form>
+                <p class="demo-error" id="check-error" role="alert"></p>
+                <div class="check-result" id="check-result" aria-live="polite" hidden></div>
+            </div>
+        </section>
+
+        <!-- Referrals -->
+        <section class="section" id="referral" aria-labelledby="referral-title">
+            <div class="wrap">
+                <div class="section-head reveal">
+                    <div>
+                        <p class="label">Referral programme</p>
+                        <h2 id="referral-title">Refer a client, get rewarded</h2>
+                    </div>
+                    <p>Know a business, school or clinic that needs a website or system? Share your link. When they become a client, you get <strong>KSh 2,000</strong> by <span class="nobreak">M-Pesa</span> or off your next invoice.</p>
+                </div>
+                <ol class="ref-steps reveal">
+                    <li><strong>Get your link</strong><span>Enter your name and phone below. Your personal link is ready instantly.</span></li>
+                    <li><strong>Share it</strong><span>Send it on WhatsApp, Facebook or anywhere people ask about websites.</span></li>
+                    <li><strong>Get paid</strong><span>When someone you referred pays their deposit, we send your reward.</span></li>
+                </ol>
+                <form class="form ref-form reveal" id="ref-form" action="https://formspree.io/f/myzbnvnb" method="POST" novalidate>
+                    <input type="hidden" name="_subject" value="New referral partner" />
+                    <input type="hidden" name="form" value="Referral sign-up" />
+                    <input type="hidden" name="referral_code" id="ref-code-field" />
+                    <div class="field">
+                        <label for="ref-name">Your name</label>
+                        <input id="ref-name" name="name" type="text" autocomplete="name" required />
+                    </div>
+                    <div class="field">
+                        <label for="ref-phone"><span class="nobreak">M-Pesa</span> number (for your reward)</label>
+                        <input id="ref-phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="0712 345 678" required />
+                    </div>
+                    <p class="demo-error full" id="ref-error" role="alert"></p>
+                    <div class="form-foot"><button type="submit" class="btn btn-solid">Get my referral link</button></div>
+                    <div class="ref-result full" id="ref-result" hidden>
+                        <p>Your link:</p>
+                        <div class="ref-link-row"><input id="ref-link" type="text" readonly aria-label="Your referral link" /><button type="button" class="btn btn-ghost" id="ref-copy">Copy</button></div>
+                        <a class="btn btn-wa" id="ref-share" target="_blank" rel="noopener noreferrer"><i class="fab fa-whatsapp" aria-hidden="true"></i> Share on WhatsApp</a>
+                    </div>
+                </form>
+                <p class="ref-terms reveal">Rewards are paid once the referred client’s deposit is received. Self-referrals don’t count. Clients can find their link in the <a href="portal/">client portal</a>.</p>
+            </div>
+        </section>
+
         <!-- Deposit -->
         <section class="section" id="deposit" aria-labelledby="deposit-title">
             <div class="wrap deposit-grid">

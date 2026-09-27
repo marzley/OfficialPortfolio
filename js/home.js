@@ -1656,6 +1656,31 @@
           });
           if (cookieBtn) cookieBtn.addEventListener("click", function () { consentBox.hidden = false; });
         }
+        var promo = cfg.banner || {};
+        var promoText = String(promo.text || "").trim();
+        var promoUntil = String(promo.until || "").trim();
+        var promoLive = promoText && (!promoUntil || new Date().toISOString().slice(0, 10) <= promoUntil);
+        var promoKey = "marzley-promo-" + promoText.length + "-" + promoText.slice(0, 20);
+        var promoDismissed = false;
+        try { promoDismissed = localStorage.getItem(promoKey) === "1"; } catch (e) {}
+        if (promoLive && !promoDismissed) {
+          var bar = document.createElement("div");
+          bar.className = "promo-banner";
+          bar.setAttribute("role", "region");
+          bar.setAttribute("aria-label", "Offer");
+          var link = String(promo.link || "").trim();
+          var msg = document.createElement(link && (/^https:\/\//.test(link) || /^[a-z0-9#-]+$/i.test(link)) ? "a" : "span");
+          msg.textContent = promoText;
+          if (msg.tagName === "A") msg.href = link;
+          var x = document.createElement("button");
+          x.type = "button";
+          x.setAttribute("aria-label", "Dismiss offer");
+          x.innerHTML = '<i class="fa-solid fa-xmark" aria-hidden="true"></i>';
+          x.addEventListener("click", function () { bar.remove(); try { localStorage.setItem(promoKey, "1"); } catch (e) {} });
+          bar.appendChild(msg);
+          bar.appendChild(x);
+          document.body.appendChild(bar);
+        }
         var review = (cfg.googleReviewUrl || "").trim();
         var profile = (cfg.googleProfileUrl || "").trim();
         var safe = function (u) { return /^https:\/\//.test(u); };
@@ -1668,6 +1693,300 @@
         });
       })
       .catch(function () {});
+  }
+
+  /* ---------- free website health check ---------- */
+  var checkForm = document.getElementById("check-form");
+  if (checkForm) {
+    var checkUrl = document.getElementById("check-url");
+    var checkGo = document.getElementById("check-go");
+    var checkErr = document.getElementById("check-error");
+    var checkOut = document.getElementById("check-result");
+    var el = function (tag, cls, text) {
+      var n = document.createElement(tag);
+      if (cls) n.className = cls;
+      if (text !== undefined) n.textContent = text;
+      return n;
+    };
+    checkForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      checkErr.textContent = "";
+      var value = checkUrl.value.trim();
+      if (!value) { checkErr.textContent = "Enter your website address, like yourbusiness.co.ke"; checkUrl.focus(); return; }
+      checkGo.disabled = true;
+      checkOut.hidden = false;
+      checkOut.textContent = "";
+      var wait = el("p", "check-wait");
+      wait.innerHTML = '<span class="spinner" aria-hidden="true"></span> Checking your website…';
+      checkOut.appendChild(wait);
+      var body = new FormData();
+      body.append("url", value);
+      fetch("healthcheck.php", { method: "POST", body: body, headers: { Accept: "application/json" } })
+        .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+        .then(function (r) {
+          checkOut.textContent = "";
+          if (!r.ok) { checkOut.hidden = true; checkErr.textContent = r.d.error || "The check didn't work. Please try again."; return; }
+          var d = r.d;
+          var head = el("div", "check-head");
+          var score = el("div", "check-score " + (d.score >= 80 ? "is-good" : d.score >= 50 ? "is-ok" : "is-bad"));
+          score.appendChild(el("strong", "", String(d.score)));
+          score.appendChild(el("span", "", "/ 100"));
+          var summary = el("div", "check-summary");
+          summary.appendChild(el("h3", "", d.url));
+          summary.appendChild(el("p", "", d.passed + " of " + d.total + " checks passed." + (d.score >= 80 ? " Nice work!" : " Here’s what to fix:")));
+          head.appendChild(score);
+          head.appendChild(summary);
+          checkOut.appendChild(head);
+          var list = el("ul", "check-list");
+          d.checks.slice().sort(function (a, b) { return a.ok - b.ok; }).forEach(function (c) {
+            var li = el("li", c.ok ? "is-pass" : "is-fail");
+            var icon = el("i", "fa-solid " + (c.ok ? "fa-circle-check" : "fa-circle-xmark"));
+            icon.setAttribute("aria-hidden", "true");
+            var txt = el("div");
+            var title = el("strong", "", c.label);
+            txt.appendChild(el("span", "check-group", c.group));
+            txt.appendChild(title);
+            txt.appendChild(el("span", "", (c.ok ? "Passed. " : "Needs work. ") + c.detail));
+            if (!c.ok) txt.appendChild(el("span", "check-tip", "Tip: " + c.tip));
+            li.appendChild(icon);
+            li.appendChild(txt);
+            list.appendChild(li);
+          });
+          checkOut.appendChild(list);
+          var cta = el("div", "cta-row check-cta");
+          var wa = el("a", "btn btn-wa");
+          wa.href = "https://wa.me/254745789590?text=" + encodeURIComponent("Hello Marzley, my website " + d.url + " scored " + d.score + "/100 on your health check. Can you help me fix it?");
+          wa.target = "_blank";
+          wa.rel = "noopener noreferrer";
+          wa.innerHTML = '<i class="fab fa-whatsapp" aria-hidden="true"></i> Fix these for me';
+          var care = el("a", "btn btn-ghost", "See care plans");
+          care.href = "pricing#care";
+          cta.appendChild(wa);
+          cta.appendChild(care);
+          checkOut.appendChild(cta);
+          checkOut.focus && head.setAttribute("tabindex", "-1");
+          head.focus();
+        })
+        .catch(function () { checkOut.hidden = true; checkErr.textContent = "The check isn't available right now. Please try again later."; })
+        .then(function () { checkGo.disabled = false; });
+    });
+  }
+
+  /* ---------- referrals ---------- */
+  // A referral code is a short hash of the referrer's phone (same formula in portal/lib.php)
+  var refCode = function (msisdn) {
+    var h = 0x811c9dc5;
+    for (var i = 0; i < msisdn.length; i++) { h ^= msisdn.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+    return "MT" + (h >>> 0).toString(36).toUpperCase();
+  };
+  var refNormalise = function (raw) {
+    var digits = String(raw).replace(/\D/g, "");
+    if (/^0[17]\d{8}$/.test(digits)) return "254" + digits.slice(1);
+    if (/^254[17]\d{8}$/.test(digits)) return digits;
+    if (/^[17]\d{8}$/.test(digits)) return "254" + digits;
+    return null;
+  };
+  // Remember who referred this visitor for 60 days, and send it with every form
+  var REF_KEY = "marzley-ref";
+  try {
+    var incoming = new URLSearchParams(location.search).get("ref");
+    if (incoming && /^MT[0-9A-Z]{4,8}$/.test(incoming)) localStorage.setItem(REF_KEY, JSON.stringify({ code: incoming, at: Date.now() }));
+  } catch (e) {}
+  var referredBy = null;
+  try {
+    var saved = JSON.parse(localStorage.getItem(REF_KEY) || "null");
+    if (saved && Date.now() - saved.at < 60 * 24 * 3600 * 1000) referredBy = saved.code;
+  } catch (e) {}
+  if (referredBy) {
+    document.querySelectorAll('form[action*="formspree.io"]').forEach(function (f) {
+      if (f.id === "ref-form") return;
+      var input = document.createElement("input");
+      input.type = "hidden";
+      input.name = "referred_by";
+      input.value = referredBy;
+      f.appendChild(input);
+    });
+  }
+  var refForm = document.getElementById("ref-form");
+  if (refForm) {
+    refForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var err = document.getElementById("ref-error");
+      err.textContent = "";
+      var name = document.getElementById("ref-name").value.trim();
+      var msisdn = refNormalise(document.getElementById("ref-phone").value);
+      if (!name) { err.textContent = "Enter your name."; return; }
+      if (!msisdn) { err.textContent = "Enter a Safaricom number like 0712 345 678."; return; }
+      var code = refCode(msisdn);
+      document.getElementById("ref-code-field").value = code;
+      var link = location.origin + "/?ref=" + code;
+      document.getElementById("ref-link").value = link;
+      document.getElementById("ref-share").href = "https://wa.me/?text=" + encodeURIComponent("Need a website, online shop or system? I recommend Marzley Tech Solutions: " + link);
+      document.getElementById("ref-result").hidden = false;
+      fetch(refForm.action, { method: "POST", body: new FormData(refForm), headers: { Accept: "application/json" } }).catch(function () {});
+    });
+    document.getElementById("ref-copy").addEventListener("click", function () {
+      var input = document.getElementById("ref-link");
+      input.select();
+      var btn = this;
+      var ok = function () { btn.textContent = "Copied!"; setTimeout(function () { btn.textContent = "Copy"; }, 2000); };
+      if (navigator.clipboard) navigator.clipboard.writeText(input.value).then(ok, function () { document.execCommand("copy"); ok(); });
+      else { document.execCommand("copy"); ok(); }
+    });
+  }
+
+  /* ---------- chat assistant (opens from the WhatsApp button) ---------- */
+  var waFloat = document.querySelector(".wa-float");
+  if (waFloat) {
+    var WA = "https://wa.me/254745789590";
+    var chat = document.createElement("div");
+    chat.className = "chat";
+    chat.id = "chat";
+    chat.setAttribute("role", "dialog");
+    chat.setAttribute("aria-label", "Chat with Marzley Tech");
+    chat.hidden = true;
+    chat.innerHTML =
+      '<div class="chat-head"><img src="img/brand/logo-96.webp" alt="" width="36" height="36" /><div><strong>Marzley Tech</strong><span><i class="chat-dot" aria-hidden="true"></i>Available 24/7</span></div>' +
+      '<button type="button" class="chat-close" aria-label="Close chat"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div>' +
+      '<div class="chat-log" role="log" aria-live="polite"></div>' +
+      '<div class="chat-chips"></div>' +
+      '<form class="chat-input"><label class="sr-only" for="chat-q">Your question</label><input id="chat-q" type="text" autocomplete="off" placeholder="Ask a question…" maxlength="300" />' +
+      '<button type="submit" aria-label="Send"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></button></form>' +
+      '<div class="chat-foot"><a class="btn btn-wa" target="_blank" rel="noopener noreferrer" href="' + WA + '"><i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp</a>' +
+      '<button type="button" class="btn btn-ghost chat-callback-btn"><i class="fa-solid fa-phone" aria-hidden="true"></i> Call me back</button></div>';
+    document.body.appendChild(chat);
+    var log = chat.querySelector(".chat-log");
+    var chips = chat.querySelector(".chat-chips");
+    var qInput = chat.querySelector("#chat-q");
+    var say = function (who, text, links) {
+      var b = document.createElement("div");
+      b.className = "chat-msg chat-" + who;
+      var p = document.createElement("p");
+      p.textContent = text;
+      b.appendChild(p);
+      (links || []).forEach(function (l) {
+        var a = document.createElement("a");
+        a.href = l[1];
+        a.textContent = l[0];
+        if (/^https?:/.test(l[1])) { a.target = "_blank"; a.rel = "noopener noreferrer"; }
+        b.appendChild(a);
+      });
+      log.appendChild(b);
+      log.scrollTop = log.scrollHeight;
+      return b;
+    };
+    var KB = [
+      { k: /price|cost|how much|charge|budget|bei|pesa ngapi|package/i, chip: "Prices",
+        a: "Websites start at KSh 15,000 for a landing page, KSh 25,000 for a business site, KSh 40,000 for an online shop and KSh 60,000 for corporate sites.",
+        l: [["See all packages", "pricing"], ["Build a quote", "pricing#pricing"]] },
+      { k: /how long|time|weeks|days|duration|fast|quick|deadline/i, chip: "How long does it take?",
+        a: "Most landing pages take about a week and business websites a few weeks. Shops and systems depend on the features. You’ll get a clear timeline with your quote.",
+        l: [["Book a free call", "contact#booking"]] },
+      { k: /m-?pesa|mpesa|paystack|paypal|payment|pay|till|stk/i, chip: "M-Pesa payments",
+        a: "Yes, I add M-Pesa (STK push), Paystack cards and PayPal to websites and systems. You can try a real KSh 1 M-Pesa payment on the Services page.",
+        l: [["Try the M-Pesa demo", "services#demo"]] },
+      { k: /host|domain|\.co\.ke|email address|server/i, chip: "Domain & hosting",
+        a: "Domain and hosting setup is from KSh 3,000 a year, and I deploy your site so it’s live on your own address.",
+        l: [["Pricing & add-ons", "pricing"]] },
+      { k: /train|course|learn|class|student|mentor|mafunzo/i, chip: "Training",
+        a: "I run practical training in web development, programming and design, in person and online. Over 200 students trained so far.",
+        l: [["See the courses", "training"]] },
+      { k: /seo|google|rank|search|slow|speed|check/i, chip: "Is my site OK?",
+        a: "Run the free website health check: it tests security, speed, mobile and Google basics in seconds, with tips to fix each issue.",
+        l: [["Check my website", "website-check"]] },
+      { k: /maint|update|backup|care|support|hack|broken/i,
+        a: "Care plans keep your site backed up, secure and up to date, from KSh 1,500 a month.",
+        l: [["See care plans", "pricing#care"]] },
+      { k: /portal|login|log in|sign in|my project|invoice/i,
+        a: "Clients can follow their project, download files and pay invoices in the client portal.",
+        l: [["Open the client portal", "portal/"]] },
+      { k: /where|location|located|office|nairobi|murang|town/i,
+        a: "We’re in Kenya and work with clients across the country, online and 24/7.",
+        l: [["Contact us", "contact"]] },
+      { k: /refer|reward|commission/i,
+        a: "Refer a client and get KSh 2,000 by M-Pesa when they become a client.",
+        l: [["Get your referral link", "referrals"]] },
+      { k: /^(hi|hello|hey|habari|mambo|niaje|good (morning|afternoon|evening))\b/i,
+        a: "Hello! 👋 How can I help? You can ask about prices, timelines, M-Pesa payments, hosting or training." }
+    ];
+    var answer = function (q) {
+      say("me", q);
+      var hit = KB.filter(function (e) { return e.k.test(q); })[0];
+      setTimeout(function () {
+        if (hit) say("bot", hit.a, hit.l);
+        else say("bot", "Good question. Kelvin can answer that directly. Send it on WhatsApp or ask for a call back.",
+          [["Ask on WhatsApp", WA + "?text=" + encodeURIComponent(q)]]);
+      }, 350);
+    };
+    KB.filter(function (e) { return e.chip; }).forEach(function (e) {
+      var c = document.createElement("button");
+      c.type = "button";
+      c.textContent = e.chip;
+      c.addEventListener("click", function () { answer(e.chip); });
+      chips.appendChild(c);
+    });
+    var greeted = false;
+    var openChat = function (focus) {
+      chat.hidden = false;
+      waFloat.setAttribute("aria-expanded", "true");
+      if (!greeted) { greeted = true; say("bot", "Hi! I’m the Marzley Tech assistant. Ask me anything, or pick a topic below."); }
+      if (focus !== false) qInput.focus();
+    };
+    var closeChat = function () { chat.hidden = true; waFloat.setAttribute("aria-expanded", "false"); waFloat.focus(); };
+    waFloat.setAttribute("aria-haspopup", "dialog");
+    waFloat.setAttribute("aria-expanded", "false");
+    waFloat.setAttribute("aria-controls", "chat");
+    waFloat.addEventListener("click", function (e) {
+      e.preventDefault();
+      if (chat.hidden) openChat(); else closeChat();
+    });
+    chat.querySelector(".chat-close").addEventListener("click", closeChat);
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !chat.hidden) closeChat(); });
+    chat.querySelector(".chat-input").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var q = qInput.value.trim();
+      if (!q) return;
+      qInput.value = "";
+      answer(q);
+    });
+    // Call me back
+    var showCallback = function () {
+      openChat(false);
+      var box = say("bot", "Leave your number and we’ll call you back.");
+      var f = document.createElement("form");
+      f.className = "chat-callback";
+      f.innerHTML = '<label class="sr-only" for="cb-name">Name</label><input id="cb-name" name="name" placeholder="Your name" required maxlength="80" />' +
+        '<label class="sr-only" for="cb-phone">Phone</label><input id="cb-phone" name="phone" type="tel" inputmode="tel" placeholder="Phone number" required maxlength="20" />' +
+        '<button type="submit" class="btn btn-solid">Call me back</button>';
+      box.appendChild(f);
+      f.querySelector("input").focus();
+      f.addEventListener("submit", function (ev) {
+        ev.preventDefault();
+        var fd = new FormData(f);
+        if (!String(fd.get("name")).trim() || !refNormalise(fd.get("phone")) && String(fd.get("phone")).replace(/\D/g, "").length < 9) {
+          say("bot", "Please enter your name and a valid phone number.");
+          return;
+        }
+        fd.append("_subject", "Call-back request from the website");
+        fd.append("form", "Call me back");
+        fd.append("page", location.pathname);
+        if (referredBy) fd.append("referred_by", referredBy);
+        f.querySelector("button").disabled = true;
+        fetch("https://formspree.io/f/myzbnvnb", { method: "POST", body: fd, headers: { Accept: "application/json" } })
+          .then(function (r) {
+            if (!r.ok) throw new Error();
+            f.remove();
+            say("bot", "Thanks, " + String(fd.get("name")).trim() + "! We’ll call you shortly.");
+          })
+          .catch(function () {
+            f.querySelector("button").disabled = false;
+            say("bot", "That didn't send. Please message us on WhatsApp instead.",
+              [["Open WhatsApp", WA + "?text=" + encodeURIComponent("Please call me back on " + fd.get("phone") + ". Name: " + fd.get("name"))]]);
+          });
+      });
+    };
+    chat.querySelector(".chat-callback-btn").addEventListener("click", showCallback);
+    document.querySelectorAll("[data-callback]").forEach(function (b) { b.addEventListener("click", function (e) { e.preventDefault(); showCallback(); }); });
   }
 
   /* ---------- video testimonials and certifications (from data/*.json) ---------- */

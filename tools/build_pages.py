@@ -66,6 +66,20 @@ PAGES = [
         "sections": ["contact", "booking", "faq"],
     },
     {
+        "slug": "website-check",
+        "label": "Website check",
+        "title": "Free Website Health Check: Speed, Security & SEO | Marzley Tech Solutions",
+        "description": "Check your website for free: https security, speed, mobile setup and Google basics, with simple tips to fix each issue.",
+        "sections": ["check", "care"],
+    },
+    {
+        "slug": "referrals",
+        "label": "Referrals",
+        "title": "Referral Programme: Earn KSh 2,000 per Client | Marzley Tech Solutions",
+        "description": "Refer a business, school or clinic to Marzley Tech Solutions and get KSh 2,000 by M-Pesa when they become a client.",
+        "sections": ["referral", "testimonials"],
+    },
+    {
         "slug": "training",
         "label": "Training",
         "title": "IT Training & Mentorship in Kenya: Web Development, Programming, Design | Marzley Tech",
@@ -80,7 +94,7 @@ HOME_OF = {
     "services": "services", "demo": "services#demo", "process": "process",
     "planner": "process#planner", "pricing": "pricing", "faq": "contact#faq",
     "contact": "contact", "cases": "work#cases", "deposit": "pricing#deposit",
-    "booking": "contact#booking", "training": "training", "compare": "pricing#compare", "care": "pricing#care", "safe": "services#safe", "integrations": "services#integrations",
+    "booking": "contact#booking", "training": "training", "compare": "pricing#compare", "care": "pricing#care", "safe": "services#safe", "integrations": "services#integrations", "check": "website-check", "referral": "referrals",
 }
 
 
@@ -386,7 +400,7 @@ def write_sitemap(posts, cases=()):
         ("", "weekly", "1.0", ["img/brand/og-image.jpg", "img/kelvin/office.jpg", "img/kelvin/office-square.jpg"]),
         ("work", "weekly", "0.9", []), ("services", "monthly", "0.9", []), ("pricing", "monthly", "0.9", []),
         ("about", "monthly", "0.8", []), ("contact", "monthly", "0.8", []), ("process", "monthly", "0.7", []),
-        ("training", "monthly", "0.8", []), ("blog", "weekly", "0.8", []), ("kiswahili", "monthly", "0.7", []),
+        ("training", "monthly", "0.8", []), ("website-check", "monthly", "0.8", []), ("referrals", "monthly", "0.6", []), ("blog", "weekly", "0.8", []), ("kiswahili", "monthly", "0.7", []),
     ] + [(p["slug"], "monthly", "0.8", []) for p in cases] + [(p["slug"], "monthly", "0.7", []) for p in posts]
     out = ['<?xml version="1.0" encoding="UTF-8"?>',
            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',
