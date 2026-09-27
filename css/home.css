@@ -2391,6 +2391,78 @@ a {
   }
 }
 
+/* ---------- project status badges ---------- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.work-row .name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.badge-live {
+  color: #047857;
+  background: #d1fae5;
+}
+
+.badge-live .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+  animation: live-pulse 2s ease-out infinite;
+}
+
+@keyframes live-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.55); }
+  100% { box-shadow: 0 0 0 7px rgba(16, 185, 129, 0); }
+}
+
+.badge-shot {
+  color: var(--fg-muted);
+  background: var(--bg);
+  border: 1px solid var(--line);
+}
+
+.work-row.is-active .badge-shot {
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+:root[data-theme="dark"] .badge-live {
+  color: #6ee7b7;
+  background: rgba(16, 185, 129, 0.16);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badge-live .dot {
+    animation: none;
+  }
+}
+
 /* ---------- reveal on scroll ---------- */
 .reveal {
   opacity: 0;
