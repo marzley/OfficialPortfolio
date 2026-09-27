@@ -23,12 +23,12 @@ ErrorDocument 404 /index.html
 
     # The site is one page now; send old page addresses (still in Google and
     # old links) to the matching section of the homepage
-    RewriteRule ^about\.html$ /#about [NE,L,R=301]
-    RewriteRule ^service\.html$ /#services [NE,L,R=301]
-    RewriteRule ^booking\.html$ /#pricing [NE,L,R=301]
-    RewriteRule ^testimonial\.html$ /#testimonials [NE,L,R=301]
-    RewriteRule ^contact\.html$ /#contact [NE,L,R=301]
-    RewriteRule ^(marzley|training|404)\.html$ / [L,R=301]
+    RewriteRule ^about(\.html|/)?$ /#about [NE,L,R=301]
+    RewriteRule ^service(\.html|/)?$ /#services [NE,L,R=301]
+    RewriteRule ^booking(\.html|/)?$ /#pricing [NE,L,R=301]
+    RewriteRule ^testimonial(\.html|/)?$ /#testimonials [NE,L,R=301]
+    RewriteRule ^contact(\.html|/)?$ /#contact [NE,L,R=301]
+    RewriteRule ^(marzley|training|404)(\.html|/)?$ / [L,R=301]
 </IfModule>
 
 # ---------- Keep private files private ----------
