@@ -23,6 +23,31 @@ connection is down or a page takes more than 10 seconds. If you change `offline.
 `sw.js`, change `VERSION` at the top of `sw.js` (for example `marzley-v2`) so visitors get
 the new copy.
 
+## Settings you can change without code
+- `data/stats.json`: the numbers in the homepage hero.
+- `data/site.json`: `analyticsId` (your Google Analytics ID, starting `G-`) turns on analytics
+  with a cookie banner; `googleReviewUrl` and `googleProfileUrl` show a "Leave a Google review"
+  prompt under the testimonials. Leave them empty to keep these off.
+
+## Blog, case studies and pages
+- New blog post: add a file to `content/blog/` (copy an existing one: the comment at the top
+  holds the title, description, date and tag), then run `python3 tools/build_pages.py`.
+- Case studies live in `content/case-studies/`, the Kiswahili page in `content/kiswahili.html`,
+  and the deposit, booking and training sections in `content/sections.html`.
+- `content/` and `tools/` do not need uploading.
+
+## Client portal (/portal)
+1. cPanel > MySQL Databases: create a database and user, and give the user all privileges.
+2. cPanel > phpMyAdmin: open the database, Import `portal/schema.sql`.
+3. Copy `portal-config.example.php` to `portal-config.php`, fill in the database details, your
+   cPanel username in `storage_dir`, and the admin Google emails. Upload it ONE FOLDER ABOVE
+   `public_html`, next to `mpesa-config.php`.
+4. Google Cloud Console > your OAuth client: under Authorized JavaScript origins add
+   `https://marzleytechsolutions.co.ke`.
+5. Open https://marzleytechsolutions.co.ke/portal/ and sign in with an admin email. Add each
+   client with the Google email they use; they can then sign in and see only their own projects,
+   updates, files and invoices, and pay invoices by M-Pesa.
+
 ## Upload
 Upload the whole folder into `public_html`, including the hidden `.htaccess` file.
 

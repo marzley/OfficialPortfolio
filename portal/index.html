@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Client portal | Marzley Tech Solutions</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#0b1b35" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/brand/favicon-32.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="../css/home.css" />
+    <link rel="stylesheet" href="portal.css" />
+    <script>
+        try { if (localStorage.getItem("marzley-theme") === "dark") document.documentElement.setAttribute("data-theme", "dark"); } catch (e) {}
+    </script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="app.js" defer></script>
+</head>
+
+<body class="portal-body">
+    <header class="portal-top">
+        <div class="wrap">
+            <a class="brand" href="../"><img src="../img/brand/logo-96.webp" alt="" width="40" height="40" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <span class="portal-tag">Client portal</span>
+            <div class="portal-user" id="portal-user" hidden>
+                <span id="portal-name"></span>
+                <button type="button" class="btn btn-ghost" id="sign-out">Sign out</button>
+            </div>
+        </div>
+    </header>
+
+    <main id="main" class="wrap portal-main">
+        <p class="portal-loading" id="portal-loading"><span class="spinner" aria-hidden="true"></span> Loading…</p>
+
+        <section class="portal-signin" id="view-signin" hidden aria-labelledby="signin-title">
+            <img src="../img/brand/logo-256.webp" alt="" width="96" height="96" />
+            <h1 id="signin-title">Client portal</h1>
+            <p>See your project’s progress, updates, files and invoices, and pay by M-Pesa. Sign in with the Google account you gave us.</p>
+            <div id="google-signin"></div>
+            <p class="portal-error" id="signin-error" role="alert"></p>
+            <p class="portal-help">No access yet? <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I%27d%20like%20access%20to%20the%20client%20portal." target="_blank" rel="noopener noreferrer">Message us on WhatsApp</a>.</p>
+        </section>
+
+        <section id="view-client" hidden aria-labelledby="client-title">
+            <h1 id="client-title" class="portal-h1"></h1>
+            <h2 class="portal-h2">Your projects</h2>
+            <div id="client-projects" class="portal-cards"></div>
+            <h2 class="portal-h2">Invoices</h2>
+            <div id="client-invoices"></div>
+        </section>
+
+        <section id="view-admin" hidden aria-labelledby="admin-title">
+            <h1 id="admin-title" class="portal-h1">Portal admin</h1>
+            <div class="portal-tabs" role="tablist" aria-label="Manage">
+                <button type="button" role="tab" id="tab-projects" aria-controls="panel-projects" aria-selected="true">Projects</button>
+                <button type="button" role="tab" id="tab-clients" aria-controls="panel-clients" aria-selected="false">Clients</button>
+                <button type="button" role="tab" id="tab-invoices" aria-controls="panel-invoices" aria-selected="false">Invoices</button>
+            </div>
+            <div role="tabpanel" id="panel-projects" aria-labelledby="tab-projects"></div>
+            <div role="tabpanel" id="panel-clients" aria-labelledby="tab-clients" hidden></div>
+            <div role="tabpanel" id="panel-invoices" aria-labelledby="tab-invoices" hidden></div>
+        </section>
+    </main>
+
+    <div class="portal-toast" id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+
+</html>
