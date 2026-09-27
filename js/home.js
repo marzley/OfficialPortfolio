@@ -438,6 +438,36 @@
     updateCalc();
   }
 
+  /* ---------- 3D tilt with glare ---------- */
+  var tiltQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+  document.querySelectorAll("[data-tilt]").forEach(function (el) {
+    var glare = document.createElement("span");
+    glare.className = "tilt-glare";
+    glare.setAttribute("aria-hidden", "true");
+    el.appendChild(glare);
+    var MAX = el.classList.contains("hero-photo-wrap") ? 12 : 7;
+    var frame = null;
+    el.addEventListener("mousemove", function (event) {
+      if (!tiltQuery.matches || reduceMotionQuery.matches) return;
+      var box = el.getBoundingClientRect();
+      var px = (event.clientX - box.left) / box.width;
+      var py = (event.clientY - box.top) / box.height;
+      if (frame) cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(function () {
+        el.classList.add("is-tilting");
+        el.style.transform = "perspective(900px) rotateX(" + ((0.5 - py) * MAX).toFixed(2) + "deg) rotateY(" +
+          ((px - 0.5) * MAX).toFixed(2) + "deg) translateZ(8px)";
+        el.style.setProperty("--gx", (px * 100).toFixed(1) + "%");
+        el.style.setProperty("--gy", (py * 100).toFixed(1) + "%");
+      });
+    });
+    el.addEventListener("mouseleave", function () {
+      if (frame) cancelAnimationFrame(frame);
+      el.classList.remove("is-tilting");
+      el.style.transform = "";
+    });
+  });
+
   /* ---------- footer year ---------- */
   var year = document.getElementById("year");
   if (year) year.textContent = String(new Date().getFullYear());
