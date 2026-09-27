@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // Best place: one folder ABOVE public_html (e.g. /home/USER/mpesa-config.php).
 // Copy mpesa-config.example.php, fill in your Daraja values, and upload it there.
 $configCandidates = array_filter([
-    getenv('MPESA_CONFIG') ?: null,
+    getenv('MPESA_CONFIG') ?: ($_SERVER['MPESA_CONFIG'] ?? null),
     dirname(__DIR__) . '/mpesa-config.php',
     __DIR__ . '/mpesa-config.php',
 ]);
@@ -144,7 +144,8 @@ if (!$phone) {
 }
 
 // GENERATE ACCESS TOKEN
-$tokenUrl = "https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
+$darajaBase = ($mpesa['environment'] ?? 'live') === 'sandbox' ? 'https://sandbox.safaricom.co.ke' : 'https://api.safaricom.co.ke';
+$tokenUrl = $darajaBase . "/oauth/v1/generate?grant_type=client_credentials";
 $ch = curl_init($tokenUrl);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_USERPWD, $consumerKey . ':' . $consumerSecret);
@@ -192,7 +193,7 @@ $stkPayload = [
 $dataString = json_encode($stkPayload);
 file_put_contents($logFile, date('c') . " - stk_request:" . $dataString . "\n", FILE_APPEND);
 
-$stkCurl = curl_init('https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest');
+$stkCurl = curl_init($darajaBase . '/mpesa/stkpush/v1/processrequest');
 curl_setopt($stkCurl, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($stkCurl, CURLOPT_POST, true);
 curl_setopt($stkCurl, CURLOPT_POSTFIELDS, $dataString);

@@ -62,7 +62,13 @@
     }
     return fetch(url, init).then(function (res) {
       return res.json().catch(function () { return {}; }).then(function (d) {
-        if (!res.ok) { var err = new Error(d.error || "Something went wrong. Please try again."); err.status = res.status; throw err; }
+        if (!res.ok) {
+          var err = new Error(d.error || "Something went wrong. Please try again.");
+          err.status = res.status;
+          // Signed out (idle too long, or "sign out everywhere"): go back to the sign-in screen
+          if (res.status === 401 && me && action !== "login") signedOut(err.message);
+          throw err;
+        }
         return d;
       });
     });
@@ -79,6 +85,14 @@
   }
 
   // ---------- sign-in ----------
+  var googleClientId = null;
+  var googleReady = false;
+  function signedOut(message) {
+    me = null; csrf = null; data = null;
+    show("view-signin");
+    $("signin-error").textContent = message || "";
+    if (!googleReady) startGoogle(googleClientId);
+  }
   function startGoogle(clientId, tries) {
     if (!clientId) { $("signin-error").textContent = "Sign-in is not set up yet."; return; }
     if (!(window.google && google.accounts && google.accounts.id)) {
@@ -95,6 +109,7 @@
       }
     });
     google.accounts.id.renderButton($("google-signin"), { theme: "filled_blue", size: "large", shape: "pill", text: "signin_with" });
+    googleReady = true;
   }
 
   $("sign-out").addEventListener("click", function () {
@@ -111,7 +126,7 @@
       if (me.role === "admin") { renderAdmin(); show("view-admin"); }
       else { renderClient(); show("view-client"); }
     }).catch(function (e) {
-      if (e.status === 401) { me = null; show("view-signin"); }
+      if (e.status === 401) signedOut(e.message);
       else toast(e.message, true);
     });
   }
@@ -200,7 +215,7 @@
         action.appendChild(h("button", { type: "button", className: "linklike", onclick: function () { editInvoice(inv); }, text: "Edit" }));
         action.appendChild(h("button", { type: "button", className: "linklike danger", onclick: function () { remove("invoice", inv.id); }, text: "Delete" }));
       }
-      body.appendChild(h("tr", null,
+      body.appendChild(h("tr", { "data-status": inv.status },
         h("td", { "data-label": "Invoice", text: inv.number }),
         admin ? h("td", { "data-label": "Client", text: client || "" }) : null,
         h("td", { "data-label": "Description", text: inv.description }),
@@ -296,7 +311,11 @@
     renderAdminClients();
     renderAdminInvoices();
     renderSupport($("panel-support"), true);
+    var sp = $("panel-support"), sf = filterBar(sp, ":scope > .ticket", "support requests", [["open", "Open"], ["closed", "Solved"]]);
+    var firstTicket = sp.querySelector(":scope > .ticket");
+    if (firstTicket) { sp.insertBefore(sf.bar, firstTicket); sf.run(); }
     renderAdminCourses();
+    renderActivity();
     var open = (data.tickets || []).filter(function (t) { return t.status === "open"; }).length;
     $("open-count").textContent = String(open);
     $("open-count").hidden = !open;
@@ -305,6 +324,9 @@
     badge("count-clients", data.clients.length);
     badge("count-invoices", data.invoices.filter(function (i) { return i.status === "unpaid"; }).length);
     badge("count-courses", (data.courses || []).length);
+    var sys = data.system || {};
+    var stale = function (s) { return !s || (Date.now() - new Date(String(s).replace(" ", "T")).getTime()) / 36e5 > 26; };
+    badge("count-activity", (stale(sys.last_cron) ? 1 : 0) + (stale(sys.last_backup) ? 1 : 0));
   }
 
   function renderAdminClients(edit) {
@@ -322,7 +344,10 @@
       field("Name", name), field("Google email (used to sign in)", email), field("Phone", phone),
       h("div", { className: "form-foot" }, h("button", { type: "submit", className: "btn btn-solid", text: edit.id ? "Save changes" : "Add client" }),
         edit.id ? h("button", { type: "button", className: "btn btn-ghost", onclick: function () { renderAdminClients(); }, text: "Cancel" }) : null));
+    panel.insertBefore(quickStart(), panel.firstChild);
     panel.appendChild(form);
+    var cf = filterBar(panel, ".admin-list > li", "people");
+    if (data.clients.length) panel.appendChild(cf.bar);
     var list = h("ul", { className: "admin-list" });
     data.clients.forEach(function (c) {
       list.appendChild(h("li", null, h("div", null, h("strong", { text: c.name }), h("span", { className: "portal-meta", text: c.email + (c.phone ? " · " + c.phone : "") })),
@@ -331,6 +356,7 @@
           h("button", { type: "button", className: "linklike", onclick: function () { renderAdminClients(c); name.focus(); }, text: "Edit" }))));
     });
     panel.appendChild(data.clients.length ? list : h("p", { className: "portal-empty", text: "No clients yet. Add one above; they can then sign in with that Google account." }));
+    cf.run();
   }
 
   function renderAdminProjects(edit) {
@@ -357,9 +383,12 @@
         edit.id ? h("button", { type: "button", className: "btn btn-ghost", onclick: function () { renderAdminProjects(); }, text: "Cancel" }) : null));
     summary.id = "p-summary";
     panel.appendChild(form);
+    var pf = filterBar(panel, ":scope > .portal-card", "projects", Object.keys(STATUS).map(function (k) { return [k, STATUS[k]]; }));
+    panel.appendChild(pf.bar);
 
     data.projects.forEach(function (p) {
       var card = projectCard(p, true);
+      card.setAttribute("data-status", p.status);
       var c = data.clients.find(function (x) { return +x.id === +p.client_id; });
       card.insertBefore(h("p", { className: "portal-meta", text: "Client: " + (c ? c.name : "?") }), card.children[1]);
       var msg = h("textarea", { rows: "2", maxlength: "2000", placeholder: "What’s new on this project?", "aria-label": "New update for " + p.title });
@@ -387,6 +416,7 @@
       card.appendChild(h("button", { type: "button", className: "linklike", onclick: function () { renderAdminProjects(p); window.scrollTo(0, 0); }, text: "Edit project details" }));
       panel.appendChild(card);
     });
+    pf.run();
   }
 
   function editInvoice(inv) {
@@ -416,13 +446,170 @@
       h("div", { className: "form-foot" }, h("button", { type: "submit", className: "btn btn-solid", text: edit.id ? "Save changes" : "Create invoice" }),
         edit.id ? h("button", { type: "button", className: "btn btn-ghost", onclick: function () { renderAdminInvoices(); }, text: "Cancel" }) : null));
     panel.appendChild(form);
+    var inf = filterBar(panel, "tbody tr", "invoices", [["unpaid", "Unpaid"], ["paid", "Paid"], ["cancelled", "Cancelled"]]);
+    if (data.invoices.length) panel.appendChild(inf.bar);
     var list = h("div");
     renderInvoices(list, data.invoices, true);
     panel.appendChild(list);
+    inf.run();
+    panel.appendChild(h("div", { className: "admin-quick" }, exportLink("invoices", "Download invoices (CSV)"), exportLink("payments", "Download payments (CSV)")));
+    panel.appendChild(renderRecurring());
   }
 
-  var TABS = ["overview", "reports", "projects", "clients", "invoices", "support", "courses"];
-  var TAB_NAMES = { overview: "Overview", reports: "Reports", projects: "Projects", clients: "People", invoices: "Invoices", support: "Support", courses: "Courses" };
+  var TABS = ["overview", "reports", "projects", "clients", "invoices", "support", "courses", "activity"];
+  var TAB_NAMES = { overview: "Overview", reports: "Reports", projects: "Projects", clients: "People", invoices: "Invoices", support: "Support", courses: "Courses", activity: "Activity & system" };
+
+  // ---------- search and filter for admin lists ----------
+  var FILTERS = {};
+  /** A search box (and optional status menu) that hides items in `panel` matching `selector`. Remembers its values across reloads. */
+  function filterBar(panel, selector, label, statuses) {
+    var state = FILTERS[label] || (FILTERS[label] = { q: "", s: "" });
+    var q = h("input", { type: "search", value: state.q, placeholder: "Search " + label + "…", "aria-label": "Search " + label });
+    var st = statuses ? select([["", "All"]].concat(statuses), state.s) : null;
+    if (st) st.setAttribute("aria-label", "Show " + label + " by status");
+    var count = h("span", { className: "filter-count", "aria-live": "polite" });
+    var run = function () {
+      state.q = q.value; if (st) state.s = st.value;
+      var words = q.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+      var items = panel.querySelectorAll(selector), shown = 0;
+      items.forEach(function (el) {
+        var ok = words.every(function (w) { return el.textContent.toLowerCase().indexOf(w) >= 0; }) && (!st || !st.value || el.getAttribute("data-status") === st.value);
+        el.hidden = !ok;
+        if (ok) shown++;
+      });
+      count.textContent = words.length || (st && st.value) ? shown + " of " + items.length + " shown" : items.length + " in total";
+    };
+    q.addEventListener("input", run);
+    if (st) st.addEventListener("change", run);
+    return { bar: h("div", { className: "admin-filter" }, h("i", { className: "fa-solid fa-magnifying-glass", "aria-hidden": "true" }), q, st, count), run: run };
+  }
+
+  function exportLink(type, label) {
+    return h("a", { className: "btn btn-ghost", href: API + "?action=export&type=" + type, download: "" },
+      h("i", { className: "fa-solid fa-file-csv", "aria-hidden": "true" }), " " + label);
+  }
+
+  // ---------- quick start: client + project + deposit invoice ----------
+  function quickStart() {
+    var f = {
+      name: h("input", { maxlength: "120", autocomplete: "off" }), email: h("input", { type: "email", maxlength: "190", autocomplete: "off" }),
+      phone: h("input", { type: "tel", maxlength: "30" }), title: h("input", { maxlength: "160", placeholder: "e.g. School website with M-Pesa" }),
+      total: h("input", { type: "number", min: "1", placeholder: "Agreed total in KSh" }), pct: h("input", { type: "number", min: "0", max: "100", value: "50" }),
+      due: h("input", { type: "number", min: "0", max: "60", value: "7" })
+    };
+    var form = h("form", { className: "form portal-form", onsubmit: function (e) {
+      e.preventDefault();
+      api("quick_start", { method: "POST", body: { name: f.name.value, email: f.email.value, phone: f.phone.value, title: f.title.value, total: f.total.value, deposit_percent: f.pct.value, due_days: f.due.value } })
+        .then(function (r) { toast(r.invoice ? "Set up. Deposit invoice " + r.invoice + " was sent to the client." : "Client and project set up."); load(); })
+        .catch(function (err) { toast(err.message, true); });
+    } },
+      h("p", { className: "full portal-meta", text: "When a client accepts a quote: this adds them (or finds them by email), creates the project and sends the deposit invoice, all at once." }),
+      field("Client name", f.name), field("Google email", f.email), field("Phone (for M-Pesa and SMS)", f.phone), field("Project name", f.title),
+      field("Agreed total (KSh)", f.total), field("Deposit (%)", f.pct), field("Deposit due in (days)", f.due),
+      h("div", { className: "form-foot" }, h("button", { type: "submit", className: "btn btn-solid" }, h("i", { className: "fa-solid fa-bolt", "aria-hidden": "true" }), " Set it all up")));
+    return h("details", { className: "admin-panel quick-start", id: "quick-start" },
+      h("summary", null, h("i", { className: "fa-solid fa-bolt", "aria-hidden": "true" }), " Quick start: new client, project and deposit invoice"), form);
+  }
+
+  // ---------- monthly (recurring) invoices ----------
+  function renderRecurring() {
+    var rec = data.recurring || [];
+    var client = select(clientOptions());
+    var project = select([["", "No project"]].concat(data.projects.map(function (p) { return [p.id, p.title]; })));
+    var desc = h("input", { maxlength: "300", placeholder: "e.g. Website care plan" });
+    var amount = h("input", { type: "number", min: "1" });
+    var dom = h("input", { type: "number", min: "1", max: "28", value: "1" });
+    var dueDays = h("input", { type: "number", min: "0", max: "60", value: "7" });
+    var form = h("form", { className: "form", onsubmit: function (e) {
+      e.preventDefault();
+      api("recurring_save", { method: "POST", body: { client_id: client.value, project_id: project.value, description: desc.value, amount: amount.value, day_of_month: dom.value, due_days: dueDays.value } })
+        .then(function (r) { toast("Saved. The first invoice goes out on " + day(r.next_date) + "."); load(); })
+        .catch(function (err) { toast(err.message, true); });
+    } },
+      field("Client", client), field("Project", project), field("Description", desc), field("Amount each month (KSh)", amount),
+      field("Invoice on day of the month (1–28)", dom), field("Due after (days)", dueDays),
+      h("div", { className: "form-foot" }, h("button", { type: "submit", className: "btn btn-solid", text: "Add monthly invoice" })));
+    var list = h("ul", { className: "admin-list" });
+    rec.forEach(function (r) {
+      var c = data.clients.find(function (x) { return +x.id === +r.client_id; }) || {};
+      var on = +r.active === 1;
+      list.appendChild(h("li", null,
+        h("div", null, h("strong", { text: r.description + " · " + ksh(r.amount) }),
+          h("span", { className: "portal-meta", text: (c.name || "?") + " · day " + r.day_of_month + " of each month · " + (on ? "next " + day(r.next_date) : "paused") })),
+        h("span", { className: "row-actions" },
+          h("button", { type: "button", className: "linklike", onclick: function () { save("recurring_toggle", { id: r.id, active: !on }); }, text: on ? "Pause" : "Resume" }),
+          h("button", { type: "button", className: "linklike danger", onclick: function () { remove("recurring", r.id); }, text: "Delete" }))));
+    });
+    return h("section", { className: "admin-panel", "aria-labelledby": "rec-title" },
+      h("div", { className: "admin-panel-head" }, h("h2", { id: "rec-title", text: "Monthly invoices (care plans)" })),
+      h("p", { className: "portal-meta", text: "Each month the invoice is created and sent automatically, with an M-Pesa pay button. Reminders go out before and after the due date." }),
+      form, rec.length ? list : h("p", { className: "portal-empty", text: "No monthly invoices yet." }));
+  }
+
+  // ---------- activity log and system status ----------
+  var ACTIONS = {
+    sign_in: "Signed in", sign_out: "Signed out", sign_out_everywhere: "Signed out on all devices", client_save: "Saved a client", project_save: "Saved a project",
+    update_add: "Posted an update", invoice_save: "Saved an invoice", file_upload: "Uploaded a file", "delete": "Deleted", approval_request: "Asked for approval",
+    approval_decide: "Reviewed an approval", ticket_open: "Opened a support request", ticket_reply: "Replied to support", ticket_status: "Changed a support request",
+    course_save: "Saved a course", lesson_save: "Added a lesson", enroll: "Enrolled a student", lesson_done: "Lesson progress", certificate_issue: "Issued a certificate",
+    pay_invoice: "Started an M-Pesa payment", payment_started: "M-Pesa prompt sent", invoice_paid: "Invoice paid", payment_rejected: "Payment rejected",
+    recurring_save: "Added a monthly invoice", recurring_toggle: "Paused or resumed a monthly invoice", recurring_invoice: "Monthly invoice created",
+    quick_start: "Quick start", "export": "Downloaded a CSV", backup: "Backup made"
+  };
+  function renderActivity() {
+    var panel = $("panel-activity");
+    panel.textContent = "";
+    var sys = data.system || {};
+    var ago = function (s) {
+      if (!s) return null;
+      var hrs = (Date.now() - new Date(String(s).replace(" ", "T")).getTime()) / 36e5;
+      return hrs < 1 ? "less than an hour ago" : hrs < 48 ? Math.round(hrs) + " hours ago" : Math.round(hrs / 24) + " days ago";
+    };
+    var fresh = function (s, hours) { return s && (Date.now() - new Date(String(s).replace(" ", "T")).getTime()) / 36e5 < hours; };
+    var rows = [
+      [fresh(sys.last_cron, 26), "Daily jobs (reminders, monthly invoices)", sys.last_cron ? "Last ran " + ago(sys.last_cron) : "Not set up yet: add the cron job in cPanel (see GO-LIVE.md)"],
+      [fresh(sys.last_backup, 26), "Nightly backup", sys.last_backup ? "Last backup " + ago(sys.last_backup) : "Not set up yet: add the backup cron job in cPanel"],
+      [!!sys.smtp, "Email", sys.smtp ? "Sent through your mailbox (SMTP)" : "Using PHP mail(): add SMTP settings so emails don’t land in spam"],
+      [!!sys.sms, "SMS", sys.sms ? "Africa’s Talking is connected" : "Off: add Africa’s Talking keys to send SMS"],
+      [!!sys.mpesa, "M-Pesa", sys.mpesa ? "Connected" : "Not configured"],
+      [!sys.staging, "Environment", sys.staging ? "Staging (test) site" : "Live site"]
+    ];
+    var status = h("ul", { className: "system-list" });
+    rows.forEach(function (r) {
+      status.appendChild(h("li", null, h("span", { className: "row-icon tone-" + (r[0] ? "green" : "amber") }, h("i", { className: "fa-solid " + (r[0] ? "fa-circle-check" : "fa-triangle-exclamation"), "aria-hidden": "true" })),
+        h("span", { className: "row-text" }, h("strong", { text: r[1] }), h("small", { text: r[2] }))));
+    });
+    panel.appendChild(h("div", { className: "admin-columns" },
+      h("section", { className: "admin-panel", "aria-labelledby": "sys-title" }, h("div", { className: "admin-panel-head" }, h("h2", { id: "sys-title", text: "System status" })), status),
+      h("section", { className: "admin-panel", "aria-labelledby": "sec-title" },
+        h("div", { className: "admin-panel-head" }, h("h2", { id: "sec-title", text: "Security and exports" })),
+        h("p", { className: "portal-meta", text: "For safety you are signed out after " + (sys.idle_minutes || 30) + " minutes without activity. Lost a phone or used a shared computer? Sign out everywhere." }),
+        h("div", { className: "admin-quick" },
+          h("button", { type: "button", className: "btn btn-ghost", onclick: function () {
+            if (!confirm("Sign out on every device, including this one?")) return;
+            api("logout_all", { method: "POST" }).then(function () { location.reload(); }).catch(function (e) { toast(e.message, true); });
+          } }, h("i", { className: "fa-solid fa-right-from-bracket", "aria-hidden": "true" }), " Sign out everywhere")),
+        h("div", { className: "admin-quick" }, exportLink("clients", "Clients (CSV)"), exportLink("activity", "Activity log (CSV)")))));
+
+    var log = data.audit || [];
+    var sec = h("section", { className: "admin-panel", "aria-labelledby": "log-title" },
+      h("div", { className: "admin-panel-head" }, h("h2", { id: "log-title", text: "Activity log" }), h("span", { className: "portal-meta", text: "Latest " + log.length })));
+    if (!log.length) { sec.appendChild(h("p", { className: "portal-empty", text: "Changes will be listed here: who did what, and when." })); panel.appendChild(sec); return; }
+    var body = h("tbody");
+    log.forEach(function (a) {
+      body.appendChild(h("tr", { "data-status": a.actor === "M-Pesa" || a.actor === "cron" ? "system" : "people" },
+        h("td", { "data-label": "When", text: String(a.created_at).slice(0, 16).replace("T", " ") }),
+        h("td", { "data-label": "Who", text: a.actor }),
+        h("td", { "data-label": "What", text: ACTIONS[a.action] || a.action }),
+        h("td", { "data-label": "Details", className: "log-detail", text: a.detail || "" })));
+    });
+    var lf = filterBar(sec, "tbody tr", "activity", [["people", "People"], ["system", "Automatic (M-Pesa, daily jobs)"]]);
+    sec.appendChild(lf.bar);
+    sec.appendChild(h("div", { className: "table-wrap" }, h("table", { className: "portal-table" },
+      h("thead", null, h("tr", null, h("th", { text: "When" }), h("th", { text: "Who" }), h("th", { text: "What" }), h("th", { text: "Details" }))), body)));
+    panel.appendChild(sec);
+    lf.run();
+  }
   function selectTab(name) {
     TABS.forEach(function (t) {
       $("tab-" + t).setAttribute("aria-selected", String(t === name));
@@ -574,7 +761,8 @@
 
     // Quick actions
     panel.appendChild(h("div", { className: "admin-quick" },
-      h("button", { type: "button", className: "btn btn-solid", onclick: function () { selectTab("clients"); } }, h("i", { className: "fa-solid fa-user-plus", "aria-hidden": "true" }), " Add a client"),
+      h("button", { type: "button", className: "btn btn-solid", onclick: function () { selectTab("clients"); var qs = $("quick-start"); if (qs) { qs.open = true; qs.querySelector("input").focus(); } } }, h("i", { className: "fa-solid fa-bolt", "aria-hidden": "true" }), " Quick start"),
+      h("button", { type: "button", className: "btn btn-ghost", onclick: function () { selectTab("clients"); } }, h("i", { className: "fa-solid fa-user-plus", "aria-hidden": "true" }), " Add a client"),
       h("button", { type: "button", className: "btn btn-ghost", onclick: function () { selectTab("projects"); } }, h("i", { className: "fa-solid fa-folder-plus", "aria-hidden": "true" }), " New project"),
       h("button", { type: "button", className: "btn btn-ghost", onclick: function () { selectTab("invoices"); } }, h("i", { className: "fa-solid fa-file-circle-plus", "aria-hidden": "true" }), " Create invoice"),
       h("button", { type: "button", className: "btn btn-ghost", onclick: function () { selectTab("courses"); } }, h("i", { className: "fa-solid fa-book-open", "aria-hidden": "true" }), " Manage courses")));
@@ -722,14 +910,17 @@
       "tfoot td{font-weight:800;font-size:20px;border:0}.stamp{display:inline-block;margin-top:20px;padding:8px 18px;border:3px solid #059669;color:#059669;border-radius:10px;font-weight:800;letter-spacing:.1em;transform:rotate(-4deg)}" +
       ".notes{margin-top:24px;font-size:14px;color:#475569}.foot{margin-top:28px;padding-top:16px;border-top:1px solid #e2e8f0;font-size:13px;color:#475569}@media(max-width:600px){.page{margin:12px;padding:24px}.meta{grid-template-columns:1fr}}";
     var body = "<div class=\"page\"><div class=\"top\"><div class=\"brand\"><img src=\"" + esc(logoUrl()) + "\" alt=\"\"><div><b>Marzley<span>Tech</span> Solutions</b><div class=\"muted\">Technology for real solutions</div></div></div>" +
-      "<div><h1>" + (paid ? "Receipt" : "Invoice") + "</h1><div class=\"muted\">" + esc(inv.number) + "</div></div></div>" +
+      "<div><h1>" + (paid ? "Receipt" : "Invoice") + "</h1><div class=\"muted\">" + esc(inv.number) + "</div>" +
+      (data.org && data.org.kra_pin ? "<div class=\"muted\">KRA PIN " + esc(data.org.kra_pin) + "</div>" : "") + "</div></div>" +
       "<div class=\"meta\"><div><b>Billed to</b>" + esc(client.name) + "<br><span class=\"muted\">" + esc(client.email) + "</span></div>" +
       "<div><b>" + (paid ? "Paid on" : "Date") + "</b>" + esc(day(paid ? inv.paid_at : inv.created_at)) + (inv.due_date && !paid ? "<br><span class=\"muted\">Due " + esc(day(inv.due_date)) + "</span>" : "") + "</div></div>" +
       "<table><thead><tr><th>Description</th><th class=\"r\">Amount</th></tr></thead><tbody><tr><td>" + esc(inv.description) + "</td><td class=\"r\">" + esc(ksh(inv.amount)) + "</td></tr></tbody>" +
       "<tfoot><tr><td>" + (paid ? "Total paid" : "Total due") + "</td><td class=\"r\">" + esc(ksh(inv.amount)) + "</td></tr></tfoot></table>" +
       (paid ? "<div class=\"stamp\">PAID" + (inv.mpesa_receipt ? " · M-PESA " + esc(inv.mpesa_receipt) : "") + "</div>" :
         "<p class=\"notes\">Pay by M-Pesa in the client portal, or Buy Goods Till 6095737 with reference " + esc(inv.number) + ".</p>") +
-      "<div class=\"foot\">Marzley Tech Solutions · +254 745 789 590 · marzleytechsolutionltd@gmail.com · marzleytechsolutions.co.ke · Kenya</div></div>";
+      "<div class=\"foot\">" + esc((data.org && data.org.name) || "Marzley Tech Solutions") + (data.org && data.org.kra_pin ? " · KRA PIN " + esc(data.org.kra_pin) : "") +
+      " · +254 745 789 590 · marzleytechsolutionltd@gmail.com · marzleytechsolutions.co.ke · Kenya" +
+      (data.org && data.org.etims ? "<br>An eTIMS tax invoice is issued for this " + (paid ? "payment" : "invoice") + " on request." : "") + "</div></div>";
     printDoc((paid ? "Receipt " : "Invoice ") + inv.number, css, body);
   }
 
@@ -764,7 +955,7 @@
           h("p", { text: m.message })));
       });
       var reply = h("textarea", { rows: "2", maxlength: "4000", placeholder: "Write a reply…", "aria-label": "Reply to " + t.subject });
-      var det = h("details", { className: "portal-card ticket", open: t.status === "open" && admin ? true : null },
+      var det = h("details", { className: "portal-card ticket", "data-status": t.status, open: t.status === "open" && admin ? true : null },
         h("summary", null, h("strong", { text: t.subject }), h("span", { className: "pill pill-" + (t.status === "open" ? "unpaid" : "paid"), text: t.status === "open" ? "Open" : "Closed" }),
           admin ? h("span", { className: "portal-meta", text: client || "" }) : null),
         thread,
@@ -924,8 +1115,11 @@
   api("me").then(function (d) {
     me = d.user;
     csrf = d.csrf;
+    googleClientId = d.google_client_id;
+    if (d.staging) document.body.insertBefore(h("p", { className: "staging-banner", role: "note" },
+      h("i", { className: "fa-solid fa-flask", "aria-hidden": "true" }), " Staging site: test data only. Payments use the M-Pesa sandbox."), document.body.firstChild);
     if (me) load();
-    else { show("view-signin"); startGoogle(d.google_client_id); }
+    else signedOut(d.expired || "");
   }).catch(function (e) {
     show("view-signin");
     $("signin-error").textContent = e.message;

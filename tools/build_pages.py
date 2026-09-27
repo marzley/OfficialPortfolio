@@ -95,6 +95,20 @@ PAGES = [
         "description": "Practical, project-based training in web development, programming and graphic design, in person and online. Over 200 students trained.",
         "sections": ["training", "testimonials"],
     },
+    {
+        "slug": "privacy",
+        "label": "Privacy",
+        "title": "Privacy Policy | Marzley Tech Solutions",
+        "description": "How Marzley Tech Solutions collects, uses and protects your personal information, and your rights under Kenya’s Data Protection Act, 2019.",
+        "sections": ["privacy"],
+    },
+    {
+        "slug": "terms",
+        "label": "Terms",
+        "title": "Terms of Service | Marzley Tech Solutions",
+        "description": "Terms for websites, systems, M-Pesa integration, care plans and training from Marzley Tech Solutions: quotes, payments, ownership and support.",
+        "sections": ["terms"],
+    },
 ]
 
 # Where each homepage section lives when it is not on the current page
@@ -103,7 +117,7 @@ HOME_OF = {
     "services": "services", "demo": "services#demo", "process": "process",
     "planner": "process#planner", "pricing": "pricing", "faq": "contact#faq",
     "contact": "contact", "cases": "work#cases", "deposit": "pricing#deposit",
-    "booking": "contact#booking", "training": "training", "compare": "pricing#compare", "care": "pricing#care", "safe": "services#safe", "integrations": "services#integrations", "check": "website-check", "referral": "referrals", "faqs": "faq",
+    "booking": "contact#booking", "training": "training", "compare": "pricing#compare", "care": "pricing#care", "safe": "services#safe", "integrations": "services#integrations", "check": "website-check", "referral": "referrals", "faqs": "faq", "privacy": "privacy", "terms": "terms",
 }
 
 
@@ -405,6 +419,7 @@ SW_FOOTER = [
     (">Email</a>", ">Barua pepe</a>"), (">Support our work ☕</button>", ">Unga mkono kazi yetu ☕</button>"),
     ("All rights reserved.", "Haki zote zimehifadhiwa."), (">Back to top ↑</a>", ">Rudi juu ↑</a>"),
     (">Cookie settings</button>", ">Mipangilio ya vidakuzi</button>"),
+    ('href="privacy">Privacy</a>', 'href="privacy">Faragha</a>'), ('href="terms">Terms</a>', 'href="terms">Masharti</a>'),
     ('<a href="kiswahili" hreflang="sw" lang="sw">Kiswahili</a>', '<a href="./" hreflang="en" lang="en">English</a>'),
 ]
 
@@ -486,6 +501,7 @@ def write_sitemap(posts, cases=()):
         ("work", "weekly", "0.9", []), ("services", "monthly", "0.9", []), ("pricing", "monthly", "0.9", []),
         ("about", "monthly", "0.8", []), ("contact", "monthly", "0.8", []), ("process", "monthly", "0.7", []),
         ("training", "monthly", "0.8", []), ("website-check", "monthly", "0.8", []), ("faq", "monthly", "0.7", []), ("referrals", "monthly", "0.6", []), ("blog", "weekly", "0.8", []), ("kiswahili", "monthly", "0.7", []),
+        ("privacy", "yearly", "0.3", []), ("terms", "yearly", "0.3", []),
     ] + [(p["slug"], "monthly", "0.8", []) for p in cases] + [(p["slug"], "monthly", "0.7", []) for p in posts]
     out = ['<?xml version="1.0" encoding="UTF-8"?>',
            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',

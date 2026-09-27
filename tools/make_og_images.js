@@ -9,7 +9,7 @@ try { ({ chromium } = require("playwright")); } catch (e) { ({ chromium } = requ
 const root = path.resolve(__dirname, "..");
 const skip = new Set(["index.html", "offline.html", "404.html"]);
 const labels = { work: "Our work", about: "About us", services: "Services", process: "How we work", pricing: "Pricing",
-  contact: "Contact", training: "Training", blog: "Blog", faq: "FAQ", "website-check": "Free tool", referrals: "Refer & earn", kiswahili: "Kiswahili" };
+  contact: "Contact", training: "Training", blog: "Blog", faq: "FAQ", "website-check": "Free tool", referrals: "Refer & earn", kiswahili: "Kiswahili", privacy: "Legal", terms: "Legal" };
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
 const logo = "data:image/webp;base64," + fs.readFileSync(path.join(root, "img/brand/logo-256.webp")).toString("base64");
 

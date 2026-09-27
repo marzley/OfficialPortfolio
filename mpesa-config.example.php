@@ -10,5 +10,10 @@ return [
     'shortcode'       => 'YOUR_BUSINESS_SHORTCODE',
     'till_number'     => 'YOUR_TILL_NUMBER',
     'passkey'         => 'YOUR_PASSKEY',
-    'callback_url'    => 'https://marzleytechsolutions.co.ke/callback.php',
+    // Make up a long random secret (e.g. 40 letters and numbers) and put the SAME value in both lines
+    'callback_secret' => 'CHANGE_ME_TO_A_LONG_RANDOM_SECRET',
+    'callback_url'    => 'https://marzleytechsolutions.co.ke/callback.php?key=CHANGE_ME_TO_A_LONG_RANDOM_SECRET',
+
+    // 'live' for real payments, 'sandbox' on the staging site (use your Daraja sandbox app keys there)
+    'environment'     => 'live',
 ];

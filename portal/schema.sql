@@ -152,3 +152,43 @@ CREATE TABLE certificates (
     FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE,
     FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Added for production (the portal also creates these by itself the first time it runs)
+CREATE TABLE IF NOT EXISTS settings (
+    k VARCHAR(190) NOT NULL PRIMARY KEY,
+    v TEXT NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS audit_log (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    actor VARCHAR(190) NOT NULL,
+    action VARCHAR(60) NOT NULL,
+    detail VARCHAR(500) NOT NULL DEFAULT '',
+    ip VARCHAR(45) NOT NULL DEFAULT '',
+    created_at DATETIME NOT NULL,
+    INDEX audit_created (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS recurring_invoices (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    client_id INT UNSIGNED NOT NULL,
+    project_id INT UNSIGNED NULL,
+    description VARCHAR(300) NOT NULL,
+    amount INT UNSIGNED NOT NULL,
+    day_of_month INT UNSIGNED NOT NULL DEFAULT 1,
+    due_days INT UNSIGNED NOT NULL DEFAULT 7,
+    next_date DATE NOT NULL,
+    active INT UNSIGNED NOT NULL DEFAULT 1,
+    created_at DATETIME NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS reminders (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    kind VARCHAR(30) NOT NULL,
+    ref_id INT UNSIGNED NOT NULL,
+    stage VARCHAR(30) NOT NULL,
+    sent_at DATETIME NOT NULL,
+    UNIQUE (kind, ref_id, stage)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO settings (k, v) VALUES ('schema_version', '2') ON DUPLICATE KEY UPDATE v = '2';

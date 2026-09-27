@@ -3,13 +3,26 @@
 define('MARZLEY_PORTAL', true);
 require __DIR__ . '/lib.php';
 
+install_error_alerts('client portal');
 start_session();
 $action = $_GET['action'] ?? '';
 $method = $_SERVER['REQUEST_METHOD'];
 
+// Activity log: every change that succeeds is recorded with who made it
+if ($method === 'POST' && !in_array($action, ['login', 'dev_login', 'logout', 'logout_all'], true)) {
+    register_shutdown_function(function () use ($action) {
+        if (http_response_code() !== 200 || !current_user()) return;
+        $d = $action === 'file_upload' ? $_POST + ['name' => $_FILES['file']['name'] ?? ''] : body();
+        $keep = ['type', 'id', 'name', 'email', 'title', 'subject', 'status', 'decision', 'amount', 'total', 'description', 'client_id', 'project_id', 'invoice_id', 'ticket_id', 'course_id', 'lesson_id', 'done', 'active'];
+        $parts = [];
+        foreach ($keep as $k) if (isset($d[$k]) && $d[$k] !== '' && !is_array($d[$k])) $parts[] = "$k=" . mb_substr((string)$d[$k], 0, 80);
+        audit($action, implode(', ', $parts));
+    });
+}
+
 // Every change needs POST with the session's CSRF token (sign-in gets one afterwards).
 if ($method === 'POST' && !in_array($action, ['login', 'dev_login'], true)) check_csrf();
-if ($method !== 'POST' && !in_array($action, ['me', 'data', 'download', 'payment_status'], true)) fail(405, 'Use POST.');
+if ($method !== 'POST' && !in_array($action, ['me', 'data', 'download', 'payment_status', 'export'], true)) fail(405, 'Use POST.');
 
 switch ($action) {
 
@@ -17,7 +30,8 @@ switch ($action) {
 
     case 'me':
         $u = current_user();
-        out(['user' => $u, 'csrf' => $u ? csrf_token() : null, 'google_client_id' => config()['google_client_id']]);
+        out(['user' => $u, 'csrf' => $u ? csrf_token() : null, 'google_client_id' => config()['google_client_id'],
+            'staging' => is_staging(), 'expired' => $u ? null : expired_message()]);
 
     case 'login':
         $token = (string)(body()['credential'] ?? '');
@@ -33,6 +47,16 @@ switch ($action) {
         out(['user' => $user, 'csrf' => csrf_token()]);
 
     case 'logout':
+        if ($u = current_user()) audit('sign_out', '', $u['email']);
+        $_SESSION = [];
+        session_regenerate_id(true);
+        out(['ok' => true]);
+
+    case 'logout_all':
+        // Sign this person out on every phone and computer, including this one
+        $u = require_user();
+        set_setting('epoch:' . strtolower($u['email']), (string)(session_epoch($u['email']) + 1));
+        audit('sign_out_everywhere', '', $u['email']);
         $_SESSION = [];
         session_regenerate_id(true);
         out(['ok' => true]);
@@ -80,8 +104,20 @@ switch ($action) {
         $cids = array_map(fn($c) => (int)$c['id'], $courses) ?: [0];
         $cmarks = implode(',', array_fill(0, count($cids), '?'));
         $lessons = q("SELECT * FROM lessons WHERE course_id IN ($cmarks) ORDER BY course_id, position, id", $cids)->fetchAll();
+        $cfg = config();
+        $org = ['name' => $cfg['business_name'], 'kra_pin' => $cfg['kra_pin'], 'etims' => (bool)$cfg['etims']];
+        $extra = [];
+        if ($u['role'] === 'admin') {
+            $extra['audit'] = q('SELECT * FROM audit_log ORDER BY id DESC LIMIT 300')->fetchAll();
+            $extra['recurring'] = q('SELECT * FROM recurring_invoices ORDER BY active DESC, next_date')->fetchAll();
+            $extra['system'] = [
+                'last_cron' => setting('last_cron'), 'last_backup' => setting('last_backup'),
+                'sms' => !empty($cfg['sms']['api_key']), 'smtp' => !empty($cfg['smtp']['host']), 'mpesa' => (bool)mpesa_config(),
+                'staging' => is_staging(), 'idle_minutes' => (int)$cfg['admin_idle_minutes'],
+            ];
+        }
         out(compact('clients', 'projects', 'updates', 'invoices', 'files', 'approvals', 'tickets', 'messages',
-            'courses', 'lessons', 'enrollments', 'progress', 'certificates', 'me'));
+            'courses', 'lessons', 'enrollments', 'progress', 'certificates', 'me', 'org') + $extra);
 
     case 'download':
         $u = require_user();
@@ -139,7 +175,8 @@ switch ($action) {
         $message = str_in($d, 'message', 2000);
         q('INSERT INTO updates (project_id, message, created_at) VALUES (?, ?, ?)', [$pid, $message, now()]);
         q('UPDATE projects SET updated_at = ? WHERE id = ?', [now(), $pid]);
-        if ($pc = client_of_project($pid)) notify_client((int)$pc['client_id'], 'New update on ' . $pc['title'], "There's a new update on your project “{$pc['title']}”:\n\n$message");
+        if ($pc = client_of_project($pid)) notify_client((int)$pc['client_id'], 'New update on ' . $pc['title'], "There's a new update on your project “{$pc['title']}”:\n\n$message",
+            'Marzley Tech: new update on ' . mb_substr($pc['title'], 0, 60) . '. See it at ' . portal_url());
         out(['ok' => true]);
 
     case 'invoice_save':
@@ -162,7 +199,8 @@ switch ($action) {
             $number = 'INV-' . date('ymd') . '-' . strtoupper(bin2hex(random_bytes(2)));
             q('INSERT INTO invoices (client_id, project_id, number, description, amount, status, due_date, paid_at, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
                 [$clientId, $projectId, $number, $desc, $amount, $status, $due, $status === 'paid' ? now() : null, now()]);
-            if ($status === 'unpaid') notify_client($clientId, "New invoice $number", "You have a new invoice: $desc, KSh " . number_format($amount) . ($due ? ", due $due" : '') . '. You can pay it by M-Pesa in the portal.');
+            if ($status === 'unpaid') notify_client($clientId, "New invoice $number", "You have a new invoice: $desc, KSh " . number_format($amount) . ($due ? ", due $due" : '') . '. You can pay it by M-Pesa in the portal.',
+                "Marzley Tech: invoice $number for KSh " . number_format($amount) . ($due ? " due $due" : '') . '. Pay by M-Pesa at ' . portal_url());
         }
         out(['ok' => true]);
 
@@ -195,6 +233,7 @@ switch ($action) {
             case 'approval': q('DELETE FROM approvals WHERE id = ?', [$id]); break;
             case 'lesson': q('DELETE FROM lessons WHERE id = ?', [$id]); break;
             case 'enrollment': q('DELETE FROM enrollments WHERE id = ?', [$id]); break;
+            case 'recurring': q('DELETE FROM recurring_invoices WHERE id = ?', [$id]); break;
             case 'file':
                 $f = q('SELECT stored_name FROM files WHERE id = ?', [$id])->fetch();
                 if ($f) @unlink(config()['storage_dir'] . '/' . basename($f['stored_name']));
@@ -346,6 +385,7 @@ switch ($action) {
         $recent = q('SELECT COUNT(*) AS n FROM invoice_payments WHERE invoice_id = ? AND created_at > ?', [$inv['id'], date('Y-m-d H:i:s', time() - 600)])->fetch();
         if ((int)$recent['n'] >= 5) fail(429, 'Too many payment requests. Please wait a few minutes.');
         $checkout = stk_push($msisdn, (int)$inv['amount'], $inv['number'], 'Invoice');
+        audit('payment_started', "{$inv['number']} KSh {$inv['amount']}");
         q('INSERT INTO invoice_payments (invoice_id, checkout_id, created_at) VALUES (?, ?, ?)', [$inv['id'], $checkout, now()]);
         out(['ok' => true, 'checkout_id' => $checkout]);
 
@@ -357,13 +397,100 @@ switch ($action) {
         $pay = q('SELECT checkout_id FROM invoice_payments WHERE invoice_id = ? ORDER BY id DESC LIMIT 1', [$inv['id']])->fetch();
         $r = $pay ? mpesa_result($pay['checkout_id']) : null;
         if (!$r) out(['status' => 'pending']);
-        if ((int)$r['result_code'] === 0 && (int)$r['amount'] >= (int)$inv['amount']) {
-            $receipt = preg_replace('/[^A-Z0-9]/i', '', (string)$r['receipt']);
-            $changed = q("UPDATE invoices SET status = 'paid', paid_at = ?, mpesa_receipt = ? WHERE id = ? AND status = 'unpaid'", [now(), $receipt, $inv['id']])->rowCount();
-            if ($changed) notify_admins("Invoice {$inv['number']} paid", "Invoice {$inv['number']} (KSh " . number_format((int)$inv['amount']) . ") was paid by M-Pesa. Receipt: $receipt.");
-            out(['status' => 'paid', 'receipt' => $receipt]);
-        }
+        $result = settle_payment($pay['checkout_id'], $r);
+        if ($result === 'paid') out(['status' => 'paid', 'receipt' => q('SELECT mpesa_receipt FROM invoices WHERE id = ?', [$inv['id']])->fetch()['mpesa_receipt']]);
+        if ($result === 'pending') out(['status' => 'pending']);
+        if ($result === 'mismatch') out(['status' => 'failed', 'code' => -2, 'message' => 'We could not match this payment to your invoice. We have been alerted and will contact you.']);
         out(['status' => 'failed', 'code' => (int)$r['result_code']]);
+
+    // ---------- admin: monthly invoices, quick start, exports ----------
+
+    case 'recurring_save':
+        require_admin();
+        $d = body();
+        $clientId = (int)($d['client_id'] ?? 0);
+        if (!q('SELECT id FROM clients WHERE id = ?', [$clientId])->fetch()) fail(400, 'Choose a client.');
+        $projectId = (int)($d['project_id'] ?? 0) ?: null;
+        if ($projectId && !q('SELECT id FROM projects WHERE id = ? AND client_id = ?', [$projectId, $clientId])->fetch()) fail(400, 'That project belongs to another client.');
+        $desc = str_in($d, 'description', 300);
+        $amount = int_in($d, 'amount', 1, 150000);
+        $dom = int_in($d, 'day_of_month', 1, 28);
+        $dueDays = int_in($d, 'due_days', 0, 60);
+        $next = new DateTime('today');
+        if ((int)$next->format('j') > $dom) $next->modify('first day of next month');
+        $next->setDate((int)$next->format('Y'), (int)$next->format('n'), $dom);
+        q('INSERT INTO recurring_invoices (client_id, project_id, description, amount, day_of_month, due_days, next_date, active, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?)',
+            [$clientId, $projectId, $desc, $amount, $dom, $dueDays, $next->format('Y-m-d'), now()]);
+        out(['ok' => true, 'next_date' => $next->format('Y-m-d')]);
+
+    case 'recurring_toggle':
+        require_admin();
+        $d = body();
+        q('UPDATE recurring_invoices SET active = ? WHERE id = ?', [empty($d['active']) ? 0 : 1, (int)($d['id'] ?? 0)]);
+        out(['ok' => true]);
+
+    case 'quick_start':
+        // New client + project + deposit invoice in one step (e.g. after a quote is accepted)
+        require_admin();
+        $d = body();
+        $name = str_in($d, 'name', 120);
+        $email = strtolower(str_in($d, 'email', 190));
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) fail(400, 'Please enter a valid email.');
+        $phone = str_in($d, 'phone', 30, false);
+        $title = str_in($d, 'title', 160);
+        $total = int_in($d, 'total', 1, 10000000);
+        $pct = int_in($d, 'deposit_percent', 0, 100);
+        $dueDays = int_in($d, 'due_days', 0, 60);
+        $pdo = db();
+        $pdo->beginTransaction();
+        $client = q('SELECT id FROM clients WHERE email = ?', [$email])->fetch();
+        if ($client) $clientId = (int)$client['id'];
+        else {
+            q('INSERT INTO clients (name, email, phone, created_at) VALUES (?, ?, ?, ?)', [$name, $email, $phone, now()]);
+            $clientId = (int)$pdo->lastInsertId();
+        }
+        q('INSERT INTO projects (client_id, title, status, progress, due_date, summary, created_at, updated_at) VALUES (?, ?, ?, 0, NULL, ?, ?, ?)',
+            [$clientId, $title, 'planning', 'Total agreed: KSh ' . number_format($total) . '.', now(), now()]);
+        $projectId = (int)$pdo->lastInsertId();
+        $deposit = (int)round($total * $pct / 100);
+        $number = null;
+        if ($deposit > 0) {
+            $number = 'INV-' . date('ymd') . '-' . strtoupper(bin2hex(random_bytes(2)));
+            $due = date('Y-m-d', strtotime("+$dueDays days"));
+            q('INSERT INTO invoices (client_id, project_id, number, description, amount, status, due_date, paid_at, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NULL, ?)',
+                [$clientId, $projectId, $number, "Deposit ($pct%) for $title", $deposit, 'unpaid', $due, now()]);
+        }
+        $pdo->commit();
+        notify_client($clientId, 'Welcome to your Marzley Tech client portal',
+            "Your project “{$title}” is set up. Sign in with this Google account to follow progress, approve designs and see invoices." .
+            ($number ? "\n\nYour deposit invoice $number is KSh " . number_format($deposit) . ". You can pay it by M-Pesa in the portal." : ''),
+            'Marzley Tech: your project "' . mb_substr($title, 0, 50) . '" is set up.' . ($number ? ' Deposit KSh ' . number_format($deposit) . '.' : '') . ' Portal: ' . portal_url());
+        out(['ok' => true, 'client_id' => $clientId, 'project_id' => $projectId, 'invoice' => $number]);
+
+    case 'export':
+        require_admin();
+        $type = (string)($_GET['type'] ?? '');
+        $sets = [
+            'invoices' => ['SELECT i.number, c.name AS client, c.email, i.description, i.amount, i.status, i.due_date, i.created_at, i.paid_at, i.mpesa_receipt FROM invoices i JOIN clients c ON c.id = i.client_id ORDER BY i.created_at', []],
+            'payments' => ["SELECT i.paid_at, i.number, c.name AS client, i.description, i.amount, i.mpesa_receipt FROM invoices i JOIN clients c ON c.id = i.client_id WHERE i.status = 'paid' ORDER BY i.paid_at", []],
+            'clients' => ['SELECT name, email, phone, created_at FROM clients ORDER BY name', []],
+            'activity' => ['SELECT created_at, actor, action, detail, ip FROM audit_log ORDER BY id DESC LIMIT 5000', []],
+        ];
+        if (!isset($sets[$type])) fail(400, 'Unknown export.');
+        $rows = q($sets[$type][0], $sets[$type][1])->fetchAll();
+        audit('export', $type);
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="marzley-' . $type . '-' . date('Y-m-d') . '.csv"');
+        header('Cache-Control: private, no-store');
+        header('X-Content-Type-Options: nosniff');
+        $out = fopen('php://output', 'w');
+        fwrite($out, "\xEF\xBB\xBF"); // so Excel reads the file as UTF-8
+        // A cell starting with = + - @ could run as a formula in Excel: prefix it with '
+        $safe = fn($v) => is_string($v) && $v !== '' && strpbrk($v[0], "=+-@\t\r") !== false ? "'" . $v : $v;
+        fputcsv($out, $rows ? array_keys($rows[0]) : ['no data'], ',', '"', '');
+        foreach ($rows as $r) fputcsv($out, array_map($safe, $r), ',', '"', '');
+        fclose($out);
+        exit;
 
     default:
         fail(404, 'Unknown action.');

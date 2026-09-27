@@ -1,5 +1,8 @@
 # Going live on marzleytechsolutions.co.ke
 
+**Start with `GO-LIVE.md`**: the step-by-step checklist for payments, backups, scheduled jobs,
+uptime alerts, email, staging, SMS, legal pages and Google. This file covers building and uploading.
+
 ## Before uploading
 1. **Rotate the M-Pesa (Daraja) credentials.** Older versions of `stkpush.php` in this
    repository's git history contain the live consumer key, secret and passkey. Generate new
@@ -88,8 +91,8 @@ Upload the whole folder into `public_html`, including the hidden `.htaccess` fil
    - https://marzleytechsolutions.co.ke/
    - https://marzleytechsolutions.co.ke/robots.txt
    - https://marzleytechsolutions.co.ke/sitemap.xml
-   - https://marzleytechsolutions.co.ke/some-missing-page (should show the homepage)
-   - https://marzleytechsolutions.co.ke/about (and /work, /services, /process, /pricing, /contact)
+   - https://marzleytechsolutions.co.ke/some-missing-page (should show the “page not found” page)
+   - https://marzleytechsolutions.co.ke/about (and /work, /services, /process, /pricing, /contact, /privacy, /terms)
    - https://marzleytechsolutions.co.ke/about.html (should redirect to /about)
 3. **Google Search Console** (https://search.google.com/search-console): add the domain,
    verify it with the DNS TXT record Google gives you, then submit `sitemap.xml`.

@@ -1319,3 +1319,66 @@ button.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-l
 [data-theme="dark"] .linklike.danger,
 [data-theme="dark"] .row-actions .linklike.danger { color: #f87171; }
 [data-theme="dark"] .wa-link { color: #4ade80; }
+
+/* ---------- Search, quick start, system status ---------- */
+.admin .portal-table tr[hidden],
+.admin .portal-card[hidden],
+.admin .admin-list li[hidden] { display: none !important; }
+
+.admin-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+}
+.admin-filter > i { color: var(--fg-muted); }
+.admin-filter input,
+.admin-filter select {
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--field-border);
+  border-radius: 10px;
+  background: var(--field-bg);
+  color: var(--fg);
+  font: inherit;
+}
+.admin-filter input { flex: 1 1 220px; }
+.filter-count { margin-left: auto; font-size: 13px; color: var(--fg-muted); }
+
+.quick-start { border-left: 4px solid var(--amber); }
+.quick-start summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--heading);
+  cursor: pointer;
+}
+.quick-start summary i { color: var(--amber-text); }
+.quick-start[open] summary { margin-bottom: 14px; }
+.quick-start .portal-form { margin: 0; padding: 0; border: 0; box-shadow: none; background: none; }
+
+.system-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.system-list li { display: flex; align-items: center; gap: 12px; }
+.system-list .row-text small { white-space: normal; }
+.log-detail { max-width: 420px; font-size: 13px; color: var(--fg-muted); word-break: break-word; }
+
+.staging-banner {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  margin: 0;
+  padding: 8px 16px;
+  background: repeating-linear-gradient(45deg, #b45309, #b45309 12px, #92400e 12px, #92400e 24px);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+}
+.admin-panel > .admin-quick + .admin-quick { margin-top: 10px; }
+.admin-panel > .portal-meta { margin: 0 0 14px; }
