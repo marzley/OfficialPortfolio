@@ -1598,6 +1598,56 @@
     update();
   });
 
+  /* ---------- site settings: analytics (with consent) and Google reviews ---------- */
+  var CONSENT_KEY = "marzley-consent";
+  var consentBox = document.getElementById("consent");
+  var cookieBtn = document.getElementById("cookie-settings");
+  var loadAnalytics = function (id) {
+    if (window.__gaLoaded || !/^G-[A-Z0-9]+$/.test(id)) return;
+    window.__gaLoaded = true;
+    var s = document.createElement("script");
+    s.async = true;
+    s.src = "https://www.googletagmanager.com/gtag/js?id=" + id;
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { window.dataLayer.push(arguments); };
+    window.gtag("js", new Date());
+    window.gtag("config", id, { anonymize_ip: true });
+  };
+  var readConsent = function () { try { return localStorage.getItem(CONSENT_KEY); } catch (e) { return null; } };
+  var saveConsent = function (v) { try { localStorage.setItem(CONSENT_KEY, v); } catch (e) {} };
+  if (window.fetch) {
+    fetch("data/site.json", { cache: "no-cache" })
+      .then(function (r) { return r.ok ? r.json() : {}; })
+      .then(function (cfg) {
+        var id = (cfg.analyticsId || "").trim();
+        if (/^G-[A-Z0-9]+$/.test(id) && consentBox) {
+          if (cookieBtn) cookieBtn.hidden = false;
+          var choice = readConsent();
+          if (choice === "yes") loadAnalytics(id);
+          else if (choice !== "no") consentBox.hidden = false;
+          document.getElementById("consent-yes").addEventListener("click", function () {
+            saveConsent("yes"); consentBox.hidden = true; loadAnalytics(id);
+          });
+          document.getElementById("consent-no").addEventListener("click", function () {
+            saveConsent("no"); consentBox.hidden = true;
+          });
+          if (cookieBtn) cookieBtn.addEventListener("click", function () { consentBox.hidden = false; });
+        }
+        var review = (cfg.googleReviewUrl || "").trim();
+        var profile = (cfg.googleProfileUrl || "").trim();
+        var safe = function (u) { return /^https:\/\//.test(u); };
+        document.querySelectorAll("[data-review-cta]").forEach(function (box) {
+          if (!safe(review)) return;
+          box.querySelector("[data-review-link]").href = review;
+          var prof = box.querySelector("[data-profile-link]");
+          if (safe(profile)) { prof.href = profile; prof.hidden = false; }
+          box.hidden = false;
+        });
+      })
+      .catch(function () {});
+  }
+
   /* ---------- offline support ---------- */
   // The service worker shows offline.html (or a saved copy of the page) when
   // the connection is down or too slow. Only on the real site and localhost.
