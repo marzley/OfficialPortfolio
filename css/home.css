@@ -149,6 +149,7 @@ a {
 }
 
 .brand {
+  flex: none;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -189,6 +190,28 @@ a {
 .nav a:focus-visible {
   color: var(--heading);
   background: var(--bg);
+}
+
+/* Mid-size screens: make room for all seven menu links */
+@media (max-width: 1180px) {
+  .site-header .status {
+    display: none;
+  }
+}
+
+@media (max-width: 1040px) {
+  .site-header .wrap {
+    gap: 12px;
+  }
+
+  .nav {
+    gap: 2px;
+    font-size: 14px;
+  }
+
+  .nav a {
+    padding: 8px 9px;
+  }
 }
 
 .status {

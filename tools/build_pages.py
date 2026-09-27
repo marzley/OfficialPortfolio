@@ -128,6 +128,7 @@ def build(page, html, sections):
     html = html.replace('<header class="site-header">', '<header class="site-header" id="top">', 1)
     html = html.replace('<a class="brand" href="#top" aria-label="Marzley Tech Solutions, back to top">',
                         '<a class="brand" href="./" aria-label="Marzley Tech Solutions home">', 1)
+    html = html.replace('<a href="./" class="is-current" aria-current="page">Home</a>', '<a href="./">Home</a>', 1)
     html = html.replace('                <a href="%s">' % page["slug"],
                         '                <a href="%s" class="is-current" aria-current="page">' % page["slug"], 1)
 
