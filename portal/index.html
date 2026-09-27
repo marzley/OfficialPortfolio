@@ -52,20 +52,46 @@
             <div id="client-referral"></div>
         </section>
 
-        <section id="view-admin" hidden aria-labelledby="admin-title">
-            <h1 id="admin-title" class="portal-h1">Portal admin</h1>
-            <div class="portal-tabs" role="tablist" aria-label="Manage">
-                <button type="button" role="tab" id="tab-projects" aria-controls="panel-projects" aria-selected="true">Projects</button>
-                <button type="button" role="tab" id="tab-clients" aria-controls="panel-clients" aria-selected="false">People</button>
-                <button type="button" role="tab" id="tab-invoices" aria-controls="panel-invoices" aria-selected="false">Invoices</button>
-                <button type="button" role="tab" id="tab-support" aria-controls="panel-support" aria-selected="false">Support <span class="tab-count" id="open-count" hidden></span></button>
-                <button type="button" role="tab" id="tab-courses" aria-controls="panel-courses" aria-selected="false">Courses</button>
+        <section id="view-admin" class="admin" hidden aria-labelledby="admin-title">
+            <aside class="admin-side" aria-label="Admin menu">
+                <a class="admin-brand" href="../" aria-label="Marzley Tech website">
+                    <img src="../img/brand/logo-96.webp" alt="" width="44" height="44" />
+                    <span><strong>Marzley<span>Tech</span></strong><small>Admin control panel</small></span>
+                </a>
+                <nav class="admin-nav" role="tablist" aria-orientation="vertical" aria-label="Manage">
+                    <p class="admin-nav-label">Console</p>
+                    <button type="button" role="tab" id="tab-overview" aria-controls="panel-overview" aria-selected="true"><i class="fa-solid fa-table-cells-large" aria-hidden="true"></i><span>Overview</span></button>
+                    <button type="button" role="tab" id="tab-reports" aria-controls="panel-reports" aria-selected="false"><i class="fa-solid fa-chart-line" aria-hidden="true"></i><span>Reports</span></button>
+                    <p class="admin-nav-label">Management</p>
+                    <button type="button" role="tab" id="tab-projects" aria-controls="panel-projects" aria-selected="false"><i class="fa-solid fa-diagram-project" aria-hidden="true"></i><span>Projects</span><b class="nav-badge badge-blue" id="count-projects" hidden></b></button>
+                    <button type="button" role="tab" id="tab-clients" aria-controls="panel-clients" aria-selected="false"><i class="fa-solid fa-users" aria-hidden="true"></i><span>People</span><b class="nav-badge badge-cyan" id="count-clients" hidden></b></button>
+                    <button type="button" role="tab" id="tab-invoices" aria-controls="panel-invoices" aria-selected="false"><i class="fa-solid fa-file-invoice-dollar" aria-hidden="true"></i><span>Invoices</span><b class="nav-badge badge-amber" id="count-invoices" hidden></b></button>
+                    <button type="button" role="tab" id="tab-support" aria-controls="panel-support" aria-selected="false"><i class="fa-solid fa-life-ring" aria-hidden="true"></i><span>Support</span><b class="nav-badge badge-red" id="open-count" hidden></b></button>
+                    <button type="button" role="tab" id="tab-courses" aria-controls="panel-courses" aria-selected="false"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i><span>Courses</span><b class="nav-badge badge-green" id="count-courses" hidden></b></button>
+                </nav>
+                <a class="admin-back" href="../"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to website</a>
+            </aside>
+
+            <div class="admin-main">
+                <header class="admin-top">
+                    <p class="admin-crumb"><span>Admin</span><i class="fa-solid fa-chevron-right" aria-hidden="true"></i><span id="admin-crumb-page">Overview</span></p>
+                    <div class="admin-user">
+                        <span><strong id="admin-name"></strong><small><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Verified access</small></span>
+                        <img src="../img/brand/logo-96.webp" alt="" width="42" height="42" />
+                        <button type="button" class="admin-signout" id="admin-signout" aria-label="Sign out"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i></button>
+                    </div>
+                </header>
+                <div class="admin-body">
+                    <h1 id="admin-title" class="sr-only">Portal admin</h1>
+                    <div role="tabpanel" id="panel-overview" aria-labelledby="tab-overview"></div>
+                    <div role="tabpanel" id="panel-reports" aria-labelledby="tab-reports" hidden></div>
+                    <div role="tabpanel" id="panel-projects" aria-labelledby="tab-projects" hidden></div>
+                    <div role="tabpanel" id="panel-clients" aria-labelledby="tab-clients" hidden></div>
+                    <div role="tabpanel" id="panel-invoices" aria-labelledby="tab-invoices" hidden></div>
+                    <div role="tabpanel" id="panel-support" aria-labelledby="tab-support" hidden></div>
+                    <div role="tabpanel" id="panel-courses" aria-labelledby="tab-courses" hidden></div>
+                </div>
             </div>
-            <div role="tabpanel" id="panel-projects" aria-labelledby="tab-projects"></div>
-            <div role="tabpanel" id="panel-clients" aria-labelledby="tab-clients" hidden></div>
-            <div role="tabpanel" id="panel-invoices" aria-labelledby="tab-invoices" hidden></div>
-            <div role="tabpanel" id="panel-support" aria-labelledby="tab-support" hidden></div>
-            <div role="tabpanel" id="panel-courses" aria-labelledby="tab-courses" hidden></div>
         </section>
     </main>
 

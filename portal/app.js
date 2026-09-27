@@ -24,11 +24,12 @@
       else if (k === "value") el.value = v;
       else el.setAttribute(k, v === true ? "" : v);
     });
-    for (var i = 2; i < arguments.length; i++) {
-      var c = arguments[i];
-      if (c === null || c === undefined || c === false) continue;
+    var add = function (c) {
+      if (c === null || c === undefined || c === false) return;
+      if (Array.isArray(c)) { c.forEach(add); return; }
       el.appendChild(typeof c === "string" || typeof c === "number" ? document.createTextNode(String(c)) : c);
-    }
+    };
+    for (var i = 2; i < arguments.length; i++) add(arguments[i]);
     return el;
   }
 
@@ -69,8 +70,12 @@
 
   function show(view) {
     ["portal-loading", "view-signin", "view-client", "view-admin"].forEach(function (id) { $(id).hidden = id !== view; });
+    document.body.classList.toggle("is-admin", view === "view-admin");
     $("portal-user").hidden = !me;
-    if (me) $("portal-name").textContent = me.name || me.email;
+    if (me) {
+      $("portal-name").textContent = me.name || me.email;
+      $("admin-name").textContent = me.name || me.email;
+    }
   }
 
   // ---------- sign-in ----------
@@ -285,6 +290,8 @@
   var clientOptions = function () { return data.clients.map(function (c) { return [c.id, c.name + " (" + c.email + ")"]; }); };
 
   function renderAdmin() {
+    renderOverview();
+    renderReports();
     renderAdminProjects();
     renderAdminClients();
     renderAdminInvoices();
@@ -293,6 +300,11 @@
     var open = (data.tickets || []).filter(function (t) { return t.status === "open"; }).length;
     $("open-count").textContent = String(open);
     $("open-count").hidden = !open;
+    var badge = function (id, n) { $(id).textContent = String(n); $(id).hidden = !n; };
+    badge("count-projects", data.projects.filter(function (p) { return p.status !== "live"; }).length);
+    badge("count-clients", data.clients.length);
+    badge("count-invoices", data.invoices.filter(function (i) { return i.status === "unpaid"; }).length);
+    badge("count-courses", (data.courses || []).length);
   }
 
   function renderAdminClients(edit) {
@@ -409,15 +421,247 @@
     panel.appendChild(list);
   }
 
+  var TABS = ["overview", "reports", "projects", "clients", "invoices", "support", "courses"];
+  var TAB_NAMES = { overview: "Overview", reports: "Reports", projects: "Projects", clients: "People", invoices: "Invoices", support: "Support", courses: "Courses" };
   function selectTab(name) {
-    ["projects", "clients", "invoices", "support", "courses"].forEach(function (t) {
+    TABS.forEach(function (t) {
       $("tab-" + t).setAttribute("aria-selected", String(t === name));
+      $("tab-" + t).tabIndex = t === name ? 0 : -1;
       $("panel-" + t).hidden = t !== name;
     });
+    $("admin-crumb-page").textContent = TAB_NAMES[name];
+    // The chart is drawn at the panel's real width, so redraw it once it is visible
+    if (name === "reports" && data) renderReports();
+    window.scrollTo(0, 0);
   }
-  ["projects", "clients", "invoices", "support", "courses"].forEach(function (t) {
-    $("tab-" + t).addEventListener("click", function () { selectTab(t); });
+  var resizeTimer;
+  window.addEventListener("resize", function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () { if (data && !$("panel-reports").hidden) renderReports(); }, 200);
   });
+  TABS.forEach(function (t, i) {
+    var tab = $("tab-" + t);
+    tab.addEventListener("click", function () { selectTab(t); });
+    tab.addEventListener("keydown", function (e) {
+      var d = e.key === "ArrowDown" ? 1 : e.key === "ArrowUp" ? -1 : 0;
+      if (!d) return;
+      e.preventDefault();
+      var next = TABS[(i + d + TABS.length) % TABS.length];
+      selectTab(next);
+      $("tab-" + next).focus();
+    });
+  });
+  $("admin-signout").addEventListener("click", function () { $("sign-out").click(); });
+
+  // ---------- admin overview (dashboard) ----------
+  var ymd = function (d) { return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); };
+  var clock = null;
+  function renderOverview() {
+    var panel = $("panel-overview");
+    panel.textContent = "";
+    var now = new Date();
+    var month = ymd(now).slice(0, 7);
+    var unpaid = data.invoices.filter(function (i) { return i.status === "unpaid"; });
+    var paidMonth = data.invoices.filter(function (i) { return i.status === "paid" && String(i.paid_at || "").slice(0, 7) === month; });
+    var sum = function (list) { return list.reduce(function (t, i) { return t + Number(i.amount); }, 0); };
+    var openTickets = (data.tickets || []).filter(function (t) { return t.status === "open"; });
+    var pending = (data.approvals || []).filter(function (a) { return a.status === "pending"; });
+    var active = data.projects.filter(function (p) { return p.status !== "live" && p.status !== "on_hold"; });
+
+    // Welcome banner
+    var timeEl = h("span", { text: "" });
+    var dateEl = h("span", { text: "" });
+    var tick = function () {
+      try {
+        var t = new Date();
+        dateEl.textContent = new Intl.DateTimeFormat("en-KE", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Africa/Nairobi" }).format(t);
+        timeEl.textContent = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false, timeZone: "Africa/Nairobi" }).format(t) + " EAT";
+      } catch (e) { dateEl.textContent = t.toDateString(); timeEl.textContent = t.toTimeString().slice(0, 8); }
+    };
+    tick();
+    clearInterval(clock);
+    clock = setInterval(tick, 1000);
+    var first = String(me.name || "Admin").split(" ")[0];
+    panel.appendChild(h("section", { className: "admin-welcome", "aria-label": "Welcome" },
+      h("div", { className: "admin-welcome-head" },
+        h("span", { className: "admin-welcome-icon" }, h("i", { className: "fa-solid fa-user-shield", "aria-hidden": "true" })),
+        h("div", null, h("h2", null, "Welcome, ", h("span", { text: first })), h("p", { text: "Marzley Tech Solutions — Admin Control Panel" }))),
+      h("ul", { className: "admin-welcome-meta" },
+        h("li", null, h("i", { className: "fa-solid fa-calendar-days", "aria-hidden": "true" }), dateEl),
+        h("li", null, h("i", { className: "fa-solid fa-clock", "aria-hidden": "true" }), timeEl),
+        h("li", null, h("i", { className: "fa-solid fa-users", "aria-hidden": "true" }), h("span", { text: data.clients.length + " clients & students" })))));
+
+    // Number cards
+    var cards = [
+      ["fa-users", "blue", String(data.clients.length), "Clients & students", "clients"],
+      ["fa-diagram-project", "purple", String(active.length), "Active projects", "projects"],
+      ["fa-file-invoice-dollar", "amber", ksh(sum(unpaid)), unpaid.length + " unpaid invoice" + (unpaid.length === 1 ? "" : "s"), "invoices"],
+      ["fa-sack-dollar", "green", ksh(sum(paidMonth)), "Collected this month", "reports"],
+      ["fa-life-ring", "red", String(openTickets.length), "Open support requests", "support"],
+      ["fa-clipboard-check", "cyan", String(pending.length), "Approvals waiting on clients", "projects"],
+      ["fa-graduation-cap", "indigo", String((data.enrollments || []).length), "Course enrolments", "courses"],
+      ["fa-award", "pink", String((data.certificates || []).length), "Certificates issued", "courses"]
+    ];
+    var grid = h("div", { className: "stat-cards" });
+    cards.forEach(function (c) {
+      grid.appendChild(h("button", { type: "button", className: "stat-card", onclick: function () { selectTab(c[4]); } },
+        h("span", { className: "stat-icon tone-" + c[1] }, h("i", { className: "fa-solid " + c[0], "aria-hidden": "true" })),
+        h("strong", { text: c[2] }),
+        h("span", { text: c[3] })));
+    });
+    panel.appendChild(grid);
+
+    // Needs attention + recent activity
+    var today = ymd(now);
+    var soon = ymd(new Date(now.getTime() + 14 * 864e5));
+    var clientName = function (id) { return (data.clients.find(function (c) { return +c.id === +id; }) || {}).name || "Client"; };
+    var attention = [];
+    unpaid.filter(function (i) { return i.due_date && i.due_date < today; }).forEach(function (i) {
+      attention.push(["red", "fa-triangle-exclamation", "Overdue: " + i.number + " · " + ksh(i.amount), clientName(i.client_id) + " · due " + day(i.due_date), "invoices"]);
+    });
+    openTickets.forEach(function (t) {
+      var msgs = (data.messages || []).filter(function (m) { return +m.ticket_id === +t.id; });
+      var last = msgs[msgs.length - 1];
+      if (last && last.author === "client") attention.push(["amber", "fa-comment-dots", "Reply needed: " + t.subject, clientName(t.client_id) + " · " + day(last.created_at), "support"]);
+    });
+    (data.approvals || []).filter(function (a) { return a.status === "changes"; }).forEach(function (a) {
+      var p = data.projects.find(function (x) { return +x.id === +a.project_id; }) || {};
+      attention.push(["purple", "fa-pen-to-square", "Changes requested: " + a.title, (p.title || "") + (a.client_note ? " · “" + a.client_note.slice(0, 60) + "”" : ""), "projects"]);
+    });
+    data.projects.filter(function (p) { return p.due_date && p.status !== "live" && p.due_date <= soon; }).forEach(function (p) {
+      attention.push([p.due_date < today ? "red" : "blue", "fa-flag", (p.due_date < today ? "Past target date: " : "Due soon: ") + p.title, clientName(p.client_id) + " · " + day(p.due_date) + " · " + p.progress + "%", "projects"]);
+    });
+    var attList = h("ul", { className: "admin-list-rows" });
+    attention.slice(0, 8).forEach(function (a) {
+      attList.appendChild(h("li", null, h("button", { type: "button", onclick: function () { selectTab(a[4]); } },
+        h("span", { className: "row-icon tone-" + a[0] }, h("i", { className: "fa-solid " + a[1], "aria-hidden": "true" })),
+        h("span", { className: "row-text" }, h("strong", { text: a[2] }), h("small", { text: a[3] })),
+        h("i", { className: "fa-solid fa-chevron-right row-go", "aria-hidden": "true" }))));
+    });
+
+    var events = [];
+    data.updates.forEach(function (u) {
+      var p = data.projects.find(function (x) { return +x.id === +u.project_id; }) || {};
+      events.push([u.created_at, "fa-bullhorn", "Update on " + (p.title || "a project"), u.message]);
+    });
+    data.invoices.forEach(function (i) {
+      if (i.status === "paid" && i.paid_at) events.push([i.paid_at, "fa-circle-check", "Paid: " + i.number + " · " + ksh(i.amount), clientName(i.client_id) + (i.mpesa_receipt ? " · M-Pesa " + i.mpesa_receipt : "")]);
+      events.push([i.created_at, "fa-file-invoice", "Invoice " + i.number + " created", clientName(i.client_id) + " · " + ksh(i.amount)]);
+    });
+    (data.approvals || []).forEach(function (a) {
+      if (a.decided_at) events.push([a.decided_at, a.status === "approved" ? "fa-thumbs-up" : "fa-pen-to-square", (a.status === "approved" ? "Approved: " : "Changes requested: ") + a.title, a.client_note || ""]);
+    });
+    (data.messages || []).forEach(function (m) {
+      var t = (data.tickets || []).find(function (x) { return +x.id === +m.ticket_id; }) || {};
+      events.push([m.created_at, "fa-comments", (m.author === "admin" ? "You replied: " : "Support message: ") + (t.subject || ""), m.message]);
+    });
+    events.sort(function (a, b) { return String(b[0]).localeCompare(String(a[0])); });
+    var feed = h("ol", { className: "admin-feed" });
+    events.slice(0, 8).forEach(function (e) {
+      feed.appendChild(h("li", null,
+        h("span", { className: "feed-icon" }, h("i", { className: "fa-solid " + e[1], "aria-hidden": "true" })),
+        h("span", { className: "row-text" }, h("strong", { text: e[2] }), e[3] ? h("small", { text: String(e[3]).slice(0, 110) }) : null),
+        h("time", { datetime: e[0], text: day(e[0]) })));
+    });
+
+    panel.appendChild(h("div", { className: "admin-columns" },
+      h("section", { className: "admin-panel", "aria-labelledby": "att-title" },
+        h("div", { className: "admin-panel-head" }, h("h2", { id: "att-title", text: "Needs your attention" }), h("span", { className: "nav-badge badge-red", text: String(attention.length), hidden: !attention.length })),
+        attention.length ? attList : h("p", { className: "portal-empty", text: "All clear. Nothing needs you right now." })),
+      h("section", { className: "admin-panel", "aria-labelledby": "feed-title" },
+        h("div", { className: "admin-panel-head" }, h("h2", { id: "feed-title", text: "Recent activity" })),
+        events.length ? feed : h("p", { className: "portal-empty", text: "Activity will appear here as you add projects, invoices and updates." }))));
+
+    // Quick actions
+    panel.appendChild(h("div", { className: "admin-quick" },
+      h("button", { type: "button", className: "btn btn-solid", onclick: function () { selectTab("clients"); } }, h("i", { className: "fa-solid fa-user-plus", "aria-hidden": "true" }), " Add a client"),
+      h("button", { type: "button", className: "btn btn-ghost", onclick: function () { selectTab("projects"); } }, h("i", { className: "fa-solid fa-folder-plus", "aria-hidden": "true" }), " New project"),
+      h("button", { type: "button", className: "btn btn-ghost", onclick: function () { selectTab("invoices"); } }, h("i", { className: "fa-solid fa-file-circle-plus", "aria-hidden": "true" }), " Create invoice"),
+      h("button", { type: "button", className: "btn btn-ghost", onclick: function () { selectTab("courses"); } }, h("i", { className: "fa-solid fa-book-open", "aria-hidden": "true" }), " Manage courses")));
+  }
+
+  // ---------- reports: payments received per month (single-series bar chart) ----------
+  function renderReports() {
+    var panel = $("panel-reports");
+    panel.textContent = "";
+    var now = new Date();
+    var months = [];
+    for (var i = 5; i >= 0; i--) {
+      var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      months.push({ key: ymd(d).slice(0, 7), label: d.toLocaleDateString("en-KE", { month: "short" }), full: d.toLocaleDateString("en-KE", { month: "long", year: "numeric" }), total: 0, count: 0 });
+    }
+    data.invoices.forEach(function (inv) {
+      if (inv.status !== "paid" || !inv.paid_at) return;
+      var m = months.find(function (x) { return x.key === String(inv.paid_at).slice(0, 7); });
+      if (m) { m.total += Number(inv.amount); m.count += 1; }
+    });
+    var total = months.reduce(function (t, m) { return t + m.total; }, 0);
+    var max = Math.max.apply(null, months.map(function (m) { return m.total; })) || 1;
+    var nice = function (v) { var p = Math.pow(10, Math.floor(Math.log10(v))); var n = v / p; return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * p; };
+    var top = nice(max);
+    var W = Math.max(300, Math.min(900, (panel.clientWidth || 682) - 42)), H = W < 480 ? 220 : 260, L = 64, R = 12, T = 22, B = 34, bw = (W - L - R) / months.length;
+    var NS = "http://www.w3.org/2000/svg";
+    var el = function (tag, attrs, text) {
+      var n = document.createElementNS(NS, tag);
+      Object.keys(attrs).forEach(function (k) { n.setAttribute(k, attrs[k]); });
+      if (text !== undefined) n.textContent = text;
+      return n;
+    };
+    var short = function (v) { return v >= 1e6 ? (v / 1e6).toFixed(1).replace(/\.0$/, "") + "M" : v >= 1e3 ? Math.round(v / 1e3) + "k" : String(v); };
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H, class: "chart-svg", role: "img", "aria-labelledby": "rep-title rep-desc" });
+    svg.appendChild(el("desc", { id: "rep-desc" }, "Bar chart of payments received in each of the last six months. The same figures are in the table below."));
+    for (var g = 0; g <= 4; g++) {
+      var v = top * g / 4, y = T + (H - T - B) * (1 - g / 4);
+      svg.appendChild(el("line", { x1: L, x2: W - R, y1: y, y2: y, class: g ? "chart-grid" : "chart-base" }));
+      svg.appendChild(el("text", { x: L - 8, y: y + 4, class: "chart-tick", "text-anchor": "end" }, "KSh " + short(v)));
+    }
+    var tip = h("div", { className: "chart-tip", role: "status", hidden: true });
+    months.forEach(function (m, idx) {
+      var bh = (H - T - B) * (m.total / top);
+      var x = L + idx * bw + bw * 0.22, w = bw * 0.56, y = H - B - bh;
+      var r = Math.min(4, bh / 2, w / 2);
+      if (bh > 0) {
+        var path = "M" + x + "," + (H - B) + " V" + (y + r) + " Q" + x + "," + y + " " + (x + r) + "," + y + " H" + (x + w - r) + " Q" + (x + w) + "," + y + " " + (x + w) + "," + (y + r) + " V" + (H - B) + " Z";
+        svg.appendChild(el("path", { d: path, class: "chart-bar" }));
+      }
+      if (m.total === max && m.total > 0) svg.appendChild(el("text", { x: x + w / 2, y: y - 6, class: "chart-value", "text-anchor": "middle" }, "KSh " + short(m.total)));
+      svg.appendChild(el("text", { x: x + w / 2, y: H - B + 20, class: "chart-tick", "text-anchor": "middle" }, m.label));
+      var hit = el("rect", { x: L + idx * bw, y: T, width: bw, height: H - T - B, class: "chart-hit", tabindex: "0", role: "img", "aria-label": m.full + ": " + ksh(m.total) });
+      var showTip = function () {
+        tip.textContent = "";
+        tip.appendChild(h("strong", { text: m.full }));
+        tip.appendChild(h("span", { text: ksh(m.total) + " · " + m.count + " payment" + (m.count === 1 ? "" : "s") }));
+        tip.hidden = false;
+        // Centre the tip over the bar, but keep it inside the chart box
+        var box = tip.parentNode.clientWidth, tw = tip.offsetWidth;
+        tip.style.left = Math.max(0, Math.min(box - tw, (L + idx * bw + bw / 2) / W * box - tw / 2)) + "px";
+      };
+      hit.addEventListener("mouseenter", showTip);
+      hit.addEventListener("focus", showTip);
+      hit.addEventListener("mouseleave", function () { tip.hidden = true; });
+      hit.addEventListener("blur", function () { tip.hidden = true; });
+      svg.appendChild(hit);
+    });
+    var rows = months.map(function (m) { return h("tr", null, h("th", { scope: "row", text: m.full }), h("td", { className: "r", text: ksh(m.total) }), h("td", { className: "r", text: String(m.count) })); });
+    var byStatus = Object.keys(STATUS).map(function (k) { return [STATUS[k], data.projects.filter(function (p) { return p.status === k; }).length]; });
+    var unpaidTotal = data.invoices.filter(function (i) { return i.status === "unpaid"; }).reduce(function (t, i) { return t + Number(i.amount); }, 0);
+    panel.appendChild(h("div", { className: "stat-cards stat-cards-3" },
+      h("div", { className: "stat-card is-static" }, h("span", { className: "stat-icon tone-green" }, h("i", { className: "fa-solid fa-sack-dollar", "aria-hidden": "true" })), h("strong", { text: ksh(total) }), h("span", { text: "Received in the last 6 months" })),
+      h("div", { className: "stat-card is-static" }, h("span", { className: "stat-icon tone-amber" }, h("i", { className: "fa-solid fa-hourglass-half", "aria-hidden": "true" })), h("strong", { text: ksh(unpaidTotal) }), h("span", { text: "Waiting to be paid" })),
+      h("div", { className: "stat-card is-static" }, h("span", { className: "stat-icon tone-blue" }, h("i", { className: "fa-solid fa-receipt", "aria-hidden": "true" })), h("strong", { text: String(months.reduce(function (t, m) { return t + m.count; }, 0)) }), h("span", { text: "Payments in the last 6 months" }))));
+    panel.appendChild(h("section", { className: "admin-panel", "aria-labelledby": "rep-title" },
+      h("div", { className: "admin-panel-head" }, h("h2", { id: "rep-title", text: "Payments received, last 6 months" })),
+      h("div", { className: "chart-wrap" }, svg, tip),
+      h("details", { className: "chart-table" }, h("summary", { text: "Show as a table" }),
+        h("table", { className: "portal-table" }, h("thead", null, h("tr", null, h("th", { text: "Month" }), h("th", { className: "r", text: "Received" }), h("th", { className: "r", text: "Payments" }))), h("tbody", null, rows)))));
+    var statusList = h("ul", { className: "status-bars" });
+    var most = Math.max.apply(null, byStatus.map(function (b) { return b[1]; })) || 1;
+    byStatus.forEach(function (b) {
+      statusList.appendChild(h("li", null, h("span", { text: b[0] }), h("span", { className: "status-track" }, h("span", { style: "width:" + (b[1] / most * 100) + "%" })), h("strong", { text: String(b[1]) })));
+    });
+    panel.appendChild(h("section", { className: "admin-panel", "aria-labelledby": "proj-title" },
+      h("div", { className: "admin-panel-head" }, h("h2", { id: "proj-title", text: "Projects by stage" })), statusList));
+  }
 
   // ---------- shared helpers for the new sections ----------
   function waTo(phone, text) {
