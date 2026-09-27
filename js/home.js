@@ -296,6 +296,73 @@
     });
   }
 
+  /* ---------- project filters ---------- */
+  var chips = document.querySelectorAll(".work-filters .chip");
+  var workItems = document.querySelectorAll(".work-list li");
+  var workList = document.querySelector(".work-list");
+  chips.forEach(function (chip) {
+    chip.addEventListener("click", function () {
+      var filter = chip.getAttribute("data-filter");
+      chips.forEach(function (c) {
+        var on = c === chip;
+        c.classList.toggle("is-on", on);
+        c.setAttribute("aria-pressed", String(on));
+      });
+      if (workList) workList.dispatchEvent(new Event("mouseleave"));
+      workItems.forEach(function (li) {
+        li.hidden = filter !== "all" && li.getAttribute("data-cat") !== filter;
+      });
+    });
+  });
+
+  /* ---------- count-up stats ---------- */
+  var counters = document.querySelectorAll("[data-count]");
+  if (counters.length && !reduceMotionQuery.matches) {
+    counters.forEach(function (el) { el.textContent = "0"; });
+    var start = null;
+    var DURATION_MS = 1600;
+    var step = function (ts) {
+      if (start === null) start = ts;
+      var t = Math.min(1, (ts - start) / DURATION_MS);
+      var eased = 1 - Math.pow(1 - t, 3);
+      counters.forEach(function (el) {
+        el.textContent = String(Math.round(Number(el.getAttribute("data-count")) * eased));
+      });
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  /* ---------- header shadow + current section in nav ---------- */
+  var header = document.querySelector(".site-header");
+  var onScroll = function () {
+    if (header) header.classList.toggle("is-scrolled", window.scrollY > 8);
+  };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  if ("IntersectionObserver" in window && nav) {
+    var links = {};
+    nav.querySelectorAll('a[href^="#"]').forEach(function (a) {
+      links[a.getAttribute("href").slice(1)] = a;
+    });
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var link = links[entry.target.id];
+        if (!link || !entry.isIntersecting) return;
+        Object.keys(links).forEach(function (id) {
+          links[id].classList.toggle("is-current", links[id] === link);
+          if (links[id] === link) links[id].setAttribute("aria-current", "true");
+          else links[id].removeAttribute("aria-current");
+        });
+      });
+    }, { rootMargin: "-45% 0px -50% 0px" });
+    Object.keys(links).forEach(function (id) {
+      var section = document.getElementById(id);
+      if (section) spy.observe(section);
+    });
+  }
+
   /* ---------- footer year ---------- */
   var year = document.getElementById("year");
   if (year) year.textContent = String(new Date().getFullYear());
