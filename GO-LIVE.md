@@ -37,12 +37,13 @@ emailed to you. If a client closes the page after paying, the invoice is still m
 
 ## 3. Scheduled jobs (backups, reminders, monthly invoices)
 
-cPanel → **Cron Jobs** → add these two (replace `USERNAME`; check the PHP path under
+cPanel → **Cron Jobs** → add these three (replace `USERNAME`; check the PHP path under
 *Select PHP Version*, it is often `/usr/local/bin/php`):
 
 ```
 30 2 * * *   /usr/local/bin/php /home/USERNAME/public_html/portal/cron.php backup
 0  7 * * *   /usr/local/bin/php /home/USERNAME/public_html/portal/cron.php daily
+5  * * * *   /usr/local/bin/php /home/USERNAME/public_html/portal/cron.php monitor
 ```
 
 - [ ] Set **Cron Email** at the top of that page to your email, so you hear about failures.
@@ -58,6 +59,23 @@ What they do:
   on the due date, then 3, 7 and 14 days late), nudges clients about approvals waiting 3+ days,
   finishes any M-Pesa payment that was not marked paid, and emails you one morning summary
   (overdue invoices, support requests waiting more than a day).
+
+- **monitor** (every hour): checks each client website you entered under *Domains & hosting* →
+  *Website to monitor*, emails you when one is down twice in a row and when it's back, and
+  records uptime for the monthly care reports.
+
+### Off-site backups (strongly recommended)
+Backups on the same server are lost if the server is lost. Copy them off-site every night:
+- [ ] Sign up at https://www.backblaze.com/cloud-storage (the first 10 GB are free; after that
+      it costs a few shillings a month for a small portal).
+- [ ] *Buckets* → **Create a Bucket**, name it e.g. `marzley-backups`, set it to **Private**.
+      Note the **Endpoint** shown on the bucket (e.g. `s3.us-west-004.backblazeb2.com`).
+- [ ] *Application Keys* → **Add a New Application Key**, allow access **only to that bucket**,
+      Read and Write. Copy the keyID and applicationKey (shown once).
+- [ ] Fill in `offsite_backup` in `portal-config.php` (endpoint with `https://`, region = the
+      middle part of the endpoint, e.g. `us-west-004`, bucket, key, secret).
+- [ ] Next morning, *Activity & system* shows "Off-site copy" in green, and the files appear in
+      the bucket. Optional: in the bucket's *Lifecycle Settings*, keep only the last 30 days.
 
 ## 4. Uptime alerts (5 minutes, free)
 
@@ -115,6 +133,17 @@ Try changes here first, never on the live site.
 Clients then also get an SMS for: new invoices, payment received, project updates, reminders and
 approval nudges. Their phone number must be saved in *People*.
 
+## 7b. Card payments (Paystack, optional)
+
+- [ ] Log in to https://dashboard.paystack.com (the account the website already uses).
+- [ ] *Settings → API Keys & Webhooks*: copy the **Live Secret Key** into `portal-config.php`:
+      `'paystack' => ['secret_key' => 'sk_live_…'],`
+- [ ] On the same page set **Live Webhook URL** to
+      `https://marzleytechsolutions.co.ke/portal/paystack.php`
+- [ ] Test with a small real card payment on a test invoice, then refund it from Paystack.
+Clients then see **Pay by card** next to Pay with M-Pesa. A card payment is only recorded after
+the portal asks Paystack directly and the amount and currency (KES) match.
+
 ## 8. Legal and tax
 
 - [ ] Read `/privacy` and `/terms` (linked in every page footer) and correct anything that does
@@ -162,6 +191,50 @@ Send these (or add them yourself) so every placeholder is replaced:
 ---
 
 ## Everyday use of the new admin features
+
+**New in this round**
+- **Leads** (Sales → Leads): every enquiry from the website's contact, booking, training and
+  call-back forms lands here automatically (you still get the Formspree email too). Move each one
+  along New → Contacted → Quoted → Won or Lost, keep private notes, WhatsApp or call in one tap.
+- **Quotes**: build an itemised quote (from a lead or from scratch), then **Send** (email, and SMS
+  if set up) or **Copy link** / **WhatsApp**. The client opens a private page, reads it, types their
+  name and ticks the terms to accept. That creates their portal account, project and deposit
+  invoice automatically and marks the lead Won. You get an email.
+- **Invoice numbers** now run MT-2026-0001, MT-2026-0002 … with a new series each year. Older
+  invoices keep their old numbers. Change the prefix with `invoice_prefix` in the config.
+- **Part payments**: clients choose how much to pay by M-Pesa (up to KSh 150,000 per payment);
+  invoices show the balance and stay open until fully paid. Reminders mention the balance.
+- **"I've already paid"**: clients report a till or bank payment with the code and an optional
+  slip. It appears at the top of Invoices under *Payments to confirm*: check your statement,
+  then **Confirm** (receipt goes out) or **Reject** with a reason (the client is told).
+- **Record payment** on any invoice for cash, bank or payments you received another way.
+- **Stage payments**: when you *Request approval* on a project you can enter a stage amount.
+  When the client approves, the invoice for that stage is created and sent.
+- **Domains & hosting**: add each client's domain, hosting and SSL with the expiry date and
+  renewal price. Clients and you get reminders 30 and 7 days before; with "send the renewal
+  invoice" ticked, the invoice goes out at 30 days. **Renewed +1 year** moves the date on.
+- **Care report**: in Domains & hosting, *Care report* makes a one-page monthly PDF for a client
+  (uptime, work done, support, payments). Clients can open theirs from their portal too.
+- **After-launch feedback**: when you set a project to *Live*, the client is asked for a 1–5 star
+  rating. 4–5 stars are sent to your Google review link (set `googleReviewUrl` in
+  `data/site.json` first!); 1–3 stars come privately to you with "Needs attention".
+- **Client uploads**: clients can send logos, photos and documents on each project card.
+- **Team** (Activity & system → Team, owners only): add staff with their own Google sign-in and
+  only the areas they need (Projects, People, Support, Courses, Invoices & quotes, Leads).
+  Changes and removals sign them out at once. Staff never see the activity log or team settings.
+- **Kiswahili**: clients can switch the portal to Kiswahili with the button at the top. Please
+  have a native speaker read it once and send corrections.
+- **"Built by" link for client sites**: `content/built-by-snippet.html` has a text link and a small
+  badge to put in client website footers (ask the client first). Each one helps your Google
+  ranking.
+- **Content**: two new blog posts are live, and `content/google-business-posts.md` now has ten
+  ready-to-paste Google Business posts. Post one or two a week.
+
+**Automated tests**: `sh tests/run.sh` checks 79 things in the portal (payments, permissions,
+quotes, backups…) against a throwaway database. GitHub runs it on every push once the push works
+(`.github/workflows/tests.yml`). The `tests/` folder is not needed on the server.
+
+
 
 - **Quick start** (People tab, or Overview → Quick start): when a client accepts a quote, enter
   their name, Google email, phone, project and agreed total. It creates the client and project

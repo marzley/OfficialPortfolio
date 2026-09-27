@@ -3,12 +3,14 @@
 //
 //   Every day at 07:00   php /home/USER/public_html/portal/cron.php daily
 //   Every day at 02:30   php /home/USER/public_html/portal/cron.php backup
+//   Every hour           php /home/USER/public_html/portal/cron.php monitor
 //
 // daily:  creates monthly (recurring) invoices, sends payment and approval reminders,
 //         finishes any M-Pesa payments that were not settled, and alerts you about
 //         support requests waiting more than a day.
-// backup: saves the database and uploaded files to backup_dir (outside public_html)
-//         and deletes backups older than backup_keep_days.
+// backup: saves the database and uploaded files to backup_dir (outside public_html),
+//         copies them off-site if offsite_backup is set, and deletes backups older than backup_keep_days.
+// monitor: checks every client website you monitor and emails you when one goes down or comes back.
 if (PHP_SAPI !== 'cli') {
     http_response_code(404);
     exit;
@@ -41,13 +43,9 @@ function run_daily(callable $log): void {
     foreach (q('SELECT * FROM recurring_invoices WHERE active = 1 AND next_date <= ?', [$today])->fetchAll() as $r) {
         $next = $r['next_date'];
         while ($next <= $today) {
-            $number = 'INV-' . date('ymd') . '-' . strtoupper(bin2hex(random_bytes(2)));
             $due = date('Y-m-d', strtotime($next . ' +' . (int)$r['due_days'] . ' days'));
             $desc = $r['description'] . ' (' . date('F Y', strtotime($next)) . ')';
-            q('INSERT INTO invoices (client_id, project_id, number, description, amount, status, due_date, paid_at, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NULL, ?)',
-                [$r['client_id'], $r['project_id'], $number, $desc, $r['amount'], 'unpaid', $due, now()]);
-            notify_client((int)$r['client_id'], "New invoice $number", "Your monthly invoice is ready: $desc, KSh " . number_format((int)$r['amount']) . ", due $due. You can pay it by M-Pesa in the portal.",
-                "Marzley Tech: invoice $number KSh " . number_format((int)$r['amount']) . " due $due. Pay by M-Pesa at " . portal_url());
+            [, $number] = create_invoice((int)$r['client_id'], $r['project_id'] ? (int)$r['project_id'] : null, $desc, (int)$r['amount'], $due);
             audit('recurring_invoice', "$number KSh {$r['amount']} for client {$r['client_id']}", 'cron');
             $summary[] = "Created $number (KSh " . number_format((int)$r['amount']) . ')';
             $d = new DateTime($next);
@@ -70,9 +68,9 @@ function run_daily(callable $log): void {
     foreach (q("SELECT i.*, c.name FROM invoices i JOIN clients c ON c.id = i.client_id WHERE i.status = 'unpaid' AND i.due_date IS NOT NULL")->fetchAll() as $inv) {
         $late = days_between($inv['due_date'], $today);
         $stage = $late >= 14 ? 'late14' : ($late >= 7 ? 'late7' : ($late >= 3 ? 'late3' : ($late === 0 ? 'due' : ($late >= -3 && $late < 0 ? 'soon' : null))));
-        if ($late > 0) $overdue[] = "{$inv['number']} · {$inv['name']} · KSh " . number_format((int)$inv['amount']) . " · $late days late";
+        if ($late > 0) $overdue[] = "{$inv['number']} · {$inv['name']} · KSh " . number_format(invoice_balance($inv)) . " · $late days late";
         if (!$stage || !once('invoice', (int)$inv['id'], $stage)) continue;
-        $amount = 'KSh ' . number_format((int)$inv['amount']);
+        $amount = 'KSh ' . number_format(invoice_balance($inv)) . ((int)$inv['amount_paid'] > 0 ? ' balance' : '');
         $when = $late < 0 ? 'is due on ' . date('j M', strtotime($inv['due_date'])) : ($late === 0 ? 'is due today' : "was due $late days ago");
         notify_client((int)$inv['client_id'], "Reminder: invoice {$inv['number']} $when",
             "A friendly reminder that invoice {$inv['number']} ({$inv['description']}, $amount) $when. You can pay it by M-Pesa in the portal in a few seconds. If you have already paid, please ignore this message or reply with the M-Pesa code.",
@@ -91,6 +89,31 @@ function run_daily(callable $log): void {
         $summary[] = "Approval nudge for “{$a['title']}”";
     }
 
+    // 4b. Domain, hosting and SSL renewals: remind 30 and 7 days before, invoice at 30 days
+    $expiring = [];
+    foreach (q('SELECT d.*, c.name AS client FROM domains d JOIN clients c ON c.id = d.client_id WHERE d.expires_on <= ?', [date('Y-m-d', strtotime('+30 days'))])->fetchAll() as $dm) {
+        $left = days_between($today, $dm['expires_on']);
+        $what = ['domain' => 'domain', 'hosting' => 'hosting', 'ssl' => 'SSL certificate', 'email' => 'email service', 'other' => 'service'][$dm['kind']] ?? 'service';
+        $expiring[] = "{$dm['name']} ($what) · {$dm['client']} · " . ($left < 0 ? 'EXPIRED ' . -$left . ' days ago' : "expires in $left days");
+        $cycle = $dm['expires_on'];
+        if ($left <= 30 && $left > 7 && once('domain', (int)$dm['id'], "30:$cycle")) {
+            $inv = null;
+            if ((int)$dm['auto_invoice'] && (int)$dm['renew_price'] > 0) {
+                [, $inv] = create_invoice((int)$dm['client_id'], null, "Renewal: {$dm['name']} $what for 1 year (expires " . date('j M Y', strtotime($cycle)) . ')', (int)$dm['renew_price'], date('Y-m-d', strtotime($cycle . ' -7 days')), 'unpaid', false);
+                $summary[] = "Renewal invoice $inv for {$dm['name']}";
+            }
+            notify_client((int)$dm['client_id'], "Your $what {$dm['name']} renews on " . date('j M', strtotime($cycle)),
+                "Your $what “{$dm['name']}” expires on " . date('j F Y', strtotime($cycle)) . '. ' .
+                ($inv ? "We’ve sent renewal invoice $inv (KSh " . number_format((int)$dm['renew_price']) . "). Please pay it before the date so your website and email keep working." : 'We’ll take care of the renewal; contact us if anything has changed.'),
+                "Marzley Tech: {$dm['name']} expires " . date('j M', strtotime($cycle)) . '.' . ($inv ? " Renewal invoice $inv KSh " . number_format((int)$dm['renew_price']) . '.' : '') . ' ' . portal_url());
+        } elseif ($left <= 7 && $left >= 0 && once('domain', (int)$dm['id'], "7:$cycle")) {
+            notify_client((int)$dm['client_id'], "Reminder: {$dm['name']} expires in $left days",
+                "Your $what “{$dm['name']}” expires on " . date('j F Y', strtotime($cycle)) . '. If it isn’t renewed in time your website or email may stop working. Please pay the renewal invoice in the portal, or contact us.',
+                "Marzley Tech: {$dm['name']} expires in $left days. Please renew: " . portal_url());
+            $summary[] = "7-day renewal reminder for {$dm['name']}";
+        }
+    }
+
     // 5. Support requests where the client has waited more than a day for us
     $waiting = [];
     foreach (q("SELECT t.id, t.subject, c.name FROM tickets t JOIN clients c ON c.id = t.client_id WHERE t.status = 'open'")->fetchAll() as $t) {
@@ -99,10 +122,13 @@ function run_daily(callable $log): void {
     }
 
     // 6. One morning summary for the team, only when there is something to act on
-    if ($overdue || $waiting || $summary) {
+    if ($overdue || $waiting || $summary || $expiring) {
         $text = "Good morning. Here is today's summary from the client portal.\n";
         if ($overdue) $text .= "\nOverdue invoices:\n- " . implode("\n- ", $overdue) . "\n";
         if ($waiting) $text .= "\nSupport requests waiting more than a day for your reply:\n- " . implode("\n- ", $waiting) . "\n";
+        if ($expiring) $text .= "\nDomains and hosting expiring within 30 days:\n- " . implode("\n- ", $expiring) . "\n";
+        $newLeads = (int)q("SELECT COUNT(*) AS n FROM leads WHERE status = 'new'")->fetch()['n'];
+        if ($newLeads) $text .= "\nNew leads waiting for a reply: $newLeads (Leads tab)\n";
         if ($summary) $text .= "\nDone automatically this morning:\n- " . implode("\n- ", $summary) . "\n";
         notify_admins('Portal summary for ' . date('j M'), $text);
     }
@@ -165,6 +191,14 @@ function run_backup(callable $log): void {
         else { unset($tar); @unlink($archive); }
     }
 
+    // Off-site copy, so a server failure can't take the backups with it
+    if (!empty($cfg['offsite_backup']['bucket'])) {
+        $prefix = trim((string)($cfg['offsite_backup']['prefix'] ?? 'marzley-portal'), '/');
+        foreach (glob("$dir/portal-*-$stamp.*") as $f) s3_put($cfg['offsite_backup'], "$prefix/" . basename($f), $f);
+        set_setting('last_offsite', now());
+        $log('backup: copied off-site to ' . $cfg['offsite_backup']['bucket']);
+    }
+
     // Keep the last N days
     $keep = max(1, (int)$cfg['backup_keep_days']);
     foreach (glob("$dir/portal-*") as $old) {
@@ -175,10 +209,44 @@ function run_backup(callable $log): void {
     $log("backup: $rowsTotal rows, $files files -> $dir");
 }
 
+/** Check each monitored client website. Alerts when a site is down twice in a row, and when it recovers. */
+function run_monitor(callable $log): void {
+    $sites = q("SELECT d.*, c.name AS client FROM domains d JOIN clients c ON c.id = d.client_id WHERE d.monitor_url <> ''")->fetchAll();
+    foreach ($sites as $s) {
+        $start = microtime(true);
+        $ch = curl_init($s['monitor_url']);
+        curl_setopt_array($ch, [CURLOPT_NOBODY => false, CURLOPT_RETURNTRANSFER => true, CURLOPT_FOLLOWLOCATION => true, CURLOPT_MAXREDIRS => 5,
+            CURLOPT_TIMEOUT => 20, CURLOPT_CONNECTTIMEOUT => 10, CURLOPT_RANGE => '0-2047', CURLOPT_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+            CURLOPT_USERAGENT => 'MarzleyTech-Monitor/1.0 (+https://marzleytechsolutions.co.ke)']);
+        curl_exec($ch);
+        $code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        $ms = (int)round((microtime(true) - $start) * 1000);
+        $ok = $code >= 200 && $code < 400 ? 1 : 0;
+        q('INSERT INTO site_checks (domain_id, ok, ms, code, checked_at) VALUES (?, ?, ?, ?, ?)', [$s['id'], $ok, $ms, $code, now()]);
+        $prev = q('SELECT ok FROM site_checks WHERE domain_id = ? ORDER BY id DESC LIMIT 1 OFFSET 1', [$s['id']])->fetch();
+        if (!$ok && $prev && !(int)$prev['ok'] && $s['last_status'] !== 'down') {
+            q("UPDATE domains SET last_status = 'down', down_since = ? WHERE id = ?", [now(), $s['id']]);
+            notify_admins("DOWN: {$s['name']}", "{$s['monitor_url']} ({$s['client']}) is not responding (HTTP " . ($code ?: 'no answer') . ") on two checks in a row.");
+        } elseif ($ok && $s['last_status'] === 'down') {
+            $mins = $s['down_since'] ? (int)round((time() - strtotime($s['down_since'])) / 60) : 0;
+            q("UPDATE domains SET last_status = 'up', down_since = NULL WHERE id = ?", [$s['id']]);
+            notify_admins("Back up: {$s['name']}", "{$s['monitor_url']} ({$s['client']}) is working again after about $mins minutes.");
+        } elseif ($ok && $s['last_status'] === '') {
+            q("UPDATE domains SET last_status = 'up' WHERE id = ?", [$s['id']]);
+        }
+    }
+    // Keep 13 months of checks for the care reports
+    q('DELETE FROM site_checks WHERE checked_at < ?', [date('Y-m-d', strtotime('-13 months'))]);
+    set_setting('last_monitor', now());
+    $log('monitor: checked ' . count($sites) . ' sites');
+}
+
 try {
-    if ($job === 'daily') run_daily($log);
+    if ($job === 'monitor') run_monitor($log);
+    elseif ($job === 'daily') run_daily($log);
     elseif ($job === 'backup') run_backup($log);
-    else { fwrite(STDERR, "Usage: php cron.php daily|backup\n"); exit(2); }
+    else { fwrite(STDERR, "Usage: php cron.php daily|backup|monitor\n"); exit(2); }
 } catch (Throwable $e) {
     report_error("scheduled job '$job'", $e->getMessage());
     fwrite(STDERR, $e->getMessage() . "\n");

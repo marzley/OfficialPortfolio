@@ -1,0 +1,24 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  portal:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          extensions: pdo_sqlite, curl, mbstring, phar
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: PHP syntax
+        run: find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l
+      - name: JavaScript syntax
+        run: for f in js/home.js js/offline.js js/theme-init.js js/print-page.js js/print-button.js portal/app.js sw.js; do node --check "$f"; done
+      - name: Portal tests
+        run: sh tests/run.sh

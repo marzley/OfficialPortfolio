@@ -1620,6 +1620,21 @@
     update();
   });
 
+  /* ---------- copy every enquiry to the Leads board in the client portal ---------- */
+  document.addEventListener("submit", function (e) {
+    var f = e.target;
+    if (!f || f.tagName !== "FORM" || f.id === "ref-form") return;
+    var callback = f.classList.contains("chat-callback");
+    if (!callback && !/formspree\.io/.test(f.getAttribute("action") || "")) return;
+    try {
+      var fd = new FormData(f);
+      fd.append("_source", callback ? "Call-back request" : ({ "booking-form": "Booking", "contact-form": "Contact form", "enrol-form": "Training enquiry" }[f.id] || f.getAttribute("data-kind") || "Website form"));
+      fd.append("page", location.pathname);
+      if (navigator.sendBeacon) navigator.sendBeacon("/portal/lead.php", fd);
+      else fetch("/portal/lead.php", { method: "POST", body: fd, keepalive: true }).catch(function () {});
+    } catch (err) {}
+  }, true);
+
   /* ---------- site settings: analytics (with consent) and Google reviews ---------- */
   var CONSENT_KEY = "marzley-consent";
   var consentBox = document.getElementById("consent");

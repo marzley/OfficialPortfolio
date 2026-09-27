@@ -11,7 +11,7 @@ if ($id === '' || strlen($id) > 100) {
     exit;
 }
 
-$baseDir = is_writable(dirname(__DIR__)) ? dirname(__DIR__) : __DIR__;
+$baseDir = getenv('PORTAL_PRIVATE_DIR') ?: (is_writable(dirname(__DIR__)) ? dirname(__DIR__) : __DIR__);
 $file = $baseDir . '/mpesa_results/' . $id . '.json';
 if (!is_readable($file)) {
     echo json_encode(['status' => 'pending']);

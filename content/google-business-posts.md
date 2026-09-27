@@ -35,3 +35,23 @@ Button: Sign up → https://marzleytechsolutions.co.ke/training
 Keep your website safe and up to date with a monthly care plan: backups, security updates,
 uptime monitoring and small changes, from KSh 1,500 a month.
 Button: Learn more → https://marzleytechsolutions.co.ke/pricing#care
+
+## 7. Never miss a domain renewal
+When a domain expires, your website and business email stop working. With our care plans we
+track your domain, hosting and SSL dates, remind you early and check your site every hour.
+Button: Learn more → https://marzleytechsolutions.co.ke/why-your-website-needs-a-care-plan
+
+## 8. Get paid faster with M-Pesa invoices
+Online invoices with a Pay with M-Pesa button, automatic reminders and part payments. We build
+invoicing into websites and business systems for Kenyan businesses.
+Button: Learn more → https://marzleytechsolutions.co.ke/how-to-get-paid-faster-mpesa-invoices
+
+## 9. Your own client portal
+Every Marzley Tech client gets a private portal: follow progress, approve designs, send files,
+pay invoices by M-Pesa or card, and get a monthly report on your website.
+Button: Call now
+
+## 10. Free quote in 24 hours
+Tell us what you need on WhatsApp and get a clear, itemised quote you can accept online.
+Websites from KSh 15,000, online shops with M-Pesa, school and hospital systems.
+Button: Get quote → https://marzleytechsolutions.co.ke/contact

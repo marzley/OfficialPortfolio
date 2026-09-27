@@ -12,6 +12,47 @@
   // ---------- helpers ----------
   var $ = function (id) { return document.getElementById(id); };
 
+  // ---------- Kiswahili for clients ----------
+  var LANG = "en";
+  try { LANG = localStorage.getItem("marzley-portal-lang") === "sw" ? "sw" : "en"; } catch (e) {}
+  var SW = {
+    "Client portal": "Lango la wateja", "Sign out": "Toka", "Loading…": "Inapakia…", "Hello, ": "Habari, ",
+    "See your project’s progress, updates, files and invoices, and pay by M-Pesa. Sign in with the Google account you gave us.": "Ona maendeleo ya mradi wako, taarifa, faili na ankara, na ulipe kwa M-Pesa. Ingia kwa akaunti ya Google uliyotupa.",
+    "No access yet?": "Bado huna ruhusa?", "Message us on WhatsApp": "Tutumie ujumbe WhatsApp",
+    "Your projects": "Miradi yako", "Invoices": "Ankara", "Your courses": "Kozi zako", "Support": "Msaada", "Projects": "Miradi", "Courses": "Kozi",
+    "Domains & hosting": "Vikoa na upangishaji", "Planning": "Mipango", "Design": "Usanifu", "Building": "Ujenzi", "Review": "Ukaguzi", "Live": "Iko hewani", "On hold": "Imesimamishwa",
+    "% complete": "% imekamilika", " · Target date ": " · Tarehe lengwa ", "Approvals": "Idhini", "Updates": "Taarifa", "Files": "Faili",
+    "No updates yet.": "Bado hakuna taarifa.", "No files yet.": "Bado hakuna faili.", "Your project will appear here once it starts.": "Mradi wako utaonekana hapa ukianza.",
+    "Invoice": "Ankara", "Description": "Maelezo", "Amount": "Kiasi", "Due": "Mwisho", "Status": "Hali", "Paid": "Imelipwa", "Unpaid": "Haijalipwa", "Cancelled": "Imeghairiwa",
+    "Part paid": "Imelipwa sehemu", "Balance": "Salio", "Receipt": "Risiti", "PDF": "PDF", "Pay with M-Pesa": "Lipa kwa M-Pesa", "Pay by card": "Lipa kwa kadi",
+    "I’ve already paid": "Nimeshalipa", "No invoices yet.": "Bado hakuna ankara.", "Waiting for confirmation": "Inasubiri kuthibitishwa",
+    "M-Pesa phone number": "Nambari ya simu ya M-Pesa", "Send M-Pesa prompt": "Tuma ombi la M-Pesa", "Amount to pay (KSh)": "Kiasi cha kulipa (KSh)", "Close": "Funga",
+    "Check your phone and enter your M-Pesa PIN to pay ": "Angalia simu yako na uweke PIN ya M-Pesa kulipa ", "Paid. Thank you! M-Pesa receipt ": "Imelipwa. Asante! Risiti ya M-Pesa ",
+    "The payment didn't go through. No money was deducted. You can try again.": "Malipo hayakufanikiwa. Hakuna pesa iliyokatwa. Unaweza kujaribu tena.",
+    "How did you pay?": "Ulilipaje?", "M-Pesa (Till 6095737)": "M-Pesa (Till 6095737)", "Bank transfer": "Uhamisho wa benki", "M-Pesa code or bank reference": "Nambari ya M-Pesa au ya benki",
+    "Proof of payment (optional)": "Uthibitisho wa malipo (si lazima)", "Send for confirmation": "Tuma kwa uthibitisho",
+    "Thanks! We’ll confirm your payment shortly.": "Asante! Tutathibitisha malipo yako hivi karibuni.",
+    "Approve": "Idhinisha", "Request changes": "Omba mabadiliko", "Waiting for you": "Inakusubiri", "Approved": "Imeidhinishwa", "Changes requested": "Mabadiliko yameombwa",
+    "Need help? Open a support request": "Unahitaji msaada? Fungua ombi la msaada", "About": "Kuhusu", "Subject": "Mada", "Message": "Ujumbe", "Send": "Tuma", "General": "Jumla",
+    "Reply": "Jibu", "Mark as solved": "Imetatuliwa", "Reopen": "Fungua tena", "Open": "Wazi", "Closed": "Imefungwa", "No support requests yet.": "Bado hakuna maombi ya msaada.",
+    "Write a reply…": "Andika jibu…", "You": "Wewe", "Send us a file (logo, photos, documents)": "Tutumie faili (nembo, picha, nyaraka)", "Upload": "Pakia", "Uploaded.": "Imepakiwa.",
+    "expires": "inaisha", "Monthly report": "Ripoti ya mwezi", "Website status": "Hali ya tovuti", "Online": "Iko hewani", "Down": "Haifanyi kazi",
+    "is live! How did we do?": "iko hewani! Tulifanyaje?", "Rate us": "Tupe alama", "Payment received. Thank you!": "Malipo yamepokelewa. Asante!",
+    "Sections": "Sehemu", "Pay": "Lipa", "Choose a file first.": "Chagua faili kwanza."
+  };
+  var t = function (s) { return LANG === "sw" && SW[s] ? SW[s] : s; };
+  function translateStatic() {
+    document.querySelectorAll("[data-i18n]").forEach(function (el) {
+      if (!el.hasAttribute("data-en")) el.setAttribute("data-en", el.textContent);
+      el.textContent = t(el.getAttribute("data-en"));
+    });
+    document.documentElement.lang = LANG === "sw" ? "sw" : "en";
+    var b = $("lang-toggle");
+    if (b) { b.textContent = LANG === "sw" ? "English" : "Kiswahili"; b.setAttribute("lang", LANG === "sw" ? "en" : "sw"); }
+  }
+  var isTeam = function () { return me && (me.role === "admin" || me.role === "staff"); };
+  var can = function (perm) { return me && (me.role === "admin" || (me.role === "staff" && data && data.me && (data.me.perms || []).indexOf(perm) >= 0)); };
+
   /** Build an element: h("p", { className: "x" }, "text", child, ...) */
   function h(tag, attrs) {
     var el = document.createElement(tag);
@@ -78,6 +119,8 @@
     ["portal-loading", "view-signin", "view-client", "view-admin"].forEach(function (id) { $(id).hidden = id !== view; });
     document.body.classList.toggle("is-admin", view === "view-admin");
     $("portal-user").hidden = !me;
+    var lt = $("lang-toggle");
+    if (lt) lt.hidden = view === "view-admin";
     if (me) {
       $("portal-name").textContent = me.name || me.email;
       $("admin-name").textContent = me.name || me.email;
@@ -123,7 +166,7 @@
   function load() {
     return api("data").then(function (d) {
       data = d;
-      if (me.role === "admin") { renderAdmin(); show("view-admin"); }
+      if (isTeam()) { renderAdmin(); show("view-admin"); }
       else { renderClient(); show("view-client"); }
     }).catch(function (e) {
       if (e.status === 401) signedOut(e.message);
@@ -133,19 +176,20 @@
 
   // ---------- client view ----------
   function projectCard(p, admin) {
+    var tx = admin ? function (x) { return x; } : t;
     var ups = data.updates.filter(function (u) { return +u.project_id === +p.id; });
     var files = data.files.filter(function (f) { return +f.project_id === +p.id; });
     var card = h("article", { className: "portal-card" },
       h("div", { className: "portal-card-head" },
         h("h3", { text: p.title }),
-        h("span", { className: "pill pill-" + p.status, text: STATUS[p.status] || p.status })),
+        h("span", { className: "pill pill-" + p.status, text: tx(STATUS[p.status] || p.status) })),
       h("div", { className: "progress", role: "progressbar", "aria-valuemin": "0", "aria-valuemax": "100", "aria-valuenow": String(p.progress), "aria-label": "Progress" },
         h("span", { style: "width:" + Math.max(0, Math.min(100, +p.progress)) + "%" })),
-      h("p", { className: "portal-meta", text: p.progress + "% complete" + (p.due_date ? " · Target date " + day(p.due_date) : "") }),
+      h("p", { className: "portal-meta", text: p.progress + tx("% complete") + (p.due_date ? tx(" · Target date ") + day(p.due_date) : "") }),
       p.summary ? h("p", { className: "portal-summary", text: p.summary }) : null);
 
     var approvals = (data.approvals || []).filter(function (a) { return +a.project_id === +p.id; });
-    if (approvals.length || admin) card.appendChild(h("h4", { text: "Approvals" }));
+    if (approvals.length || admin) card.appendChild(h("h4", { text: tx("Approvals") }));
     if (approvals.length) {
       var al = h("ul", { className: "approval-list" });
       approvals.forEach(function (a) { al.appendChild(approvalItem(a, admin)); });
@@ -161,31 +205,50 @@
         h("p", { text: u.message }),
         admin ? h("button", { type: "button", className: "linklike danger", onclick: function () { remove("update", u.id); }, text: "Delete" }) : null));
     });
-    card.appendChild(h("h4", { text: "Updates" }));
-    card.appendChild(ups.length ? timeline : h("p", { className: "portal-empty", text: "No updates yet." }));
+    card.appendChild(h("h4", { text: tx("Updates") }));
+    card.appendChild(ups.length ? timeline : h("p", { className: "portal-empty", text: tx("No updates yet.") }));
 
-    card.appendChild(h("h4", { text: "Files" }));
+    card.appendChild(h("h4", { text: tx("Files") }));
     if (files.length) {
       var list = h("ul", { className: "file-list" });
       files.forEach(function (f) {
         list.appendChild(h("li", null,
           h("a", { href: API + "?action=download&id=" + encodeURIComponent(f.id) },
             h("i", { className: "fa-solid fa-file-arrow-down", "aria-hidden": "true" }), " " + f.original_name),
-          h("span", { className: "portal-meta", text: size(+f.size) + " · " + day(f.created_at) }),
+          h("span", { className: "portal-meta", text: size(+f.size) + " · " + day(f.created_at) + (admin && f.uploaded_by === "client" ? " · from client" : "") }),
           admin ? h("button", { type: "button", className: "linklike danger", onclick: function () { remove("file", f.id); }, text: "Delete" }) : null));
       });
       card.appendChild(list);
     } else {
-      card.appendChild(h("p", { className: "portal-empty", text: "No files yet." }));
+      card.appendChild(h("p", { className: "portal-empty", text: tx("No files yet.") }));
+    }
+    if (!admin) {
+      // Clients can send us their logo, photos and documents
+      var up = h("input", { type: "file", "aria-label": t("Send us a file (logo, photos, documents)"), accept: ".pdf,.png,.jpg,.jpeg,.webp,.zip,.docx,.xlsx,.pptx,.txt,.csv" });
+      card.appendChild(h("form", { className: "inline-form client-upload", onsubmit: function (e) {
+        e.preventDefault();
+        if (!up.files[0]) return toast(t("Choose a file first."), true);
+        var fd = new FormData();
+        fd.append("project_id", p.id);
+        fd.append("file", up.files[0]);
+        api("file_upload", { method: "POST", form: fd }).then(function () { toast(t("Uploaded.")); load(); }).catch(function (err) { toast(err.message, true); });
+      } }, h("span", { className: "portal-meta", text: t("Send us a file (logo, photos, documents)") }), up, h("button", { type: "submit", className: "btn btn-ghost btn-sm", text: t("Upload") })));
     }
     return card;
   }
 
   function renderClient() {
-    $("client-title").textContent = "Hello, " + (me.name || "there");
+    translateStatic();
+    $("client-title").textContent = t("Hello, ") + (me.name || "there");
+    var fbBox = $("client-feedback");
+    fbBox.textContent = "";
+    if (data.me && data.me.feedback) fbBox.appendChild(h("div", { className: "feedback-banner" },
+      h("i", { className: "fa-solid fa-rocket", "aria-hidden": "true" }),
+      h("p", null, h("strong", { text: "“" + data.me.feedback.title + "” " + t("is live! How did we do?") })),
+      h("a", { className: "btn btn-solid btn-sm", href: data.me.feedback.link, text: t("Rate us") })));
     var box = $("client-projects");
     box.textContent = "";
-    if (!data.projects.length) box.appendChild(h("p", { className: "portal-empty", text: "Your project will appear here once it starts." }));
+    if (!data.projects.length) box.appendChild(h("p", { className: "portal-empty", text: t("Your project will appear here once it starts.") }));
     data.projects.forEach(function (p) { box.appendChild(projectCard(p, false)); });
     renderInvoices($("client-invoices"), data.invoices, false);
     renderClientCourses();
@@ -196,36 +259,145 @@
     document.querySelectorAll('.portal-jump a[href="#sec-projects"], .portal-jump a[href="#sec-invoices"]').forEach(function (a) { a.hidden = studentOnly; });
     renderSupport($("client-support"), false);
     renderReferral();
+    renderClientDomains();
+  }
+
+  function renderClientDomains() {
+    var box = $("client-domains");
+    box.textContent = "";
+    var list = data.domains || [];
+    $("sec-domains").hidden = !list.length;
+    $("jump-domains").hidden = !list.length;
+    if (!list.length) return;
+    var ul = h("ul", { className: "admin-list" });
+    list.forEach(function (d) {
+      var left = Math.round((new Date(d.expires_on + "T00:00:00") - new Date(ymd(new Date()) + "T00:00:00")) / 864e5);
+      ul.appendChild(h("li", null, h("div", null, h("strong", { text: d.name }),
+        h("span", { className: "portal-meta", text: KINDS[d.kind] + " · " + t("expires") + " " + day(d.expires_on) + (left <= 30 ? " (" + left + " days)" : "") })),
+        d.monitor_url ? h("span", { className: "pill " + (d.last_status === "down" ? "pill-unpaid" : "pill-paid"), text: t("Website status") + ": " + t(d.last_status === "down" ? "Down" : "Online") }) : null));
+    });
+    box.appendChild(ul);
+    box.appendChild(h("button", { type: "button", className: "btn btn-ghost btn-sm", onclick: function () { careReport(list[0].client_id, ymd(new Date()).slice(0, 7)); } },
+      h("i", { className: "fa-solid fa-chart-simple", "aria-hidden": "true" }), " " + t("Monthly report")));
   }
 
   function renderInvoices(box, invoices, admin) {
+    var tx = admin ? function (x) { return x; } : t;
     box.textContent = "";
-    if (!invoices.length) { box.appendChild(h("p", { className: "portal-empty", text: "No invoices yet." })); return; }
+    if (!invoices.length) { box.appendChild(h("p", { className: "portal-empty", text: tx("No invoices yet.") })); return; }
     var table = h("table", { className: "portal-table" },
       h("thead", null, h("tr", null,
-        h("th", { text: "Invoice" }), admin ? h("th", { text: "Client" }) : null, h("th", { text: "Description" }),
-        h("th", { className: "r", text: "Amount" }), h("th", { text: "Due" }), h("th", { text: "Status" }), h("th", { text: "" }))));
+        h("th", { text: tx("Invoice") }), admin ? h("th", { text: "Client" }) : null, h("th", { text: tx("Description") }),
+        h("th", { className: "r", text: tx("Amount") }), h("th", { text: tx("Due") }), h("th", { text: tx("Status") }), h("th", { text: "" }))));
     var body = h("tbody");
     invoices.forEach(function (inv) {
       var client = admin ? (data.clients.find(function (c) { return +c.id === +inv.client_id; }) || {}).name : null;
-      var pdf = h("button", { type: "button", className: "linklike", onclick: function () { printInvoice(inv); }, text: inv.status === "paid" ? "Receipt" : "PDF" });
+      var paidPart = +inv.amount_paid || 0;
+      var balance = Math.max(0, +inv.amount - paidPart);
+      var pending = (data.payments || []).filter(function (p) { return +p.invoice_id === +inv.id && p.status === "pending"; });
+      var pdf = h("button", { type: "button", className: "linklike", onclick: function () { printInvoice(inv); }, text: tx(inv.status === "paid" ? "Receipt" : "PDF") });
       var action = h("span", { className: "row-actions" }, pdf);
-      if (!admin && inv.status === "unpaid") action.insertBefore(h("button", { type: "button", className: "btn btn-mpesa btn-sm", onclick: function () { payInvoice(inv); }, text: "Pay with M-Pesa" }), pdf);
-      if (admin) {
-        action.appendChild(h("button", { type: "button", className: "linklike", onclick: function () { editInvoice(inv); }, text: "Edit" }));
-        action.appendChild(h("button", { type: "button", className: "linklike danger", onclick: function () { remove("invoice", inv.id); }, text: "Delete" }));
+      if (!admin && inv.status === "unpaid") {
+        action.insertBefore(h("button", { type: "button", className: "btn btn-mpesa btn-sm", onclick: function () { payInvoice(inv); }, text: t("Pay") }), pdf);
+        if (data.me && data.me.card) action.insertBefore(h("button", { type: "button", className: "linklike", onclick: function () { payByCard(inv, balance); }, text: t("Pay by card") }), pdf);
+        action.insertBefore(h("button", { type: "button", className: "linklike", onclick: function () { claimPayment(inv, balance); }, text: t("I’ve already paid") }), pdf);
       }
+      if (admin) {
+        if (inv.status === "unpaid") action.appendChild(h("button", { type: "button", className: "linklike", onclick: function () { recordPayment(inv, balance); }, text: "Record payment" }));
+        action.appendChild(h("button", { type: "button", className: "linklike", onclick: function () { editInvoice(inv); }, text: "Edit" }));
+        if (!paidPart) action.appendChild(h("button", { type: "button", className: "linklike danger", onclick: function () { remove("invoice", inv.id); }, text: "Delete" }));
+      }
+      var statusText = inv.status === "paid" ? tx("Paid") + (inv.mpesa_receipt ? " · " + inv.mpesa_receipt : "") : inv.status === "unpaid" ? (paidPart ? tx("Part paid") : tx("Unpaid")) : tx("Cancelled");
       body.appendChild(h("tr", { "data-status": inv.status },
-        h("td", { "data-label": "Invoice", text: inv.number }),
+        h("td", { "data-label": tx("Invoice"), text: inv.number }),
         admin ? h("td", { "data-label": "Client", text: client || "" }) : null,
-        h("td", { "data-label": "Description", text: inv.description }),
-        h("td", { "data-label": "Amount", className: "r", text: ksh(inv.amount) }),
-        h("td", { "data-label": "Due", text: day(inv.due_date) || "—" }),
-        h("td", { "data-label": "Status" }, h("span", { className: "pill pill-" + inv.status, text: inv.status === "paid" ? "Paid" + (inv.mpesa_receipt ? " · " + inv.mpesa_receipt : "") : inv.status === "unpaid" ? "Unpaid" : "Cancelled" })),
+        h("td", { "data-label": tx("Description"), text: inv.description }),
+        h("td", { "data-label": tx("Amount"), className: "r" }, ksh(inv.amount), paidPart && inv.status === "unpaid" ? h("small", { className: "balance", text: tx("Balance") + " " + ksh(balance) }) : null),
+        h("td", { "data-label": tx("Due"), text: day(inv.due_date) || "—" }),
+        h("td", { "data-label": tx("Status") }, h("span", { className: "pill pill-" + (inv.status === "unpaid" && paidPart ? "build" : inv.status), text: statusText }),
+          pending.length ? h("small", { className: "balance", text: tx("Waiting for confirmation") + ": " + ksh(pending.reduce(function (a, p) { return a + +p.amount; }, 0)) }) : null),
         h("td", null, action)));
     });
     table.appendChild(body);
     box.appendChild(h("div", { className: "table-wrap" }, table));
+  }
+
+  // ---------- other ways to pay, and recording payments ----------
+  function dialog(title, content) {
+    var dlg = h("dialog", { className: "portal-dialog", "aria-label": title });
+    dlg.appendChild(content);
+    dlg.addEventListener("close", function () { dlg.remove(); });
+    document.body.appendChild(dlg);
+    dlg.showModal();
+    var first = dlg.querySelector("input, select, textarea");
+    if (first) first.focus();
+    return dlg;
+  }
+  function payByCard(inv, balance) {
+    var amt = h("input", { type: "number", min: "1", max: String(balance), value: String(balance) });
+    var err = h("p", { className: "portal-error", role: "alert" });
+    var dlg = dialog("Pay by card", h("form", { novalidate: true, onsubmit: function (e) {
+      e.preventDefault();
+      err.textContent = "";
+      api("card_pay", { method: "POST", body: { invoice_id: inv.id, amount: amt.value } }).then(function (r) { location.href = r.url; }).catch(function (x) { err.textContent = x.message; });
+    } }, h("h2", { text: t("Pay by card") + ": " + inv.number }), h("p", { className: "portal-meta", text: "Visa, Mastercard and more, through Paystack. You’ll come back here after paying." }),
+      field(t("Amount to pay (KSh)"), amt), err, h("button", { type: "submit", className: "btn btn-solid", text: t("Pay by card") }),
+      h("button", { type: "button", className: "linklike", onclick: function () { dlg.close(); }, text: t("Close") })));
+  }
+  function claimPayment(inv, balance) {
+    var method = select([["till", t("M-Pesa (Till 6095737)")], ["bank", t("Bank transfer")]], "till");
+    var amt = h("input", { type: "number", min: "1", max: String(balance), value: String(balance) });
+    var ref = h("input", { maxlength: "60", autocomplete: "off", placeholder: "e.g. SGR7H2K9PQ" });
+    var proof = h("input", { type: "file", accept: ".pdf,.png,.jpg,.jpeg,.webp" });
+    var err = h("p", { className: "portal-error", role: "alert" });
+    var dlg = dialog(t("I’ve already paid"), h("form", { novalidate: true, onsubmit: function (e) {
+      e.preventDefault();
+      err.textContent = "";
+      var fd = new FormData();
+      fd.append("invoice_id", inv.id); fd.append("method", method.value); fd.append("amount", amt.value); fd.append("reference", ref.value);
+      if (proof.files[0]) fd.append("proof", proof.files[0]);
+      api("payment_claim", { method: "POST", form: fd }).then(function () { dlg.close(); toast(t("Thanks! We’ll confirm your payment shortly.")); load(); }).catch(function (x) { err.textContent = x.message; });
+    } }, h("h2", { text: t("I’ve already paid") + ": " + inv.number }),
+      field(t("How did you pay?"), method), field(t("Amount to pay (KSh)"), amt), field(t("M-Pesa code or bank reference"), ref), field(t("Proof of payment (optional)"), proof),
+      err, h("button", { type: "submit", className: "btn btn-solid", text: t("Send for confirmation") }),
+      h("button", { type: "button", className: "linklike", onclick: function () { dlg.close(); }, text: t("Close") })));
+  }
+  function recordPayment(inv, balance) {
+    var method = select([["mpesa", "M-Pesa"], ["till", "M-Pesa till"], ["bank", "Bank transfer"], ["card", "Card"], ["cash", "Cash"]], "mpesa");
+    var amt = h("input", { type: "number", min: "1", max: String(balance), value: String(balance) });
+    var ref = h("input", { maxlength: "60", autocomplete: "off", placeholder: "M-Pesa code or bank reference" });
+    var err = h("p", { className: "portal-error", role: "alert" });
+    var hist = (data.payments || []).filter(function (p) { return +p.invoice_id === +inv.id && p.status === "confirmed"; });
+    var dlg = dialog("Record a payment", h("form", { novalidate: true, onsubmit: function (e) {
+      e.preventDefault();
+      err.textContent = "";
+      api("payment_record", { method: "POST", body: { invoice_id: inv.id, amount: amt.value, method: method.value, reference: ref.value } })
+        .then(function () { dlg.close(); toast("Payment recorded. The client was sent a receipt."); load(); }).catch(function (x) { err.textContent = x.message; });
+    } }, h("h2", { text: "Record a payment: " + inv.number }), h("p", { className: "portal-meta", text: "Total " + ksh(inv.amount) + " · paid " + ksh(inv.amount_paid || 0) + " · balance " + ksh(balance) }),
+      hist.length ? h("ul", { className: "file-list" }, hist.map(function (p) { return h("li", null, h("span", { text: ksh(p.amount) + " · " + p.method + (p.reference ? " · " + p.reference : "") }), h("span", { className: "portal-meta", text: day(p.decided_at) })); })) : null,
+      field("How it was paid", method), field("Amount (KSh)", amt), field("Reference", ref), err,
+      h("button", { type: "submit", className: "btn btn-solid", text: "Record payment" }), h("button", { type: "button", className: "linklike", onclick: function () { dlg.close(); }, text: "Close" })));
+  }
+  function pendingPayments() {
+    var pend = (data.payments || []).filter(function (p) { return p.status === "pending"; });
+    if (!pend.length) return null;
+    var ul = h("ul", { className: "admin-list" });
+    pend.forEach(function (p) {
+      var inv = data.invoices.find(function (i) { return +i.id === +p.invoice_id; }) || {};
+      var c = data.clients.find(function (x) { return +x.id === +inv.client_id; }) || {};
+      ul.appendChild(h("li", null, h("div", null, h("strong", { text: ksh(p.amount) + " · " + (p.method === "till" ? "M-Pesa till" : "Bank transfer") + " · ref " + p.reference }),
+        h("span", { className: "portal-meta", text: (c.name || "?") + " · " + (inv.number || "") + " · sent " + day(p.created_at) })),
+        h("span", { className: "row-actions" },
+          +p.has_proof ? h("a", { className: "linklike", href: API + "?action=proof&id=" + p.id, text: "Proof" }) : null,
+          h("button", { type: "button", className: "btn btn-solid btn-sm", onclick: function () { save("payment_decide", { id: p.id, decision: "confirm" }); }, text: "Confirm" }),
+          h("button", { type: "button", className: "linklike danger", onclick: function () {
+            var why = prompt("Why can’t you confirm it? (the client will see this)", "We couldn’t find this payment on our statement.");
+            if (why) save("payment_decide", { id: p.id, decision: "reject", note: why });
+          }, text: "Reject" }))));
+    });
+    return h("section", { className: "admin-panel attention-panel", "aria-labelledby": "pend-title" },
+      h("div", { className: "admin-panel-head" }, h("h2", { id: "pend-title", text: "Payments to confirm" }), h("span", { className: "nav-badge badge-red", text: String(pend.length) })),
+      h("p", { className: "portal-meta", text: "Clients say they paid these. Check your M-Pesa or bank statement first." }), ul);
   }
 
   // ---------- paying an invoice ----------
@@ -233,28 +405,30 @@
     var dlg = h("dialog", { className: "portal-dialog", "aria-labelledby": "pay-title" });
     var err = h("p", { className: "portal-error", role: "alert" });
     var status = h("div", { className: "deposit-status", role: "status", "aria-live": "polite", hidden: true });
-    var phone = h("input", { id: "pay-phone", type: "tel", inputmode: "numeric", autocomplete: "tel", placeholder: "0712 345 678", required: true });
-    var btn = h("button", { type: "submit", className: "btn btn-mpesa", text: "Send M-Pesa prompt" });
+    var phone = h("input", { id: "pay-phone", type: "tel", inputmode: "numeric", autocomplete: "tel", placeholder: "0712 345 678", required: true, value: (data.me && data.me.phone) || "" });
+    var balance = Math.max(0, +inv.amount - (+inv.amount_paid || 0));
+    var amount = h("input", { id: "pay-amount", type: "number", min: "1", max: String(Math.min(balance, 150000)), value: String(Math.min(balance, 150000)) });
+    var btn = h("button", { type: "submit", className: "btn btn-mpesa", text: t("Send M-Pesa prompt") });
     var timer;
     var form = h("form", { novalidate: true, onsubmit: function (e) {
       e.preventDefault();
       err.textContent = "";
       btn.disabled = true;
-      api("pay_invoice", { method: "POST", body: { invoice_id: inv.id, phone: phone.value } }).then(function () {
+      api("pay_invoice", { method: "POST", body: { invoice_id: inv.id, phone: phone.value, amount: amount.value } }).then(function () {
         status.hidden = false;
         status.className = "deposit-status is-wait";
-        status.textContent = "Check your phone and enter your M-Pesa PIN to pay " + ksh(inv.amount) + ".";
+        status.textContent = t("Check your phone and enter your M-Pesa PIN to pay ") + ksh(amount.value) + ".";
         var tries = 30;
         (function poll() {
           api("payment_status", { query: "&invoice_id=" + encodeURIComponent(inv.id) }).then(function (s) {
             if (s.status === "paid") {
               status.className = "deposit-status is-ok";
-              status.textContent = "Paid. Thank you! M-Pesa receipt " + (s.receipt || "") + ".";
+              status.textContent = t("Paid. Thank you! M-Pesa receipt ") + (s.receipt || "") + ".";
               btn.disabled = false;
               load();
             } else if (s.status === "failed") {
               status.className = "deposit-status is-fail";
-              status.textContent = "The payment didn't go through. No money was deducted. You can try again.";
+              status.textContent = t("The payment didn't go through. No money was deducted. You can try again.");
               btn.disabled = false;
             } else if (--tries > 0) {
               timer = setTimeout(poll, 3000);
@@ -266,11 +440,12 @@
         })();
       }).catch(function (e) { err.textContent = e.message; btn.disabled = false; });
     } },
-      h("h2", { id: "pay-title", text: "Pay " + inv.number }),
-      h("p", { text: inv.description + " · " + ksh(inv.amount) }),
-      h("div", { className: "field" }, h("label", { for: "pay-phone", text: "M-Pesa phone number" }), phone),
+      h("h2", { id: "pay-title", text: t("Pay with M-Pesa") + ": " + inv.number }),
+      h("p", { text: inv.description + " · " + t("Balance") + " " + ksh(balance) }),
+      h("div", { className: "field" }, h("label", { for: "pay-phone", text: t("M-Pesa phone number") }), phone),
+      h("div", { className: "field" }, h("label", { for: "pay-amount", text: t("Amount to pay (KSh)") }), amount),
       err, btn, status,
-      h("button", { type: "button", className: "linklike", onclick: function () { clearTimeout(timer); dlg.close(); }, text: "Close" }));
+      h("button", { type: "button", className: "linklike", onclick: function () { clearTimeout(timer); dlg.close(); }, text: t("Close") }));
     dlg.appendChild(form);
     dlg.addEventListener("close", function () { clearTimeout(timer); dlg.remove(); });
     document.body.appendChild(dlg);
@@ -305,17 +480,23 @@
   var clientOptions = function () { return data.clients.map(function (c) { return [c.id, c.name + " (" + c.email + ")"]; }); };
 
   function renderAdmin() {
+    TABS.forEach(function (tb) { $("tab-" + tb).hidden = !tabAllowed(tb); });
+    document.querySelectorAll(".admin-nav-label[data-area]").forEach(function (l) {
+      l.hidden = !l.getAttribute("data-area").split(" ").some(tabAllowed);
+    });
+    var current = TABS.filter(function (tb) { return $("tab-" + tb).getAttribute("aria-selected") === "true"; })[0];
+    if (current && !tabAllowed(current)) selectTab("overview");
     renderOverview();
-    renderReports();
-    renderAdminProjects();
-    renderAdminClients();
-    renderAdminInvoices();
-    renderSupport($("panel-support"), true);
+    if (can("money")) { renderReports(); renderAdminInvoices(); renderQuotes(); renderDomains(); }
+    if (can("leads")) renderLeads();
+    if (can("projects")) renderAdminProjects();
+    if (can("clients")) renderAdminClients();
+    if (can("support")) renderSupport($("panel-support"), true);
     var sp = $("panel-support"), sf = filterBar(sp, ":scope > .ticket", "support requests", [["open", "Open"], ["closed", "Solved"]]);
     var firstTicket = sp.querySelector(":scope > .ticket");
     if (firstTicket) { sp.insertBefore(sf.bar, firstTicket); sf.run(); }
-    renderAdminCourses();
-    renderActivity();
+    if (can("courses")) renderAdminCourses();
+    if (me.role === "admin") renderActivity();
     var open = (data.tickets || []).filter(function (t) { return t.status === "open"; }).length;
     $("open-count").textContent = String(open);
     $("open-count").hidden = !open;
@@ -326,7 +507,13 @@
     badge("count-courses", (data.courses || []).length);
     var sys = data.system || {};
     var stale = function (s) { return !s || (Date.now() - new Date(String(s).replace(" ", "T")).getTime()) / 36e5 > 26; };
-    badge("count-activity", (stale(sys.last_cron) ? 1 : 0) + (stale(sys.last_backup) ? 1 : 0));
+    badge("count-activity", me.role === "admin" ? (stale(sys.last_cron) ? 1 : 0) + (stale(sys.last_backup) ? 1 : 0) : 0);
+    badge("count-leads", (data.leads || []).filter(function (l) { return l.status === "new"; }).length);
+    badge("count-quotes", (data.quotes || []).filter(function (q) { return q.status === "sent"; }).length);
+    var soonDays = function (d) { return (new Date(d.expires_on + "T00:00:00") - Date.now()) / 864e5; };
+    badge("count-domains", (data.domains || []).filter(function (d) { return soonDays(d) <= 30 || d.last_status === "down"; }).length);
+    var pendPay = (data.payments || []).filter(function (x) { return x.status === "pending"; }).length;
+    if (pendPay) badge("count-invoices", pendPay + data.invoices.filter(function (i) { return i.status === "unpaid"; }).length);
   }
 
   function renderAdminClients(edit) {
@@ -407,10 +594,11 @@
       } }, fileInput, h("button", { type: "submit", className: "btn btn-ghost btn-sm", text: "Upload file" })));
       var apTitle = h("input", { maxlength: "160", placeholder: "What should they approve? e.g. Homepage design", "aria-label": "Approval title for " + p.title });
       var apDetails = h("input", { maxlength: "2000", placeholder: "Details or a link to review (optional)", "aria-label": "Approval details for " + p.title });
+      var apBill = can("money") ? h("input", { type: "number", min: "0", placeholder: "Stage payment KSh (optional)", "aria-label": "Invoice this amount when approved (optional)" }) : null;
       card.appendChild(h("form", { className: "inline-form", onsubmit: function (e) {
         e.preventDefault();
-        save("approval_request", { project_id: p.id, title: apTitle.value, details: apDetails.value }, e.target);
-      } }, apTitle, apDetails, h("button", { type: "submit", className: "btn btn-ghost btn-sm", text: "Request approval" })));
+        save("approval_request", { project_id: p.id, title: apTitle.value, details: apDetails.value, bill_amount: apBill ? apBill.value : "" }, e.target);
+      } }, apTitle, apDetails, apBill, h("button", { type: "submit", className: "btn btn-ghost btn-sm", text: "Request approval" })));
       if (c && c.phone) card.appendChild(h("a", { className: "wa-link", href: waTo(c.phone, "Hello " + c.name + ", there's a new update on " + p.title + " in your Marzley Tech portal: " + location.origin + "/portal/"), target: "_blank", rel: "noopener noreferrer" },
         h("i", { className: "fab fa-whatsapp", "aria-hidden": "true" }), " Message " + c.name + " on WhatsApp"));
       card.appendChild(h("button", { type: "button", className: "linklike", onclick: function () { renderAdminProjects(p); window.scrollTo(0, 0); }, text: "Edit project details" }));
@@ -445,6 +633,8 @@
       field("Client", client), field("Project", project), field("Description", desc), field("Amount (KSh)", amount), field("Due date", due), field("Status", status),
       h("div", { className: "form-foot" }, h("button", { type: "submit", className: "btn btn-solid", text: edit.id ? "Save changes" : "Create invoice" }),
         edit.id ? h("button", { type: "button", className: "btn btn-ghost", onclick: function () { renderAdminInvoices(); }, text: "Cancel" }) : null));
+    var pp = pendingPayments();
+    if (pp && !edit.id) panel.appendChild(pp);
     panel.appendChild(form);
     var inf = filterBar(panel, "tbody tr", "invoices", [["unpaid", "Unpaid"], ["paid", "Paid"], ["cancelled", "Cancelled"]]);
     if (data.invoices.length) panel.appendChild(inf.bar);
@@ -452,12 +642,16 @@
     renderInvoices(list, data.invoices, true);
     panel.appendChild(list);
     inf.run();
-    panel.appendChild(h("div", { className: "admin-quick" }, exportLink("invoices", "Download invoices (CSV)"), exportLink("payments", "Download payments (CSV)")));
+    panel.appendChild(h("div", { className: "admin-quick" }, exportLink("invoices", "Download invoices (CSV)"), exportLink("receipts", "Download payments received (CSV)")));
     panel.appendChild(renderRecurring());
   }
 
-  var TABS = ["overview", "reports", "projects", "clients", "invoices", "support", "courses", "activity"];
-  var TAB_NAMES = { overview: "Overview", reports: "Reports", projects: "Projects", clients: "People", invoices: "Invoices", support: "Support", courses: "Courses", activity: "Activity & system" };
+  var TABS = ["overview", "reports", "leads", "quotes", "projects", "clients", "invoices", "domains", "support", "courses", "activity"];
+  var TAB_NAMES = { overview: "Overview", reports: "Reports", leads: "Leads", quotes: "Quotes", projects: "Projects", clients: "People", invoices: "Invoices", domains: "Domains & hosting", support: "Support", courses: "Courses", activity: "Activity & system" };
+  // Which area each tab belongs to (staff only see the areas the owner gave them)
+  var TAB_PERM = { reports: "money", leads: "leads", quotes: "money", projects: "projects", clients: "clients", invoices: "money", domains: "money", support: "support", courses: "courses", activity: "owner" };
+  var tabAllowed = function (name) { var p = TAB_PERM[name]; return !p || (p === "owner" ? me.role === "admin" : can(p)); };
+  var KINDS = { domain: "Domain", hosting: "Hosting", ssl: "SSL certificate", email: "Email", other: "Other" };
 
   // ---------- search and filter for admin lists ----------
   var FILTERS = {};
@@ -499,7 +693,7 @@
     };
     var form = h("form", { className: "form portal-form", onsubmit: function (e) {
       e.preventDefault();
-      api("quick_start", { method: "POST", body: { name: f.name.value, email: f.email.value, phone: f.phone.value, title: f.title.value, total: f.total.value, deposit_percent: f.pct.value, due_days: f.due.value } })
+      api("quick_start", { method: "POST", body: { name: f.name.value, email: f.email.value, phone: f.phone.value, title: f.title.value, total: f.total.value, deposit_percent: f.pct.value, due_days: f.due.value, lead_id: +($("quick-start").getAttribute("data-lead") || 0) } })
         .then(function (r) { toast(r.invoice ? "Set up. Deposit invoice " + r.invoice + " was sent to the client." : "Client and project set up."); load(); })
         .catch(function (err) { toast(err.message, true); });
     } },
@@ -546,6 +740,245 @@
       form, rec.length ? list : h("p", { className: "portal-empty", text: "No monthly invoices yet." }));
   }
 
+
+  // ---------- leads ----------
+  var LEAD_STAGES = [["new", "New"], ["contacted", "Contacted"], ["quoted", "Quoted"], ["won", "Won"], ["lost", "Lost"]];
+  function renderLeads() {
+    var panel = $("panel-leads");
+    panel.textContent = "";
+    var leads = data.leads || [];
+    var name = h("input", { maxlength: "120" }), email = h("input", { type: "email", maxlength: "190" }), phone = h("input", { type: "tel", maxlength: "30" });
+    var source = h("input", { maxlength: "60", placeholder: "e.g. Referral, Facebook, walk-in" }), value = h("input", { type: "number", min: "0", placeholder: "Estimated KSh" });
+    var msg = h("textarea", { rows: "2", maxlength: "4000" });
+    var add = h("form", { className: "form portal-form", onsubmit: function (e) {
+      e.preventDefault();
+      save("lead_save", { name: name.value, email: email.value, phone: phone.value, source: source.value, value: value.value, message: msg.value, status: "new" }, add);
+    } }, field("Name", name), field("Email", email), field("Phone", phone), field("Where they came from", source), field("Estimated value", value),
+      h("div", { className: "field full" }, h("label", { for: "lead-msg", text: "What they need" }), msg),
+      h("div", { className: "form-foot" }, h("button", { type: "submit", className: "btn btn-solid", text: "Add lead" })));
+    msg.id = "lead-msg";
+    panel.appendChild(h("details", { className: "admin-panel" }, h("summary", { className: "panel-summary", text: "Add a lead by hand (phone call, walk-in)" }), add));
+    panel.appendChild(h("p", { className: "portal-meta", text: "Every enquiry from the website’s forms and the chat call-back appears here automatically." }));
+    var lf = filterBar(panel, ".lead-card", "leads");
+    panel.appendChild(lf.bar);
+    var board = h("div", { className: "lead-board" });
+    LEAD_STAGES.forEach(function (st) {
+      var items = leads.filter(function (l) { return l.status === st[0]; });
+      var total = items.reduce(function (a, l) { return a + (+l.value || 0); }, 0);
+      var col = h("section", { className: "lead-col lead-" + st[0], "aria-label": st[1] },
+        h("h2", null, st[1] + " ", h("span", { className: "lead-count", text: String(items.length) })), total ? h("p", { className: "portal-meta", text: ksh(total) }) : null);
+      items.forEach(function (l) { col.appendChild(leadCard(l)); });
+      if (!items.length) col.appendChild(h("p", { className: "portal-empty", text: "None" }));
+      board.appendChild(col);
+    });
+    panel.appendChild(board);
+    lf.run();
+  }
+  function leadCard(l) {
+    var st = select(LEAD_STAGES, l.status);
+    st.setAttribute("aria-label", "Stage for " + l.name);
+    st.addEventListener("change", function () { save("lead_status", { id: l.id, status: st.value }); });
+    var notes = h("textarea", { rows: "2", maxlength: "4000", placeholder: "Notes (only your team sees these)", "aria-label": "Notes on " + l.name });
+    notes.value = l.notes || "";
+    return h("article", { className: "lead-card portal-card" },
+      h("div", { className: "portal-card-head" }, h("h3", { text: l.name }), l.value > 0 ? h("span", { className: "pill pill-build", text: ksh(l.value) }) : null),
+      h("p", { className: "portal-meta", text: (l.source || "Website") + " · " + day(l.created_at) }),
+      h("p", { className: "row-actions" },
+        l.phone ? h("a", { className: "linklike", href: waTo(l.phone, "Hello " + l.name + ", this is Marzley Tech Solutions. Thank you for reaching out!"), target: "_blank", rel: "noopener noreferrer", text: "WhatsApp" }) : null,
+        l.phone ? h("a", { className: "linklike", href: "tel:" + l.phone.replace(/[^\d+]/g, ""), text: "Call" }) : null,
+        l.email ? h("a", { className: "linklike", href: "mailto:" + l.email, text: "Email" }) : null),
+      l.message ? h("details", null, h("summary", { text: "What they asked" }), h("p", { className: "lead-msg", text: l.message })) : null,
+      st,
+      h("form", { className: "inline-form", onsubmit: function (e) {
+        e.preventDefault();
+        save("lead_save", { id: l.id, name: l.name, email: l.email, phone: l.phone, source: l.source, message: l.message, status: l.status, value: l.value, notes: notes.value });
+      } }, notes, h("button", { type: "submit", className: "btn btn-ghost btn-sm", text: "Save notes" })),
+      l.status !== "won" && l.status !== "lost" ? h("div", { className: "row-actions" },
+        can("money") ? h("button", { type: "button", className: "linklike", onclick: function () { selectTab("quotes"); renderQuotes({ lead_id: l.id, client_name: l.name, client_email: l.email, client_phone: l.phone, title: "", items: "[]", deposit_percent: 50 }); }, text: "Make a quote" }) : null,
+        can("money") ? h("button", { type: "button", className: "linklike", onclick: function () { selectTab("clients"); var qs = $("quick-start"); if (qs) { qs.open = true; var i = qs.querySelectorAll("input"); i[0].value = l.name; i[1].value = l.email; i[2].value = l.phone; qs.setAttribute("data-lead", l.id); i[3].focus(); } }, text: "Won: quick start" }) : null,
+        h("button", { type: "button", className: "linklike danger", onclick: function () { if (confirm("Delete this lead?")) remove("lead", l.id); }, text: "Delete" })) : null);
+  }
+
+  // ---------- quotes ----------
+  var QUOTE_STATUS = { draft: "Draft", sent: "Sent", accepted: "Accepted", declined: "Declined" };
+  function renderQuotes(edit) {
+    var panel = $("panel-quotes");
+    panel.textContent = "";
+    edit = edit || {};
+    var items = [];
+    try { items = JSON.parse(edit.items || "[]"); } catch (e) {}
+    if (!items.length) items = [{ desc: "", qty: 1, price: "" }];
+    var cname = h("input", { maxlength: "120", value: edit.client_name || "" }), cemail = h("input", { type: "email", maxlength: "190", value: edit.client_email || "" });
+    var cphone = h("input", { type: "tel", maxlength: "30", value: edit.client_phone || "" }), title = h("input", { maxlength: "160", value: edit.title || "", placeholder: "e.g. Online shop with M-Pesa" });
+    var pct = h("input", { type: "number", min: "0", max: "100", value: String(edit.deposit_percent !== undefined ? edit.deposit_percent : 50) });
+    var valid = h("input", { type: "date", value: edit.valid_until || ymd(new Date(Date.now() + 30 * 864e5)) });
+    var notes = h("textarea", { rows: "3", maxlength: "4000", placeholder: "Timeline, what’s included, what the client provides…" });
+    notes.value = edit.notes || "";
+    var rows = h("tbody"), totalOut = h("strong");
+    var calc = function () {
+      var tot = 0;
+      rows.querySelectorAll("tr").forEach(function (tr) { var i = tr.querySelectorAll("input"); tot += (+i[1].value || 0) * (+i[2].value || 0); });
+      totalOut.textContent = ksh(tot);
+    };
+    var addRow = function (it) {
+      var tr = h("tr", null,
+        h("td", null, h("input", { maxlength: "200", value: it.desc || "", "aria-label": "Item", placeholder: "e.g. 5-page website design and build" })),
+        h("td", null, h("input", { type: "number", min: "1", value: String(it.qty || 1), "aria-label": "Quantity" })),
+        h("td", null, h("input", { type: "number", min: "0", value: it.price === "" ? "" : String(it.price || ""), "aria-label": "Price (KSh)" })),
+        h("td", null, h("button", { type: "button", className: "linklike danger", "aria-label": "Remove item", onclick: function () { tr.remove(); calc(); }, text: "×" })));
+      tr.addEventListener("input", calc);
+      rows.appendChild(tr);
+    };
+    items.forEach(addRow);
+    var form = h("form", { className: "form portal-form quote-form", onsubmit: function (e) {
+      e.preventDefault();
+      var list = [];
+      rows.querySelectorAll("tr").forEach(function (tr) { var i = tr.querySelectorAll("input"); list.push({ desc: i[0].value, qty: i[1].value, price: i[2].value }); });
+      api("quote_save", { method: "POST", body: { id: edit.id || 0, lead_id: edit.lead_id || 0, client_name: cname.value, client_email: cemail.value, client_phone: cphone.value, title: title.value,
+        items: list, deposit_percent: pct.value, valid_until: valid.value, notes: notes.value } })
+        .then(function (r) { toast("Quote saved. Use Send to email it, or copy the link."); load(); }).catch(function (x) { toast(x.message, true); });
+    } },
+      h("h2", { className: "full", text: edit.id ? "Edit quote" : "New quote" }),
+      field("Client name or business", cname), field("Client’s Google email", cemail), field("Phone", cphone), field("What it’s for", title),
+      h("div", { className: "field full" }, h("span", { className: "field-label", text: "Items" }),
+        h("div", { className: "table-wrap" }, h("table", { className: "portal-table quote-items" }, h("thead", null, h("tr", null, h("th", { text: "Item" }), h("th", { text: "Qty" }), h("th", { text: "Price (KSh)" }), h("th", { text: "" }))), rows)),
+        h("p", { className: "quote-total" }, h("button", { type: "button", className: "linklike", onclick: function () { addRow({ desc: "", qty: 1, price: "" }); }, text: "+ Add item" }), h("span", null, "Total: ", totalOut))),
+      field("Deposit (%)", pct), field("Valid until", valid),
+      h("div", { className: "field full" }, h("label", { for: "q-notes", text: "Notes shown on the quote" }), notes),
+      h("div", { className: "form-foot" }, h("button", { type: "submit", className: "btn btn-solid", text: "Save quote" }),
+        edit.id || edit.lead_id ? h("button", { type: "button", className: "btn btn-ghost", onclick: function () { renderQuotes(); }, text: "Cancel" }) : null));
+    notes.id = "q-notes";
+    panel.appendChild(form);
+    calc();
+    var quotes = data.quotes || [];
+    if (!quotes.length) { panel.appendChild(h("p", { className: "portal-empty", text: "No quotes yet." })); return; }
+    var qf = filterBar(panel, ".admin-list > li", "quotes", Object.keys(QUOTE_STATUS).map(function (k) { return [k, QUOTE_STATUS[k]]; }));
+    panel.appendChild(qf.bar);
+    var ul = h("ul", { className: "admin-list" });
+    quotes.forEach(function (q) {
+      var link = location.origin + location.pathname.replace(/[^/]*$/, "") + "quote.php?t=" + q.token;
+      ul.appendChild(h("li", { "data-status": q.status },
+        h("div", null, h("strong", { text: q.title + " · " + ksh(q.total) }),
+          h("span", { className: "portal-meta", text: q.client_name + " · " + QUOTE_STATUS[q.status] + (q.accepted_at ? " by " + q.accepted_name + " on " + day(q.accepted_at) : "") + (q.valid_until && q.status !== "accepted" ? " · valid until " + day(q.valid_until) : "") })),
+        h("span", { className: "row-actions" },
+          h("a", { className: "linklike", href: link, target: "_blank", rel: "noopener", text: "Open" }),
+          h("button", { type: "button", className: "linklike", onclick: function () { (navigator.clipboard ? navigator.clipboard.writeText(link) : Promise.reject()).then(function () { toast("Link copied."); }, function () { prompt("Copy this link:", link); }); }, text: "Copy link" }),
+          q.status === "draft" || q.status === "sent" ? h("button", { type: "button", className: "linklike", onclick: function () { api("quote_send", { method: "POST", body: { id: q.id } }).then(function () { toast("Quote emailed" + (q.client_phone ? " and texted" : "") + " to " + q.client_name + "."); load(); }).catch(function (x) { toast(x.message, true); }); }, text: q.status === "sent" ? "Send again" : "Send" }) : null,
+          q.client_phone ? h("a", { className: "linklike", href: waTo(q.client_phone, "Hello " + q.client_name + ", here is your quote from Marzley Tech Solutions: " + link), target: "_blank", rel: "noopener noreferrer", text: "WhatsApp" }) : null,
+          q.status !== "accepted" ? h("button", { type: "button", className: "linklike", onclick: function () { renderQuotes(q); window.scrollTo(0, 0); }, text: "Edit" }) : null,
+          q.status !== "accepted" ? h("button", { type: "button", className: "linklike danger", onclick: function () { if (confirm("Delete this quote?")) remove("quote", q.id); }, text: "Delete" }) : null)));
+    });
+    panel.appendChild(ul);
+    qf.run();
+  }
+
+  // ---------- domains and hosting ----------
+  function renderDomains(edit) {
+    var panel = $("panel-domains");
+    panel.textContent = "";
+    edit = edit || {};
+    if (!data.clients.length) { panel.appendChild(h("p", { className: "portal-empty", text: "Add a client first (People tab)." })); return; }
+    var client = select(clientOptions(), edit.client_id), name = h("input", { maxlength: "190", value: edit.name || "", placeholder: "e.g. wanjikusupplies.co.ke" });
+    var kind = select(Object.keys(KINDS).map(function (k) { return [k, KINDS[k]]; }), edit.kind || "domain");
+    var exp = h("input", { type: "date", value: edit.expires_on || "" }), price = h("input", { type: "number", min: "0", value: edit.renew_price || "", placeholder: "KSh per year" });
+    var auto = h("input", { type: "checkbox" });
+    auto.checked = edit.id ? +edit.auto_invoice === 1 : true;
+    var url = h("input", { type: "url", maxlength: "300", value: edit.monitor_url || "", placeholder: "https://… (optional)" }), notes = h("input", { maxlength: "500", value: edit.notes || "", placeholder: "Registrar, login location… (optional)" });
+    var form = h("form", { className: "form portal-form", onsubmit: function (e) {
+      e.preventDefault();
+      save("domain_save", { id: edit.id || 0, client_id: client.value, name: name.value, kind: kind.value, expires_on: exp.value, renew_price: price.value, auto_invoice: auto.checked, monitor_url: url.value, notes: notes.value }, form)
+        .then(function () { renderDomains(); });
+    } },
+      h("h2", { className: "full", text: edit.id ? "Edit " + edit.name : "Track a domain, hosting or SSL" }),
+      field("Client", client), field("Name", name), field("Type", kind), field("Expires on", exp), field("Renewal price (KSh)", price), field("Website to monitor", url), field("Notes", notes),
+      h("label", { className: "check full" }, auto, h("span", { text: " Send the renewal invoice automatically 30 days before expiry" })),
+      h("div", { className: "form-foot" }, h("button", { type: "submit", className: "btn btn-solid", text: edit.id ? "Save changes" : "Add" }),
+        edit.id ? h("button", { type: "button", className: "btn btn-ghost", onclick: function () { renderDomains(); }, text: "Cancel" }) : null));
+    panel.appendChild(form);
+    var list = data.domains || [];
+    if (!list.length) { panel.appendChild(h("p", { className: "portal-empty", text: "Nothing tracked yet. Reminders go to you and the client 30 and 7 days before each expiry date." })); return; }
+    var df = filterBar(panel, "tbody tr", "domains");
+    panel.appendChild(df.bar);
+    var body = h("tbody");
+    var month = ymd(new Date()).slice(0, 7);
+    list.forEach(function (d) {
+      var c = data.clients.find(function (x) { return +x.id === +d.client_id; }) || {};
+      var left = Math.round((new Date(d.expires_on + "T00:00:00") - new Date(ymd(new Date()) + "T00:00:00")) / 864e5);
+      var up = (data.uptime || []).filter(function (u) { return +u.domain_id === +d.id && u.month === month; })[0];
+      body.appendChild(h("tr", null,
+        h("td", { "data-label": "Name" }, h("strong", { text: d.name }), h("small", { className: "balance", text: KINDS[d.kind] })),
+        h("td", { "data-label": "Client", text: c.name || "?" }),
+        h("td", { "data-label": "Expires" }, day(d.expires_on), " ", h("span", { className: "pill " + (left < 0 ? "pill-unpaid" : left <= 30 ? "pill-review" : "pill-paid"), text: left < 0 ? "expired" : left + " days" })),
+        h("td", { "data-label": "Renewal", className: "r", text: +d.renew_price ? ksh(d.renew_price) : "—" }),
+        h("td", { "data-label": "Website" }, d.monitor_url ? h("span", { className: "pill " + (d.last_status === "down" ? "pill-unpaid" : "pill-paid"), text: (d.last_status === "down" ? "Down" : "Up") + (up ? " · " + (100 * up.ok / up.checks).toFixed(2) + "%" : "") }) : "—"),
+        h("td", null, h("span", { className: "row-actions" },
+          h("button", { type: "button", className: "linklike", onclick: function () { if (confirm("Mark " + d.name + " as renewed for another year?")) save("domain_renewed", { id: d.id }); }, text: "Renewed +1 year" }),
+          h("button", { type: "button", className: "linklike", onclick: function () { careReport(d.client_id, month); }, text: "Care report" }),
+          h("button", { type: "button", className: "linklike", onclick: function () { renderDomains(d); window.scrollTo(0, 0); }, text: "Edit" }),
+          h("button", { type: "button", className: "linklike danger", onclick: function () { if (confirm("Stop tracking " + d.name + "?")) remove("domain", d.id); }, text: "Delete" })))));
+    });
+    panel.appendChild(h("div", { className: "table-wrap" }, h("table", { className: "portal-table" },
+      h("thead", null, h("tr", null, h("th", { text: "Name" }), h("th", { text: "Client" }), h("th", { text: "Expires" }), h("th", { className: "r", text: "Renewal" }), h("th", { text: "Website (this month)" }), h("th", { text: "" }))), body)));
+    df.run();
+  }
+
+  // ---------- monthly care report (printable) ----------
+  function careReport(clientId, month) {
+    var inMonth = function (s) { return String(s || "").slice(0, 7) === month; };
+    var client = isTeam() ? (data.clients.find(function (c) { return +c.id === +clientId; }) || {}) : (data.me || {});
+    var projects = data.projects.filter(function (p) { return +p.client_id === +clientId; });
+    var pids = projects.map(function (p) { return +p.id; });
+    var ups = data.updates.filter(function (u) { return pids.indexOf(+u.project_id) >= 0 && inMonth(u.created_at); });
+    var tickets = (data.tickets || []).filter(function (tk) { return +tk.client_id === +clientId && (inMonth(tk.created_at) || inMonth(tk.updated_at)); });
+    var sites = (data.domains || []).filter(function (d) { return +d.client_id === +clientId; });
+    var paid = (data.payments || []).filter(function (p) { var inv = data.invoices.find(function (i) { return +i.id === +p.invoice_id; }); return inv && +inv.client_id === +clientId && p.status === "confirmed" && inMonth(p.decided_at); });
+    var label = new Date(month + "-01T00:00:00").toLocaleDateString("en-KE", { month: "long", year: "numeric" });
+    var siteRows = sites.map(function (d) {
+      var u = (data.uptime || []).filter(function (x) { return +x.domain_id === +d.id && x.month === month; })[0];
+      return "<tr><td>" + esc(d.name) + "<br><span class=\"muted\">" + esc(KINDS[d.kind]) + "</span></td><td>" + (u ? (100 * u.ok / u.checks).toFixed(2) + "%" : "—") + "</td><td>" + (u ? esc(u.avg_ms) + " ms" : "—") + "</td><td>" + esc(day(d.expires_on)) + "</td></tr>";
+    }).join("");
+    var css = ".page{max-width:800px;margin:24px auto;background:#fff;padding:48px;border-radius:14px;box-shadow:0 10px 30px rgba(11,27,53,.12)}.top{display:flex;justify-content:space-between;align-items:center;border-bottom:4px solid #ffb800;padding-bottom:20px}" +
+      ".brand{display:flex;gap:14px;align-items:center}.brand img{width:56px;height:56px;border-radius:50%}.brand b{font-size:20px;color:#0b1b35}.brand b span{color:#d49a00}h1{margin:0;font-size:26px;color:#0b1b35;text-align:right}h2{font-size:17px;color:#0b1b35;margin:28px 0 10px}" +
+      ".muted{color:#475569;font-size:13px}.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px}.kpis div{background:#f8fafc;border-radius:10px;padding:14px}.kpis b{display:block;font-size:24px;color:#0b1b35}" +
+      "table{width:100%;border-collapse:collapse}th,td{padding:10px;border-bottom:1px solid #e2e8f0;text-align:left;font-size:14px}th{background:#0b1b35;color:#fff;font-size:12px;text-transform:uppercase;letter-spacing:.06em}ul{padding-left:18px}li{margin:6px 0}.foot{margin-top:28px;padding-top:14px;border-top:1px solid #e2e8f0;font-size:12px;color:#475569}";
+    var avgUp = sites.map(function (d) { return (data.uptime || []).filter(function (x) { return +x.domain_id === +d.id && x.month === month; })[0]; }).filter(Boolean);
+    var upPct = avgUp.length ? (100 * avgUp.reduce(function (a, u) { return a + +u.ok; }, 0) / avgUp.reduce(function (a, u) { return a + +u.checks; }, 0)).toFixed(2) + "%" : "—";
+    var body = "<div class=\"page\"><div class=\"top\"><div class=\"brand\"><img src=\"" + esc(logoUrl()) + "\" alt=\"\"><div><b>Marzley<span>Tech</span> Solutions</b><div class=\"muted\">Monthly care report</div></div></div>" +
+      "<div><h1>" + esc(label) + "</h1><div class=\"muted\">" + esc(client.name) + "</div></div></div>" +
+      "<div class=\"kpis\"><div><b>" + upPct + "</b><span class=\"muted\">Website uptime</span></div><div><b>" + ups.length + "</b><span class=\"muted\">Updates and changes</span></div><div><b>" + tickets.length + "</b><span class=\"muted\">Support requests</span></div></div>" +
+      (sites.length ? "<h2>Websites and services</h2><table><thead><tr><th>Name</th><th>Uptime</th><th>Avg. response</th><th>Renews</th></tr></thead><tbody>" + siteRows + "</tbody></table>" : "") +
+      "<h2>Work done this month</h2>" + (ups.length ? "<ul>" + ups.map(function (u) { return "<li><b>" + esc(day(u.created_at)) + ":</b> " + esc(u.message) + "</li>"; }).join("") + "</ul>" : "<p class=\"muted\">No changes were needed this month. Everything was checked and kept up to date.</p>") +
+      (tickets.length ? "<h2>Support</h2><ul>" + tickets.map(function (tk) { return "<li>" + esc(tk.subject) + " · " + (tk.status === "closed" ? "solved" : "in progress") + "</li>"; }).join("") + "</ul>" : "") +
+      (paid.length ? "<h2>Payments received</h2><ul>" + paid.map(function (p) { return "<li>" + esc(ksh(p.amount)) + " · " + esc(day(p.decided_at)) + (p.reference ? " · " + esc(p.reference) : "") + "</li>"; }).join("") + "</ul>" : "") +
+      "<div class=\"foot\">Questions about this report? Call or WhatsApp +254 745 789 590 · marzleytechsolutions.co.ke</div></div>";
+    printDoc("Care report " + label + " · " + (client.name || ""), css, body);
+  }
+
+  // ---------- team (owner only) ----------
+  function teamPanel() {
+    var PERMS = { projects: "Projects & files", clients: "People", support: "Support", courses: "Courses", money: "Invoices, payments & quotes", leads: "Leads" };
+    var name = h("input", { maxlength: "120" }), email = h("input", { type: "email", maxlength: "190" });
+    var boxes = Object.keys(PERMS).map(function (k) { return h("label", { className: "check" }, h("input", { type: "checkbox", value: k }), h("span", { text: " " + PERMS[k] })); });
+    var form = h("form", { className: "form", onsubmit: function (e) {
+      e.preventDefault();
+      var perms = boxes.map(function (b) { return b.querySelector("input"); }).filter(function (i) { return i.checked; }).map(function (i) { return i.value; });
+      save("staff_save", { name: name.value, email: email.value, perms: perms }, form);
+    } }, field("Name", name), field("Their Google email", email),
+      h("fieldset", { className: "field full perm-list" }, h("legend", { text: "What they can work on" }), boxes),
+      h("div", { className: "form-foot" }, h("button", { type: "submit", className: "btn btn-solid", text: "Add or update" })));
+    var ul = h("ul", { className: "admin-list" });
+    (data.staff || []).forEach(function (st) {
+      ul.appendChild(h("li", null, h("div", null, h("strong", { text: st.name }), h("span", { className: "portal-meta", text: st.email + " · " + st.perms.split(",").map(function (p) { return PERMS[p] || p; }).join(", ") })),
+        h("span", { className: "row-actions" },
+          h("button", { type: "button", className: "linklike", onclick: function () { name.value = st.name; email.value = st.email; boxes.forEach(function (b) { var i = b.querySelector("input"); i.checked = st.perms.split(",").indexOf(i.value) >= 0; }); name.focus(); }, text: "Edit" }),
+          h("button", { type: "button", className: "linklike danger", onclick: function () { if (confirm("Remove " + st.name + "? They are signed out at once.")) remove("staff", st.id); }, text: "Remove" }))));
+    });
+    return h("section", { className: "admin-panel", "aria-labelledby": "team-title" },
+      h("div", { className: "admin-panel-head" }, h("h2", { id: "team-title", text: "Team" })),
+      h("p", { className: "portal-meta", text: "Give a staff member their own sign-in with only the areas they need. Owners (in portal-config.php) can do everything. Staff never see the activity log, team or security settings." }),
+      (data.staff || []).length ? ul : h("p", { className: "portal-empty", text: "No staff yet." }), form);
+  }
+
   // ---------- activity log and system status ----------
   var ACTIONS = {
     sign_in: "Signed in", sign_out: "Signed out", sign_out_everywhere: "Signed out on all devices", client_save: "Saved a client", project_save: "Saved a project",
@@ -554,7 +987,10 @@
     course_save: "Saved a course", lesson_save: "Added a lesson", enroll: "Enrolled a student", lesson_done: "Lesson progress", certificate_issue: "Issued a certificate",
     pay_invoice: "Started an M-Pesa payment", payment_started: "M-Pesa prompt sent", invoice_paid: "Invoice paid", payment_rejected: "Payment rejected",
     recurring_save: "Added a monthly invoice", recurring_toggle: "Paused or resumed a monthly invoice", recurring_invoice: "Monthly invoice created",
-    quick_start: "Quick start", "export": "Downloaded a CSV", backup: "Backup made"
+    quick_start: "Quick start", "export": "Downloaded a CSV", backup: "Backup made", part_payment: "Part payment", payment_record: "Recorded a payment",
+    payment_claim: "Client reported a payment", payment_decide: "Confirmed or rejected a payment", card_started: "Card payment started", lead_received: "New website lead",
+    lead_save: "Saved a lead", lead_status: "Moved a lead", quote_save: "Saved a quote", quote_send: "Sent a quote", quote_accepted: "Quote accepted",
+    domain_save: "Saved a domain or hosting", domain_renewed: "Marked renewed", staff_save: "Changed team access", feedback: "Client feedback"
   };
   function renderActivity() {
     var panel = $("panel-activity");
@@ -569,6 +1005,9 @@
     var rows = [
       [fresh(sys.last_cron, 26), "Daily jobs (reminders, monthly invoices)", sys.last_cron ? "Last ran " + ago(sys.last_cron) : "Not set up yet: add the cron job in cPanel (see GO-LIVE.md)"],
       [fresh(sys.last_backup, 26), "Nightly backup", sys.last_backup ? "Last backup " + ago(sys.last_backup) : "Not set up yet: add the backup cron job in cPanel"],
+      [sys.offsite && fresh(sys.last_offsite, 26), "Off-site copy", sys.offsite ? (sys.last_offsite ? "Last copied " + ago(sys.last_offsite) : "Set up, waiting for the first backup") : "Off: backups only exist on this server. Add offsite_backup in portal-config.php"],
+      [!(data.domains || []).some(function (d) { return d.monitor_url; }) || fresh(sys.last_monitor, 2), "Website monitoring", (data.domains || []).some(function (d) { return d.monitor_url; }) ? (sys.last_monitor ? "Last check " + ago(sys.last_monitor) : "Add the hourly monitor cron job") : "No client websites monitored yet (Domains & hosting)"],
+      [!!sys.paystack, "Card payments", sys.paystack ? "Paystack is connected" : "Off: add your Paystack secret key to accept cards on invoices"],
       [!!sys.smtp, "Email", sys.smtp ? "Sent through your mailbox (SMTP)" : "Using PHP mail(): add SMTP settings so emails don’t land in spam"],
       [!!sys.sms, "SMS", sys.sms ? "Africa’s Talking is connected" : "Off: add Africa’s Talking keys to send SMS"],
       [!!sys.mpesa, "M-Pesa", sys.mpesa ? "Connected" : "Not configured"],
@@ -591,6 +1030,7 @@
           } }, h("i", { className: "fa-solid fa-right-from-bracket", "aria-hidden": "true" }), " Sign out everywhere")),
         h("div", { className: "admin-quick" }, exportLink("clients", "Clients (CSV)"), exportLink("activity", "Activity log (CSV)")))));
 
+    panel.appendChild(teamPanel());
     var log = data.audit || [];
     var sec = h("section", { className: "admin-panel", "aria-labelledby": "log-title" },
       h("div", { className: "admin-panel-head" }, h("h2", { id: "log-title", text: "Activity log" }), h("span", { className: "portal-meta", text: "Latest " + log.length })));
@@ -611,6 +1051,7 @@
     lf.run();
   }
   function selectTab(name) {
+    if (me && !tabAllowed(name)) return;
     TABS.forEach(function (t) {
       $("tab-" + t).setAttribute("aria-selected", String(t === name));
       $("tab-" + t).tabIndex = t === name ? 0 : -1;
@@ -633,7 +1074,8 @@
       var d = e.key === "ArrowDown" ? 1 : e.key === "ArrowUp" ? -1 : 0;
       if (!d) return;
       e.preventDefault();
-      var next = TABS[(i + d + TABS.length) % TABS.length];
+      var j = i, next;
+      do { j = (j + d + TABS.length) % TABS.length; next = TABS[j]; } while (!tabAllowed(next) && j !== i);
       selectTab(next);
       $("tab-" + next).focus();
     });
@@ -690,7 +1132,7 @@
       ["fa-award", "pink", String((data.certificates || []).length), "Certificates issued", "courses"]
     ];
     var grid = h("div", { className: "stat-cards" });
-    cards.forEach(function (c) {
+    cards.filter(function (c) { return tabAllowed(c[4]); }).forEach(function (c) {
       grid.appendChild(h("button", { type: "button", className: "stat-card", onclick: function () { selectTab(c[4]); } },
         h("span", { className: "stat-icon tone-" + c[1] }, h("i", { className: "fa-solid " + c[0], "aria-hidden": "true" })),
         h("strong", { text: c[2] }),
@@ -719,6 +1161,16 @@
       attention.push([p.due_date < today ? "red" : "blue", "fa-flag", (p.due_date < today ? "Past target date: " : "Due soon: ") + p.title, clientName(p.client_id) + " · " + day(p.due_date) + " · " + p.progress + "%", "projects"]);
     });
     var attList = h("ul", { className: "admin-list-rows" });
+    attention = attention.filter(function (a) { return tabAllowed(a[4]); });
+    if (can("money")) (data.payments || []).filter(function (x) { return x.status === "pending"; }).forEach(function (x) {
+      attention.unshift(["red", "fa-money-check-dollar", "Payment to confirm: " + ksh(x.amount), (x.method === "till" ? "M-Pesa till" : "Bank") + " · ref " + x.reference, "invoices"]);
+    });
+    if (can("leads")) (data.leads || []).filter(function (l) { return l.status === "new"; }).slice(0, 3).forEach(function (l) {
+      attention.unshift(["blue", "fa-user-plus", "New lead: " + l.name, (l.source || "Website") + " · " + day(l.created_at), "leads"]);
+    });
+    if (can("money")) (data.domains || []).filter(function (d) { return d.last_status === "down"; }).forEach(function (d) {
+      attention.unshift(["red", "fa-plug-circle-xmark", "Website down: " + d.name, "Since " + day(d.down_since), "domains"]);
+    });
     attention.slice(0, 8).forEach(function (a) {
       attList.appendChild(h("li", null, h("button", { type: "button", onclick: function () { selectTab(a[4]); } },
         h("span", { className: "row-icon tone-" + a[0] }, h("i", { className: "fa-solid " + a[1], "aria-hidden": "true" })),
@@ -876,12 +1328,14 @@
 
   // ---------- approvals ----------
   function approvalItem(a, admin) {
-    var label = { pending: "Waiting for you", approved: "Approved", changes: "Changes requested" }[a.status] || a.status;
+    var tx = admin ? function (x) { return x; } : t;
+    var label = tx({ pending: "Waiting for you", approved: "Approved", changes: "Changes requested" }[a.status] || a.status);
     if (admin && a.status === "pending") label = "Waiting for client";
     var li = h("li", { className: "approval approval-" + a.status },
       h("div", { className: "approval-head" }, h("strong", { text: a.title }), h("span", { className: "pill pill-" + (a.status === "approved" ? "paid" : a.status === "pending" ? "unpaid" : "on_hold"), text: label })),
       a.details ? (/^https:\/\//.test(a.details) ? h("a", { href: a.details, target: "_blank", rel: "noopener noreferrer", text: "Open to review ↗" }) : h("p", { text: a.details })) : null,
-      a.client_note ? h("p", { className: "portal-meta", text: "Note: " + a.client_note }) : null);
+      a.client_note ? h("p", { className: "portal-meta", text: "Note: " + a.client_note }) : null,
+      +a.bill_amount ? h("p", { className: "portal-meta", text: (a.status === "approved" ? "Stage payment invoiced: " : "Approving this invoices the stage payment of ") + ksh(a.bill_amount) }) : null);
     if (!admin && a.status === "pending") {
       var note = h("textarea", { rows: "2", maxlength: "2000", placeholder: "What should change? (needed for change requests)", "aria-label": "Notes on " + a.title });
       var decide = function (decision) {
@@ -891,8 +1345,8 @@
       };
       li.appendChild(note);
       li.appendChild(h("div", { className: "row-actions" },
-        h("button", { type: "button", className: "btn btn-solid btn-sm", onclick: function () { decide("approved"); }, text: "Approve" }),
-        h("button", { type: "button", className: "btn btn-ghost btn-sm", onclick: function () { decide("changes"); }, text: "Request changes" })));
+        h("button", { type: "button", className: "btn btn-solid btn-sm", onclick: function () { decide("approved"); }, text: t("Approve") }),
+        h("button", { type: "button", className: "btn btn-ghost btn-sm", onclick: function () { decide("changes"); }, text: t("Request changes") })));
     }
     if (admin) li.appendChild(h("button", { type: "button", className: "linklike danger", onclick: function () { remove("approval", a.id); }, text: "Delete" }));
     return li;
@@ -900,7 +1354,7 @@
 
   // ---------- invoices and receipts ----------
   function printInvoice(inv) {
-    var client = me.role === "admin" ? (data.clients.find(function (c) { return +c.id === +inv.client_id; }) || {}) : (data.me || {});
+    var client = isTeam() ? (data.clients.find(function (c) { return +c.id === +inv.client_id; }) || {}) : (data.me || {});
     var paid = inv.status === "paid";
     var css = ".page{max-width:800px;margin:24px auto;background:#fff;padding:48px;border-radius:14px;box-shadow:0 10px 30px rgba(11,27,53,.12)}" +
       ".top{display:flex;justify-content:space-between;align-items:center;gap:24px;border-bottom:4px solid #ffb800;padding-bottom:24px}.brand{display:flex;gap:14px;align-items:center}.brand img{width:64px;height:64px;border-radius:50%}" +
@@ -926,46 +1380,47 @@
 
   // ---------- support ----------
   function renderSupport(box, admin) {
+    var tx = admin ? function (x) { return x; } : t;
     box.textContent = "";
     var tickets = data.tickets || [];
     if (!admin || data.clients.length) {
       var subject = h("input", { maxlength: "160" });
       var message = h("textarea", { rows: "3", maxlength: "4000" });
       var who = admin ? select(clientOptions()) : null;
-      var project = select([["", "General"]].concat(data.projects.filter(function (p) { return !admin || true; }).map(function (p) { return [p.id, p.title]; })));
+      var project = select([["", tx("General")]].concat(data.projects.filter(function (p) { return !admin || true; }).map(function (p) { return [p.id, p.title]; })));
       var form = h("form", { className: "form portal-form", onsubmit: function (e) {
         e.preventDefault();
         save("ticket_open", { client_id: who ? who.value : 0, project_id: project.value, subject: subject.value, message: message.value }, form);
       } },
-        h("h3", { className: "full", text: admin ? "Start a conversation with a client" : "Need help? Open a support request" }),
-        who ? field("Client", who) : null, field("About", project), field("Subject", subject),
-        h("div", { className: "field full" }, h("label", { for: "t-msg-" + (admin ? "a" : "c"), text: "Message" }), message),
-        h("div", { className: "form-foot" }, h("button", { type: "submit", className: "btn btn-solid", text: "Send" })));
+        h("h3", { className: "full", text: admin ? "Start a conversation with a client" : t("Need help? Open a support request") }),
+        who ? field("Client", who) : null, field(tx("About"), project), field(tx("Subject"), subject),
+        h("div", { className: "field full" }, h("label", { for: "t-msg-" + (admin ? "a" : "c"), text: tx("Message") }), message),
+        h("div", { className: "form-foot" }, h("button", { type: "submit", className: "btn btn-solid", text: tx("Send") })));
       message.id = "t-msg-" + (admin ? "a" : "c");
       box.appendChild(form);
     }
-    if (!tickets.length) { box.appendChild(h("p", { className: "portal-empty", text: "No support requests yet." })); return; }
+    if (!tickets.length) { box.appendChild(h("p", { className: "portal-empty", text: tx("No support requests yet.") })); return; }
     tickets.forEach(function (t) {
       var msgs = (data.messages || []).filter(function (m) { return +m.ticket_id === +t.id; });
       var client = admin ? (data.clients.find(function (c) { return +c.id === +t.client_id; }) || {}).name : null;
       var thread = h("ol", { className: "thread" });
       msgs.forEach(function (m) {
         thread.appendChild(h("li", { className: "msg msg-" + (m.author === (admin ? "admin" : "client") ? "mine" : "theirs") },
-          h("span", { className: "portal-meta", text: (m.author === "admin" ? "Marzley Tech" : (admin ? client : "You")) + " · " + day(m.created_at) }),
+          h("span", { className: "portal-meta", text: (m.author === "admin" ? "Marzley Tech" : (admin ? client : tx("You"))) + " · " + day(m.created_at) }),
           h("p", { text: m.message })));
       });
-      var reply = h("textarea", { rows: "2", maxlength: "4000", placeholder: "Write a reply…", "aria-label": "Reply to " + t.subject });
+      var reply = h("textarea", { rows: "2", maxlength: "4000", placeholder: tx("Write a reply…"), "aria-label": tx("Reply") + ": " + t.subject });
       var det = h("details", { className: "portal-card ticket", "data-status": t.status, open: t.status === "open" && admin ? true : null },
-        h("summary", null, h("strong", { text: t.subject }), h("span", { className: "pill pill-" + (t.status === "open" ? "unpaid" : "paid"), text: t.status === "open" ? "Open" : "Closed" }),
+        h("summary", null, h("strong", { text: t.subject }), h("span", { className: "pill pill-" + (t.status === "open" ? "unpaid" : "paid"), text: tx(t.status === "open" ? "Open" : "Closed") }),
           admin ? h("span", { className: "portal-meta", text: client || "" }) : null),
         thread,
         h("form", { className: "inline-form", onsubmit: function (e) {
           e.preventDefault();
           save("ticket_reply", { ticket_id: t.id, message: reply.value }, e.target);
-        } }, reply, h("button", { type: "submit", className: "btn btn-solid btn-sm", text: "Reply" })),
+        } }, reply, h("button", { type: "submit", className: "btn btn-solid btn-sm", text: tx("Reply") })),
         h("button", { type: "button", className: "linklike", onclick: function () {
           save("ticket_status", { ticket_id: t.id, status: t.status === "open" ? "closed" : "open" });
-        }, text: t.status === "open" ? "Mark as solved" : "Reopen" }));
+        }, text: tx(t.status === "open" ? "Mark as solved" : "Reopen") }));
       box.appendChild(det);
     });
   }
@@ -1112,6 +1567,23 @@
   }
 
   // ---------- start ----------
+  translateStatic();
+  var lt0 = $("lang-toggle");
+  if (lt0) lt0.addEventListener("click", function () {
+    LANG = LANG === "sw" ? "en" : "sw";
+    try { localStorage.setItem("marzley-portal-lang", LANG); } catch (e) {}
+    translateStatic();
+    if (data && me && !isTeam()) renderClient();
+  });
+  var cardResult = (location.search.match(/[?&]card=([a-z]+)/) || [])[1];
+  if (cardResult) {
+    history.replaceState(null, "", location.pathname);
+    setTimeout(function () {
+      if (cardResult === "paid") toast(t("Payment received. Thank you!"));
+      else if (cardResult === "pending") toast("Your card payment is still being confirmed. The invoice will update shortly.");
+      else toast("The card payment didn’t go through. No money was taken. You can try again or pay by M-Pesa.", true);
+    }, 600);
+  }
   api("me").then(function (d) {
     me = d.user;
     csrf = d.csrf;

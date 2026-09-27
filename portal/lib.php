@@ -5,13 +5,15 @@ if (!defined('MARZLEY_PORTAL')) {
     exit;
 }
 
-const SCHEMA_VERSION = 2;
+const SCHEMA_VERSION = 3;
+const STAFF_PERMS = ['projects' => 'Projects & files', 'clients' => 'People', 'support' => 'Support', 'courses' => 'Courses', 'money' => 'Invoices, payments & quotes', 'leads' => 'Leads'];
 const PROJECT_STATUSES = ['planning', 'design', 'build', 'review', 'live', 'on_hold'];
 const INVOICE_STATUSES = ['unpaid', 'paid', 'cancelled'];
 
 /** The site folder (public_html) and the private folder above it. */
 function site_root(): string { return dirname(__DIR__); }
 function private_dir(): string {
+    if ($env = getenv('PORTAL_PRIVATE_DIR')) return $env;   // tests
     $up = dirname(site_root());
     return is_writable($up) ? $up : site_root();
 }
@@ -99,9 +101,38 @@ function migrate(PDO $pdo): void {
         "CREATE TABLE IF NOT EXISTS audit_log (id $id, actor VARCHAR(190) NOT NULL, action VARCHAR(60) NOT NULL, detail VARCHAR(500) NOT NULL DEFAULT '', ip VARCHAR(45) NOT NULL DEFAULT '', created_at DATETIME NOT NULL)$end",
         "CREATE TABLE IF NOT EXISTS recurring_invoices (id $id, client_id $uint NOT NULL, project_id $uint NULL, description VARCHAR(300) NOT NULL, amount $uint NOT NULL, day_of_month $uint NOT NULL DEFAULT 1, due_days $uint NOT NULL DEFAULT 7, next_date DATE NOT NULL, active $uint NOT NULL DEFAULT 1, created_at DATETIME NOT NULL)$end",
         "CREATE TABLE IF NOT EXISTS reminders (id $id, kind VARCHAR(30) NOT NULL, ref_id $uint NOT NULL, stage VARCHAR(30) NOT NULL, sent_at DATETIME NOT NULL, UNIQUE (kind, ref_id, stage))$end",
+        // v3
+        "CREATE TABLE IF NOT EXISTS payments (id $id, invoice_id $uint NOT NULL, amount $uint NOT NULL, method VARCHAR(20) NOT NULL, reference VARCHAR(60) NOT NULL DEFAULT '', status VARCHAR(20) NOT NULL DEFAULT 'confirmed', note VARCHAR(500) NOT NULL DEFAULT '', proof_file VARCHAR(80) NULL, checkout_id VARCHAR(100) NULL, created_by VARCHAR(190) NOT NULL DEFAULT '', created_at DATETIME NOT NULL, decided_at DATETIME NULL)$end",
+        "CREATE TABLE IF NOT EXISTS leads (id $id, name VARCHAR(120) NOT NULL, email VARCHAR(190) NOT NULL DEFAULT '', phone VARCHAR(30) NOT NULL DEFAULT '', source VARCHAR(60) NOT NULL DEFAULT '', message TEXT NOT NULL, status VARCHAR(20) NOT NULL DEFAULT 'new', value $uint NOT NULL DEFAULT 0, notes TEXT NOT NULL, client_id $uint NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL)$end",
+        "CREATE TABLE IF NOT EXISTS quotes (id $id, token VARCHAR(64) NOT NULL UNIQUE, lead_id $uint NULL, client_name VARCHAR(120) NOT NULL, client_email VARCHAR(190) NOT NULL, client_phone VARCHAR(30) NOT NULL DEFAULT '', title VARCHAR(160) NOT NULL, items TEXT NOT NULL, total $uint NOT NULL, deposit_percent $uint NOT NULL DEFAULT 50, valid_until DATE NULL, notes TEXT NOT NULL, status VARCHAR(20) NOT NULL DEFAULT 'draft', accepted_name VARCHAR(120) NULL, accepted_at DATETIME NULL, accepted_ip VARCHAR(45) NULL, client_id $uint NULL, project_id $uint NULL, created_at DATETIME NOT NULL)$end",
+        "CREATE TABLE IF NOT EXISTS domains (id $id, client_id $uint NOT NULL, name VARCHAR(190) NOT NULL, kind VARCHAR(20) NOT NULL DEFAULT 'domain', expires_on DATE NOT NULL, renew_price $uint NOT NULL DEFAULT 0, auto_invoice $uint NOT NULL DEFAULT 1, monitor_url VARCHAR(300) NOT NULL DEFAULT '', last_status VARCHAR(10) NOT NULL DEFAULT '', down_since DATETIME NULL, notes VARCHAR(500) NOT NULL DEFAULT '', created_at DATETIME NOT NULL)$end",
+        "CREATE TABLE IF NOT EXISTS site_checks (id $id, domain_id $uint NOT NULL, ok $uint NOT NULL, ms $uint NOT NULL DEFAULT 0, code $uint NOT NULL DEFAULT 0, checked_at DATETIME NOT NULL)$end",
+        "CREATE TABLE IF NOT EXISTS feedback (id $id, project_id $uint NOT NULL, client_id $uint NOT NULL, token VARCHAR(64) NOT NULL UNIQUE, rating $uint NULL, comment TEXT NULL, created_at DATETIME NOT NULL, submitted_at DATETIME NULL)$end",
+        "CREATE TABLE IF NOT EXISTS staff (id $id, email VARCHAR(190) NOT NULL UNIQUE, name VARCHAR(120) NOT NULL, perms VARCHAR(200) NOT NULL DEFAULT '', created_at DATETIME NOT NULL)$end",
     ];
     foreach ($tables as $sql) $pdo->exec($sql);
-    try { $pdo->exec('CREATE INDEX audit_created ON audit_log (created_at)'); } catch (PDOException $e) { /* already there */ }
+    $columns = [
+        ['invoices', 'amount_paid', "$uint NOT NULL DEFAULT 0"],
+        ['invoice_payments', 'amount', "$uint NULL"],
+        ['invoice_payments', 'method', "VARCHAR(20) NOT NULL DEFAULT 'mpesa'"],
+        ['approvals', 'bill_amount', "$uint NULL"],
+        ['approvals', 'invoice_id', "$uint NULL"],
+        ['files', 'uploaded_by', "VARCHAR(10) NOT NULL DEFAULT 'admin'"],
+    ];
+    foreach ($columns as [$table, $col, $def]) {
+        try { $pdo->exec("ALTER TABLE $table ADD COLUMN $col $def"); } catch (PDOException $e) { /* already there */ }
+    }
+    foreach (['CREATE INDEX audit_created ON audit_log (created_at)', 'CREATE INDEX payments_invoice ON payments (invoice_id)', 'CREATE INDEX payments_ref ON payments (reference)', 'CREATE UNIQUE INDEX payments_checkout ON payments (checkout_id)',
+              'CREATE INDEX checks_domain ON site_checks (domain_id, checked_at)'] as $sql) {
+        try { $pdo->exec($sql); } catch (PDOException $e) { /* already there */ }
+    }
+    if ($v < 3) {
+        // Invoices paid before part payments existed count as paid in full
+        $pdo->exec("UPDATE invoices SET amount_paid = amount WHERE status = 'paid' AND amount_paid = 0");
+        $pdo->exec("INSERT INTO payments (invoice_id, amount, method, reference, status, created_by, created_at, decided_at)
+            SELECT id, amount, CASE WHEN mpesa_receipt IS NULL OR mpesa_receipt = '' THEN 'manual' ELSE 'mpesa' END, COALESCE(mpesa_receipt, ''), 'confirmed', 'system', COALESCE(paid_at, created_at), COALESCE(paid_at, created_at)
+            FROM invoices WHERE status = 'paid' AND id NOT IN (SELECT invoice_id FROM payments)");
+    }
     $pdo->prepare($sqlite ? 'INSERT OR REPLACE INTO settings (k, v) VALUES (?, ?)' : 'REPLACE INTO settings (k, v) VALUES (?, ?)')
         ->execute(['schema_version', (string)SCHEMA_VERSION]);
 }
@@ -207,9 +238,26 @@ function require_user(): array {
     return $u;
 }
 
+/** Owners (admin_emails in the config) can do everything, including team and security settings. */
 function require_admin(): array {
     $u = require_user();
-    if ($u['role'] !== 'admin') fail(403, 'Only Marzley Tech staff can do that.');
+    if ($u['role'] !== 'admin') fail(403, 'Only the business owner can do that.');
+    return $u;
+}
+
+/** True for owners and staff: people who work at Marzley Tech, not clients. */
+function is_team(?array $u): bool { return $u && in_array($u['role'], ['admin', 'staff'], true); }
+
+function can(?array $u, string $perm): bool {
+    if (!$u) return false;
+    if ($u['role'] === 'admin') return true;
+    return $u['role'] === 'staff' && in_array($perm, $u['perms'] ?? [], true);
+}
+
+/** Owners, or staff who have been given this area. */
+function require_perm(string $perm): array {
+    $u = require_user();
+    if (!can($u, $perm)) fail(403, $u['role'] === 'client' ? 'Only Marzley Tech staff can do that.' : 'You don’t have access to this area. Ask the owner.');
     return $u;
 }
 
@@ -245,8 +293,12 @@ function verify_google_token(string $token): array {
 /** Turn a verified email into a portal user, or refuse if they are not a client. */
 function sign_in(string $email, string $name): array {
     $email = strtolower(trim($email));
+    $staff = in_array($email, config()['admin_emails'], true) ? null : q('SELECT name, perms FROM staff WHERE email = ?', [$email])->fetch();
     if (in_array($email, config()['admin_emails'], true)) {
         $user = ['email' => $email, 'name' => $name, 'role' => 'admin', 'client_id' => null];
+    } elseif ($staff) {
+        $user = ['email' => $email, 'name' => $staff['name'] ?: $name, 'role' => 'staff', 'client_id' => null,
+                 'perms' => array_values(array_intersect(explode(',', $staff['perms']), array_keys(STAFF_PERMS)))];
     } else {
         $client = q('SELECT id, name FROM clients WHERE email = ?', [$email])->fetch();
         if (!$client) fail(403, 'This Google account is not linked to a Marzley Tech project yet. Contact us on WhatsApp +254 745 789 590 to get access.');
@@ -383,25 +435,116 @@ function stk_query(string $checkoutId): ?string {
     return isset($res['ResultCode']) ? (string)$res['ResultCode'] : null;
 }
 
+// ---------- invoices and payments ----------
+
+/** Next invoice number in an unbroken yearly series, e.g. MT-2026-0001 (as KRA and accountants expect). */
+function next_invoice_number(): string {
+    $pdo = db();
+    $own = !$pdo->inTransaction();
+    if ($own) $pdo->beginTransaction();
+    try {
+        $year = date('Y');
+        $key = "invoice_seq:$year";
+        // The UPDATE locks the counter row until commit, so two invoices can never get the same number
+        if (q('UPDATE settings SET v = v + 1 WHERE k = ?', [$key])->rowCount() === 0) {
+            try { q('INSERT INTO settings (k, v) VALUES (?, ?)', [$key, '1']); }
+            catch (PDOException $e) { q('UPDATE settings SET v = v + 1 WHERE k = ?', [$key]); }
+        }
+        $n = (int)q('SELECT v FROM settings WHERE k = ?', [$key])->fetch()['v'];
+        if ($own) $pdo->commit();
+    } catch (Throwable $e) {
+        if ($own && $pdo->inTransaction()) $pdo->rollBack();
+        throw $e;
+    }
+    $prefix = preg_replace('/[^A-Z0-9]/', '', strtoupper((string)(config()['invoice_prefix'] ?? 'MT'))) ?: 'MT';
+    return sprintf('%s-%s-%04d', $prefix, $year, $n);
+}
+
+/** Create an invoice and email/SMS the client. Returns [id, number]. */
+function create_invoice(int $clientId, ?int $projectId, string $desc, int $amount, ?string $due, string $status = 'unpaid', bool $notify = true): array {
+    $number = next_invoice_number();
+    q('INSERT INTO invoices (client_id, project_id, number, description, amount, amount_paid, status, due_date, paid_at, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [$clientId, $projectId, $number, $desc, $amount, $status === 'paid' ? $amount : 0, $status, $due, $status === 'paid' ? now() : null, now()]);
+    $id = (int)db()->lastInsertId();
+    if ($status === 'paid') q("INSERT INTO payments (invoice_id, amount, method, reference, status, created_by, created_at, decided_at) VALUES (?, ?, 'manual', '', 'confirmed', ?, ?, ?)", [$id, $amount, current_user()['email'] ?? 'system', now(), now()]);
+    if ($notify && $status === 'unpaid') {
+        notify_client($clientId, "New invoice $number", "You have a new invoice: $desc, KSh " . number_format($amount) . ($due ? ", due $due" : '') . '. You can pay it by M-Pesa or card in the portal.',
+            "Marzley Tech: invoice $number for KSh " . number_format($amount) . ($due ? " due $due" : '') . '. Pay at ' . portal_url());
+    }
+    return [$id, $number];
+}
+
+function invoice_balance(array $inv): int { return max(0, (int)$inv['amount'] - (int)($inv['amount_paid'] ?? 0)); }
+
+/** True if this payment reference (M-Pesa code, card reference, bank ref) was already used. */
+function reference_used(string $reference, ?int $exceptPaymentId = null): bool {
+    if ($reference === '') return false;
+    if (q("SELECT id FROM payments WHERE reference = ? AND status <> 'rejected' AND id <> ?", [$reference, $exceptPaymentId ?? 0])->fetch()) return true;
+    return (bool)q('SELECT id FROM invoices WHERE mpesa_receipt = ?', [$reference])->fetch() && $exceptPaymentId === null;
+}
+
 /**
- * Mark the invoice for this M-Pesa request as paid, after checking everything:
- * the request is one we sent for this invoice, Safaricom confirms it, the amount
- * covers the invoice, and the receipt number has not been used before.
- * Returns 'paid', 'failed', 'pending' or 'mismatch'. Safe to call more than once.
+ * Record money received against an invoice (part or full). When the total paid reaches the
+ * invoice amount it is marked paid. Sends the client a receipt. Returns the payment id.
+ */
+function apply_payment(int $invoiceId, int $amount, string $method, string $reference, string $by, ?string $checkoutId = null, ?int $existingPaymentId = null): int {
+    $pdo = db();
+    $own = !$pdo->inTransaction();
+    if ($own) $pdo->beginTransaction();
+    $inv = q('SELECT * FROM invoices WHERE id = ?', [$invoiceId])->fetch();
+    if ($existingPaymentId) {
+        // Only one "Confirm" can win, even if the button is pressed twice at once
+        if (q("UPDATE payments SET status = 'confirmed', decided_at = ? WHERE id = ? AND status = 'pending'", [now(), $existingPaymentId])->rowCount() === 0) {
+            if ($own) $pdo->rollBack();
+            return 0;
+        }
+        $pid = $existingPaymentId;
+    } else {
+        try {
+            q("INSERT INTO payments (invoice_id, amount, method, reference, status, checkout_id, created_by, created_at, decided_at) VALUES (?, ?, ?, ?, 'confirmed', ?, ?, ?, ?)",
+                [$invoiceId, $amount, $method, $reference, $checkoutId, $by, now(), now()]);
+        } catch (PDOException $e) {
+            // The same payment arrived twice at once (callback and status check): the first one counts
+            if ($own) $pdo->rollBack();
+            if ($checkoutId !== null && q('SELECT id FROM payments WHERE checkout_id = ?', [$checkoutId])->fetch()) return 0;
+            throw $e;
+        }
+        $pid = (int)$pdo->lastInsertId();
+    }
+    q('UPDATE invoices SET amount_paid = amount_paid + ? WHERE id = ?', [$amount, $invoiceId]);
+    $paidNow = q("UPDATE invoices SET status = 'paid', paid_at = ?, mpesa_receipt = ? WHERE id = ? AND status = 'unpaid' AND amount_paid >= amount", [now(), $reference ?: null, $invoiceId])->rowCount() > 0;
+    if ($own) $pdo->commit();
+    $label = ['mpesa' => 'M-Pesa', 'card' => 'card', 'bank' => 'bank transfer', 'till' => 'M-Pesa (till)', 'manual' => 'payment'][$method] ?? $method;
+    $balance = max(0, (int)$inv['amount'] - (int)$inv['amount_paid'] - $amount);
+    audit($paidNow ? 'invoice_paid' : 'part_payment', "{$inv['number']} KSh $amount by $label" . ($reference ? " $reference" : '') . ($paidNow ? '' : ", balance KSh $balance"), $by);
+    notify_admins(($paidNow ? "Invoice {$inv['number']} paid" : "Part payment on {$inv['number']}"),
+        "KSh " . number_format($amount) . " received by $label for invoice {$inv['number']}" . ($reference ? " (ref $reference)" : '') . '.' . ($paidNow ? ' The invoice is now fully paid.' : ' Balance: KSh ' . number_format($balance) . '.'));
+    notify_client((int)$inv['client_id'], $paidNow ? "Payment received: {$inv['number']}" : "Part payment received: {$inv['number']}",
+        "Thank you! We received KSh " . number_format($amount) . " by $label for {$inv['description']}" . ($reference ? " (ref $reference)" : '') . '.' .
+        ($paidNow ? ' Your invoice is now fully paid and your receipt is in the portal.' : ' Balance remaining: KSh ' . number_format($balance) . '.'),
+        "Marzley Tech: received KSh " . number_format($amount) . " for {$inv['number']}" . ($reference ? " ref $reference" : '') . '.' . ($paidNow ? ' Fully paid. Thank you!' : ' Balance KSh ' . number_format($balance) . '.'));
+    return $pid;
+}
+
+/**
+ * Settle an M-Pesa request after checking everything: the request is one we sent for this
+ * invoice, Safaricom confirms it, the amount covers what was requested, and the receipt
+ * number has not been used before. Returns 'paid', 'failed', 'pending' or 'mismatch'. Safe to call more than once.
  */
 function settle_payment(string $checkoutId, array $r): string {
-    $pay = q('SELECT ip.invoice_id, i.* FROM invoice_payments ip JOIN invoices i ON i.id = ip.invoice_id WHERE ip.checkout_id = ?', [$checkoutId])->fetch();
+    $pay = q('SELECT ip.invoice_id, ip.amount AS requested, i.* FROM invoice_payments ip JOIN invoices i ON i.id = ip.invoice_id WHERE ip.checkout_id = ?', [$checkoutId])->fetch();
     if (!$pay) return 'mismatch';
-    if ($pay['status'] === 'paid') return 'paid';
+    if (q('SELECT id FROM payments WHERE checkout_id = ?', [$checkoutId])->fetch()) return 'paid';
     if ((int)($r['result_code'] ?? -1) !== 0) return 'failed';
+    $expected = (int)($pay['requested'] ?: $pay['amount']);
     $amount = (int)($r['amount'] ?? 0);
     $receipt = strtoupper(preg_replace('/[^A-Z0-9]/i', '', (string)($r['receipt'] ?? '')));
-    if ($amount < (int)$pay['amount'] || $receipt === '') {
+    if ($amount < $expected || $receipt === '') {
         audit('payment_rejected', "{$pay['number']}: amount $amount, receipt '$receipt'", 'M-Pesa');
-        report_error('M-Pesa payment check', "Invoice {$pay['number']}: paid amount $amount is less than KSh {$pay['amount']} or no receipt. Not marked paid.");
+        report_error('M-Pesa payment check', "Invoice {$pay['number']}: paid amount $amount is less than the KSh $expected requested, or no receipt. Not recorded.");
         return 'mismatch';
     }
-    if (q('SELECT id FROM invoices WHERE mpesa_receipt = ? AND id <> ?', [$receipt, $pay['invoice_id']])->fetch()) {
+    if (reference_used($receipt)) {
         audit('payment_rejected', "{$pay['number']}: receipt $receipt already used", 'M-Pesa');
         return 'mismatch';
     }
@@ -414,14 +557,197 @@ function settle_payment(string $checkoutId, array $r): string {
             return 'failed';
         }
     }
-    $changed = q("UPDATE invoices SET status = 'paid', paid_at = ?, mpesa_receipt = ? WHERE id = ? AND status = 'unpaid'", [now(), $receipt, $pay['invoice_id']])->rowCount();
-    if ($changed) {
-        audit('invoice_paid', "{$pay['number']} KSh {$pay['amount']} M-Pesa $receipt", 'M-Pesa');
-        notify_admins("Invoice {$pay['number']} paid", "Invoice {$pay['number']} (KSh " . number_format((int)$pay['amount']) . ") was paid by M-Pesa. Receipt: $receipt.");
-        notify_client((int)$pay['client_id'], "Payment received: {$pay['number']}", "Thank you! We received KSh " . number_format((int)$pay['amount']) . " for {$pay['description']}. M-Pesa receipt: $receipt. Your receipt is in the portal.",
-            "Marzley Tech: we received KSh " . number_format((int)$pay['amount']) . " for {$pay['number']}. M-Pesa ref $receipt. Thank you!");
-    }
+    if ($pay['status'] !== 'unpaid') return 'paid';
+    apply_payment((int)$pay['invoice_id'], $expected, 'mpesa', $receipt, 'M-Pesa', $checkoutId);
     return 'paid';
+}
+
+// ---------- card payments (Paystack) ----------
+
+function paystack(): ?array {
+    $p = config()['paystack'] ?? null;
+    return !empty($p['secret_key']) ? $p + ['base' => 'https://api.paystack.co'] : null;
+}
+
+function paystack_call(string $method, string $path, ?array $body = null): ?array {
+    $p = paystack();
+    if (!$p) return null;
+    $ch = curl_init(rtrim($p['base'], '/') . $path);
+    $opts = [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 30, CURLOPT_HTTPHEADER => ['Authorization: Bearer ' . $p['secret_key'], 'Content-Type: application/json']];
+    if ($method === 'POST') { $opts[CURLOPT_POST] = true; $opts[CURLOPT_POSTFIELDS] = json_encode($body ?? []); }
+    curl_setopt_array($ch, $opts);
+    $res = json_decode((string)curl_exec($ch), true);
+    curl_close($ch);
+    return is_array($res) ? $res : null;
+}
+
+/** Verify a card payment with Paystack and record it. Returns 'paid', 'pending', 'failed' or 'mismatch'. */
+function settle_card(string $reference): string {
+    $pay = q("SELECT ip.invoice_id, ip.amount AS requested, i.* FROM invoice_payments ip JOIN invoices i ON i.id = ip.invoice_id WHERE ip.checkout_id = ? AND ip.method = 'card'", [$reference])->fetch();
+    if (!$pay) return 'mismatch';
+    if (q('SELECT id FROM payments WHERE checkout_id = ?', [$reference])->fetch()) return 'paid';
+    $res = paystack_call('GET', '/transaction/verify/' . rawurlencode($reference));
+    if (!$res) return 'pending';
+    $d = $res['data'] ?? [];
+    if (($d['status'] ?? '') !== 'success') return ($d['status'] ?? '') === 'abandoned' || ($d['status'] ?? '') === 'failed' ? 'failed' : 'pending';
+    $expected = (int)($pay['requested'] ?: $pay['amount']);
+    if (($d['reference'] ?? '') !== $reference || strtoupper($d['currency'] ?? '') !== 'KES' || (int)($d['amount'] ?? 0) < $expected * 100) {
+        audit('payment_rejected', "{$pay['number']}: card $reference amount/currency mismatch", 'Paystack');
+        report_error('Card payment check', "Invoice {$pay['number']}: Paystack reference $reference does not match the amount or currency. Not recorded.");
+        return 'mismatch';
+    }
+    if ($pay['status'] !== 'unpaid') return 'paid';
+    apply_payment((int)$pay['invoice_id'], $expected, 'card', $reference, 'Paystack', $reference);
+    return 'paid';
+}
+
+// ---------- off-site backups (any S3-compatible storage: Backblaze B2, Cloudflare R2, Wasabi, AWS) ----------
+
+/** AWS Signature Version 4 Authorization header for S3 (signs host, x-amz-content-sha256 and x-amz-date). */
+function s3_authorization(string $keyId, string $secret, string $region, string $method, string $host, string $path, string $query, string $payloadHash, string $amzDate): string {
+    $date = substr($amzDate, 0, 8);
+    $headers = ['host' => $host, 'x-amz-content-sha256' => $payloadHash, 'x-amz-date' => $amzDate];
+    $canonHeaders = '';
+    foreach ($headers as $k => $v) $canonHeaders .= "$k:" . trim($v) . "\n";
+    $signed = implode(';', array_keys($headers));
+    $canon = "$method\n$path\n$query\n$canonHeaders\n$signed\n$payloadHash";
+    $scope = "$date/$region/s3/aws4_request";
+    $toSign = "AWS4-HMAC-SHA256\n$amzDate\n$scope\n" . hash('sha256', $canon);
+    $k = hash_hmac('sha256', 'aws4_request', hash_hmac('sha256', 's3', hash_hmac('sha256', $region, hash_hmac('sha256', $date, 'AWS4' . $secret, true), true), true), true);
+    return "AWS4-HMAC-SHA256 Credential=$keyId/$scope,SignedHeaders=$signed,Signature=" . hash_hmac('sha256', $toSign, $k);
+}
+
+/** Upload a file to S3-compatible storage (path-style URL). Throws on failure. */
+function s3_put(array $c, string $key, string $file): void {
+    $u = parse_url($c['endpoint']);
+    $host = $u['host'] . (isset($u['port']) ? ':' . $u['port'] : '');
+    $path = '/' . rawurlencode($c['bucket']) . '/' . implode('/', array_map('rawurlencode', explode('/', $key)));
+    $hash = hash_file('sha256', $file);
+    $amz = gmdate('Ymd\THis\Z');
+    $auth = s3_authorization($c['key'], $c['secret'], $c['region'] ?? 'us-east-1', 'PUT', $host, $path, '', $hash, $amz);
+    $fh = fopen($file, 'rb');
+    $ch = curl_init(($u['scheme'] ?? 'https') . "://$host$path");
+    curl_setopt_array($ch, [
+        CURLOPT_PUT => true, CURLOPT_INFILE => $fh, CURLOPT_INFILESIZE => filesize($file), CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 600,
+        CURLOPT_HTTPHEADER => ["Authorization: $auth", "x-amz-content-sha256: $hash", "x-amz-date: $amz", 'Content-Type: application/octet-stream'],
+    ]);
+    $res = curl_exec($ch);
+    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $err = curl_error($ch);
+    curl_close($ch);
+    fclose($fh);
+    if ($code < 200 || $code >= 300) throw new RuntimeException("Off-site upload of $key failed: HTTP $code $err " . substr((string)$res, 0, 300));
+}
+
+// ---------- shared steps used by several screens ----------
+
+/**
+ * Add a client (or find them by email), create their project and send the deposit invoice.
+ * Used by Quick start and by accepted online quotes. Returns [clientId, projectId, invoiceNumber|null, deposit].
+ */
+function setup_client_project(string $name, string $email, string $phone, string $title, int $total, int $pct, int $dueDays, string $summary = ''): array {
+    $pdo = db();
+    $pdo->beginTransaction();
+    try {
+        $client = q('SELECT id FROM clients WHERE email = ?', [$email])->fetch();
+        if ($client) {
+            $clientId = (int)$client['id'];
+            if ($phone !== '') q("UPDATE clients SET phone = ? WHERE id = ? AND phone = ''", [$phone, $clientId]);
+        } else {
+            q('INSERT INTO clients (name, email, phone, created_at) VALUES (?, ?, ?, ?)', [$name, $email, $phone, now()]);
+            $clientId = (int)$pdo->lastInsertId();
+        }
+        q('INSERT INTO projects (client_id, title, status, progress, due_date, summary, created_at, updated_at) VALUES (?, ?, ?, 0, NULL, ?, ?, ?)',
+            [$clientId, $title, 'planning', $summary !== '' ? $summary : 'Total agreed: KSh ' . number_format($total) . '.', now(), now()]);
+        $projectId = (int)$pdo->lastInsertId();
+        $deposit = (int)round($total * $pct / 100);
+        $number = null;
+        if ($deposit > 0) [, $number] = create_invoice($clientId, $projectId, "Deposit ($pct%) for $title", $deposit, date('Y-m-d', strtotime("+$dueDays days")), 'unpaid', false);
+        $pdo->commit();
+    } catch (Throwable $e) {
+        if ($pdo->inTransaction()) $pdo->rollBack();
+        throw $e;
+    }
+    notify_client($clientId, 'Welcome to your Marzley Tech client portal',
+        "Your project “{$title}” is set up. Sign in with this Google account to follow progress, approve designs and see invoices." .
+        ($number ? "\n\nYour deposit invoice $number is KSh " . number_format($deposit) . ". You can pay it by M-Pesa or card in the portal." : ''),
+        'Marzley Tech: your project "' . mb_substr($title, 0, 50) . '" is set up.' . ($number ? ' Deposit KSh ' . number_format($deposit) . '.' : '') . ' Portal: ' . portal_url());
+    return [$clientId, $projectId, $number, $deposit];
+}
+
+/** Ask the client for a rating when their project goes live (once per project). */
+function request_feedback(int $projectId): void {
+    $p = q('SELECT id, client_id, title FROM projects WHERE id = ?', [$projectId])->fetch();
+    if (!$p || q('SELECT id FROM feedback WHERE project_id = ?', [$projectId])->fetch()) return;
+    $token = bin2hex(random_bytes(24));
+    q('INSERT INTO feedback (project_id, client_id, token, created_at) VALUES (?, ?, ?, ?)', [$projectId, $p['client_id'], $token, now()]);
+    $link = portal_url() . 'feedback.php?t=' . $token;
+    notify_client((int)$p['client_id'], "“{$p['title']}” is live! How did we do?",
+        "Your project “{$p['title']}” is now live. Congratulations!\n\nWould you take 30 seconds to rate working with us? It really helps.\n$link",
+        "Marzley Tech: {$p['title']} is live! Rate us in 30 seconds: $link");
+}
+
+/** Public site settings (data/site.json), e.g. the Google review link. */
+function site_json(): array {
+    $d = json_decode((string)@file_get_contents(site_root() . '/data/site.json'), true);
+    return is_array($d) ? $d : [];
+}
+
+/** Simple per-visitor rate limit for public forms. Returns false when over the limit. */
+function rate_ok(string $bucket, int $max, int $seconds): bool {
+    $dir = private_dir() . '/portal_ratelimit';
+    if (!is_dir($dir)) @mkdir($dir, 0750, true);
+    $file = $dir . '/' . hash('sha256', $bucket . '|' . ($_SERVER['REMOTE_ADDR'] ?? 'x'));
+    $hits = array_filter(explode("\n", (string)@file_get_contents($file)), fn($t) => (int)$t > time() - $seconds);
+    if (count($hits) >= $max) return false;
+    $hits[] = time();
+    @file_put_contents($file, implode("\n", $hits), LOCK_EX);
+    return true;
+}
+
+/** Save an uploaded file outside public_html. Returns [storedName, cleanOriginalName, size]. */
+function store_upload(array $up): array {
+    if (($up['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) fail(400, 'The upload did not work. Files can be up to 20 MB.');
+    if ($up['size'] > 20 * 1024 * 1024) fail(400, 'Files can be up to 20 MB.');
+    $ext = strtolower(pathinfo($up['name'], PATHINFO_EXTENSION));
+    $allowed = ['pdf', 'png', 'jpg', 'jpeg', 'webp', 'zip', 'docx', 'xlsx', 'pptx', 'txt', 'csv'];
+    if (!in_array($ext, $allowed, true)) fail(400, 'That file type is not allowed. Use PDF, images, ZIP or Office files.');
+    $dir = config()['storage_dir'];
+    if (!is_dir($dir) && !@mkdir($dir, 0750, true)) fail(500, 'The file folder could not be created.');
+    $stored = bin2hex(random_bytes(16)) . '.' . $ext;
+    if (!move_uploaded_file($up['tmp_name'], $dir . '/' . $stored)) fail(500, 'The file could not be saved.');
+    $name = mb_substr(preg_replace('/[^\p{L}\p{N} ._()-]/u', '_', $up['name']), 0, 180);
+    return [$stored, $name, (int)$up['size']];
+}
+
+// ---------- simple public pages (quote, feedback) ----------
+
+function h(?string $v): string { return htmlspecialchars((string)$v, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
+
+function page_open(string $title): void {
+    header('Content-Type: text/html; charset=utf-8');
+    header('Cache-Control: no-store');
+    header('X-Robots-Tag: noindex, nofollow');
+    header('Referrer-Policy: no-referrer');
+    echo '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />',
+        '<title>', h($title), ' | Marzley Tech Solutions</title><meta name="robots" content="noindex, nofollow" /><meta name="theme-color" content="#0b1b35" />',
+        '<link rel="icon" href="../favicon.ico" sizes="any" /><link rel="stylesheet" href="../vendor/fontawesome/css/all.min.css" />',
+        '<link rel="stylesheet" href="../css/home.min.css" /><link rel="stylesheet" href="portal.css" /><script src="../js/theme-init.js"></script></head>',
+        '<body class="portal-body public-page"><header class="portal-top"><div class="wrap"><a class="brand" href="../"><img src="../img/brand/logo-96.webp" alt="" width="40" height="40" />',
+        '<span>Marzley<span class="accent">Tech</span></span></a></div></header><main id="main" class="wrap portal-main public-main">';
+}
+
+function page_close(): void {
+    echo '</main><footer class="public-foot wrap"><p>Marzley Tech Solutions · <a href="tel:+254745789590">+254 745 789 590</a> · ',
+        '<a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="../privacy">Privacy</a> · <a href="../terms">Terms</a></p></footer>',
+        '<script src="../js/print-button.js" defer></script></body></html>';
+    exit;
+}
+
+function page_message(string $title, string $icon, string $heading, string $html): void {
+    page_open($title);
+    echo '<section class="public-card public-center"><span class="public-icon"><i class="fa-solid ', h($icon), '" aria-hidden="true"></i></span><h1>', h($heading), '</h1>', $html, '</section>';
+    page_close();
 }
 
 /** The result callback.php saved for a payment, or null while it is pending. */

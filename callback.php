@@ -33,7 +33,7 @@ $raw  = file_get_contents('php://input');
 $data = json_decode($raw, true);
 $cb   = $data['Body']['stkCallback'] ?? null;
 
-$logDir  = is_writable(dirname(__DIR__)) ? dirname(__DIR__) : __DIR__;
+$logDir = getenv('PORTAL_PRIVATE_DIR') ?: (is_writable(dirname(__DIR__)) ? dirname(__DIR__) : __DIR__);
 $logFile = $logDir . '/mpesa_callbacks.log';
 
 if (!is_array($cb)) {

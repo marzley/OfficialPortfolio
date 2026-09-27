@@ -49,6 +49,26 @@ return [
     'backup_dir' => '/home/CPANELUSER/portal-backups',
     'backup_keep_days' => 14,
 
+    // Invoice numbers: MT-2026-0001, MT-2026-0002 … (a new series each year)
+    'invoice_prefix' => 'MT',
+
+    // Card payments on invoices through Paystack (Settings > API Keys & Webhooks).
+    // Set the webhook URL there to https://marzleytechsolutions.co.ke/portal/paystack.php
+    // 'paystack' => ['secret_key' => 'sk_live_…'],
+    'paystack' => null,
+
+    // Off-site copy of the nightly backups (any S3-compatible storage). Backblaze B2 example:
+    // create a PRIVATE bucket and an application key limited to that bucket.
+    // 'offsite_backup' => [
+    //     'endpoint' => 'https://s3.us-west-004.backblazeb2.com',   // shown on the bucket page
+    //     'region'   => 'us-west-004',
+    //     'bucket'   => 'marzley-backups',
+    //     'key'      => 'KEY_ID',
+    //     'secret'   => 'APPLICATION_KEY',
+    //     'prefix'   => 'portal',
+    // ],
+    'offsite_backup' => null,
+
     // 'production' on the live site, 'staging' on staging.marzleytechsolutions.co.ke
     'environment' => 'production',
 ];

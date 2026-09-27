@@ -20,35 +20,38 @@
     <header class="portal-top">
         <div class="wrap">
             <a class="brand" href="../"><img src="../img/brand/logo-96.webp" alt="" width="40" height="40" /><span>Marzley<span class="accent">Tech</span></span></a>
-            <span class="portal-tag">Client portal</span>
+            <span class="portal-tag" data-i18n>Client portal</span>
+            <button type="button" class="lang-toggle" id="lang-toggle" lang="sw">Kiswahili</button>
             <div class="portal-user" id="portal-user" hidden>
                 <span id="portal-name"></span>
-                <button type="button" class="btn btn-ghost" id="sign-out">Sign out</button>
+                <button type="button" class="btn btn-ghost" id="sign-out" data-i18n>Sign out</button>
             </div>
         </div>
     </header>
 
     <main id="main" class="wrap portal-main">
-        <p class="portal-loading" id="portal-loading"><span class="spinner" aria-hidden="true"></span> Loading…</p>
+        <p class="portal-loading" id="portal-loading"><span class="spinner" aria-hidden="true"></span> <span data-i18n>Loading…</span></p>
 
         <section class="portal-signin" id="view-signin" hidden aria-labelledby="signin-title">
             <img src="../img/brand/logo-256.webp" alt="" width="96" height="96" />
-            <h1 id="signin-title">Client portal</h1>
-            <p>See your project’s progress, updates, files and invoices, and pay by M-Pesa. Sign in with the Google account you gave us.</p>
+            <h1 id="signin-title" data-i18n>Client portal</h1>
+            <p data-i18n>See your project’s progress, updates, files and invoices, and pay by M-Pesa. Sign in with the Google account you gave us.</p>
             <div id="google-signin"></div>
             <p class="portal-error" id="signin-error" role="alert"></p>
-            <p class="portal-help">No access yet? <a href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I%27d%20like%20access%20to%20the%20client%20portal." target="_blank" rel="noopener noreferrer">Message us on WhatsApp</a>.</p>
+            <p class="portal-help"><span data-i18n>No access yet?</span> <a data-i18n href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I%27d%20like%20access%20to%20the%20client%20portal." target="_blank" rel="noopener noreferrer">Message us on WhatsApp</a>.</p>
         </section>
 
         <section id="view-client" hidden aria-labelledby="client-title">
             <h1 id="client-title" class="portal-h1"></h1>
             <nav class="portal-jump" aria-label="Sections">
-                <a href="#sec-projects">Projects</a><a href="#sec-invoices">Invoices</a><a href="#sec-courses" id="jump-courses" hidden>Courses</a><a href="#sec-support">Support</a>
+                <a href="#sec-projects" data-i18n>Projects</a><a href="#sec-invoices" data-i18n>Invoices</a><a href="#sec-domains" id="jump-domains" hidden data-i18n>Domains &amp; hosting</a><a href="#sec-courses" id="jump-courses" hidden data-i18n>Courses</a><a href="#sec-support" data-i18n>Support</a>
             </nav>
-            <div id="sec-projects"><h2 class="portal-h2">Your projects</h2><div id="client-projects" class="portal-cards"></div></div>
-            <div id="sec-invoices"><h2 class="portal-h2">Invoices</h2><div id="client-invoices"></div></div>
-            <div id="sec-courses" hidden><h2 class="portal-h2">Your courses</h2><div id="client-courses" class="portal-cards"></div></div>
-            <div id="sec-support"><h2 class="portal-h2">Support</h2><div id="client-support"></div></div>
+            <div id="client-feedback"></div>
+            <div id="sec-projects"><h2 class="portal-h2" data-i18n>Your projects</h2><div id="client-projects" class="portal-cards"></div></div>
+            <div id="sec-invoices"><h2 class="portal-h2" data-i18n>Invoices</h2><div id="client-invoices"></div></div>
+            <div id="sec-domains" hidden><h2 class="portal-h2" data-i18n>Domains &amp; hosting</h2><div id="client-domains"></div></div>
+            <div id="sec-courses" hidden><h2 class="portal-h2" data-i18n>Your courses</h2><div id="client-courses" class="portal-cards"></div></div>
+            <div id="sec-support"><h2 class="portal-h2" data-i18n>Support</h2><div id="client-support"></div></div>
             <div id="client-referral"></div>
         </section>
 
@@ -59,16 +62,20 @@
                     <span><strong>Marzley<span>Tech</span></strong><small>Admin control panel</small></span>
                 </a>
                 <nav class="admin-nav" role="tablist" aria-orientation="vertical" aria-label="Manage">
-                    <p class="admin-nav-label">Console</p>
+                    <p class="admin-nav-label" data-area="overview">Console</p>
                     <button type="button" role="tab" id="tab-overview" aria-controls="panel-overview" aria-selected="true"><i class="fa-solid fa-table-cells-large" aria-hidden="true"></i><span>Overview</span></button>
                     <button type="button" role="tab" id="tab-reports" aria-controls="panel-reports" aria-selected="false"><i class="fa-solid fa-chart-line" aria-hidden="true"></i><span>Reports</span></button>
-                    <p class="admin-nav-label">Management</p>
+                    <p class="admin-nav-label" data-area="leads quotes">Sales</p>
+                    <button type="button" role="tab" id="tab-leads" aria-controls="panel-leads" aria-selected="false"><i class="fa-solid fa-user-plus" aria-hidden="true"></i><span>Leads</span><b class="nav-badge badge-blue" id="count-leads" hidden></b></button>
+                    <button type="button" role="tab" id="tab-quotes" aria-controls="panel-quotes" aria-selected="false"><i class="fa-solid fa-file-signature" aria-hidden="true"></i><span>Quotes</span><b class="nav-badge badge-cyan" id="count-quotes" hidden></b></button>
+                    <p class="admin-nav-label" data-area="projects clients invoices domains support courses">Management</p>
                     <button type="button" role="tab" id="tab-projects" aria-controls="panel-projects" aria-selected="false"><i class="fa-solid fa-diagram-project" aria-hidden="true"></i><span>Projects</span><b class="nav-badge badge-blue" id="count-projects" hidden></b></button>
                     <button type="button" role="tab" id="tab-clients" aria-controls="panel-clients" aria-selected="false"><i class="fa-solid fa-users" aria-hidden="true"></i><span>People</span><b class="nav-badge badge-cyan" id="count-clients" hidden></b></button>
                     <button type="button" role="tab" id="tab-invoices" aria-controls="panel-invoices" aria-selected="false"><i class="fa-solid fa-file-invoice-dollar" aria-hidden="true"></i><span>Invoices</span><b class="nav-badge badge-amber" id="count-invoices" hidden></b></button>
+                    <button type="button" role="tab" id="tab-domains" aria-controls="panel-domains" aria-selected="false"><i class="fa-solid fa-globe" aria-hidden="true"></i><span>Domains &amp; hosting</span><b class="nav-badge badge-red" id="count-domains" hidden></b></button>
                     <button type="button" role="tab" id="tab-support" aria-controls="panel-support" aria-selected="false"><i class="fa-solid fa-life-ring" aria-hidden="true"></i><span>Support</span><b class="nav-badge badge-red" id="open-count" hidden></b></button>
                     <button type="button" role="tab" id="tab-courses" aria-controls="panel-courses" aria-selected="false"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i><span>Courses</span><b class="nav-badge badge-green" id="count-courses" hidden></b></button>
-                    <p class="admin-nav-label">System</p>
+                    <p class="admin-nav-label" data-area="activity">System</p>
                     <button type="button" role="tab" id="tab-activity" aria-controls="panel-activity" aria-selected="false"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><span>Activity &amp; system</span><b class="nav-badge badge-amber" id="count-activity" hidden></b></button>
                 </nav>
                 <a class="admin-back" href="../"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to website</a>
@@ -87,9 +94,12 @@
                     <h1 id="admin-title" class="sr-only">Portal admin</h1>
                     <div role="tabpanel" id="panel-overview" aria-labelledby="tab-overview"></div>
                     <div role="tabpanel" id="panel-reports" aria-labelledby="tab-reports" hidden></div>
+                    <div role="tabpanel" id="panel-leads" aria-labelledby="tab-leads" hidden></div>
+                    <div role="tabpanel" id="panel-quotes" aria-labelledby="tab-quotes" hidden></div>
                     <div role="tabpanel" id="panel-projects" aria-labelledby="tab-projects" hidden></div>
                     <div role="tabpanel" id="panel-clients" aria-labelledby="tab-clients" hidden></div>
                     <div role="tabpanel" id="panel-invoices" aria-labelledby="tab-invoices" hidden></div>
+                    <div role="tabpanel" id="panel-domains" aria-labelledby="tab-domains" hidden></div>
                     <div role="tabpanel" id="panel-support" aria-labelledby="tab-support" hidden></div>
                     <div role="tabpanel" id="panel-courses" aria-labelledby="tab-courses" hidden></div>
                     <div role="tabpanel" id="panel-activity" aria-labelledby="tab-activity" hidden></div>
