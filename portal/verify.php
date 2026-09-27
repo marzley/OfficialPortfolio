@@ -19,7 +19,7 @@ if (preg_match('/^MTC-[A-Z0-9]{5}-[A-Z0-9]{5}$/', $code)) {
     <title>Certificate check | Marzley Tech Solutions</title>
     <meta name="robots" content="noindex" />
     <link rel="icon" type="image/png" sizes="32x32" href="../img/brand/favicon-32.png" />
-    <link rel="stylesheet" href="../css/home.css" />
+    <link rel="stylesheet" href="../css/home.min.css" />
     <link rel="stylesheet" href="portal.css" />
 </head>
 <body class="portal-body">

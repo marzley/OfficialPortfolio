@@ -3,11 +3,13 @@
  * long, show the saved copy of that page, or the offline page if there is none.
  * Styles, scripts and images: use the saved copy when the network fails.
  * Change VERSION whenever offline.html or this file changes. */
-var VERSION = "marzley-v2";
+var VERSION = "marzley-v3";
 var OFFLINE_URL = "offline.html";
 var PAGE_TIMEOUT = 10000;
 var PRECACHE = [
   OFFLINE_URL,
+  "js/offline.js",
+  "js/theme-init.js",
   "img/brand/logo-96.webp",
   "img/brand/favicon-32.png"
 ];

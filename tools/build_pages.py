@@ -12,6 +12,7 @@ import datetime
 import html as htmllib
 import json
 import math
+import os
 import re
 from pathlib import Path
 
@@ -504,12 +505,27 @@ def write_sitemap(posts, cases=()):
     (ROOT / "sitemap.xml").write_text("\n".join(out) + "\n", encoding="utf-8", newline="")
 
 
+def minify_assets():
+    """css/home.css and js/home.js -> .min versions (esbuild if installed, otherwise a plain copy)."""
+    import shutil
+    import subprocess
+    pairs = [("css/home.css", "css/home.min.css"), ("js/home.js", "js/home.min.js")]
+    esbuild = shutil.which("esbuild") or os.environ.get("ESBUILD")
+    for src, dst in pairs:
+        if esbuild:
+            subprocess.run([esbuild, str(ROOT / src), "--minify", "--log-level=warning", "--outfile=" + str(ROOT / dst)], check=True)
+        else:
+            shutil.copyfile(ROOT / src, ROOT / dst)
+        print("wrote", dst, "(minified)" if esbuild else "(copy: install esbuild to minify)")
+
+
 def write(name, text):
     (ROOT / name).write_text(text, encoding="utf-8", newline="")
     print("wrote", name)
 
 
 def main():
+    minify_assets()
     home = (ROOT / "index.html").read_text(encoding="utf-8")
     sections = sections_of(home)
     sections.update(sections_of(EXTRA_SECTIONS.read_text(encoding="utf-8")))

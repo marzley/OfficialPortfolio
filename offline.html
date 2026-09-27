@@ -8,9 +8,7 @@
     <meta name="robots" content="noindex, nofollow" />
     <meta name="theme-color" content="#0b1b35" />
     <link rel="icon" type="image/png" sizes="32x32" href="img/brand/favicon-32.png" />
-    <script>
-        try { if (localStorage.getItem("marzley-theme") === "dark") document.documentElement.setAttribute("data-theme", "dark"); } catch (e) {}
-    </script>
+    <script src="js/theme-init.js"></script>
     <style>
         :root {
             --navy: #0b1b35;
@@ -342,55 +340,7 @@
         <p class="foot">Need us now? Call <a href="tel:+254745789590">+254 745 789 590</a>. We’re available 24/7.</p>
     </main>
 
-    <script>
-        (function () {
-            var statusBox = document.getElementById("status");
-            var statusText = document.getElementById("status-text");
-            var retry = document.getElementById("retry");
-
-            var goBack = function () { window.location.reload(); };
-
-            var setOnline = function () {
-                statusBox.classList.add("is-on");
-                statusText.textContent = "Back online. Reloading…";
-                setTimeout(goBack, 800);
-            };
-
-            retry.addEventListener("click", function () {
-                statusText.textContent = "Checking your connection…";
-                goBack();
-            });
-            window.addEventListener("online", setOnline);
-
-            // Pages this visitor opened before are saved and still work offline
-            var names = { "": "Home", "work": "Work", "about": "About", "services": "Services", "process": "Process", "pricing": "Pricing", "contact": "Contact" };
-            if ("caches" in window) {
-                caches.keys().then(function (keys) {
-                    return Promise.all(keys.map(function (k) { return caches.open(k).then(function (c) { return c.keys(); }); }));
-                }).then(function (lists) {
-                    var seen = {};
-                    var list = document.getElementById("saved-list");
-                    lists.forEach(function (reqs) {
-                        reqs.forEach(function (req) {
-                            var url = new URL(req.url);
-                            if (url.origin !== location.origin) return;
-                            var slug = url.pathname.replace(/^\//, "").replace(/\.html$/, "");
-                            if (slug === "index") slug = "";
-                            if (!(slug in names) || seen[slug]) return;
-                            seen[slug] = true;
-                            var li = document.createElement("li");
-                            var a = document.createElement("a");
-                            a.href = "/" + slug;
-                            a.textContent = names[slug];
-                            li.appendChild(a);
-                            list.appendChild(li);
-                        });
-                    });
-                    if (list.children.length) document.getElementById("saved").hidden = false;
-                }).catch(function () {});
-            }
-        })();
-    </script>
+    <script src="js/offline.js"></script>
 </body>
 
 </html>

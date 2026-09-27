@@ -436,8 +436,8 @@
     if (!w) { toast("Please allow pop-ups to download this document.", true); return; }
     w.document.open();
     w.document.write("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>" + esc(title) +
-      "</title><style>" + PRINT_CSS + css + "</style></head><body><div class=\"bar\"><button type=\"button\" onclick=\"window.print()\">Save as PDF / Print</button></div>" + body +
-      "<script>window.addEventListener(\"load\",function(){setTimeout(function(){window.focus();window.print();},300);});<\/script></body></html>");
+      "</title><style>" + PRINT_CSS + css + "</style></head><body><div class=\"bar\"><button type=\"button\">Save as PDF / Print</button></div>" + body +
+      "<script src=\"" + esc(new URL("../js/print-page.js", document.baseURI).href) + "\"><\/script></body></html>");
     w.document.close();
   }
   var logoUrl = function () { return new URL("../img/brand/logo-256.webp", document.baseURI).href; };

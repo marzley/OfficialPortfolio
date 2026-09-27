@@ -1349,7 +1349,7 @@
         "@media(max-width:600px){.page{margin:12px;padding:24px}.top{flex-direction:column;align-items:flex-start}h1{text-align:left}.meta{grid-template-columns:1fr}}" +
         "@media print{body{background:#fff}.page{box-shadow:none;margin:0;max-width:none;border-radius:0}.bar{display:none}th{-webkit-print-color-adjust:exact;print-color-adjust:exact}tfoot td.r{-webkit-print-color-adjust:exact;print-color-adjust:exact}}" +
         "</style></head><body>" +
-        "<div class=\"bar\"><button type=\"button\" onclick=\"window.print()\">Save as PDF / Print</button></div>" +
+        "<div class=\"bar\"><button type=\"button\">Save as PDF / Print</button></div>" +
         "<div class=\"page\"><div class=\"top\"><div class=\"brand\"><img src=\"" + esc(logo) + "\" alt=\"\">" +
         "<div><b>Marzley<span>Tech</span> Solutions</b><small>Technology for real solutions</small></div></div>" +
         "<div><h1>Quote</h1><div class=\"muted\">" + number + "</div></div></div>" +
@@ -1361,7 +1361,7 @@
         "<li>Domain and hosting renew yearly. Other add-ons are one-off costs.</li>" +
         "<li>Payment by M-Pesa (Till 6095737), bank transfer or card.</li></ul>" +
         "<div class=\"foot\"><span>+254 745 789 590</span><span>marzleytechsolutionltd@gmail.com</span><span>marzleytechsolutions.co.ke</span><span>Kenya · Open 24/7</span></div>" +
-        "</div><script>window.addEventListener(\"load\",function(){setTimeout(function(){window.focus();window.print();},300);});<\/script></body></html>";
+        "</div><script src=\"" + esc(new URL("js/print-page.js", document.baseURI).href) + "\"><\/script></body></html>";
       var w = window.open("", "_blank");
       if (!w) { alert("Please allow pop-ups for this site to download your quote."); return; }
       w.document.open();
