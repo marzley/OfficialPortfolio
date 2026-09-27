@@ -240,7 +240,7 @@
     var waLinks = [document.getElementById("booking-wa"), document.getElementById("fallback-wa")];
     var mailLink = document.getElementById("fallback-mail");
     var WA_NUMBER = "254745789590";
-    var EMAIL = "marzleytechsolutions@gmail.com";
+    var EMAIL = "marzleytechsolutionltd@gmail.com";
 
     var fieldValue = function (name) {
       var el = form.elements[name];

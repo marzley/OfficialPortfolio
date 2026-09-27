@@ -22,7 +22,7 @@ Passionate full‑stack developer and trainer building practical, user‑focused
 
 ## Contact
 - Website: https://marzleytechsolutions.co.ke  
-- Email: marzleytechsolutions@gmail.com  
+- Email: marzleytechsolutionltd@gmail.com  
 - Phone / WhatsApp: +254 745 789 590  
 - LinkedIn: https://www.linkedin.com/in/kelvin-wanyoike-marzley  
 - GitHub: https://github.com/marzley
@@ -53,7 +53,7 @@ Passionate full‑stack developer and trainer building practical, user‑focused
 
 ## Contact
 - Website: https://marzleytechsolutions.co.ke  
-- Email: marzleytechsolutions@gmail.com  
+- Email: marzleytechsolutionltd@gmail.com  
 - Phone / WhatsApp: +254 745 789 590  
 - LinkedIn: https://www.linkedin.com/in/kelvin-wanyoike-marzley  
 - GitHub: https://github.com/marzley
