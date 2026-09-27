@@ -42,7 +42,7 @@ PAGES = [
         "label": "Services",
         "title": "Web Development, M-Pesa Integration & IT Training | Marzley Tech Solutions",
         "description": "Websites, business and hospital systems, M-Pesa and Paystack payment integration, UI/UX design and practical IT training in Kenya.",
-        "sections": ["services", "demo", "faq"],
+        "sections": ["services", "safe", "integrations", "demo", "faq"],
     },
     {
         "slug": "process",
@@ -80,7 +80,7 @@ HOME_OF = {
     "services": "services", "demo": "services#demo", "process": "process",
     "planner": "process#planner", "pricing": "pricing", "faq": "contact#faq",
     "contact": "contact", "cases": "work#cases", "deposit": "pricing#deposit",
-    "booking": "contact#booking", "training": "training", "compare": "pricing#compare", "care": "pricing#care",
+    "booking": "contact#booking", "training": "training", "compare": "pricing#compare", "care": "pricing#care", "safe": "services#safe", "integrations": "services#integrations",
 }
 
 

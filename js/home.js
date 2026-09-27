@@ -1670,6 +1670,74 @@
       .catch(function () {});
   }
 
+  /* ---------- video testimonials and certifications (from data/*.json) ---------- */
+  var loadJSON = function (url) {
+    return window.fetch ? fetch(url, { cache: "no-cache" }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }) : Promise.resolve(null);
+  };
+  var videoBox = document.querySelector("[data-videos]");
+  if (videoBox) loadJSON("data/videos.json").then(function (d) {
+    var list = (d && d.videos || []).filter(function (v) { return v && /^[A-Za-z0-9_-]{11}$/.test(v.id || ""); });
+    if (!list.length) return;
+    var grid = videoBox.querySelector(".video-grid");
+    list.forEach(function (v) {
+      var fig = document.createElement("figure");
+      fig.className = "video-quote";
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "video-play";
+      btn.setAttribute("aria-label", "Play video testimonial from " + (v.name || "a client"));
+      var img = document.createElement("img");
+      img.src = "https://i.ytimg.com/vi/" + v.id + "/hqdefault.jpg";
+      img.alt = "";
+      img.loading = "lazy";
+      var icon = document.createElement("span");
+      icon.className = "video-icon";
+      icon.setAttribute("aria-hidden", "true");
+      icon.innerHTML = '<i class="fa-solid fa-play"></i>';
+      btn.appendChild(img);
+      btn.appendChild(icon);
+      btn.addEventListener("click", function () {
+        var frame = document.createElement("iframe");
+        frame.src = "https://www.youtube-nocookie.com/embed/" + v.id + "?autoplay=1&rel=0";
+        frame.title = "Video testimonial from " + (v.name || "a client");
+        frame.allow = "autoplay; encrypted-media; picture-in-picture";
+        frame.allowFullscreen = true;
+        btn.replaceWith(frame);
+      });
+      var cap = document.createElement("figcaption");
+      var strong = document.createElement("strong");
+      strong.textContent = v.name || "";
+      var role = document.createElement("span");
+      role.textContent = v.role || "";
+      cap.appendChild(strong);
+      cap.appendChild(role);
+      fig.appendChild(btn);
+      fig.appendChild(cap);
+      grid.appendChild(fig);
+    });
+    videoBox.hidden = false;
+  });
+  var certBox = document.querySelector("[data-certs]");
+  if (certBox) loadJSON("data/certifications.json").then(function (d) {
+    var list = (d && d.certifications || []).filter(function (c) { return c && c.title; });
+    if (!list.length) return;
+    var ul = certBox.querySelector("ul");
+    list.forEach(function (c) {
+      var li = document.createElement("li");
+      var title = document.createElement(/^https:\/\//.test(c.url || "") ? "a" : "span");
+      title.className = "cert-title";
+      title.textContent = c.title;
+      if (title.tagName === "A") { title.href = c.url; title.target = "_blank"; title.rel = "noopener noreferrer"; }
+      var meta = document.createElement("span");
+      meta.className = "cert-meta";
+      meta.textContent = [c.issuer, c.year].filter(Boolean).join(" · ");
+      li.appendChild(title);
+      li.appendChild(meta);
+      ul.appendChild(li);
+    });
+    certBox.hidden = false;
+  });
+
   /* ---------- offline support ---------- */
   // The service worker shows offline.html (or a saved copy of the page) when
   // the connection is down or too slow. Only on the real site and localhost.
