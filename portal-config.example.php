@@ -17,4 +17,9 @@ return [
 
     // Where uploaded files are kept: outside public_html so they are never public
     'storage_dir' => '/home/CPANELUSER/portal-files',
+
+    // Email alerts (updates, invoices, approvals, support replies, certificates).
+    // Use an address on your domain created in cPanel > Email Accounts. Leave empty to turn alerts off.
+    'mail_from' => 'portal@marzleytechsolutions.co.ke',
+    'site_url'  => 'https://marzleytechsolutions.co.ke',
 ];

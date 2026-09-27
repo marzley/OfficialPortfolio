@@ -124,6 +124,16 @@
       h("p", { className: "portal-meta", text: p.progress + "% complete" + (p.due_date ? " · Target date " + day(p.due_date) : "") }),
       p.summary ? h("p", { className: "portal-summary", text: p.summary }) : null);
 
+    var approvals = (data.approvals || []).filter(function (a) { return +a.project_id === +p.id; });
+    if (approvals.length || admin) card.appendChild(h("h4", { text: "Approvals" }));
+    if (approvals.length) {
+      var al = h("ul", { className: "approval-list" });
+      approvals.forEach(function (a) { al.appendChild(approvalItem(a, admin)); });
+      card.appendChild(al);
+    } else if (admin) {
+      card.appendChild(h("p", { className: "portal-empty", text: "Nothing waiting for approval." }));
+    }
+
     var timeline = h("ol", { className: "timeline" });
     ups.forEach(function (u) {
       timeline.appendChild(h("li", null,
@@ -158,6 +168,14 @@
     if (!data.projects.length) box.appendChild(h("p", { className: "portal-empty", text: "Your project will appear here once it starts." }));
     data.projects.forEach(function (p) { box.appendChild(projectCard(p, false)); });
     renderInvoices($("client-invoices"), data.invoices, false);
+    renderClientCourses();
+    // Students with only courses don't need empty project and invoice sections
+    var studentOnly = !data.projects.length && !data.invoices.length && (data.courses || []).length > 0;
+    $("sec-projects").hidden = studentOnly;
+    $("sec-invoices").hidden = studentOnly;
+    document.querySelectorAll('.portal-jump a[href="#sec-projects"], .portal-jump a[href="#sec-invoices"]').forEach(function (a) { a.hidden = studentOnly; });
+    renderSupport($("client-support"), false);
+    renderReferral();
   }
 
   function renderInvoices(box, invoices, admin) {
@@ -170,11 +188,13 @@
     var body = h("tbody");
     invoices.forEach(function (inv) {
       var client = admin ? (data.clients.find(function (c) { return +c.id === +inv.client_id; }) || {}).name : null;
-      var action = null;
-      if (!admin && inv.status === "unpaid") action = h("button", { type: "button", className: "btn btn-mpesa btn-sm", onclick: function () { payInvoice(inv); }, text: "Pay with M-Pesa" });
-      if (admin) action = h("span", { className: "row-actions" },
-        h("button", { type: "button", className: "linklike", onclick: function () { editInvoice(inv); }, text: "Edit" }),
-        h("button", { type: "button", className: "linklike danger", onclick: function () { remove("invoice", inv.id); }, text: "Delete" }));
+      var pdf = h("button", { type: "button", className: "linklike", onclick: function () { printInvoice(inv); }, text: inv.status === "paid" ? "Receipt" : "PDF" });
+      var action = h("span", { className: "row-actions" }, pdf);
+      if (!admin && inv.status === "unpaid") action.insertBefore(h("button", { type: "button", className: "btn btn-mpesa btn-sm", onclick: function () { payInvoice(inv); }, text: "Pay with M-Pesa" }), pdf);
+      if (admin) {
+        action.appendChild(h("button", { type: "button", className: "linklike", onclick: function () { editInvoice(inv); }, text: "Edit" }));
+        action.appendChild(h("button", { type: "button", className: "linklike danger", onclick: function () { remove("invoice", inv.id); }, text: "Delete" }));
+      }
       body.appendChild(h("tr", null,
         h("td", { "data-label": "Invoice", text: inv.number }),
         admin ? h("td", { "data-label": "Client", text: client || "" }) : null,
@@ -268,6 +288,11 @@
     renderAdminProjects();
     renderAdminClients();
     renderAdminInvoices();
+    renderSupport($("panel-support"), true);
+    renderAdminCourses();
+    var open = (data.tickets || []).filter(function (t) { return t.status === "open"; }).length;
+    $("open-count").textContent = String(open);
+    $("open-count").hidden = !open;
   }
 
   function renderAdminClients(edit) {
@@ -289,7 +314,9 @@
     var list = h("ul", { className: "admin-list" });
     data.clients.forEach(function (c) {
       list.appendChild(h("li", null, h("div", null, h("strong", { text: c.name }), h("span", { className: "portal-meta", text: c.email + (c.phone ? " · " + c.phone : "") })),
-        h("button", { type: "button", className: "linklike", onclick: function () { renderAdminClients(c); name.focus(); }, text: "Edit" })));
+        h("span", { className: "row-actions" },
+          c.phone ? h("a", { className: "linklike", href: waTo(c.phone, "Hello " + c.name + ","), target: "_blank", rel: "noopener noreferrer", text: "WhatsApp" }) : null,
+          h("button", { type: "button", className: "linklike", onclick: function () { renderAdminClients(c); name.focus(); }, text: "Edit" }))));
     });
     panel.appendChild(data.clients.length ? list : h("p", { className: "portal-empty", text: "No clients yet. Add one above; they can then sign in with that Google account." }));
   }
@@ -337,6 +364,14 @@
         fd.append("file", fileInput.files[0]);
         api("file_upload", { method: "POST", form: fd }).then(function () { toast("Uploaded."); load(); }).catch(function (err) { toast(err.message, true); });
       } }, fileInput, h("button", { type: "submit", className: "btn btn-ghost btn-sm", text: "Upload file" })));
+      var apTitle = h("input", { maxlength: "160", placeholder: "What should they approve? e.g. Homepage design", "aria-label": "Approval title for " + p.title });
+      var apDetails = h("input", { maxlength: "2000", placeholder: "Details or a link to review (optional)", "aria-label": "Approval details for " + p.title });
+      card.appendChild(h("form", { className: "inline-form", onsubmit: function (e) {
+        e.preventDefault();
+        save("approval_request", { project_id: p.id, title: apTitle.value, details: apDetails.value }, e.target);
+      } }, apTitle, apDetails, h("button", { type: "submit", className: "btn btn-ghost btn-sm", text: "Request approval" })));
+      if (c && c.phone) card.appendChild(h("a", { className: "wa-link", href: waTo(c.phone, "Hello " + c.name + ", there's a new update on " + p.title + " in your Marzley Tech portal: " + location.origin + "/portal/"), target: "_blank", rel: "noopener noreferrer" },
+        h("i", { className: "fab fa-whatsapp", "aria-hidden": "true" }), " Message " + c.name + " on WhatsApp"));
       card.appendChild(h("button", { type: "button", className: "linklike", onclick: function () { renderAdminProjects(p); window.scrollTo(0, 0); }, text: "Edit project details" }));
       panel.appendChild(card);
     });
@@ -375,14 +410,271 @@
   }
 
   function selectTab(name) {
-    ["projects", "clients", "invoices"].forEach(function (t) {
+    ["projects", "clients", "invoices", "support", "courses"].forEach(function (t) {
       $("tab-" + t).setAttribute("aria-selected", String(t === name));
       $("panel-" + t).hidden = t !== name;
     });
   }
-  ["projects", "clients", "invoices"].forEach(function (t) {
+  ["projects", "clients", "invoices", "support", "courses"].forEach(function (t) {
     $("tab-" + t).addEventListener("click", function () { selectTab(t); });
   });
+
+  // ---------- shared helpers for the new sections ----------
+  function waTo(phone, text) {
+    var d = String(phone).replace(/\D/g, "");
+    if (/^0[17]\d{8}$/.test(d)) d = "254" + d.slice(1);
+    return "https://wa.me/" + d + "?text=" + encodeURIComponent(text);
+  }
+  var esc = function (v) {
+    return String(v === null || v === undefined ? "" : v).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; });
+  };
+  var PRINT_CSS = "*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#0f172a;background:#f1f5f9}" +
+    ".bar{max-width:800px;margin:16px auto 0;display:flex;justify-content:flex-end;padding:0 16px}.bar button{border:0;border-radius:999px;padding:12px 22px;font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;background:#ffb800;color:#0b1b35}" +
+    "@media print{body{background:#fff}.bar{display:none}.page{box-shadow:none!important;margin:0!important}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}";
+  function printDoc(title, css, body) {
+    var w = window.open("", "_blank");
+    if (!w) { toast("Please allow pop-ups to download this document.", true); return; }
+    w.document.open();
+    w.document.write("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>" + esc(title) +
+      "</title><style>" + PRINT_CSS + css + "</style></head><body><div class=\"bar\"><button type=\"button\" onclick=\"window.print()\">Save as PDF / Print</button></div>" + body +
+      "<script>window.addEventListener(\"load\",function(){setTimeout(function(){window.focus();window.print();},300);});<\/script></body></html>");
+    w.document.close();
+  }
+  var logoUrl = function () { return new URL("../img/brand/logo-256.webp", document.baseURI).href; };
+
+  // ---------- approvals ----------
+  function approvalItem(a, admin) {
+    var label = { pending: "Waiting for you", approved: "Approved", changes: "Changes requested" }[a.status] || a.status;
+    if (admin && a.status === "pending") label = "Waiting for client";
+    var li = h("li", { className: "approval approval-" + a.status },
+      h("div", { className: "approval-head" }, h("strong", { text: a.title }), h("span", { className: "pill pill-" + (a.status === "approved" ? "paid" : a.status === "pending" ? "unpaid" : "on_hold"), text: label })),
+      a.details ? (/^https:\/\//.test(a.details) ? h("a", { href: a.details, target: "_blank", rel: "noopener noreferrer", text: "Open to review ↗" }) : h("p", { text: a.details })) : null,
+      a.client_note ? h("p", { className: "portal-meta", text: "Note: " + a.client_note }) : null);
+    if (!admin && a.status === "pending") {
+      var note = h("textarea", { rows: "2", maxlength: "2000", placeholder: "What should change? (needed for change requests)", "aria-label": "Notes on " + a.title });
+      var decide = function (decision) {
+        api("approval_decide", { method: "POST", body: { id: a.id, decision: decision, note: note.value } })
+          .then(function () { toast(decision === "approved" ? "Approved. Thank you!" : "Thanks, we’ll make the changes."); load(); })
+          .catch(function (e) { toast(e.message, true); });
+      };
+      li.appendChild(note);
+      li.appendChild(h("div", { className: "row-actions" },
+        h("button", { type: "button", className: "btn btn-solid btn-sm", onclick: function () { decide("approved"); }, text: "Approve" }),
+        h("button", { type: "button", className: "btn btn-ghost btn-sm", onclick: function () { decide("changes"); }, text: "Request changes" })));
+    }
+    if (admin) li.appendChild(h("button", { type: "button", className: "linklike danger", onclick: function () { remove("approval", a.id); }, text: "Delete" }));
+    return li;
+  }
+
+  // ---------- invoices and receipts ----------
+  function printInvoice(inv) {
+    var client = me.role === "admin" ? (data.clients.find(function (c) { return +c.id === +inv.client_id; }) || {}) : (data.me || {});
+    var paid = inv.status === "paid";
+    var css = ".page{max-width:800px;margin:24px auto;background:#fff;padding:48px;border-radius:14px;box-shadow:0 10px 30px rgba(11,27,53,.12)}" +
+      ".top{display:flex;justify-content:space-between;align-items:center;gap:24px;border-bottom:4px solid #ffb800;padding-bottom:24px}.brand{display:flex;gap:14px;align-items:center}.brand img{width:64px;height:64px;border-radius:50%}" +
+      ".brand b{font-size:22px;color:#0b1b35}.brand b span{color:#d49a00}h1{margin:0;font-size:30px;color:#0b1b35;text-align:right}.muted{color:#475569;font-size:14px}" +
+      ".meta{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:28px 0}.meta div{background:#f8fafc;border-radius:10px;padding:14px 16px}.meta b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#a16207;margin-bottom:4px}" +
+      "table{width:100%;border-collapse:collapse}th,td{padding:14px 12px;border-bottom:1px solid #e2e8f0;text-align:left}th{background:#0b1b35;color:#fff;font-size:13px;text-transform:uppercase;letter-spacing:.06em}.r{text-align:right}" +
+      "tfoot td{font-weight:800;font-size:20px;border:0}.stamp{display:inline-block;margin-top:20px;padding:8px 18px;border:3px solid #059669;color:#059669;border-radius:10px;font-weight:800;letter-spacing:.1em;transform:rotate(-4deg)}" +
+      ".notes{margin-top:24px;font-size:14px;color:#475569}.foot{margin-top:28px;padding-top:16px;border-top:1px solid #e2e8f0;font-size:13px;color:#475569}@media(max-width:600px){.page{margin:12px;padding:24px}.meta{grid-template-columns:1fr}}";
+    var body = "<div class=\"page\"><div class=\"top\"><div class=\"brand\"><img src=\"" + esc(logoUrl()) + "\" alt=\"\"><div><b>Marzley<span>Tech</span> Solutions</b><div class=\"muted\">Technology for real solutions</div></div></div>" +
+      "<div><h1>" + (paid ? "Receipt" : "Invoice") + "</h1><div class=\"muted\">" + esc(inv.number) + "</div></div></div>" +
+      "<div class=\"meta\"><div><b>Billed to</b>" + esc(client.name) + "<br><span class=\"muted\">" + esc(client.email) + "</span></div>" +
+      "<div><b>" + (paid ? "Paid on" : "Date") + "</b>" + esc(day(paid ? inv.paid_at : inv.created_at)) + (inv.due_date && !paid ? "<br><span class=\"muted\">Due " + esc(day(inv.due_date)) + "</span>" : "") + "</div></div>" +
+      "<table><thead><tr><th>Description</th><th class=\"r\">Amount</th></tr></thead><tbody><tr><td>" + esc(inv.description) + "</td><td class=\"r\">" + esc(ksh(inv.amount)) + "</td></tr></tbody>" +
+      "<tfoot><tr><td>" + (paid ? "Total paid" : "Total due") + "</td><td class=\"r\">" + esc(ksh(inv.amount)) + "</td></tr></tfoot></table>" +
+      (paid ? "<div class=\"stamp\">PAID" + (inv.mpesa_receipt ? " · M-PESA " + esc(inv.mpesa_receipt) : "") + "</div>" :
+        "<p class=\"notes\">Pay by M-Pesa in the client portal, or Buy Goods Till 6095737 with reference " + esc(inv.number) + ".</p>") +
+      "<div class=\"foot\">Marzley Tech Solutions · +254 745 789 590 · marzleytechsolutionltd@gmail.com · marzleytechsolutions.co.ke · Kenya</div></div>";
+    printDoc((paid ? "Receipt " : "Invoice ") + inv.number, css, body);
+  }
+
+  // ---------- support ----------
+  function renderSupport(box, admin) {
+    box.textContent = "";
+    var tickets = data.tickets || [];
+    if (!admin || data.clients.length) {
+      var subject = h("input", { maxlength: "160" });
+      var message = h("textarea", { rows: "3", maxlength: "4000" });
+      var who = admin ? select(clientOptions()) : null;
+      var project = select([["", "General"]].concat(data.projects.filter(function (p) { return !admin || true; }).map(function (p) { return [p.id, p.title]; })));
+      var form = h("form", { className: "form portal-form", onsubmit: function (e) {
+        e.preventDefault();
+        save("ticket_open", { client_id: who ? who.value : 0, project_id: project.value, subject: subject.value, message: message.value }, form);
+      } },
+        h("h3", { className: "full", text: admin ? "Start a conversation with a client" : "Need help? Open a support request" }),
+        who ? field("Client", who) : null, field("About", project), field("Subject", subject),
+        h("div", { className: "field full" }, h("label", { for: "t-msg-" + (admin ? "a" : "c"), text: "Message" }), message),
+        h("div", { className: "form-foot" }, h("button", { type: "submit", className: "btn btn-solid", text: "Send" })));
+      message.id = "t-msg-" + (admin ? "a" : "c");
+      box.appendChild(form);
+    }
+    if (!tickets.length) { box.appendChild(h("p", { className: "portal-empty", text: "No support requests yet." })); return; }
+    tickets.forEach(function (t) {
+      var msgs = (data.messages || []).filter(function (m) { return +m.ticket_id === +t.id; });
+      var client = admin ? (data.clients.find(function (c) { return +c.id === +t.client_id; }) || {}).name : null;
+      var thread = h("ol", { className: "thread" });
+      msgs.forEach(function (m) {
+        thread.appendChild(h("li", { className: "msg msg-" + (m.author === (admin ? "admin" : "client") ? "mine" : "theirs") },
+          h("span", { className: "portal-meta", text: (m.author === "admin" ? "Marzley Tech" : (admin ? client : "You")) + " · " + day(m.created_at) }),
+          h("p", { text: m.message })));
+      });
+      var reply = h("textarea", { rows: "2", maxlength: "4000", placeholder: "Write a reply…", "aria-label": "Reply to " + t.subject });
+      var det = h("details", { className: "portal-card ticket", open: t.status === "open" && admin ? true : null },
+        h("summary", null, h("strong", { text: t.subject }), h("span", { className: "pill pill-" + (t.status === "open" ? "unpaid" : "paid"), text: t.status === "open" ? "Open" : "Closed" }),
+          admin ? h("span", { className: "portal-meta", text: client || "" }) : null),
+        thread,
+        h("form", { className: "inline-form", onsubmit: function (e) {
+          e.preventDefault();
+          save("ticket_reply", { ticket_id: t.id, message: reply.value }, e.target);
+        } }, reply, h("button", { type: "submit", className: "btn btn-solid btn-sm", text: "Reply" })),
+        h("button", { type: "button", className: "linklike", onclick: function () {
+          save("ticket_status", { ticket_id: t.id, status: t.status === "open" ? "closed" : "open" });
+        }, text: t.status === "open" ? "Mark as solved" : "Reopen" }));
+      box.appendChild(det);
+    });
+  }
+
+  // ---------- referral link ----------
+  function renderReferral() {
+    var box = $("client-referral");
+    box.textContent = "";
+    var link = data.me && data.me.referral_link;
+    if (!link) return;
+    var input = h("input", { type: "text", readonly: true, value: link, "aria-label": "Your referral link" });
+    box.appendChild(h("aside", { className: "portal-card referral-card" },
+      h("h2", { className: "portal-h2", text: "Refer a friend, earn KSh 2,000" }),
+      h("p", { text: "Share your link. When someone you refer becomes a client, you get KSh 2,000 by M-Pesa or off your next invoice." }),
+      h("div", { className: "ref-link-row" }, input,
+        h("button", { type: "button", className: "btn btn-ghost btn-sm", onclick: function () {
+          input.select();
+          (navigator.clipboard ? navigator.clipboard.writeText(link) : Promise.reject()).then(function () { toast("Link copied."); }, function () { document.execCommand("copy"); toast("Link copied."); });
+        }, text: "Copy" })),
+      h("a", { className: "btn btn-wa btn-sm", href: "https://wa.me/?text=" + encodeURIComponent("Need a website, online shop or system? I recommend Marzley Tech Solutions: " + link), target: "_blank", rel: "noopener noreferrer" },
+        h("i", { className: "fab fa-whatsapp", "aria-hidden": "true" }), " Share on WhatsApp")));
+  }
+
+  // ---------- courses ----------
+  function youtubeId(url) {
+    var m = String(url).match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]{11})/);
+    return m ? m[1] : null;
+  }
+  function courseLessons(courseId) { return (data.lessons || []).filter(function (l) { return +l.course_id === +courseId; }); }
+  function doneSet(clientId) {
+    var set = {};
+    (data.progress || []).forEach(function (p) { if (+p.client_id === +clientId) set[p.lesson_id] = true; });
+    return set;
+  }
+  function printCertificate(cert, name, courseTitle) {
+    var verify = location.origin + "/portal/verify.php?code=" + encodeURIComponent(cert.code);
+    var css = "@page{size:A4 landscape;margin:0}.page{max-width:1000px;margin:24px auto;background:#fff;padding:56px;border:14px solid #0b1b35;outline:4px solid #ffb800;outline-offset:-26px;text-align:center;box-shadow:0 10px 30px rgba(11,27,53,.12)}" +
+      ".page img{width:90px;height:90px;border-radius:50%}.kicker{margin:18px 0 0;letter-spacing:.3em;text-transform:uppercase;color:#a16207;font-weight:800;font-size:14px}" +
+      "h1{margin:10px 0 24px;font-size:44px;color:#0b1b35}.to{color:#475569}.name{margin:8px 0 18px;font-size:40px;font-weight:800;color:#0b1b35;border-bottom:3px solid #ffb800;display:inline-block;padding:0 24px 6px}" +
+      ".course{font-size:24px;font-weight:700;color:#0b1b35}.row{display:flex;justify-content:space-between;gap:24px;margin-top:48px;font-size:14px;color:#475569;text-align:left}.row b{display:block;color:#0b1b35;font-size:16px}";
+    var body = "<div class=\"page\"><img src=\"" + esc(logoUrl()) + "\" alt=\"\"><p class=\"kicker\">Marzley Tech Solutions</p><h1>Certificate of Completion</h1>" +
+      "<p class=\"to\">This certifies that</p><div class=\"name\">" + esc(name) + "</div><p class=\"to\">has successfully completed</p><p class=\"course\">" + esc(courseTitle) + "</p>" +
+      "<div class=\"row\"><div><b>Kelvin G. Wanyoike</b>Founder &amp; trainer</div><div><b>" + esc(day(cert.issued_at)) + "</b>Date</div><div><b>" + esc(cert.code) + "</b>Verify at " + esc(verify) + "</div></div></div>";
+    printDoc("Certificate " + cert.code, css, body);
+  }
+  function renderClientCourses() {
+    var courses = data.courses || [];
+    $("sec-courses").hidden = !courses.length;
+    $("jump-courses").hidden = !courses.length;
+    var box = $("client-courses");
+    box.textContent = "";
+    var done = doneSet(me.client_id);
+    courses.forEach(function (c) {
+      var lessons = courseLessons(c.id);
+      var count = lessons.filter(function (l) { return done[l.id]; }).length;
+      var pct = lessons.length ? Math.round(count / lessons.length * 100) : 0;
+      var cert = (data.certificates || []).find(function (x) { return +x.course_id === +c.id; });
+      var card = h("article", { className: "portal-card" },
+        h("div", { className: "portal-card-head" }, h("h3", { text: c.title }), h("span", { className: "pill " + (cert ? "pill-paid" : "pill-build"), text: cert ? "Completed" : pct + "%" })),
+        h("div", { className: "progress", role: "progressbar", "aria-valuemin": "0", "aria-valuemax": "100", "aria-valuenow": String(pct), "aria-label": "Course progress" }, h("span", { style: "width:" + pct + "%" })),
+        h("p", { className: "portal-meta", text: count + " of " + lessons.length + " lessons complete" }),
+        c.summary ? h("p", { className: "portal-summary", text: c.summary }) : null);
+      if (cert) card.appendChild(h("div", { className: "cert-box" },
+        h("i", { className: "fa-solid fa-award", "aria-hidden": "true" }),
+        h("div", null, h("strong", { text: "Your certificate is ready" }), h("span", { className: "portal-meta", text: "Code " + cert.code })),
+        h("button", { type: "button", className: "btn btn-solid btn-sm", onclick: function () { printCertificate(cert, data.me.name || me.name, c.title); }, text: "Download certificate" })));
+      var list = h("ol", { className: "lessons" });
+      lessons.forEach(function (l, i) {
+        var box2 = h("input", { type: "checkbox", checked: done[l.id] ? true : null, "aria-label": "Mark “" + l.title + "” complete" });
+        box2.addEventListener("change", function () {
+          api("lesson_done", { method: "POST", body: { lesson_id: l.id, done: box2.checked } }).then(function (r) {
+            if (r.certificate) toast("Course complete! Your certificate is ready.");
+            load();
+          }).catch(function (e) { box2.checked = !box2.checked; toast(e.message, true); });
+        });
+        var content = h("div", { className: "lesson-body" });
+        var yt = youtubeId(l.video_url);
+        if (yt) content.appendChild(h("div", { className: "lesson-video" }, h("iframe", { src: "https://www.youtube-nocookie.com/embed/" + yt + "?rel=0", title: l.title, allow: "encrypted-media; picture-in-picture", allowfullscreen: true, loading: "lazy" })));
+        else if (/^https:\/\//.test(l.video_url || "")) content.appendChild(h("a", { href: l.video_url, target: "_blank", rel: "noopener noreferrer", text: "Open the lesson video ↗" }));
+        if (l.body) content.appendChild(h("p", { className: "lesson-text", text: l.body }));
+        list.appendChild(h("li", { className: done[l.id] ? "is-done" : "" },
+          h("details", null, h("summary", null, h("span", { className: "lesson-num", text: String(i + 1) }), h("span", { text: l.title })), content),
+          h("label", { className: "lesson-check" }, box2, h("span", { text: "Done" }))));
+      });
+      card.appendChild(lessons.length ? list : h("p", { className: "portal-empty", text: "Lessons will appear here soon." }));
+      box.appendChild(card);
+    });
+  }
+  function renderAdminCourses() {
+    var panel = $("panel-courses");
+    panel.textContent = "";
+    var title = h("input", { maxlength: "160" });
+    var summary = h("textarea", { rows: "2", maxlength: "2000" });
+    summary.id = "c-summary";
+    var form = h("form", { className: "form portal-form", onsubmit: function (e) {
+      e.preventDefault();
+      save("course_save", { title: title.value, summary: summary.value }, form);
+    } }, h("h2", { className: "full", text: "Create a course" }), field("Course name", title),
+      h("div", { className: "field full" }, h("label", { for: "c-summary", text: "Summary" }), summary),
+      h("div", { className: "form-foot" }, h("button", { type: "submit", className: "btn btn-solid", text: "Create course" })));
+    panel.appendChild(form);
+    (data.courses || []).forEach(function (c) {
+      var lessons = courseLessons(c.id);
+      var card = h("article", { className: "portal-card" }, h("div", { className: "portal-card-head" }, h("h3", { text: c.title }), h("span", { className: "portal-meta", text: lessons.length + " lessons" })));
+      var ol = h("ol", { className: "admin-list" });
+      lessons.forEach(function (l) {
+        ol.appendChild(h("li", null, h("div", null, h("strong", { text: l.title }), h("span", { className: "portal-meta", text: l.video_url || "No video" })),
+          h("button", { type: "button", className: "linklike danger", onclick: function () { remove("lesson", l.id); }, text: "Delete" })));
+      });
+      card.appendChild(h("h4", { text: "Lessons" }));
+      card.appendChild(lessons.length ? ol : h("p", { className: "portal-empty", text: "No lessons yet." }));
+      var lt = h("input", { maxlength: "160", placeholder: "Lesson title", "aria-label": "Lesson title" });
+      var lv = h("input", { maxlength: "300", placeholder: "Video link (YouTube, optional)", "aria-label": "Video link" });
+      var lb = h("textarea", { rows: "2", maxlength: "20000", placeholder: "Lesson notes (optional)", "aria-label": "Lesson notes" });
+      card.appendChild(h("form", { className: "inline-form", onsubmit: function (e) {
+        e.preventDefault();
+        save("lesson_save", { course_id: c.id, title: lt.value, video_url: lv.value, body: lb.value }, e.target);
+      } }, lt, lv, lb, h("button", { type: "submit", className: "btn btn-ghost btn-sm", text: "Add lesson" })));
+      card.appendChild(h("h4", { text: "Students" }));
+      var enrolled = (data.enrollments || []).filter(function (en) { return +en.course_id === +c.id; });
+      var sl = h("ul", { className: "admin-list" });
+      enrolled.forEach(function (en) {
+        var st = data.clients.find(function (x) { return +x.id === +en.client_id; }) || {};
+        var done = doneSet(en.client_id);
+        var n = lessons.filter(function (l) { return done[l.id]; }).length;
+        var cert = (data.certificates || []).find(function (x) { return +x.course_id === +c.id && +x.client_id === +en.client_id; });
+        sl.appendChild(h("li", null, h("div", null, h("strong", { text: st.name || "?" }), h("span", { className: "portal-meta", text: n + "/" + lessons.length + " lessons" + (cert ? " · Certificate " + cert.code : "") })),
+          h("span", { className: "row-actions" },
+            cert ? h("button", { type: "button", className: "linklike", onclick: function () { printCertificate(cert, st.name, c.title); }, text: "Certificate" })
+              : h("button", { type: "button", className: "linklike", onclick: function () { save("certificate_issue", { client_id: en.client_id, course_id: c.id }); }, text: "Issue certificate" }),
+            h("button", { type: "button", className: "linklike danger", onclick: function () { remove("enrollment", en.id); }, text: "Remove" }))));
+      });
+      card.appendChild(enrolled.length ? sl : h("p", { className: "portal-empty", text: "No students yet." }));
+      if (data.clients.length) {
+        var who = select(clientOptions());
+        who.setAttribute("aria-label", "Student to enrol");
+        card.appendChild(h("form", { className: "inline-form", onsubmit: function (e) {
+          e.preventDefault();
+          save("enroll", { client_id: who.value, course_id: c.id });
+        } }, who, h("button", { type: "submit", className: "btn btn-solid btn-sm", text: "Enrol student" })));
+      }
+      panel.appendChild(card);
+    });
+  }
 
   // ---------- start ----------
   api("me").then(function (d) {

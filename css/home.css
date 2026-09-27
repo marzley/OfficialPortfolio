@@ -2435,6 +2435,56 @@ a {
   cursor: pointer;
 }
 
+/* ---------- student showcase ---------- */
+.showcase {
+  margin-top: clamp(40px, 6vw, 72px);
+}
+
+.showcase h3 {
+  margin: 0 0 18px;
+  font-size: clamp(22px, 3vw, 28px);
+  color: var(--heading);
+}
+
+.showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 18px;
+}
+
+.showcase-card {
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: inherit;
+}
+
+.showcase-card img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top;
+}
+
+.showcase-card > span {
+  display: grid;
+  gap: 2px;
+  padding: 14px 16px;
+  font-size: 14px;
+  color: var(--fg-muted);
+}
+
+.showcase-card strong {
+  font-size: 16px;
+  color: var(--heading);
+}
+
+a.showcase-card:hover {
+  border-color: var(--amber);
+}
+
 /* ---------- safety + integrations ---------- */
 .safe-grid {
   display: grid;

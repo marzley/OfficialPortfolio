@@ -2057,6 +2057,36 @@
     certBox.hidden = false;
   });
 
+  var showBox = document.querySelector("[data-showcase]");
+  if (showBox) loadJSON("data/showcase.json").then(function (d) {
+    var list = (d && d.projects || []).filter(function (x) { return x && x.title && x.student; });
+    if (!list.length) return;
+    var grid = showBox.querySelector(".showcase-grid");
+    var safeImg = function (u) { return /^https:\/\//.test(u || "") || /^img\/[\w\/.-]+$/.test(u || ""); };
+    list.forEach(function (x) {
+      var card = document.createElement(/^https:\/\//.test(x.url || "") ? "a" : "div");
+      card.className = "showcase-card";
+      if (card.tagName === "A") { card.href = x.url; card.target = "_blank"; card.rel = "noopener noreferrer"; }
+      if (safeImg(x.image)) {
+        var img = document.createElement("img");
+        img.src = x.image;
+        img.alt = "";
+        img.loading = "lazy";
+        card.appendChild(img);
+      }
+      var body = document.createElement("span");
+      var strong = document.createElement("strong");
+      strong.textContent = x.title;
+      var who = document.createElement("span");
+      who.textContent = "by " + x.student + (x.course ? " · " + x.course : "");
+      body.appendChild(strong);
+      body.appendChild(who);
+      card.appendChild(body);
+      grid.appendChild(card);
+    });
+    showBox.hidden = false;
+  });
+
   /* ---------- offline support ---------- */
   // The service worker shows offline.html (or a saved copy of the page) when
   // the connection is down or too slow. Only on the real site and localhost.

@@ -238,3 +238,71 @@ function mpesa_result(string $checkoutId): ?array {
     $r = json_decode((string)file_get_contents($file), true);
     return is_array($r) ? $r : null;
 }
+
+// ---------- alerts ----------
+
+/** Send a plain-text email alert, if mail_from is set in the config. Never fails the request. */
+function send_mail(string $to, string $subject, string $text): void {
+    $from = config()['mail_from'] ?? '';
+    if (!$from || !filter_var($to, FILTER_VALIDATE_EMAIL)) return;
+    $subject = '=?UTF-8?B?' . base64_encode(str_replace(["\r", "\n"], ' ', $subject)) . '?=';
+    $headers = "From: Marzley Tech Solutions <$from>\r\nReply-To: $from\r\nContent-Type: text/plain; charset=UTF-8\r\n";
+    $text .= "\n\nOpen your client portal: " . portal_url() . "\n\nMarzley Tech Solutions · +254 745 789 590";
+    @mail($to, $subject, $text, $headers);
+}
+
+function portal_url(): string { return rtrim(config()['site_url'] ?? 'https://marzleytechsolutions.co.ke', '/') . '/portal/'; }
+
+function notify_client(int $clientId, string $subject, string $text): void {
+    $c = q('SELECT name, email FROM clients WHERE id = ?', [$clientId])->fetch();
+    if ($c) send_mail($c['email'], $subject, "Hello {$c['name']},\n\n$text");
+}
+
+function notify_admins(string $subject, string $text): void {
+    foreach (config()['admin_emails'] as $email) send_mail($email, $subject, $text);
+}
+
+function client_of_project(int $projectId): ?array {
+    $r = q('SELECT p.title, c.id AS client_id, c.name FROM projects p JOIN clients c ON c.id = p.client_id WHERE p.id = ?', [$projectId])->fetch();
+    return $r ?: null;
+}
+
+// ---------- referral and certificate codes ----------
+
+/** Same formula as js/home.js: FNV-1a hash of the phone in 2547XXXXXXXX form. */
+function referral_code(string $phone): ?string {
+    $msisdn = normalise_phone($phone);
+    if (!$msisdn) return null;
+    $h = 0x811c9dc5;
+    for ($i = 0; $i < strlen($msisdn); $i++) {
+        $h ^= ord($msisdn[$i]);
+        $h = ($h * 16777619) & 0xFFFFFFFF;
+    }
+    return 'MT' . strtoupper(base_convert((string)$h, 10, 36));
+}
+
+function new_certificate_code(): string {
+    $alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    $code = '';
+    for ($i = 0; $i < 10; $i++) $code .= $alphabet[random_int(0, strlen($alphabet) - 1)];
+    return 'MTC-' . substr($code, 0, 5) . '-' . substr($code, 5);
+}
+
+/** Issue a certificate once a student has completed every lesson of a course. */
+function maybe_issue_certificate(int $clientId, int $courseId): ?string {
+    $total = (int)q('SELECT COUNT(*) AS n FROM lessons WHERE course_id = ?', [$courseId])->fetch()['n'];
+    if ($total === 0) return null;
+    $done = (int)q('SELECT COUNT(*) AS n FROM lesson_progress lp JOIN lessons l ON l.id = lp.lesson_id WHERE lp.client_id = ? AND l.course_id = ?', [$clientId, $courseId])->fetch()['n'];
+    if ($done < $total) return null;
+    return issue_certificate($clientId, $courseId);
+}
+
+function issue_certificate(int $clientId, int $courseId): string {
+    $existing = q('SELECT code FROM certificates WHERE client_id = ? AND course_id = ?', [$clientId, $courseId])->fetch();
+    if ($existing) return $existing['code'];
+    $code = new_certificate_code();
+    q('INSERT INTO certificates (client_id, course_id, code, issued_at) VALUES (?, ?, ?, ?)', [$clientId, $courseId, $code, now()]);
+    $course = q('SELECT title FROM courses WHERE id = ?', [$courseId])->fetch();
+    notify_client($clientId, 'Your certificate is ready', "Congratulations on completing {$course['title']}! Download your certificate in the portal. Certificate code: $code");
+    return $code;
+}
