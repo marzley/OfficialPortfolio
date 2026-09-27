@@ -4,7 +4,7 @@
 
 Options -Indexes -MultiViews
 DirectoryIndex index.html
-ErrorDocument 404 /index.html
+ErrorDocument 404 /404.html
 
 # ---------- One canonical address: https, no "www" ----------
 <IfModule mod_rewrite.c>
@@ -24,18 +24,18 @@ ErrorDocument 404 /index.html
     # Clean page addresses: /about serves about.html, and about.html or
     # /about/ redirect to /about so each page has one address
     RewriteCond %{THE_REQUEST} \s/([a-z0-9-]+)\.html[\s?] [NC]
-    RewriteCond %1 !^(index|offline)$
+    RewriteCond %1 !^(index|offline|404)$
     RewriteRule ^ /%1 [L,R=301]
     RewriteCond %{DOCUMENT_ROOT}/$1.html -f
     RewriteRule ^([a-z0-9-]+)/$ /$1 [L,R=301]
     RewriteCond %{DOCUMENT_ROOT}/$1.html -f
-    RewriteRule ^([a-z0-9-]+)$ $1.html [L]
+    RewriteRule ^([a-z0-9-]+)$ $1.html [END]
 
     # Old page addresses (still in Google and old links)
     RewriteRule ^service(\.html|/)?$ /services [L,R=301]
     RewriteRule ^booking(\.html|/)?$ /pricing [L,R=301]
     RewriteRule ^testimonial(\.html|/)?$ /work#testimonials [NE,L,R=301]
-    RewriteRule ^(marzley|training|404)(\.html|/)?$ / [L,R=301]
+    RewriteRule ^marzley(\.html|/)?$ / [L,R=301]
 </IfModule>
 
 # ---------- Keep private files private ----------

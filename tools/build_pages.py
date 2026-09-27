@@ -117,9 +117,17 @@ def sections_of(html):
     return found
 
 
+def og_image(slug):
+    """img/og/<slug>.jpg if tools/make_og_images.js made one, else the site-wide image."""
+    return "img/og/%s.jpg" % slug if (ROOT / "img" / "og" / (slug + ".jpg")).exists() else None
+
+
 def make_page(html, slug, title, description, main_html, ld_nodes, current, on_page=()):
     """Turn a copy of the homepage into another page with its own meta, schema and main content."""
     url = SITE + slug
+    own = og_image(slug)
+    if own:
+        html = html.replace(SITE + "img/brand/og-image.jpg", SITE + own)
     title_a, desc_a = attr(title), attr(description)
 
     def meta(pattern, value):
@@ -306,6 +314,9 @@ def build_post(html, post, posts, kind="blog"):
             '                </section>\n'
         )
     hero = ""
+    if not case and og_image(post["slug"]):
+        hero += ('                        <figure class="post-hero"><img src="%s" alt="" width="1200" height="630" loading="eager" /></figure>\n'
+                 % og_image(post["slug"]))
     if post.get("image"):
         hero += ('                        <figure class="post-hero"><img src="%s" alt="%s" loading="eager" /></figure>\n'
                  % (e(post["image"]), e(post["title"].split(":")[0] + " screenshot")))
@@ -374,6 +385,29 @@ SW_NAV = [("Home", "Nyumbani"), ("Work", "Kazi"), ("About", "Kuhusu"), ("Service
           ("Process", "Mchakato"), ("Pricing", "Bei"), ("Blog", "Blogu"), ("Contact", "Wasiliana")]
 
 
+SW_FOOTER = [
+    (">Technology for real solutions<", ">Teknolojia kwa suluhisho halisi<"),
+    ("<h4>Explore</h4>", "<h4>Gundua</h4>"), ("<h4>Work</h4>", "<h4>Kazi</h4>"),
+    ("<h4>Contact</h4>", "<h4>Mawasiliano</h4>"), ("<h4>Support</h4>", "<h4>Tuunge mkono</h4>"),
+    ('href="./">Home</a>', 'href="./">Nyumbani</a>'), ('href="work">Work</a>', 'href="work">Kazi zetu</a>'),
+    ('href="about">About</a>', 'href="about">Kuhusu</a>'), ('href="services">Services</a>', 'href="services">Huduma</a>'),
+    ('href="process">Process</a>', 'href="process">Mchakato</a>'),
+    ('href="pricing">Packages &amp; pricing</a>', 'href="pricing">Vifurushi na bei</a>'),
+    ('href="training">Training courses</a>', 'href="training">Kozi za mafunzo</a>'),
+    ('href="website-check">Free website check</a>', 'href="website-check">Kagua tovuti yako bure</a>'),
+    ('href="referrals">Refer &amp; earn</a>', 'href="referrals">Pendekeza upate zawadi</a>'),
+    ('href="blog">Blog</a>', 'href="blog">Blogu</a>'), ('href="faq">FAQ</a>', 'href="faq">Maswali</a>'),
+    ('href="contact">Contact</a>', 'href="contact">Wasiliana</a>'),
+    ('href="work">Selected projects</a>', 'href="work">Miradi yetu</a>'),
+    ('href="work#cases">Case studies</a>', 'href="work#cases">Mifano ya kazi</a>'),
+    (">Download the app</a>", ">Pakua programu</a>"), (">Client login</a>", ">Ingia (wateja)</a>"),
+    (">Email</a>", ">Barua pepe</a>"), (">Support our work ☕</button>", ">Unga mkono kazi yetu ☕</button>"),
+    ("All rights reserved.", "Haki zote zimehifadhiwa."), (">Back to top ↑</a>", ">Rudi juu ↑</a>"),
+    (">Cookie settings</button>", ">Mipangilio ya vidakuzi</button>"),
+    ('<a href="kiswahili" hreflang="sw" lang="sw">Kiswahili</a>', '<a href="./" hreflang="en" lang="en">English</a>'),
+]
+
+
 def build_kiswahili(html):
     text = KISWAHILI.read_text(encoding="utf-8")
     m = re.match(r"\s*<!--(.*?)-->\s*(.*)", text, re.S)
@@ -397,12 +431,48 @@ def build_kiswahili(html):
         nav = nav.replace(">%s</a>" % en, ">%s</a>" % sw, 1)
     nav = nav.replace('aria-label="Main"', 'aria-label="Menyu kuu"', 1)
     page = page[:nav_start] + nav + page[nav_end:]
+    foot_start = page.index('<footer class="site-footer">')
+    foot_end = page.index("</footer>", foot_start)
+    foot = page[foot_start:foot_end]
+    for en, sw in SW_FOOTER:
+        foot = foot.replace(en, sw)
+    page = page[:foot_start] + foot + page[foot_end:]
+    page = page.replace("<span>Chat with us</span>", "<span>Ongea nasi</span>", 1)
+    page = page.replace('aria-label="Chat with us"', 'aria-label="Ongea nasi"', 1)
     page = page.replace(">Skip to content</a>", ">Ruka hadi maudhui</a>", 1)
     page = page.replace('<span class="dot"></span>Available for hire</a>', '<span class="dot"></span>Tunapatikana</a>', 1)
     page = page.replace('<span class="dot" aria-hidden="true"></span>Available for hire</a>',
                         '<span class="dot" aria-hidden="true"></span>Tunapatikana</a>', 1)
     page = page.replace('<button class="menu-toggle" type="button" aria-controls="site-nav" aria-expanded="false">Menu</button>',
                         '<button class="menu-toggle" type="button" aria-controls="site-nav" aria-expanded="false">Menyu</button>', 1)
+    return page
+
+
+# ---------- 404 page ----------
+
+def build_404(html):
+    body = (
+        '        <section class="section notfound" id="notfound" aria-labelledby="nf-title">\n'
+        '            <div class="wrap">\n'
+        '                <p class="notfound-code" aria-hidden="true">404</p>\n'
+        '                <h1 id="nf-title">We couldn’t find that page</h1>\n'
+        '                <p class="notfound-lede">The link may be old or mistyped. Here are some places to go instead:</p>\n'
+        '                <ul class="notfound-links">\n'
+        '                    <li><a href="./"><i class="fa-solid fa-house" aria-hidden="true"></i><span><strong>Home</strong>Start from the beginning</span></a></li>\n'
+        '                    <li><a href="work"><i class="fa-solid fa-briefcase" aria-hidden="true"></i><span><strong>Our work</strong>Projects and case studies</span></a></li>\n'
+        '                    <li><a href="pricing"><i class="fa-solid fa-tags" aria-hidden="true"></i><span><strong>Pricing</strong>Packages from KSh 15,000</span></a></li>\n'
+        '                    <li><a href="blog"><i class="fa-solid fa-newspaper" aria-hidden="true"></i><span><strong>Blog</strong>Tips and guides</span></a></li>\n'
+        '                    <li><a href="contact"><i class="fa-solid fa-comments" aria-hidden="true"></i><span><strong>Contact</strong>We’re available 24/7</span></a></li>\n'
+        '                </ul>\n'
+        '            </div>\n'
+        '        </section>\n'
+    )
+    nodes = [web_page("404", "Page not found | Marzley Tech Solutions", "This page doesn’t exist.")]
+    page = make_page(html, "404", "Page not found | Marzley Tech Solutions", "This page doesn’t exist.", body, nodes, None, ["notfound"])
+    # Shown at any address, so every link and file must resolve from the site root
+    page = page.replace("<head>\n", '<head>\n    <base href="/" />\n', 1)
+    page = page.replace('<meta name="robots" content="index, follow, max-image-preview:large" />', '<meta name="robots" content="noindex, follow" />', 1)
+    page = re.sub(r' *<link rel="canonical"[^>]*>\n', "", page)
     return page
 
 
@@ -455,6 +525,7 @@ def main():
     for case in cases:
         write(case["slug"] + ".html", build_post(home, case, cases, kind="case"))
     write("kiswahili.html", build_kiswahili(home))
+    write("404.html", build_404(home))
     write_sitemap(posts, cases)
     print("wrote sitemap.xml")
 
