@@ -169,8 +169,8 @@ def make_page(html, slug, title, description, main_html, ld_nodes, current, on_p
 
     html = html.replace("<body>", '<body class="subpage">', 1)
     html = html.replace('<header class="site-header">', '<header class="site-header" id="top">', 1)
-    html = html.replace('<a class="brand" href="#top" aria-label="Marzley Tech Solutions, back to top">',
-                        '<a class="brand" href="./" aria-label="Marzley Tech Solutions home">', 1)
+    html = html.replace('<a class="brand" href="#top" aria-label="MarzleyTech: back to top">',
+                        '<a class="brand" href="./" aria-label="MarzleyTech home">', 1)
     html = html.replace('<a href="./" class="is-current" aria-current="page">Home</a>', '<a href="./">Home</a>', 1)
     if current:
         html = html.replace('                <a href="%s">' % current,
@@ -544,6 +544,80 @@ def write(name, text):
     print("wrote", name)
 
 
+def sync_csp_hash():
+    """The theme script is inline in every page (no extra request); keep its hash in the .htaccess CSP."""
+    import base64, hashlib
+    m = re.search(r"<script>(\(function \(\) \{ var root = document\.documentElement;.*?)</script>", (ROOT / "index.html").read_text(encoding="utf-8"))
+    if not m:
+        return
+    digest = base64.b64encode(hashlib.sha256(m.group(1).encode("utf-8")).digest()).decode()
+    ht = ROOT / ".htaccess"
+    text = ht.read_text(encoding="utf-8")
+    new = re.sub(r"script-src 'self'( 'sha256-[^']+')?", "script-src 'self' 'sha256-%s'" % digest, text, count=1)
+    if new != text:
+        ht.write_text(new, encoding="utf-8", newline="")
+        print("updated the CSP hash for the inline theme script")
+
+
+INLINE_CSS = [("css/home.min.css", "css/"), ("vendor/fontawesome/css/icons.min.css", "vendor/fontawesome/css/")]
+
+
+def inline_css():
+    """Put the site CSS inside every page instead of separate files, so phones can draw the page
+    without waiting for extra downloads (the biggest mobile speed win). Safe to run repeatedly."""
+    blocks = {}
+    for path, base in INLINE_CSS:
+        css = (ROOT / path).read_text(encoding="utf-8")
+        parent = base.rstrip("/").rpartition("/")[0]
+        parent = parent + "/" if parent else ""
+        # url(../x) inside the CSS is relative to its folder; make it relative to the site root
+        css = re.sub(r"url\((['\"]?)\.\./", lambda m: "url(" + m.group(1) + parent, css)
+        css = re.sub(r"/\*!.*?\*/", "", css, flags=re.S).strip()
+        blocks[path] = '<style data-inline="%s">%s</style>' % (path, css.replace("</", "<\\/"))
+    count = 0
+    for page in sorted(ROOT.glob("*.html")):
+        text = page.read_text(encoding="utf-8")
+        new = text
+        for path, _ in INLINE_CSS:
+            new = new.replace('<link rel="stylesheet" href="%s" />' % path, blocks[path])
+            new = re.sub(r'<style data-inline="%s">.*?</style>' % re.escape(path), lambda m: blocks[path], new, flags=re.S)
+        if new != text:
+            page.write_text(new, encoding="utf-8", newline="")
+            count += 1
+    print("inlined CSS into %d pages" % count)
+
+
+VERSIONED = ["js/home.min.js", "vendor/gsap/gsap.min.js", "vendor/gsap/ScrollTrigger.min.js"]
+
+
+def version_assets():
+    """Add ?v=<content hash> to script links, so browsers can cache them for long and still get updates."""
+    import hashlib
+    tags = {}
+    for path in VERSIONED:
+        f = ROOT / path
+        if f.exists():
+            tags[path] = hashlib.sha1(f.read_bytes()).hexdigest()[:10]
+    for page in sorted(ROOT.glob("*.html")):
+        text = page.read_text(encoding="utf-8")
+        new = text
+        for path, v in tags.items():
+            new = re.sub(r'src="%s(\?v=[0-9a-f]+)?"' % re.escape(path), 'src="%s?v=%s"' % (path, v), new)
+        if new != text:
+            page.write_text(new, encoding="utf-8", newline="")
+
+
+def subset_icons():
+    """Rebuild the small icon font with every fa-* icon the site uses (needs fonttools)."""
+    try:
+        import fontTools  # noqa: F401
+    except ImportError:
+        print("skipped icon subset (pip install fonttools brotli)")
+        return
+    import subprocess, sys
+    subprocess.run([sys.executable, str(ROOT / "tools" / "subset_icons.py")], check=True)
+
+
 def main():
     minify_assets()
     home = (ROOT / "index.html").read_text(encoding="utf-8")
@@ -563,6 +637,10 @@ def main():
     write("kiswahili.html", build_kiswahili(home))
     write("404.html", build_404(home))
     write_sitemap(posts, cases)
+    subset_icons()
+    inline_css()
+    version_assets()
+    sync_csp_hash()
     print("wrote sitemap.xml")
 
 

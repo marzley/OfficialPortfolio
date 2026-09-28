@@ -898,7 +898,7 @@ function page_open(string $title): void {
     header('Referrer-Policy: no-referrer');
     echo '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />',
         '<title>', h($title), ' | Marzley Tech Solutions</title><meta name="robots" content="noindex, nofollow" /><meta name="theme-color" content="#0b1b35" />',
-        '<link rel="icon" href="../favicon.ico" sizes="any" /><link rel="stylesheet" href="../vendor/fontawesome/css/all.min.css" />',
+        '<link rel="icon" href="../favicon.ico" sizes="any" /><link rel="stylesheet" href="../vendor/fontawesome/css/icons.min.css" />',
         '<link rel="stylesheet" href="../css/home.min.css" /><link rel="stylesheet" href="portal.css" /><script src="../js/theme-init.js"></script></head>',
         '<body class="portal-body public-page"><header class="portal-top"><div class="wrap"><a class="brand" href="../"><img src="../img/brand/logo-96.webp" alt="" width="40" height="40" />',
         '<span>Marzley<span class="accent">Tech</span></span></a></div></header><main id="main" class="wrap portal-main public-main">';

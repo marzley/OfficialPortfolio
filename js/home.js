@@ -385,7 +385,24 @@
       });
       googleBox.hidden = false;
     };
-    startGoogle();
+    // Google's script loads only when the visitor gets near the form, not on every page view
+    var loadGoogle = function () {
+      if (loadGoogle.done) return;
+      loadGoogle.done = true;
+      var s = document.createElement("script");
+      s.src = "https://accounts.google.com/gsi/client";
+      s.async = true;
+      s.onload = startGoogle;
+      document.head.appendChild(s);
+    };
+    var formEl = document.getElementById("google-button").closest("form") || googleBox;
+    if ("IntersectionObserver" in window) {
+      var gio = new IntersectionObserver(function (entries) {
+        if (entries.some(function (e) { return e.isIntersecting; })) { gio.disconnect(); loadGoogle(); }
+      }, { rootMargin: "600px 0px" });
+      gio.observe(formEl);
+    } else loadGoogle();
+    formEl.addEventListener("focusin", loadGoogle);
   }
 
   /* ---------- accessibility menu ---------- */
@@ -1036,11 +1053,7 @@
   /* ---------- donate (Paystack) ---------- */
   var donate = document.getElementById("donate-btn");
   if (donate) {
-    donate.addEventListener("click", function () {
-      if (typeof window.PaystackPop === "undefined") {
-        window.open("https://paystack.shop/pay/yxq9x-qg6d", "_blank", "noopener");
-        return;
-      }
+    var pay = function () {
       var amount = Number(prompt("Enter the amount you want to donate (KSh):"));
       if (!amount || amount <= 0) return;
       var email = prompt("Your email address (for the receipt):");
@@ -1054,6 +1067,16 @@
           alert("Thank you for your support! Reference: " + response.reference);
         }
       }).openIframe();
+    };
+    // Paystack's script (and the 120 KB it pulls in) loads only when someone clicks, not on every page
+    donate.addEventListener("click", function () {
+      if (window.PaystackPop) return pay();
+      var fallback = function () { window.open("https://paystack.shop/pay/yxq9x-qg6d", "_blank", "noopener"); };
+      var s = document.createElement("script");
+      s.src = "https://js.paystack.co/v1/inline.js";
+      s.onload = function () { if (window.PaystackPop) pay(); else fallback(); };
+      s.onerror = fallback;
+      document.head.appendChild(s);
     });
   }
 
