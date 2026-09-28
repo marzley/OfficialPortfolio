@@ -612,6 +612,25 @@ def version_assets():
             new = re.sub(r'src="%s(\?v=[0-9a-f]+)?"' % re.escape(path), 'src="%s?v=%s"' % (path, v), new)
         if new != text:
             page.write_text(new, encoding="utf-8", newline="")
+    # The portal and learning hub pages load their own scripts and styles. Stamp them too,
+    # so a new upload never runs old cached JavaScript against new HTML (or the other way round).
+    for page in ("portal/index.html", "learn/index.html"):
+        f = ROOT / page
+        if not f.exists():
+            continue
+        text = f.read_text(encoding="utf-8")
+
+        def stamp(m):
+            ref = m.group(2)
+            target = (f.parent / ref).resolve()
+            if not target.is_file():
+                return m.group(0)
+            v = hashlib.sha1(target.read_bytes()).hexdigest()[:10]
+            return '%s="%s?v=%s"' % (m.group(1), ref, v)
+
+        new = re.sub(r'(src|href)="((?:\.\./)?[A-Za-z0-9_./-]+\.(?:js|css))(?:\?v=[0-9a-f]+)?"', stamp, text)
+        if new != text:
+            f.write_text(new, encoding="utf-8", newline="")
 
 
 def subset_icons():

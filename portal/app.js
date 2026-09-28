@@ -276,7 +276,7 @@
     var box = $("client-domains");
     box.textContent = "";
     var list = data.domains || [];
-    $("ctab-domains").hidden = !list.length;
+    if ($("ctab-domains")) $("ctab-domains").hidden = !list.length;
     if (!list.length) return;
     var ul = h("ul", { className: "admin-list" });
     list.forEach(function (d) {
@@ -509,7 +509,7 @@
     var open = (data.tickets || []).filter(function (t) { return t.status === "open"; }).length;
     $("open-count").textContent = String(open);
     $("open-count").hidden = !open;
-    var badge = function (id, n) { $(id).textContent = String(n); $(id).hidden = !n; };
+    var badge = function (id, n) { var el = $(id); if (!el) return; el.textContent = String(n); el.hidden = !n; };
     badge("count-projects", data.projects.filter(function (p) { return p.status !== "live"; }).length);
     badge("count-clients", data.clients.length);
     badge("count-invoices", data.invoices.filter(function (i) { return i.status === "unpaid"; }).length);
@@ -1770,7 +1770,7 @@
     renderClientOverview();
     renderRequest();
     renderProfile();
-    var badge = function (id, n) { $(id).textContent = String(n); $(id).hidden = !n; };
+    var badge = function (id, n) { var el = $(id); if (!el) return; el.textContent = String(n); el.hidden = !n; };
     badge("ccount-projects", data.projects.filter(function (p) { return p.status !== "live"; }).length);
     badge("ccount-payments", data.invoices.filter(function (i) { return i.status === "unpaid"; }).length);
     badge("ccount-referrals", (dm.referrals || []).filter(function (r) { return r.stage === "reward_due"; }).length);
@@ -2149,7 +2149,7 @@
   }
   function renderClientCourses() {
     var courses = data.courses || [];
-    $("ctab-courses").hidden = !courses.length;
+    if ($("ctab-courses")) $("ctab-courses").hidden = !courses.length;
     var box = $("client-courses");
     box.textContent = "";
     var done = doneSet(me.client_id);
@@ -2264,7 +2264,7 @@
         api("code_request", { method: "POST", body: { who: who } }).then(function (r) {
           msg.textContent = r.message;
           $("code-step2").hidden = false;
-          $("code-name-row").hidden = who.indexOf("@") < 0;
+          if ($("code-name-row")) $("code-name-row").hidden = who.indexOf("@") < 0;
           btn.textContent = t("Sign in");
           $("code-code").focus();
         }).catch(function (x) { msg.textContent = x.message; }).then(function () { btn.disabled = false; });
