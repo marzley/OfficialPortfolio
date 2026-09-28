@@ -88,7 +88,7 @@
   }
   /** Returns { html, blocks } where blocks are the "try it" code samples, placed at <div data-try="n">. */
   function markdown(src, top) {
-    var lines = String(src || "").replace(/\r/g, "").split("\n"), out = [], blocks = [], i = 0, para = [];
+    var lines = String(src || "").replace(/\r/g, "").split("\n"), out = [], blocks = [], quizzes = [], i = 0, para = [];
     var flush = function () { if (para.length) { out.push("<p>" + inline(para.join(" ")) + "</p>"); para = []; } };
     while (i < lines.length) {
       var line = lines[i];
@@ -101,6 +101,8 @@
         i++;
         var lang = fence[1] || "";
         if (/^try-/.test(lang)) { blocks.push({ lang: lang.slice(4), code: code.join("\n") }); out.push('<div data-try="' + (blocks.length - 1) + '"></div>'); }
+        else if (lang === "quiz") { quizzes.push(code.join("\n")); out.push('<div data-quiz="' + (quizzes.length - 1) + '"></div>'); }
+        else if (/^tool-/.test(lang)) out.push('<div data-tool="' + esc(lang.slice(5)) + '"></div>');
         else out.push('<pre class="code-sample"><code>' + esc(code.join("\n")) + "</code></pre>");
         continue;
       }
@@ -135,7 +137,7 @@
       i++;
     }
     flush();
-    return { html: out.join("\n"), blocks: blocks };
+    return { html: out.join("\n"), blocks: blocks, quizzes: quizzes };
   }
 
   // ---------- running code (in the sandboxed frame) ----------
@@ -231,6 +233,188 @@
     return { editor: ed, run: run, el: wrap };
   }
 
+  // ---------- quizzes (```quiz blocks: Q: / A: answer | other accepted answer / H: hint) ----------
+  function normAns(s) { return String(s).toLowerCase().replace(/[“”"'`]/g, "").replace(/,/g, "").replace(/\s+/g, "").replace(/\.$/, ""); }
+  function renderQuiz(host, text, onAllCorrect) {
+    var qs = [], cur = null;
+    String(text).split("\n").forEach(function (line) {
+      var m = line.match(/^\s*([QAH]):\s*(.*)$/);
+      if (!m) { if (cur && line.trim() && cur.a === undefined) cur.q += " " + line.trim(); return; }
+      if (m[1] === "Q") { cur = { q: m[2] }; qs.push(cur); }
+      else if (cur && m[1] === "A") cur.a = m[2].split("|").map(function (x) { return x.trim(); }).filter(Boolean);
+      else if (cur && m[1] === "H") cur.h = m[2];
+    });
+    qs = qs.filter(function (q) { return q.a && q.a.length; });
+    if (!qs.length) return;
+    var box = el('<section class="quiz"><h3><i class="fa-solid fa-circle-question" aria-hidden="true"></i> Practice questions</h3><ol></ol><p class="quiz-score" role="status" aria-live="polite"></p></section>');
+    var ol = box.querySelector("ol"), right = {};
+    qs.forEach(function (q, i) {
+      var li = el('<li><p class="quiz-q">' + inline(q.q) + '</p><div class="quiz-row"><label class="sr-only" for="qz' + i + '"></label><input autocomplete="off" spellcheck="false" placeholder="Your answer" />' +
+        '<button type="button" class="btn btn-solid btn-sm">Check</button><button type="button" class="linklike quiz-show">Show answer</button></div><p class="quiz-fb" aria-live="polite"></p></li>');
+      var input = li.querySelector("input"), fb = li.querySelector(".quiz-fb");
+      var check = function () {
+        var v = normAns(input.value);
+        if (!v) { input.focus(); return; }
+        var ok = q.a.some(function (a) { return normAns(a) === v; });
+        li.classList.toggle("ok", ok); li.classList.toggle("bad", !ok);
+        fb.innerHTML = ok ? '<i class="fa-solid fa-circle-check" aria-hidden="true"></i> Correct!' : '<i class="fa-solid fa-circle-xmark" aria-hidden="true"></i> Not quite.' + (q.h ? " Hint: " + inline(q.h) : " Try again.");
+        if (ok) right[i] = true;
+        var n = Object.keys(right).length;
+        box.querySelector(".quiz-score").textContent = n + " of " + qs.length + " correct";
+        if (n === qs.length && onAllCorrect) onAllCorrect();
+      };
+      li.querySelector(".btn").addEventListener("click", check);
+      input.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); check(); } });
+      li.querySelector(".quiz-show").addEventListener("click", function () { fb.innerHTML = "Answer: <strong>" + esc(q.a[0]) + "</strong>" + (q.h ? " · " + inline(q.h) : ""); });
+      ol.appendChild(li);
+    });
+    host.appendChild(box);
+  }
+
+  // ---------- interactive tools (```tool-cidr, ```tool-subnet-practice, ```tool-binary, ```tool-chmod, ```tool-rate) ----------
+  function ipToInt(ip) {
+    var p = String(ip).trim().split(".");
+    if (p.length !== 4) return null;
+    var n = 0;
+    for (var i = 0; i < 4; i++) { if (!/^\d{1,3}$/.test(p[i]) || +p[i] > 255) return null; n = n * 256 + (+p[i]); }
+    return n;
+  }
+  function intToIp(n) { return [n >>> 24, (n >>> 16) & 255, (n >>> 8) & 255, n & 255].join("."); }
+  function maskOf(prefix) { return prefix === 0 ? 0 : (0xFFFFFFFF << (32 - prefix)) >>> 0; }
+  function bin8(n) { return ("00000000" + n.toString(2)).slice(-8); }
+  function ipBin(n) { return [n >>> 24, (n >>> 16) & 255, (n >>> 8) & 255, n & 255].map(bin8).join("."); }
+  function subnet(ipInt, prefix) {
+    var mask = maskOf(prefix), net = (ipInt & mask) >>> 0, bc = (net | (~mask >>> 0)) >>> 0, total = Math.pow(2, 32 - prefix);
+    var usable = prefix >= 31 ? (prefix === 31 ? 2 : 1) : total - 2;
+    return { mask: mask, net: net, bc: bc, total: total, usable: usable, first: prefix >= 31 ? net : net + 1, last: prefix >= 31 ? bc : bc - 1 };
+  }
+  function ipClass(n) { var a = n >>> 24; return a < 128 ? "A" : a < 192 ? "B" : a < 224 ? "C" : a < 240 ? "D (multicast)" : "E (reserved)"; }
+  function ipKind(n) {
+    var a = n >>> 24, b = (n >>> 16) & 255;
+    if (a === 10 || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168)) return "Private (RFC 1918)";
+    if (a === 127) return "Loopback";
+    if (a === 169 && b === 254) return "Link-local (APIPA)";
+    if (a === 100 && b >= 64 && b <= 127) return "Carrier-grade NAT (shared)";
+    if (a >= 224) return "Multicast / reserved";
+    return "Public";
+  }
+  var TOOLS = {
+    cidr: function (host) {
+      var box = el('<div class="tool"><h3><i class="fa-solid fa-calculator" aria-hidden="true"></i> CIDR / subnet calculator</h3><div class="tool-row"><label for="cidr-in">IP address / prefix</label>' +
+        '<input id="cidr-in" value="192.168.10.77/27" spellcheck="false" autocomplete="off" /><button type="button" class="btn btn-solid btn-sm">Calculate</button></div><div class="tool-out" aria-live="polite"></div></div>');
+      var input = box.querySelector("input"), out = box.querySelector(".tool-out");
+      var run = function () {
+        var m = input.value.trim().match(/^(\d{1,3}(?:\.\d{1,3}){3})\s*(?:\/\s*(\d{1,2})|\s+(\d{1,3}(?:\.\d{1,3}){3}))?$/);
+        var ip = m ? ipToInt(m[1]) : null, prefix = m && m[2] !== undefined ? +m[2] : null;
+        if (m && m[3]) { var mk = ipToInt(m[3]); if (mk !== null) { var bits = mk.toString(2); if (/^1*0*$/.test(("00000000000000000000000000000000" + bits).slice(-32))) prefix = (("00000000000000000000000000000000" + bits).slice(-32).match(/1/g) || []).length; } }
+        if (m && prefix === null && !m[3]) prefix = ip === null ? null : ((ip >>> 24) < 128 ? 8 : (ip >>> 24) < 192 ? 16 : 24);
+        if (ip === null || prefix === null || prefix > 32) { out.innerHTML = '<p class="bad">Type an address like <code>192.168.1.10/24</code> or <code>10.0.0.5 255.255.255.0</code>.</p>'; return; }
+        var s = subnet(ip, prefix);
+        var rows = [["Address", intToIp(ip)], ["Prefix (CIDR)", "/" + prefix], ["Subnet mask", intToIp(s.mask)], ["Wildcard mask", intToIp((~s.mask) >>> 0)],
+          ["Network address", intToIp(s.net)], ["Broadcast address", prefix >= 31 ? "none (/" + prefix + ")" : intToIp(s.bc)], ["First usable host", intToIp(s.first)], ["Last usable host", intToIp(s.last)],
+          ["Total addresses", s.total.toLocaleString() + " (2^" + (32 - prefix) + ")"], ["Usable hosts", s.usable.toLocaleString() + (prefix < 31 ? " (2^" + (32 - prefix) + " − 2)" : "")],
+          ["Block size (in the interesting octet)", String(prefix % 8 === 0 && prefix < 32 ? 256 : Math.pow(2, 8 - prefix % 8))], ["Class (old system)", ipClass(ip)], ["Type", ipKind(ip)],
+          ["Address in binary", "<code>" + ipBin(ip) + "</code>"], ["Mask in binary", "<code>" + ipBin(s.mask) + "</code>"], ["Network in binary", "<code>" + ipBin(s.net) + "</code>"]];
+        out.innerHTML = '<table class="tool-table"><tbody>' + rows.map(function (r) { return "<tr><th>" + r[0] + "</th><td>" + (/<code>/.test(r[1]) ? r[1] : esc(r[1])) + "</td></tr>"; }).join("") + "</tbody></table>";
+      };
+      box.querySelector("button").addEventListener("click", run);
+      input.addEventListener("keydown", function (e) { if (e.key === "Enter") run(); });
+      host.appendChild(box); run();
+    },
+    "subnet-practice": function (host) {
+      var box = el('<div class="tool"><h3><i class="fa-solid fa-dumbbell" aria-hidden="true"></i> Subnetting practice (new question every time)</h3><p class="tool-q"></p><div class="tool-grid"></div>' +
+        '<p class="tool-btns"><button type="button" class="btn btn-solid btn-sm" data-a="check">Check</button><button type="button" class="btn btn-line btn-sm" data-a="show">Show answers</button><button type="button" class="btn btn-line btn-sm" data-a="new">New question</button></p><p class="tool-score" aria-live="polite"></p></div>');
+      var fields = [["net", "Network address"], ["bc", "Broadcast address"], ["first", "First usable host"], ["last", "Last usable host"], ["hosts", "Usable hosts"], ["mask", "Subnet mask"]];
+      var grid = box.querySelector(".tool-grid"), q = box.querySelector(".tool-q"), score = box.querySelector(".tool-score"), ans = {}, stats = { right: 0, tried: 0 };
+      try { stats = JSON.parse(store.get("subnet-score") || "null") || stats; } catch (e) {}
+      fields.forEach(function (f) { grid.appendChild(el('<label class="tool-field"><span>' + f[1] + '</span><input data-f="' + f[0] + '" spellcheck="false" autocomplete="off" /></label>')); });
+      var fresh = function () {
+        var firsts = [10, 172, 192], a = firsts[Math.floor(Math.random() * 3)];
+        var ip = a === 10 ? [10, rnd(0, 255), rnd(0, 255), rnd(1, 254)] : a === 172 ? [172, rnd(16, 31), rnd(0, 255), rnd(1, 254)] : [192, 168, rnd(0, 255), rnd(1, 254)];
+        var prefix = rnd(a === 192 ? 24 : 18, 30), n = ipToInt(ip.join(".")), s = subnet(n, prefix);
+        ans = { net: intToIp(s.net), bc: intToIp(s.bc), first: intToIp(s.first), last: intToIp(s.last), hosts: String(s.usable), mask: intToIp(s.mask) };
+        q.innerHTML = "Host <strong>" + ip.join(".") + "/" + prefix + "</strong>. Work out:";
+        grid.querySelectorAll("input").forEach(function (i) { i.value = ""; i.parentNode.className = "tool-field"; });
+        grid.querySelector("input").focus({ preventScroll: true });
+      };
+      function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
+      var showScore = function () { score.textContent = stats.tried ? "Your score: " + stats.right + " of " + stats.tried + " questions fully correct" : ""; };
+      box.querySelector(".tool-btns").addEventListener("click", function (e) {
+        var a = e.target.getAttribute("data-a");
+        if (a === "new") return fresh();
+        if (a === "show") { grid.querySelectorAll("input").forEach(function (i) { i.value = ans[i.getAttribute("data-f")]; }); return; }
+        if (a === "check") {
+          var all = true;
+          grid.querySelectorAll("input").forEach(function (i) {
+            var ok = normAns(i.value) === normAns(ans[i.getAttribute("data-f")]);
+            i.parentNode.className = "tool-field " + (ok ? "ok" : "bad"); if (!ok) all = false;
+          });
+          stats.tried++; if (all) stats.right++;
+          store.set("subnet-score", JSON.stringify(stats)); showScore();
+          if (all) score.textContent += " · Perfect! Press “New question”.";
+        }
+      });
+      host.appendChild(box); fresh(); showScore();
+    },
+    binary: function (host) {
+      var box = el('<div class="tool"><h3><i class="fa-solid fa-calculator" aria-hidden="true"></i> Binary / decimal / hex converter</h3><div class="tool-grid">' +
+        '<label class="tool-field"><span>Decimal</span><input data-b="10" value="192" /></label><label class="tool-field"><span>Binary</span><input data-b="2" /></label><label class="tool-field"><span>Hexadecimal</span><input data-b="16" /></label></div>' +
+        '<p class="tool-bits" aria-hidden="true"></p></div>');
+      var inputs = box.querySelectorAll("input"), bits = box.querySelector(".tool-bits");
+      var upd = function (src) {
+        var n = parseInt(src.value.trim().replace(/^0x/i, "").replace(/\s/g, ""), +src.getAttribute("data-b"));
+        if (isNaN(n) || n < 0) return;
+        inputs.forEach(function (i) { if (i !== src) { var b = +i.getAttribute("data-b"); i.value = b === 2 ? n.toString(2) : b === 16 ? n.toString(16).toUpperCase() : String(n); } });
+        if (n <= 255) bits.innerHTML = [128, 64, 32, 16, 8, 4, 2, 1].map(function (v) { return '<span class="' + (n & v ? "on" : "") + '"><b>' + (n & v ? 1 : 0) + "</b>" + v + "</span>"; }).join("");
+        else bits.textContent = "";
+      };
+      inputs.forEach(function (i) { i.addEventListener("input", function () { upd(i); }); });
+      host.appendChild(box); upd(inputs[0]);
+    },
+    chmod: function (host) {
+      var who = ["Owner", "Group", "Others"], perms = [["r", 4], ["w", 2], ["x", 1]];
+      var box = el('<div class="tool"><h3><i class="fa-solid fa-lock" aria-hidden="true"></i> Linux permissions calculator</h3><table class="tool-table chmod"><thead><tr><th></th><th>Read (4)</th><th>Write (2)</th><th>Execute (1)</th></tr></thead><tbody>' +
+        who.map(function (w, i) { return "<tr><th>" + w + "</th>" + perms.map(function (p) { return '<td><input type="checkbox" data-w="' + i + '" data-v="' + p[1] + '" aria-label="' + w + " " + p[0] + '" /></td>'; }).join("") + "</tr>"; }).join("") +
+        '</tbody></table><div class="tool-row"><label for="chmod-oct">Number</label><input id="chmod-oct" value="755" maxlength="3" /><code class="chmod-sym"></code></div></div>');
+      var boxes = box.querySelectorAll("input[type=checkbox]"), oct = box.querySelector("#chmod-oct"), sym = box.querySelector(".chmod-sym");
+      var fromBoxes = function () {
+        var d = [0, 0, 0];
+        boxes.forEach(function (b) { if (b.checked) d[+b.getAttribute("data-w")] += +b.getAttribute("data-v"); });
+        oct.value = d.join(""); show(d);
+      };
+      var show = function (d) { sym.textContent = "chmod " + d.join("") + " file   →   -" + d.map(function (x) { return (x & 4 ? "r" : "-") + (x & 2 ? "w" : "-") + (x & 1 ? "x" : "-"); }).join(""); };
+      var fromOct = function () {
+        if (!/^[0-7]{3}$/.test(oct.value)) return;
+        var d = oct.value.split("").map(Number);
+        boxes.forEach(function (b) { b.checked = !!(d[+b.getAttribute("data-w")] & +b.getAttribute("data-v")); });
+        show(d);
+      };
+      boxes.forEach(function (b) { b.addEventListener("change", fromBoxes); });
+      oct.addEventListener("input", fromOct);
+      host.appendChild(box); fromOct();
+    },
+    rate: function (host) {
+      var box = el('<div class="tool"><h3><i class="fa-solid fa-calculator" aria-hidden="true"></i> Freelance rate calculator</h3><div class="tool-grid">' +
+        '<label class="tool-field"><span>Income you want per month (KSh)</span><input data-k="want" type="number" value="80000" /></label>' +
+        '<label class="tool-field"><span>Monthly work costs: internet, power, tools (KSh)</span><input data-k="costs" type="number" value="8000" /></label>' +
+        '<label class="tool-field"><span>Paid hours you can bill per week</span><input data-k="hours" type="number" value="20" /></label>' +
+        '<label class="tool-field"><span>Platform fee (%)</span><input data-k="fee" type="number" value="10" /></label>' +
+        '<label class="tool-field"><span>Tax to set aside (%)</span><input data-k="tax" type="number" value="10" /></label>' +
+        '<label class="tool-field"><span>KSh per US$ (check today’s rate)</span><input data-k="fx" type="number" value="129" /></label></div><div class="tool-out" aria-live="polite"></div></div>');
+      var out = box.querySelector(".tool-out");
+      var calc = function () {
+        var v = {}; box.querySelectorAll("input").forEach(function (i) { v[i.getAttribute("data-k")] = Math.max(0, +i.value || 0); });
+        var need = (v.want + v.costs) / Math.max(0.01, (1 - v.fee / 100) * (1 - v.tax / 100));
+        var hoursMonth = v.hours * 52 / 12, hourly = hoursMonth ? need / hoursMonth : 0;
+        out.innerHTML = '<table class="tool-table"><tbody><tr><th>You must bill per month</th><td>KSh ' + Math.round(need).toLocaleString() + "</td></tr><tr><th>Billable hours per month</th><td>" + Math.round(hoursMonth) +
+          "</td></tr><tr><th>Minimum hourly rate</th><td><strong>KSh " + Math.round(hourly).toLocaleString() + " ≈ US$ " + (v.fx ? (hourly / v.fx).toFixed(2) : "?") + "</strong></td></tr><tr><th>Half-day (4 h)</th><td>KSh " + Math.round(hourly * 4).toLocaleString() +
+          "</td></tr><tr><th>Full day (8 h)</th><td>KSh " + Math.round(hourly * 8).toLocaleString() + "</td></tr></tbody></table><p class=\"muted small\">Only about half of a freelancer’s working time is billable (the rest is finding clients, admin and learning), which is why billable hours are lower than working hours.</p>";
+      };
+      box.querySelectorAll("input").forEach(function (i) { i.addEventListener("input", calc); });
+      host.appendChild(box); calc();
+    }
+  };
+
   // ---------- page structure ----------
   function setNav(which) {
     document.querySelectorAll(".learn-nav a").forEach(function (a) {
@@ -256,7 +440,7 @@
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeSide(); });
 
   function setTitle(t, desc) {
-    document.title = t ? t + " | Marzley Tech Learning Hub" : "Learn to code free: HTML, CSS, JavaScript, Python, SQL | Marzley Tech Solutions";
+    document.title = t ? t + " | Marzley Tech Learning Hub" : "Free tech lessons: coding, networking & CIDR, making money online | Marzley Tech";
     if (desc) { var m = document.querySelector('meta[name="description"]'); if (m) m.setAttribute("content", desc); }
   }
   function errorBox(msg) { main.innerHTML = '<div class="empty"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><p>' + esc(msg) + '</p><p><a class="btn btn-solid btn-sm" href="./">Back to the learning hub</a></p></div>'; }
@@ -288,7 +472,7 @@
         return '<li><a href="./?track=' + esc(track.slug) + "&amp;lesson=" + esc(l.slug) + '" data-lesson="' + l.id + '" class="' + (cur ? "is-current " : "") + (isDone(l.id) ? "done" : "") + '"' + (cur ? ' aria-current="page"' : "") + ">" +
           '<i class="fa-solid fa-circle-check tick" aria-hidden="true"></i><span>' + esc(l.title) + "</span>" + (isDone(l.id) ? '<span class="sr-only"> (done)</span>' : "") + "</a></li>";
       }).join("") + "</ol>" +
-      '<a class="side-practice" href="./?page=practice&amp;lang=' + esc(track.lang) + '"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice ' + esc(track.title) + "</a>";
+      (LANGS[track.lang] ? '<a class="side-practice" href="./?page=practice&amp;lang=' + esc(track.lang) + '"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice ' + esc(track.title) + "</a>" : "");
   }
 
   // ---------- pages ----------
@@ -296,20 +480,22 @@
     setNav("");
     showSide(false);
     setTitle("");
-    main.innerHTML = '<section class="hero-learn"><div><p class="eyebrow">Marzley Tech Learning Hub</p><h1>Learn to code, free, right in your browser</h1>' +
-      '<p class="lead">Read simple lessons, edit the examples and see the result instantly. No installs, works on your phone. Then practise, read free notes and watch step-by-step videos.</p>' +
+    main.innerHTML = '<section class="hero-learn"><div><p class="eyebrow">Marzley Tech Learning Hub</p><h1>Learn tech skills free, right in your browser</h1>' +
+      '<p class="lead">14 subjects and 120+ lessons: coding with a live editor, networking and subnetting with calculators, Linux, Git, cybersecurity, and how to make money online. Practise with questions that check themselves. Works on your phone.</p>' +
       '<ul class="free-badges"><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Tutorials: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Notes: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Practice: free</li><li><i class="fa-solid fa-user" aria-hidden="true"></i> No account needed</li></ul>' +
       '<p class="hero-ctas"><a class="btn btn-solid" href="./?track=html">Start with HTML</a><a class="btn btn-line" href="./?page=practice">Open the code editor</a></p></div>' +
       '<div class="hero-code" aria-hidden="true"><pre><span class="c-k">print</span>(<span class="c-s">"Habari, Kenya!"</span>)\n<span class="c-t">&lt;h1&gt;</span>Hello<span class="c-t">&lt;/h1&gt;</span>\n<span class="c-k">SELECT</span> * <span class="c-k">FROM</span> Customers;</pre></div></section>' +
       '<section class="home-sec"><h2>Tutorials</h2><div class="track-grid" id="track-grid"><p class="muted">Loading…</p></div></section>' +
       '<section class="home-sec"><div class="sec-head"><h2>Latest videos</h2><a href="./?page=videos">All videos</a></div><div class="video-grid" id="home-videos"></div></section>' +
       '<section class="home-sec"><div class="sec-head"><h2>Free notes &amp; books</h2><a href="./?page=notes">All notes</a></div><div class="note-grid" id="home-notes"></div></section>';
-    var icons = { html: "fa-brands fa-html5", css: "fa-brands fa-css3-alt", javascript: "fa-brands fa-js", python: "fa-brands fa-python", sql: "fa-solid fa-database" };
+    var icons = { html: "fa-brands fa-html5", css: "fa-brands fa-css3-alt", javascript: "fa-brands fa-js", python: "fa-brands fa-python", sql: "fa-solid fa-database",
+      networking: "fa-solid fa-network-wired", "make-money-online": "fa-solid fa-sack-dollar", git: "fa-brands fa-git-alt", linux: "fa-brands fa-linux", php: "fa-brands fa-php",
+      cybersecurity: "fa-solid fa-shield-halved", hosting: "fa-solid fa-server", marketing: "fa-solid fa-bullhorn", "it-basics": "fa-solid fa-computer" };
     getCatalog().then(function (tracks) {
       $("#track-grid").innerHTML = tracks.map(function (t) {
         var done = t.lessons.filter(function (l) { return isDone(l.id); }).length;
         var first = t.lessons[0];
-        return '<a class="track-card t-' + esc(t.lang) + '" href="./?track=' + esc(t.slug) + (first ? "&amp;lesson=" + esc(first.slug) : "") + '"><i class="' + (icons[t.lang] || "fa-solid fa-book") + '" aria-hidden="true"></i>' +
+        return '<a class="track-card t-' + esc(t.lang) + " s-" + esc(t.slug) + '" href="./?track=' + esc(t.slug) + (first ? "&amp;lesson=" + esc(first.slug) : "") + '"><i class="' + (icons[t.slug] || icons[t.lang] || "fa-solid fa-book") + '" aria-hidden="true"></i>' +
           "<h3>" + esc(t.title) + "</h3><p>" + esc(t.summary) + '</p><span class="track-meta">' + t.lessons.length + " lessons" + (done ? " · " + done + " done" : "") + "</span>" +
           '<span class="bar" aria-hidden="true"><span style="width:' + (t.lessons.length ? Math.round(100 * done / t.lessons.length) : 0) + '%"></span></span></a>';
       }).join("") || '<p class="muted">Tutorials are coming soon.</p>';
@@ -339,7 +525,7 @@
       return api("lesson", undefined, "&track=" + encodeURIComponent(trackSlug) + "&slug=" + encodeURIComponent(lessonSlug)).then(function (j) {
         var l = j.lesson, idx = track.lessons.map(function (x) { return x.slug; }).indexOf(lessonSlug);
         var prev = track.lessons[idx - 1], next = track.lessons[idx + 1];
-        setTitle(l.title + " (" + track.title + ")", "Free " + track.title + " lesson: " + l.title + ". Read, edit the code and see the result live.");
+        setTitle(l.title + " (" + track.title + ")", "Free " + track.title + " lesson: " + l.title + ". Clear notes, examples and practice questions.");
         var md = markdown(l.body, true);
         var pager = '<nav class="pager" aria-label="Lessons">' +
           (prev ? '<a class="btn btn-line btn-sm" href="./?track=' + esc(track.slug) + "&amp;lesson=" + esc(prev.slug) + '"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> ' + esc(prev.title) + "</a>" : "<span></span>") +
@@ -348,6 +534,13 @@
           '<div class="lesson-body">' + md.html + "</div>" + (l.exercise ? '<section class="exercise" id="exercise" aria-labelledby="ex-title"><h2 id="ex-title"><i class="fa-solid fa-dumbbell" aria-hidden="true"></i> Exercise</h2><div class="ex-task">' + markdown(l.exercise).html + '</div><div id="ex-host"></div><p class="ex-result" id="ex-result" role="status" aria-live="polite"></p></section>' :
           '<p class="done-row"><button type="button" class="btn btn-line btn-sm" id="mark-done">' + (isDone(l.id) ? '<i class="fa-solid fa-check" aria-hidden="true"></i> Completed' : "Mark as completed") + "</button></p>") + pager + "</article>";
         md.blocks.forEach(function (b, n) { codeBlock(main.querySelector('[data-try="' + n + '"]'), { lang: b.lang, code: b.code }); });
+        var quizDone = 0;
+        md.quizzes.forEach(function (q, n) {
+          renderQuiz(main.querySelector('[data-quiz="' + n + '"]'), q, function () {
+            if (++quizDone === md.quizzes.length && !l.exercise) { markDone(l.id); var b = $("#mark-done"); if (b) b.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i> Completed'; }
+          });
+        });
+        main.querySelectorAll("[data-tool]").forEach(function (h) { var fn = TOOLS[h.getAttribute("data-tool")]; if (fn) fn(h); });
         if (l.exercise) exercise(l, track);
         var md2 = $("#mark-done");
         if (md2) md2.addEventListener("click", function () { markDone(l.id); md2.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i> Completed'; });

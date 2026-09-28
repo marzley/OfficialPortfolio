@@ -1416,7 +1416,7 @@
         .then(function () { toast("Lesson saved."); onDone(); loadLearn(); }).catch(function (err) { toast(err.message, true); });
     } },
       field("Tutorial", track), field("Lesson title", title), field("Web address (slug)", slug), field("Order", pos),
-      big("Lesson (Markdown)", body, "# Heading, ## Subheading, **bold**, `code`, - lists, > tip, | tables |. A code block marked ```try-html, ```try-css, ```try-javascript, ```try-python or ```try-sql gets a Run button."),
+      big("Lesson (Markdown)", body, "# Heading, ## Subheading, **bold**, `code`, - lists, > tip, | tables |. A code block marked ```try-html, ```try-css, ```try-javascript, ```try-python or ```try-sql gets a Run button. A ```quiz block with lines “Q: question” and “A: answer | other accepted answer” (optional “H: hint”) becomes self-checking questions. Tools: ```tool-cidr, ```tool-subnet-practice, ```tool-binary, ```tool-chmod, ```tool-rate."),
       big("Exercise task (optional)", ex), big("Starter code for the exercise", starter),
       big("Expected output (optional)", expected, "The learner's output must include this text."), big("Code must include (one per line, optional)", must, "Each line must appear somewhere in the learner's code, e.g. <h1> or GROUP BY."),
       h("label", { className: "check" }, pub, h("span", { text: " Published" })),

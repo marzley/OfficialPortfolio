@@ -504,7 +504,19 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
     const cl = await login("client@example.com");
     r = await lget(guest, "catalog");
     const lessonCount = r.j.tracks.reduce((n, t) => n + t.lessons.length, 0);
-    ok("starter tutorials are there (HTML, CSS, JavaScript, Python, SQL)", r.s === 200 && r.j.tracks.map((t) => t.slug).join() === "html,css,javascript,python,sql" && lessonCount >= 25, r.j);
+    ok("tutorials are there (coding, networking, making money online and more)", r.s === 200 && r.j.tracks.slice(0, 5).map((t) => t.slug).join() === "html,css,javascript,python,sql" &&
+      ["networking", "make-money-online", "linux", "git", "php", "cybersecurity"].every((x) => r.j.tracks.some((t) => t.slug === x)) && lessonCount >= 100, r.j.tracks.map((t) => t.slug));
+    // a newer tutorials file adds what's missing but never overwrites lessons edited in the portal
+    sql("UPDATE learn_lessons SET title = 'My own intro' WHERE slug = 'introduction' AND track_id = (SELECT id FROM learn_tracks WHERE slug = 'html')");
+    sql("DELETE FROM learn_lessons WHERE track_id = (SELECT id FROM learn_tracks WHERE slug = 'networking')");
+    sql("DELETE FROM learn_tracks WHERE slug = 'networking'");
+    sql("UPDATE settings SET v = '1' WHERE k = 'learn_seed_version'");
+    r = await lget(guest, "catalog");
+    const netTrack = r.j.tracks.find((t) => t.slug === "networking");
+    ok("new subjects are added to an existing site automatically", netTrack && netTrack.lessons.some((l) => l.slug === "cidr"));
+    ok("lessons edited in the portal are kept", one("SELECT title FROM learn_lessons WHERE slug = 'introduction' AND track_id = (SELECT id FROM learn_tracks WHERE slug = 'html')").title === "My own intro");
+    r = await lget(guest, "lesson", "&track=networking&slug=cidr");
+    ok("the CIDR lesson has its calculator and practice questions", r.s === 200 && /```tool-cidr/.test(r.j.lesson.body) && /```quiz/.test(r.j.lesson.body));
     r = await lget(guest, "lesson", "&track=python&slug=introduction");
     ok("a lesson is free to read without signing in", r.s === 200 && /```try-python/.test(r.j.lesson.body));
     sql("UPDATE learn_lessons SET published = 0 WHERE slug = 'semantic'");

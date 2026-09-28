@@ -194,6 +194,12 @@ Uploads go in 8 MB pieces, so the hosting upload limit doesn't matter, and a dro
 carries on where it stopped. Keep the tab open until it says "Video uploaded". A preview picture is
 taken from the video; change it with **Picture**.
 
+**Adding lessons in bulk.** The tutorials live in `tools/learn_seed/*.py` (one file per subject). Edit or add
+lessons there, raise `VERSION` in `tools/learn_seed/build.py`, run `python3 tools/learn_seed/build.py` and upload
+`data/learn-seed.json`. The live site adds new subjects and lessons by itself; lessons you edited in the portal are
+never overwritten. To remove a lesson, untick "Published" rather than deleting it (deleted ones come back with the
+next version).
+
 **Good to know.**
 - Only people who paid (and you and staff with the Courses area) can stream a video. Downloading is
   switched off in the player and links don't work for anyone else.

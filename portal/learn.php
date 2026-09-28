@@ -17,6 +17,7 @@ const CHUNK_MAX = 8 * 1024 * 1024;
 if ($method === 'POST' && !in_array($action, ['code_request', 'code_verify', 'google', 'dev_login'], true)) check_csrf();
 if ($method !== 'POST' && !in_array($action, LEARN_GET, true)) fail(405, 'Use POST.');
 
+learn_seed(db());   // adds any new tutorials shipped in data/learn-seed.json
 $editor = learn_is_editor();
 $me = learner();
 $pub = $editor ? '1 = 1' : 'published = 1';

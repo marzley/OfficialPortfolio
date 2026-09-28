@@ -1179,20 +1179,36 @@ function issue_certificate(int $clientId, int $courseId): string {
 
 // ---------- learning hub (free tutorials and notes, videos unlocked with M-Pesa) ----------
 
-/** Fill the tutorials the first time the hub runs, from data/learn-seed.json. They can be edited in the portal afterwards. */
+/**
+ * Add the tutorials from data/learn-seed.json: new subjects and lessons are added when the file's
+ * "version" goes up. Lessons already in the database (including ones edited in the portal) are never changed.
+ */
 function learn_seed(PDO $pdo): void {
-    if ((int)$pdo->query('SELECT COUNT(*) FROM learn_tracks')->fetchColumn() > 0) return;
     $seed = json_decode((string)@file_get_contents(site_root() . '/data/learn-seed.json'), true);
     if (!is_array($seed['tracks'] ?? null)) return;
-    $track = $pdo->prepare('INSERT INTO learn_tracks (slug, title, lang, summary, position, published) VALUES (?, ?, ?, ?, ?, 1)');
-    $lesson = $pdo->prepare('INSERT INTO learn_lessons (track_id, slug, title, position, body, exercise, starter, expected, must_contain, published, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)');
+    $version = (string)($seed['version'] ?? '1');
+    $st = $pdo->prepare('SELECT v FROM settings WHERE k = ?');
+    $st->execute(['learn_seed_version']);
+    if ((string)$st->fetchColumn() === $version) return;
+    $findTrack = $pdo->prepare('SELECT id FROM learn_tracks WHERE slug = ?');
+    $addTrack = $pdo->prepare('INSERT INTO learn_tracks (slug, title, lang, summary, position, published) VALUES (?, ?, ?, ?, ?, 1)');
+    $findLesson = $pdo->prepare('SELECT id FROM learn_lessons WHERE track_id = ? AND slug = ?');
+    $addLesson = $pdo->prepare('INSERT INTO learn_lessons (track_id, slug, title, position, body, exercise, starter, expected, must_contain, published, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)');
     foreach ($seed['tracks'] as $i => $t) {
-        $track->execute([$t['slug'], $t['title'], $t['lang'], $t['summary'] ?? '', $i + 1]);
-        $tid = (int)$pdo->lastInsertId();
+        $findTrack->execute([$t['slug']]);
+        $tid = (int)$findTrack->fetchColumn();
+        if (!$tid) {
+            $addTrack->execute([$t['slug'], $t['title'], $t['lang'], $t['summary'] ?? '', $i + 1]);
+            $tid = (int)$pdo->lastInsertId();
+        }
         foreach ($t['lessons'] as $j => $l) {
-            $lesson->execute([$tid, $l['slug'], $l['title'], $j + 1, $l['body'], $l['exercise'] ?? '', $l['starter'] ?? '', $l['expected'] ?? '', $l['must_contain'] ?? '', date('Y-m-d H:i:s')]);
+            $findLesson->execute([$tid, $l['slug']]);
+            if ($findLesson->fetchColumn()) continue;
+            $addLesson->execute([$tid, $l['slug'], $l['title'], $j + 1, $l['body'], $l['exercise'] ?? '', $l['starter'] ?? '', $l['expected'] ?? '', $l['must_contain'] ?? '', date('Y-m-d H:i:s')]);
         }
     }
+    $pdo->prepare('DELETE FROM settings WHERE k = ?')->execute(['learn_seed_version']);
+    $pdo->prepare('INSERT INTO settings (k, v) VALUES (?, ?)')->execute(['learn_seed_version', $version]);
 }
 
 /** Private folder for hub videos, posters and notes. */

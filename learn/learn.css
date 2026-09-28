@@ -299,3 +299,39 @@ html { zoom: 1; }
 .portal-link { display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line); color: var(--heading) !important; text-decoration: none; font-weight: 700; font-size: 14px; }
 .portal-link i { color: var(--amber-text); }
 @media (max-width: 1100px) { .portal-link span { display: none; } }
+
+/* ---------- practice questions and tools ---------- */
+.quiz, .tool { margin: 22px 0; padding: 18px 20px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow); }
+.quiz h3, .tool h3 { margin: 0 0 12px; font-size: 18px; color: var(--heading); display: flex; gap: 10px; align-items: center; }
+.quiz h3 i, .tool h3 i { color: var(--amber-text); }
+.quiz ol { margin: 0; padding-left: 22px; display: grid; gap: 14px; }
+.quiz-q { margin: 0 0 6px; font-weight: 600; }
+.quiz-row, .tool-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.quiz-row input, .tool-row input, .tool-field input { min-height: 40px; min-width: 0; flex: 1 1 180px; border-radius: 10px; border: 1px solid var(--field-border); background: var(--field-bg); color: var(--fg); padding: 0 12px; font: 15px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.quiz li.ok input, .tool-field.ok input { border-color: var(--green); box-shadow: 0 0 0 2px rgba(5, 150, 105, .15); }
+.quiz li.bad input, .tool-field.bad input { border-color: #dc2626; }
+.quiz-fb { margin: 6px 0 0; min-height: 20px; font-size: 14px; }
+.quiz li.ok .quiz-fb { color: var(--green); font-weight: 700; }
+.quiz li.bad .quiz-fb { color: #b91c1c; }
+[data-theme=dark] .quiz li.bad .quiz-fb { color: #fca5a5; }
+.quiz-score, .tool-score { margin: 12px 0 0; font-weight: 700; color: var(--fg-muted); }
+.tool-row label { font-weight: 700; font-size: 14px; }
+.tool-out { margin-top: 12px; }
+.tool-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.tool-table th, .tool-table td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.tool-table th { width: 42%; color: var(--fg-muted); font-weight: 600; }
+.tool-table td { font-weight: 700; color: var(--heading); overflow-wrap: anywhere; }
+.tool-table.chmod th, .tool-table.chmod td { text-align: center; width: auto; }
+.tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.tool-field { display: grid; gap: 4px; font-size: 13px; font-weight: 700; color: var(--fg-muted); }
+.tool-q { margin: 0 0 12px; font-size: 16px; }
+.tool-btns { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; }
+.tool-bits { display: flex; gap: 4px; flex-wrap: wrap; margin: 14px 0 0; }
+.tool-bits span { display: grid; place-items: center; width: 52px; padding: 6px 0; border-radius: 8px; background: var(--bg); font-size: 12px; color: var(--fg-muted); }
+.tool-bits span b { font-size: 20px; color: var(--fg-faint); }
+.tool-bits span.on { background: var(--current-bg); }
+.tool-bits span.on b { color: var(--amber-text); }
+.chmod-sym { padding: 6px 10px; border-radius: 8px; background: var(--bg); }
+.s-networking > i { color: #0891b2; } .s-make-money-online > i { color: #059669; } .s-git > i { color: #f05033; } .s-linux > i { color: #0f172a; }
+.s-php > i { color: #777bb3; } .s-cybersecurity > i { color: #dc2626; } .s-hosting > i { color: #2563eb; } .s-marketing > i { color: #d97706; } .s-it-basics > i { color: #475569; }
+[data-theme=dark] .s-linux > i, [data-theme=dark] .s-it-basics > i { color: #cbd5e1; }
