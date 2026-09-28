@@ -298,6 +298,7 @@
     setTitle("");
     main.innerHTML = '<section class="hero-learn"><div><p class="eyebrow">Marzley Tech Learning Hub</p><h1>Learn to code, free, right in your browser</h1>' +
       '<p class="lead">Read simple lessons, edit the examples and see the result instantly. No installs, works on your phone. Then practise, read free notes and watch step-by-step videos.</p>' +
+      '<ul class="free-badges"><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Tutorials: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Notes: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Practice: free</li><li><i class="fa-solid fa-user" aria-hidden="true"></i> No account needed</li></ul>' +
       '<p class="hero-ctas"><a class="btn btn-solid" href="./?track=html">Start with HTML</a><a class="btn btn-line" href="./?page=practice">Open the code editor</a></p></div>' +
       '<div class="hero-code" aria-hidden="true"><pre><span class="c-k">print</span>(<span class="c-s">"Habari, Kenya!"</span>)\n<span class="c-t">&lt;h1&gt;</span>Hello<span class="c-t">&lt;/h1&gt;</span>\n<span class="c-k">SELECT</span> * <span class="c-k">FROM</span> Customers;</pre></div></section>' +
       '<section class="home-sec"><h2>Tutorials</h2><div class="track-grid" id="track-grid"><p class="muted">Loading…</p></div></section>' +
@@ -432,7 +433,7 @@
     setNav("videos");
     showSide(false);
     setTitle("Video lessons", "Step-by-step coding video lessons. Unlock each one with M-Pesa.");
-    main.innerHTML = '<section class="list-page"><h1>Video lessons</h1><p class="lead">Step-by-step lessons you can pause and replay. Unlock a video once with M-Pesa and it’s yours to watch any time.</p><div class="video-grid" id="vid-grid"><p class="muted">Loading…</p></div></section>';
+    main.innerHTML = '<section class="list-page"><h1>Video lessons</h1><p class="lead">Step-by-step lessons you can pause and replay. Watching needs a free account: sign in, unlock a video once with M-Pesa and it’s yours to watch any time. Tutorials, notes and practice stay free without an account.</p><div class="video-grid" id="vid-grid"><p class="muted">Loading…</p></div></section>';
     api("videos").then(function (j) {
       $("#vid-grid").innerHTML = (j.videos || []).map(function (v) { return videoCard(v, "h2"); }).join("") || '<div class="empty"><i class="fa-solid fa-video" aria-hidden="true"></i><p>Video lessons are coming soon.</p></div>';
     }).catch(function (e) { $("#vid-grid").innerHTML = '<p class="muted">' + esc(e.message) + "</p>"; });

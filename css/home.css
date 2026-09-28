@@ -206,7 +206,7 @@ a {
 }
 
 /* Mid-size screens: make room for all seven menu links */
-@media (max-width: 1180px) {
+@media (max-width: 1440px) {
   .site-header .status {
     display: none;
   }
@@ -5918,3 +5918,44 @@ html.a11y-cursor * {
 @media (min-width: 2300px) { html { zoom: 1.45; } }
 @media (min-width: 2700px) { html { zoom: 1.65; } }
 @media (min-width: 3300px) { html { zoom: 2; } }
+
+/* ---------- Links to the learning hub and client portal ---------- */
+.nav-learn::after { content: "Free"; margin-left: 6px; padding: 1px 6px; border-radius: 999px; background: var(--green); color: #fff; font-size: 10px; font-weight: 800; letter-spacing: .04em; vertical-align: 2px; }
+html[lang="sw"] .nav-learn::after { content: "Bure"; }
+.nav .nav-portal { display: none; }
+.header-login { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border-radius: 999px; background: var(--navy); color: #fff; font-size: 13px; font-weight: 700; text-decoration: none; white-space: nowrap; }
+.header-login i { color: var(--amber); font-size: 16px; }
+.header-login:hover { background: var(--navy-2); }
+[data-theme=dark] .header-login { background: var(--highlight); }
+@media (max-width: 1280px) { .header-login span { display: none; } .header-login { padding: 0; width: 40px; justify-content: center; } }
+@media (max-width: 900px) {
+  .header-login { display: none; }
+  .nav .nav-portal { display: block; font-weight: 800; color: var(--heading); }
+}
+.hero-learn { margin: 14px 0 0; font-size: 14px; }
+.hero-learn a { color: rgba(255, 255, 255, .85); text-decoration: none; border-bottom: 1px dashed rgba(255, 255, 255, .4); }
+.hero-learn a:hover { color: #fff; border-bottom-color: var(--amber); }
+.hero-learn i, .hero-learn strong { color: var(--amber); }
+.learnhub-card { display: grid; grid-template-columns: 1.25fr 1fr; gap: clamp(20px, 4vw, 48px); align-items: center; padding: clamp(22px, 4vw, 44px); border-radius: 22px; background: linear-gradient(135deg, var(--navy), var(--navy-2)); color: #fff; box-shadow: var(--shadow-lg); }
+.learnhub-card .label { color: var(--amber); }
+.learnhub-card h2 { color: #fff; margin: 6px 0 12px; font-size: clamp(26px, 3.4vw, 40px); line-height: 1.1; }
+.learnhub-card p { color: rgba(255, 255, 255, .82); }
+.lh-points { list-style: none; margin: 18px 0; padding: 0; display: grid; gap: 10px; }
+.lh-points li { display: flex; gap: 10px; align-items: flex-start; }
+.lh-points i { color: var(--amber); margin-top: 4px; }
+.lh-points strong { color: #fff; }
+.lh-ctas { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; }
+.learnhub-card .btn-line { color: #fff; border: 2px solid rgba(255, 255, 255, .45); background: transparent; }
+.learnhub-card .btn-line:hover { border-color: var(--amber); }
+.lh-tracks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.lh-tracks a { display: grid; justify-items: center; gap: 8px; padding: 18px 8px; border-radius: 16px; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .14); color: #fff; text-decoration: none; font-weight: 700; font-size: 14px; transition: transform .2s var(--ease), background .2s; }
+.lh-tracks a:hover { transform: translateY(-3px); background: rgba(255, 255, 255, .14); }
+.lh-tracks i { font-size: 30px; }
+.lh-tracks .t-html i { color: #f97316; } .lh-tracks .t-css i { color: #60a5fa; } .lh-tracks .t-js i { color: #facc15; }
+.lh-tracks .t-py i { color: #93c5fd; } .lh-tracks .t-sql i { color: #34d399; } .lh-tracks .t-notes i { color: #fca5a5; }
+@media (max-width: 900px) { .learnhub-card { grid-template-columns: 1fr; } }
+@media (max-width: 420px) { .lh-tracks { grid-template-columns: repeat(2, 1fr); } }
+.post-learn { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 18px; padding: 16px 18px; border-radius: 14px; border: 1px dashed var(--field-border); background: var(--card); }
+.post-learn > i { font-size: 24px; color: var(--amber-text); }
+.post-learn p { flex: 1; min-width: 220px; margin: 0; }
+.post-learn .btn { min-height: 44px; padding: 0 16px; font-size: 14px; }

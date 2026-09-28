@@ -61,6 +61,7 @@
     "Date": "Tarehe", "Method": "Njia", "Reference": "Kumbukumbu", "No payments yet.": "Bado hakuna malipo.", "Your details": "Maelezo yako", "Save": "Hifadhi", "Saved.": "Imehifadhiwa.",
     "M-Pesa phone number (payments and referral rewards)": "Nambari ya M-Pesa (malipo na zawadi)", "Email (sign-in)": "Barua pepe (kuingia)", "Security": "Usalama",
     "Sign out everywhere": "Toka kwenye vifaa vyote", "No projects yet": "Bado hakuna miradi", "Request sent. We’ll get back to you within a day.": "Ombi limetumwa. Tutakujibu ndani ya siku moja.",
+    "Just want to learn to code?": "Unataka tu kujifunza kuandika programu?", "Free tutorials, notes and practice. No account needed.": "Mafunzo, notisi na mazoezi bure. Huhitaji akaunti.",
     "6-digit code": "Nambari ya tarakimu 6", "Send me a code": "Nitumie nambari", "Sign in": "Ingia"
   };
   var t = function (s) { return LANG === "sw" && SW[s] ? SW[s] : s; };

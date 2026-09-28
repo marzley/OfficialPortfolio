@@ -36,14 +36,14 @@ PAGES = [
         "label": "About",
         "title": "About Kelvin Wanyoike (Marzley) | Marzley Tech Solutions",
         "description": "Kelvin Wanyoike, known as Marzley, is a web developer, designer and IT trainer in Kenya and the founder of Marzley Tech Solutions.",
-        "sections": ["about", "testimonials"],
+        "sections": ["about", "learnhub", "testimonials"],
     },
     {
         "slug": "services",
         "label": "Services",
         "title": "Web Development, M-Pesa Integration & IT Training | Marzley Tech Solutions",
         "description": "Websites, business and hospital systems, M-Pesa and Paystack payment integration, UI/UX design and practical IT training in Kenya.",
-        "sections": ["services", "safe", "integrations", "demo", "faq"],
+        "sections": ["services", "safe", "integrations", "learnhub", "demo", "faq"],
     },
     {
         "slug": "process",
@@ -93,7 +93,7 @@ PAGES = [
         "label": "Training",
         "title": "IT Training & Mentorship in Kenya: Web Development, Programming, Design | Marzley Tech",
         "description": "Practical, project-based training in web development, programming and graphic design, in person and online. Over 200 students trained.",
-        "sections": ["training", "testimonials"],
+        "sections": ["training", "learnhub", "testimonials"],
     },
     {
         "slug": "privacy",
@@ -361,6 +361,12 @@ def build_post(html, post, posts, kind="blog"):
         '<i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp</a>\n'
         '                        </div>\n'
         '                    </aside>\n'
+        '                    <aside class="post-learn" aria-label="Free learning hub">\n'
+        '                        <i class="fa-solid fa-laptop-code" aria-hidden="true"></i>\n'
+        '                        <p><strong>Want to build it yourself?</strong> Our free learning hub has HTML, CSS, JavaScript, Python and SQL lessons '
+        'with a live code editor. No account needed.</p>\n'
+        '                        <a class="btn btn-ghost" href="learn/">Start learning free <span aria-hidden="true">→</span></a>\n'
+        '                    </aside>\n'
         '                </article>\n'
         '{more}'
         '            </div>\n'
@@ -397,7 +403,7 @@ def build_post(html, post, posts, kind="blog"):
 # ---------- Kiswahili ----------
 
 SW_NAV = [("Home", "Nyumbani"), ("Work", "Kazi"), ("About", "Kuhusu"), ("Services", "Huduma"),
-          ("Process", "Mchakato"), ("Pricing", "Bei"), ("Blog", "Blogu"), ("Learn", "Jifunze"), ("Contact", "Wasiliana")]
+          ("Process", "Mchakato"), ("Pricing", "Bei"), ("Blog", "Blogu"), ("Learn", "Jifunze"), ("Contact", "Wasiliana"), ("Client login", "Ingia (wateja)")]
 
 
 SW_FOOTER = [
@@ -451,6 +457,7 @@ def build_kiswahili(html):
         nav = nav.replace(">%s</a>" % en, ">%s</a>" % sw, 1)
     nav = nav.replace('aria-label="Main"', 'aria-label="Menyu kuu"', 1)
     page = page[:nav_start] + nav + page[nav_end:]
+    page = page.replace('<span>Client login</span></a>', '<span>Ingia (wateja)</span></a>', 1)
     foot_start = page.index('<footer class="site-footer">')
     foot_end = page.index("</footer>", foot_start)
     foot = page[foot_start:foot_end]
