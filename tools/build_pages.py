@@ -27,7 +27,7 @@ PAGES = [
     {
         "slug": "work",
         "label": "Work",
-        "title": "Projects & Portfolio | Marzley Tech Solutions",
+        "title": "Projects & Portfolio: Websites and Systems | Marzley Tech",
         "description": "Websites and systems built by Kelvin Wanyoike (Marzley): CBET Planner, hospital systems, college websites and e-commerce with M-Pesa and Paystack.",
         "sections": ["work", "cases", "testimonials"],
     },
@@ -41,14 +41,14 @@ PAGES = [
     {
         "slug": "services",
         "label": "Services",
-        "title": "Web Development, M-Pesa Integration & IT Training | Marzley Tech Solutions",
+        "title": "Web Development & M-Pesa Integration in Kenya | Marzley Tech",
         "description": "Websites, business and hospital systems, M-Pesa and Paystack payment integration, UI/UX design and practical IT training in Kenya.",
         "sections": ["services", "safe", "integrations", "learnhub", "demo", "faq"],
     },
     {
         "slug": "process",
         "label": "Process",
-        "title": "How We Work | Marzley Tech Solutions",
+        "title": "How We Work: From Quote to Launch | Marzley Tech Solutions",
         "description": "Discuss, design, build, launch: how Marzley Tech Solutions delivers your website or system, plus a quick planner to find the right package.",
         "sections": ["process", "planner"],
     },
@@ -62,14 +62,14 @@ PAGES = [
     {
         "slug": "contact",
         "label": "Contact",
-        "title": "Contact Marzley Tech Solutions | Hire a Web Developer in Kenya",
+        "title": "Contact Us: Hire a Web Developer in Kenya | Marzley Tech",
         "description": "Contact Marzley Tech Solutions on WhatsApp, phone or email. We offer our services 24 hours a day, 7 days a week.",
         "sections": ["contact", "booking", "faq"],
     },
     {
         "slug": "website-check",
         "label": "Website check",
-        "title": "Free Website Checker: Test Speed, Security & SEO | Marzley Tech",
+        "title": "Free Website Checker: Speed, Security & SEO | Marzley Tech",
         "description": "Free website checker and SEO audit for Kenyan businesses. Test https security, speed, mobile setup and Google basics in seconds, with tips to fix each issue.",
         "sections": ["check", "checkinfo", "care"],
         "faq_schema": True,
@@ -78,14 +78,14 @@ PAGES = [
     {
         "slug": "referrals",
         "label": "Referrals",
-        "title": "Referral Programme: Earn KSh 2,000 per Client | Marzley Tech Solutions",
+        "title": "Referral Programme: Earn KSh 2,000 per Client | Marzley Tech",
         "description": "Refer a business, school or clinic to Marzley Tech Solutions and get KSh 2,000 by M-Pesa when they become a client.",
         "sections": ["referral", "testimonials"],
     },
     {
         "slug": "faq",
         "label": "FAQ",
-        "title": "FAQ: Websites, M-Pesa, Systems & Training | Marzley Tech Solutions",
+        "title": "FAQ: Websites, M-Pesa, Systems & Training | Marzley Tech",
         "description": "Answers to common questions about website timelines, ownership, M-Pesa payments, custom systems, training certificates and support in Kenya.",
         "sections": ["faqs"],
         "faq_schema": True,
@@ -93,7 +93,7 @@ PAGES = [
     {
         "slug": "training",
         "label": "Training",
-        "title": "IT Training & Mentorship in Kenya: Web Development, Programming, Design | Marzley Tech",
+        "title": "IT & Coding Training in Kenya | Marzley Tech Solutions",
         "description": "Practical, project-based training in web development, programming and graphic design, in person and online. Over 200 students trained.",
         "sections": ["training", "learnhub", "testimonials"],
     },
@@ -139,6 +139,14 @@ def og_image(slug):
     return "img/og/%s.jpg" % slug if (ROOT / "img" / "og" / (slug + ".jpg")).exists() else None
 
 
+def fit_title(title, limit=60):
+    """Add the brand to a page title only while it still fits in Google's results (about 60 characters)."""
+    for t in (title + " | Marzley Tech Solutions", title + " | Marzley Tech"):
+        if len(t) <= limit:
+            return t
+    return title
+
+
 def make_page(html, slug, title, description, main_html, ld_nodes, current, on_page=()):
     """Turn a copy of the homepage into another page with its own meta, schema and main content."""
     url = SITE + slug
@@ -160,6 +168,7 @@ def make_page(html, slug, title, description, main_html, ld_nodes, current, on_p
     meta(r'(<meta property="og:url" content=")[^"]*(")', url)
     meta(r'(<meta name="twitter:title" content=")[^"]*(")', title_a)
     meta(r'(<meta name="twitter:description" content=")[^"]*(")', desc_a)
+    html = re.sub(r'(<meta property="og:image:alt" content=")[^"]*(")', lambda m: m.group(1) + attr(title.split(" | ")[0]) + m.group(2), html, count=1)
     html = re.sub(r' *<link rel="preload" as="image"[^>]*>\n', "", html)
     html = re.sub(r' *<link rel="alternate" hreflang="[^"]*"[^>]*>\n', "", html)
 
@@ -259,6 +268,7 @@ def read_posts(folder=POSTS_DIR):
             "minutes": max(1, math.ceil(words / 200)),
             "image": info.get("image"),
             "image_alt": info.get("image_alt"),
+            "seo_title": info.get("seo_title"),
             "live": info.get("live"),
             "body": m.group(2).strip(),
         })
@@ -292,7 +302,7 @@ def post_card(post):
 BLOG = {
     "slug": "blog",
     "label": "Blog",
-    "title": "Blog: Web, M-Pesa & Tech Tips for Kenyan Businesses | Marzley Tech Solutions",
+    "title": "Blog: Web, SEO, M-Pesa & Tech Tips for Kenya | Marzley Tech",
     "description": "Practical guides on website costs in Kenya, M-Pesa payment integration, CBET documentation and running your business online.",
 }
 
@@ -399,7 +409,7 @@ def build_post(html, post, posts, kind="blog"):
         "dateModified": post["date"].isoformat(),
         "author": {"@id": SITE + "#kelvin", "@type": "Person", "name": "Kelvin Wanyoike", "url": SITE + "about"},
         "publisher": {"@id": SITE + "#business"},
-        "image": SITE + (post.get("image") or "img/brand/og-image.jpg"),
+        "image": [SITE + x for x in (og_image(post["slug"]), post.get("image")) if x] or [SITE + "img/brand/og-image.jpg"],
         "mainEntityOfPage": url,
         "inLanguage": "en-KE",
     }
@@ -408,7 +418,7 @@ def build_post(html, post, posts, kind="blog"):
         article["articleSection"] = "Case study"
     nodes = [web_page(post["slug"], post["title"], post["description"]), article,
              breadcrumbs((parent_name, parent_slug), (post["title"], post["slug"]))]
-    page = make_page(html, post["slug"], post["title"] + " | Marzley Tech Solutions", post["description"],
+    page = make_page(html, post["slug"], fit_title(post.get("seo_title") or post["title"]), post["description"],
                      body, nodes, parent_slug, ["post"])
     return page.replace('<meta property="og:type" content="website" />', '<meta property="og:type" content="article" />', 1)
 
@@ -526,14 +536,17 @@ def write_sitemap(posts, cases=()):
         ("about", "monthly", "0.8", []), ("contact", "monthly", "0.8", []), ("process", "monthly", "0.7", []),
         ("training", "monthly", "0.8", []), ("learn/", "weekly", "0.8", []), ("website-check", "monthly", "0.9", []), ("faq", "monthly", "0.7", []), ("referrals", "monthly", "0.6", []), ("blog", "weekly", "0.8", []), ("kiswahili", "monthly", "0.7", []),
         ("privacy", "yearly", "0.3", []), ("terms", "yearly", "0.3", []),
-    ] + [(p["slug"], "monthly", "0.8", []) for p in cases] + [(p["slug"], "monthly", "0.7", []) for p in posts]
+    ] + [(p["slug"], "monthly", "0.8", [], p["date"].isoformat()) for p in cases] + [(p["slug"], "monthly", "0.7", [], p["date"].isoformat()) for p in posts]
+    seed = json.loads((ROOT / "data" / "learn-seed.json").read_text(encoding="utf-8"))
+    urls += [("learn/?page=" + pg, "weekly", "0.6", []) for pg in ("practice", "videos", "notes")]
+    urls += [("learn/?track=%s&lesson=%s" % (t["slug"], l["slug"]), "monthly", "0.6", []) for t in seed["tracks"] for l in t["lessons"]]
     out = ['<?xml version="1.0" encoding="UTF-8"?>',
            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',
            '        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">']
-    for slug, freq, prio, images in urls:
+    for slug, freq, prio, images, *when in urls:
         out.append("  <url>")
-        out.append("    <loc>%s%s</loc>" % (SITE, slug))
-        out.append("    <lastmod>%s</lastmod>" % today)
+        out.append("    <loc>%s%s</loc>" % (SITE, htmllib.escape(slug, quote=False)))
+        out.append("    <lastmod>%s</lastmod>" % (when[0] if when else today))
         out.append("    <changefreq>%s</changefreq>" % freq)
         out.append("    <priority>%s</priority>" % prio)
         for img in images:
@@ -543,6 +556,44 @@ def write_sitemap(posts, cases=()):
         out.append("  </url>")
     out.append("</urlset>")
     (ROOT / "sitemap.xml").write_text("\n".join(out) + "\n", encoding="utf-8", newline="")
+
+
+def learn_seo():
+    """Give /learn/ what search engines need before JavaScript runs: structured data listing every
+    subject as a free course, and a plain list of links to every lesson (replaced by the app when it loads)."""
+    seed = json.loads((ROOT / "data" / "learn-seed.json").read_text(encoding="utf-8"))
+    e = htmllib.escape
+    url = SITE + "learn/"
+    courses = [{"@type": "ListItem", "position": i + 1, "item": {
+        "@type": "Course", "name": t["title"], "description": t["summary"],
+        "url": url + "?track=" + t["slug"] + ("&lesson=" + t["lessons"][0]["slug"] if t["lessons"] else ""),
+        "provider": {"@id": SITE + "#business"}, "isAccessibleForFree": True, "inLanguage": "en",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "KES", "category": "Free"},
+        "hasCourseInstance": {"@type": "CourseInstance", "courseMode": "Online", "courseWorkload": "PT%dH" % max(1, len(t["lessons"]))},
+    }} for i, t in enumerate(seed["tracks"])]
+    graph = {"@context": "https://schema.org", "@graph": [
+        {"@type": "WebPage", "@id": url + "#webpage", "url": url, "name": "Marzley Tech Learning Hub",
+         "description": "Free coding and ICT lessons with live practice, quizzes and notes.",
+         "isPartOf": {"@id": SITE + "#website"}, "inLanguage": "en-KE"},
+        {"@type": "ItemList", "name": "Free courses", "itemListElement": courses},
+        {"@type": "BreadcrumbList", "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Home", "item": SITE},
+            {"@type": "ListItem", "position": 2, "name": "Learn", "item": url}]},
+    ]}
+    ld = '<!-- learn:ld --><script type="application/ld+json">' + json.dumps(graph, ensure_ascii=False, separators=(",", ":")) + "</script><!-- /learn:ld -->"
+    items = []
+    for t in seed["tracks"]:
+        links = "".join('<li><a href="./?track=%s&amp;lesson=%s">%s</a></li>' % (e(t["slug"]), e(l["slug"]), e(l["title"])) for l in t["lessons"])
+        items.append('<li><h3>%s</h3><p>%s</p><ul>%s</ul></li>' % (e(t["title"]), e(t["summary"]), links))
+    index = ('<!-- learn:index --><section class="learn-static"><h1>Free coding and ICT lessons</h1>'
+             '<p>%d subjects and %d lessons with live practice, quizzes and notes. No account needed.</p><ul>%s</ul></section><!-- /learn:index -->'
+             % (len(seed["tracks"]), sum(len(t["lessons"]) for t in seed["tracks"]), "".join(items)))
+    f = ROOT / "learn" / "index.html"
+    text = f.read_text(encoding="utf-8")
+    new = re.sub(r"<!-- learn:ld -->.*?<!-- /learn:ld -->", lambda m: ld, text, flags=re.S)
+    new = re.sub(r"<!-- learn:index -->.*?<!-- /learn:index -->", lambda m: index, new, flags=re.S)
+    if new != text:
+        f.write_text(new, encoding="utf-8", newline="")
 
 
 def minify_assets():
@@ -678,6 +729,7 @@ def main():
     write_sitemap(posts, cases)
     subset_icons()
     inline_css()
+    learn_seo()
     version_assets()
     sync_csp_hash()
     print("wrote sitemap.xml")

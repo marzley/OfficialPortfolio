@@ -4,6 +4,8 @@
 define('MARZLEY_PORTAL', true);
 require __DIR__ . '/lib.php';
 
+// The JSON may be fetched by search engines rendering /learn/, but it shouldn't appear in results itself
+header('X-Robots-Tag: noindex');
 install_error_alerts('learning hub');
 start_session();
 $action = $_GET['action'] ?? '';

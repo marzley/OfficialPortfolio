@@ -466,9 +466,26 @@
   scrim.addEventListener("click", closeSide);
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeSide(); });
 
+  var HOME_TITLE = "Free Coding & ICT Lessons in Kenya | Marzley Tech Learn", HOME_DESC = document.querySelector('meta[name="description"]') ? document.querySelector('meta[name="description"]').getAttribute("content") : "";
+  function setMeta(sel, attr, val) { var m = document.querySelector(sel); if (m) m.setAttribute(attr, val); }
   function setTitle(t, desc) {
-    document.title = t ? t + " | Marzley Tech Learning Hub" : "Free tech lessons: coding, networking & CIDR, making money online | Marzley Tech";
-    if (desc) { var m = document.querySelector('meta[name="description"]'); if (m) m.setAttribute("content", desc); }
+    var title = t ? (t.length > 34 ? t + " | Marzley Learn" : t + " | Marzley Tech Learning Hub") : HOME_TITLE;
+    document.title = title;
+    desc = desc || HOME_DESC;
+    setMeta('meta[name="description"]', "content", desc);
+    setMeta('meta[property="og:title"]', "content", title);
+    setMeta('meta[name="twitter:title"]', "content", title);
+    setMeta('meta[property="og:description"]', "content", desc);
+  }
+  /** One clean address per page for search engines: /learn/?track=…&lesson=…, ?page=…, ?video=…, ?note=… */
+  function setCanonical() {
+    var p = new URLSearchParams(location.search), keep = new URLSearchParams();
+    ["track", "lesson", "video", "note", "page"].forEach(function (k) { if (p.get(k) && !(k === "page" && (p.get("track") || p.get("video") || p.get("note")))) keep.set(k, p.get(k)); });
+    var url = (/marzleytechsolutions\.co\.ke$/.test(location.hostname) ? "https://marzleytechsolutions.co.ke" : location.origin) + location.pathname + (keep.toString() ? "?" + keep.toString() : "");
+    var link = document.querySelector('link[rel="canonical"]');
+    if (!link) { link = document.createElement("link"); link.rel = "canonical"; document.head.appendChild(link); }
+    link.href = url;
+    setMeta('meta[property="og:url"]', "content", url);
   }
   function errorBox(msg) { main.innerHTML = '<div class="empty"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><p>' + esc(msg) + '</p><p><a class="btn btn-solid btn-sm" href="./">Back to the learning hub</a></p></div>'; }
 
@@ -1090,6 +1107,7 @@
   }
   function route() {
     while (cleanup.length) { try { cleanup.pop()(); } catch (e) {} }
+    setCanonical();
     var p = new URLSearchParams(location.search);
     if (p.get("track")) return pageLesson(p.get("track"), p.get("lesson"));
     if (p.get("video")) return pageVideo(p.get("video"));
