@@ -1293,6 +1293,74 @@
   window.addEventListener("resize", onProgress);
   onProgress();
 
+  /* ---------- user guide: preview first, then download ---------- */
+  var guideModal = null;
+  var guideInfo = null;
+  var showGuide = function (page) {
+    var list = guideModal.querySelector(".gm-pages");
+    if (!list.childElementCount) {
+      for (var n = 1; n <= guideInfo.pages; n++) {
+        var fig = document.createElement("figure");
+        fig.className = "guide-page";
+        fig.id = "gm-page-" + n;
+        var img = document.createElement("img");
+        img.src = "img/guide/p" + (n < 10 ? "0" : "") + n + ".webp";
+        img.width = 900;
+        img.height = 1273;
+        img.loading = "lazy";
+        img.decoding = "async";
+        img.alt = "User guide page " + n + " of " + guideInfo.pages;
+        var cap = document.createElement("figcaption");
+        cap.textContent = "Page " + n + " of " + guideInfo.pages;
+        fig.appendChild(img);
+        fig.appendChild(cap);
+        list.appendChild(fig);
+      }
+    }
+    document.documentElement.classList.add("gm-open");
+    guideModal.showModal();
+    var target = document.getElementById("gm-page-" + Math.min(Math.max(page, 1), guideInfo.pages));
+    list.scrollTop = target && page > 1 ? target.offsetTop - list.offsetTop : 0;
+  };
+  var openGuide = function (page) {
+    if (!guideModal) {
+      guideModal = document.createElement("dialog");
+      if (!guideModal.showModal) {
+        window.location.href = "user-guide#page-" + page;
+        return;
+      }
+      guideModal.className = "guide-modal";
+      guideModal.setAttribute("aria-labelledby", "gm-title");
+      guideModal.innerHTML =
+        '<div class="gm-head"><div><p class="gm-kicker">Preview</p><h2 id="gm-title">User guide</h2></div>' +
+        '<div class="gm-actions"><a class="btn btn-solid" href="docs/Marzley-Tech-User-Guide.pdf" download>' +
+        '<i class="fa-solid fa-download" aria-hidden="true"></i> Download PDF</a>' +
+        '<a class="btn btn-ghost gm-full" href="user-guide">Full page</a>' +
+        '<button type="button" class="gm-close" aria-label="Close preview"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div></div>' +
+        '<div class="gm-pages" tabindex="0" aria-label="Guide pages"></div>';
+      document.body.appendChild(guideModal);
+      guideModal.querySelector(".gm-close").addEventListener("click", function () { guideModal.close(); });
+      guideModal.addEventListener("click", function (ev) { if (ev.target === guideModal) guideModal.close(); });
+      guideModal.addEventListener("close", function () { document.documentElement.classList.remove("gm-open"); });
+    }
+    if (guideInfo) return showGuide(page);
+    fetch("data/guide.json", { cache: "no-cache" })
+      .then(function (r) { if (!r.ok) throw new Error("guide"); return r.json(); })
+      .then(function (info) {
+        guideInfo = info;
+        var dl = guideModal.querySelector("a[download]");
+        dl.lastChild.textContent = " Download PDF (" + (info.bytes / 1048576).toFixed(1) + " MB)";
+        showGuide(page);
+      })
+      .catch(function () { window.location.href = "user-guide#page-" + page; });
+  };
+  document.addEventListener("click", function (ev) {
+    var link = ev.target.closest ? ev.target.closest("a[data-guide]") : null;
+    if (!link || ev.button || ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.altKey) return;
+    ev.preventDefault();
+    openGuide(Number(link.getAttribute("data-guide")) || 1);
+  });
+
   /* ---------- hero role rotator ---------- */
   var roleEl = document.getElementById("role-word");
   var roles = ["a web developer", "an app developer", "a UI/UX designer", "a systems builder", "a digital skills facilitator", "a Jitume facilitator"];

@@ -390,6 +390,8 @@ def build_post(html, post, posts, kind="blog"):
         'with a live code editor. No account needed.</p>\n'
         '                        <a class="btn btn-ghost" href="learn/">Start learning free <span aria-hidden="true">→</span></a>\n'
         '                    </aside>\n'
+        '                    <a class="guide-link" href="user-guide" data-guide="1"><i class="fa-solid fa-book-open" aria-hidden="true"></i> '
+        'User guide: preview &amp; download (PDF)</a>\n'
         '                </article>\n'
         '{more}'
         '            </div>\n'
@@ -444,7 +446,7 @@ SW_NAV = [("Home", "Nyumbani"), ("Work", "Kazi"), ("About", "Kuhusu"), ("Service
 
 SW_FOOTER = [
     (">Technology for real solutions<", ">Teknolojia kwa suluhisho halisi<"),
-    ("<h4>Explore</h4>", "<h4>Gundua</h4>"), ("<h4>Guides</h4>", "<h4>Miongozo</h4>"), ("<h4>Work</h4>", "<h4>Kazi</h4>"),
+    ("<h4>Explore</h4>", "<h4>Gundua</h4>"), ("<h4>Guides</h4>", "<h4>Miongozo</h4>"), ('data-guide="1">User guide (PDF)</a>', 'data-guide="1">Mwongozo wa matumizi (PDF)</a>'), ("<h4>Work</h4>", "<h4>Kazi</h4>"),
     ("<h4>Contact</h4>", "<h4>Mawasiliano</h4>"), ("<h4>Support</h4>", "<h4>Tuunge mkono</h4>"),
     ('href="./">Home</a>', 'href="./">Nyumbani</a>'), ('href="work">Work</a>', 'href="work">Kazi zetu</a>'),
     ('href="about">About</a>', 'href="about">Kuhusu</a>'), ('href="services">Services</a>', 'href="services">Huduma</a>'),
@@ -539,6 +541,58 @@ def build_404(html):
     return page
 
 
+def build_user_guide(html):
+    """/user-guide: preview every page of the PDF user guide, then download it."""
+    e = htmllib.escape
+    guide = json.loads((ROOT / "data" / "guide.json").read_text(encoding="utf-8"))
+    pdf = "docs/Marzley-Tech-User-Guide.pdf"
+    size = "%.1f MB" % (guide["bytes"] / 1048576)
+    title = "User Guide (PDF): Website, Portal & Learning Hub"
+    desc = ("Preview and download the free Marzley Tech Solutions user guide: website, prices and M-Pesa, "
+            "the client portal, referrals, the learning hub and code editor.")
+    toc = "".join('                            <li><a href="user-guide#page-%d"><span>%s</span>%s<b>p. %d</b></a></li>\n'
+                  % (x["page"], e(x.get("num", "01")), e(x["title"]), x["page"]) for x in guide["sections"])
+    pages = "".join('                        <figure class="guide-page" id="page-%d"><img src="img/guide/p%02d.webp" width="900" height="1273" '
+                    'alt="User guide page %d of %d" loading="%s" decoding="async" /><figcaption>Page %d of %d</figcaption></figure>\n'
+                    % (n, n, n, guide["pages"], "eager" if n == 1 else "lazy", n, guide["pages"])
+                    for n in range(1, guide["pages"] + 1))
+    body = (
+        '        <section class="section guide" id="guide" aria-labelledby="guide-title">\n'
+        '            <div class="wrap">\n'
+        '                <div class="section-head reveal">\n'
+        '                    <div>\n'
+        '                        <p class="label">User guide</p>\n'
+        '                        <h1 id="guide-title">How everything works, step by step</h1>\n'
+        '                    </div>\n'
+        '                    <p>Preview the guide below, then download the PDF to keep, print or share. It covers the website, prices and '
+        'M-Pesa payments, the client portal, referrals, the learning hub and the code editor, with screenshots.</p>\n'
+        '                </div>\n'
+        '                <div class="guide-bar">\n'
+        '                    <a class="btn btn-solid" href="{pdf}" download><i class="fa-solid fa-download" aria-hidden="true"></i> Download PDF ({size})</a>\n'
+        '                    <a class="btn btn-ghost" href="{pdf}" target="_blank" rel="noopener">Open PDF in a new tab</a>\n'
+        '                    <span class="guide-meta">{n} pages · A4 · Free</span>\n'
+        '                </div>\n'
+        '                <div class="guide-layout">\n'
+        '                    <nav class="guide-toc" aria-label="Guide contents">\n'
+        '                        <h2>Contents</h2>\n'
+        '                        <ol>\n{toc}'
+        '                        </ol>\n'
+        '                    </nav>\n'
+        '                    <div class="guide-pages">\n{pages}'
+        '                        <p class="guide-end"><a class="btn btn-solid" href="{pdf}" download><i class="fa-solid fa-download" aria-hidden="true"></i> Download the full guide ({size})</a></p>\n'
+        '                    </div>\n'
+        '                </div>\n'
+        '            </div>\n'
+        '        </section>\n'
+    ).format(pdf=pdf, size=size, n=guide["pages"], toc=toc, pages=pages)
+    nodes = [web_page("user-guide", title, desc), breadcrumbs(("User guide", "user-guide")),
+             {"@type": "DigitalDocument", "@id": SITE + "user-guide#document", "name": "Marzley Tech Solutions: User Guide",
+              "description": desc, "url": SITE + pdf, "encodingFormat": "application/pdf", "inLanguage": "en-KE",
+              "numberOfPages": guide["pages"], "thumbnailUrl": SITE + "img/guide/p01.webp",
+              "author": {"@id": SITE + "#business"}, "publisher": {"@id": SITE + "#business"}, "isAccessibleForFree": True}]
+    return make_page(html, "user-guide", fit_title(title), desc, body, nodes, None, ["guide"])
+
+
 # ---------- sitemap ----------
 
 def write_sitemap(posts, cases=()):
@@ -547,7 +601,7 @@ def write_sitemap(posts, cases=()):
         ("", "weekly", "1.0", ["img/brand/og-image.jpg", "img/kelvin/office.jpg", "img/kelvin/office-square.jpg"]),
         ("work", "weekly", "0.9", []), ("services", "monthly", "0.9", []), ("pricing", "monthly", "0.9", []),
         ("about", "monthly", "0.8", []), ("contact", "monthly", "0.8", []), ("process", "monthly", "0.7", []),
-        ("training", "monthly", "0.8", []), ("learn/", "weekly", "0.8", []), ("website-check", "monthly", "0.9", []), ("faq", "monthly", "0.7", []), ("referrals", "monthly", "0.6", []), ("blog", "weekly", "0.8", []), ("kiswahili", "monthly", "0.7", []),
+        ("training", "monthly", "0.8", []), ("learn/", "weekly", "0.8", []), ("website-check", "monthly", "0.9", []), ("faq", "monthly", "0.7", []), ("user-guide", "monthly", "0.6", ["img/guide/p01.webp"]), ("referrals", "monthly", "0.6", []), ("blog", "weekly", "0.8", []), ("kiswahili", "monthly", "0.7", []),
         ("privacy", "yearly", "0.3", []), ("terms", "yearly", "0.3", []),
     ] + [(p["slug"], "monthly", "0.8", [], p["date"].isoformat()) for p in cases] + [(p["slug"], "monthly", "0.7", [], p["date"].isoformat()) for p in posts]
     seed = json.loads((ROOT / "data" / "learn-seed.json").read_text(encoding="utf-8"))
@@ -746,6 +800,7 @@ def main():
         write(case["slug"] + ".html", build_post(home, case, cases, kind="case"))
     write("kiswahili.html", build_kiswahili(home))
     write("404.html", build_404(home))
+    write("user-guide.html", build_user_guide(home))
     write_sitemap(posts, cases)
     subset_icons()
     inline_css()

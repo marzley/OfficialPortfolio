@@ -5987,3 +5987,45 @@ html[lang="sw"] .nav-learn::after { content: "Bure"; }
   margin: 0;
   font-size: 16px;
 }
+
+/* ---------- User guide: links, preview page and preview window ---------- */
+.guide-link { display: flex; width: fit-content; align-items: center; gap: 8px; margin-top: 12px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--heading); font-size: 14px; font-weight: 700; text-decoration: none; transition: border-color .2s, transform .2s var(--ease); }
+.guide-link i { color: var(--amber-text); }
+.section-head .guide-link { color: var(--heading); text-decoration: none; }
+.guide-link:hover, .guide-link:focus-visible { border-color: var(--amber); transform: translateY(-1px); }
+.guide-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 0 0 28px; }
+.guide-meta { font-size: 14px; font-weight: 600; color: var(--fg-muted); }
+.guide-layout { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 32px; align-items: start; }
+.guide-toc { position: sticky; top: 96px; padding: 18px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); }
+.guide-toc h2 { margin: 0 0 10px; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--amber-text); }
+.guide-toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.guide-toc a { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 8px; padding: 7px 8px; border-radius: 8px; color: var(--fg); font-size: 14px; line-height: 1.35; text-decoration: none; }
+.guide-toc a:hover { background: var(--bg); color: var(--heading); }
+.guide-toc span { font-weight: 800; color: var(--amber-text); }
+.guide-toc b { font-weight: 600; color: var(--fg-muted); font-size: 12px; white-space: nowrap; }
+.guide-pages { display: grid; gap: 22px; justify-items: center; }
+.guide-page { margin: 0; width: 100%; max-width: 820px; scroll-margin-top: 90px; }
+.guide-page img { display: block; width: 100%; height: auto; border-radius: 6px; background: #fff; box-shadow: 0 2px 6px rgba(15, 23, 42, .08), 0 18px 40px rgba(15, 23, 42, .14); }
+.guide-page figcaption { margin-top: 8px; text-align: center; font-size: 13px; color: var(--fg-muted); }
+.guide-end { margin: 8px 0 0; }
+@media (max-width: 900px) {
+  .guide-layout { grid-template-columns: 1fr; }
+  .guide-toc { position: static; }
+}
+html.gm-open { overflow: hidden; }
+.guide-modal { width: min(960px, calc(100vw - 24px)); height: calc(100vh - 24px); height: calc(100dvh - 24px); max-width: none; max-height: none; margin: auto; padding: 0; border: 0; border-radius: 16px; background: var(--bg); color: var(--fg); box-shadow: 0 30px 80px rgba(0, 0, 0, .45); overflow: hidden; }
+.guide-modal[open] { display: flex; flex-direction: column; }
+.guide-modal::backdrop { background: rgba(8, 17, 31, .72); }
+.gm-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; padding: 14px 16px; background: var(--navy); color: #fff; border-bottom: 4px solid var(--amber); }
+.gm-kicker { margin: 0; font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--amber); }
+.gm-head h2 { margin: 2px 0 0; font-size: 20px; color: #fff; }
+.gm-actions { display: flex; align-items: center; gap: 8px; }
+.gm-actions .btn { min-height: 42px; padding: 0 16px; font-size: 14px; }
+.gm-actions .btn-ghost { color: #fff; border-color: rgba(255, 255, 255, .5); }
+.gm-close { display: inline-grid; place-items: center; width: 42px; height: 42px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .12); color: #fff; font-size: 20px; cursor: pointer; }
+.gm-close:hover, .gm-close:focus-visible { background: rgba(255, 255, 255, .24); }
+.gm-pages { flex: 1; overflow-y: auto; overscroll-behavior: contain; display: grid; align-content: start; justify-items: center; gap: 18px; padding: 18px 14px 28px; }
+@media (max-width: 560px) {
+  .gm-head h2 { font-size: 17px; }
+  .gm-full { display: none; }
+}
