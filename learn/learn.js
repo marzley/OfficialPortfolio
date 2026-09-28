@@ -3,7 +3,7 @@
 (function () {
   "use strict";
   var API = "../portal/learn.php?action=";
-  var LANGS = { html: "HTML", css: "CSS", javascript: "JavaScript", python: "Python", sql: "SQL", php: "PHP", typescript: "TypeScript", react: "React", json: "JSON", markdown: "Markdown" };
+  var LANGS = { html: "HTML", css: "CSS", javascript: "JavaScript", python: "Python", sql: "SQL", php: "PHP", typescript: "TypeScript", react: "React", json: "JSON", markdown: "Markdown", c: "C", cpp: "C++", csharp: "C#", java: "Java", go: "Go", rust: "Rust", kotlin: "Kotlin", lua: "Lua", ruby: "Ruby", sass: "Sass", regex: "Regex", prolog: "Prolog" };
   var TRACK_ICONS = { html: "fa-brands fa-html5", css: "fa-brands fa-css3-alt", javascript: "fa-brands fa-js", python: "fa-brands fa-python", sql: "fa-solid fa-database",
     networking: "fa-solid fa-network-wired", "make-money-online": "fa-solid fa-sack-dollar", git: "fa-brands fa-git-alt", linux: "fa-brands fa-linux", php: "fa-brands fa-php",
     cybersecurity: "fa-solid fa-shield-halved", hosting: "fa-solid fa-server", marketing: "fa-solid fa-bullhorn", "it-basics": "fa-solid fa-computer",
@@ -25,7 +25,7 @@
     "c-programming": ["OnlineGDB (C)", "https://www.onlinegdb.com/online_c_compiler"], cpp: ["OnlineGDB (C++)", "https://www.onlinegdb.com/online_c++_compiler"],
     csharp: [".NET Fiddle", "https://dotnetfiddle.net/"], "dart-flutter": ["DartPad", "https://dartpad.dev/"], go: ["Go Playground", "https://go.dev/play/"],
     php: ["OnlineGDB (PHP)", "https://www.onlinegdb.com/online_php_interpreter"] };
-  var MODES = { html: "htmlmixed", css: "htmlmixed", javascript: "javascript", python: "python", sql: "text/x-sql", php: "application/x-httpd-php", typescript: "text/typescript", react: "jsx", json: "application/json", markdown: "markdown" };
+  var MODES = { html: "htmlmixed", css: "htmlmixed", javascript: "javascript", python: "python", sql: "text/x-sql", php: "application/x-httpd-php", typescript: "text/typescript", react: "jsx", json: "application/json", markdown: "markdown", c: "text/x-csrc", cpp: "text/x-c++src", csharp: "text/x-csharp", java: "text/x-java", go: "text/x-go", rust: "text/x-rustsrc", kotlin: "text/x-kotlin", lua: "text/x-lua", ruby: "text/x-ruby", sass: "text/x-scss", regex: "text/plain", prolog: "text/plain" };
   var STARTERS = {
     html: "<!DOCTYPE html>\n<html>\n<body>\n  <h1>Hello!</h1>\n  <p>Edit me and press Run.</p>\n</body>\n</html>",
     css: "<style>\n  h1 { color: #0b1b35; font-family: sans-serif; }\n  .box { padding: 16px; background: #fff7e0; border: 2px solid #ffb800; border-radius: 12px; }\n</style>\n<h1>Styling practice</h1>\n<div class=\"box\">Change my colours.</div>",
@@ -39,6 +39,21 @@
     json: "{\n  \"shop\": \"Mama Mboga\",\n  \"town\": \"Nakuru\",\n  \"open\": true,\n  \"products\": [\n    { \"name\": \"Sukuma\", \"price\": 20 },\n    { \"name\": \"Tomatoes\", \"price\": 10 }\n  ]\n}",
     markdown: "# My shop\n\nWe sell **fresh vegetables** in *Nakuru*.\n\n## Prices\n\n| Item | Price |\n|------|-------|\n| Sukuma | KSh 20 |\n| Tomatoes | KSh 10 |\n\n- Open daily\n- Pay with M-Pesa\n\n> Order on WhatsApp: 0712 345 678"
   };
+
+  Object.assign(STARTERS, {
+    "c": "#include <stdio.h>\n\nint main() {\n    int prices[] = {180, 150, 60};\n    int total = 0;\n    for (int i = 0; i < 3; i++) {\n        total += prices[i];\n    }\n    printf(\"Habari, Kenya!\\n\");\n    printf(\"Total: KSh %d\\n\", total);\n    return 0;\n}",
+    "cpp": "#include <iostream>\nusing namespace std;\n\nint square(int x) {\n    return x * x;\n}\n\nint main() {\n    cout << \"Habari, Kenya!\" << endl;\n    for (int i = 1; i <= 5; i++) {\n        cout << i << \" squared is \" << square(i) << endl;\n    }\n    return 0;\n}",
+    "csharp": "using System;\nusing System.Collections.Generic;\nusing System.Linq;\n\nclass Program\n{\n    static void Main()\n    {\n        var prices = new Dictionary<string, decimal> { [\"Unga\"] = 180, [\"Sugar\"] = 150, [\"Milk\"] = 60 };\n        foreach (var p in prices)\n            Console.WriteLine($\"{p.Key}: KSh {p.Value}\");\n        Console.WriteLine($\"Total: KSh {prices.Values.Sum()}\");\n    }\n}",
+    "java": "import java.util.*;\n\nclass Main {\n    public static void main(String[] args) {\n        List<String> towns = List.of(\"Nairobi\", \"Kisumu\", \"Mombasa\");\n        for (String town : towns) {\n            System.out.println(\"Habari, \" + town + \"!\");\n        }\n        System.out.println(\"Towns: \" + towns.size());\n    }\n}",
+    "go": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tprices := map[string]int{\"Unga\": 180, \"Sugar\": 150, \"Milk\": 60}\n\ttotal := 0\n\tfor item, price := range prices {\n\t\tfmt.Printf(\"%s: KSh %d\\n\", item, price)\n\t\ttotal += price\n\t}\n\tfmt.Println(\"Total:\", total)\n}",
+    "rust": "fn main() {\n    let prices = vec![180, 150, 60];\n    let total: i32 = prices.iter().sum();\n    for (i, p) in prices.iter().enumerate() {\n        println!(\"Item {}: KSh {}\", i + 1, p);\n    }\n    println!(\"Total: KSh {}\", total);\n}",
+    "kotlin": "data class Product(val name: String, val price: Int)\n\nfun main() {\n    val products = listOf(Product(\"Unga\", 180), Product(\"Sugar\", 150), Product(\"Milk\", 60))\n    products.forEach { println(\"${it.name}: KSh ${it.price}\") }\n    println(\"Total: KSh ${products.sumOf { it.price }}\")\n}",
+    "lua": "local prices = { Unga = 180, Sugar = 150, Milk = 60 }\nlocal total = 0\nfor item, price in pairs(prices) do\n  print(item .. \": KSh \" .. price)\n  total = total + price\nend\nprint(\"Total: KSh \" .. total)",
+    "ruby": "prices = { \"Unga\" => 180, \"Sugar\" => 150, \"Milk\" => 60 }\n\nprices.each do |item, price|\n  puts \"#{item}: KSh #{price}\"\nend\nputs \"Total: KSh #{prices.values.sum}\"\nputs \"Cheapest: #{prices.min_by { |_, p| p }.first}\"",
+    "sass": "$brand: #0b1b35;\n$accent: #ffb800;\n$radius: 12px;\n\n@mixin card($pad: 16px) {\n  padding: $pad;\n  border-radius: $radius;\n}\n\n.card {\n  @include card(24px);\n  color: $brand;\n  border: 2px solid $accent;\n\n  h2 { margin: 0; }\n  &:hover { background: $accent; }\n}",
+    "regex": "/07\\d{2}\\s?\\d{3}\\s?\\d{3}/g\n---\nCall 0712 345 678 or 0798123456. Office: 020 123 4567.",
+    "prolog": "% Facts\nparent(kamau, wanjiku).\nparent(kamau, otieno).\nparent(wanjiku, amina).\n\n% Rules\ngrandparent(X, Z) :- parent(X, Y), parent(Y, Z).\nsibling(X, Y) :- parent(P, X), parent(P, Y), X \\= Y.\n\n% Queries (lines starting with ?-)\n?- grandparent(kamau, Who).\n?- sibling(wanjiku, S)."
+  });
 
   var state = { me: null, csrf: null, editor: false, progress: [], catalog: null, gsiLoaded: false, mpesa: false };
   var main = document.getElementById("learn-main");
@@ -218,7 +233,7 @@
           // The frame is stuck: throw it away so the next run starts a fresh one
           if (self.frame) { self.frame.remove(); self.frame = null; self.frameLang = null; }
           resolve({ text: "", ok: false, error: "timeout" });
-        }, lang === "python" || lang === "php" ? 90000 : lang === "sql" ? 40000 : 15000);
+        }, lang === "python" || lang === "php" || lang === "ruby" ? 90000 : lang === "sql" || ONLINE_LANGS[lang] ? 45000 : { c: 1, cpp: 1, lua: 1, sass: 1, prolog: 1, regex: 1 }[lang] ? 70000 : 15000);
       });
     });
   };
@@ -709,13 +724,72 @@
         ["Links and images", "Visit [Marzley Tech](https://marzleytechsolutions.co.ke).\n\n![A photo](https://picsum.photos/400/200)"]] }
   };
 
+  Object.assign(PRACTICE, {
+    c: { track: "c-programming", about: "C is the language behind operating systems, microcontrollers and embedded devices. Learning it shows how computers really work.", uses: ["Operating systems", "Arduino and embedded", "Fast programs"],
+      tips: ["Every program starts in int main().", "printf(\"%d\", n) prints numbers; %s text; %.2f decimals.", "Arrays start at index 0 and C does not check the end."],
+      examples: [["Array total", null], ["Functions", "#include <stdio.h>\n\nint max(int a, int b) {\n    return a > b ? a : b;\n}\n\nint main() {\n    printf(\"Bigger: %d\\n\", max(12, 40));\n    return 0;\n}"],
+        ["Pointers", "#include <stdio.h>\n\nvoid addBonus(int *salary) {\n    *salary += 2000;\n}\n\nint main() {\n    int pay = 30000;\n    addBonus(&pay);\n    printf(\"Pay: %d\\n\", pay);\n    return 0;\n}"],
+        ["Structs", "#include <stdio.h>\n#include <string.h>\n\nstruct Student { char name[20]; int marks; };\n\nint main() {\n    struct Student s;\n    strcpy(s.name, \"Kiprop\");\n    s.marks = 78;\n    printf(\"%s scored %d\\n\", s.name, s.marks);\n    return 0;\n}"]] },
+    cpp: { track: "cpp", about: "C++ adds classes and a huge library to C. It powers games, browsers, trading systems and coding contests.", uses: ["Games", "High-performance apps", "Competitive programming"],
+      tips: ["cout << prints; endl ends the line.", "Functions must be declared before main or above it.", "Code using string, vector or other libraries runs on the full online compiler automatically."],
+      examples: [["Squares", null], ["Grades with if", "#include <iostream>\nusing namespace std;\n\nint main() {\n    int marks[] = {82, 55, 31};\n    for (int i = 0; i < 3; i++) {\n        if (marks[i] >= 70) cout << marks[i] << \": A\" << endl;\n        else if (marks[i] >= 50) cout << marks[i] << \": C\" << endl;\n        else cout << marks[i] << \": E\" << endl;\n    }\n    return 0;\n}"],
+        ["Recursion", "#include <iostream>\nusing namespace std;\n\nint factorial(int n) {\n    if (n <= 1) return 1;\n    return n * factorial(n - 1);\n}\n\nint main() {\n    cout << \"5! = \" << factorial(5) << endl;\n    return 0;\n}"]] },
+    csharp: { track: "csharp", about: "C# is Microsoft's language for business software, websites with ASP.NET and games with Unity.", uses: ["Business systems", "ASP.NET websites", "Unity games"],
+      tips: ["Console.WriteLine prints a line.", "Use $\"Total: {total}\" to insert values into text.", "decimal is best for money."],
+      examples: [["Dictionary total", null], ["Classes", "using System;\n\nclass Account\n{\n    public string Owner { get; }\n    public decimal Balance { get; private set; }\n    public Account(string owner) => Owner = owner;\n    public void Deposit(decimal amount) => Balance += amount;\n}\n\nclass Program\n{\n    static void Main()\n    {\n        var a = new Account(\"Amina\");\n        a.Deposit(2500);\n        Console.WriteLine($\"{a.Owner}: KSh {a.Balance}\");\n    }\n}"],
+        ["LINQ", "using System;\nusing System.Linq;\n\nclass Program\n{\n    static void Main()\n    {\n        int[] marks = { 45, 78, 92, 60, 71 };\n        Console.WriteLine($\"Average: {marks.Average():F1}\");\n        Console.WriteLine(\"Passed: \" + string.Join(\", \", marks.Where(m => m >= 50)));\n    }\n}"]] },
+    java: { track: "java", about: "Java runs Android apps, banks and big business systems, and is taught in many colleges.", uses: ["Android apps", "Banking systems", "Enterprise software"],
+      tips: ["Keep the class name Main with a main method.", "System.out.println prints a line.", "Every statement ends with ;"],
+      examples: [["List of towns", null], ["Classes", "class Main {\n    static class Account {\n        private double balance;\n        void deposit(double amount) { balance += amount; }\n        double getBalance() { return balance; }\n    }\n\n    public static void main(String[] args) {\n        Account a = new Account();\n        a.deposit(2500);\n        System.out.println(\"Balance: \" + a.getBalance());\n    }\n}"],
+        ["Loops and arrays", "class Main {\n    public static void main(String[] args) {\n        int[] scores = {45, 78, 92, 60};\n        int total = 0;\n        for (int s : scores) total += s;\n        System.out.println(\"Average: \" + (double) total / scores.length);\n    }\n}"]] },
+    go: { track: "go", about: "Go is a simple, fast language from Google for web servers, APIs and cloud tools like Docker and Kubernetes.", uses: ["APIs and servers", "Cloud tools", "Fintech back ends"],
+      tips: ["Start with package main and func main().", ":= declares a variable.", "Go has only one loop keyword: for."],
+      examples: [["Map of prices", null], ["Functions with errors", "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n)\n\nfunc divide(a, b float64) (float64, error) {\n\tif b == 0 {\n\t\treturn 0, errors.New(\"cannot divide by zero\")\n\t}\n\treturn a / b, nil\n}\n\nfunc main() {\n\tif r, err := divide(10, 4); err == nil {\n\t\tfmt.Println(\"Result:\", r)\n\t}\n\t_, err := divide(1, 0)\n\tfmt.Println(\"Error:\", err)\n}"],
+        ["Structs", "package main\n\nimport \"fmt\"\n\ntype Order struct {\n\tItem   string\n\tAmount int\n\tPaid   bool\n}\n\nfunc main() {\n\to := Order{\"Charger\", 800, true}\n\tfmt.Printf(\"%+v\\n\", o)\n}"]] },
+    rust: { track: "algorithms", about: "Rust is fast and memory-safe. It is used for systems, web servers, blockchain and command-line tools.", uses: ["Systems programming", "WebAssembly", "Command-line tools"],
+      tips: ["println!(\"{}\", x) prints values.", "Variables can't change unless you write let mut.", "The compiler's error messages are very helpful: read them."],
+      examples: [["Vector sum", null], ["Structs and methods", "struct Account { owner: String, balance: f64 }\n\nimpl Account {\n    fn deposit(&mut self, amount: f64) { self.balance += amount; }\n}\n\nfn main() {\n    let mut a = Account { owner: String::from(\"Amina\"), balance: 0.0 };\n    a.deposit(2500.0);\n    println!(\"{}: KSh {}\", a.owner, a.balance);\n}"],
+        ["Match", "fn grade(marks: u32) -> &'static str {\n    match marks {\n        70..=100 => \"A\",\n        50..=69 => \"C\",\n        _ => \"E\",\n    }\n}\n\nfn main() {\n    for m in [82, 55, 31] {\n        println!(\"{} -> {}\", m, grade(m));\n    }\n}"]] },
+    kotlin: { track: "java", about: "Kotlin is Google's preferred language for Android apps. It is shorter and safer than Java.", uses: ["Android apps", "Back ends", "Multiplatform apps"],
+      tips: ["fun main() is where the program starts.", "val can't change; var can.", "\"${x}\" puts values into text."],
+      examples: [["Data classes", null], ["Null safety", "fun main() {\n    val email: String? = null\n    println(email ?: \"No email\")\n    println(email?.length ?: 0)\n}"],
+        ["Loops and ranges", "fun main() {\n    for (i in 1..5) println(\"$i x 7 = ${i * 7}\")\n    val evens = (1..20).filter { it % 2 == 0 }\n    println(evens)\n}"]] },
+    lua: { track: "algorithms", about: "Lua is a small, fast scripting language used in games (Roblox, World of Warcraft), apps and embedded devices.", uses: ["Game scripting (Roblox)", "Embedded devices", "App plugins"],
+      tips: ["print() shows output; .. joins text.", "Tables {} are Lua's lists and dictionaries.", "Lists start at index 1."],
+      examples: [["Price table", null], ["Functions", "local function grade(marks)\n  if marks >= 70 then return \"A\" elseif marks >= 50 then return \"C\" end\n  return \"E\"\nend\n\nfor _, m in ipairs({82, 55, 31}) do\n  print(m, grade(m))\nend"],
+        ["Loops", "for i = 1, 5 do\n  print(i .. \" x 7 = \" .. i * 7)\nend"]] },
+    ruby: { track: "algorithms", about: "Ruby is a friendly language built for programmer happiness. Ruby on Rails powers sites like GitHub and Shopify.", uses: ["Web apps with Rails", "Automation", "Startups"],
+      tips: ["puts prints a line.", "\"#{x}\" puts values into text.", "Blocks: [1, 2, 3].each { |n| puts n }"],
+      examples: [["Hash of prices", null], ["Classes", "class Account\n  attr_reader :balance\n  def initialize(owner)\n    @owner = owner\n    @balance = 0\n  end\n  def deposit(amount)\n    @balance += amount\n    self\n  end\nend\n\na = Account.new(\"Amina\").deposit(2500)\nputs \"Balance: #{a.balance}\""],
+        ["Arrays", "marks = [82, 55, 31, 90]\nputs marks.select { |m| m >= 50 }.inspect\nputs marks.map { |m| m + 5 }.inspect\nputs \"Average: #{marks.sum / marks.size.to_f}\""]] },
+    sass: { track: "css", about: "Sass (SCSS) is CSS with superpowers: variables, nesting and mixins. It compiles to normal CSS.", uses: ["Large websites", "Design systems", "Bootstrap theming"],
+      tips: ["$name: value; makes a variable.", "Nest selectors inside each other; & means the parent.", "@mixin and @include reuse groups of styles."],
+      examples: [["Variables and mixin", null], ["Nesting", "nav {\n  ul { list-style: none; margin: 0; }\n  li { display: inline-block; }\n  a {\n    color: #0b1b35;\n    &:hover { color: #ffb800; }\n  }\n}"],
+        ["Loops", "@for $i from 1 through 4 {\n  .mt-#{$i} { margin-top: #{$i * 8}px; }\n}"]] },
+    regex: { track: "javascript", about: "Regular expressions find patterns in text: phone numbers, emails, dates and more. Write the pattern, then --- and your text.", uses: ["Form validation", "Search and replace", "Data cleaning"],
+      tips: ["\\d digit, \\w letter or digit, \\s space, . any character.", "+ one or more, * zero or more, {3} exactly three.", "( ) makes a group; flags: g all, i ignore case."],
+      examples: [["Kenyan phone numbers", null], ["Emails", "/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g\n---\nWrite to info@marzleytechsolutions.co.ke or sales@example.com today."],
+        ["Dates with groups", "/(\\d{4})-(\\d{2})-(\\d{2})/g\n---\nPaid on 2026-09-28, due again on 2026-10-28."],
+        ["M-Pesa codes", "/\\b[A-Z0-9]{10}\\b/g\n---\nSGH7XK2L9P Confirmed. Ksh500.00 sent. Ref TJK2M8ZQ4A."]] },
+    prolog: { track: "algorithms", about: "Prolog is a logic language: you state facts and rules, then ask questions. It is used in AI, expert systems and language processing.", uses: ["AI and expert systems", "Puzzles and logic", "University courses"],
+      tips: ["Facts and rules end with a full stop.", "Variables start with a capital letter.", "Ask questions on lines that start with ?-"],
+      examples: [["Family tree", null], ["Lists", "total([], 0).\ntotal([H|T], S) :- total(T, S1), S is H + S1.\n\n?- total([180, 150, 60], S).\n?- member(X, [unga, sugar, milk])."],
+        ["Recommendations", "likes(amina, python).\nlikes(otieno, java).\nlikes(amina, design).\ncourse(python, data).\ncourse(java, android).\ncourse(design, web).\n\nsuggest(P, Area) :- likes(P, T), course(T, Area).\n\n?- suggest(amina, Area)."]] }
+  });
+  var PRACTICE_GROUPS = [
+    ["Web", ["html", "css", "javascript", "typescript", "react", "sass", "json", "markdown"]],
+    ["Programming", ["python", "php", "c", "cpp", "csharp", "java", "go", "rust", "kotlin", "lua", "ruby", "prolog"]],
+    ["Data", ["sql", "regex"]]
+  ];
+  var ONLINE_LANGS = { csharp: 1, java: 1, go: 1, rust: 1, kotlin: 1 };
+
   function pagePractice(lang) {
     setNav("practice");
     showSide(false);
     lang = LANGS[lang] ? lang : store.get("practice-lang") || "python";
     setTitle(LANGS[lang] + " online editor", "Free online " + LANGS[lang] + " editor: write code and run it in your browser.");
     main.innerHTML = '<section class="practice"><div class="practice-head"><h1>Practice</h1><div class="lang-pick" role="tablist" aria-label="Language">' +
-      Object.keys(LANGS).map(function (k) { return '<button type="button" role="tab" data-lang="' + k + '" aria-selected="' + (k === lang) + '">' + LANGS[k] + "</button>"; }).join("") +
+      PRACTICE_GROUPS.map(function (g) { return '<span class="lang-group">' + g[0] + "</span>" + g[1].map(function (k) { return '<button type="button" role="tab" data-lang="' + k + '" aria-selected="' + (k === lang) + '">' + LANGS[k] + "</button>"; }).join(""); }).join("") +
       '</div></div><div class="practice-grid"><div class="pane"><div class="pane-bar"><span>Code</span><div><label class="sr-only" for="p-example">Load an example</label><select id="p-example" class="ex-select"><option value="">Examples…</option>' +
       PRACTICE[lang].examples.map(function (x, i) { return '<option value="' + i + '">' + esc(x[0]) + "</option>"; }).join("") + "</select>" +
       '<button type="button" class="try-reset" id="p-reset" title="Start again"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i><span class="sr-only">Start again</span></button>' +
@@ -740,13 +814,17 @@
     });
     var t = setInterval(function () { store.set("code:" + lang, ed.getValue()); }, 5000);
     cleanup.push(function () { clearInterval(t); store.set("code:" + lang, ed.getValue()); });
-    if (lang !== "python" && lang !== "php") run();
+    if (lang !== "python" && lang !== "php" && lang !== "ruby" && !ONLINE_LANGS[lang]) run();
   }
   function practiceDetails(lang) {
     var info = PRACTICE[lang], track = info.track;
+    if (ONLINE_LANGS[lang]) info = Object.assign({}, info, { online: true });
     var note = { python: "Python runs fully in your browser. The first run downloads it once (about 10 MB).", php: "PHP 8.3 runs fully in your browser. The first run downloads it once (about 4 MB). Databases, sessions and email need a real server.",
       sql: "SQL runs on a sample shop database with Customers, Products and Orders. Try SELECT * FROM Products;", typescript: "Types are removed before running, so type mistakes are not reported here. Use VS Code to see them.",
-      react: "React 18 and ReactDOM are ready to use. Hooks: React.useState, React.useEffect.", json: "Only data is allowed in JSON: no comments, no trailing commas.", markdown: "The output shows the formatted page, like GitHub shows a README." }[lang] || "Your code runs in a safe sandbox: it can't touch this website, your cookies or your accounts.";
+      react: "React 18 and ReactDOM are ready to use. Hooks: React.useState, React.useEffect.", json: "Only data is allowed in JSON: no comments, no trailing commas.", markdown: "The output shows the formatted page, like GitHub shows a README.",
+      c: "C runs instantly in your browser with a small C interpreter (PicoC). If your code uses something it doesn't support, it is sent to Compiler Explorer (godbolt.org), a free online compiler.", cpp: "Simple C++ (cout, loops, functions, arrays) runs instantly in your browser. Code that needs string, vector or other libraries is sent to Compiler Explorer (godbolt.org), a free online compiler.",
+      lua: "Lua runs fully in your browser.", ruby: "Ruby 3.3 runs fully in your browser. The first run downloads it once (about 5 MB).", sass: "The output shows the CSS that your Sass compiles to.",
+      regex: "Uses JavaScript regular expressions, the same ones websites use for form checks.", prolog: "Prolog runs in your browser (Tau Prolog). Put questions on lines starting with ?-" }[lang] || (ONLINE_LANGS[lang] ? LANGS[lang] + " is compiled and run by Compiler Explorer (godbolt.org), a free online service, so your code is sent to it. It needs an internet connection and takes a few seconds." : "Your code runs in a safe sandbox: it can't touch this website, your cookies or your accounts.");
     return '<section class="practice-info" aria-labelledby="pi-title"><div class="pi-main"><h2 id="pi-title">About ' + esc(LANGS[lang]) + '</h2><p>' + esc(info.about) + '</p>' +
       '<p class="pi-uses">' + info.uses.map(function (u) { return '<span class="tag">' + esc(u) + "</span>"; }).join(" ") + '</p><p class="muted small">' + esc(note) + ' Your code is saved on this device.</p></div>' +
       '<div class="pi-tips"><h3>Quick tips</h3><ul>' + info.tips.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul>" +

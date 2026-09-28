@@ -313,6 +313,7 @@
 
   // ---------- Helpers for the extra languages ----------
   var ROOT = new URL("/", location.href).href;
+  var ENGINES_V = (document.querySelector("script[data-engines]") || { getAttribute: function () { return "1"; } }).getAttribute("data-engines");
   var loaded = {};
   function loadScript(path) {
     if (!loaded[path]) loaded[path] = new Promise(function (resolve, reject) {
@@ -441,9 +442,105 @@
     w.postMessage({ code: code });
   }
 
+  // ---------- C, C++, Lua, Ruby, Sass and Prolog: engines in a worker (learn/engines.js), stopped after 10 seconds ----------
+  var engWorker = null, ENG_LIMIT = 10000, ENG_NAMES = { c: "C", cpp: "C++", lua: "Lua", ruby: "Ruby", sass: "Sass", prolog: "Prolog", regex: "Regex" };
+  function startEngines() {
+    var src = "self.__LEARN_ROOT = '" + ROOT + "'; importScripts('" + ROOT + "learn/engines.js?v=" + ENGINES_V + "');";
+    return new Worker(URL.createObjectURL(new Blob([src], { type: "text/javascript" })));
+  }
+  function runEngine(lang, code, stdin) {
+    out.textContent = "";
+    var w, timer = null, first = !engWorker;
+    try { w = engWorker || (engWorker = startEngines()); } catch (e) { return showError("Error", "This language can't run in this browser. Try a recent Chrome, Edge or Firefox."); }
+    print(first || !w["__" + lang] ? "Starting " + ENG_NAMES[lang] + "…" + (lang === "ruby" ? " (the first run downloads it once, about 5 MB)" : "") + "\n" : "Running…\n", "muted");
+    var stop = function () {
+      w.terminate(); engWorker = null; out.textContent = "";
+      print("Your code ran for more than 10 seconds and was stopped. Check for a loop that never ends.\n", "err");
+      send({ type: "output", text: "", ok: false, error: "Your code ran for more than 10 seconds and was stopped." });
+    };
+    // First use downloads the engine, so allow longer before the 10-second limit starts
+    timer = setTimeout(stop, ENG_LIMIT + (w["__" + lang] ? 0 : 50000));
+    var go = function () { w.postMessage({ lang: lang, code: code, stdin: stdin || "" }); };
+    w.onmessage = function (e) {
+      var d = e.data || {};
+      if (d.ready) { go(); return; }
+      if (!d.done) return;
+      clearTimeout(timer);
+      w["__" + lang] = true;
+      out.textContent = "";
+      // The quick in-browser C/C++ interpreters don't cover everything: fall back to the full online compiler
+      if ((lang === "c" || lang === "cpp") && d.err && !d.out && /cannot find library|not supported|unsupported|can't assign|not implemented|unknown type|undefined identifier|is not defined/i.test(d.err)) {
+        return runRemote(lang, code, "This code needs the full compiler, so it's running on Compiler Explorer (godbolt.org)…");
+      }
+      if (lang === "sass" && d.out) {
+        print("Compiled CSS:\n", "muted"); print(d.out);
+      } else if (d.out) print(d.out);
+      if (d.err) print(d.err, "err");
+      if (!d.out && !d.err) print("(no output)", "muted");
+      send(d.err && !d.out ? { type: "output", text: "", ok: false, error: d.err.trim().split("\n")[0] } : { type: "output", text: d.out || "", ok: !d.err, error: d.err ? d.err.trim().split("\n")[0] : "" });
+    };
+    w.onerror = function (e) { clearTimeout(timer); if (e.preventDefault) e.preventDefault(); w.terminate(); engWorker = null; showError("Error", "The " + ENG_NAMES[lang] + " engine could not start. Check your connection and try again."); };
+    if (!first) go();
+  }
+
+  // ---------- C#, Java, Go, Rust and Kotlin: compiled and run by Compiler Explorer (godbolt.org), a free online service ----------
+  var CE = "https://godbolt.org/api/", CE_LANG = { csharp: "csharp", java: "java", go: "go", rust: "rust", kotlin: "kotlin", c: "c", cpp: "c++" },
+    CE_NAMES = { csharp: "C#", java: "Java", go: "Go", rust: "Rust", kotlin: "Kotlin", c: "C", cpp: "C++" },
+    CE_OPEN = { csharp: "https://dotnetfiddle.net/", java: "https://www.onlinegdb.com/online_java_compiler", go: "https://go.dev/play/", rust: "https://play.rust-lang.org/", kotlin: "https://play.kotlinlang.org/", c: "https://www.onlinegdb.com/online_c_compiler", cpp: "https://www.onlinegdb.com/online_c++_compiler" },
+    ceCompiler = {};
+  function ceJson(url, body) {
+    return fetch(url, body ? { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify(body) } : { headers: { "Accept": "application/json" } })
+      .then(function (r) { if (!r.ok) throw new Error("The online compiler replied with an error (" + r.status + ")."); return r.json(); });
+  }
+  function pickCompiler(lang) {
+    if (ceCompiler[lang]) return Promise.resolve(ceCompiler[lang]);
+    return ceJson(CE + "compilers/" + CE_LANG[lang] + "?fields=id,name,semver,supportsExecute").then(function (list) {
+      var ok = (list || []).filter(function (c) { return c.supportsExecute !== false && !/nightly|trunk|beta|snapshot/i.test(c.name + c.id); });
+      var num = function (v) { return String(v || "").split(/[^0-9]+/).filter(Boolean).slice(0, 3).map(function (x) { return ("000" + x).slice(-4); }).join("."); };
+      ok.sort(function (a, b) { return num(b.semver) < num(a.semver) ? -1 : num(b.semver) > num(a.semver) ? 1 : 0; });
+      if (!ok.length) throw new Error("No compiler is available for this language right now.");
+      return (ceCompiler[lang] = ok[0].id);
+    });
+  }
+  function ceText(x) { return (x || []).map(function (l) { return l.text; }).join("\n"); }
+  function runRemote(lang, code, note) {
+    out.textContent = "";
+    print((note || "Compiling and running on Compiler Explorer (godbolt.org)…") + "\n", "muted");
+    var done = false, timer = setTimeout(function () { if (!done) { done = true; fail("The online compiler took too long to answer."); } }, 30000);
+    var fail = function (why) {
+      out.textContent = "";
+      print(why + "\n\n", "err");
+      print("You can still run your code: copy it (the copy button above) and paste it into " + CE_OPEN[lang] + "\n", "muted");
+      send({ type: "output", text: "", ok: false, error: why });
+    };
+    pickCompiler(lang).then(function (id) {
+      return ceJson(CE + "compiler/" + encodeURIComponent(id) + "/compile", {
+        source: code, lang: CE_LANG[lang], allowStoreCodeDebug: false,
+        options: { userArguments: "", executeParameters: { args: [], stdin: "" }, compilerOptions: { executorRequest: true, skipAsm: true }, filters: { execute: true }, tools: [], libraries: [] }
+      });
+    }).then(function (r) {
+      if (done) return; done = true; clearTimeout(timer);
+      var ex = r.execResult || r, build = ex.buildResult || r.buildResult || {};
+      out.textContent = "";
+      var stdout = ceText(ex.stdout), stderr = ceText(ex.stderr);
+      var buildErr = build.code ? (ceText(build.stderr) || ceText(build.stdout)) : "";
+      if (buildErr) { print("Your code didn't compile:\n", "err"); print(buildErr + "\n", "err"); return send({ type: "output", text: "", ok: false, error: buildErr.split("\n")[0] }); }
+      if (stdout) print(stdout + "\n");
+      if (stderr) print(stderr + "\n", "err");
+      if (ex.timedOut) print("Your program took too long and was stopped.\n", "err");
+      if (!stdout && !stderr) print("(no output)", "muted");
+      send({ type: "output", text: stdout, ok: !stderr && !ex.timedOut && !(ex.code > 0), error: stderr ? stderr.split("\n")[0] : "" });
+    }).catch(function (e) {
+      if (done) return; done = true; clearTimeout(timer);
+      fail(/Failed to fetch|NetworkError|Load failed/i.test(String(e && e.message)) ? "Couldn't reach the online compiler. Check your internet connection." : String(e && e.message || e));
+    });
+  }
+
   window.addEventListener("message", function (e) {
     var d = e.data || {};
     if (d.type !== "run" || typeof d.code !== "string") return;
+    if (ENG_NAMES[d.lang]) return runEngine(d.lang, d.code, d.stdin);
+    if (CE_LANG[d.lang]) return runRemote(d.lang, d.code);
     if (d.lang === "python") runPython(d.code);
     else if (d.lang === "sql") runSql(d.code);
     else if (d.lang === "php") runPhp(d.code);

@@ -2,7 +2,7 @@
 # It is always shown inside a sandboxed frame with no access to the website, cookies or accounts.
 <Files "runner.html">
     <IfModule mod_headers.c>
-        Header always set Content-Security-Policy "default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob:; style-src 'self' 'unsafe-inline'; img-src data: blob: https:; media-src data: blob: https:; font-src data:; connect-src 'self' data:; frame-ancestors 'self'; form-action 'none'; base-uri 'none'"
+        Header always set Content-Security-Policy "default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob:; style-src 'self' 'unsafe-inline'; img-src data: blob: https:; media-src data: blob: https:; font-src data:; connect-src 'self' data: https://godbolt.org; frame-ancestors 'self'; form-action 'none'; base-uri 'none'"
         Header always unset X-Frame-Options
     </IfModule>
 </Files>

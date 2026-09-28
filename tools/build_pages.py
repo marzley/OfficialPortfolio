@@ -678,6 +678,13 @@ def version_assets():
             page.write_text(new, encoding="utf-8", newline="")
     # The portal and learning hub pages load their own scripts and styles. Stamp them too,
     # so a new upload never runs old cached JavaScript against new HTML (or the other way round).
+    runner = ROOT / "learn" / "runner.html"
+    engines = ROOT / "learn" / "engines.js"
+    if runner.exists() and engines.exists():
+        text = runner.read_text(encoding="utf-8")
+        new = re.sub(r'data-engines="[^"]*"', 'data-engines="%s"' % hashlib.sha1(engines.read_bytes()).hexdigest()[:10], text)
+        if new != text:
+            runner.write_text(new, encoding="utf-8", newline="")
     for page in ("portal/index.html", "learn/index.html", "learn/runner.html"):
         f = ROOT / page
         if not f.exists():
