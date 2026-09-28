@@ -492,33 +492,55 @@
     return fetch(url, body ? { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify(body) } : { headers: { "Accept": "application/json" } })
       .then(function (r) { if (!r.ok) throw new Error("The online compiler replied with an error (" + r.status + ")."); return r.json(); });
   }
-  function pickCompiler(lang) {
+  // All compilers for a language that can run code, newest stable first
+  function compilerList(lang) {
     if (ceCompiler[lang]) return Promise.resolve(ceCompiler[lang]);
     return ceJson(CE + "compilers/" + CE_LANG[lang] + "?fields=id,name,semver,supportsExecute").then(function (list) {
-      var ok = (list || []).filter(function (c) { return c.supportsExecute !== false && !/nightly|trunk|beta|snapshot/i.test(c.name + c.id); });
+      var ok = (list || []).filter(function (c) { return c.supportsExecute !== false && !/nightly|trunk|beta|snapshot|alpha|\brc\b|dev|experimental|native/i.test(c.name + " " + c.id); });
       var num = function (v) { return String(v || "").split(/[^0-9]+/).filter(Boolean).slice(0, 3).map(function (x) { return ("000" + x).slice(-4); }).join("."); };
       ok.sort(function (a, b) { return num(b.semver) < num(a.semver) ? -1 : num(b.semver) > num(a.semver) ? 1 : 0; });
       if (!ok.length) throw new Error("No compiler is available for this language right now.");
-      return (ceCompiler[lang] = ok[0].id);
+      return (ceCompiler[lang] = { ids: ok.map(function (c) { return c.id; }), good: 0 });
     });
   }
   function ceText(x) { return (x || []).map(function (l) { return l.text; }).join("\n"); }
+  // A crash inside the compiler's own runtime (not the learner's code): try another compiler version
+  function infraFailure(lang, ex, stdout, stderr) {
+    if (stdout) return false;
+    if (ex.didExecute === false && !(ex.buildResult && ex.buildResult.code)) return true;
+    if (/Exception in thread|Error occurred during initialization of VM|Could not find or load main class|Internal compiler error/i.test(stderr)) {
+      var frames = stderr.split("\n").filter(function (l) { return /^\s*at /.test(l); });
+      // No stack frame points at the learner's file: the failure is in the runtime itself
+      return frames.length > 0 && !frames.some(function (l) { return /example|Main|Kt\.|Program|\.kt:|\.java:(?!.*java\.base)/.test(l) && !/java\.base|jdk\.internal|kotlin\.|sun\./.test(l); });
+    }
+    return false;
+  }
   function runRemote(lang, code, note) {
     out.textContent = "";
     print((note || "Compiling and running on Compiler Explorer (godbolt.org)…") + "\n", "muted");
-    var done = false, timer = setTimeout(function () { if (!done) { done = true; fail("The online compiler took too long to answer."); } }, 30000);
+    var done = false, timer = setTimeout(function () { if (!done) { done = true; fail("The online compiler took too long to answer."); } }, 60000);
     var fail = function (why) {
       out.textContent = "";
       print(why + "\n\n", "err");
       print("You can still run your code: copy it (the copy button above) and paste it into " + CE_OPEN[lang] + "\n", "muted");
       send({ type: "output", text: "", ok: false, error: why });
     };
-    pickCompiler(lang).then(function (id) {
+    var attempt = function (c, n) {
+      var id = c.ids[(c.good + n) % c.ids.length];
       return ceJson(CE + "compiler/" + encodeURIComponent(id) + "/compile", {
         source: code, lang: CE_LANG[lang], allowStoreCodeDebug: false,
         options: { userArguments: "", executeParameters: { args: [], stdin: "" }, compilerOptions: { executorRequest: true, skipAsm: true }, filters: { execute: true }, tools: [], libraries: [] }
+      }).then(function (r) {
+        var ex = r.execResult || r, stdout = ceText(ex.stdout), stderr = ceText(ex.stderr);
+        if (infraFailure(lang, ex, stdout, stderr) && n + 1 < Math.min(4, c.ids.length)) {
+          if (!done) { out.textContent = ""; print("That compiler version had a problem, trying another one…\n", "muted"); }
+          return attempt(c, n + 1);
+        }
+        c.good = (c.good + n) % c.ids.length;
+        return r;
       });
-    }).then(function (r) {
+    };
+    compilerList(lang).then(function (c) { return attempt(c, 0); }).then(function (r) {
       if (done) return; done = true; clearTimeout(timer);
       var ex = r.execResult || r, build = ex.buildResult || r.buildResult || {};
       out.textContent = "";
