@@ -37,13 +37,13 @@ switch ($action) {
         $token = (string)(body()['credential'] ?? '');
         if ($token === '') fail(400, 'Missing Google sign-in.');
         $claims = verify_google_token($token);
-        $user = sign_in($claims['email'], $claims['name'] ?? '');
+        $user = sign_in($claims['email'], $claims['name'] ?? '', (string)(body()['ref'] ?? ''));
         out(['user' => $user, 'csrf' => csrf_token()]);
 
     case 'dev_login':
         // Local testing only: needs dev_login in the config AND PHP's built-in server on this computer.
         if (empty(config()['dev_login']) || PHP_SAPI !== 'cli-server' || !in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1'], true)) fail(404, 'Not found.');
-        $user = sign_in((string)(body()['email'] ?? ''), 'Test user');
+        $user = sign_in((string)(body()['email'] ?? ''), 'Test user', (string)(body()['ref'] ?? ''));
         out(['user' => $user, 'csrf' => csrf_token()]);
 
     case 'logout':
@@ -101,10 +101,16 @@ switch ($action) {
             $progress = q('SELECT client_id, lesson_id FROM lesson_progress WHERE client_id = ?', [$cid])->fetchAll();
             $certificates = q('SELECT * FROM certificates WHERE client_id = ?', [$cid])->fetchAll();
             $domains = q('SELECT id, client_id, name, kind, expires_on, renew_price, monitor_url, last_status FROM domains WHERE client_id = ? ORDER BY expires_on', [$cid])->fetchAll();
-            $row = q('SELECT name, email, phone FROM clients WHERE id = ?', [$cid])->fetch();
-            $code = $row ? referral_code((string)$row['phone']) : null;
+            $row = q('SELECT name, email, phone, created_at FROM clients WHERE id = ?', [$cid])->fetch();
+            $code = client_ref_code((int)$cid);
             $fb = q('SELECT f.token, p.title FROM feedback f JOIN projects p ON p.id = f.project_id WHERE f.client_id = ? AND f.submitted_at IS NULL ORDER BY f.id DESC LIMIT 1', [$cid])->fetch();
-            $me = ['name' => $row['name'] ?? '', 'email' => $row['email'] ?? '', 'phone' => $row['phone'] ?? '',
+            $me = ['name' => $row['name'] ?? '', 'email' => $row['email'] ?? '', 'phone' => $row['phone'] ?? '', 'since' => $row['created_at'] ?? '',
+                   'client_code' => client_number((int)$cid), 'ref_code' => $code, 'reward' => (int)(config()['referral_reward'] ?? 2000),
+                   'referrals' => my_referrals((int)$cid, $code, (string)($row['phone'] ?? '')),
+                   'requests' => q("SELECT id, message, status, created_at, updated_at FROM leads WHERE client_id = ? AND source = 'Portal request' ORDER BY id DESC", [$cid])->fetchAll(),
+                   'quotes' => array_map(fn($x) => ['title' => $x['title'], 'total' => (int)$x['total'], 'status' => $x['status'], 'valid_until' => $x['valid_until'], 'created_at' => $x['created_at'],
+                                                   'link' => portal_url() . 'quote.php?t=' . $x['token']],
+                       q("SELECT * FROM quotes WHERE (client_id = ? OR client_email = ?) AND status <> 'draft' ORDER BY id DESC", [$cid, $row['email'] ?? ''])->fetchAll()),
                    'referral_link' => $code ? rtrim(config()['site_url'] ?? 'https://marzleytechsolutions.co.ke', '/') . '/?ref=' . $code : null,
                    'feedback' => $fb ? ['link' => portal_url() . 'feedback.php?t=' . $fb['token'], 'title' => $fb['title']] : null,
                    'card' => (bool)paystack()];
@@ -200,6 +206,7 @@ switch ($action) {
             [$clientId, $title, $status, $progress, $due, $summary, now(), now()]);
         // Just went live: ask the client how we did
         if ($id && $status === 'live' && $was !== 'live') request_feedback($id);
+        if ($status === 'live' && $was !== 'live') referral_work_done($clientId);
         out(['ok' => true]);
 
     case 'update_add':
@@ -779,7 +786,7 @@ switch ($action) {
             fail(401, 'That code is wrong or has expired. Ask for a new one.');
         }
         q('UPDATE login_codes SET used_at = ? WHERE id = ?', [now(), $row['id']]);
-        $user = $client ? sign_in($client['email'], $client['name']) : sign_in($who, (string)($d['name'] ?? ''));
+        $user = $client ? sign_in($client['email'], $client['name']) : sign_in($who, (string)($d['name'] ?? ''), (string)($d['ref'] ?? ''));
         out(['user' => $user, 'csrf' => csrf_token()]);
 
     // ---------- growth: website payments, referrals, reviews, chat questions, mailing list ----------
@@ -798,6 +805,8 @@ switch ($action) {
         [$invId] = create_invoice($clientId, $projectId, "$what paid on the website", $amount, null, 'unpaid', false);
         apply_payment($invId, $amount, 'mpesa', (string)$sp['receipt'], $u['email']);
         q('UPDATE site_payments SET invoice_id = ? WHERE id = ?', [$invId, $sp['id']]);
+        q('UPDATE referrals SET client_id = ? WHERE site_payment_id = ? AND client_id IS NULL', [$clientId, $sp['id']]);
+        if (client_work_done($clientId)) referral_work_done($clientId);
         out(['ok' => true]);
 
     case 'referral_paid':
@@ -813,7 +822,47 @@ switch ($action) {
     case 'referral_void':
         require_perm('leads');
         $d = body();
-        q("UPDATE referrals SET status = 'void', note = ? WHERE id = ? AND status = 'due'", [str_in($d, 'note', 300, false), (int)($d['id'] ?? 0)]);
+        q("UPDATE referrals SET status = 'void', note = ? WHERE id = ? AND status IN ('due', 'pending')", [str_in($d, 'note', 300, false), (int)($d['id'] ?? 0)]);
+        out(['ok' => true]);
+
+    case 'referral_ready':
+        // The referred client's work is done (e.g. a website deposit with no project in the portal)
+        require_perm('leads');
+        $r = q("SELECT * FROM referrals WHERE id = ? AND status = 'pending'", [(int)(body()['id'] ?? 0)])->fetch();
+        if (!$r) fail(404, 'Nothing waiting.');
+        q("UPDATE referrals SET status = 'due' WHERE id = ?", [$r['id']]);
+        referral_notify_due($r['referrer_name'], $r['referrer_phone'], $r['code'], $r['referred_name'], (int)$r['amount']);
+        out(['ok' => true]);
+
+    // ---------- clients: request a project, profile ----------
+
+    case 'project_request':
+        $u = require_user();
+        if ($u['role'] !== 'client') fail(403, 'Only clients can request projects here.');
+        $d = body();
+        $service = str_in($d, 'service', 80);
+        $details = str_in($d, 'details', 4000);
+        $budget = str_in($d, 'budget', 60, false);
+        $timeline = str_in($d, 'timeline', 60, false);
+        if (!rate_ok('project_request:' . $u['client_id'], 10, 86400)) fail(429, 'You’ve sent several requests today. We’ll be in touch; WhatsApp us if it’s urgent.');
+        $c = q('SELECT name, email, phone FROM clients WHERE id = ?', [$u['client_id']])->fetch();
+        $msg = "Service: $service" . ($budget !== '' ? "\nBudget: $budget" : '') . ($timeline !== '' ? "\nTimeline: $timeline" : '') . "\n\n$details";
+        q('INSERT INTO leads (name, email, phone, source, message, status, value, notes, client_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?)',
+            [$c['name'], $c['email'], $c['phone'], 'Portal request', $msg, 'new', '', $u['client_id'], now(), now()]);
+        notify_admins("Project request: $service from {$c['name']}", "{$c['name']} ({$c['email']}" . ($c['phone'] ? ", {$c['phone']}" : '') . ") asked for a project in the portal.\n\n$msg\n\nIt's on the Leads board: " . portal_url());
+        out(['ok' => true]);
+
+    case 'profile_save':
+        $u = require_user();
+        if ($u['role'] !== 'client') fail(403, 'Only clients have a profile here.');
+        $d = body();
+        $name = str_in($d, 'name', 120);
+        $phone = trim((string)($d['phone'] ?? ''));
+        if ($phone !== '' && !normalise_phone($phone)) fail(400, 'Enter a Kenyan phone number, for example 0712 345 678.');
+        $phone = $phone !== '' ? '0' . substr((string)normalise_phone($phone), 3) : '';
+        client_ref_code((int)$u['client_id']);   // keep the referral code they already share
+        q('UPDATE clients SET name = ?, phone = ? WHERE id = ?', [$name, $phone, $u['client_id']]);
+        $_SESSION['user']['name'] = $name;
         out(['ok' => true]);
 
     case 'feedback_publish':

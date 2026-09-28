@@ -45,6 +45,22 @@
     "is live! How did we do?": "iko hewani! Tulifanyaje?", "Rate us": "Tupe alama", "Payment received. Thank you!": "Malipo yamepokelewa. Asante!",
     "Sections": "Sehemu", "Pay": "Lipa", "Choose a file first.": "Chagua faili kwanza.",
     "No Google account? Sign in with a code": "Huna akaunti ya Google? Ingia kwa nambari ya siri", "Your email or phone number (the one you gave us)": "Barua pepe au nambari ya simu (uliyotupa)",
+    "Overview": "Muhtasari", "Request a project": "Omba mradi", "Payments": "Malipo", "Referrals": "Pendekeza", "Profile": "Wasifu", "My account": "Akaunti yangu", "Learning hub": "Kituo cha kujifunza",
+    "Active projects": "Miradi inayoendelea", "Balance to pay": "Salio la kulipa", "Paid so far": "Umelipa hadi sasa", "Open support requests": "Maombi ya msaada yaliyo wazi",
+    "People you referred": "Watu uliowapendekeza", "Referral rewards earned": "Zawadi ulizopata", "Project progress": "Maendeleo ya mradi", "See all": "Ona yote", "Next payment": "Malipo yajayo",
+    "Nothing to pay right now.": "Hakuna cha kulipa sasa.", "Latest updates": "Taarifa za karibuni", "Client ID": "Nambari ya mteja", "Your client ID": "Nambari yako ya mteja",
+    "Your referral code": "Nambari yako ya kupendekeza", "Rewards go to": "Zawadi zinatumwa kwa", "Add your M-Pesa number": "Weka nambari yako ya M-Pesa", "Add it in Profile": "Iweke kwenye Wasifu",
+    "Copy": "Nakili", "Share on WhatsApp": "Shiriki kwa WhatsApp", "Link copied.": "Kiungo kimenakiliwa.", "Share": "Shiriki", "They sign up or enquire": "Wanajisajili au kuuliza",
+    "They pay, we finish the work": "Wanalipa, tunamaliza kazi", "You get paid": "Unalipwa", "Referred": "Waliopendekezwa", "In progress": "Inaendelea", "Reward due to you": "Zawadi unayodai",
+    "Rewards paid to you": "Zawadi ulizolipwa", "Name": "Jina", "Since": "Tangu", "Reward": "Zawadi", "Enquired": "Ameuliza", "Signed up": "Amejisajili", "Project started": "Mradi umeanza",
+    "Paid · work in progress": "Amelipa · kazi inaendelea", "Work done · reward due": "Kazi imekamilika · zawadi inadaiwa", "Reward paid": "Zawadi imelipwa", "Not eligible": "Haistahili",
+    "No one yet. Share your link to start earning.": "Bado hakuna. Shiriki kiungo chako uanze kupata.", "Request a new project": "Omba mradi mpya", "What do you need?": "Unahitaji nini?",
+    "Budget": "Bajeti", "When do you need it?": "Unauhitaji lini?", "Describe your project": "Eleza mradi wako", "Send request": "Tuma ombi", "Your requests and quotes": "Maombi na makadirio yako",
+    "Received": "Limepokelewa", "We’re in touch": "Tunawasiliana", "Quote sent": "Makadirio yametumwa", "Accepted": "Imekubaliwa", "View & accept": "Ona na ukubali", "View": "Ona",
+    "Payment history & statement": "Historia ya malipo na taarifa", "Print statement": "Chapisha taarifa", "Total invoiced": "Jumla ya ankara", "Total paid": "Jumla uliyolipa",
+    "Date": "Tarehe", "Method": "Njia", "Reference": "Kumbukumbu", "No payments yet.": "Bado hakuna malipo.", "Your details": "Maelezo yako", "Save": "Hifadhi", "Saved.": "Imehifadhiwa.",
+    "M-Pesa phone number (payments and referral rewards)": "Nambari ya M-Pesa (malipo na zawadi)", "Email (sign-in)": "Barua pepe (kuingia)", "Security": "Usalama",
+    "Sign out everywhere": "Toka kwenye vifaa vyote", "No projects yet": "Bado hakuna miradi", "Request sent. We’ll get back to you within a day.": "Ombi limetumwa. Tutakujibu ndani ya siku moja.",
     "6-digit code": "Nambari ya tarakimu 6", "Send me a code": "Nitumie nambari", "Sign in": "Ingia"
   };
   var t = function (s) { return LANG === "sw" && SW[s] ? SW[s] : s; };
@@ -54,8 +70,10 @@
       el.textContent = t(el.getAttribute("data-en"));
     });
     document.documentElement.lang = LANG === "sw" ? "sw" : "en";
-    var b = $("lang-toggle");
-    if (b) { b.textContent = LANG === "sw" ? "English" : "Kiswahili"; b.setAttribute("lang", LANG === "sw" ? "en" : "sw"); }
+    ["lang-toggle", "client-lang"].forEach(function (id) {
+      var b = $(id);
+      if (b) { b.textContent = LANG === "sw" ? "English" : "Kiswahili"; b.setAttribute("lang", LANG === "sw" ? "en" : "sw"); }
+    });
   }
   var isTeam = function () { return me && (me.role === "admin" || me.role === "staff"); };
   var can = function (perm) { return me && (me.role === "admin" || (me.role === "staff" && data && data.me && (data.me.perms || []).indexOf(perm) >= 0)); };
@@ -124,7 +142,7 @@
 
   function show(view) {
     ["portal-loading", "view-signin", "view-client", "view-admin"].forEach(function (id) { $(id).hidden = id !== view; });
-    document.body.classList.toggle("is-admin", view === "view-admin");
+    document.body.classList.toggle("is-admin", view === "view-admin" || view === "view-client");
     $("portal-user").hidden = !me;
     var lt = $("lang-toggle");
     if (lt) lt.hidden = view === "view-admin";
@@ -135,6 +153,12 @@
   }
 
   // ---------- sign-in ----------
+  // Someone who arrived through a referral link keeps the referrer's code (saved by the website)
+  try {
+    var inRef = new URLSearchParams(location.search).get("ref");
+    if (inRef && /^M[TC][0-9A-Z]{4,8}$/.test(inRef)) localStorage.setItem("marzley-ref", JSON.stringify({ code: inRef, at: Date.now() }));
+  } catch (e) {}
+  var refCode = function () { try { var r = JSON.parse(localStorage.getItem("marzley-ref") || "null"); return r && r.code ? String(r.code) : ""; } catch (e) { return ""; } };
   var googleClientId = null;
   var googleReady = false;
   function signedOut(message) {
@@ -153,7 +177,7 @@
       client_id: clientId,
       callback: function (resp) {
         $("signin-error").textContent = "";
-        api("login", { method: "POST", body: { credential: resp.credential } })
+        api("login", { method: "POST", body: { credential: resp.credential, ref: refCode() } })
           .then(function (d) { csrf = d.csrf; me = d.user; load(); })
           .catch(function (e) { $("signin-error").textContent = e.message; });
       }
@@ -247,45 +271,11 @@
     return card;
   }
 
-  function renderClient() {
-    translateStatic();
-    $("client-title").textContent = t("Hello, ") + (me.name || "there");
-    var fbBox = $("client-feedback");
-    fbBox.textContent = "";
-    if (data.me && data.me.feedback) fbBox.appendChild(h("div", { className: "feedback-banner" },
-      h("i", { className: "fa-solid fa-rocket", "aria-hidden": "true" }),
-      h("p", null, h("strong", { text: "“" + data.me.feedback.title + "” " + t("is live! How did we do?") })),
-      h("a", { className: "btn btn-solid btn-sm", href: data.me.feedback.link, text: t("Rate us") })));
-    var box = $("client-projects");
-    box.textContent = "";
-    var brandNew = !data.projects.length && !data.invoices.length && !(data.courses || []).length && !(data.tickets || []).length;
-    if (brandNew) box.appendChild(h("div", { className: "welcome-card" },
-      h("h3", { text: t("Welcome! Your account is ready.") }),
-      h("p", { text: t("When we start a project for you, its progress, files and invoices will appear here. What would you like to do?") }),
-      h("p", { className: "welcome-actions" },
-        h("a", { className: "btn btn-solid btn-sm", href: "../contact" }, h("i", { className: "fa-solid fa-file-signature", "aria-hidden": "true" }), " " + t("Get a free quote")),
-        h("a", { className: "btn btn-ghost btn-sm", href: "../learn/" }, h("i", { className: "fa-solid fa-laptop-code", "aria-hidden": "true" }), " " + t("Learn to code (free)")),
-        h("a", { className: "btn btn-ghost btn-sm", href: "https://wa.me/254745789590", target: "_blank", rel: "noopener noreferrer" }, h("i", { className: "fa-brands fa-whatsapp", "aria-hidden": "true" }), " " + t("Chat on WhatsApp")))));
-    else if (!data.projects.length) box.appendChild(h("p", { className: "portal-empty", text: t("Your project will appear here once it starts.") }));
-    data.projects.forEach(function (p) { box.appendChild(projectCard(p, false)); });
-    renderInvoices($("client-invoices"), data.invoices, false);
-    renderClientCourses();
-    // Students with only courses don't need empty project and invoice sections
-    var studentOnly = !data.projects.length && !data.invoices.length && (data.courses || []).length > 0;
-    $("sec-projects").hidden = studentOnly;
-    $("sec-invoices").hidden = studentOnly;
-    document.querySelectorAll('.portal-jump a[href="#sec-projects"], .portal-jump a[href="#sec-invoices"]').forEach(function (a) { a.hidden = studentOnly; });
-    renderSupport($("client-support"), false);
-    renderReferral();
-    renderClientDomains();
-  }
-
   function renderClientDomains() {
     var box = $("client-domains");
     box.textContent = "";
     var list = data.domains || [];
-    $("sec-domains").hidden = !list.length;
-    $("jump-domains").hidden = !list.length;
+    $("ctab-domains").hidden = !list.length;
     if (!list.length) return;
     var ul = h("ul", { className: "admin-list" });
     list.forEach(function (d) {
@@ -803,7 +793,13 @@
       rl.appendChild(h("li", null,
         h("div", null, h("strong", { text: r.referrer_name + " → " + r.referred_name + " · " + ksh(r.amount) }),
           h("span", { className: "portal-meta", text: "Send to " + r.referrer_phone + " · code " + r.code + " · " + day(r.created_at) + (r.note ? " · " + r.note : "") })),
-        h("span", { className: "pill pill-" + (r.status === "paid" ? "paid" : r.status === "due" ? "unpaid" : "on_hold"), text: r.status === "due" ? "Reward due" : r.status === "paid" ? "Paid " + day(r.paid_at) : "Not due" }),
+        h("span", { className: "pill pill-" + (r.status === "paid" ? "paid" : r.status === "due" ? "unpaid" : r.status === "pending" ? "build" : "on_hold"), text: r.status === "due" ? "Reward due" : r.status === "paid" ? "Paid " + day(r.paid_at) : r.status === "pending" ? "Client paid · waiting for work to finish" : "Not due" }),
+        r.status === "pending" ? h("span", { className: "row-actions" },
+          h("button", { type: "button", className: "btn btn-ghost btn-sm", onclick: function () { if (confirm("Is the work for " + r.referred_name + " done? The reward becomes due.")) save("referral_ready", { id: r.id }); }, text: "Work done" }),
+          h("button", { type: "button", className: "linklike danger", onclick: function () {
+            var why = prompt("Why is no reward due?", "Not a genuine referral");
+            if (why) save("referral_void", { id: r.id, note: why });
+          }, text: "Not due" })) : null,
         r.status === "due" ? h("span", { className: "row-actions" },
           h("button", { type: "button", className: "btn btn-solid btn-sm", onclick: function () {
             var ref = prompt("M-Pesa code of the reward you sent to " + r.referrer_name + " (optional):", "");
@@ -816,7 +812,7 @@
     });
     panel.appendChild(h("section", { className: "admin-panel", "aria-labelledby": "ref-title" },
       h("div", { className: "admin-panel-head" }, h("h2", { id: "ref-title", text: "Referrals" }), h("span", { className: "portal-meta", text: (data.referrers || 0) + " people have a referral link" })),
-      h("p", { className: "portal-meta", text: "When someone who came through a referral link pays, the reward shows here as due and you get an email. Send it by M-Pesa, then mark it paid (the referrer gets an SMS if SMS is set up)." }),
+      h("p", { className: "portal-meta", text: "When someone who came through a referral link pays, it shows here as waiting. The reward becomes due when their project is marked Live (or you click Work done), and you get an email. Send it by M-Pesa, then mark it paid (the referrer gets an SMS if SMS is set up)." }),
       refs.length ? rl : h("p", { className: "portal-empty", text: "No referral rewards yet." })));
 
     // Reviews for the website
@@ -1491,6 +1487,299 @@
       pl.length ? h("ul", { className: "admin-list" }, pl) : h("p", { className: "portal-empty", text: "No video payments yet." })));
   }
 
+  // ---------- client dashboard ----------
+  var CTABS = ["overview", "projects", "request", "payments", "referrals", "support", "courses", "domains", "profile"];
+  var CTAB_NAMES = { overview: "Overview", projects: "Projects", request: "Request a project", payments: "Payments", referrals: "Referrals", support: "Support", courses: "Courses", domains: "Domains & hosting", profile: "Profile" };
+  function selectClientTab(name, focus) {
+    if (!$("ctab-" + name) || $("ctab-" + name).hidden) name = "overview";
+    CTABS.forEach(function (tb) {
+      var tab = $("ctab-" + tb);
+      tab.setAttribute("aria-selected", String(tb === name));
+      tab.tabIndex = tb === name ? 0 : -1;
+      $("cpanel-" + tb).hidden = tb !== name;
+    });
+    $("client-crumb").setAttribute("data-en", CTAB_NAMES[name]);
+    $("client-crumb").textContent = t(CTAB_NAMES[name]);
+    $("client-feedback").hidden = name !== "overview" || !$("client-feedback").childNodes.length;
+    if (focus) $("ctab-" + name).focus();
+    window.scrollTo(0, 0);
+  }
+  CTABS.forEach(function (tb, i) {
+    var tab = $("ctab-" + tb);
+    tab.addEventListener("click", function () { selectClientTab(tb); });
+    tab.addEventListener("keydown", function (e) {
+      var d = e.key === "ArrowDown" || e.key === "ArrowRight" ? 1 : e.key === "ArrowUp" || e.key === "ArrowLeft" ? -1 : 0;
+      if (!d) return;
+      e.preventDefault();
+      var j = i, next;
+      do { j = (j + d + CTABS.length) % CTABS.length; next = CTABS[j]; } while ($("ctab-" + next).hidden && j !== i);
+      selectClientTab(next, true);
+    });
+  });
+  $("client-signout").addEventListener("click", function () { $("sign-out").click(); });
+
+  var balanceOf = function (inv) { return Math.max(0, +inv.amount - (+inv.amount_paid || 0)); };
+  function statCards(cards) {
+    return h("div", { className: "stat-cards" }, cards.map(function (c) {
+      return h("button", { type: "button", className: "stat-card", onclick: function () { selectClientTab(c[4]); } },
+        h("span", { className: "stat-icon tone-" + c[3] }, h("i", { className: "fa-solid " + c[2], "aria-hidden": "true" })),
+        h("strong", { text: String(c[1]) }), h("span", { text: t(c[0]) }));
+    }));
+  }
+
+  function renderClientOverview() {
+    var panel = $("cpanel-overview");
+    panel.textContent = "";
+    var dm = data.me || {};
+    var active = data.projects.filter(function (p) { return p.status !== "live"; });
+    var unpaid = data.invoices.filter(function (i) { return i.status === "unpaid"; });
+    var due = unpaid.reduce(function (s, i) { return s + balanceOf(i); }, 0);
+    var paid = (data.payments || []).filter(function (p) { return p.status === "confirmed"; }).reduce(function (s, p) { return s + (+p.amount || 0); }, 0);
+    var openTickets = (data.tickets || []).filter(function (x) { return x.status === "open"; }).length;
+    var refs = dm.referrals || [];
+    var earned = refs.filter(function (r) { return r.stage === "reward_paid"; }).reduce(function (s, r) { return s + r.reward; }, 0);
+    panel.appendChild(statCards([
+      ["Active projects", active.length, "fa-diagram-project", "blue", "projects"],
+      ["Balance to pay", ksh(due), "fa-hourglass-half", due ? "amber" : "green", "payments"],
+      ["Paid so far", ksh(paid), "fa-sack-dollar", "green", "payments"],
+      ["Open support requests", openTickets, "fa-life-ring", "purple", "support"],
+      ["People you referred", refs.length, "fa-user-plus", "cyan", "referrals"],
+      ["Referral rewards earned", ksh(earned), "fa-gift", "pink", "referrals"]
+    ]));
+    var brandNew = !data.projects.length && !data.invoices.length && !(data.courses || []).length && !(data.tickets || []).length;
+    if (brandNew) panel.appendChild(h("div", { className: "welcome-card" },
+      h("h3", { text: t("Welcome! Your account is ready.") }),
+      h("p", { text: t("When we start a project for you, its progress, files and invoices will appear here. What would you like to do?") }),
+      h("p", { className: "welcome-actions" },
+        h("button", { type: "button", className: "btn btn-solid btn-sm", onclick: function () { selectClientTab("request"); } }, h("i", { className: "fa-solid fa-circle-plus", "aria-hidden": "true" }), " " + t("Request a project")),
+        h("a", { className: "btn btn-ghost btn-sm", href: "../learn/" }, h("i", { className: "fa-solid fa-laptop-code", "aria-hidden": "true" }), " " + t("Learn to code (free)")),
+        h("a", { className: "btn btn-ghost btn-sm", href: "https://wa.me/254745789590", target: "_blank", rel: "noopener noreferrer" }, h("i", { className: "fa-brands fa-whatsapp", "aria-hidden": "true" }), " " + t("Chat on WhatsApp")))));
+    var cols = h("div", { className: "admin-columns" });
+    // Project progress
+    var prog = h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: t("Project progress") }),
+      h("button", { type: "button", className: "linklike", onclick: function () { selectClientTab("projects"); }, text: t("See all") })));
+    if (data.projects.length) {
+      var ul = h("ul", { className: "mini-progress" });
+      data.projects.slice(0, 5).forEach(function (p) {
+        ul.appendChild(h("li", null, h("div", { className: "mp-head" }, h("strong", { text: p.title }), h("span", { className: "pill pill-" + p.status, text: t(STATUS[p.status] || p.status) })),
+          h("div", { className: "progress", role: "progressbar", "aria-valuemin": "0", "aria-valuemax": "100", "aria-valuenow": String(p.progress), "aria-label": p.title }, h("span", { style: "width:" + Math.max(0, Math.min(100, +p.progress)) + "%" })),
+          h("span", { className: "portal-meta", text: p.progress + t("% complete") + (p.due_date ? t(" · Target date ") + day(p.due_date) : "") })));
+      });
+      prog.appendChild(ul);
+    } else prog.appendChild(h("p", { className: "portal-empty", text: t("No projects yet. Request one and we’ll get back to you.") }));
+    cols.appendChild(prog);
+    // Next payment + latest updates
+    var side = h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: t("Next payment") })));
+    var next = unpaid.slice().sort(function (a, b) { return String(a.due_date || "9").localeCompare(String(b.due_date || "9")); })[0];
+    if (next) side.appendChild(h("div", { className: "next-pay" }, h("div", null, h("strong", { text: ksh(balanceOf(next)) }), h("span", { className: "portal-meta", text: next.number + " · " + next.description + (next.due_date ? " · " + t("Due") + " " + day(next.due_date) : "") })),
+      h("button", { type: "button", className: "btn btn-solid btn-sm", onclick: function () { selectClientTab("payments"); }, text: t("Pay") })));
+    else side.appendChild(h("p", { className: "portal-empty", text: t("Nothing to pay right now.") }));
+    side.appendChild(h("h3", { className: "mini-h", text: t("Latest updates") }));
+    var ups = (data.updates || []).slice(0, 4);
+    if (ups.length) side.appendChild(h("ul", { className: "admin-feed" }, ups.map(function (u) {
+      var p = data.projects.find(function (x) { return +x.id === +u.project_id; }) || {};
+      return h("li", null, h("span", { className: "feed-dot", "aria-hidden": "true" }), h("div", null, h("strong", { text: u.title || p.title || "" }), h("span", { className: "portal-meta", text: (p.title ? p.title + " · " : "") + day(u.created_at) })));
+    })));
+    else side.appendChild(h("p", { className: "portal-empty", text: t("No updates yet.") }));
+    cols.appendChild(side);
+    panel.appendChild(cols);
+  }
+
+  var LEAD_STAGE = { new: ["Received", "review"], contacted: ["We’re in touch", "design"], quoted: ["Quote sent", "build"], won: ["Accepted", "paid"], lost: ["Closed", "on_hold"] };
+  function renderRequest() {
+    var panel = $("cpanel-request");
+    panel.textContent = "";
+    var services = ["Website", "Online shop (e-commerce)", "School, hospital or business system", "M-Pesa or card payments", "Mobile app", "Design & branding", "Website care & hosting", "Training", "Something else"];
+    var service = select(services.map(function (x) { return [x, t(x)]; }));
+    var budget = select([["", t("Not sure yet")], ["Under KSh 15,000", "Under KSh 15,000"], ["KSh 15,000 – 40,000", "KSh 15,000 – 40,000"], ["KSh 40,000 – 100,000", "KSh 40,000 – 100,000"], ["Over KSh 100,000", "Over KSh 100,000"]]);
+    var timeline = select([["", t("Flexible")], ["As soon as possible", t("As soon as possible")], ["Within a month", t("Within a month")], ["1–3 months", t("1–3 months")]]);
+    var details = h("textarea", { rows: "6", maxlength: "4000", required: true, placeholder: t("What do you need? For example: a website for my shop with M-Pesa payments and 5 pages.") });
+    details.id = "req-details";
+    var form = h("form", { className: "form portal-form", onsubmit: function (e) {
+      e.preventDefault();
+      if (!details.value.trim()) { details.focus(); return; }
+      api("project_request", { method: "POST", body: { service: service.value, budget: budget.value, timeline: timeline.value, details: details.value } })
+        .then(function () { toast(t("Request sent. We’ll get back to you within a day.")); load().then(function () { selectClientTab("request"); }); })
+        .catch(function (err) { toast(err.message, true); });
+    } },
+      h("h2", { className: "full", text: t("Request a new project") }),
+      h("p", { className: "full portal-meta", text: t("Tell us what you need. We’ll reply with questions or a quote, usually within a day. You can pay a deposit here once you accept the quote.") }),
+      field(t("What do you need?"), service), field(t("Budget"), budget), field(t("When do you need it?"), timeline),
+      h("div", { className: "field full" }, h("label", { for: "req-details", text: t("Describe your project") }), details),
+      h("div", { className: "form-foot" }, h("button", { type: "submit", className: "btn btn-solid" }, h("i", { className: "fa-solid fa-paper-plane", "aria-hidden": "true" }), " " + t("Send request"))));
+    panel.appendChild(form);
+    var reqs = (data.me && data.me.requests) || [];
+    var quotes = (data.me && data.me.quotes) || [];
+    var list = h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: t("Your requests and quotes") })));
+    if (!reqs.length && !quotes.length) list.appendChild(h("p", { className: "portal-empty", text: t("Nothing yet. Requests you send appear here with their status.") }));
+    var ul = h("ul", { className: "admin-list" });
+    quotes.forEach(function (q) {
+      var st = { sent: ["Waiting for you", "review"], accepted: ["Accepted", "paid"], declined: ["Declined", "on_hold"], expired: ["Expired", "on_hold"] }[q.status] || [q.status, "review"];
+      ul.appendChild(h("li", null, h("div", null, h("strong", { text: t("Quote") + ": " + q.title + " · " + ksh(q.total) }), h("span", { className: "portal-meta", text: day(q.created_at) + (q.valid_until ? " · " + t("valid until") + " " + day(q.valid_until) : "") })),
+        h("span", { className: "pill pill-" + st[1], text: t(st[0]) }),
+        h("a", { className: "btn btn-solid btn-sm", href: q.link, target: "_blank", rel: "noopener", text: q.status === "sent" ? t("View & accept") : t("View") })));
+    });
+    reqs.forEach(function (r) {
+      var st = LEAD_STAGE[r.status] || [r.status, "review"];
+      var first = String(r.message).split("\n")[0].replace(/^Service: /, "");
+      ul.appendChild(h("li", null, h("div", null, h("strong", { text: first }), h("span", { className: "portal-meta", text: t("Sent") + " " + day(r.created_at) + " · " + String(r.message).split("\n\n").slice(1).join(" ").slice(0, 120) })),
+        h("span", { className: "pill pill-" + st[1], text: t(st[0]) })));
+    });
+    if (ul.children.length) list.appendChild(ul);
+    panel.appendChild(list);
+  }
+
+  function renderStatement() {
+    var box = $("client-statement");
+    box.textContent = "";
+    var invs = data.invoices || [];
+    var pays = (data.payments || []).filter(function (p) { return p.status === "confirmed"; });
+    var billed = invs.reduce(function (s, i) { return s + (+i.amount || 0); }, 0);
+    var paid = pays.reduce(function (s, p) { return s + (+p.amount || 0); }, 0);
+    var owed = invs.filter(function (i) { return i.status === "unpaid"; }).reduce(function (s, i) { return s + balanceOf(i); }, 0);
+    var numOf = function (id) { return (invs.find(function (i) { return +i.id === +id; }) || {}).number || ""; };
+    var sec = h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: t("Payment history & statement") }),
+      pays.length || invs.length ? h("button", { type: "button", className: "btn btn-ghost btn-sm", onclick: printStatement }, h("i", { className: "fa-solid fa-print", "aria-hidden": "true" }), " " + t("Print statement")) : null),
+      h("div", { className: "stat-cards stat-cards-3" },
+        h("div", { className: "stat-card is-static" }, h("span", { className: "stat-icon tone-blue" }, h("i", { className: "fa-solid fa-file-invoice", "aria-hidden": "true" })), h("strong", { text: ksh(billed) }), h("span", { text: t("Total invoiced") })),
+        h("div", { className: "stat-card is-static" }, h("span", { className: "stat-icon tone-green" }, h("i", { className: "fa-solid fa-sack-dollar", "aria-hidden": "true" })), h("strong", { text: ksh(paid) }), h("span", { text: t("Total paid") })),
+        h("div", { className: "stat-card is-static" }, h("span", { className: "stat-icon tone-amber" }, h("i", { className: "fa-solid fa-hourglass-half", "aria-hidden": "true" })), h("strong", { text: ksh(owed) }), h("span", { text: t("Balance") }))));
+    if (pays.length) sec.appendChild(h("div", { className: "table-wrap" }, h("table", { className: "portal-table" },
+      h("thead", null, h("tr", null, h("th", { text: t("Date") }), h("th", { text: t("Invoice") }), h("th", { text: t("Method") }), h("th", { text: t("Reference") }), h("th", { className: "r", text: t("Amount") }))),
+      h("tbody", null, pays.map(function (p) {
+        return h("tr", null, h("td", { text: day(p.decided_at || p.created_at) }), h("td", { text: numOf(p.invoice_id) }), h("td", { text: p.method === "mpesa" ? "M-Pesa" : p.method === "card" ? t("Card") : p.method === "bank" ? t("Bank") : p.method }),
+          h("td", { text: p.reference || "" }), h("td", { className: "r", text: ksh(p.amount) }));
+      })))));
+    else sec.appendChild(h("p", { className: "portal-empty", text: t("No payments yet.") }));
+    box.appendChild(sec);
+    function printStatement() {
+      var dm = data.me || {};
+      var rows = invs.map(function (i) { return "<tr><td>" + esc(day(i.created_at)) + "</td><td>" + esc(i.number) + "</td><td>" + esc(i.description) + "</td><td class=r>" + esc(ksh(i.amount)) + "</td><td class=r></td></tr>"; })
+        .concat(pays.map(function (p) { return "<tr><td>" + esc(day(p.decided_at || p.created_at)) + "</td><td>" + esc(numOf(p.invoice_id)) + "</td><td>Payment " + esc(p.method === "mpesa" ? "M-Pesa " : "") + esc(p.reference || "") + "</td><td class=r></td><td class=r>" + esc(ksh(p.amount)) + "</td></tr>"; }));
+      var css = ".page{max-width:820px;margin:24px auto;background:#fff;padding:40px;font:14px/1.5 system-ui,sans-serif;color:#0f172a}h1{margin:0 0 4px;color:#0b1b35}table{width:100%;border-collapse:collapse;margin-top:18px}th,td{border-bottom:1px solid #e2e8f0;padding:8px;text-align:left}.r{text-align:right}.tot td{font-weight:800;border-top:2px solid #0b1b35}.head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}.head img{width:64px;height:64px;border-radius:50%}";
+      printDoc("Statement " + (dm.client_code || ""), css, "<div class=page><div class=head><div><h1>Account statement</h1><p>" + esc(dm.name || "") + " · " + esc(dm.client_code || "") + "<br>" + esc(dm.email || "") + "<br>Printed " + esc(day(new Date().toISOString().slice(0, 10))) + "</p></div><img src=\"" + esc(logoUrl()) + "\" alt=\"\"></div>" +
+        "<table><thead><tr><th>Date</th><th>Invoice</th><th>Details</th><th class=r>Invoiced</th><th class=r>Paid</th></tr></thead><tbody>" + rows.join("") +
+        "<tr class=tot><td colspan=3>Totals · balance " + esc(ksh(owed)) + "</td><td class=r>" + esc(ksh(billed)) + "</td><td class=r>" + esc(ksh(paid)) + "</td></tr></tbody></table><p style=\"margin-top:24px;color:#475569\">Marzley Tech Solutions · +254 745 789 590 · marzleytechsolutions.co.ke</p></div>");
+    }
+  }
+
+  var REF_STAGE = {
+    enquired: ["Enquired", "review", 1], signed_up: ["Signed up", "review", 1], project_started: ["Project started", "design", 2],
+    paid: ["Paid · work in progress", "build", 3], reward_due: ["Work done · reward due", "unpaid", 4], reward_paid: ["Reward paid", "paid", 5], not_eligible: ["Not eligible", "on_hold", 0]
+  };
+  function renderReferral() {
+    var box = $("client-referral");
+    box.textContent = "";
+    var dm = data.me || {};
+    var link = dm.referral_link;
+    var refs = dm.referrals || [];
+    var reward = ksh(dm.reward || 2000);
+    var input = h("input", { type: "text", readonly: true, value: link || "", "aria-label": t("Your referral link") });
+    box.appendChild(h("section", { className: "admin-panel referral-hero" },
+      h("div", { className: "admin-panel-head" }, h("h2", { text: t("Refer a friend, earn ") + reward })),
+      h("p", { text: t("Share your link or code. When someone you refer pays for a project and the work is done, we send you ") + reward + t(" by M-Pesa.") }),
+      h("div", { className: "ref-ids" },
+        h("div", null, h("small", { text: t("Your client ID") }), h("strong", { text: dm.client_code || "" })),
+        h("div", null, h("small", { text: t("Your referral code") }), h("strong", { text: dm.ref_code || "" })),
+        h("div", null, h("small", { text: t("Rewards go to") }), h("strong", { text: dm.phone || t("Add your M-Pesa number") }),
+          !dm.phone ? h("button", { type: "button", className: "linklike", onclick: function () { selectClientTab("profile"); }, text: t("Add it in Profile") }) : null)),
+      link ? h("div", { className: "ref-link-row" }, input,
+        h("button", { type: "button", className: "btn btn-ghost btn-sm", onclick: function () {
+          input.select();
+          (navigator.clipboard ? navigator.clipboard.writeText(link) : Promise.reject()).then(function () { toast(t("Link copied.")); }, function () { document.execCommand("copy"); toast(t("Link copied.")); });
+        }, text: t("Copy") }),
+        h("a", { className: "btn btn-wa btn-sm", href: "https://wa.me/?text=" + encodeURIComponent("Need a website, online shop or system? I recommend Marzley Tech Solutions: " + link), target: "_blank", rel: "noopener noreferrer" },
+          h("i", { className: "fab fa-whatsapp", "aria-hidden": "true" }), " " + t("Share on WhatsApp"))) : null,
+      h("ol", { className: "ref-steps" },
+        h("li", null, h("strong", { text: t("Share") }), h("span", { text: t("Send your link, or give them your code.") })),
+        h("li", null, h("strong", { text: t("They sign up or enquire") }), h("span", { text: t("They appear below straight away.") })),
+        h("li", null, h("strong", { text: t("They pay, we finish the work") }), h("span", { text: t("Status: Paid · work in progress.") })),
+        h("li", null, h("strong", { text: t("You get paid") }), h("span", { text: reward + t(" to your M-Pesa once the work is done.") })))));
+    var inProgress = refs.filter(function (r) { var s = REF_STAGE[r.stage]; return s && s[2] >= 1 && s[2] <= 3; }).length;
+    var dueAmt = refs.filter(function (r) { return r.stage === "reward_due"; }).reduce(function (s, r) { return s + r.reward; }, 0);
+    var paidAmt = refs.filter(function (r) { return r.stage === "reward_paid"; }).reduce(function (s, r) { return s + r.reward; }, 0);
+    var sec = h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: t("People you referred") })),
+      h("div", { className: "stat-cards" },
+        h("div", { className: "stat-card is-static" }, h("span", { className: "stat-icon tone-cyan" }, h("i", { className: "fa-solid fa-users", "aria-hidden": "true" })), h("strong", { text: String(refs.length) }), h("span", { text: t("Referred") })),
+        h("div", { className: "stat-card is-static" }, h("span", { className: "stat-icon tone-blue" }, h("i", { className: "fa-solid fa-spinner", "aria-hidden": "true" })), h("strong", { text: String(inProgress) }), h("span", { text: t("In progress") })),
+        h("div", { className: "stat-card is-static" }, h("span", { className: "stat-icon tone-amber" }, h("i", { className: "fa-solid fa-hourglass-half", "aria-hidden": "true" })), h("strong", { text: ksh(dueAmt) }), h("span", { text: t("Reward due to you") })),
+        h("div", { className: "stat-card is-static" }, h("span", { className: "stat-icon tone-green" }, h("i", { className: "fa-solid fa-gift", "aria-hidden": "true" })), h("strong", { text: ksh(paidAmt) }), h("span", { text: t("Rewards paid to you") }))));
+    if (refs.length) sec.appendChild(h("div", { className: "table-wrap" }, h("table", { className: "portal-table" },
+      h("thead", null, h("tr", null, h("th", { text: t("Name") }), h("th", { text: t("Client ID") }), h("th", { text: t("Since") }), h("th", { text: t("Status") }), h("th", { className: "r", text: t("Reward") }))),
+      h("tbody", null, refs.map(function (r) {
+        var s = REF_STAGE[r.stage] || [r.stage, "review", 0];
+        var steps = h("span", { className: "ref-track", "aria-hidden": "true" }, [1, 2, 3, 4, 5].map(function (n) { return h("i", { className: n <= s[2] ? "on" : "" }); }));
+        return h("tr", null, h("td", { text: r.name }), h("td", { text: r.client_code || "—" }), h("td", { text: day(r.date) }),
+          h("td", null, h("span", { className: "pill pill-" + s[1], text: t(s[0]) }), s[2] ? steps : null),
+          h("td", { className: "r", text: r.reward ? ksh(r.reward) + (r.stage === "reward_paid" && r.paid_at ? " · " + day(r.paid_at) : "") : "—" }));
+      })))));
+    else sec.appendChild(h("p", { className: "portal-empty", text: t("No one yet. Share your link to start earning.") }));
+    box.appendChild(sec);
+  }
+
+  function renderProfile() {
+    var panel = $("cpanel-profile");
+    panel.textContent = "";
+    var dm = data.me || {};
+    var name = h("input", { maxlength: "120", value: dm.name || "", autocomplete: "name", required: true });
+    var phone = h("input", { type: "tel", maxlength: "30", value: dm.phone || "", autocomplete: "tel", placeholder: t("Enter your phone number") });
+    var form = h("form", { className: "form portal-form", onsubmit: function (e) {
+      e.preventDefault();
+      api("profile_save", { method: "POST", body: { name: name.value, phone: phone.value } })
+        .then(function () { toast(t("Saved.")); load().then(function () { selectClientTab("profile"); }); }).catch(function (err) { toast(err.message, true); });
+    } },
+      h("h2", { className: "full", text: t("Your details") }),
+      field(t("Name"), name), field(t("M-Pesa phone number (payments and referral rewards)"), phone),
+      h("div", { className: "field" }, h("span", { className: "field-label", text: t("Email (sign-in)") }), h("strong", { text: dm.email || me.email })),
+      h("div", { className: "field" }, h("span", { className: "field-label", text: t("Client ID") }), h("strong", { text: dm.client_code || "" })),
+      h("div", { className: "form-foot" }, h("button", { type: "submit", className: "btn btn-solid", text: t("Save") })));
+    panel.appendChild(form);
+    panel.appendChild(h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: t("Security") })),
+      h("p", { className: "portal-meta", text: t("Member since") + " " + day(dm.since) + ". " + t("Lost a phone or used a shared computer? Sign out on every device.") }),
+      h("button", { type: "button", className: "btn btn-ghost btn-sm", onclick: function () {
+        if (!confirm(t("Sign out on all your devices?"))) return;
+        api("logout_all", { method: "POST" }).then(function () { location.reload(); }).catch(function (err) { toast(err.message, true); });
+      } }, h("i", { className: "fa-solid fa-right-from-bracket", "aria-hidden": "true" }), " " + t("Sign out everywhere"))));
+  }
+
+  function renderClient() {
+    translateStatic();
+    var dm = data.me || {};
+    $("client-title").textContent = t("Hello, ") + (dm.name || me.name || "there");
+    $("client-name").textContent = dm.name || me.name || me.email;
+    $("client-code").textContent = (dm.client_code ? t("Client ID") + " " + dm.client_code : "");
+    var fbBox = $("client-feedback");
+    fbBox.textContent = "";
+    if (dm.feedback) fbBox.appendChild(h("div", { className: "feedback-banner" },
+      h("i", { className: "fa-solid fa-rocket", "aria-hidden": "true" }),
+      h("p", null, h("strong", { text: "“" + dm.feedback.title + "” " + t("is live! How did we do?") })),
+      h("a", { className: "btn btn-solid btn-sm", href: dm.feedback.link, text: t("Rate us") })));
+    var box = $("client-projects");
+    box.textContent = "";
+    if (!data.projects.length) box.appendChild(h("div", { className: "welcome-card" }, h("h3", { text: t("No projects yet") }),
+      h("p", { text: t("Request a project and it will appear here with its progress, updates, files and approvals.") }),
+      h("p", { className: "welcome-actions" }, h("button", { type: "button", className: "btn btn-solid btn-sm", onclick: function () { selectClientTab("request"); }, text: t("Request a project") }))));
+    data.projects.forEach(function (p) { box.appendChild(projectCard(p, false)); });
+    renderInvoices($("client-invoices"), data.invoices, false);
+    renderStatement();
+    renderClientCourses();
+    renderSupport($("client-support"), false);
+    renderReferral();
+    renderClientDomains();
+    renderClientOverview();
+    renderRequest();
+    renderProfile();
+    var badge = function (id, n) { $(id).textContent = String(n); $(id).hidden = !n; };
+    badge("ccount-projects", data.projects.filter(function (p) { return p.status !== "live"; }).length);
+    badge("ccount-payments", data.invoices.filter(function (i) { return i.status === "unpaid"; }).length);
+    badge("ccount-referrals", (dm.referrals || []).filter(function (r) { return r.stage === "reward_due"; }).length);
+    badge("ccount-support", (data.tickets || []).filter(function (x) { return x.status === "open"; }).length);
+    var current = CTABS.filter(function (tb) { return $("ctab-" + tb).getAttribute("aria-selected") === "true"; })[0] || "overview";
+    var want = (location.hash || "").replace("#", "");
+    if (CTABS.indexOf(want) >= 0) { current = want; history.replaceState(null, "", location.pathname); }
+    selectClientTab(current);
+  }
+
   // ---------- admin overview (dashboard) ----------
   var ymd = function (d) { return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); };
   var clock = null;
@@ -1835,24 +2124,6 @@
   }
 
   // ---------- referral link ----------
-  function renderReferral() {
-    var box = $("client-referral");
-    box.textContent = "";
-    var link = data.me && data.me.referral_link;
-    if (!link) return;
-    var input = h("input", { type: "text", readonly: true, value: link, "aria-label": "Your referral link" });
-    box.appendChild(h("aside", { className: "portal-card referral-card" },
-      h("h2", { className: "portal-h2", text: "Refer a friend, earn KSh 2,000" }),
-      h("p", { text: "Share your link. When someone you refer becomes a client, you get KSh 2,000 by M-Pesa or off your next invoice." }),
-      h("div", { className: "ref-link-row" }, input,
-        h("button", { type: "button", className: "btn btn-ghost btn-sm", onclick: function () {
-          input.select();
-          (navigator.clipboard ? navigator.clipboard.writeText(link) : Promise.reject()).then(function () { toast("Link copied."); }, function () { document.execCommand("copy"); toast("Link copied."); });
-        }, text: "Copy" })),
-      h("a", { className: "btn btn-wa btn-sm", href: "https://wa.me/?text=" + encodeURIComponent("Need a website, online shop or system? I recommend Marzley Tech Solutions: " + link), target: "_blank", rel: "noopener noreferrer" },
-        h("i", { className: "fab fa-whatsapp", "aria-hidden": "true" }), " Share on WhatsApp")));
-  }
-
   // ---------- courses ----------
   function youtubeId(url) {
     var m = String(url).match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]{11})/);
@@ -1877,8 +2148,7 @@
   }
   function renderClientCourses() {
     var courses = data.courses || [];
-    $("sec-courses").hidden = !courses.length;
-    $("jump-courses").hidden = !courses.length;
+    $("ctab-courses").hidden = !courses.length;
     var box = $("client-courses");
     box.textContent = "";
     var done = doneSet(me.client_id);
@@ -1998,7 +2268,7 @@
           $("code-code").focus();
         }).catch(function (x) { msg.textContent = x.message; }).then(function () { btn.disabled = false; });
       } else {
-        api("code_verify", { method: "POST", body: { who: who, code: $("code-code").value, name: $("code-name").value.trim() } })
+        api("code_verify", { method: "POST", body: { who: who, code: $("code-code").value, name: $("code-name").value.trim(), ref: refCode() } })
           .then(function (d) { csrf = d.csrf; me = d.user; load(); })
           .catch(function (x) { msg.textContent = x.message; btn.disabled = false; });
       }
@@ -2006,12 +2276,14 @@
   }
 
   translateStatic();
-  var lt0 = $("lang-toggle");
-  if (lt0) lt0.addEventListener("click", function () {
-    LANG = LANG === "sw" ? "en" : "sw";
-    try { localStorage.setItem("marzley-portal-lang", LANG); } catch (e) {}
-    translateStatic();
-    if (data && me && !isTeam()) renderClient();
+  ["lang-toggle", "client-lang"].forEach(function (id) {
+    var lt0 = $(id);
+    if (lt0) lt0.addEventListener("click", function () {
+      LANG = LANG === "sw" ? "en" : "sw";
+      try { localStorage.setItem("marzley-portal-lang", LANG); } catch (e) {}
+      translateStatic();
+      if (data && me && !isTeam()) renderClient();
+    });
   });
   var cardResult = (location.search.match(/[?&]card=([a-z]+)/) || [])[1];
   if (cardResult) {

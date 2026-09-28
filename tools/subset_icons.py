@@ -25,7 +25,8 @@ def used_names():
         for f in ROOT.glob(pattern):
             if f.name.endswith(".min.js"):
                 continue
-            names.update(re.findall(r"\bfa-([a-z0-9]+(?:-[a-z0-9]+)*)", f.read_text(encoding="utf-8", errors="ignore")))
+            text = re.sub(r"<style data-inline=.*?</style>", "", f.read_text(encoding="utf-8", errors="ignore"), flags=re.S)
+            names.update(re.findall(r"\bfa-([a-z0-9]+(?:-[a-z0-9]+)*)", text))
     return names
 
 

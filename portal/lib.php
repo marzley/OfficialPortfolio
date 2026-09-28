@@ -5,7 +5,7 @@ if (!defined('MARZLEY_PORTAL')) {
     exit;
 }
 
-const SCHEMA_VERSION = 6;
+const SCHEMA_VERSION = 7;
 const STAFF_PERMS = ['projects' => 'Projects & files', 'clients' => 'People', 'support' => 'Support', 'courses' => 'Courses', 'money' => 'Invoices, payments & quotes', 'leads' => 'Leads'];
 const PROJECT_STATUSES = ['planning', 'design', 'build', 'review', 'live', 'on_hold'];
 const INVOICE_STATUSES = ['unpaid', 'paid', 'cancelled'];
@@ -145,6 +145,8 @@ function migrate(PDO $pdo): void {
         ['feedback', 'publish_ok', "$uint NOT NULL DEFAULT 0"],
         ['feedback', 'published', "$uint NOT NULL DEFAULT 0"],
         ['login_codes', 'email', "VARCHAR(190) NOT NULL DEFAULT ''"],   // v6: codes for people creating an account
+        ['clients', 'ref_code', "VARCHAR(20) NOT NULL DEFAULT ''"],      // v7: each client's own referral code
+        ['clients', 'referred_by', "VARCHAR(20) NOT NULL DEFAULT ''"],   // v7: who referred them (signed up through a link)
     ];
     foreach ($columns as [$table, $col, $def]) {
         try { $pdo->exec("ALTER TABLE $table ADD COLUMN $col $def"); } catch (PDOException $e) { /* already there */ }
@@ -161,6 +163,13 @@ function migrate(PDO $pdo): void {
             FROM invoices WHERE status = 'paid' AND id NOT IN (SELECT invoice_id FROM payments)");
     }
     if ($v < 5) learn_seed($pdo);
+    if ($v < 7) {
+        // Existing clients keep the referral code their links already use (made from their phone number)
+        foreach ($pdo->query("SELECT id, phone FROM clients WHERE ref_code = ''")->fetchAll(PDO::FETCH_ASSOC) as $c) {
+            $code = $c['phone'] !== '' ? referral_code((string)$c['phone']) : null;
+            $pdo->prepare('UPDATE clients SET ref_code = ? WHERE id = ?')->execute([$code ?: new_ref_code($pdo), $c['id']]);
+        }
+    }
     $pdo->prepare($sqlite ? 'INSERT OR REPLACE INTO settings (k, v) VALUES (?, ?)' : 'REPLACE INTO settings (k, v) VALUES (?, ?)')
         ->execute(['schema_version', (string)SCHEMA_VERSION]);
 }
@@ -319,7 +328,7 @@ function verify_google_token(string $token): array {
 }
 
 /** Turn a verified email into a portal user, or refuse if they are not a client. */
-function sign_in(string $email, string $name): array {
+function sign_in(string $email, string $name, string $referredBy = ''): array {
     $email = strtolower(trim($email));
     $staff = in_array($email, config()['admin_emails'], true) ? null : q('SELECT name, perms FROM staff WHERE email = ?', [$email])->fetch();
     if (in_array($email, config()['admin_emails'], true)) {
@@ -330,7 +339,7 @@ function sign_in(string $email, string $name): array {
     } else {
         $client = q('SELECT id, name FROM clients WHERE email = ?', [$email])->fetch();
         if (!$client && empty(config()['open_signup'])) fail(403, 'This Google account is not linked to a Marzley Tech project yet. Contact us on WhatsApp +254 745 789 590 to get access.');
-        if (!$client) $client = create_client_account($email, $name);
+        if (!$client) $client = create_client_account($email, $name, $referredBy);
         $user = ['email' => $email, 'name' => $client['name'] ?: $name, 'role' => 'client', 'client_id' => (int)$client['id']];
     }
     session_regenerate_id(true);
@@ -342,11 +351,13 @@ function sign_in(string $email, string $name): array {
 }
 
 /** Someone new signed up themselves: give them a client account and let the team know. */
-function create_client_account(string $email, string $name): array {
+function create_client_account(string $email, string $name, string $referredBy = ''): array {
     $name = mb_substr(trim(preg_replace('/\s+/u', ' ', $name)), 0, 120);
     if ($name === '') $name = ucwords(str_replace(['.', '_', '-'], ' ', explode('@', $email)[0]));
     if (!rate_ok('signup', 30, 3600)) fail(429, 'Too many new accounts right now. Please try again in an hour.');
-    q('INSERT INTO clients (name, email, phone, created_at) VALUES (?, ?, ?, ?)', [$name, $email, '', now()]);
+    $referredBy = strtoupper(substr(preg_replace('/[^A-Za-z0-9]/', '', $referredBy), 0, 20));
+    if ($referredBy !== '' && !find_referrer($referredBy)) $referredBy = '';
+    q('INSERT INTO clients (name, email, phone, ref_code, referred_by, created_at) VALUES (?, ?, ?, ?, ?, ?)', [$name, $email, '', new_ref_code(db()), $referredBy, now()]);
     $client = q('SELECT id, name FROM clients WHERE email = ?', [$email])->fetch();
     audit('client_signup', $name, $email);
     notify_admins("New portal account: $name", "$name ($email) created an account in the client portal.\n\nThey can now send support requests and pay invoices. To start a project for them, open People in the portal: " . portal_url());
@@ -611,6 +622,8 @@ function settle_payment(string $checkoutId, array $r): string {
 function find_referrer(string $code): ?array {
     $code = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $code));
     if ($code === '') return null;
+    $c = q("SELECT id, name, phone FROM clients WHERE ref_code = ?", [$code])->fetch();
+    if ($c) return ['name' => $c['name'], 'phone' => $c['phone'], 'code' => $code, 'client_id' => (int)$c['id']];
     $r = q('SELECT name, phone FROM referrers WHERE code = ?', [$code])->fetch();
     if ($r) return $r + ['code' => $code];
     foreach (q("SELECT name, phone FROM clients WHERE phone <> ''")->fetchAll() as $c) {
@@ -632,21 +645,105 @@ function referral_due(string $code, string $referredName, string $referredPhone,
     $dupe = $clientId ? q('SELECT id FROM referrals WHERE code = ? AND client_id = ?', [$ref['code'], $clientId])->fetch()
                       : q('SELECT id FROM referrals WHERE code = ? AND referred_phone = ?', [$ref['code'], $key])->fetch();
     if ($dupe) return;
+    if (!empty($ref['client_id']) && $clientId && (int)$ref['client_id'] === $clientId) return;   // self-referral
     $amount = (int)(config()['referral_reward'] ?? 2000);
+    // The reward is paid once the referred client's work is done (a project marked Live)
+    $status = $clientId && client_work_done($clientId) ? 'due' : 'pending';
     q('INSERT INTO referrals (code, referrer_name, referrer_phone, client_id, lead_id, site_payment_id, referred_name, referred_phone, amount, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [$ref['code'], $ref['name'], $ref['phone'], $clientId, $leadId, $sitePaymentId, $referredName, $key, $amount, 'due', now()]);
-    audit('referral_due', "{$ref['name']} ({$ref['code']}) referred $referredName", 'system');
-    notify_admins("Referral reward due: KSh " . number_format($amount) . " to {$ref['name']}",
-        "$referredName, referred by {$ref['name']} ({$ref['phone']}, code {$ref['code']}), has paid. Send KSh " . number_format($amount) .
-        " to {$ref['name']} by M-Pesa, then mark it paid in the portal (Growth → Referrals).");
+        [$ref['code'], $ref['name'], $ref['phone'], $clientId, $leadId, $sitePaymentId, $referredName, $key, $amount, $status, now()]);
+    audit('referral_' . $status, "{$ref['name']} ({$ref['code']}) referred $referredName", 'system');
+    if ($status === 'due') referral_notify_due($ref['name'], $ref['phone'], $ref['code'], $referredName, $amount);
+    else notify_admins("Referral: $referredName paid (reward after the work is done)",
+        "$referredName, referred by {$ref['name']} ({$ref['phone']}, code {$ref['code']}), has paid. The KSh " . number_format($amount) .
+        " reward becomes due when their project is marked Live, or when you click “Work done” in Growth → Referrals.");
 }
+
+function referral_notify_due(string $name, string $phone, string $code, string $referredName, int $amount): void {
+    notify_admins("Referral reward due: KSh " . number_format($amount) . " to $name",
+        "$referredName, referred by $name ($phone, code $code), has paid and their work is done. Send KSh " . number_format($amount) .
+        " to $name by M-Pesa, then mark it paid in the portal (Growth → Referrals).");
+}
+
+/** True once the client has a project marked Live. */
+function client_work_done(int $clientId): bool {
+    return (bool)q("SELECT id FROM projects WHERE client_id = ? AND status = 'live'", [$clientId])->fetch();
+}
+
+/** A client's work is done: their referrer's reward (waiting for this) becomes due. */
+function referral_work_done(int $clientId): void {
+    $c = q('SELECT phone FROM clients WHERE id = ?', [$clientId])->fetch();
+    $phone = $c ? (normalise_phone((string)$c['phone']) ?: '') : '';
+    if ($phone !== '') q("UPDATE referrals SET client_id = ? WHERE client_id IS NULL AND status = 'pending' AND referred_phone = ?", [$clientId, $phone]);
+    foreach (q("SELECT * FROM referrals WHERE client_id = ? AND status = 'pending'", [$clientId])->fetchAll() as $r) {
+        if (!q("UPDATE referrals SET status = 'due' WHERE id = ? AND status = 'pending'", [$r['id']])->rowCount()) continue;
+        audit('referral_due', "{$r['referrer_name']} ({$r['code']}) referred {$r['referred_name']}", 'system');
+        referral_notify_due($r['referrer_name'], $r['referrer_phone'], $r['code'], $r['referred_name'], (int)$r['amount']);
+    }
+}
+
+/** A client's own referral code (made the first time it's needed). */
+function client_ref_code(int $clientId): string {
+    $c = q('SELECT ref_code, phone FROM clients WHERE id = ?', [$clientId])->fetch();
+    if (!$c) return '';
+    if ($c['ref_code'] !== '') return $c['ref_code'];
+    $code = ($c['phone'] !== '' ? referral_code((string)$c['phone']) : null) ?: new_ref_code(db());
+    if (q('SELECT id FROM clients WHERE ref_code = ?', [$code])->fetch()) $code = new_ref_code(db());
+    q('UPDATE clients SET ref_code = ? WHERE id = ?', [$code, $clientId]);
+    return $code;
+}
+
+function new_ref_code(PDO $pdo): string {
+    $alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    do {
+        $code = 'MC';
+        for ($i = 0; $i < 6; $i++) $code .= $alphabet[random_int(0, strlen($alphabet) - 1)];
+        $st = $pdo->prepare('SELECT id FROM clients WHERE ref_code = ?');
+        $st->execute([$code]);
+    } while ($st->fetch());
+    return $code;
+}
+
+/** Everyone a client referred, with how far along they are: enquired, signed up, project started, paid (work in progress), reward due, reward paid. */
+function my_referrals(int $clientId, string $code, string $phone): array {
+    $codes = array_values(array_unique(array_filter([$code, $phone !== '' ? referral_code($phone) : null])));
+    if (!$codes) return [];
+    $marks = implode(',', array_fill(0, count($codes), '?'));
+    $short = function (string $name): string {
+        $p = preg_split('/\s+/u', trim($name)) ?: [''];
+        return $p[0] . (isset($p[1]) ? ' ' . mb_substr($p[1], 0, 1) . '.' : '');
+    };
+    $out = []; $seenClients = []; $seenLeads = [];
+    foreach (q("SELECT * FROM referrals WHERE code IN ($marks) ORDER BY id DESC", $codes)->fetchAll() as $r) {
+        if ($r['client_id']) $seenClients[] = (int)$r['client_id'];
+        if ($r['lead_id']) $seenLeads[] = (int)$r['lead_id'];
+        $stage = ['pending' => 'paid', 'due' => 'reward_due', 'paid' => 'reward_paid', 'void' => 'not_eligible'][$r['status']] ?? $r['status'];
+        $out[] = ['name' => $short($r['referred_name']), 'client_code' => $r['client_id'] ? client_number((int)$r['client_id']) : '', 'stage' => $stage,
+                  'reward' => (int)$r['amount'], 'date' => $r['created_at'], 'paid_at' => $r['paid_at']];
+    }
+    foreach (q("SELECT c.id, c.name, c.created_at, (SELECT COUNT(*) FROM projects p WHERE p.client_id = c.id) AS projects FROM clients c WHERE c.referred_by IN ($marks) AND c.id <> ? ORDER BY c.id DESC", array_merge($codes, [$clientId]))->fetchAll() as $c) {
+        if (in_array((int)$c['id'], $seenClients, true)) continue;
+        $seenClients[] = (int)$c['id'];
+        $out[] = ['name' => $short($c['name']), 'client_code' => client_number((int)$c['id']), 'stage' => $c['projects'] > 0 ? 'project_started' : 'signed_up', 'reward' => 0, 'date' => $c['created_at'], 'paid_at' => null];
+    }
+    foreach (q("SELECT id, name, status, client_id, created_at FROM leads WHERE referred_by IN ($marks) ORDER BY id DESC", $codes)->fetchAll() as $l) {
+        if (in_array((int)$l['id'], $seenLeads, true) || ($l['client_id'] && in_array((int)$l['client_id'], $seenClients, true))) continue;
+        $out[] = ['name' => $short($l['name']), 'client_code' => $l['client_id'] ? client_number((int)$l['client_id']) : '',
+                  'stage' => $l['status'] === 'lost' ? 'not_eligible' : ($l['client_id'] ? 'project_started' : 'enquired'), 'reward' => 0, 'date' => $l['created_at'], 'paid_at' => null];
+    }
+    usort($out, fn($a, $b) => strcmp((string)$b['date'], (string)$a['date']));
+    return $out;
+}
+
+/** Client number shown in the portal, e.g. MT-0012. */
+function client_number(int $id): string { return 'MT-' . str_pad((string)$id, 4, '0', STR_PAD_LEFT); }
 
 /** After any payment by a client: if they came through a referral, the reward is due. */
 function referral_check_client(int $clientId): void {
+    $c = q('SELECT name, phone, referred_by FROM clients WHERE id = ?', [$clientId])->fetch();
+    if (!$c) return;
     $lead = q("SELECT id, name, phone, referred_by FROM leads WHERE client_id = ? AND referred_by <> '' ORDER BY id LIMIT 1", [$clientId])->fetch();
-    if (!$lead) return;
-    $c = q('SELECT name, phone FROM clients WHERE id = ?', [$clientId])->fetch();
-    referral_due($lead['referred_by'], $c['name'] ?? $lead['name'], $c['phone'] ?: $lead['phone'], $clientId, (int)$lead['id']);
+    if ($lead) referral_due($lead['referred_by'], $c['name'] ?: $lead['name'], $c['phone'] ?: $lead['phone'], $clientId, (int)$lead['id']);
+    elseif ($c['referred_by'] !== '') referral_due($c['referred_by'], $c['name'], (string)$c['phone'], $clientId, null);
 }
 
 // ---------- payments made on the public website (deposit, care plan, demo) ----------

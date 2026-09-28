@@ -54,18 +54,48 @@
             <p class="portal-help"><span data-i18n>Need help?</span> <a data-i18n href="https://wa.me/254745789590?text=Hello%20Marzley%2C%20I%20need%20help%20with%20the%20client%20portal." target="_blank" rel="noopener noreferrer">Message us on WhatsApp</a>.</p>
         </section>
 
-        <section id="view-client" hidden aria-labelledby="client-title">
-            <h1 id="client-title" class="portal-h1"></h1>
-            <nav class="portal-jump" aria-label="Sections">
-                <a href="#sec-projects" data-i18n>Projects</a><a href="#sec-invoices" data-i18n>Invoices</a><a href="#sec-domains" id="jump-domains" hidden data-i18n>Domains &amp; hosting</a><a href="#sec-courses" id="jump-courses" hidden data-i18n>Courses</a><a href="#sec-support" data-i18n>Support</a>
-            </nav>
-            <div id="client-feedback"></div>
-            <div id="sec-projects"><h2 class="portal-h2" data-i18n>Your projects</h2><div id="client-projects" class="portal-cards"></div></div>
-            <div id="sec-invoices"><h2 class="portal-h2" data-i18n>Invoices</h2><div id="client-invoices"></div></div>
-            <div id="sec-domains" hidden><h2 class="portal-h2" data-i18n>Domains &amp; hosting</h2><div id="client-domains"></div></div>
-            <div id="sec-courses" hidden><h2 class="portal-h2" data-i18n>Your courses</h2><div id="client-courses" class="portal-cards"></div></div>
-            <div id="sec-support"><h2 class="portal-h2" data-i18n>Support</h2><div id="client-support"></div></div>
-            <div id="client-referral"></div>
+        <section id="view-client" class="admin client-dash" hidden aria-labelledby="client-title">
+            <aside class="admin-side" aria-label="Menu">
+                <a class="admin-brand" href="../" aria-label="Marzley Tech website">
+                    <img src="../img/brand/logo-96.webp" alt="" width="44" height="44" />
+                    <span><strong>Marzley<span>Tech</span></strong><small data-i18n>Client portal</small></span>
+                </a>
+                <nav class="admin-nav" role="tablist" aria-orientation="vertical" aria-label="Your account">
+                    <button type="button" role="tab" id="ctab-overview" aria-controls="cpanel-overview" aria-selected="true"><i class="fa-solid fa-table-cells-large" aria-hidden="true"></i><span data-i18n>Overview</span></button>
+                    <button type="button" role="tab" id="ctab-projects" aria-controls="cpanel-projects" aria-selected="false"><i class="fa-solid fa-diagram-project" aria-hidden="true"></i><span data-i18n>Projects</span><b class="nav-badge badge-amber" id="ccount-projects" hidden></b></button>
+                    <button type="button" role="tab" id="ctab-request" aria-controls="cpanel-request" aria-selected="false"><i class="fa-solid fa-circle-plus" aria-hidden="true"></i><span data-i18n>Request a project</span></button>
+                    <button type="button" role="tab" id="ctab-payments" aria-controls="cpanel-payments" aria-selected="false"><i class="fa-solid fa-file-invoice-dollar" aria-hidden="true"></i><span data-i18n>Payments</span><b class="nav-badge badge-red" id="ccount-payments" hidden></b></button>
+                    <button type="button" role="tab" id="ctab-referrals" aria-controls="cpanel-referrals" aria-selected="false"><i class="fa-solid fa-user-plus" aria-hidden="true"></i><span data-i18n>Referrals</span><b class="nav-badge badge-green" id="ccount-referrals" hidden></b></button>
+                    <button type="button" role="tab" id="ctab-support" aria-controls="cpanel-support" aria-selected="false"><i class="fa-solid fa-life-ring" aria-hidden="true"></i><span data-i18n>Support</span><b class="nav-badge badge-blue" id="ccount-support" hidden></b></button>
+                    <button type="button" role="tab" id="ctab-courses" aria-controls="cpanel-courses" aria-selected="false" hidden><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i><span data-i18n>Courses</span></button>
+                    <button type="button" role="tab" id="ctab-domains" aria-controls="cpanel-domains" aria-selected="false" hidden><i class="fa-solid fa-globe" aria-hidden="true"></i><span data-i18n>Domains &amp; hosting</span></button>
+                    <button type="button" role="tab" id="ctab-profile" aria-controls="cpanel-profile" aria-selected="false"><i class="fa-solid fa-id-card" aria-hidden="true"></i><span data-i18n>Profile</span></button>
+                </nav>
+                <a class="admin-back" href="../learn/"><i class="fa-solid fa-laptop-code" aria-hidden="true"></i> <span data-i18n>Learning hub</span></a>
+            </aside>
+            <div class="admin-main">
+                <header class="admin-top">
+                    <p class="admin-crumb"><span data-i18n>My account</span><i class="fa-solid fa-chevron-right" aria-hidden="true"></i><span id="client-crumb" data-i18n>Overview</span></p>
+                    <div class="admin-user">
+                        <button type="button" class="lang-toggle" id="client-lang" lang="sw">Kiswahili</button>
+                        <span><strong id="client-name"></strong><small id="client-code"></small></span>
+                        <button type="button" class="admin-signout" id="client-signout" aria-label="Sign out"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i></button>
+                    </div>
+                </header>
+                <div class="admin-body">
+                    <h1 id="client-title" class="portal-h1"></h1>
+                    <div id="client-feedback"></div>
+                    <div role="tabpanel" id="cpanel-overview" aria-labelledby="ctab-overview"></div>
+                    <div role="tabpanel" id="cpanel-projects" aria-labelledby="ctab-projects" hidden><div id="client-projects" class="portal-cards"></div></div>
+                    <div role="tabpanel" id="cpanel-request" aria-labelledby="ctab-request" hidden></div>
+                    <div role="tabpanel" id="cpanel-payments" aria-labelledby="ctab-payments" hidden><div id="client-invoices"></div><div id="client-statement"></div></div>
+                    <div role="tabpanel" id="cpanel-referrals" aria-labelledby="ctab-referrals" hidden><div id="client-referral"></div></div>
+                    <div role="tabpanel" id="cpanel-support" aria-labelledby="ctab-support" hidden><div id="client-support"></div></div>
+                    <div role="tabpanel" id="cpanel-courses" aria-labelledby="ctab-courses" hidden><div id="client-courses" class="portal-cards"></div></div>
+                    <div role="tabpanel" id="cpanel-domains" aria-labelledby="ctab-domains" hidden><div id="client-domains"></div></div>
+                    <div role="tabpanel" id="cpanel-profile" aria-labelledby="ctab-profile" hidden></div>
+                </div>
+            </div>
         </section>
 
         <section id="view-admin" class="admin" hidden aria-labelledby="admin-title">

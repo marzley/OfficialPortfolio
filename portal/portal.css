@@ -1508,3 +1508,34 @@ details.admin-panel[open] .panel-summary { margin-bottom: 14px; }
 
 /* The site zooms up on very large screens (home.css); the code editor and admin work best unzoomed */
 html { zoom: 1; }
+
+/* ---------- Client dashboard ---------- */
+.client-dash .admin-body > .portal-h1 { margin: 0 0 18px; font-size: clamp(24px, 3vw, 32px); }
+.client-dash .admin-user .lang-toggle { min-height: 36px; }
+.client-dash .stat-cards { margin-bottom: 18px; }
+.mini-progress { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+.mini-progress li { display: grid; gap: 6px; }
+.mp-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.next-pay { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px; border-radius: 12px; background: var(--current-bg); border: 1px solid var(--amber); }
+.next-pay strong { display: block; font-size: 22px; color: var(--heading); }
+.mini-h { margin: 20px 0 8px; font-size: 15px; color: var(--heading); }
+.referral-hero { border: 2px solid var(--amber); }
+.ref-ids { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 14px 0; }
+.ref-ids > div { padding: 12px 14px; border-radius: 12px; background: var(--bg); border: 1px solid var(--line); display: grid; gap: 2px; }
+.ref-ids small { color: var(--fg-muted); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.ref-ids strong { font-size: 18px; color: var(--heading); overflow-wrap: anywhere; }
+.ref-steps { list-style: none; counter-reset: s; margin: 18px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+.ref-steps li { counter-increment: s; position: relative; padding: 12px 12px 12px 48px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); display: grid; gap: 2px; font-size: 14px; }
+.ref-steps li::before { content: counter(s); position: absolute; left: 12px; top: 12px; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--navy); color: var(--amber); font-weight: 800; font-size: 13px; }
+.ref-steps strong { color: var(--heading); }
+.ref-steps span { color: var(--fg-muted); }
+.ref-track { display: flex; gap: 3px; margin-top: 6px; }
+.ref-track i { width: 16px; height: 4px; border-radius: 4px; background: var(--line); }
+.ref-track i.on { background: var(--green); }
+@media (max-width: 900px) {
+  .client-dash .admin-user .lang-toggle { display: none; }
+}
+.feed-dot { width: 8px; height: 8px; margin-top: 7px; border-radius: 50%; background: var(--amber); flex: none; }
+
+.client-dash #client-feedback:empty { display: none; }
+.client-dash .admin-body > .portal-form, .client-dash [role=tabpanel] > .portal-form { margin-bottom: 18px; }

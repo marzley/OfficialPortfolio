@@ -1917,7 +1917,7 @@
   var REF_KEY = "marzley-ref";
   try {
     var incoming = new URLSearchParams(location.search).get("ref");
-    if (incoming && /^MT[0-9A-Z]{4,8}$/.test(incoming)) localStorage.setItem(REF_KEY, JSON.stringify({ code: incoming, at: Date.now() }));
+    if (incoming && /^M[TC][0-9A-Z]{4,8}$/.test(incoming)) localStorage.setItem(REF_KEY, JSON.stringify({ code: incoming, at: Date.now() }));
   } catch (e) {}
   var referredBy = null;
   try {

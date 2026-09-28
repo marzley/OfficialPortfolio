@@ -62,7 +62,7 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   const cid = one("SELECT id FROM clients WHERE email = 'client@example.com'").id;
 
   // ---------- database upgrade ----------
-  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "6");
+  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "7");
 
   // ---------- sequential invoice numbers ----------
   r = await admin("invoice_save", { client_id: cid, description: "Website build", amount: 10000, status: "unpaid" });
@@ -346,7 +346,7 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   ok("team emailed about the website payment", subjects().some((x) => /^Payment received: KSh 5,000 from Amani Bakery/.test(x)), subjects());
   const bakery = one("SELECT * FROM leads WHERE phone = '0722555666'");
   ok("website payment put on the Leads board as Won", bakery && bakery.status === "won" && +bakery.value === 5000, bakery);
-  ok("referral reward due for the referrer", one(`SELECT COUNT(*) AS n FROM referrals WHERE code = '${code}' AND status = 'due'`).n == 1 && subjects().some((x) => /^Referral reward due/.test(x)));
+  ok("referral recorded, reward waits until the work is done", one(`SELECT COUNT(*) AS n FROM referrals WHERE code = '${code}' AND status = 'pending'`).n == 1 && subjects().some((x) => /^Referral: Amani Bakery paid/.test(x)) && !subjects().some((x) => /^Referral reward due/.test(x)));
   sql(`INSERT INTO site_payments (checkout_id, purpose, amount, phone, name, status, created_at) VALUES ('ws_SITE2', 'deposit', 5000, '0722555777', 'Short Payer', 'pending', datetime('now'))`);
   await callback("ws_SITE2", 100, "SITE000002");
   await sleep(300);
@@ -362,6 +362,12 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   r = await admin3("site_payment_link", { id: sp1.id, client_id: amani });
   const amInv = one(`SELECT * FROM invoices WHERE client_id = ${amani}`);
   ok("website payment attached as a paid invoice with its M-Pesa code", r.s === 200 && amInv.status === "paid" && amInv.mpesa_receipt === "SITE000001", amInv);
+  ok("attaching the payment links the referral to the client", +one("SELECT client_id FROM referrals WHERE referred_name = 'Amani Bakery'").client_id === +amani);
+  r = await admin3("referral_paid", { id: one("SELECT id FROM referrals WHERE status = 'pending'").id, note: "EARLY" });
+  ok("a reward can't be paid before the work is done", r.s === 404);
+  clearMail();
+  r = await admin3("referral_ready", { id: one("SELECT id FROM referrals WHERE status = 'pending'").id });
+  ok("“Work done” makes the reward due and emails the team", r.s === 200 && one("SELECT status FROM referrals").status === "due" && subjects().some((x) => /^Referral reward due/.test(x)));
   r = await admin3("referral_paid", { id: one("SELECT id FROM referrals WHERE status = 'due'").id, note: "RWD1234567" });
   ok("referral reward marked paid", r.s === 200 && one("SELECT status FROM referrals").status === "paid");
   // referral through a lead that becomes a client and pays an invoice
@@ -372,13 +378,44 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   r = await admin3("quick_start", { name: "Juma Hardware", email: "juma@example.com", phone: "0733444555", title: "Shop site", total: 20000, deposit_percent: 50, due_days: 7, lead_id: jl.id });
   const jInv = one(`SELECT * FROM invoices WHERE number = '${r.j.invoice}'`);
   await admin3("payment_record", { invoice_id: jInv.id, amount: 10000, method: "mpesa", reference: "JUMA000001" });
-  ok("client's first payment makes the referral due", one(`SELECT COUNT(*) AS n FROM referrals WHERE referred_name = 'Juma Hardware' AND status = 'due'`).n == 1);
+  ok("client's first payment records the referral (work in progress)", one(`SELECT COUNT(*) AS n FROM referrals WHERE referred_name = 'Juma Hardware' AND status = 'pending'`).n == 1);
+  const jumaId = one("SELECT id FROM clients WHERE email = 'juma@example.com'").id;
+  const jProj = one(`SELECT * FROM projects WHERE client_id = ${jumaId}`);
+  r = await admin3("project_save", { id: jProj.id, client_id: jumaId, title: jProj.title, status: "live", progress: 100 });
+  ok("marking the project Live makes the reward due", r.s === 200 && one(`SELECT status FROM referrals WHERE referred_name = 'Juma Hardware'`).status === "due", r.j);
   let self = new FormData(); self.append("name", "Mercy Referrer"); self.append("phone", "0711223344"); self.append("email", "mercy@example.com"); self.append("referred_by", code);
   await fetch(BASE + "/portal/lead.php", { method: "POST", body: self });
   const ml = one("SELECT * FROM leads WHERE email = 'mercy@example.com'");
   r = await admin3("quick_start", { name: "Mercy", email: "mercy@example.com", phone: "0711223344", title: "Blog", total: 2000, deposit_percent: 100, due_days: 1, lead_id: ml.id });
   await admin3("payment_record", { invoice_id: one(`SELECT id FROM invoices WHERE number = '${r.j.invoice}'`).id, amount: 2000, method: "cash", reference: "" });
   ok("self-referrals earn nothing", one("SELECT COUNT(*) AS n FROM referrals WHERE referred_name = 'Mercy'").n == 0);
+
+  // client dashboard: client ID, referral code, referrals and their status, requests, profile
+  const mercy = await login("mercy@example.com");
+  r = await mercy("data");
+  const mme = r.j.me;
+  ok("client sees their client ID and referral code", /^MT-\d{4}$/.test(mme.client_code) && mme.ref_code === code, mme);
+  const byName = (n) => mme.referrals.find((x) => x.name.indexOf(n) === 0);
+  ok("referrer sees who they referred, with client ID and status", byName("Amani") && byName("Amani").stage === "reward_paid" && /^MT-\d{4}$/.test(byName("Amani").client_code) &&
+    byName("Juma") && byName("Juma").stage === "reward_due" && byName("Juma").reward === 2000, mme.referrals);
+  ok("referred people's names are shortened", byName("Juma").name === "Juma H.");
+  const friend = session();
+  r = await friend("dev_login", { email: "friend.of.mercy@example.com", ref: code });
+  ok("signing up through a referral link remembers the referrer", one("SELECT referred_by FROM clients WHERE email = 'friend.of.mercy@example.com'").referred_by === code);
+  r = await mercy("data");
+  ok("a new sign-up shows as “signed up” for the referrer", r.j.me.referrals.some((x) => x.stage === "signed_up" && /^MT-\d{4}$/.test(x.client_code)));
+  r = await friend("project_request", { service: "Website", budget: "KSh 15,000 – 40,000", timeline: "Within a month", details: "A site for my salon with booking." });
+  ok("a client can request a project", r.s === 200 && one("SELECT COUNT(*) AS n FROM leads WHERE source = 'Portal request' AND email = 'friend.of.mercy@example.com'").n == 1);
+  r = await friend("data");
+  ok("the request shows in their dashboard", r.j.me.requests.length === 1 && r.j.me.requests[0].status === "new");
+  r = await admin3("project_request", { service: "Website", details: "x" });
+  ok("only clients request projects", r.s === 403);
+  r = await friend("profile_save", { name: "Faith Friend", phone: "12" });
+  ok("profile rejects a bad phone number", r.s === 400);
+  const friendCode = one("SELECT ref_code FROM clients WHERE email = 'friend.of.mercy@example.com'").ref_code;
+  r = await friend("profile_save", { name: "Faith Friend", phone: "0799 111 222" });
+  const fr2 = one("SELECT * FROM clients WHERE email = 'friend.of.mercy@example.com'");
+  ok("profile saved; their referral code stays the same", r.s === 200 && fr2.name === "Faith Friend" && fr2.phone === "0799111222" && fr2.ref_code === friendCode && /^MC/.test(friendCode));
 
   // chat questions log (personal details removed)
   await fetch(BASE + "/portal/chat-log.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ q: "Do you do drone videos? call me 0712 345 678 or me@x.com" }) });
