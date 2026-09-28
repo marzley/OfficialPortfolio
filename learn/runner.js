@@ -21,8 +21,8 @@
     "box.style.cssText='margin:16px 0 0;padding:10px 12px;border-top:2px solid #ffb800;background:#0b1b35;color:#e2e8f0;font:14px/1.5 monospace;white-space:pre-wrap';" +
     "(document.body||document.documentElement).appendChild(box);}var s=document.createElement('div');if(c)s.style.color=c;s.textContent=t;box.appendChild(s);}" +
     "['log','info','warn','error'].forEach(function(k){console[k]=function(){show(fmt(arguments),k==='error'?'#fca5a5':k==='warn'?'#fcd34d':'');};});" +
-    "window.addEventListener('error',function(e){var m=String(e.message||'');show(/Your loop ran/.test(m)?m.replace(/^Uncaught Error: /,''):'Error: '+m+(e.lineno?' (line '+e.lineno+')':''),'#fca5a5');});" +
-    "window.__report=function(){parent.postMessage({type:'output',text:lines.join('\\n'),ok:true},'*');};" +
+    "var firstErr='';window.addEventListener('error',function(e){var m=String(e.message||'');var t=/Your loop ran/.test(m)?m.replace(/^Uncaught Error: /,''):'Error: '+m+(e.lineno?' (line '+e.lineno+')':'');if(!firstErr)firstErr=t;show(t,'#fca5a5');});" +
+    "window.__report=function(){parent.postMessage({type:'output',text:lines.join('\\n'),ok:!firstErr,error:firstErr,detail:firstErr},'*');};" +
     "window.addEventListener('load',function(){setTimeout(window.__report,150);});})();<\/script>";
 
   // ---------- Loop guard for JavaScript ----------
@@ -209,7 +209,7 @@
         var stopped = /CodeTookTooLong: (.*)/.exec(String(e.message || e));
         var msg = stopped ? stopped[1] : String(e.message || e).split("\n").filter(function (l) { return l && !/^\s*File "\/lib\//.test(l) && !/_pyodide/.test(l); }).join("\n");
         print(msg.trim() + "\n", "err");
-        send({ type: "output", text: text.join("\n"), ok: false, error: msg });
+        send({ type: "output", text: text.join("\n"), ok: false, error: msg, detail: msg });
       }
     }).catch(function (e) { out.textContent = ""; print(e.message, "err"); send({ type: "output", text: "", ok: false, error: e.message }); });
   }
@@ -436,7 +436,7 @@
       if (errs) print(errs + "\n", "err");
       if (d.fail) print(d.fail + "\n", "err");
       if (!text && !errs && !d.fail) print("(no output)", "muted");
-      send(problem ? { type: "output", text: text, ok: false, error: problem } : { type: "output", text: text, ok: true });
+      send(problem ? { type: "output", text: text, ok: false, error: problem, detail: (errs + "\n" + (d.fail || "") + "\n" + ((text.match(/(Parse error|Fatal error|Warning|Deprecated|Notice):[^\n]*/g) || []).join("\n"))).trim() } : { type: "output", text: text, ok: true });
     };
     w.onerror = function (e) { clearTimeout(timer); e.preventDefault && e.preventDefault(); w.terminate(); phpWorker = null; showError("Error", "PHP could not start. Check your connection and try again."); };
     w.postMessage({ code: code });
@@ -477,7 +477,7 @@
       } else if (d.out) print(d.out);
       if (d.err) print(d.err, "err");
       if (!d.out && !d.err) print("(no output)", "muted");
-      send(d.err && !d.out ? { type: "output", text: "", ok: false, error: d.err.trim().split("\n")[0] } : { type: "output", text: d.out || "", ok: !d.err, error: d.err ? d.err.trim().split("\n")[0] : "" });
+      send(d.err && !d.out ? { type: "output", text: "", ok: false, error: d.err.trim().split("\n")[0], detail: d.err } : { type: "output", text: d.out || "", ok: !d.err, error: d.err ? d.err.trim().split("\n")[0] : "", detail: d.err || "" });
     };
     w.onerror = function (e) { clearTimeout(timer); if (e.preventDefault) e.preventDefault(); w.terminate(); engWorker = null; showError("Error", "The " + ENG_NAMES[lang] + " engine could not start. Check your connection and try again."); };
     if (!first) go();
@@ -546,12 +546,12 @@
       out.textContent = "";
       var stdout = ceText(ex.stdout), stderr = ceText(ex.stderr);
       var buildErr = build.code ? (ceText(build.stderr) || ceText(build.stdout)) : "";
-      if (buildErr) { print("Your code didn't compile:\n", "err"); print(buildErr + "\n", "err"); return send({ type: "output", text: "", ok: false, error: buildErr.split("\n")[0] }); }
+      if (buildErr) { print("Your code didn't compile:\n", "err"); print(buildErr + "\n", "err"); return send({ type: "output", text: "", ok: false, error: buildErr.split("\n")[0], detail: buildErr }); }
       if (stdout) print(stdout + "\n");
       if (stderr) print(stderr + "\n", "err");
       if (ex.timedOut) print("Your program took too long and was stopped.\n", "err");
       if (!stdout && !stderr) print("(no output)", "muted");
-      send({ type: "output", text: stdout, ok: !stderr && !ex.timedOut && !(ex.code > 0), error: stderr ? stderr.split("\n")[0] : "" });
+      send({ type: "output", text: stdout, ok: !stderr && !ex.timedOut && !(ex.code > 0), error: stderr ? stderr.split("\n")[0] : (ex.timedOut ? "took too long" : ""), detail: stderr || (ex.timedOut ? "Your program took too long and was stopped." : "") });
     }).catch(function (e) {
       if (done) return; done = true; clearTimeout(timer);
       fail(/Failed to fetch|NetworkError|Load failed/i.test(String(e && e.message)) ? "Couldn't reach the online compiler. Check your internet connection." : String(e && e.message || e));

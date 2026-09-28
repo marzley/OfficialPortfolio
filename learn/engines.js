@@ -25,7 +25,11 @@
   var ENGINES = {
     c: function (code) {
       need("picoc.js");
-      return Promise.resolve(self.picocjs.runC(code, function (s) { out += line(String(s)); })).then(function () {});
+      return Promise.resolve(self.picocjs.runC(code, function (s) { out += line(String(s)); })).then(function () {
+        // PicoC prints its errors as normal output: move them to the error stream
+        var at = out.search(/[^\n]*\n?[^\n]*\^\s*\n?[^\n]*file\.c:\d+:\d+|file\.c:\d+:\d+/);
+        if (at >= 0) { var head = out.slice(0, at), tail = out.slice(at); var cut = head.lastIndexOf("\n", head.length - 2); if (/\^\s*$/.test(head.trim()) || true) { err += tail; out = head; } }
+      });
     },
     cpp: function (code, stdin) {
       need("jscpp.js");
@@ -131,8 +135,8 @@
           }).then(function (r) { return r.vm; });
         }
         return vmReady.then(function (vm) {
-          try { vm.eval("$stdout.sync = true\n" + code); }
-          catch (e) { err += String(e && e.message || e).replace(/^.*?: /, "") + "\n"; }
+          try { vm.eval("$stdout.sync = true; " + code); }
+          catch (e) { err += String(e && e.message || e) + "\n"; }
         });
       };
     })()

@@ -223,7 +223,7 @@
           if (!self.frame || e.source !== self.frame.contentWindow || !e.data || e.data.type !== "output") return;
           window.removeEventListener("message", onMsg);
           done = true;
-          resolve({ text: String(e.data.text || ""), ok: !!e.data.ok, error: e.data.error || "" });
+          resolve({ text: String(e.data.text || ""), ok: !!e.data.ok, error: e.data.error || "", detail: e.data.detail || "" });
         };
         window.addEventListener("message", onMsg);
         self.frame.contentWindow.postMessage({ type: "run", lang: lang, code: code }, "*");
@@ -258,6 +258,43 @@
     return cm;
   }
 
+  // ---------- "What went wrong" helper under the output (learn/help.js does the explaining) ----------
+  function clearMarks(ed) {
+    if (ed && ed.__errLine != null && ed.removeLineClass) { ed.removeLineClass(ed.__errLine, "background", "cm-err-line"); ed.__errLine = null; }
+  }
+  function renderHelp(box, lang, code, r, ed) {
+    if (!box) return;
+    clearMarks(ed);
+    box.innerHTML = "";
+    box.hidden = true;
+    var H = window.MarzleyHelp;
+    if (!H) return;
+    var hit = r && !r.ok ? H.explain(lang, code, r) : null;
+    var tips = (lang === "html" || lang === "css") ? H.lint(lang, code) : [];
+    if (!hit && !tips.length) return;
+    var html = "";
+    if (hit) {
+      if (hit.line && ed && ed.addLineClass) { ed.addLineClass(hit.line - 1, "background", "cm-err-line"); ed.__errLine = hit.line - 1; }
+      html += '<div class="help-card help-err"><p class="help-title"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i> ' + esc(hit.title) + "</p>" +
+        (hit.line ? '<p class="help-line"><button type="button" class="linklike help-go" data-line="' + hit.line + '">Line ' + hit.line + "</button>" + (hit.lineText ? ": <code>" + esc(hit.lineText.slice(0, 120)) + "</code>" : "") + "</p>" : "") +
+        '<p><strong>What went wrong:</strong> ' + esc(hit.why) + '</p><p><strong>How to fix it:</strong> ' + esc(hit.fix) + "</p>" +
+        (hit.example ? '<p class="help-ex-label">Example:</p><pre class="help-ex"><code>' + esc(hit.example) + "</code></pre>" : "") +
+        '<details class="help-raw"><summary>Full error message</summary><pre>' + esc(hit.raw.slice(0, 3000)) + "</pre></details></div>";
+    }
+    if (tips.length) {
+      html += '<div class="help-card help-tips"><p class="help-title"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> ' + (hit ? "Also check" : "Tips to improve your code") + "</p><ul>" +
+        tips.map(function (t) { return "<li>" + (t.line ? '<button type="button" class="linklike help-go" data-line="' + t.line + '">Line ' + t.line + "</button>: " : "") + "<strong>" + esc(t.title) + ".</strong> " + esc(t.fix) + "</li>"; }).join("") + "</ul></div>";
+    }
+    box.innerHTML = html;
+    box.hidden = false;
+    box.querySelectorAll(".help-go").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var n = Number(b.getAttribute("data-line")) - 1;
+        if (ed && ed.setCursor) { ed.focus(); ed.setCursor({ line: n, ch: 0 }); ed.scrollIntoView({ line: n, ch: 0 }, 80); }
+      });
+    });
+  }
+
   /** An editor + Run button + output. opts: { lang, code, title, check } */
   function codeBlock(host, opts) {
     var lang = opts.lang;
@@ -265,14 +302,15 @@
       '<div class="try-btns"><button type="button" class="try-reset" title="Reset the code"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i><span class="sr-only">Reset</span></button>' +
       '<a class="try-open" title="Open in the practice editor" href="./?page=practice&amp;lang=' + esc(lang) + '"><i class="fa-solid fa-up-right-from-square" aria-hidden="true"></i><span class="sr-only">Open in practice</span></a>' +
       '<button type="button" class="btn btn-solid btn-sm try-run"><i class="fa-solid fa-play" aria-hidden="true"></i> Run</button></div></div>' +
-      '<div class="try-body"><div class="try-editor"></div><div class="try-output" hidden></div></div></div>');
+      '<div class="try-body"><div class="try-editor"></div><div class="try-output" hidden></div></div><div class="try-help" hidden aria-live="polite"></div></div>');
     host.appendChild(wrap);
     var ed = makeEditor(wrap.querySelector(".try-editor"), opts.code, lang);
     var runner = new Runner(wrap.querySelector(".try-output"));
     var runBtn = wrap.querySelector(".try-run");
     var run = function () {
       runBtn.disabled = true;
-      return runner.run(lang, ed.getValue()).then(function (r) { runBtn.disabled = false; return r; });
+      var code = ed.getValue();
+      return runner.run(lang, code).then(function (r) { runBtn.disabled = false; renderHelp(wrap.querySelector(".try-help"), runLang(lang, code), code, r, ed); return r; });
     };
     runBtn.addEventListener("click", run);
     wrap.querySelector(".try-reset").addEventListener("click", function () { ed.setValue(opts.code); });
@@ -796,10 +834,14 @@
       '<button type="button" class="try-reset" id="p-copy" title="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i><span class="sr-only">Copy code</span></button>' +
       '<button type="button" class="btn btn-solid btn-sm" id="p-run"><i class="fa-solid fa-play" aria-hidden="true"></i> Run <kbd>Ctrl</kbd>+<kbd>Enter</kbd></button></div></div><div class="pane-editor" id="p-editor"></div></div>' +
       '<div class="pane"><div class="pane-bar"><span>Output</span></div><div class="pane-output" id="p-out"></div></div></div>' +
-      practiceDetails(lang) + '</section>';
+      '<div class="practice-help" id="p-help" hidden aria-live="polite"></div>' + practiceDetails(lang) + '</section>';
     var ed = makeEditor($("#p-editor"), store.get("code:" + lang) || STARTERS[lang], lang);
     var runner = new Runner($("#p-out"));
-    var run = function () { store.set("code:" + lang, ed.getValue()); $("#p-run").disabled = true; runner.run(lang, ed.getValue()).then(function () { $("#p-run").disabled = false; }); };
+    var run = function () {
+      var code = ed.getValue();
+      store.set("code:" + lang, code); $("#p-run").disabled = true;
+      runner.run(lang, code).then(function (r) { $("#p-run").disabled = false; renderHelp($("#p-help"), runLang(lang, code), code, r, ed); });
+    };
     $("#p-run").addEventListener("click", run);
     $("#p-reset").addEventListener("click", function () { if (confirm("Start again with the example code?")) ed.setValue(STARTERS[lang]); });
     $("#p-copy").addEventListener("click", function () { if (navigator.clipboard) navigator.clipboard.writeText(ed.getValue()); });
