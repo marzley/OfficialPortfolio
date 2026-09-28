@@ -296,9 +296,12 @@ html { zoom: 1; }
 .free-badges { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0; padding: 0; }
 .free-badges li { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 14px; font-weight: 700; color: var(--heading); }
 .free-badges i { color: var(--green); }
-.portal-link { display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line); color: var(--heading) !important; text-decoration: none; font-weight: 700; font-size: 14px; }
-.portal-link i { color: var(--amber-text); }
-@media (max-width: 1100px) { .portal-link span { display: none; } }
+.learn-actions .portal-link { display: inline-flex; align-items: center; gap: 8px; min-height: 38px; padding: 0 14px 0 5px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--heading); text-decoration: none; font-weight: 700; font-size: 14px; line-height: 1; white-space: nowrap; box-shadow: 0 1px 2px rgba(11, 27, 53, .06); transition: border-color .2s, box-shadow .2s, transform .2s; }
+.learn-actions .portal-link i { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--navy); color: var(--amber); font-size: 14px; }
+[data-theme=dark] .learn-actions .portal-link i { background: var(--amber); color: var(--navy); }
+.learn-actions .portal-link:hover, .learn-actions .portal-link:focus-visible { border-color: var(--amber); box-shadow: 0 4px 14px rgba(11, 27, 53, .12); transform: translateY(-1px); color: var(--heading); }
+@media (prefers-reduced-motion: reduce) { .learn-actions .portal-link { transition: none; } .learn-actions .portal-link:hover { transform: none; } }
+@media (max-width: 1100px) { .learn-actions .portal-link { padding: 0 4px; } .learn-actions .portal-link span { display: none; } }
 
 /* ---------- practice questions and tools ---------- */
 .quiz, .tool { margin: 22px 0; padding: 18px 20px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow); }
@@ -335,3 +338,4 @@ html { zoom: 1; }
 .s-networking > i { color: #0891b2; } .s-make-money-online > i { color: #059669; } .s-git > i { color: #f05033; } .s-linux > i { color: #0f172a; }
 .s-php > i { color: #777bb3; } .s-cybersecurity > i { color: #dc2626; } .s-hosting > i { color: #2563eb; } .s-marketing > i { color: #d97706; } .s-it-basics > i { color: #475569; }
 [data-theme=dark] .s-linux > i, [data-theme=dark] .s-it-basics > i { color: #cbd5e1; }
+.learn-actions .btn { white-space: nowrap; }
