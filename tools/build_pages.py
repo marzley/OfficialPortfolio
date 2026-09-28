@@ -69,9 +69,11 @@ PAGES = [
     {
         "slug": "website-check",
         "label": "Website check",
-        "title": "Free Website Health Check: Speed, Security & SEO | Marzley Tech Solutions",
-        "description": "Check your website for free: https security, speed, mobile setup and Google basics, with simple tips to fix each issue.",
-        "sections": ["check", "care"],
+        "title": "Free Website Checker: Test Speed, Security & SEO | Marzley Tech",
+        "description": "Free website checker and SEO audit for Kenyan businesses. Test https security, speed, mobile setup and Google basics in seconds, with tips to fix each issue.",
+        "sections": ["check", "checkinfo", "care"],
+        "faq_schema": True,
+        "app_schema": True,
     },
     {
         "slug": "referrals",
@@ -117,7 +119,7 @@ HOME_OF = {
     "services": "services", "demo": "services#demo", "process": "process",
     "planner": "process#planner", "pricing": "pricing", "faq": "contact#faq",
     "contact": "contact", "cases": "work#cases", "deposit": "pricing#deposit",
-    "booking": "contact#booking", "training": "training", "compare": "pricing#compare", "care": "pricing#care", "safe": "services#safe", "integrations": "services#integrations", "check": "website-check", "referral": "referrals", "faqs": "faq", "privacy": "privacy", "terms": "terms",
+    "booking": "contact#booking", "training": "training", "compare": "pricing#compare", "care": "pricing#care", "safe": "services#safe", "integrations": "services#integrations", "check": "website-check", "checkinfo": "website-check#checkinfo", "referral": "referrals", "faqs": "faq", "privacy": "privacy", "terms": "terms",
 }
 
 
@@ -221,6 +223,16 @@ def build(page, html, sections):
         nodes.append({"@type": "FAQPage", "@id": SITE + page["slug"] + "#faq",
                       "mainEntity": [{"@type": "Question", "name": strip(q),
                                       "acceptedAnswer": {"@type": "Answer", "text": strip(a)}} for q, a in pairs]})
+    if page.get("app_schema"):
+        nodes.append({"@type": "WebApplication", "@id": SITE + page["slug"] + "#app",
+                      "name": "Free Website Health Check", "url": SITE + page["slug"],
+                      "description": page["description"], "applicationCategory": "BusinessApplication",
+                      "operatingSystem": "Any", "browserRequirements": "Requires JavaScript",
+                      "offers": {"@type": "Offer", "price": "0", "priceCurrency": "KES"},
+                      "provider": {"@id": SITE + "#business"}})
+    # A page never needs a "run a website check" prompt pointing at itself
+    if page["slug"] == "website-check":
+        body = re.sub(r'\s*<p class="check-cta[^"]*">.*?</p>\n', "\n", body, flags=re.S)
     return make_page(html, page["slug"], page["title"], page["description"], body, nodes,
                      page["slug"], page["sections"])
 
@@ -511,7 +523,7 @@ def write_sitemap(posts, cases=()):
         ("", "weekly", "1.0", ["img/brand/og-image.jpg", "img/kelvin/office.jpg", "img/kelvin/office-square.jpg"]),
         ("work", "weekly", "0.9", []), ("services", "monthly", "0.9", []), ("pricing", "monthly", "0.9", []),
         ("about", "monthly", "0.8", []), ("contact", "monthly", "0.8", []), ("process", "monthly", "0.7", []),
-        ("training", "monthly", "0.8", []), ("learn/", "weekly", "0.8", []), ("website-check", "monthly", "0.8", []), ("faq", "monthly", "0.7", []), ("referrals", "monthly", "0.6", []), ("blog", "weekly", "0.8", []), ("kiswahili", "monthly", "0.7", []),
+        ("training", "monthly", "0.8", []), ("learn/", "weekly", "0.8", []), ("website-check", "monthly", "0.9", []), ("faq", "monthly", "0.7", []), ("referrals", "monthly", "0.6", []), ("blog", "weekly", "0.8", []), ("kiswahili", "monthly", "0.7", []),
         ("privacy", "yearly", "0.3", []), ("terms", "yearly", "0.3", []),
     ] + [(p["slug"], "monthly", "0.8", []) for p in cases] + [(p["slug"], "monthly", "0.7", []) for p in posts]
     out = ['<?xml version="1.0" encoding="UTF-8"?>',
