@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Marzley Tech Solutions: Developer Guide</title>
+<style>
+  @font-face { font-family: "Inter"; src: url("file:///home/user/OfficialPortfolio/fonts/inter-var.woff2") format("woff2"); font-weight: 100 900; }
+  :root { --navy: #0b1b35; --navy-2: #1e3a7a; --amber: #ffb800; --amber-text: #955a06; --amber-soft: #fff7e0; --blue: #2563eb; --green: #059669; --red: #dc2626; --ink: #0f172a; --muted: #475569; --line: #e2e8f0; --bg: #f1f5f9; }
+  @page { size: A4; margin: 15mm 14mm 17mm; }
+  @page :first { margin: 0; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; font-family: "Inter", system-ui, sans-serif; color: var(--ink); font-size: 9.6pt; line-height: 1.5; }
+  h2 { color: var(--navy); font-size: 19pt; font-weight: 800; margin: 0; letter-spacing: -.01em; }
+  h3 { color: var(--navy); font-size: 12pt; font-weight: 750; margin: 14px 0 5px; }
+  h4 { color: var(--navy); font-size: 10pt; margin: 9px 0 3px; }
+  p { margin: 0 0 7px; }
+  ul, ol { margin: 0 0 8px; padding-left: 17px; }
+  li { margin: 0 0 2px; }
+  a { color: var(--blue); text-decoration: none; }
+  code { font-family: "SFMono-Regular", Menlo, Consolas, monospace; font-size: 8.3pt; background: var(--bg); padding: 1px 4px; border-radius: 4px; color: #0b1b35; }
+  pre { font-family: "SFMono-Regular", Menlo, Consolas, monospace; font-size: 7.9pt; line-height: 1.45; background: #0b1b35; color: #e2e8f0; padding: 10px 12px; border-radius: 8px; margin: 6px 0 10px; white-space: pre-wrap; break-inside: avoid; }
+  pre b { color: var(--amber); font-weight: 700; }
+  pre i { color: #94a3b8; font-style: normal; }
+  strong { color: var(--navy); }
+  .cover { height: 297mm; width: 210mm; position: relative; overflow: hidden; color: #fff; page-break-after: always;
+    background: radial-gradient(circle at 85% 15%, rgba(255,184,0,.34), transparent 40%), linear-gradient(155deg, #1e3a7a 0%, #0b1b35 60%, #07122a 100%); }
+  .cover .grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px); background-size: 26px 26px; }
+  .cover .in { position: relative; padding: 24mm 20mm; height: 100%; display: flex; flex-direction: column; }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand img { width: 60px; height: 60px; border-radius: 50%; background: #fff; }
+  .brand b { font-size: 19pt; font-weight: 800; } .brand b span { color: var(--amber); }
+  .brand small { display: block; font-size: 8.5pt; letter-spacing: .18em; text-transform: uppercase; color: #cbd5e1; font-weight: 700; }
+  .cover .kicker { margin-top: 34mm; color: var(--amber); font-weight: 800; letter-spacing: .2em; text-transform: uppercase; font-size: 10pt; }
+  .cover h1 { font-size: 40pt; font-weight: 850; line-height: 1.03; letter-spacing: -.02em; margin: 10px 0 14px; }
+  .cover h1 span { color: var(--amber); }
+  .cover .lede { font-size: 12pt; color: #dbe4f3; max-width: 135mm; }
+  .cover .code { margin-top: 16px; font-family: Menlo, monospace; font-size: 9pt; background: rgba(0,0,0,.28); border: 1px solid rgba(255,255,255,.15); border-radius: 10px; padding: 12px 14px; max-width: 130mm; color: #e2e8f0; }
+  .cover .code b { color: var(--amber); }
+  .cover .stack { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; max-width: 150mm; }
+  .cover .stack span { border: 1px solid rgba(255,255,255,.25); border-radius: 999px; padding: 4px 10px; font-size: 8.5pt; font-weight: 650; background: rgba(255,255,255,.06); }
+  .cover .foot { margin-top: auto; display: flex; justify-content: space-between; font-size: 9pt; color: #cbd5e1; border-top: 1px solid rgba(255,255,255,.2); padding-top: 10px; }
+  .cover .foot b { color: #fff; }
+  .sec { page-break-before: always; }
+  .sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; border-bottom: 3px solid var(--navy); padding-bottom: 7px; margin-bottom: 12px; }
+  .sec-head .num { font-size: 8.5pt; font-weight: 800; letter-spacing: .16em; color: var(--amber-text); text-transform: uppercase; margin: 0; }
+  .sec-head img { width: 28px; height: 28px; border-radius: 50%; }
+  .lead { font-size: 10.5pt; color: var(--muted); }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .card { border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px; break-inside: avoid; }
+  .card h4 { margin-top: 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 8.6pt; margin: 5px 0 10px; }
+  tr { break-inside: avoid; }
+  th { background: var(--navy); color: #fff; text-align: left; padding: 5px 7px; font-weight: 700; }
+  td { border-bottom: 1px solid var(--line); padding: 5px 7px; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  td:first-child { white-space: nowrap; }
+  .note { background: var(--amber-soft); border-left: 4px solid var(--amber); border-radius: 7px; padding: 8px 11px; margin: 8px 0; font-size: 9pt; break-inside: avoid; }
+  .warn { background: #fef2f2; border-left: 4px solid var(--red); border-radius: 7px; padding: 8px 11px; margin: 8px 0; font-size: 9pt; break-inside: avoid; }
+  .tip { background: #eff6ff; border-left: 4px solid var(--blue); border-radius: 7px; padding: 8px 11px; margin: 8px 0; font-size: 9pt; break-inside: avoid; }
+  .toc { columns: 2; column-gap: 22px; }
+  .toc a { display: flex; gap: 10px; color: var(--ink); padding: 5px 0; border-bottom: 1px dashed var(--line); break-inside: avoid; font-size: 9.6pt; }
+  .toc a b { color: var(--amber-text); width: 22px; flex: none; }
+  /* diagrams */
+  .diagram { border: 1px solid var(--line); border-radius: 12px; padding: 12px; background: #f8fafc; margin: 8px 0 12px; break-inside: avoid; }
+  .row { display: flex; gap: 8px; align-items: stretch; justify-content: center; }
+  .box { flex: 1; border-radius: 9px; padding: 8px 10px; background: #fff; border: 1px solid var(--line); font-size: 8.4pt; }
+  .box b { display: block; color: var(--navy); font-size: 9pt; margin-bottom: 2px; }
+  .box.n { background: var(--navy); color: #dbe4f3; border-color: var(--navy); } .box.n b { color: var(--amber); }
+  .box.a { background: var(--amber-soft); border-color: #f5d27a; }
+  .box.g { background: #ecfdf5; border-color: #a7f3d0; }
+  .box.bl { background: #eff6ff; border-color: #bfdbfe; }
+  .arrow { text-align: center; color: var(--amber-text); font-weight: 800; font-size: 11pt; line-height: 1; margin: 4px 0; }
+  .harrow { align-self: center; color: var(--amber-text); font-weight: 800; }
+  .seq { counter-reset: q; list-style: none; padding: 0; margin: 6px 0 10px; }
+  .seq li { counter-increment: q; position: relative; padding: 5px 8px 5px 34px; border-left: 3px solid var(--amber); margin: 0 0 4px; background: #fff; border-radius: 0 6px 6px 0; break-inside: avoid; }
+  .seq li::before { content: counter(q); position: absolute; left: 7px; top: 5px; width: 18px; height: 18px; border-radius: 50%; background: var(--navy); color: var(--amber); font-size: 8pt; font-weight: 800; display: grid; place-items: center; }
+  .tag { display: inline-block; padding: 0 6px; border-radius: 999px; font-size: 7.6pt; font-weight: 700; background: var(--amber-soft); color: var(--amber-text); margin-right: 2px; }
+  .tag.g { background: #ecfdf5; color: var(--green); } .tag.b { background: #eff6ff; color: var(--blue); } .tag.r { background: #fef2f2; color: var(--red); }
+</style>
+</head>
+<body>
+
+<section class="cover">
+  <div class="grid"></div>
+  <div class="in">
+    <div class="brand"><img src="logo-256.webp" alt="" /><div><b>Marzley<span>Tech</span> Solutions</b><small>Technology for real solutions</small></div></div>
+    <p class="kicker">Developer guide · technical reference · 2026</p>
+    <h1>How the system<br /><span>is built</span></h1>
+    <p class="lede">Architecture, technologies, data flows, APIs, database, payments, the learning hub's code engines, security, build, tests and deployment of marzleytechsolutions.co.ke.</p>
+    <div class="code"><b>$</b> sh tests/run.sh<br /><b>$</b> python3 tools/build_pages.py<br /><b>$</b> python3 tools/learn_seed/build.py<br /><i style="color:#94a3b8">→ static site + PHP portal + learning hub, deployed to cPanel</i></div>
+    <div class="stack"><span>HTML · CSS · vanilla JS</span><span>PHP 8.1+ · PDO</span><span>MySQL / MariaDB</span><span>SQLite (tests)</span><span>Python build tools</span><span>esbuild</span><span>Apache .htaccess</span><span>M-Pesa Daraja</span><span>Paystack</span><span>Google Identity</span><span>WebAssembly</span><span>Pyodide · php-wasm · ruby.wasm</span><span>CodeMirror 5</span><span>Playwright</span></div>
+    <div class="foot"><div><b>Repository:</b> marzley/OfficialPortfolio<br />Owner: Kelvin G. Wanyoike (Marzley)</div><div style="text-align:right"><b>info@marzleytechsolutions.co.ke</b><br />0745 789 590</div></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><div><p class="num">Contents</p><h2>Developer guide</h2></div><img src="logo-256.webp" alt="" /></div>
+  <div class="toc">
+    <a href="#a1"><b>01</b> Architecture overview</a>
+    <a href="#a2"><b>02</b> Technology stack, part by part</a>
+    <a href="#a3"><b>03</b> Repository layout</a>
+    <a href="#a4"><b>04</b> Build pipeline (static pages)</a>
+    <a href="#a5"><b>05</b> Front-end: the website</a>
+    <a href="#a6"><b>06</b> Where content comes from</a>
+    <a href="#a7"><b>07</b> Hosting: Apache, caching, CSP</a>
+    <a href="#a8"><b>08</b> Back-end: the PHP portal</a>
+    <a href="#a9"><b>09</b> Database schema</a>
+    <a href="#a10"><b>10</b> API reference</a>
+    <a href="#a11"><b>11</b> Payments: M-Pesa and Paystack</a>
+    <a href="#a12"><b>12</b> Authentication, sessions, referrals</a>
+    <a href="#a13"><b>13</b> Learning hub (SPA, seed, videos)</a>
+    <a href="#a14"><b>14</b> Code runner and language engines</a>
+    <a href="#a15"><b>15</b> Error helper</a>
+    <a href="#a16"><b>16</b> Scheduled jobs, email, SMS, backups</a>
+    <a href="#a17"><b>17</b> Security model</a>
+    <a href="#a18"><b>18</b> Local development and tests</a>
+    <a href="#a19"><b>19</b> Deployment to cPanel</a>
+    <a href="#a20"><b>20</b> Recipes: common changes</a>
+  </div>
+
+  <h3 id="a1" style="margin-top:16px">01 · Architecture overview</h3>
+  <p>The system is deliberately simple to host: a <strong>pre-built static website</strong> (HTML generated by Python), a <strong>PHP 8 back-end</strong> for everything that needs data (portal, payments, learning hub API), one <strong>MySQL database</strong>, and a few external services. It runs on ordinary cPanel shared hosting: no Node server, no framework, no build step on the server.</p>
+  <div class="diagram">
+    <div class="row">
+      <div class="box bl"><b>Browser</b>Static pages + <code>js/home.js</code> · Portal SPA <code>portal/app.js</code> · Learning hub SPA <code>learn/learn.js</code> · sandboxed code runner</div>
+    </div>
+    <div class="arrow">▼ HTTPS (Apache on cPanel)</div>
+    <div class="row">
+      <div class="box n"><b>Static files</b>*.html (built), css/, js/, img/, vendor/, data/*.json, sw.js</div>
+      <div class="box n"><b>PHP endpoints</b>portal/api.php · portal/learn.php · stkpush.php · callback.php · status.php · healthcheck.php · portal/lead.php, chat.php, cron.php …</div>
+      <div class="box n"><b>Private (outside public_html)</b>portal-config.php · mpesa-config.php · uploads (storage_dir) · backups · payment logs</div>
+    </div>
+    <div class="arrow">▼ PDO</div>
+    <div class="row"><div class="box a"><b>MySQL / MariaDB</b>database marzleyt_portal · 45 tables · schema migrations in <code>portal/lib.php</code> (SCHEMA_VERSION 7)</div></div>
+    <div class="arrow">▼ outbound (cURL / browser)</div>
+    <div class="row">
+      <div class="box g"><b>Payments</b>Safaricom Daraja (M-Pesa STK), Paystack (cards)</div>
+      <div class="box g"><b>Identity & mail</b>Google Identity Services, SMTP / mail(), Africa's Talking SMS</div>
+      <div class="box g"><b>Other</b>Formspree (form fallback), GA4 (with consent), Anthropic API (chat), S3/B2 backups, Compiler Explorer, YouTube</div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="a2">
+  <div class="sec-head"><div><p class="num">Section 02</p><h2>Technology stack, part by part</h2></div><img src="logo-256.webp" alt="" /></div>
+  <table>
+    <tr><th>Part</th><th>Technologies</th><th>Where</th></tr>
+    <tr><td>Website pages</td><td>Semantic HTML5, one hand-written CSS file with custom properties (light/dark themes), vanilla ES5-compatible JavaScript, GSAP + ScrollTrigger (work list animation), Font Awesome (subset), Inter variable font (self-hosted)</td><td><code>index.html</code>, <code>content/</code>, <code>css/home.css</code>, <code>js/home.js</code></td></tr>
+    <tr><td>Page generator</td><td>Python 3 (standard library only), esbuild (minify), fontTools (icon subsetting), Node + Playwright (share images)</td><td><code>tools/build_pages.py</code>, <code>tools/subset_icons.py</code>, <code>tools/make_og_images.js</code></td></tr>
+    <tr><td>SEO</td><td>JSON-LD (ProfessionalService, Person, WebSite, WebPage, BlogPosting, BreadcrumbList, FAQPage, WebApplication, Course/ItemList), Open Graph/Twitter cards, sitemap.xml, robots.txt, hreflang (en/sw)</td><td>generated by <code>build_pages.py</code></td></tr>
+    <tr><td>Offline / app</td><td>Service worker (network-first pages, cached assets), Web App Manifest, Android APK download</td><td><code>sw.js</code>, <code>site.webmanifest</code>, <code>offline.html</code></td></tr>
+    <tr><td>Client portal</td><td>Single-page app in vanilla JS; PHP 8.1 JSON API; PDO (MySQL in production, SQLite in tests); cookie sessions + CSRF header</td><td><code>portal/index.html</code>, <code>portal/app.js</code>, <code>portal/api.php</code>, <code>portal/lib.php</code></td></tr>
+    <tr><td>Payments</td><td>Safaricom Daraja API (OAuth, STK push, STK query, callbacks), Paystack (card checkout + verify)</td><td><code>stkpush.php</code>, <code>callback.php</code>, <code>status.php</code>, <code>portal/lib.php</code>, <code>portal/paystack.php</code></td></tr>
+    <tr><td>Sign-in</td><td>Google Identity Services (ID token verified server-side), one-time email codes (SHA-256 hashed, 10-minute expiry)</td><td><code>portal/api.php</code>, <code>portal/learn.php</code></td></tr>
+    <tr><td>Chat assistant</td><td>Keyword/phrase matcher over a JSON knowledge base in the browser; optional Claude answers via the Anthropic PHP SDK (Composer, Guzzle)</td><td><code>data/knowledge.json</code>, <code>js/home.js</code>, <code>portal/chat.php</code>, <code>phpvendor/</code></td></tr>
+    <tr><td>Learning hub</td><td>Vanilla JS SPA with query-string routing, safe mini-Markdown renderer, CodeMirror 5 editor, PDF.js (notes), HTML5 video with HTTP Range streaming</td><td><code>learn/</code>, <code>portal/learn.php</code>, <code>vendor/codemirror</code>, <code>vendor/pdfjs</code></td></tr>
+    <tr><td>Code engines</td><td>Sandboxed iframe + Web Workers; Pyodide (Python), sql.js (SQLite), php-wasm (PHP 8.3), ruby.wasm (Ruby 3.3), PicoC (C), JSCPP (C++), Fengari (Lua), Tau Prolog, dart-sass, Sucrase (TypeScript/JSX), React 18, marked (Markdown); Compiler Explorer API for C#, Java, Go, Rust, Kotlin</td><td><code>learn/runner.html</code>, <code>learn/runner.js</code>, <code>learn/engines.js</code>, <code>vendor/*</code></td></tr>
+    <tr><td>Operations</td><td>cPanel cron → PHP CLI jobs; SMTP or PHP mail(); Africa's Talking SMS; AWS Signature v4 uploads to S3-compatible storage (e.g. Backblaze B2); uptime endpoint for UptimeRobot</td><td><code>portal/cron.php</code>, <code>portal/up.php</code></td></tr>
+    <tr><td>Testing</td><td>Node test script against PHP's built-in server with a throwaway SQLite DB and fake external services; Playwright for visual checks</td><td><code>tests/</code></td></tr>
+  </table>
+  <div class="note"><b>Design choices:</b> no framework and no server-side Node, so hosting stays cheap and anything can be fixed by editing one file. Everything third-party is self-hosted under <code>vendor/</code> (no CDNs), which keeps the Content-Security-Policy strict and the site working when a CDN is down.</div>
+</section>
+
+<section class="sec" id="a3">
+  <div class="sec-head"><div><p class="num">Section 03</p><h2>Repository layout</h2></div><img src="logo-256.webp" alt="" /></div>
+<pre><b>/</b>                        <i>public_html on the server</i>
+├── index.html               <i>SOURCE of truth for the homepage and all shared sections (header, footer, schema)</i>
+├── *.html                   <i>GENERATED pages: services, pricing, blog posts, case studies, kiswahili, 404 …</i>
+├── content/
+│   ├── sections.html        <i>extra sections used by sub-pages (care, safe, check, faq, cases, deposit …)</i>
+│   ├── blog/*.html          <i>one file per blog post, header comment = metadata</i>
+│   ├── case-studies/*.html  <i>case studies (same format + image/live fields)</i>
+│   └── kiswahili.html       <i>Kiswahili page body</i>
+├── css/home.css → home.min.css      js/home.js → home.min.js   <i>(esbuild)</i>
+├── data/*.json              <i>editable content: stats, site settings, knowledge base, videos, certs, showcase, learn-seed</i>
+├── img/  fonts/  vendor/    <i>images (webp + srcset sizes), Inter, self-hosted libraries and language engines</i>
+├── sw.js  site.webmanifest  robots.txt  sitemap.xml  .htaccess
+├── stkpush.php  callback.php  status.php   <i>public M-Pesa endpoints (website deposits)</i>
+├── healthcheck.php          <i>free website checker (server-side fetch)</i>
+├── portal/                  <i>client + admin portal (SPA + PHP API)</i>
+│   ├── index.html  app.js  portal.css
+│   ├── lib.php              <i>shared back-end: config, DB, migrations, auth, payments, mail, SMS, backups, learn helpers</i>
+│   ├── api.php  learn.php   <i>JSON APIs (portal / learning hub)</i>
+│   ├── cron.php  up.php     <i>scheduled jobs, uptime</i>
+│   └── lead.php quote.php refer.php subscribe.php feedback.php testimonials.php verify.php paystack.php chat.php chat-log.php
+├── learn/                   <i>learning hub SPA: index.html learn.js learn.css help.js runner.html runner.js engines.js</i>
+├── phpvendor/               <i>Composer packages (Anthropic SDK, Guzzle); denied to the web by .htaccess</i>
+├── tools/                   <i>build scripts (NOT uploaded): build_pages.py, subset_icons.py, make_og_images.js, learn_seed/, guide/</i>
+├── tests/                   <i>test suite (NOT uploaded)</i>
+└── README.md  DEPLOY.md  GO-LIVE.md  portal-config.example.php  mpesa-config.example.php
+<b>/home/marzleyt/</b>           <i>one level ABOVE public_html (private)</i>
+├── portal-config.php  mpesa-config.php      <i>secrets: DB, Daraja, Paystack, Google, SMTP, SMS, chat keys</i>
+└── storage, backups, payment logs           <i>paths set in the config</i></pre>
+  <div class="warn"><b>Rule:</b> never edit generated <code>*.html</code> files in the root (except <code>index.html</code>). Edit <code>index.html</code>, <code>content/</code> or <code>tools/build_pages.py</code>, then rebuild. Secrets never go in the repository.</div>
+</section>
+
+<section class="sec" id="a4">
+  <div class="sec-head"><div><p class="num">Section 04</p><h2>Build pipeline (static pages)</h2></div><img src="logo-256.webp" alt="" /></div>
+  <p class="lead"><code>python3 tools/build_pages.py</code> turns the homepage and content files into every page of the site. Run it after any content change, then commit the generated files.</p>
+  <ol class="seq">
+    <li><strong>minify_assets()</strong>: esbuild minifies <code>css/home.css</code> and <code>js/home.js</code> into <code>.min</code> files (set <code>ESBUILD=/path/to/esbuild</code>; falls back to a copy).</li>
+    <li><strong>Sections</strong>: <code>sections_of()</code> splits <code>index.html</code> and <code>content/sections.html</code> by <code>&lt;section class="section" id="…"&gt;</code>.</li>
+    <li><strong>Pages</strong>: each entry in <code>PAGES</code> (slug, title, description, list of section ids) becomes <code>slug.html</code> via <code>make_page()</code>: a copy of the homepage shell with its own title, description, canonical, Open Graph, JSON-LD and body. The first <code>h2</code> becomes the page's only <code>h1</code>; <code>#anchor</code> links are rewritten to the page that now owns that section (<code>HOME_OF</code>).</li>
+    <li><strong>Blog and case studies</strong>: <code>read_posts()</code> parses the header comment (<code>title, seo_title, description, date, tag, image, image_alt, live</code>), counts reading time, and <code>build_post()</code> writes each post with BlogPosting schema, breadcrumbs and related posts. <code>fit_title()</code> keeps titles ≤ 60 characters.</li>
+    <li><strong>Special pages</strong>: <code>build_kiswahili()</code> (translated strings, <code>lang="sw"</code>) and <code>build_404()</code> (noindex, <code>&lt;base href="/"&gt;</code>).</li>
+    <li><strong>write_sitemap()</strong>: all pages, posts (real dates), learning hub pages and all 190 lesson URLs.</li>
+    <li><strong>subset_icons()</strong>: scans every HTML/JS file for <code>fa-*</code> classes and builds a small Font Awesome CSS + woff2 subset (fontTools).</li>
+    <li><strong>inline_css()</strong>: inlines the critical CSS into root pages (faster first paint).</li>
+    <li><strong>learn_seo()</strong>: writes Course JSON-LD and a crawlable list of every lesson into <code>learn/index.html</code> from <code>data/learn-seed.json</code>.</li>
+    <li><strong>version_assets()</strong>: adds <code>?v=&lt;sha1&gt;</code> to scripts/styles in root pages, the portal, the learning hub and the runner (and stamps <code>engines.js</code>'s hash), so a new upload is never mixed with cached old files.</li>
+    <li><strong>sync_csp_hash()</strong>: recomputes the SHA-256 of the inline theme script and updates <code>script-src</code> in <code>.htaccess</code>.</li>
+  </ol>
+  <h3>Other generators</h3>
+  <table>
+    <tr><th>Command</th><th>Does</th></tr>
+    <tr><td><code>node tools/make_og_images.js</code></td><td>1200×630 share image per page (<code>img/og/&lt;slug&gt;.jpg</code>) from each title, via Playwright. Run after a build, then build again.</td></tr>
+    <tr><td><code>python3 tools/learn_seed/build.py</code></td><td>Compiles lesson sources (<code>tools/learn_seed/*.py</code>) into <code>data/learn-seed.json</code>, validates code fences and quiz blocks. Raise <code>VERSION</code> to publish new lessons.</td></tr>
+    <tr><td><code>node tools/guide/pdf.js</code></td><td>Builds the user guide PDF (see <code>tools/guide/README.md</code>).</td></tr>
+  </table>
+</section>
+
+<section class="sec" id="a5">
+  <div class="sec-head"><div><p class="num">Section 05</p><h2>Front-end: the website</h2></div><img src="logo-256.webp" alt="" /></div>
+  <p><code>js/home.js</code> is one IIFE of independent feature blocks, each guarded by a DOM lookup, so the same file runs on every page.</p>
+  <div class="cols">
+    <div>
+      <h4>Features in js/home.js</h4>
+      <ul>
+        <li>Mobile menu, reveal-on-scroll (IntersectionObserver), reduced-motion support</li>
+        <li>Work list hover previews (GSAP), category filter chips</li>
+        <li>Count-up stats from <code>data/stats.json</code></li>
+        <li>Quote calculator + printable PDF quote (<code>js/print-page.js</code>)</li>
+        <li>Deposit and care-plan payments → <code>stkpush.php</code>, polling <code>status.php</code> every 3 s</li>
+        <li>Booking form (.ics calendar file), call-back form</li>
+        <li>Website check UI → <code>healthcheck.php</code></li>
+        <li>Referral links (<code>?ref=</code> stored in localStorage and sent with payments/leads)</li>
+        <li>Chat assistant: matcher over <code>data/knowledge.json</code>, then <code>portal/chat.php</code> (Claude) when enabled and unsure; unanswered questions go to <code>chat-log.php</code></li>
+        <li>Accessibility panel (text size, contrast, motion, reading guide), theme toggle</li>
+        <li>Cookie consent → loads GA4 only after “Accept”; custom events</li>
+        <li>Lazy loading of Paystack and Google sign-in scripts</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Forms and leads</h4>
+      <p>Contact, booking, training and call-back forms POST to <code>portal/lead.php</code>, which saves a lead (Leads board), emails the team and replies to the visitor. If the portal isn't reachable, the form falls back to <strong>Formspree</strong>, then to WhatsApp/mailto.</p>
+      <h4>Theme and styles</h4>
+      <p>Colours are CSS custom properties on <code>:root</code> (<code>--navy #0b1b35</code>, <code>--amber #ffb800</code>, <code>--amber-text #955a06</code>, <code>--line</code>, <code>--card</code> …) redefined for <code>[data-theme=dark]</code>. <code>js/theme-init.js</code> runs before paint to apply the saved theme and accessibility classes (and adds <code>html.js</code>). Large screens use CSS <code>zoom</code> breakpoints; the portal and learning hub opt out.</p>
+      <h4>Performance</h4>
+      <p>Inlined critical CSS, responsive <code>srcset</code> WebP images, icon subset, self-hosted variable font, lazy third-party scripts, long-lived caching with content-hash versioning. Local Lighthouse score ≈ 97.</p>
+    </div>
+  </div>
+
+  <h3 id="a6">06 · Where content comes from</h3>
+  <table>
+    <tr><th>Shown on the site</th><th>Source</th><th>How to change</th></tr>
+    <tr><td>Page text, services, pricing cards</td><td><code>index.html</code>, <code>content/sections.html</code></td><td>Edit, rebuild</td></tr>
+    <tr><td>Page titles & descriptions (SEO)</td><td><code>PAGES</code> list in <code>tools/build_pages.py</code></td><td>Edit, rebuild</td></tr>
+    <tr><td>Blog posts, case studies</td><td><code>content/blog/*.html</code>, <code>content/case-studies/*.html</code></td><td>Add a file, rebuild, make share images</td></tr>
+    <tr><td>Hero numbers (projects, students)</td><td><code>data/stats.json</code></td><td>Edit and upload only this file</td></tr>
+    <tr><td>Offer banner, GA4 ID, Google review link</td><td><code>data/site.json</code></td><td>Edit and upload</td></tr>
+    <tr><td>Chat answers</td><td><code>data/knowledge.json</code> (+ optional Claude)</td><td>Add an entry (id, keys, a, l)</td></tr>
+    <tr><td>Video testimonials, certifications, student showcase</td><td><code>data/videos.json</code>, <code>certifications.json</code>, <code>showcase.json</code></td><td>Edit and upload</td></tr>
+    <tr><td>Website reviews</td><td>Database (feedback) via <code>portal/testimonials.php</code></td><td>Publish from portal → Growth</td></tr>
+    <tr><td>Lessons and subjects</td><td><code>data/learn-seed.json</code> → database (learn_tracks, learn_lessons)</td><td>Lesson sources or portal → Learning hub</td></tr>
+    <tr><td>Videos, notes</td><td>Database + files in storage_dir</td><td>Upload in portal → Learning hub</td></tr>
+    <tr><td>Client projects, invoices, referrals</td><td>Database</td><td>Admin portal</td></tr>
+  </table>
+</section>
+
+<section class="sec" id="a7">
+  <div class="sec-head"><div><p class="num">Section 07</p><h2>Hosting: Apache, caching, CSP</h2></div><img src="logo-256.webp" alt="" /></div>
+  <h3>.htaccess (root)</h3>
+  <ul>
+    <li><strong>Canonical host:</strong> 301 to <code>https://marzleytechsolutions.co.ke</code> (http and www redirected).</li>
+    <li><strong>Clean URLs:</strong> <code>/pricing</code> → <code>pricing.html</code>; <code>index.html</code> and trailing slashes redirected; legacy URLs mapped.</li>
+    <li><strong>Security headers:</strong> nosniff, X-Frame-Options SAMEORIGIN, Referrer-Policy, Permissions-Policy, strict <strong>Content-Security-Policy</strong>.</li>
+    <li><strong>Caching:</strong> HTML 0 s (always fresh); CSS/JS 1 month; images 6 months; fonts 1 year. Safe because every asset URL carries <code>?v=hash</code>.</li>
+    <li><strong>Compression:</strong> DEFLATE for text, JSON, SVG and <code>application/wasm</code>.</li>
+  </ul>
+  <h4>Content-Security-Policy (site)</h4>
+<pre>default-src 'self';
+script-src 'self' <b>'sha256-…theme script…'</b> https://accounts.google.com/gsi/client https://js.paystack.co https://www.googletagmanager.com;
+style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style;   img-src 'self' data: blob: https:;   media-src 'self' blob:;
+connect-src 'self' https://formspree.io https://accounts.google.com/gsi/ https://*.paystack.co https://*.google-analytics.com …;
+frame-src 'self' https://accounts.google.com/gsi/ https://*.paystack.com https://www.youtube-nocookie.com;
+object-src 'none'; base-uri 'self'; form-action 'self' https://formspree.io; frame-ancestors 'self'; upgrade-insecure-requests</pre>
+  <h4>Per-folder rules</h4>
+  <table>
+    <tr><th>File</th><th>Purpose</th></tr>
+    <tr><td><code>learn/.htaccess</code></td><td>Own CSP for <code>runner.html</code> only: <code>'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob:</code>, <code>connect-src 'self' data: https://godbolt.org</code>, <code>frame-ancestors 'self'</code>. Only the sandboxed runner may execute learner code.</td></tr>
+    <tr><td><code>vendor/pyodide|sqljs|php|langs/.htaccess</code></td><td><code>Access-Control-Allow-Origin: *</code>: the runner has an opaque (null) origin, so its fetches of wasm files need CORS.</td></tr>
+    <tr><td><code>phpvendor/.htaccess</code></td><td><code>Require all denied</code> (Composer code is never web-accessible).</td></tr>
+    <tr><td><code>robots.txt</code></td><td>Blocks <code>/portal/</code> except <code>/portal/learn.php</code> (so Google can render lessons); API sends <code>X-Robots-Tag: noindex</code>.</td></tr>
+  </table>
+</section>
+
+<section class="sec" id="a8">
+  <div class="sec-head"><div><p class="num">Section 08</p><h2>Back-end: the PHP portal</h2></div><img src="logo-256.webp" alt="" /></div>
+  <p><code>portal/lib.php</code> (~1,300 lines, 92 functions) is the shared core, included by every endpoint that defines <code>MARZLEY_PORTAL</code>.</p>
+  <div class="cols">
+    <div class="card"><h4>Config</h4><p><code>config()</code> loads <code>portal-config.php</code> from <strong>one level above public_html</strong> (or <code>PORTAL_CONFIG</code> env var in tests) and merges defaults. Keys: <code>db_dsn, db_user, db_pass, google_client_id, open_signup, admin_emails, storage_dir, backup_dir, backup_keep_days, offsite_backup, mail_from, site_url, smtp, sms, chat, business_name, kra_pin, etims, admin_idle_minutes, client_idle_minutes</code>. M-Pesa keys live in <code>mpesa-config.php</code>: <code>consumer_key, consumer_secret, shortcode, till_number, passkey, callback_url, callback_secret, environment</code>.</p></div>
+    <div class="card"><h4>Database</h4><p><code>db()</code> opens one PDO connection (exceptions on, emulation off). <code>q($sql, $params)</code> is the only query helper: always prepared statements. <code>migrate()</code> creates/updates tables in steps up to <code>SCHEMA_VERSION = 7</code> (stored in <code>settings</code>), on MySQL and SQLite. <code>learn_seed()</code> syncs lessons when the seed version changes.</p></div>
+    <div class="card"><h4>Responses and errors</h4><p><code>out($data)</code> sends JSON; <code>fail($code, $msg)</code> sends a JSON error. <code>install_error_alerts()</code> turns PHP errors into a friendly 500 and emails the admin (rate-limited).</p></div>
+    <div class="card"><h4>Roles and permissions</h4><p>Users: <strong>client</strong> or <strong>staff</strong> (admin if email is in <code>admin_emails</code>). Staff have permission sets (<code>money, leads, projects, clients, support, courses, owner</code>) checked by <code>require_perm()</code>; the admin UI hides tabs accordingly (<code>TAB_PERM</code> in app.js).</p></div>
+  </div>
+  <h3>Endpoints</h3>
+  <table>
+    <tr><th>File</th><th>Purpose</th></tr>
+    <tr><td><code>portal/api.php</code></td><td>Main JSON API for the portal SPA (≈ 60 actions, section 10).</td></tr>
+    <tr><td><code>portal/learn.php</code></td><td>Learning hub API: catalog, lessons, progress, notes, videos (streaming), unlocks, likes, comments, admin CRUD and chunked uploads.</td></tr>
+    <tr><td><code>portal/lead.php</code></td><td>Website enquiries → leads + emails.</td></tr>
+    <tr><td><code>portal/quote.php</code></td><td>Private quote link; accepting creates the client account, project and deposit invoice.</td></tr>
+    <tr><td><code>portal/refer.php</code></td><td>Website referral sign-ups (code, name, M-Pesa number).</td></tr>
+    <tr><td><code>portal/subscribe.php</code></td><td>Mailing list with double opt-in and unsubscribe tokens.</td></tr>
+    <tr><td><code>portal/feedback.php</code>, <code>testimonials.php</code></td><td>Post-launch star ratings; published reviews for the website.</td></tr>
+    <tr><td><code>portal/verify.php</code></td><td>Public certificate check (<code>?code=MTC-…</code>).</td></tr>
+    <tr><td><code>portal/paystack.php</code></td><td>Card payment return + verification.</td></tr>
+    <tr><td><code>portal/chat.php</code>, <code>chat-log.php</code></td><td>Claude answers for the chat (off until configured); log of unanswered questions.</td></tr>
+    <tr><td><code>portal/cron.php</code>, <code>up.php</code></td><td>Scheduled jobs (CLI only), uptime check.</td></tr>
+    <tr><td><code>stkpush.php</code>, <code>callback.php</code>, <code>status.php</code></td><td>Website deposit payments by M-Pesa (section 11).</td></tr>
+    <tr><td><code>healthcheck.php</code></td><td>Website checker: fetches one public page (SSRF-guarded: public IPs only, size and time limits) and scores it.</td></tr>
+  </table>
+</section>
+
+<section class="sec" id="a9">
+  <div class="sec-head"><div><p class="num">Section 09</p><h2>Database schema</h2></div><img src="logo-256.webp" alt="" /></div>
+  <p class="lead">45 tables, created by <code>migrate()</code> (and <code>portal/schema.sql</code> for reference). Grouped by feature:</p>
+  <table>
+    <tr><th>Area</th><th>Tables</th><th>Notes</th></tr>
+    <tr><td>People & access</td><td><code>clients</code>, <code>staff</code>, <code>login_codes</code>, <code>audit_log</code>, <code>settings</code></td><td>clients have <code>ref_code</code>, <code>referred_by</code>; client number shown as MT-0001; settings hold schema/seed versions and job timestamps</td></tr>
+    <tr><td>Sales</td><td><code>leads</code>, <code>quotes</code>, <code>subscribers</code>, <code>campaigns</code>, <code>campaign_queue</code>, <code>chat_questions</code></td><td>leads come from website forms, WhatsApp notes and portal requests</td></tr>
+    <tr><td>Delivery</td><td><code>projects</code>, <code>updates</code>, <code>files</code>, <code>approvals</code>, <code>tickets</code>, <code>ticket_messages</code>, <code>domains</code>, <code>site_checks</code>, <code>feedback</code></td><td>project status “live” triggers referral rewards and feedback requests</td></tr>
+    <tr><td>Money</td><td><code>invoices</code>, <code>invoice_payments</code>, <code>payments</code>, <code>site_payments</code>, <code>recurring_invoices</code>, <code>reminders</code></td><td><code>payments</code> = M-Pesa/card attempts keyed by CheckoutRequestID / reference; <code>site_payments</code> = website deposits</td></tr>
+    <tr><td>Referrals</td><td><code>referrers</code>, <code>referrals</code></td><td>status: pending → due (work done) → paid / void</td></tr>
+    <tr><td>Training</td><td><code>courses</code>, <code>lessons</code>, <code>enrollments</code>, <code>lesson_progress</code>, <code>certificates</code></td><td>paid training courses and verifiable certificates</td></tr>
+    <tr><td>Learning hub</td><td><code>learners</code>, <code>learn_codes</code>, <code>learn_tracks</code>, <code>learn_lessons</code>, <code>learn_progress</code>, <code>learn_notes</code>, <code>learn_videos</code>, <code>learn_uploads</code>, <code>learn_unlocks</code>, <code>learn_payments</code>, <code>learn_likes</code>, <code>learn_comments</code></td><td>learners are separate from clients; unlocks are per learner per video</td></tr>
+  </table>
+  <div class="tip"><b>Adding a column or table:</b> add a new step to <code>migrate()</code> guarded by the version number, raise <code>SCHEMA_VERSION</code>, and make it work on both MySQL and SQLite (the tests run on SQLite). It runs automatically on the next request.</div>
+</section>
+
+<section class="sec" id="a10">
+  <div class="sec-head"><div><p class="num">Section 10</p><h2>API reference</h2></div><img src="logo-256.webp" alt="" /></div>
+  <p>Both APIs use <code>?action=NAME</code>. Reads are GET; writes are POST with a JSON body and the <code>X-CSRF-Token</code> header (token from <code>me</code>). Responses are JSON (<code>{error}</code> with an HTTP status on failure).</p>
+  <h3>portal/api.php</h3>
+  <table>
+    <tr><th>Group</th><th>Actions</th></tr>
+    <tr><td>Session</td><td><code>me</code>, <code>login</code> (Google ID token), <code>code_request</code>, <code>code_verify</code>, <code>logout</code>, <code>logout_all</code>, <code>dev_login</code> (local only)</td></tr>
+    <tr><td>Data</td><td><code>data</code> (everything the current user may see, by role), <code>download</code>, <code>export</code>, <code>proof</code></td></tr>
+    <tr><td>Clients & staff</td><td><code>client_save</code>, <code>profile_save</code>, <code>staff_save</code>, <code>delete</code></td></tr>
+    <tr><td>Projects</td><td><code>project_save</code>, <code>update_add</code>, <code>file_upload</code>, <code>approval_request</code>, <code>approval_decide</code>, <code>project_request</code>, <code>quick_start</code></td></tr>
+    <tr><td>Money</td><td><code>invoice_save</code>, <code>recurring_save</code>, <code>recurring_toggle</code>, <code>pay_invoice</code> (M-Pesa STK), <code>card_pay</code> (Paystack), <code>payment_status</code>, <code>payment_record</code>, <code>payment_claim</code>, <code>payment_decide</code>, <code>site_payment_link</code></td></tr>
+    <tr><td>Sales</td><td><code>lead_save</code>, <code>lead_status</code>, <code>quote_save</code>, <code>quote_send</code>, <code>campaign_send</code>, <code>feedback_publish</code></td></tr>
+    <tr><td>Support & domains</td><td><code>ticket_open</code>, <code>ticket_reply</code>, <code>ticket_status</code>, <code>domain_save</code>, <code>domain_renewed</code></td></tr>
+    <tr><td>Training</td><td><code>course_save</code>, <code>lesson_save</code>, <code>enroll</code>, <code>lesson_done</code>, <code>certificate_issue</code></td></tr>
+    <tr><td>Referrals</td><td><code>referral_ready</code> (work done), <code>referral_paid</code>, <code>referral_void</code></td></tr>
+  </table>
+  <h3>portal/learn.php</h3>
+  <table>
+    <tr><th>Group</th><th>Actions</th></tr>
+    <tr><td>Session</td><td><code>me</code>, <code>google</code>, <code>code_request</code>, <code>code_verify</code>, <code>logout</code>, <code>profile</code>, <code>dev_login</code></td></tr>
+    <tr><td>Public content</td><td><code>catalog</code>, <code>lesson</code>, <code>notes</code>, <code>note</code> (PDF), <code>videos</code>, <code>video</code>, <code>poster</code></td></tr>
+    <tr><td>Learner</td><td><code>progress</code>, <code>unlock</code> (M-Pesa STK), <code>unlock_status</code>, <code>stream</code> (Range, unlocked only), <code>like</code>, <code>comment</code>, <code>comment_delete</code></td></tr>
+    <tr><td>Admin</td><td><code>admin</code>, <code>track_save/delete</code>, <code>lesson_save/delete</code>, <code>upload_start</code> → <code>upload_chunk</code> → <code>upload_finish</code>, <code>poster_save</code>, <code>video_save/delete</code>, <code>note_save/delete</code>, <code>comment_hide</code></td></tr>
+  </table>
+  <div class="note"><b>Example:</b> <code>POST /portal/api.php?action=pay_invoice</code> with <code>{"invoice_id": 12, "phone": "0712345678", "amount": 5000}</code> → sends an STK push and returns <code>{checkout_id}</code>; the SPA then polls <code>payment_status</code>.</div>
+</section>
+
+<section class="sec" id="a11">
+  <div class="sec-head"><div><p class="num">Section 11</p><h2>Payments: M-Pesa and Paystack</h2></div><img src="logo-256.webp" alt="" /></div>
+  <h3>M-Pesa STK push (Daraja)</h3>
+  <ol class="seq">
+    <li>The browser sends phone + amount (+ purpose: deposit, care plan, invoice or video unlock) to <code>stkpush.php</code>, <code>api.php?action=pay_invoice</code> or <code>learn.php?action=unlock</code>.</li>
+    <li>PHP gets an OAuth token (<code>/oauth/v1/generate</code>) using <code>consumer_key/secret</code>, builds the password <code>base64(shortcode + passkey + timestamp)</code> and calls <code>/mpesa/stkpush/v1/processrequest</code> (CustomerBuyGoodsOnline to Till 6095737). <code>mpesa_base()</code> picks sandbox or production.</li>
+    <li>A row is saved with the <code>CheckoutRequestID</code>; the customer sees the PIN prompt.</li>
+    <li>Safaricom POSTs the result to <code>callback.php?secret=…</code> (secret checked). The callback is logged outside public_html and settled: <code>settle_payment()</code> (invoice), <code>settle_site_payment()</code> (website deposit), <code>settle_learn_payment()</code> (video unlock). Each is idempotent.</li>
+    <li>The browser polls <code>status.php</code> / <code>payment_status</code> / <code>unlock_status</code> every ~3 s and shows the receipt code.</li>
+    <li>If a callback never arrives, the daily cron calls <code>/mpesa/stkpushquery/v1/query</code> and settles it.</li>
+  </ol>
+  <div class="cols">
+    <div class="card"><h4>Paystack (cards)</h4><p><code>card_pay</code> creates a transaction and returns the checkout URL; the client pays on Paystack and returns to <code>portal/paystack.php?reference=…</code>, which verifies with the secret key (<code>settle_card()</code>) and redirects to the portal.</p></div>
+    <div class="card"><h4>Manual payments</h4><p>Clients can report a Till payment with its receipt code (<code>payment_claim</code>); staff approve it (<code>payment_decide</code>) or record cash/bank payments (<code>payment_record</code>). eTIMS/KRA PIN can appear on invoices when configured.</p></div>
+  </div>
+  <div class="warn"><b>Secrets:</b> Daraja and Paystack keys only in <code>mpesa-config.php</code> / <code>portal-config.php</code> above public_html. Rotate them if they were ever shared. Only non-personal fields are returned by <code>status.php</code>.</div>
+
+  <h3 id="a12">12 · Authentication, sessions, referrals</h3>
+  <ul>
+    <li><strong>Google:</strong> the GIS button returns an ID token; <code>verify_google_token()</code> checks it with Google's tokeninfo endpoint (audience = <code>google_client_id</code>, verified email).</li>
+    <li><strong>Email codes:</strong> 6 digits, stored as <code>sha256(client_id:code)</code> (new accounts: <code>new:email:code</code>), 10-minute expiry, attempt limits, previous codes invalidated.</li>
+    <li><strong>Open sign-up:</strong> with <code>open_signup</code> true, an unknown email creates a client (<code>create_client_account()</code>) with a client number and a permanent <code>ref_code</code>.</li>
+    <li><strong>Sessions:</strong> cookie <code>marzley_portal</code>, path <code>/portal/</code>, HttpOnly, Secure, SameSite=Lax; idle timeouts for admins and clients; <code>logout_all</code> bumps a per-user session epoch so every device is signed out.</li>
+    <li><strong>CSRF:</strong> random 32-byte token per session, required in <code>X-CSRF-Token</code> on every POST except sign-in actions.</li>
+    <li><strong>Referrals:</strong> a code arrives via <code>?ref=</code> (website) or sign-up; <code>find_referrer()</code> resolves it (client <code>ref_code</code> first); a referral moves <em>enquired → signed up → project started → paid</em>; <code>referral_due()</code> keeps it <em>pending</em> until <code>client_work_done()</code> (project live or admin “Work done”), then it's <em>due</em> (KSh 2,000) and the referrer is notified.</li>
+  </ul>
+</section>
+
+<section class="sec" id="a13">
+  <div class="sec-head"><div><p class="num">Section 13</p><h2>Learning hub</h2></div><img src="logo-256.webp" alt="" /></div>
+  <div class="diagram">
+    <div class="row">
+      <div class="box bl"><b>learn/index.html</b>Shell + crawlable lesson list (build-time) + Course JSON-LD</div>
+      <div class="harrow">→</div>
+      <div class="box n"><b>learn.js (SPA)</b>route(): ?track&amp;lesson · ?page=practice|videos|notes · ?video · ?note; sets title, description, canonical</div>
+      <div class="harrow">→</div>
+      <div class="box a"><b>portal/learn.php</b>catalog, lesson, notes, videos, progress, unlock, stream</div>
+      <div class="harrow">→</div>
+      <div class="box g"><b>Database</b>learn_* tables · storage_dir for video/PDF files</div>
+    </div>
+  </div>
+  <div class="cols">
+    <div>
+      <h4>Lessons: from source to database</h4>
+      <ol>
+        <li>Write lessons in Python files <code>tools/learn_seed/*.py</code> using <code>track()</code> and <code>lesson(t, slug, title, body, exercise, starter, expected, must)</code>.</li>
+        <li><code>build.py</code> validates and writes <code>data/learn-seed.json</code> (current: 32 tracks, 190 lessons, 606 questions, version 3).</li>
+        <li>On the next API request, <code>learn_seed()</code> compares the version with the <code>learn_seed_version</code> setting and <strong>adds missing tracks and lessons by slug</strong>. It never overwrites lessons edited in the portal.</li>
+      </ol>
+      <h4>Lesson Markdown extensions</h4>
+      <p><code>```try-&lt;lang&gt;</code> runnable block · <code>```quiz</code> with <code>Q:</code>/<code>A: a | b</code>/<code>H:</code> · <code>```tool-cidr</code>, <code>tool-subnet-practice</code>, <code>tool-binary</code>, <code>tool-chmod</code>, <code>tool-rate</code> interactive widgets. The renderer escapes all HTML first and allows only a small safe subset.</p>
+      <h4>Exercises</h4>
+      <p>Checked in the browser: output must contain <code>expected</code> (normalised) and code must contain every <code>must_contain</code> token. Progress is local, and synced to <code>learn_progress</code> when signed in.</p>
+    </div>
+    <div>
+      <h4>Videos</h4>
+      <ul>
+        <li>Admin uploads in 8 MB chunks (<code>upload_start/chunk/finish</code>) to <code>storage_dir</code>; a poster frame is captured in the browser.</li>
+        <li><code>stream</code> serves the file with HTTP Range (206) only to learners with an unlock (or free videos); files are never public URLs.</li>
+        <li>Unlock = M-Pesa STK (default KSh 50) → <code>settle_learn_payment()</code> → <code>learn_unlocks</code>.</li>
+        <li>A moving “Marzley Tech Solutions” watermark deters screen recording (it can't be fully blocked in a browser).</li>
+        <li>Likes and comments only for learners who unlocked the video.</li>
+      </ul>
+      <h4>Notes</h4><p>PDFs uploaded by admin, streamed by <code>note</code>, viewed with self-hosted PDF.js.</p>
+      <h4>SEO</h4><p>Lesson URLs are in the sitemap; <code>robots.txt</code> allows <code>/portal/learn.php</code> so Google can render lessons; canonical and titles are set per page by the SPA.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="a14">
+  <div class="sec-head"><div><p class="num">Section 14</p><h2>Code runner and language engines</h2></div><img src="logo-256.webp" alt="" /></div>
+  <p class="lead">Learner code never runs in the page itself. It runs in <code>learn/runner.html</code>, an iframe with <code>sandbox="allow-scripts allow-modals"</code> (no same-origin, so no cookies, storage or site access) and its own CSP.</p>
+  <div class="diagram">
+    <div class="row">
+      <div class="box bl"><b>learn.js · Runner</b>creates the iframe, <code>postMessage({type:"run", lang, code})</code>, waits for <code>{type:"output", text, ok, error, detail}</code>, frame timeout, then error helper</div>
+      <div class="harrow">⇄</div>
+      <div class="box n"><b>runner.js (sandbox)</b>dispatches by language</div>
+    </div>
+    <div class="arrow">▼</div>
+    <div class="row">
+      <div class="box a"><b>document.write</b>HTML, CSS, JS (+ loop guard), TypeScript &amp; React (Sucrase), Markdown (marked)</div>
+      <div class="box a"><b>Main thread</b>Python (Pyodide, trace guard), SQL (sql.js in worker), JSON</div>
+      <div class="box g"><b>Workers</b>PHP (php-wasm) · engines.js: C, C++, Lua, Ruby, Sass, Prolog, Regex. Terminated after 10 s</div>
+      <div class="box bl"><b>Online</b>Compiler Explorer API: C#, Java, Go, Rust, Kotlin (+ C/C++ fallback)</div>
+    </div>
+  </div>
+  <table>
+    <tr><th>Language</th><th>Engine (vendor/)</th><th>Runaway protection</th></tr>
+    <tr><td>JavaScript / HTML</td><td>browser; <code>guardLoops()</code> injects <code>__lp()</code> into every for/while/do</td><td>loop stopped after 3 s; console capped at 1,000 lines</td></tr>
+    <tr><td>TypeScript, React</td><td>Sucrase (<code>sucrase/</code>) + React 18 UMD (<code>react/</code>)</td><td>same loop guard</td></tr>
+    <tr><td>Python</td><td>Pyodide (<code>pyodide/</code>), ~3 MB gzipped, loaded once</td><td><code>sys.settrace</code> guard, 10 s; output capped at 2,000 lines</td></tr>
+    <tr><td>SQL</td><td>sql.js in a blob worker with a sample shop DB</td><td>worker terminated after 8 s; 1,000 rows per statement</td></tr>
+    <tr><td>PHP 8.3</td><td>php-wasm (<code>php/php.js</code> + wasm), classic worker with window/document shims</td><td>worker terminated after 10 s; <code>refresh()</code> between runs</td></tr>
+    <tr><td>C · C++</td><td>PicoC (wasm) · JSCPP; unsupported features fall back online</td><td>engines worker, 10 s</td></tr>
+    <tr><td>Lua · Ruby</td><td>Fengari · ruby.wasm 3.3 (WASI shim)</td><td>engines worker, 10 s</td></tr>
+    <tr><td>Sass · Prolog · Regex</td><td>dart-sass · Tau Prolog (+ lists) · JS RegExp</td><td>engines worker, 10 s</td></tr>
+    <tr><td>C#, Java, Go, Rust, Kotlin</td><td>Compiler Explorer <code>/api/compilers/&lt;lang&gt;</code> + <code>/api/compiler/&lt;id&gt;/compile</code> (executorRequest)</td><td>server-side limits; runtime crashes retried on up to 4 compiler versions</td></tr>
+  </table>
+  <div class="note"><b>Why workers are “classic”:</b> the sandbox has an opaque origin, where module workers fail; blob classic workers + <code>importScripts()</code> work, and wasm fetches need CORS headers on <code>vendor/</code>. The runner page's CSP is the only place that allows eval and wasm.</div>
+  <h3 id="a15">15 · Error helper</h3>
+  <p><code>learn/help.js</code> exposes <code>MarzleyHelp.explain(lang, code, result)</code> and <code>lint(lang, code)</code>. The runner sends the full error in <code>detail</code>; <code>explain()</code> matches 100 ordered rules <code>[langs, regex, title, why, fix, example]</code> (with <code>$1</code> capture substitution), finds the line with per-tool patterns (<code>File "&lt;exec&gt;", line N</code>, <code>on line N</code>, <code>&lt;source&gt;:N:M</code>, <code>file.c:N:M</code>, <code>(line N)</code> minus the script offset …), and <code>renderHelp()</code> in learn.js highlights the line (<code>cm-err-line</code>) and shows the card. <code>lint()</code> gives HTML/CSS tips (unclosed tags, missing alt, missing ; or }, British spellings, unitless numbers).</p>
+</section>
+
+<section class="sec" id="a16">
+  <div class="sec-head"><div><p class="num">Section 16</p><h2>Scheduled jobs, email, SMS, backups</h2></div><img src="logo-256.webp" alt="" /></div>
+  <table>
+    <tr><th>cPanel cron</th><th>Command</th><th>Does</th></tr>
+    <tr><td>Daily 07:00</td><td><code>php …/portal/cron.php daily</code></td><td>Monthly recurring invoices, payment and approval reminders, settles unfinished M-Pesa payments (STK query), alerts about support requests waiting &gt; 1 day, domain renewal alerts.</td></tr>
+    <tr><td>Daily 02:30</td><td><code>php …/portal/cron.php backup</code></td><td>Database dump + uploaded files into <code>backup_dir</code>, optional off-site copy to S3-compatible storage (AWS Sig v4), deletes backups older than <code>backup_keep_days</code>.</td></tr>
+    <tr><td>Hourly</td><td><code>php …/portal/cron.php monitor</code></td><td>Checks monitored client websites; emails when one goes down or recovers. Also sends queued campaign emails.</td></tr>
+  </table>
+  <p><code>cron.php</code> refuses to run from a browser. <code>portal/up.php</code> returns 200 “OK” only if the database works and the daily job ran in the last 26 hours (for UptimeRobot).</p>
+  <div class="cols">
+    <div class="card"><h4>Email</h4><p><code>send_mail()</code> uses SMTP when <code>smtp</code> is configured (host, port, user, pass), otherwise PHP <code>mail()</code>, with <code>mail_from</code>; a standard footer is added. Used for sign-in codes, invoices, reminders, alerts, campaigns.</p></div>
+    <div class="card"><h4>SMS</h4><p><code>send_sms()</code> via Africa's Talking when <code>sms</code> (username, api_key, sender_id) is set; e.g. payment alerts to <code>sms_alert_phone</code>.</p></div>
+  </div>
+
+  <h3 id="a17">17 · Security model</h3>
+  <table>
+    <tr><th>Threat</th><th>Protection</th></tr>
+    <tr><td>Leaked secrets</td><td>Config files above public_html; examples only in the repo; phpvendor denied; payment logs private.</td></tr>
+    <tr><td>SQL injection</td><td>Prepared statements everywhere via <code>q()</code>.</td></tr>
+    <tr><td>XSS</td><td>Strict CSP with hash-pinned inline script; <code>esc()</code>/<code>h()</code> on all output; safe Markdown renderer; learner code isolated in a sandbox.</td></tr>
+    <tr><td>CSRF</td><td>Session token in <code>X-CSRF-Token</code>; SameSite cookies.</td></tr>
+    <tr><td>Account takeover</td><td>No passwords; hashed short-lived codes with attempt limits; Google tokens verified server-side; idle timeouts; logout everywhere.</td></tr>
+    <tr><td>Fake payments</td><td>Payments only settled from Daraja callbacks (secret in URL) or server-side STK query / Paystack verify, never from the browser.</td></tr>
+    <tr><td>SSRF (website checker)</td><td>Public hosts only, blocked private/reserved IPs, redirects re-checked, size/time limits.</td></tr>
+    <tr><td>Paid video leaks</td><td>Stream only to unlocked learners, no public file URLs, watermark.</td></tr>
+    <tr><td>Abuse</td><td>Rate limits on codes, chat and forms; honeypots on forms.</td></tr>
+    <tr><td>Data loss</td><td>Nightly backups (local + off-site), audit log.</td></tr>
+  </table>
+</section>
+
+<section class="sec" id="a18">
+  <div class="sec-head"><div><p class="num">Section 18</p><h2>Local development and tests</h2></div><img src="logo-256.webp" alt="" /></div>
+  <h3>Requirements</h3>
+  <p>PHP 8.1+ (pdo_sqlite, pdo_mysql, curl, mbstring), Python 3.10+, Node 18+, esbuild, optional fontTools (icons) and Playwright (share images, screenshots, the guides).</p>
+  <h3>Run the test suite</h3>
+<pre><b>$</b> sh tests/run.sh
+<i># creates a temporary SQLite DB (tests/make-db.php) and config, starts:</i>
+<i>#   PHP built-in server with tests/router.php on :8899 (the site + portal)</i>
+<i>#   tests/fake-services.php on :8898 (fake Daraja, Paystack, S3 and Claude APIs)</i>
+<i># then runs tests/chat-match.test.js and tests/portal.test.js (hundreds of checks):</i>
+<i># sign-in, open sign-up, CSRF, projects, invoices, M-Pesa + card flows, referrals and stages,</i>
+<i># quotes, tickets, campaigns, cron jobs, backups (signed off-site copy), learning hub API,</i>
+<i># uploads, streaming, unlocks, seed sync, schema version …</i>
+All checks passed</pre>
+  <h3>Try things by hand</h3>
+  <ul>
+    <li>Start <code>php -S 127.0.0.1:8000 tests/router.php</code> with <code>PORTAL_CONFIG</code> and <code>MPESA_CONFIG</code> pointing at test configs (the router mimics .htaccess clean URLs, CSP and CORS).</li>
+    <li><code>dev_login</code> lets you sign in as any email, but only with <code>'dev_login' =&gt; true</code>, PHP's built-in server and a localhost address, so it can never work in production.</li>
+    <li>Set <code>'base' =&gt; 'http://127.0.0.1:8898'</code> in the test M-Pesa config to use the fake Daraja.</li>
+  </ul>
+  <h3>Before every commit</h3>
+  <ol><li>Rebuild pages (and lessons if changed).</li><li>Run the tests.</li><li>Check changed pages in a browser at phone and desktop widths.</li><li>Commit generated files together with their sources.</li></ol>
+</section>
+
+<section class="sec" id="a19">
+  <div class="sec-head"><div><p class="num">Section 19</p><h2>Deployment to cPanel</h2></div><img src="logo-256.webp" alt="" /></div>
+  <h3>Build the upload package</h3>
+<pre><b>$</b> git archive HEAD | tar -x -C build/
+<b>$</b> rm -rf build/{.claude,.github,tests,download,tools,content,README.md,DEPLOY.md,GO-LIVE.md,composer.lock}
+<b>$</b> rm build/vendor/fontawesome/css/all.min.css   <i># and full-size FA fonts (the subset is used)</i>
+<b>$</b> cp -r phpvendor build/ &amp;&amp; echo "Require all denied" &gt; build/phpvendor/.htaccess   <i># strip tests/examples</i>
+<b>$</b> (cd build &amp;&amp; zip -qr ../site-upload.zip .)</pre>
+  <h3>Upload</h3>
+  <ol class="seq">
+    <li>cPanel → File Manager → <code>public_html</code> → Upload <code>site-upload.zip</code> → Extract (overwrite).</li>
+    <li>First time only: create the MySQL database and user (e.g. <code>marzleyt_portal</code>), then place <code>portal-config.php</code> and <code>mpesa-config.php</code> in <code>/home/marzleyt/</code> (from the example files). Tables are created automatically on the first request.</li>
+    <li>Set the three cron jobs (section 16) and the Daraja callback URL (<code>https://marzleytechsolutions.co.ke/callback.php?secret=…</code>).</li>
+    <li>Press Ctrl + F5 and check <code>/</code>, <code>/portal/</code>, <code>/learn/</code>, <code>/portal/up.php</code>.</li>
+    <li>After content changes: resubmit <code>sitemap.xml</code> in Google Search Console (domain property verified by DNS TXT).</li>
+  </ol>
+  <div class="note"><b>Go-live checklist</b> (<code>GO-LIVE.md</code>): production Daraja keys + callback, Paystack live keys, Google OAuth client for the domain, SMTP, SMS, off-site backups, cron jobs, UptimeRobot on <code>/portal/up.php</code>, DMARC/SPF for email.</div>
+</section>
+
+<section class="sec" id="a20">
+  <div class="sec-head"><div><p class="num">Section 20</p><h2>Recipes: common changes</h2></div><img src="logo-256.webp" alt="" /></div>
+  <div class="cols">
+    <div class="card"><h4>Add a blog post</h4><ol><li>Create <code>content/blog/my-post.html</code> with the header comment (title, seo_title, description ≤ 158, date, tag, optional image).</li><li><code>build_pages.py</code> → <code>make_og_images.js</code> → build again.</li><li>Test, commit, upload, request indexing.</li></ol></div>
+    <div class="card"><h4>Add a project to Work</h4><ol><li>Add images (1000/720/480 WebP) in <code>img/projects/web/</code>.</li><li>Add an <code>&lt;li data-cat=…&gt;</code> row in <code>index.html</code>, renumber, update filter counts.</li><li>Optional case study in <code>content/case-studies/</code> + card in <code>sections.html</code>.</li></ol></div>
+    <div class="card"><h4>Add a lesson or subject</h4><ol><li>Edit or add a file in <code>tools/learn_seed/</code> (import it in <code>build.py</code>).</li><li>Raise <code>VERSION</code>, run <code>build.py</code>.</li><li>Upload <code>data/learn-seed.json</code>: the live site adds the new lessons itself.</li></ol></div>
+    <div class="card"><h4>Add a practice language</h4><ol><li>Vendor the engine under <code>vendor/langs/</code> (with CORS .htaccess).</li><li>Add an engine in <code>learn/engines.js</code> (or a runner path).</li><li>Register it in <code>LANGS</code>, <code>MODES</code>, <code>STARTERS</code>, <code>PRACTICE</code>, <code>PRACTICE_GROUPS</code>; add error rules in <code>help.js</code>.</li></ol></div>
+    <div class="card"><h4>Change prices or packages</h4><p>Pricing cards and quote calculator values live in <code>index.html</code> / <code>content/sections.html</code> (<code>data-name</code>, <code>value</code>); care plans in <code>sections.html</code>; the chat answer in <code>knowledge.json</code>. Rebuild.</p></div>
+    <div class="card"><h4>Change the video price</h4><p>Per video in portal → Learning hub; default KSh 50 in <code>learn.php</code>.</p></div>
+    <div class="card"><h4>Rotate payment keys</h4><p>Generate new keys in the Daraja / Paystack dashboards, update the config files above public_html, test a KSh 1 payment. Never commit them.</p></div>
+    <div class="card"><h4>Change brand colours</h4><p>Edit the custom properties at the top of <code>css/home.css</code> (and <code>portal/portal.css</code>, <code>learn/learn.css</code>, which reuse them), rebuild, re-generate share images.</p></div>
+  </div>
+  <div class="tip" style="margin-top:12px"><b>Support:</b> Kelvin G. Wanyoike (Marzley) · 0745 789 590 · info@marzleytechsolutions.co.ke · github.com/marzley</div>
+</section>
+</body>
+</html>
