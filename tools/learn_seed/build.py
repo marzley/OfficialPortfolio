@@ -10,9 +10,9 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 from common import TRACKS  # noqa: E402
-import core, extend, networking, money, git_linux, more_tracks  # noqa: E402,F401
+import core, extend, networking, money, git_linux, more_tracks, design, languages, ict  # noqa: E402,F401
 
-VERSION = "2"
+VERSION = "3"
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 
 

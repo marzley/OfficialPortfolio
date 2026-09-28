@@ -1,5 +1,5 @@
 {
- "version": "2",
+ "version": "3",
  "tracks": [
   {
    "slug": "html",
@@ -1204,6 +1204,762 @@
      "slug": "maintenance",
      "title": "Keeping a computer healthy and fixing common problems",
      "body": "# Keeping a computer healthy\n\n## Routine care\n\n- Install **updates** (Windows Update, apps, browser).\n- Keep at least **15–20% of the disk free**; uninstall unused programs; empty Downloads.\n- Use **Disk Cleanup / Storage Sense**.\n- Restart at least once a week.\n- Keep laptops ventilated (not on beds); clean dust from vents.\n- Use a **surge protector or UPS**: power cuts and surges damage computers.\n- **Back up** important files (cloud + external disk).\n\n## Fixing common problems\n\n| Problem | Try this |\n|---|---|\n| Computer very slow | Restart; Task Manager (Ctrl+Shift+Esc) → sort by CPU/Memory; disable startup apps; check disk space; scan for malware; upgrade to SSD/more RAM |\n| Program frozen | Wait a bit, then Task Manager → End task |\n| No internet | Check Wi-Fi/cable; restart router; run the network troubleshooter; `ipconfig /release` and `/renew`; see the Networking track |\n| Printer not printing | Check it's on and connected; clear the print queue; restart print spooler; reinstall driver |\n| No sound | Check output device and volume mixer; update driver |\n| Blue screen (BSOD) | Note the error code; update drivers and Windows; test RAM; check recent changes |\n| Full storage on phone | Clear WhatsApp media; move photos to Google Photos/computer |\n\n## When to ask a technician\n\nBurning smell, liquid damage, clicking hard disk, cracked screen, or anything involving opening a laptop if you're not trained. Back up data first.\n\n```quiz\nQ: Which shortcut opens Task Manager?\nA: Ctrl+Shift+Esc | ctrl shift esc | ctrl-shift-esc\nQ: What device protects a computer during power cuts? (3 letters)\nA: UPS\nQ: What single upgrade usually makes an old laptop feel much faster?\nA: SSD | an ssd\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    }
+   ]
+  },
+  {
+   "slug": "web-design",
+   "title": "Web design & UI/UX",
+   "lang": "html",
+   "summary": "Design websites people love to use: layout, colour, fonts, spacing, buttons, forms, mobile-first design and accessibility, with live examples.",
+   "lessons": [
+    {
+     "slug": "design-principles",
+     "title": "Principles of good design",
+     "body": "# Principles of good design\n\nGood design is not decoration. It helps people **find what they need and act on it** quickly: call you, pay, book or read. Most great websites follow the same few principles.\n\n## 1. Visual hierarchy\n\nThe most important thing should look the most important. Size, weight, colour and position tell the eye where to go first.\n\n- One clear main heading per page.\n- One main button (the **primary action**) per screen. Everything else is secondary.\n- Big, bold and high on the page = important. Small and grey = supporting detail.\n\n## 2. Contrast\n\nThings that are different should **look** different. A yellow \"Pay now\" button on a navy page stands out; a grey button on a grey page disappears.\n\n## 3. Alignment\n\nLine things up. Text that starts at the same left edge looks organised; text that starts anywhere looks messy, even if the reader can't say why.\n\n## 4. Proximity (grouping)\n\nThings that belong together sit close together. A label sits right above its input, not halfway between two inputs.\n\n## 5. Repetition (consistency)\n\nUse the same button style, the same heading sizes and the same spacing everywhere. Consistency makes a site feel trustworthy and easier to learn.\n\n## 6. White space\n\nEmpty space is not wasted space. It gives content room to breathe and makes pages easier to scan on a phone.\n\nCompare these two cards: same content, different design.\n\n```try-html\n<div style=\"font-family:sans-serif;display:flex;gap:24px;flex-wrap:wrap\">\n  <div style=\"border:1px solid #999;padding:4px;width:230px\">\n    <b>Website package</b> KSh 25,000 Home, About, Services and Contact pages. Google Maps. WhatsApp button. <a href=\"#\">Order</a> <a href=\"#\">More info</a> <a href=\"#\">Call</a>\n  </div>\n\n  <div style=\"border:1px solid #e2e8f0;border-radius:14px;padding:22px;width:230px\">\n    <h3 style=\"margin:0 0 4px\">Website package</h3>\n    <p style=\"font-size:28px;font-weight:800;margin:0 0 12px\">KSh 25,000</p>\n    <p style=\"color:#475569;margin:0 0 16px\">Home, About, Services and Contact pages, Google Maps and a WhatsApp button.</p>\n    <a href=\"#\" style=\"display:block;text-align:center;background:#ffb800;color:#0b1b35;font-weight:700;padding:12px;border-radius:999px;text-decoration:none\">Order now</a>\n  </div>\n</div>\n```\n\nThe second card uses hierarchy (big price), grouping, white space and **one** clear action.\n\n```quiz\nQ: What is the name for making the most important thing look the most important?\nA: visual hierarchy | hierarchy\nQ: How many primary (main) buttons should a screen usually have?\nA: one | 1\nQ: Placing related items close together is called…\nA: proximity | grouping\nQ: Is empty (white) space wasted space? (yes or no)\nA: no\n```\n",
+     "exercise": "Make a card with a heading **Free website check**, a short paragraph, and a single link styled as a button (give it a `background` colour and `padding`).",
+     "starter": "<div>\n  \n</div>",
+     "expected": "",
+     "must_contain": "<h\nFree website check\n<p\n<a\nbackground\npadding"
+    },
+    {
+     "slug": "colour",
+     "title": "Colour: palettes and contrast",
+     "body": "# Colour: palettes and contrast\n\nColour sets the mood and guides attention. Most professional sites use a **small palette**:\n\n| Role | How much | Example (Marzley) |\n|---|---|---|\n| Primary / brand | Headers, key areas | Navy `#0b1b35` |\n| Accent | Buttons and highlights only | Amber `#ffb800` |\n| Neutrals | Text, backgrounds, borders | Greys and white |\n| Status | Success, warning, error | Green, orange, red |\n\nA common rule is **60-30-10**: 60% neutral background, 30% brand colour, 10% accent.\n\n## Contrast for reading\n\nText must stand out from its background. The WCAG accessibility guidelines ask for a contrast ratio of at least **4.5 : 1** for normal text and **3 : 1** for large text. Light grey text on white often fails, and outdoors on a phone it becomes unreadable.\n\n```try-html\n<div style=\"font-family:sans-serif\">\n  <p style=\"color:#bbb;background:#fff;padding:10px\">Light grey on white: hard to read (fails)</p>\n  <p style=\"color:#475569;background:#fff;padding:10px\">Slate grey on white: easy to read (passes)</p>\n  <p style=\"color:#0b1b35;background:#ffb800;padding:10px;font-weight:700\">Navy on amber: strong and readable</p>\n</div>\n```\n\n## Tips\n\n- Never use colour **alone** to show meaning. Add an icon or words too (\"Error: phone number is missing\"), because about 1 in 12 men has some colour blindness.\n- Pick colours with a tool such as **coolors.co** or **Adobe Color**, and test contrast with **WebAIM Contrast Checker**.\n- Keep the accent colour rare so it keeps its power.\n- In CSS, store colours as variables so you can change them in one place:\n\n```try-html\n<style>\n  :root { --brand: #0b1b35; --accent: #ffb800; }\n  .hero { background: var(--brand); color: #fff; padding: 24px; font-family: sans-serif; border-radius: 12px; }\n  .hero a { background: var(--accent); color: var(--brand); padding: 10px 18px; border-radius: 999px; text-decoration: none; font-weight: 700; }\n</style>\n<div class=\"hero\"><h2>Grow your business online</h2><a href=\"#\">Get a quote</a></div>\n```\n\n```quiz\nQ: In the 60-30-10 rule, what percentage is the accent colour?\nA: 10 | 10%\nQ: What minimum contrast ratio does WCAG ask for normal text? (write it like 4.5:1)\nA: 4.5:1 | 4.5 : 1 | 4.5\nQ: Should colour be the only way to show an error? (yes or no)\nA: no\n```\n",
+     "exercise": "Create CSS variables `--brand` and `--accent` in `:root` and use them for a heading's `color` and a link's `background`.",
+     "starter": "<style>\n  :root {  }\n</style>\n<h1>My shop</h1>\n<a href=\"#\">Buy</a>",
+     "expected": "",
+     "must_contain": "--brand\n--accent\nvar(--brand)\nvar(--accent)"
+    },
+    {
+     "slug": "typography",
+     "title": "Typography: fonts that read well",
+     "body": "# Typography: fonts that read well\n\nAbout 90% of a website is text, so typography matters more than any picture.\n\n## Choosing fonts\n\n- **Sans-serif** fonts (Inter, Roboto, Open Sans, Poppins) are clean and easy to read on screens. Most modern sites use them.\n- **Serif** fonts (Merriweather, Playfair Display, Georgia) feel classic and formal: good for law firms, schools or headlines.\n- Use **at most two** font families: one for headings and one for body text (or just one for everything).\n- Free, legal fonts: **Google Fonts** (fonts.google.com).\n\n## Size, line height and line length\n\n| Setting | Good starting point |\n|---|---|\n| Body text size | 16–18 px |\n| Line height | 1.5–1.7 |\n| Line length | 45–80 characters per line |\n| Headings | Clearly bigger: e.g. 32 px, 24 px, 20 px |\n\n```try-html\n<style>\n  body { font-family: system-ui, sans-serif; }\n  .bad { font-size: 12px; line-height: 1.1; max-width: none; }\n  .good { font-size: 17px; line-height: 1.65; max-width: 60ch; color: #334155; }\n  h2 { font-size: 26px; line-height: 1.2; margin: 18px 0 6px; color: #0b1b35; }\n</style>\n<h2>Too small and cramped</h2>\n<p class=\"bad\">We build websites, online shops and school systems for businesses across Kenya. Every site is fast on mobile data, easy to update and comes with support.</p>\n<h2>Comfortable to read</h2>\n<p class=\"good\">We build websites, online shops and school systems for businesses across Kenya. Every site is fast on mobile data, easy to update and comes with support.</p>\n```\n\n## Scale and weight\n\nUse a consistent **type scale** (for example each heading about 1.25× the next) and use **weight** (400 regular, 600 semi-bold, 800 extra-bold) to create hierarchy without adding more fonts.\n\n## Avoid\n\n- ALL CAPITALS for long text (hard to read; fine for short labels).\n- Centred paragraphs longer than two lines.\n- Justified text on phones (it creates rivers of gaps).\n\n```quiz\nQ: What is a good body text size on the web, in pixels? (give one number from 16 to 18)\nA: 16 | 17 | 18\nQ: What is a comfortable line height for body text? (give a number between 1.5 and 1.7)\nA: 1.5 | 1.6 | 1.65 | 1.7\nQ: What is the maximum number of font families you should usually use?\nA: two | 2\nQ: Which free website offers hundreds of web fonts? (two words)\nA: Google Fonts\n```\n",
+     "exercise": "Style the paragraph so it has a `font-size` of **17px**, a `line-height` of **1.6** and a `max-width` of **60ch**.",
+     "starter": "<style>\n  p {  }\n</style>\n<p>Readable text makes people stay longer on your website.</p>",
+     "expected": "",
+     "must_contain": "font-size\n17px\nline-height\n1.6\nmax-width\n60ch"
+    },
+    {
+     "slug": "spacing-layout",
+     "title": "Spacing, grids and layout",
+     "body": "# Spacing, grids and layout\n\n## Use a spacing scale\n\nInstead of random gaps (7 px here, 13 px there), pick a scale and stick to it. Many designers use multiples of **8**: 4, 8, 16, 24, 32, 48, 64. Consistent spacing makes a page look calm and professional.\n\n## Common page layouts\n\n- **Single column**: blog posts, forms, phones. Easy to read.\n- **Cards in a grid**: products, services, courses.\n- **Split (50/50)**: text on one side, image on the other. Stacks on phones.\n- **F-pattern and Z-pattern**: people scan the top line, then down the left side. Put important things top-left and the main button where the eye ends.\n\n## Card grid that fits any screen\n\n```try-html\n<style>\n  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; font-family: sans-serif; }\n  .card { padding: 24px; border: 1px solid #e2e8f0; border-radius: 16px; }\n  .card h3 { margin: 0 0 8px; }\n  .card p { margin: 0; color: #475569; line-height: 1.5; }\n</style>\n<div class=\"grid\">\n  <div class=\"card\"><h3>Websites</h3><p>Fast, mobile-first sites.</p></div>\n  <div class=\"card\"><h3>Online shops</h3><p>Sell with M-Pesa and cards.</p></div>\n  <div class=\"card\"><h3>Systems</h3><p>Schools, clinics, SACCOs.</p></div>\n  <div class=\"card\"><h3>Training</h3><p>Learn ICT skills.</p></div>\n</div>\n```\n\nDrag the window narrower: the cards wrap on their own. `auto-fit` + `minmax()` is one of the most useful lines in CSS.\n\n## Split layout that stacks on phones\n\n```try-html\n<style>\n  .split { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; font-family: sans-serif; }\n  .split > * { flex: 1 1 260px; }\n  .img { height: 180px; border-radius: 16px; background: linear-gradient(135deg, #0b1b35, #1e3a7a); }\n</style>\n<section class=\"split\">\n  <div><h2>Your business, online in days</h2><p>We design, build and host your website so you can focus on customers.</p></div>\n  <div class=\"img\" role=\"img\" aria-label=\"Illustration\"></div>\n</section>\n```\n\n```quiz\nQ: Many designers base their spacing on multiples of which number?\nA: 8 | eight\nQ: Which CSS function lets grid columns be at least 180px but share extra space? (just the name)\nA: minmax | minmax()\nQ: In the F-pattern, which side of the page do people scan down? (left or right)\nA: left\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "buttons-forms",
+     "title": "Buttons, forms and calls to action",
+     "body": "# Buttons, forms and calls to action\n\nA **call to action (CTA)** is the thing you want visitors to do: \"Get a quote\", \"Pay with M-Pesa\", \"Chat on WhatsApp\".\n\n## Great buttons\n\n- Say **what happens**: \"Download the price list\", not \"Submit\" or \"Click here\".\n- Look clickable: filled colour, rounded corners, enough padding.\n- Are big enough to tap: at least **44 × 44 px** on phones.\n- Have clear states: hover, focus (for keyboard users), disabled and loading.\n\n```try-html\n<style>\n  .btn { display: inline-block; font: 700 16px system-ui, sans-serif; padding: 14px 22px; border-radius: 999px; border: 2px solid #0b1b35; cursor: pointer; margin: 6px; }\n  .primary { background: #ffb800; color: #0b1b35; border-color: #ffb800; }\n  .secondary { background: #fff; color: #0b1b35; }\n  .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(11,27,53,.18); }\n  .btn:focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; }\n</style>\n<button class=\"btn primary\">Get a free quote</button>\n<button class=\"btn secondary\">See our work</button>\n```\n\n## Forms people finish\n\n- Ask for **as little as possible**. Every extra field loses customers.\n- Put the **label above** the input, and never use the placeholder as the only label.\n- Use the right input type so phones show the right keyboard: `type=\"tel\"`, `type=\"email\"`, `inputmode=\"numeric\"`.\n- Show errors **next to the field** in plain words: \"Enter a Safaricom number like 0712 345 678\".\n- Group long forms into steps.\n\n```try-html\n<style>\n  form { max-width: 340px; font-family: system-ui, sans-serif; }\n  label { display: block; font-weight: 600; margin: 14px 0 6px; }\n  input { width: 100%; box-sizing: border-box; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 16px; }\n  button { margin-top: 18px; width: 100%; padding: 14px; background: #0b1b35; color: #fff; border: 0; border-radius: 10px; font-size: 16px; font-weight: 700; }\n</style>\n<form onsubmit=\"event.preventDefault(); alert('Thanks!')\">\n  <label for=\"n\">Your name</label>\n  <input id=\"n\" autocomplete=\"name\" required>\n  <label for=\"p\">Phone number</label>\n  <input id=\"p\" type=\"tel\" autocomplete=\"tel\" placeholder=\"0712 345 678\" required>\n  <button>Request a call back</button>\n</form>\n```\n\n```quiz\nQ: What is the minimum comfortable tap size for a button on a phone, in pixels?\nA: 44 | 44px | 44 x 44\nQ: Should you use the placeholder as the only label? (yes or no)\nA: no\nQ: Which input type makes phones show a number pad for phone numbers?\nA: tel | type=\"tel\"\nQ: What does CTA stand for?\nA: call to action\n```\n",
+     "exercise": "Make a button with the text **Pay with M-Pesa** that has a `background` colour, `padding` and `border-radius`.",
+     "starter": "<style>\n  button {  }\n</style>",
+     "expected": "",
+     "must_contain": "<button\nPay with M-Pesa\nbackground\npadding\nborder-radius"
+    },
+    {
+     "slug": "mobile-first",
+     "title": "Mobile-first and responsive design",
+     "body": "# Mobile-first and responsive design\n\nMost people in Kenya browse on phones, often on mobile data. **Mobile-first** means you design for the small screen first, then add more layout for bigger screens.\n\n## The basics\n\n1. Always include the viewport tag in the `<head>`:\n\n```\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n```\n\n2. Write the phone styles first, then use `min-width` media queries to enhance:\n\n```try-html\n<style>\n  .menu { display: flex; flex-direction: column; gap: 8px; font-family: sans-serif; }\n  .menu a { padding: 12px; background: #f1f5f9; border-radius: 10px; color: #0b1b35; text-decoration: none; }\n  @media (min-width: 600px) {\n    .menu { flex-direction: row; }\n  }\n</style>\n<nav class=\"menu\"><a href=\"#\">Home</a><a href=\"#\">Services</a><a href=\"#\">Pricing</a><a href=\"#\">Contact</a></nav>\n<p style=\"font-family:sans-serif;color:#475569\">Make the output narrower than 600px: the menu stacks.</p>\n```\n\n3. Use flexible units: `%`, `rem`, `fr`, `vw` and `max-width` instead of fixed widths.\n4. Make images flexible:\n\n```\nimg { max-width: 100%; height: auto; }\n```\n\n## Speed is part of design\n\n- Compress images (WebP format, under about 200 KB each).\n- Load only the fonts you need.\n- Test on a cheap phone and slow network. In Chrome DevTools, turn on the device toolbar and throttle to \"Slow 4G\".\n\n## Common breakpoints\n\nThere is no magic list, but many sites use roughly **600 px** (large phones and small tablets), **900 px** (tablets and small laptops) and **1200 px** (desktops). Add a breakpoint where **your** layout starts to look wrong.\n\n```quiz\nQ: In mobile-first CSS, do you mainly use min-width or max-width media queries?\nA: min-width\nQ: Which tag must be in the head so phones don't zoom out the page? (one word: the meta name)\nA: viewport\nQ: Which modern image format is usually smaller than JPG and PNG?\nA: WebP\nQ: What CSS makes images shrink to fit their container? (property and value, like max-width: 100%)\nA: max-width: 100% | max-width:100%\n```\n",
+     "exercise": "Write a media query for screens **at least 600px wide** that sets `.menu` to `flex-direction: row`.",
+     "starter": "<style>\n  .menu { display: flex; flex-direction: column; }\n  \n</style>\n<nav class=\"menu\"><a href=\"#\">Home</a><a href=\"#\">Shop</a></nav>",
+     "expected": "",
+     "must_contain": "@media\nmin-width\n600px\nflex-direction\nrow"
+    },
+    {
+     "slug": "accessibility",
+     "title": "Accessible design for everyone",
+     "body": "# Accessible design for everyone\n\n**Accessibility (a11y)** means people with disabilities can use your site: blind users with screen readers, people who can't use a mouse, people with low vision or colour blindness, and older users. It also helps everyone else, and Google rewards it.\n\n## Checklist\n\n- **Text alternatives**: every meaningful image has `alt` text. Decorative images use `alt=\"\"`.\n- **Headings in order**: one `<h1>`, then `<h2>`, `<h3>`. Screen reader users jump between headings.\n- **Labels on every input** with `<label for=\"...\">`.\n- **Keyboard**: everything works with Tab, Enter and Space. Never remove the focus outline without replacing it.\n- **Contrast**: at least 4.5 : 1 for normal text.\n- **Links make sense alone**: \"Read our pricing\" instead of \"Click here\".\n- **Don't rely on colour alone**, and don't flash things more than 3 times a second.\n- **Language**: `<html lang=\"en\">` so screen readers pronounce correctly.\n- **Respect settings**: honour `prefers-reduced-motion` for people who get dizzy from animations.\n\n```try-html\n<style>\n  a, button { font: 16px system-ui, sans-serif; }\n  button:focus-visible, a:focus-visible { outline: 3px solid #ffb800; outline-offset: 3px; }\n  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }\n</style>\n<img src=\"data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27160%27 height=%2790%27%3E%3Crect width=%27160%27 height=%2790%27 rx=%2712%27 fill=%27%230b1b35%27/%3E%3C/svg%3E\" alt=\"Kelvin presenting a website to a client\">\n<p><a href=\"#\">Read our pricing</a> (press Tab to see the focus ring)</p>\n<button>Get a quote</button>\n```\n\n## Test it yourself\n\n- Unplug the mouse and use the site with only the keyboard.\n- Run **Lighthouse** in Chrome DevTools (it has an Accessibility score).\n- Try a free screen reader: **NVDA** on Windows or **TalkBack** on Android.\n\n```quiz\nQ: What attribute gives an image a text alternative?\nA: alt\nQ: What alt value should a purely decorative image have?\nA: \"\" | empty | alt=\"\" | nothing\nQ: Which key do keyboard users press to move between links and buttons?\nA: Tab\nQ: Which free Windows screen reader is mentioned? (4 letters)\nA: NVDA\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "landing-page-anatomy",
+     "title": "Anatomy of a landing page that sells",
+     "body": "# Anatomy of a landing page that sells\n\nA landing page has **one goal**: get the visitor to take one action. Here is a proven structure, top to bottom:\n\n1. **Hero**: a clear headline saying what you offer and for whom, one sentence of detail, and the main button. (\"Websites for Kenyan businesses, ready in 7 days. Get a free quote.\")\n2. **Trust strip**: client logos, \"200+ happy clients\", star rating.\n3. **Problem → solution**: show you understand their pain, then how you fix it.\n4. **Benefits, not features**: \"Customers can pay you at 2 a.m.\" beats \"M-Pesa STK integration\".\n5. **Proof**: testimonials with names and photos, case studies, before/after.\n6. **Pricing or next step**: clear packages or \"from KSh 15,000\".\n7. **FAQ**: answer objections (How long? What if I need changes?).\n8. **Final call to action** and contact details, WhatsApp button.\n\n```try-html\n<style>\n  body { font-family: system-ui, sans-serif; margin: 0; color: #0f172a; }\n  .hero { background: #0b1b35; color: #fff; padding: 40px 24px; text-align: center; }\n  .hero h1 { margin: 0 0 10px; font-size: 30px; }\n  .hero p { color: #cbd5e1; max-width: 46ch; margin: 0 auto 20px; line-height: 1.6; }\n  .cta { background: #ffb800; color: #0b1b35; padding: 14px 24px; border-radius: 999px; font-weight: 800; text-decoration: none; display: inline-block; }\n  .trust { text-align: center; padding: 14px; background: #f1f5f9; color: #475569; }\n  .benefits { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; padding: 24px; }\n  .benefits div { border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; }\n</style>\n<section class=\"hero\">\n  <h1>Your shop, online in 7 days</h1>\n  <p>A fast website where customers can see your products and pay with M-Pesa, day or night.</p>\n  <a class=\"cta\" href=\"#\">Get a free quote</a>\n</section>\n<p class=\"trust\">★★★★★ Trusted by 50+ Kenyan businesses</p>\n<section class=\"benefits\">\n  <div><b>Get paid 24/7</b><br>M-Pesa and card payments.</div>\n  <div><b>Found on Google</b><br>Built for search from day one.</div>\n  <div><b>Easy to update</b><br>Change prices yourself.</div>\n</section>\n```\n\n## Write headlines that work\n\n- Be specific: numbers and time frames beat vague claims.\n- Talk to the customer (\"you\"), not about yourself (\"we are a leading…\").\n- Test two versions and keep the one that gets more clicks (A/B testing).\n\n```quiz\nQ: How many main goals should a landing page have?\nA: one | 1\nQ: \"Customers can pay you at 2 a.m.\" is a benefit or a feature?\nA: benefit | a benefit\nQ: What is it called when you compare two versions of a page to see which performs better?\nA: A/B testing | ab testing | a/b test | split testing\n```\n",
+     "exercise": "Build a hero section: an `<h1>`, a paragraph and a link with the text **Get a free quote**.",
+     "starter": "<section class=\"hero\">\n  \n</section>",
+     "expected": "",
+     "must_contain": "<h1\n<p\n<a\nGet a free quote"
+    },
+    {
+     "slug": "design-tools-figma",
+     "title": "Design tools: Figma, wireframes and prototypes",
+     "body": "# Design tools: Figma, wireframes and prototypes\n\nBefore coding, designers plan pages in three levels of detail:\n\n| Stage | What it is | Tool |\n|---|---|---|\n| **Sketch / wireframe** | Boxes and lines showing layout only, no colours | Paper, Figma, Balsamiq |\n| **Mockup** | Full design with colours, fonts and images | Figma, Adobe XD, Canva |\n| **Prototype** | Clickable mockup to test the flow | Figma prototype mode |\n\n## Figma basics\n\n**Figma** (figma.com) runs in the browser and has a free plan. Key ideas:\n\n- **Frames**: the artboards for each screen (choose \"iPhone 14\" or \"Desktop\").\n- **Auto layout**: makes elements stack and space themselves like CSS flexbox.\n- **Components**: reusable parts (a button, a card). Change the main one and every copy updates.\n- **Styles / variables**: saved colours and text styles, like CSS variables.\n- **Prototype tab**: link a button to another frame to make it clickable.\n- **Dev mode / Inspect**: developers read sizes, colours and CSS from the design.\n- **Community**: thousands of free UI kits, icons and templates.\n\n## A simple design process\n\n1. **Understand** the user and goal (who visits, what must they do?).\n2. **Research**: look at 5 competitor or inspiration sites (Dribbble, Behance, Awwwards, Land-book).\n3. **Wireframe** the key pages on paper first. It's fast and cheap to change.\n4. **Mockup** in Figma using a small palette and one or two fonts.\n5. **Prototype and test** with 3–5 real people. Watch where they get stuck.\n6. **Hand over** to development, then measure and improve.\n\n## Free resources\n\n- Icons: Font Awesome, Heroicons, Lucide\n- Photos: Unsplash, Pexels\n- Illustrations: unDraw, Storyset\n- Colours: coolors.co · Fonts: Google Fonts\n\n```quiz\nQ: What is a layout-only drawing without colours called?\nA: wireframe | a wireframe\nQ: In Figma, what is a reusable element (like a button) called?\nA: component | a component\nQ: Which Figma feature works like CSS flexbox? (two words)\nA: auto layout | autolayout\nQ: How many people do you need for a useful quick usability test? (give a number from 3 to 5)\nA: 3 | 4 | 5\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "portfolio-project",
+     "title": "Project: design your portfolio page",
+     "body": "# Project: design your portfolio page\n\nPut everything together by designing a one-page portfolio. It's the best way to show clients or employers what you can do.\n\n## What to include\n\n1. A hero with your name, what you do and a button (\"Hire me\" or \"See my work\").\n2. Three project cards with an image, a title and one line each.\n3. A short \"About me\" with a photo.\n4. Contact: WhatsApp, email and links (GitHub, LinkedIn).\n\n## Starter code\n\nRun it, then make it yours: change the colours, fonts, text and spacing using what you've learned.\n\n```try-html\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<style>\n  :root { --brand: #0b1b35; --accent: #ffb800; --muted: #475569; }\n  * { box-sizing: border-box; }\n  body { margin: 0; font-family: system-ui, sans-serif; color: #0f172a; line-height: 1.6; }\n  .wrap { max-width: 960px; margin: 0 auto; padding: 0 20px; }\n  header { background: var(--brand); color: #fff; padding: 56px 0; }\n  header h1 { font-size: clamp(28px, 6vw, 44px); margin: 0 0 8px; line-height: 1.15; }\n  header p { color: #cbd5e1; margin: 0 0 22px; max-width: 48ch; }\n  .btn { background: var(--accent); color: var(--brand); padding: 12px 22px; border-radius: 999px; font-weight: 800; text-decoration: none; }\n  h2 { margin: 40px 0 16px; }\n  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }\n  .card { border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; }\n  .card .pic { height: 120px; background: linear-gradient(135deg, var(--brand), #1e3a7a); }\n  .card div { padding: 16px; }\n  .card h3 { margin: 0 0 4px; font-size: 18px; }\n  .card p { margin: 0; color: var(--muted); }\n  footer { margin-top: 48px; padding: 24px 0; background: #f1f5f9; }\n</style>\n</head>\n<body>\n<header><div class=\"wrap\">\n  <h1>Hi, I'm Amina.<br>I design websites that sell.</h1>\n  <p>Web designer in Mombasa helping small businesses look professional online.</p>\n  <a class=\"btn\" href=\"#work\">See my work</a>\n</div></header>\n<main class=\"wrap\">\n  <h2 id=\"work\">Recent work</h2>\n  <div class=\"grid\">\n    <article class=\"card\"><div class=\"pic\"></div><div><h3>Salon booking site</h3><p>Online bookings and M-Pesa deposits.</p></div></article>\n    <article class=\"card\"><div class=\"pic\"></div><div><h3>School website</h3><p>News, fees and admissions pages.</p></div></article>\n    <article class=\"card\"><div class=\"pic\"></div><div><h3>Café menu</h3><p>A fast menu that works on any phone.</p></div></article>\n  </div>\n  <h2>About me</h2>\n  <p>I've designed for 20+ clients. I focus on clear layouts, strong colours and pages that load fast on mobile data.</p>\n</main>\n<footer><div class=\"wrap\">WhatsApp: 07XX XXX XXX · Email: amina@example.com</div></footer>\n</body>\n</html>\n```\n\n## Check your design\n\n- Is there one clear main action?\n- Does it look good at phone width?\n- Is all text easy to read (size and contrast)?\n- Did you use no more than two fonts and a small palette?\n\nWhen you're happy, publish it free on **GitHub Pages** or **Netlify** (see the Web hosting subject) and share the link.\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    }
+   ]
+  },
+  {
+   "slug": "graphic-design",
+   "title": "Graphic design with Canva",
+   "lang": "none",
+   "summary": "Design posters, social media posts, logos and business cards with Canva, and learn the basics of branding. Great for side income.",
+   "lessons": [
+    {
+     "slug": "design-basics",
+     "title": "Graphic design basics",
+     "body": "# Graphic design basics\n\nGraphic design is communicating with pictures and words. Whether it's a poster for a church event, a flyer for a salon or an Instagram post for a shop, the same rules apply.\n\n## The building blocks\n\n- **Layout**: where things sit. Use a grid and align elements to it.\n- **Typography**: fonts. Use one bold font for headlines and one simple font for details.\n- **Colour**: 2–3 main colours. Use your brand colours consistently.\n- **Images**: sharp, well-lit photos. Never stretch a photo out of shape.\n- **White space**: leave breathing room around text and the edges.\n\n## Hierarchy on a poster\n\nA viewer should get the message in **3 seconds**:\n\n1. **Headline** (biggest): \"MEGA SALE\" or \"Free Medical Camp\"\n2. **Key details**: date, time, place, price\n3. **Call to action**: \"Call 0712 345 678\" or \"Book on WhatsApp\"\n4. **Logo** and small print (smallest)\n\n## Common mistakes\n\n- Too many fonts and colours on one design.\n- Text over a busy photo with no dark overlay, so it can't be read.\n- Everything the same size (no hierarchy).\n- Low-resolution images that look blurry when printed.\n- Spelling mistakes. Always proofread twice, especially phone numbers and dates.\n\n## Print vs screen\n\n| | Screen (social media) | Print (flyers, banners) |\n|---|---|---|\n| Colour mode | RGB | CMYK |\n| Resolution | 72–150 ppi is fine | 300 dpi |\n| File type | PNG or JPG | PDF (print) |\n\n```quiz\nQ: Roughly how many seconds should it take a viewer to get a poster's main message?\nA: 3 | three\nQ: Which colour mode do professional printers use? (4 letters)\nA: CMYK\nQ: What resolution in dpi should designs for print usually have?\nA: 300 | 300 dpi\nQ: Which file type is best to send to a printer?\nA: PDF | pdf print\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "canva-essentials",
+     "title": "Canva essentials",
+     "body": "# Canva essentials\n\n**Canva** (canva.com) is a free design tool that works in the browser and on phones. It's popular for social media posts, posters, presentations, CVs and more.\n\n## Getting started\n\n1. Sign up free with your email or Google account.\n2. Search for what you want: \"Instagram post\", \"Flyer\", \"Business card\", \"Logo\".\n3. Pick a template or start blank.\n4. Edit text, colours, photos and elements.\n5. **Share → Download** as PNG (images), PDF Print (printing) or MP4 (videos).\n\n## Key tools\n\n- **Elements**: shapes, lines, icons, stickers, frames and grids.\n- **Text**: add headings and body text; use the preset font combinations.\n- **Uploads**: add your own logo and photos.\n- **Brand Kit** (Pro, free for eligible education and non-profit accounts): save your logo, colours and fonts.\n- **Background remover** (Pro): cut a product out of its background.\n- **Resize** (Pro): turn one design into many sizes.\n- **Magic Studio**: AI features such as generating images or writing text.\n- **Position → Align**: line things up neatly. Hold Shift to keep proportions when resizing.\n\n## Standard sizes (pixels)\n\n| Design | Size |\n|---|---|\n| Instagram post | 1080 × 1080 (square) or 1080 × 1350 (portrait) |\n| Instagram / WhatsApp / TikTok story | 1080 × 1920 |\n| Facebook cover | about 1640 × 624 (safe area in the centre) |\n| YouTube thumbnail | 1280 × 720 |\n| A4 flyer | 210 × 297 mm |\n| Business card | 85 × 55 mm (common in Kenya) or 3.5 × 2 in |\n\n## Workflow tips\n\n- Duplicate a page to try variations instead of starting again.\n- Use the **grid view** to check a whole carousel at once.\n- Group items (Ctrl+G) so they move together.\n- Keep templates for your regular posts so your page looks consistent.\n\n```quiz\nQ: What size in pixels is a standard square Instagram post? (write like 1080x1080)\nA: 1080x1080 | 1080 x 1080 | 1080×1080\nQ: Which download option should you choose for printing? (two words)\nA: PDF Print\nQ: What size in pixels is a story (Instagram/WhatsApp)? (write like 1080x1920)\nA: 1080x1920 | 1080 x 1920 | 1080×1920\nQ: Which keyboard shortcut groups selected elements in Canva?\nA: Ctrl+G | ctrl g | cmd+g\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "logos-branding",
+     "title": "Logos and branding",
+     "body": "# Logos and branding\n\nA **brand** is how people feel about a business. The **visual identity** (logo, colours, fonts, style) is what makes it recognisable.\n\n## What makes a good logo\n\n- **Simple**: recognisable at a small size (a phone app icon or a stamp).\n- **Memorable**: one idea, not five.\n- **Versatile**: works in one colour, on dark and light backgrounds, printed and on screen.\n- **Timeless**: avoid trendy effects that will look dated.\n- **Appropriate**: a law firm and a kids' shop need very different feels.\n\n## Types of logos\n\n| Type | Example idea |\n|---|---|\n| Wordmark (just the name in a special font) | \"Marzley\" in bold letters |\n| Lettermark (initials) | \"MT\" |\n| Icon / symbol | A leaf for an organic shop |\n| Combination | Icon + name (most common for small businesses) |\n| Emblem | Name inside a badge or crest (schools, clubs) |\n\n## A simple brand kit\n\nEvery business should have a one-page brand guide:\n\n1. **Logo** versions: full colour, white, black, and icon only.\n2. **Colours** with their codes (HEX for screens, CMYK for print).\n3. **Fonts**: headline and body.\n4. **Tone of voice**: friendly? formal? Kiswahili, English or Sheng?\n5. **Examples**: a sample post and a sample flyer.\n\n## Deliver files properly\n\n- **PNG** with a transparent background for websites and social media.\n- **SVG** or **PDF** (vector) so it can be enlarged for banners without blurring.\n- **JPG** for quick sharing on WhatsApp.\n\n> Designing logos, brand kits and social media templates is a real side income. Build a portfolio of 5–10 designs (even for imaginary businesses) and share it on Instagram, Behance and WhatsApp status.\n\n```quiz\nQ: A logo made only of the business name in a special font is called a…\nA: wordmark | a wordmark\nQ: Which file type can be enlarged to any size without blurring? (3 letters)\nA: SVG\nQ: Which image type supports a transparent background: PNG or JPG?\nA: PNG\nQ: Name the colour code format used for screens (3 letters).\nA: HEX | RGB\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "social-media-design",
+     "title": "Designing for social media",
+     "body": "# Designing for social media\n\nPeople scroll fast. Your design has about **one second** to stop the thumb.\n\n## Rules for scroll-stopping posts\n\n- **One message per post.** \"20% off school shoes this week\" is enough.\n- **Big, short text**: 5–7 words on the image. Put details in the caption.\n- **Strong contrast**: bold colours, a dark overlay behind text on photos.\n- **Faces and products** get attention. Show real people and real items.\n- **Consistent style**: same colours, fonts and layout so followers recognise you instantly.\n- **Brand in every post**: small logo or handle in a corner.\n- **Clear next step**: \"DM to order\", \"Link in bio\", \"WhatsApp 07XX\".\n\n## Types of posts that work for small businesses\n\n| Post | Idea |\n|---|---|\n| Product showcase | Clean photo + price |\n| Before and after | Salon, cleaning, renovation, website redesign |\n| Testimonial | Customer photo + short quote |\n| Tips / how-to carousel | \"5 ways to keep your phone battery healthy\" |\n| Behind the scenes | Your team at work |\n| Offer / event | Date, time, place, price, CTA |\n\n## Carousels\n\nCarousels (multiple slides) get strong engagement. Slide 1 is the hook (\"5 mistakes killing your sales\"), the middle slides deliver value, and the last slide asks for action (follow, share, DM).\n\n## Plan ahead\n\n- Make a **content calendar** for the month (e.g. Monday tips, Wednesday product, Friday testimonial).\n- Design templates once in Canva and reuse them.\n- Schedule posts with **Meta Business Suite** (Facebook and Instagram, free).\n\n```quiz\nQ: About how many words should be on the image of a social media post? (give a number from 5 to 7)\nA: 5 | 6 | 7\nQ: What is a post with several slides called?\nA: carousel | a carousel\nQ: Which free Meta tool schedules Facebook and Instagram posts? (three words)\nA: Meta Business Suite\nQ: Which slide of a carousel is the hook: first or last?\nA: first\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    }
+   ]
+  },
+  {
+   "slug": "algorithms",
+   "title": "Algorithms & problem solving",
+   "lang": "python",
+   "summary": "Think like a programmer: pseudocode, flowcharts, searching, sorting, recursion, Big O and data structures, with runnable Python examples.",
+   "lessons": [
+    {
+     "slug": "pseudocode-flowcharts",
+     "title": "Pseudocode and flowcharts",
+     "body": "# Pseudocode and flowcharts\n\nAn **algorithm** is a clear list of steps that solves a problem. A recipe is an algorithm. So is \"how to buy airtime with M-Pesa\".\n\nBefore writing code, programmers plan the steps in plain language (**pseudocode**) or as a diagram (**flowchart**).\n\n## Pseudocode example: grade a student\n\n```\nSTART\n  INPUT marks\n  IF marks >= 70 THEN grade = \"A\"\n  ELSE IF marks >= 60 THEN grade = \"B\"\n  ELSE IF marks >= 50 THEN grade = \"C\"\n  ELSE IF marks >= 40 THEN grade = \"D\"\n  ELSE grade = \"E\"\n  OUTPUT grade\nEND\n```\n\n## Flowchart symbols\n\n| Shape | Meaning |\n|---|---|\n| Oval | Start / End |\n| Parallelogram | Input / Output |\n| Rectangle | Process (a calculation or action) |\n| Diamond | Decision (yes/no question) |\n| Arrow | Direction of flow |\n\n## The same algorithm in Python\n\n```try-python\nmarks = 64\n\nif marks >= 70:\n    grade = \"A\"\nelif marks >= 60:\n    grade = \"B\"\nelif marks >= 50:\n    grade = \"C\"\nelif marks >= 40:\n    grade = \"D\"\nelse:\n    grade = \"E\"\n\nprint(\"Grade:\", grade)\n```\n\nChange `marks` and run it again. Every programming language can express this same logic: learning to **think in steps** is the real skill.\n\n```quiz\nQ: Which flowchart shape is used for a decision?\nA: diamond | a diamond | rhombus\nQ: Which flowchart shape is used for input and output?\nA: parallelogram | a parallelogram\nQ: What do we call a plain-language plan of an algorithm's steps?\nA: pseudocode | pseudo code\n```\n",
+     "exercise": "Write code that prints **Pass** if `score` is 50 or more, otherwise **Fail**. Test it with `score = 72`.",
+     "starter": "score = 72",
+     "expected": "Pass",
+     "must_contain": "if"
+    },
+    {
+     "slug": "searching",
+     "title": "Searching: linear and binary search",
+     "body": "# Searching: linear and binary search\n\n## Linear search\n\nCheck every item one by one until you find it. Simple, works on any list, but slow on big lists.\n\n```try-python\ndef linear_search(items, target):\n    for i, value in enumerate(items):\n        if value == target:\n            return i          # position found\n    return -1                 # not found\n\ntowns = [\"Nairobi\", \"Mombasa\", \"Kisumu\", \"Nakuru\", \"Eldoret\"]\nprint(linear_search(towns, \"Nakuru\"))\nprint(linear_search(towns, \"Thika\"))\n```\n\n## Binary search\n\nWorks only on a **sorted** list. Look at the middle item: if the target is smaller, throw away the right half; if bigger, throw away the left half. Repeat. Each step halves the work, like finding a word in a dictionary.\n\n```try-python\ndef binary_search(items, target):\n    low, high = 0, len(items) - 1\n    steps = 0\n    while low <= high:\n        steps += 1\n        mid = (low + high) // 2\n        if items[mid] == target:\n            print(\"found in\", steps, \"steps\")\n            return mid\n        elif items[mid] < target:\n            low = mid + 1\n        else:\n            high = mid - 1\n    print(\"not found after\", steps, \"steps\")\n    return -1\n\nnumbers = list(range(0, 1_000_000, 2))   # 500,000 sorted even numbers\nprint(binary_search(numbers, 777_778))\n```\n\nHalf a million numbers, found in about 19 steps. A linear search could need 500,000.\n\n```quiz\nQ: What must be true about a list before you can use binary search?\nA: it must be sorted | sorted | it is sorted\nQ: Which search checks every item one by one?\nA: linear search | linear | sequential search\nQ: Binary search on 1,000,000 sorted items needs at most about how many steps? (hint: 2 to the power of 20 is about a million)\nA: 20 | 19 | 20 steps\n```\n",
+     "exercise": "Write a function `count_of(items, target)` that uses a loop to count how many times `target` appears, then print `count_of([3, 1, 3, 3, 2], 3)`.",
+     "starter": "def count_of(items, target):\n    \n\nprint(count_of([3, 1, 3, 3, 2], 3))",
+     "expected": "3",
+     "must_contain": "for\ndef count_of"
+    },
+    {
+     "slug": "sorting",
+     "title": "Sorting algorithms",
+     "body": "# Sorting algorithms\n\nSorting puts items in order: prices from cheapest, names A–Z, scores highest first.\n\n## Bubble sort (easy to understand, slow)\n\nCompare neighbours and swap them if they're in the wrong order. Repeat until nothing swaps. The biggest values \"bubble\" to the end.\n\n```try-python\ndef bubble_sort(items):\n    items = items[:]            # work on a copy\n    n = len(items)\n    for i in range(n):\n        swapped = False\n        for j in range(n - 1 - i):\n            if items[j] > items[j + 1]:\n                items[j], items[j + 1] = items[j + 1], items[j]\n                swapped = True\n        if not swapped:\n            break\n    return items\n\nprint(bubble_sort([29, 3, 72, 15, 8, 41]))\n```\n\n## Selection and insertion sort\n\n- **Selection sort**: find the smallest item, put it first; find the next smallest, put it second; and so on.\n- **Insertion sort**: like sorting playing cards in your hand: take each item and insert it into the right place among the ones already sorted. Fast on nearly-sorted data.\n\n## Merge sort (fast)\n\nSplit the list in half, sort each half (by splitting again), then **merge** the two sorted halves. This \"divide and conquer\" approach is much faster on big lists.\n\n```try-python\ndef merge_sort(items):\n    if len(items) <= 1:\n        return items\n    mid = len(items) // 2\n    left, right = merge_sort(items[:mid]), merge_sort(items[mid:])\n    merged, i, j = [], 0, 0\n    while i < len(left) and j < len(right):\n        if left[i] <= right[j]:\n            merged.append(left[i]); i += 1\n        else:\n            merged.append(right[j]); j += 1\n    return merged + left[i:] + right[j:]\n\nprint(merge_sort([29, 3, 72, 15, 8, 41, 0, 56]))\n```\n\nIn real Python code, just use `sorted(items)` or `items.sort()`: they use **Timsort**, a very fast hybrid of merge and insertion sort.\n\n```quiz\nQ: Which sort repeatedly swaps neighbouring items that are in the wrong order?\nA: bubble sort | bubble\nQ: Merge sort uses which strategy? (three words)\nA: divide and conquer\nQ: What is the name of the algorithm Python's sorted() uses?\nA: Timsort | tim sort\n```\n",
+     "exercise": "Use `sorted()` with `reverse=True` to print the list `[40, 85, 12, 67]` from highest to lowest.",
+     "starter": "scores = [40, 85, 12, 67]",
+     "expected": "[85, 67, 40, 12]",
+     "must_contain": "sorted\nreverse"
+    },
+    {
+     "slug": "big-o",
+     "title": "Big O: how fast is your code?",
+     "body": "# Big O: how fast is your code?\n\n**Big O notation** describes how the work grows as the input grows. It helps you choose code that stays fast when your shop has 10 customers or 10 million.\n\n| Big O | Name | Example | 1,000 items → steps |\n|---|---|---|---|\n| O(1) | Constant | Get `items[5]`, look up a dictionary key | 1 |\n| O(log n) | Logarithmic | Binary search | ~10 |\n| O(n) | Linear | Loop through a list once | 1,000 |\n| O(n log n) | Linearithmic | Merge sort, Python's `sorted()` | ~10,000 |\n| O(n²) | Quadratic | Loop inside a loop (bubble sort, comparing every pair) | 1,000,000 |\n\n## See the difference\n\n```try-python\nimport time\n\nn = 3000\ndata = list(range(n))\n\nstart = time.time()\ntotal = 0\nfor x in data:            # O(n)\n    total += x\nprint(\"O(n) loop:\", round(time.time() - start, 4), \"s\")\n\nstart = time.time()\npairs = 0\nfor x in data:            # O(n²): a loop inside a loop\n    for y in data:\n        pairs += 1\nprint(\"O(n²) loops:\", round(time.time() - start, 4), \"s,\", pairs, \"steps\")\n```\n\n## A practical tip: use sets and dictionaries for lookups\n\nChecking `if x in some_list` is O(n). Checking `if x in some_set` is O(1) on average.\n\n```try-python\nimport time\nphones = [f\"07{n:08d}\" for n in range(200_000)]\nphone_set = set(phones)\n\nstart = time.time(); print(\"0700199999\" in phones); print(\"list:\", round(time.time() - start, 5), \"s\")\nstart = time.time(); print(\"0700199999\" in phone_set); print(\"set: \", round(time.time() - start, 5), \"s\")\n```\n\n```quiz\nQ: What is the Big O of looking up a key in a dictionary (on average)?\nA: O(1) | constant\nQ: What is the Big O of a loop inside a loop over the same list?\nA: O(n²) | O(n^2) | quadratic\nQ: What is the Big O of binary search?\nA: O(log n) | logarithmic\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "data-structures",
+     "title": "Data structures: stacks, queues and more",
+     "body": "# Data structures: stacks, queues and more\n\nA **data structure** is a way of organising data so the operations you need are fast.\n\n## Stack: last in, first out (LIFO)\n\nLike a pile of plates. Used for the browser's Back button and undo.\n\n```try-python\nhistory = []\nhistory.append(\"home\")        # push\nhistory.append(\"pricing\")\nhistory.append(\"contact\")\nprint(\"Back to:\", history.pop())   # pop removes the last one\nprint(history)\n```\n\n## Queue: first in, first out (FIFO)\n\nLike a bank queue. Used for print jobs, messages, customer support tickets.\n\n```try-python\nfrom collections import deque\nqueue = deque()\nqueue.append(\"Wanjiku\")       # join the queue\nqueue.append(\"Otieno\")\nqueue.append(\"Amina\")\nprint(\"Serving:\", queue.popleft())\nprint(\"Waiting:\", list(queue))\n```\n\n## Dictionary (hash map)\n\nKey → value, with very fast lookups. Used everywhere: user accounts by email, prices by product.\n\n## Tree\n\nItems arranged in a hierarchy: folders on a computer, the HTML DOM, a company org chart.\n\n## Graph\n\nPoints (nodes) connected by lines (edges): roads between towns, friends on social media, routers on the internet. Google Maps finds routes with graph algorithms such as Dijkstra's.\n\n```try-python\nroads = {\n    \"Nairobi\": [\"Nakuru\", \"Thika\", \"Machakos\"],\n    \"Nakuru\": [\"Nairobi\", \"Eldoret\", \"Kisumu\"],\n    \"Eldoret\": [\"Nakuru\"],\n    \"Kisumu\": [\"Nakuru\"],\n    \"Thika\": [\"Nairobi\"],\n    \"Machakos\": [\"Nairobi\", \"Mombasa\"],\n    \"Mombasa\": [\"Machakos\"],\n}\n\ndef route(start, goal):\n    # breadth-first search: finds the route with the fewest towns\n    queue, seen = [[start]], {start}\n    while queue:\n        path = queue.pop(0)\n        if path[-1] == goal:\n            return path\n        for nxt in roads[path[-1]]:\n            if nxt not in seen:\n                seen.add(nxt)\n                queue.append(path + [nxt])\n\nprint(\" -> \".join(route(\"Kisumu\", \"Mombasa\")))\n```\n\n```quiz\nQ: Which data structure is last in, first out?\nA: stack | a stack\nQ: Which data structure is first in, first out?\nA: queue | a queue\nQ: Folders inside folders on a computer form which data structure?\nA: tree | a tree\nQ: Towns connected by roads form which data structure?\nA: graph | a graph\n```\n",
+     "exercise": "Use a list as a **stack**: push `\"a\"`, `\"b\"` and `\"c\"`, then pop once and print the popped value.",
+     "starter": "stack = []",
+     "expected": "c",
+     "must_contain": "append\npop"
+    },
+    {
+     "slug": "recursion",
+     "title": "Recursion",
+     "body": "# Recursion\n\nA **recursive** function calls itself to solve a smaller version of the same problem. Every recursive function needs:\n\n1. A **base case** that stops the recursion.\n2. A **recursive case** that moves towards the base case.\n\n## Factorial\n\n5! = 5 × 4 × 3 × 2 × 1 = 120\n\n```try-python\ndef factorial(n):\n    if n <= 1:            # base case\n        return 1\n    return n * factorial(n - 1)   # recursive case\n\nprint(factorial(5))\nprint(factorial(10))\n```\n\n## Counting files in folders\n\nRecursion is natural for trees, like folders inside folders:\n\n```try-python\nfolders = {\n    \"Documents\": {\"CV.pdf\": None, \"School\": {\"Notes.docx\": None, \"Timetable.xlsx\": None}},\n    \"Photos\": {\"Mombasa.jpg\": None},\n}\n\ndef count_files(folder):\n    total = 0\n    for name, content in folder.items():\n        if content is None:\n            total += 1                 # it's a file\n        else:\n            total += count_files(content)   # it's a folder: look inside\n    return total\n\nprint(count_files(folders))\n```\n\n## Watch out\n\n- Without a base case, the function calls itself forever and Python stops it with a **RecursionError**.\n- Some recursive solutions repeat work. The classic Fibonacci example gets slow quickly. Save results you've already computed (**memoisation**) with `functools.lru_cache`.\n\n```try-python\nfrom functools import lru_cache\n\n@lru_cache(maxsize=None)\ndef fib(n):\n    return n if n < 2 else fib(n - 1) + fib(n - 2)\n\nprint([fib(i) for i in range(15)])\nprint(fib(90))\n```\n\n```quiz\nQ: What stops a recursive function from calling itself forever? (two words)\nA: base case | the base case\nQ: What error does Python raise when recursion goes too deep?\nA: RecursionError\nQ: Saving already-computed results to avoid repeating work is called…\nA: memoisation | memoization | caching\n```\n",
+     "exercise": "Write a recursive function `total(n)` that returns 1 + 2 + … + n, and print `total(100)`.",
+     "starter": "def total(n):\n    \n\nprint(total(100))",
+     "expected": "5050",
+     "must_contain": "def total\ntotal(n"
+    }
+   ]
+  },
+  {
+   "slug": "typescript",
+   "title": "TypeScript",
+   "lang": "none",
+   "summary": "JavaScript with types: catch mistakes before your code runs. Used by most modern web apps built with React, Angular and Node.js.",
+   "lessons": [
+    {
+     "slug": "introduction",
+     "title": "TypeScript introduction",
+     "body": "# TypeScript introduction\n\n**TypeScript** is JavaScript plus **types**. You write `.ts` files, and the TypeScript compiler checks them and turns them into normal JavaScript that browsers and Node.js run.\n\nWhy teams use it:\n\n- Catches mistakes **before** the code runs (typos, wrong arguments, missing fields).\n- Better autocomplete in editors like VS Code.\n- Makes big projects easier to change safely.\n\n```\nlet shop: string = \"Mama Mboga\";\nlet price: number = 150;\nlet open: boolean = true;\n\nprice = \"cheap\";   // Error: Type 'string' is not assignable to type 'number'.\n```\n\nTypeScript can also **infer** types, so you don't have to write them everywhere:\n\n```\nlet total = 450;         // TypeScript knows this is a number\ntotal.toUpperCase();     // Error: Property 'toUpperCase' does not exist on type 'number'.\n```\n\n## Setting it up\n\n```\nnpm install -g typescript     # install the compiler\ntsc --init                    # create tsconfig.json\ntsc app.ts                    # compile app.ts to app.js\nnode app.js\n```\n\n> The code boxes here are for reading and copying. Run them free online at **typescriptlang.org/play**, or install the tools on your computer.\n\n```quiz\nQ: What does the TypeScript compiler turn .ts files into?\nA: JavaScript | js\nQ: What is the command-line name of the TypeScript compiler?\nA: tsc\nQ: When TypeScript works out a type without you writing it, this is called type…\nA: inference | infer\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "types-interfaces",
+     "title": "Types, interfaces and functions",
+     "body": "# Types, interfaces and functions\n\n## Arrays and union types\n\n```\nlet towns: string[] = [\"Nairobi\", \"Kisumu\"];\nlet phone: string | null = null;         // a string OR null\ntype Status = \"pending\" | \"paid\" | \"failed\";\nlet s: Status = \"paid\";\ns = \"done\";   // Error: only the three listed values are allowed\n```\n\n## Interfaces describe objects\n\n```\ninterface Customer {\n  id: number;\n  name: string;\n  phone: string;\n  email?: string;          // ? means optional\n}\n\nconst c: Customer = { id: 1, name: \"Wanjiku\", phone: \"0712345678\" };\n```\n\n## Typed functions\n\n```\nfunction vat(amount: number, rate: number = 0.16): number {\n  return amount * rate;\n}\n\nvat(1000);          // 160\nvat(\"1000\");        // Error: Argument of type 'string' is not assignable to parameter of type 'number'.\n\nconst greet = (c: Customer): string => `Habari ${c.name}!`;\n```\n\n## Generics\n\nGenerics let a function work with many types while keeping them checked:\n\n```\nfunction first<T>(items: T[]): T | undefined {\n  return items[0];\n}\nconst n = first([10, 20]);        // n is number\nconst t = first([\"a\", \"b\"]);      // t is string\n```\n\n```quiz\nQ: Which symbol makes an interface field optional?\nA: ? | question mark\nQ: Which keyword describes the shape of an object in TypeScript?\nA: interface\nQ: What do we call a type like \"pending\" | \"paid\"? (a ___ type)\nA: union\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "typescript-in-practice",
+     "title": "TypeScript in real projects",
+     "body": "# TypeScript in real projects\n\n## Typing data from an API\n\n```\ninterface Product { id: number; name: string; price: number; }\n\nasync function loadProducts(): Promise<Product[]> {\n  const res = await fetch(\"/api/products\");\n  if (!res.ok) throw new Error(\"Could not load products\");\n  return res.json() as Promise<Product[]>;\n}\n\nloadProducts().then(list => {\n  list.forEach(p => console.log(p.name, p.price.toFixed(2)));\n});\n```\n\n## Where TypeScript is used\n\n- **React** with Vite or Next.js: `npm create vite@latest my-app -- --template react-ts`\n- **Angular** (TypeScript by default)\n- **Node.js** back ends with Express or NestJS\n- **React Native** mobile apps\n\n## Useful built-in helper types\n\n| Type | What it does |\n|---|---|\n| `Partial<T>` | All fields optional (good for update forms) |\n| `Required<T>` | All fields required |\n| `Pick<T, \"a\" | \"b\">` | Only some fields |\n| `Omit<T, \"id\">` | All fields except some |\n| `Record<string, number>` | An object map, e.g. prices by product name |\n\n## Tips\n\n- Turn on `\"strict\": true` in `tsconfig.json`: it catches the most bugs.\n- Avoid `any`: it switches type checking off. Use `unknown` and check the value instead.\n- Learn JavaScript first; TypeScript is easy once JavaScript makes sense.\n\n```quiz\nQ: Which tsconfig setting turns on the strictest, most helpful checks?\nA: strict | \"strict\": true | strict true\nQ: Which helper type makes every field optional?\nA: Partial | Partial<T>\nQ: Which type switches off type checking and should be avoided?\nA: any\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    }
+   ]
+  },
+  {
+   "slug": "java",
+   "title": "Java",
+   "lang": "none",
+   "summary": "A popular language for Android apps, banks, big business systems and university courses. Learn the syntax and object-oriented programming.",
+   "lessons": [
+    {
+     "slug": "introduction",
+     "title": "Java introduction",
+     "body": "# Java introduction\n\n**Java** is used for Android apps, banking and telecom systems, enterprise software and many university and KCSE/TVET computer studies courses. Its motto: *write once, run anywhere*: Java code compiles to **bytecode** that runs on the **Java Virtual Machine (JVM)** on any operating system.\n\n## Hello, Kenya\n\n```java\npublic class Main {\n    public static void main(String[] args) {\n        System.out.println(\"Habari, Kenya!\");\n    }\n}\n```\n\n- Every Java program lives inside a **class**. The file name must match the public class: `Main.java`.\n- The program starts at `main`.\n- Statements end with `;` and blocks use `{ }`.\n\n## Compile and run\n\n```\njavac Main.java     # compile to Main.class (bytecode)\njava Main           # run it on the JVM\n```\n\n## Variables and types\n\nJava is **statically typed**: every variable has a type that can't change.\n\n```java\nint age = 21;\ndouble price = 1499.50;\nboolean paid = true;\nchar grade = 'A';\nString name = \"Otieno\";       // String starts with a capital S\nvar town = \"Kisumu\";          // Java 10+: type inferred as String\n```\n\n> The code boxes here are for reading and copying. Run them free online at **onlinegdb.com** (choose Java) or **programiz.com/java-programming/online-compiler**, or install the tools on your computer.\nPopular editors: **IntelliJ IDEA Community**, **VS Code** with the Java extension, and **Android Studio** for apps.\n\n```quiz\nQ: What does the JVM stand for?\nA: Java Virtual Machine\nQ: Which command compiles Main.java?\nA: javac Main.java | javac\nQ: Which method does every Java program start from?\nA: main\nQ: Which type holds whole numbers like 21? (3 letters)\nA: int\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "control-flow",
+     "title": "Conditions, loops and arrays",
+     "body": "# Conditions, loops and arrays\n\n## if / else\n\n```java\nint marks = 67;\nif (marks >= 70) {\n    System.out.println(\"A\");\n} else if (marks >= 60) {\n    System.out.println(\"B\");\n} else {\n    System.out.println(\"Keep going!\");\n}\n```\n\n## switch\n\n```java\nString day = \"SAT\";\nswitch (day) {\n    case \"SAT\", \"SUN\" -> System.out.println(\"Weekend\");\n    default -> System.out.println(\"Weekday\");\n}\n```\n\n## Loops\n\n```java\nfor (int i = 1; i <= 5; i++) {\n    System.out.println(\"Line \" + i);\n}\n\nint balance = 1000;\nwhile (balance > 0) {\n    balance -= 300;\n}\n```\n\n## Arrays and ArrayList\n\n```java\nint[] scores = {45, 78, 92, 60};\nint total = 0;\nfor (int s : scores) {        // \"for each\" loop\n    total += s;\n}\nSystem.out.println(\"Average: \" + (double) total / scores.length);\n\nimport java.util.ArrayList;\nArrayList<String> towns = new ArrayList<>();\ntowns.add(\"Nakuru\");\ntowns.add(\"Eldoret\");\nSystem.out.println(towns.size());   // 2\n```\n\nArrays have a fixed size; an `ArrayList` can grow and shrink.\n\n```quiz\nQ: Which loop type is written like for (int s : scores)? (two words)\nA: for each | for-each | enhanced for\nQ: How do you get the number of items in a Java array called scores?\nA: scores.length\nQ: Which class gives you a list that can grow?\nA: ArrayList\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "oop",
+     "title": "Classes and objects (OOP)",
+     "body": "# Classes and objects (OOP)\n\nJava is **object-oriented**. A **class** is a blueprint; an **object** is a thing made from it.\n\n```java\npublic class Account {\n    private String owner;          // fields (data)\n    private double balance;\n\n    public Account(String owner) { // constructor\n        this.owner = owner;\n        this.balance = 0;\n    }\n\n    public void deposit(double amount) {   // methods (behaviour)\n        if (amount <= 0) throw new IllegalArgumentException(\"Amount must be positive\");\n        balance += amount;\n    }\n\n    public double getBalance() { return balance; }\n}\n\n// Using it\nAccount a = new Account(\"Amina\");\na.deposit(2500);\nSystem.out.println(a.getBalance());   // 2500.0\n```\n\n## The four pillars of OOP\n\n| Pillar | Meaning | Example |\n|---|---|---|\n| **Encapsulation** | Hide data, expose safe methods | `balance` is `private`; change it only through `deposit` |\n| **Inheritance** | A class extends another | `SavingsAccount extends Account` |\n| **Polymorphism** | Same method, different behaviour | Each shape's `area()` is calculated differently |\n| **Abstraction** | Show what, hide how | An `interface Payment { void pay(double amount); }` with MpesaPayment and CardPayment |\n\n```java\ninterface Payment { void pay(double amount); }\n\nclass MpesaPayment implements Payment {\n    public void pay(double amount) { System.out.println(\"STK push for KSh \" + amount); }\n}\nclass CardPayment implements Payment {\n    public void pay(double amount) { System.out.println(\"Charging card KSh \" + amount); }\n}\n```\n\n```quiz\nQ: What is the blueprint for objects called?\nA: class | a class\nQ: Which keyword creates a new object?\nA: new\nQ: Hiding data behind methods is which OOP pillar?\nA: encapsulation\nQ: Which keyword makes a class inherit from another?\nA: extends\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "android-next-steps",
+     "title": "Java for Android and next steps",
+     "body": "# Java for Android and next steps\n\n## Android\n\nAndroid apps are built in **Android Studio** (free) using **Kotlin** (Google's preferred language today) or **Java**. Knowing Java makes Kotlin easy to learn.\n\nA button click in Java:\n\n```java\nButton payBtn = findViewById(R.id.payBtn);\npayBtn.setOnClickListener(v ->\n    Toast.makeText(this, \"Processing payment…\", Toast.LENGTH_SHORT).show()\n);\n```\n\n## Handling errors: exceptions\n\n```java\ntry {\n    int shares = Integer.parseInt(\"abc\");\n} catch (NumberFormatException e) {\n    System.out.println(\"Please enter a number\");\n} finally {\n    System.out.println(\"Done\");\n}\n```\n\n## Where to go next\n\n- **Collections**: `HashMap`, `HashSet`, `List`, streams (`list.stream().filter(...)`)\n- **Build tools**: Maven or Gradle\n- **Back ends**: Spring Boot powers many bank and enterprise APIs\n- **Databases**: JDBC and JPA/Hibernate\n- **Certifications**: Oracle Certified Associate (OCA) Java\n\nFree learning: **dev.java/learn** (official), **Codecademy Java** (free course), **Harvard CS50** for fundamentals, and the Android Developers site **developer.android.com/courses**.\n\n```quiz\nQ: Which free program is used to build Android apps? (two words)\nA: Android Studio\nQ: Which language does Google now prefer for Android, alongside Java?\nA: Kotlin\nQ: Which keyword starts a block that catches exceptions?\nA: try\nQ: Which popular framework is used to build Java back-end APIs? (two words)\nA: Spring Boot | spring\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    }
+   ]
+  },
+  {
+   "slug": "c-programming",
+   "title": "C programming",
+   "lang": "none",
+   "summary": "The language behind operating systems, microcontrollers and embedded devices. Understand memory, pointers and how computers really work.",
+   "lessons": [
+    {
+     "slug": "introduction",
+     "title": "C introduction",
+     "body": "# C introduction\n\n**C** (1972) is one of the most important languages ever made. Linux, Windows' core, Python's main interpreter, databases and the chips in cars, fridges and M-Pesa agent tills are written in C. Learning it teaches you how computers really work.\n\n```c\n#include <stdio.h>\n\nint main(void) {\n    printf(\"Habari, Kenya!\\n\");\n    return 0;\n}\n```\n\n- `#include <stdio.h>` brings in input/output functions like `printf`.\n- `main` is where the program starts. `return 0` means \"finished successfully\".\n- `\\n` is a new line.\n\n## Compile and run\n\nC is **compiled** to machine code:\n\n```\ngcc hello.c -o hello     # compile\n./hello                  # run (Linux/macOS);  hello.exe on Windows\n```\n\n## Variables and printing\n\n```c\nint age = 20;\nfloat price = 99.5f;\ndouble pi = 3.14159;\nchar grade = 'B';\n\nprintf(\"Age: %d\\n\", age);           // %d  whole numbers\nprintf(\"Price: %.2f\\n\", price);     // %f  decimals (.2 = two decimal places)\nprintf(\"Grade: %c\\n\", grade);       // %c  a character\n```\n\n## Input\n\n```c\nint marks;\nprintf(\"Enter marks: \");\nscanf(\"%d\", &marks);      // & gives scanf the variable's address\n```\n\n> The code boxes here are for reading and copying. Run them free online at **onlinegdb.com** (choose C), or install the tools on your computer.\nOn Windows, install **Code::Blocks** (with MinGW) or **VS Code** with GCC.\n\n```quiz\nQ: Which header file gives you printf?\nA: stdio.h | <stdio.h>\nQ: Which format specifier prints a whole number (int)?\nA: %d\nQ: Which popular compiler command compiles C code? (3 letters)\nA: gcc\nQ: What value does main return to say everything went well?\nA: 0 | zero\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "control-functions",
+     "title": "Conditions, loops and functions",
+     "body": "# Conditions, loops and functions\n\n```c\n#include <stdio.h>\n\n// A function that returns the larger of two numbers\nint max(int a, int b) {\n    return a > b ? a : b;\n}\n\nint main(void) {\n    int marks = 58;\n\n    if (marks >= 50) {\n        printf(\"Pass\\n\");\n    } else {\n        printf(\"Fail\\n\");\n    }\n\n    for (int i = 1; i <= 5; i++) {\n        printf(\"%d x 7 = %d\\n\", i, i * 7);\n    }\n\n    int n = 10;\n    while (n > 0) {\n        n -= 3;\n    }\n\n    printf(\"Bigger: %d\\n\", max(12, 40));\n    return 0;\n}\n```\n\n## Arrays and strings\n\n```c\nint scores[5] = {45, 78, 92, 60, 71};\nint total = 0;\nfor (int i = 0; i < 5; i++) total += scores[i];\nprintf(\"Average: %.1f\\n\", total / 5.0);\n\nchar name[20] = \"Wanjiru\";          // a string is an array of characters ending in '\\0'\nprintf(\"%s has %zu letters\\n\", name, strlen(name));   // needs #include <string.h>\n```\n\nC doesn't check array limits: writing to `scores[10]` corrupts memory instead of giving a nice error. This is the cause of many security bugs, so always check your indexes.\n\n```quiz\nQ: What character ends every C string? (write it as in code)\nA: '\\0' | \\0 | null character | null\nQ: Which format specifier prints a string?\nA: %s\nQ: Does C stop you from writing past the end of an array? (yes or no)\nA: no\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "pointers-memory",
+     "title": "Pointers and memory",
+     "body": "# Pointers and memory\n\nEvery variable lives at an **address** in memory. A **pointer** is a variable that stores an address.\n\n```c\nint balance = 500;\nint *p = &balance;      // p holds the address of balance\n\nprintf(\"%d\\n\", balance);   // 500\nprintf(\"%p\\n\", (void*)p);  // an address like 0x7ffd...\nprintf(\"%d\\n\", *p);        // 500  (* reads the value at the address)\n\n*p = 800;                  // change balance through the pointer\nprintf(\"%d\\n\", balance);   // 800\n```\n\n- `&x` = \"address of x\"\n- `*p` = \"the value p points to\"\n\n## Why pointers matter: changing a variable inside a function\n\n```c\nvoid add_bonus(int *salary) {\n    *salary += 2000;\n}\n\nint main(void) {\n    int pay = 30000;\n    add_bonus(&pay);\n    printf(\"%d\\n\", pay);   // 32000\n}\n```\n\n## Dynamic memory\n\n```c\n#include <stdlib.h>\n\nint n = 100;\nint *list = malloc(n * sizeof(int));   // ask for memory\nif (list == NULL) return 1;            // always check\nlist[0] = 42;\nfree(list);                            // give it back when done\n```\n\nForgetting `free` causes **memory leaks**; using memory after freeing it causes crashes and security holes. Languages like Python and Java manage memory for you; in C, you do it yourself.\n\n```quiz\nQ: Which operator gives the address of a variable?\nA: & | ampersand\nQ: Which function requests memory at run time?\nA: malloc | malloc()\nQ: Which function returns memory you no longer need?\nA: free | free()\nQ: What is it called when a program never frees memory it no longer uses? (two words)\nA: memory leak | a memory leak\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "structs-files",
+     "title": "Structs and files",
+     "body": "# Structs and files\n\n## Structs group related data\n\n```c\n#include <stdio.h>\n#include <string.h>\n\nstruct Student {\n    char name[40];\n    int adm_no;\n    float mean;\n};\n\nint main(void) {\n    struct Student s;\n    strcpy(s.name, \"Kiprop\");\n    s.adm_no = 1024;\n    s.mean = 74.5f;\n    printf(\"%s (%d): %.1f\\n\", s.name, s.adm_no, s.mean);\n\n    // Save to a text file\n    FILE *f = fopen(\"students.txt\", \"a\");     // \"a\" = append, \"w\" = overwrite, \"r\" = read\n    if (f == NULL) { printf(\"Cannot open file\\n\"); return 1; }\n    fprintf(f, \"%s,%d,%.1f\\n\", s.name, s.adm_no, s.mean);\n    fclose(f);\n    return 0;\n}\n```\n\n## Where C is used today\n\n- **Embedded systems and IoT**: Arduino (C/C++), ESP32, STM32 microcontrollers\n- **Operating systems and drivers**: Linux kernel\n- **High-performance code**: databases (SQLite, MySQL), game engines, Python libraries\n- **Networking**: routers and firmware\n\nNext steps: try an **Arduino** kit (sold in Nairobi electronics shops on Luthuli Avenue and online) to blink LEDs and read sensors, or read the classic book *The C Programming Language* by Kernighan and Ritchie.\n\n```quiz\nQ: Which keyword groups several variables into one type?\nA: struct\nQ: Which fopen mode adds to the end of a file without deleting it?\nA: a | \"a\" | append\nQ: Which function closes a file?\nA: fclose | fclose()\nQ: Name the popular microcontroller platform programmed in C/C++ (7 letters).\nA: Arduino\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    }
+   ]
+  },
+  {
+   "slug": "cpp",
+   "title": "C++",
+   "lang": "none",
+   "summary": "C with classes and much more: used for games, high-performance apps, competitive programming and embedded systems.",
+   "lessons": [
+    {
+     "slug": "introduction",
+     "title": "C++ introduction",
+     "body": "# C++ introduction\n\n**C++** extends C with classes, a huge standard library and modern features. It's used in game engines (Unreal Engine), browsers (Chrome), trading systems, Arduino and competitive programming.\n\n```cpp\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string name;\n    cout << \"What is your name? \";\n    cin >> name;\n    cout << \"Karibu, \" << name << \"!\" << endl;\n    return 0;\n}\n```\n\n- `cout <<` prints, `cin >>` reads input.\n- `string` is a real text type (easier than C's character arrays).\n\nCompile with `g++ main.cpp -o main` and run `./main`.\n\n## Vectors: lists that grow\n\n```cpp\n#include <vector>\n#include <algorithm>\n\nvector<int> prices = {450, 120, 999, 75};\nprices.push_back(300);                 // add\nsort(prices.begin(), prices.end());    // sort ascending\nfor (int p : prices) cout << p << \" \";\ncout << \"\\nItems: \" << prices.size() << endl;\n```\n\n## Maps\n\n```cpp\n#include <map>\nmap<string, int> stock;\nstock[\"sugar\"] = 40;\nstock[\"unga\"] = 25;\nstock[\"sugar\"] -= 5;\nfor (auto& [item, qty] : stock) cout << item << \": \" << qty << endl;\n```\n\n> The code boxes here are for reading and copying. Run them free online at **onlinegdb.com** (choose C++), or install the tools on your computer.\n\n```quiz\nQ: Which object prints output in C++?\nA: cout | std::cout\nQ: Which container is a list that can grow?\nA: vector | std::vector\nQ: Which method adds an item to the end of a vector?\nA: push_back | push_back()\nQ: Which command compiles C++ code? (3 letters)\nA: g++\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "classes",
+     "title": "Classes and objects in C++",
+     "body": "# Classes and objects in C++\n\n```cpp\n#include <iostream>\n#include <string>\nusing namespace std;\n\nclass Product {\nprivate:\n    string name;\n    double price;\npublic:\n    Product(string n, double p) : name(n), price(p) {}\n\n    double priceWithVat() const { return price * 1.16; }\n    string getName() const { return name; }\n};\n\nint main() {\n    Product p(\"Phone charger\", 800);\n    cout << p.getName() << \": KSh \" << p.priceWithVat() << endl;\n}\n```\n\n## Inheritance and virtual functions\n\n```cpp\nclass Shape {\npublic:\n    virtual double area() const = 0;   // pure virtual: every shape must define it\n    virtual ~Shape() = default;\n};\n\nclass Rectangle : public Shape {\n    double w, h;\npublic:\n    Rectangle(double w, double h) : w(w), h(h) {}\n    double area() const override { return w * h; }\n};\n\nclass Circle : public Shape {\n    double r;\npublic:\n    Circle(double r) : r(r) {}\n    double area() const override { return 3.14159 * r * r; }\n};\n```\n\n## Modern C++ memory safety\n\nUse **smart pointers** instead of raw `new`/`delete`:\n\n```cpp\n#include <memory>\nauto shape = make_unique<Circle>(2.0);   // freed automatically\ncout << shape->area() << endl;\n```\n\n```quiz\nQ: Which keyword lets a derived class change a base class method at run time?\nA: virtual\nQ: Which smart-pointer helper creates a unique_ptr?\nA: make_unique | make_unique()\nQ: In C++, which access keyword hides class members from outside code?\nA: private\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "competitive-programming",
+     "title": "C++ for competitive programming",
+     "body": "# C++ for competitive programming\n\nC++ is the most popular language in coding contests because it's fast and its **Standard Template Library (STL)** has ready-made data structures and algorithms.\n\n## A typical contest template\n\n```cpp\n#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto& x : a) cin >> x;\n\n    long long best = *max_element(a.begin(), a.end());\n    long long sum = accumulate(a.begin(), a.end(), 0LL);\n    cout << best << \" \" << sum << \"\\n\";\n}\n```\n\n## STL cheat sheet\n\n| Need | Use |\n|---|---|\n| Dynamic array | `vector<int>` |\n| Sorted unique values | `set<int>` |\n| Key → value (sorted) | `map<string,int>` |\n| Fast lookup (unsorted) | `unordered_map<string,int>` |\n| Queue / stack | `queue<int>`, `stack<int>` |\n| Always get the biggest | `priority_queue<int>` |\n| Sort / binary search | `sort()`, `lower_bound()` |\n\n## Practice sites\n\n- **Codeforces**, **AtCoder**, **LeetCode**, **HackerRank**\n- **Kattis** and ICPC regional contests for universities\n\nContests teach you algorithms quickly, and good ratings impress employers.\n\n```quiz\nQ: What does STL stand for?\nA: Standard Template Library\nQ: Which container always gives you the biggest item first? (two words joined by _)\nA: priority_queue\nQ: Which STL function sorts a vector?\nA: sort | sort()\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    }
+   ]
+  },
+  {
+   "slug": "csharp",
+   "title": "C#",
+   "lang": "none",
+   "summary": "Microsoft's language for Windows apps, websites with ASP.NET, business systems and Unity games.",
+   "lessons": [
+    {
+     "slug": "introduction",
+     "title": "C# introduction",
+     "body": "# C# introduction\n\n**C#** (say \"C sharp\") is Microsoft's modern language. It's used for business and desktop software, websites and APIs with **ASP.NET Core**, and games with **Unity** (one of the world's most popular game engines).\n\n```csharp\nConsole.WriteLine(\"Habari, Kenya!\");\n\nstring name = \"Njeri\";\nint age = 24;\ndecimal balance = 1500.75m;      // decimal is best for money\nbool isMember = true;\n\nConsole.WriteLine($\"{name} is {age} years old and has KSh {balance:N2}\");\n```\n\nModern C# (with **top-level statements**) doesn't need a class around small programs.\n\n## Set up\n\n1. Install the free **.NET SDK** from dotnet.microsoft.com.\n2. Create and run a project:\n\n```\ndotnet new console -o HelloApp\ncd HelloApp\ndotnet run\n```\n\nEditors: **Visual Studio Community** (free, Windows) or **VS Code** with the C# Dev Kit.\n\n## Conditions and loops\n\n```csharp\nint marks = 72;\nstring grade = marks >= 70 ? \"A\" : marks >= 50 ? \"C\" : \"E\";\n\nfor (int i = 1; i <= 3; i++) Console.WriteLine($\"Round {i}\");\n\nvar towns = new List<string> { \"Nyeri\", \"Meru\", \"Embu\" };\nforeach (var t in towns) Console.WriteLine(t.ToUpper());\n```\n\n> The code boxes here are for reading and copying. Run them free online at **dotnetfiddle.net**, or install the tools on your computer.\n\n```quiz\nQ: Which type is best for money values in C#?\nA: decimal\nQ: Which command runs a .NET project?\nA: dotnet run\nQ: Which popular game engine uses C#?\nA: Unity\nQ: What symbol before a string lets you insert variables in { }?\nA: $ | dollar\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "classes-linq",
+     "title": "Classes and LINQ",
+     "body": "# Classes and LINQ\n\n## Classes and properties\n\n```csharp\npublic class Product\n{\n    public string Name { get; set; } = \"\";\n    public decimal Price { get; set; }\n    public int Stock { get; set; }\n\n    public bool InStock => Stock > 0;\n}\n\nvar items = new List<Product>\n{\n    new() { Name = \"Unga 2kg\", Price = 180, Stock = 12 },\n    new() { Name = \"Sugar 1kg\", Price = 150, Stock = 0 },\n    new() { Name = \"Milk 500ml\", Price = 60, Stock = 40 },\n};\n```\n\n## LINQ: query lists like a database\n\n```csharp\nvar available = items\n    .Where(p => p.InStock)\n    .OrderBy(p => p.Price)\n    .Select(p => $\"{p.Name}: KSh {p.Price}\");\n\nforeach (var line in available) Console.WriteLine(line);\n\ndecimal stockValue = items.Sum(p => p.Price * p.Stock);\nConsole.WriteLine($\"Stock value: KSh {stockValue:N0}\");\n```\n\n## Records (quick data types)\n\n```csharp\npublic record Payment(string Phone, decimal Amount, string Receipt);\nvar p = new Payment(\"0712345678\", 500m, \"SGH7XK2L9P\");\nConsole.WriteLine(p);\n```\n\n```quiz\nQ: Which LINQ method filters items?\nA: Where | Where()\nQ: Which LINQ method sorts from smallest to largest?\nA: OrderBy | OrderBy()\nQ: Which keyword quickly declares an immutable data type with a short syntax?\nA: record\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "aspnet-next-steps",
+     "title": "ASP.NET Core and next steps",
+     "body": "# ASP.NET Core and next steps\n\n**ASP.NET Core** builds fast websites and APIs that run on Windows, Linux and the cloud.\n\nA minimal API in one file:\n\n```csharp\nvar builder = WebApplication.CreateBuilder(args);\nvar app = builder.Build();\n\nvar products = new List<string> { \"Laptop bag\", \"Mouse\", \"Charger\" };\n\napp.MapGet(\"/\", () => \"Karibu to our shop API\");\napp.MapGet(\"/products\", () => products);\napp.MapPost(\"/products\", (string name) => { products.Add(name); return Results.Created($\"/products\", name); });\n\napp.Run();\n```\n\nCreate one with `dotnet new web -o ShopApi`, then `dotnet run`.\n\n## The .NET world\n\n| Area | Technology |\n|---|---|\n| Web apps | ASP.NET Core MVC, Razor Pages, Blazor |\n| Databases | Entity Framework Core with SQL Server, MySQL or PostgreSQL |\n| Desktop | WPF, WinForms, .NET MAUI |\n| Mobile | .NET MAUI |\n| Games | Unity |\n| Cloud | Microsoft Azure |\n\nFree learning: **learn.microsoft.com/dotnet** (official tutorials and free certifications prep) and Unity Learn (**learn.unity.com**) for games.\n\n```quiz\nQ: Which framework builds websites and APIs in C#? (two words)\nA: ASP.NET Core | asp.net\nQ: Which library talks to databases in .NET? (two words, then Core)\nA: Entity Framework Core | Entity Framework | EF Core\nQ: Which command creates a new empty web project? (dotnet new …)\nA: dotnet new web\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    }
+   ]
+  },
+  {
+   "slug": "dart-flutter",
+   "title": "Dart & Flutter (mobile apps)",
+   "lang": "none",
+   "summary": "Build Android and iPhone apps from one codebase with Google's Flutter framework and the Dart language.",
+   "lessons": [
+    {
+     "slug": "dart-basics",
+     "title": "Dart basics",
+     "body": "# Dart basics\n\n**Flutter** is Google's toolkit for building apps for Android, iPhone, web and desktop from **one codebase**. Apps are written in **Dart**, a friendly language that looks like a mix of JavaScript and Java.\n\n```dart\nvoid main() {\n  String name = 'Mwangi';\n  int age = 23;\n  double balance = 1200.50;\n  bool active = true;\n  var town = 'Nyeri';          // type inferred\n  final joined = 2024;         // can't be changed after set\n\n  print('$name from $town is $age');\n  print('Balance: KSh ${balance.toStringAsFixed(2)}');\n}\n```\n\n## Null safety\n\nDart won't let a variable be `null` unless you allow it with `?`:\n\n```dart\nString? email;           // may be null\nprint(email ?? 'No email');   // ?? gives a default\n```\n\n## Lists, maps and functions\n\n```dart\nvar prices = [120, 450, 80];\nprices.add(300);\nvar total = prices.reduce((a, b) => a + b);\n\nvar stock = {'sugar': 40, 'unga': 25};\nstock['sugar'] = stock['sugar']! - 5;\n\nint vat(int amount) => (amount * 0.16).round();\nprint(vat(1000));   // 160\n```\n\n> The code boxes here are for reading and copying. Run them free online at **dartpad.dev** (it runs Flutter apps too), or install the tools on your computer.\n\n```quiz\nQ: Which language are Flutter apps written in?\nA: Dart\nQ: Which symbol after a type allows a variable to be null?\nA: ? | question mark\nQ: Which operator gives a default value when something is null?\nA: ?? | double question mark\nQ: Which keyword makes a variable that can only be set once?\nA: final | const\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "flutter-widgets",
+     "title": "Flutter widgets and layouts",
+     "body": "# Flutter widgets and layouts\n\nIn Flutter, **everything is a widget**: text, buttons, padding, rows, whole screens.\n\n```dart\nimport 'package:flutter/material.dart';\n\nvoid main() => runApp(const ShopApp());\n\nclass ShopApp extends StatelessWidget {\n  const ShopApp({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(\n      title: 'Duka',\n      theme: ThemeData(colorSchemeSeed: Colors.amber),\n      home: Scaffold(\n        appBar: AppBar(title: const Text('Duka Online')),\n        body: ListView(\n          padding: const EdgeInsets.all(16),\n          children: const [\n            ListTile(leading: Icon(Icons.shopping_bag), title: Text('Unga 2kg'), trailing: Text('KSh 180')),\n            ListTile(leading: Icon(Icons.local_drink), title: Text('Milk 500ml'), trailing: Text('KSh 60')),\n          ],\n        ),\n      ),\n    );\n  }\n}\n```\n\n## Common layout widgets\n\n| Widget | Does |\n|---|---|\n| `Column` / `Row` | Stack children vertically / horizontally |\n| `Padding`, `SizedBox` | Space around / between things |\n| `Container` | Box with colour, border, size |\n| `ListView` | Scrolling list |\n| `Expanded` | Take the remaining space |\n| `Stack` | Place widgets on top of each other |\n\n## Stateful widgets\n\nWhen something changes (a counter, a form), use a `StatefulWidget` and call `setState()`:\n\n```dart\nclass Counter extends StatefulWidget {\n  const Counter({super.key});\n  @override\n  State<Counter> createState() => _CounterState();\n}\n\nclass _CounterState extends State<Counter> {\n  int items = 0;\n  @override\n  Widget build(BuildContext context) => ElevatedButton(\n        onPressed: () => setState(() => items++),\n        child: Text('Items in cart: $items'),\n      );\n}\n```\n\n```quiz\nQ: In Flutter, everything on screen is a…\nA: widget | a widget\nQ: Which widget stacks children vertically?\nA: Column\nQ: Which method tells Flutter to redraw after data changes?\nA: setState | setState()\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "publish-app",
+     "title": "Building and publishing your app",
+     "body": "# Building and publishing your app\n\n## Set up\n\n1. Install **Flutter** from docs.flutter.dev (it includes Dart).\n2. Install **Android Studio** (for the Android SDK and emulator) or use a real phone with USB debugging on.\n3. Run `flutter doctor` to check everything.\n\n```\nflutter create duka\ncd duka\nflutter run            # runs on your connected phone or emulator\n```\n\nHot reload (press `r`) updates the app in about a second without losing its state.\n\n## Useful packages (pub.dev)\n\n| Need | Package |\n|---|---|\n| Call an API | `http` or `dio` |\n| Save small data on the phone | `shared_preferences` |\n| Local database | `sqflite` or `drift` |\n| Login, database, push notifications | `firebase_core`, `firebase_auth`, `cloud_firestore` |\n| State management | `provider` or `riverpod` |\n\nM-Pesa payments are usually done through **your own server**: the app asks your server to send an STK push, so your Daraja keys never sit inside the app.\n\n## Publishing\n\n- **Google Play**: a one-time USD 25 developer registration fee. Build with `flutter build appbundle` and upload the `.aab` file in Play Console.\n- **Apple App Store**: USD 99 per year and a Mac to build.\n\n```quiz\nQ: Which command checks that your Flutter setup is working?\nA: flutter doctor\nQ: Which Flutter feature updates the running app in about a second? (two words)\nA: hot reload\nQ: Which file type do you upload to Google Play? (3 letters, .___)\nA: aab | .aab\nQ: Should Daraja (M-Pesa) secret keys be put inside the app? (yes or no)\nA: no\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    }
+   ]
+  },
+  {
+   "slug": "go",
+   "title": "Go (Golang)",
+   "lang": "none",
+   "summary": "A simple, fast language from Google for web servers, APIs, cloud tools and DevOps (Docker and Kubernetes are written in Go).",
+   "lessons": [
+    {
+     "slug": "introduction",
+     "title": "Go introduction",
+     "body": "# Go introduction\n\n**Go** (Golang) was made at Google for simple, fast, reliable software. Docker, Kubernetes and many cloud and fintech back ends are written in Go.\n\n```go\npackage main\n\nimport \"fmt\"\n\nfunc main() {\n    name := \"Achieng\"          // := declares and infers the type\n    var age int = 25\n    balance := 1200.50\n\n    fmt.Println(\"Habari,\", name)\n    fmt.Printf(\"%s is %d and has KSh %.2f\\n\", name, age, balance)\n}\n```\n\nRun with `go run main.go`, or build a single program file with `go build`.\n\n## Only one loop: for\n\n```go\nfor i := 1; i <= 3; i++ {\n    fmt.Println(i)\n}\n\ntowns := []string{\"Nairobi\", \"Kisumu\", \"Mombasa\"}\nfor index, town := range towns {\n    fmt.Println(index, town)\n}\n```\n\n## Functions can return several values\n\nGo handles errors by returning them, not with exceptions:\n\n```go\nfunc divide(a, b float64) (float64, error) {\n    if b == 0 {\n        return 0, fmt.Errorf(\"cannot divide by zero\")\n    }\n    return a / b, nil\n}\n\nresult, err := divide(10, 0)\nif err != nil {\n    fmt.Println(\"Error:\", err)\n}\n```\n\n> The code boxes here are for reading and copying. Run them free online at **go.dev/play**, or install the tools on your computer.\n\n```quiz\nQ: Which operator declares a variable and infers its type in Go?\nA: := | colon equals\nQ: How many kinds of loop keyword does Go have?\nA: one | 1 | for\nQ: What does a Go function return when there's no error?\nA: nil\nQ: Name one famous tool written in Go.\nA: Docker | Kubernetes\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "structs-web",
+     "title": "Structs and a web server",
+     "body": "# Structs and a web server\n\n## Structs and methods\n\n```go\ntype Order struct {\n    ID     int\n    Item   string\n    Amount float64\n    Paid   bool\n}\n\nfunc (o Order) Summary() string {\n    status := \"unpaid\"\n    if o.Paid {\n        status = \"paid\"\n    }\n    return fmt.Sprintf(\"#%d %s KSh %.0f (%s)\", o.ID, o.Item, o.Amount, status)\n}\n```\n\n## A JSON API with only the standard library\n\n```go\npackage main\n\nimport (\n    \"encoding/json\"\n    \"net/http\"\n)\n\ntype Product struct {\n    Name  string  `json:\"name\"`\n    Price float64 `json:\"price\"`\n}\n\nfunc main() {\n    http.HandleFunc(\"/products\", func(w http.ResponseWriter, r *http.Request) {\n        products := []Product{{\"Charger\", 800}, {\"Earphones\", 650}}\n        w.Header().Set(\"Content-Type\", \"application/json\")\n        json.NewEncoder(w).Encode(products)\n    })\n    http.ListenAndServe(\":8080\", nil)\n}\n```\n\nOpen `http://localhost:8080/products` to see the JSON.\n\n## Goroutines: doing things at the same time\n\n```go\ngo sendSMS(\"0712345678\")     // runs in the background\n```\n\nGoroutines and **channels** make it easy to handle thousands of requests at once, which is why Go is popular for payment and messaging systems.\n\n```quiz\nQ: Which package in the standard library builds web servers? (net/…)\nA: net/http | http\nQ: Which keyword starts a function running in the background?\nA: go\nQ: What are goroutines used to communicate through?\nA: channels | channel\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    }
+   ]
+  },
+  {
+   "slug": "digital-literacy",
+   "title": "Digital literacy & online safety",
+   "lang": "none",
+   "summary": "Use phones, the internet and email with confidence: strong passwords, avoiding M-Pesa and online scams, privacy and checking fake news.",
+   "lessons": [
+    {
+     "slug": "internet-basics",
+     "title": "Using the internet well",
+     "body": "# Using the internet well\n\n## Browsers and search engines\n\n- A **browser** opens websites: Chrome, Firefox, Edge, Safari, Opera Mini (saves data).\n- A **search engine** finds websites: Google, Bing, DuckDuckGo.\n- A **URL** is a web address: `https://marzleytechsolutions.co.ke/learn/`\n\n## Search like a pro\n\n| Trick | Example | Finds |\n|---|---|---|\n| Quotes for an exact phrase | `\"KCSE results 2025\"` | Only pages with that exact phrase |\n| Minus to exclude | `laptops nairobi -used` | Laptops, not used ones |\n| site: to search one website | `site:kra.go.ke nil returns` | Only KRA pages |\n| filetype: for documents | `business plan template filetype:pdf` | PDF files |\n| Ask a clear question | `how to transfer airtime safaricom` | Step-by-step answers |\n\n## Save mobile data\n\n- Turn off auto-play for videos on Facebook, Instagram and WhatsApp.\n- In WhatsApp: **Settings → Storage and data → Media auto-download** → only on Wi-Fi.\n- Download Google Maps areas and YouTube videos on Wi-Fi to use offline.\n- Use **Data Saver** in Android settings and \"Lite\" apps.\n- Check your data balance: Safaricom `*544#` to buy bundles; also the My Safaricom / MySafaricom app.\n\n## Bookmarks, tabs and downloads\n\n- **Ctrl+D** bookmarks a page. **Ctrl+T** opens a new tab. **Ctrl+Shift+T** reopens a closed tab.\n- Downloads go to the **Downloads** folder by default.\n\n```quiz\nQ: What do you put around words to search for an exact phrase?\nA: quotes | quotation marks | \"\"\nQ: Which search operator limits results to one website? (write it with the colon)\nA: site:\nQ: Which keyboard shortcut reopens a tab you just closed?\nA: Ctrl+Shift+T | ctrl shift t\nQ: Which search operator finds a specific file type? (write it with the colon)\nA: filetype:\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "passwords-2fa",
+     "title": "Passwords and two-step verification",
+     "body": "# Passwords and two-step verification\n\nMost accounts are hacked because of **weak or reused passwords**, not clever hacking.\n\n## A strong password\n\n- At least **12 characters**. Longer is stronger.\n- A **passphrase** is easy to remember and hard to guess: `Mango-Bus-Kisumu-Rain-42!`\n- Never use your name, phone number, ID number, birthday or `123456`.\n- **Different password for every important account.** If one site leaks, the others stay safe.\n\n## Use a password manager\n\nA password manager remembers all your passwords and creates strong ones. Free options: **Google Password Manager** (built into Chrome and Android), **Bitwarden**, and **Apple Passwords** on iPhone.\n\n## Turn on two-step verification (2FA)\n\nEven if someone steals your password, they also need a code from your phone.\n\n- **Gmail**: myaccount.google.com → Security → 2-Step Verification\n- **WhatsApp**: Settings → Account → **Two-step verification** → set a 6-digit PIN. This stops people hijacking your WhatsApp with a stolen SMS code.\n- **Facebook / Instagram**: Accounts Centre → Password and security → Two-factor authentication\n\nAuthenticator apps (Google Authenticator, Microsoft Authenticator) are safer than SMS codes.\n\n## Never share\n\n- Your **M-Pesa PIN**, bank PIN or one-time codes (OTPs) with **anyone**, including people who say they're from Safaricom or your bank.\n- The 6-digit WhatsApp registration code. Nobody legitimate needs it.\n\n```quiz\nQ: What is the minimum recommended password length in characters?\nA: 12 | twelve\nQ: What does 2FA stand for?\nA: two-factor authentication | two factor authentication\nQ: Should you use the same password on several sites? (yes or no)\nA: no\nQ: Where in WhatsApp do you set a 6-digit PIN? (three words)\nA: two-step verification | two step verification\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "scams",
+     "title": "Spotting M-Pesa and online scams",
+     "body": "# Spotting M-Pesa and online scams\n\nScammers rely on **urgency, fear and greed**. Learn the common tricks so you and your family don't lose money.\n\n## Common scams in Kenya\n\n| Scam | How it works | Warning sign |\n|---|---|---|\n| \"Wrong transaction\" | A fake SMS says money was sent to you by mistake, then a call asks you to send it back | Check your **real** M-Pesa balance. Real M-Pesa messages come from \"MPESA\" and your balance changes |\n| Fake Safaricom / bank calls | \"Your line will be blocked, give us the code we've sent you\" | Safaricom's customer care is **100** or **200**; they never ask for your PIN |\n| Fake jobs | \"Pay KSh 2,000 for a medical / uniform to secure the job\" | Real employers don't charge you to get hired |\n| Fake online shops | Cheap phones on Facebook/TikTok; pay first, nothing arrives | Too cheap, no physical address, pressure to pay now |\n| Phishing links | \"Your account is suspended, log in here\" | Misspelt web address, urgent threat |\n| Investment / crypto schemes | \"Double your money in 7 days\" | Guaranteed high returns = scam |\n| Sim swap | Someone gets a new SIM with your number to receive your codes | Your phone suddenly loses network |\n\n## Protect yourself\n\n1. **Stop and verify.** Hang up and call the official number yourself.\n2. **Never share PINs or OTP codes.**\n3. **Check links** before tapping: look at the real address, not the display text.\n4. Use **Hakikisha** / check the till or paybill name before paying: the M-Pesa confirmation screen shows the registered name.\n5. Forward scam SMS messages to **333** (Safaricom's free fraud reporting line).\n6. Report cybercrime to the **DCI** or the National KE-CIRT/CC (Communications Authority).\n\n```quiz\nQ: Which Safaricom short code do you forward scam SMS messages to?\nA: 333\nQ: Does Safaricom ever need your M-Pesa PIN? (yes or no)\nA: no\nQ: A fake message with a link asking you to log in is called…\nA: phishing\nQ: If your phone suddenly loses network and you get no calls, what scam might be happening? (two words)\nA: sim swap | sim-swap\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "privacy-fake-news",
+     "title": "Privacy, digital footprint and fake news",
+     "body": "# Privacy, digital footprint and fake news\n\n## Your digital footprint\n\nEverything you post, like and share leaves a trail. Employers, universities and scammers can see it.\n\n- Think before posting: would you be happy for your future boss to see it?\n- Check privacy settings: who can see your posts, phone number and friends list.\n- Turn off **location** on photos and in apps that don't need it.\n- Be careful with quizzes and apps asking to \"log in with Facebook\".\n\n## Kenya's Data Protection Act (2019)\n\nOrganisations that collect your personal data (name, ID number, phone, location) must tell you why, keep it safe and let you see or delete it. Complaints go to the **Office of the Data Protection Commissioner (ODPC)**.\n\n## Checking fake news\n\nBefore you share, use **SIFT**:\n\n1. **S**top: are you reacting emotionally? That's what fake news wants.\n2. **I**nvestigate the source: is it a known news site or an anonymous page?\n3. **F**ind better coverage: do trusted outlets report the same thing?\n4. **T**race to the original: where did the photo, video or quote first appear?\n\nTools: **Google Reverse Image Search / Google Lens** shows where a photo appeared before. Fact-checkers such as **PesaCheck** and **Africa Check** investigate viral claims.\n\n## Healthy digital habits\n\n- Screen time settings (Android: Digital Wellbeing; iPhone: Screen Time).\n- Block and report people who harass you. Cyberbullying and online harassment are offences under Kenya's Computer Misuse and Cybercrimes Act (2018).\n\n```quiz\nQ: In what year was Kenya's Data Protection Act passed?\nA: 2019\nQ: What does the S in SIFT stand for?\nA: Stop\nQ: Which Google tool helps you find where a photo appeared before? (two words)\nA: Google Lens | reverse image search | Google reverse image search\nQ: Name one African fact-checking organisation mentioned.\nA: PesaCheck | Africa Check\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    }
+   ]
+  },
+  {
+   "slug": "ms-word",
+   "title": "Microsoft Word & Google Docs",
+   "lang": "none",
+   "summary": "Create professional documents: formatting, styles, tables, CVs, letters, table of contents and mail merge.",
+   "lessons": [
+    {
+     "slug": "formatting",
+     "title": "Formatting documents like a pro",
+     "body": "# Formatting documents like a pro\n\nWhether you use **Microsoft Word** or free **Google Docs** (docs.google.com), the same skills apply.\n\n## Essential shortcuts (Windows; use Cmd on Mac)\n\n| Shortcut | Action |\n|---|---|\n| Ctrl+B / Ctrl+I / Ctrl+U | Bold / Italic / Underline |\n| Ctrl+C / Ctrl+X / Ctrl+V | Copy / Cut / Paste |\n| Ctrl+Z / Ctrl+Y | Undo / Redo |\n| Ctrl+S | Save |\n| Ctrl+F / Ctrl+H | Find / Find and replace |\n| Ctrl+E / Ctrl+L / Ctrl+R / Ctrl+J | Centre / Left / Right / Justify |\n| Ctrl+Enter | Page break (start a new page) |\n| Ctrl+P | Print |\n\n## Font and paragraph settings\n\n- Professional fonts: **Calibri**, **Arial**, **Times New Roman** or **Cambria**, size **11–12** for body text.\n- **Line spacing** 1.15 or 1.5 for easy reading.\n- Use **Space After** paragraphs (e.g. 6 pt) instead of pressing Enter twice.\n- **Margins**: Layout → Margins → Normal (2.54 cm / 1 inch).\n- Use **tabs and indents** (the ruler), not lots of spaces, to line up text.\n\n## Show hidden formatting\n\nClick the **¶** (Show/Hide) button to see spaces, tabs and paragraph marks. It helps you find why a layout looks wrong.\n\n## Paste without messy formatting\n\n**Ctrl+Shift+V** (Google Docs, and Word 365) pastes plain text so copied text matches your document.\n\n```quiz\nQ: Which shortcut opens Find and Replace in Word?\nA: Ctrl+H | ctrl h\nQ: Which shortcut starts a new page?\nA: Ctrl+Enter | ctrl enter\nQ: Which button shows spaces, tabs and paragraph marks? (the symbol's name or ¶)\nA: ¶ | show/hide | pilcrow | show hide\nQ: What font size is normal for body text? (give 11 or 12)\nA: 11 | 12\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "styles-toc",
+     "title": "Styles, headings and a table of contents",
+     "body": "# Styles, headings and a table of contents\n\n**Styles** are saved formats (font, size, colour, spacing). They're the secret to long documents like reports, projects and proposals.\n\n## Why use heading styles\n\n- Change every heading at once by editing the style.\n- The **Navigation Pane** (View → Navigation Pane) lets you jump between sections.\n- Word can build a **table of contents** automatically.\n\n## How to\n\n1. Select a chapter title and click **Heading 1** in the Home tab.\n2. Sub-sections get **Heading 2**, then **Heading 3**.\n3. Put the cursor where the contents page goes → **References → Table of Contents** → choose a style.\n4. After editing, right-click the table → **Update Field → Update entire table**.\n\nIn Google Docs: **Insert → Table of contents**.\n\n## Page numbers, headers and footers\n\n- **Insert → Page Number** → Bottom of Page.\n- To start numbering after the cover page: put a **Section Break (Next Page)** after the cover (Layout → Breaks), then untick **Link to Previous** in the next section's footer.\n- Headers/footers are great for the document title or your school/company name.\n\n## Captions and references\n\n- Right-click a picture or table → **Insert Caption** (\"Figure 1\", \"Table 1\").\n- **References → Insert Citation** and **Bibliography** create reference lists in APA or Harvard style for academic work.\n\n```quiz\nQ: Which tab contains the Table of Contents command?\nA: References\nQ: Which style should chapter titles use? (two words)\nA: Heading 1\nQ: What do you insert to start page numbering on a later page? (two words)\nA: section break | a section break\nQ: How do you add \"Figure 1\" under a picture? (two words)\nA: Insert Caption | caption\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "cv-letters",
+     "title": "Writing a CV and formal letters",
+     "body": "# Writing a CV and formal letters\n\n## A strong CV (1–2 pages)\n\n1. **Contact details**: name, phone, professional email (not `sweetgirl99@...`), town, LinkedIn.\n2. **Profile**: 2–3 lines on who you are and what you offer.\n3. **Skills**: specific ones (Excel pivot tables, graphic design with Canva, customer service).\n4. **Experience**: most recent first. Use action verbs and results: \"Increased shop sales by 20% by starting a WhatsApp catalogue\".\n5. **Education and certifications**: KCSE, college, online certificates.\n6. **Referees**: 2–3 people, or \"Available on request\".\n\nTips: use a clean template, one font, clear headings, no photo unless asked, save and send as **PDF** named `Firstname-Lastname-CV.pdf`.\n\n## Formal (business) letter layout\n\n```\nYour name\nP.O. Box 123-00100, Nairobi\n0712 345 678 · you@email.com\n\n28 September 2026\n\nThe Human Resources Manager\nABC Company Ltd\nP.O. Box 456-00200, Nairobi\n\nDear Sir/Madam,\n\nRE: APPLICATION FOR THE POSITION OF ICT ASSISTANT\n\nOpening: say why you're writing and where you saw the job.\nBody: two short paragraphs on your skills and experience that match the job.\nClosing: say you're available for an interview and thank them.\n\nYours faithfully,\n(signature)\nYour name\n```\n\n- \"Dear Sir/Madam\" → **Yours faithfully**. \"Dear Ms Wanjiku\" → **Yours sincerely**.\n- Keep it to one page.\n\n## Templates\n\nWord: **File → New** and search \"CV\" or \"letter\". Google Docs: **Template gallery**. Canva also has good CV templates.\n\n```quiz\nQ: Which ending goes with \"Dear Sir/Madam\"? (two words)\nA: Yours faithfully\nQ: Which ending goes with \"Dear Ms Wanjiku\"? (two words)\nA: Yours sincerely\nQ: In what file format should you usually send a CV?\nA: PDF\nQ: In the experience section, list jobs from most recent or oldest first?\nA: most recent | most recent first | recent\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "tables-mail-merge",
+     "title": "Tables and mail merge",
+     "body": "# Tables and mail merge\n\n## Tables\n\n- **Insert → Table**, choose rows and columns.\n- **Table Design** tab: styles, shading, borders. **Layout** tab: merge cells, add rows, align text.\n- Repeat the header row on every page: select it → Layout → **Repeat Header Rows**.\n- Word tables can even do sums: Layout → **Formula** → `=SUM(ABOVE)`.\n\n## Mail merge: 100 personalised letters in minutes\n\nUse it for invitations, fee reminders, certificates or labels.\n\n1. Make an Excel list with columns such as `Name`, `Class`, `Balance`.\n2. In Word: **Mailings → Start Mail Merge → Letters**.\n3. **Select Recipients → Use an Existing List** → choose the Excel file.\n4. Write the letter and click **Insert Merge Field** where the name, class and balance go:\n\n```\nDear «Name»,\nThis is a reminder that «Name» in «Class» has a fee balance of KSh «Balance».\n```\n\n5. **Preview Results** to check.\n6. **Finish & Merge → Edit Individual Documents** (to save/print) or **Send Email Messages**.\n\nGoogle Docs users can use add-ons like \"Mail Merge\" or Gmail's built-in mail merge in Google Workspace business plans.\n\n```quiz\nQ: Which Word tab contains Mail Merge?\nA: Mailings\nQ: What formula adds up the numbers above in a Word table?\nA: =SUM(ABOVE) | SUM(ABOVE)\nQ: Which kind of file usually holds the list of names for a mail merge?\nA: Excel | spreadsheet | excel spreadsheet\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    }
+   ]
+  },
+  {
+   "slug": "excel",
+   "title": "Excel & Google Sheets",
+   "lang": "none",
+   "summary": "From basic formulas to VLOOKUP, IF, pivot tables and charts. The number one computer skill employers ask for in Kenya.",
+   "lessons": [
+    {
+     "slug": "basics",
+     "title": "Spreadsheet basics",
+     "body": "# Spreadsheet basics\n\nA spreadsheet is a grid of **cells**. Columns have letters (A, B, C…), rows have numbers (1, 2, 3…). Cell **B3** is column B, row 3.\n\n**Excel** is part of Microsoft 365; **Google Sheets** (sheets.google.com) is free and works on phones. Almost everything here works in both.\n\n## Entering data\n\n- Put **one type of thing per column** (Date, Item, Quantity, Price) with a heading in row 1.\n- No empty rows in the middle of a table.\n- Numbers should be numbers: type `1500`, not `KSh 1,500`. Use **Format → Number/Currency** to show \"KSh\".\n\n## Formulas start with =\n\n| Formula | Result |\n|---|---|\n| `=5+3` | 8 |\n| `=B2*C2` | Quantity × price |\n| `=B2-B3` | Difference |\n| `=B2/4` | Divide |\n| `=B2^2` | Power |\n\n## Fill handle\n\nType a formula in D2, then drag the small square at the cell's bottom-right corner down: Excel copies it to every row, adjusting `B2` to `B3`, `B4`… This is called a **relative reference**.\n\n## Absolute references with $\n\nTo always point to the same cell (for example a VAT rate in F1), use `$`:\n\n```\n=D2*$F$1\n```\n\nPress **F4** after typing a cell reference to add the dollar signs.\n\n## Handy shortcuts\n\n| Shortcut | Action |\n|---|---|\n| Ctrl+Arrow | Jump to the end of the data |\n| Ctrl+Shift+L | Turn filters on/off |\n| Ctrl+T | Format as a table |\n| Alt+= | AutoSum |\n| Ctrl+; | Insert today's date |\n\n```quiz\nQ: What character must every formula start with?\nA: = | equals | equal sign\nQ: In cell reference C7, what is the column?\nA: C\nQ: Which key adds $ signs to make a reference absolute?\nA: F4\nQ: Which shortcut inserts AutoSum? (write like Alt+=)\nA: Alt+= | alt =\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "functions",
+     "title": "Essential functions: SUM, AVERAGE, IF and COUNTIF",
+     "body": "# Essential functions\n\nImagine marks in cells **B2:B31** (30 students).\n\n| Function | Example | Does |\n|---|---|---|\n| SUM | `=SUM(B2:B31)` | Adds the range |\n| AVERAGE | `=AVERAGE(B2:B31)` | Mean |\n| MAX / MIN | `=MAX(B2:B31)` | Highest / lowest |\n| COUNT | `=COUNT(B2:B31)` | How many cells contain numbers |\n| COUNTA | `=COUNTA(A2:A31)` | How many cells are not empty |\n| ROUND | `=ROUND(C2, 0)` | Round to whole numbers |\n| RANK | `=RANK(B2, $B$2:$B$31)` | Position (1 = top) |\n\n## IF: make decisions\n\n```\n=IF(B2>=50, \"Pass\", \"Fail\")\n```\n\nNested IF for grades (or use IFS in newer Excel):\n\n```\n=IF(B2>=70,\"A\",IF(B2>=60,\"B\",IF(B2>=50,\"C\",IF(B2>=40,\"D\",\"E\"))))\n=IFS(B2>=70,\"A\", B2>=60,\"B\", B2>=50,\"C\", B2>=40,\"D\", TRUE,\"E\")\n```\n\n## Counting and adding with conditions\n\n```\n=COUNTIF(C2:C31, \"Pass\")               how many passed\n=COUNTIF(B2:B31, \">=70\")               how many scored 70+\n=SUMIF(A2:A100, \"Sugar\", D2:D100)      total sales of sugar\n=AVERAGEIF(E2:E31, \"Form 3\", B2:B31)   average for Form 3\n=COUNTIFS(C2:C31,\"Pass\", E2:E31,\"Form 3\")   several conditions\n```\n\n## Text functions\n\n```\n=A2 & \" \" & B2                  join first and last name\n=UPPER(A2)  =PROPER(A2)         CAPITALS / Title Case\n=LEFT(A2, 4)  =RIGHT(A2, 3)     first 4 / last 3 characters\n=TRIM(A2)                       remove extra spaces\n=TEXT(D2, \"#,##0\")              1500 → 1,500\n```\n\n```quiz\nQ: Which function counts cells that meet one condition?\nA: COUNTIF\nQ: Write the formula to show \"Pass\" if B2 is 50 or more, otherwise \"Fail\".\nA: =IF(B2>=50,\"Pass\",\"Fail\") | =IF(B2>=50, \"Pass\", \"Fail\") | IF(B2>=50,\"Pass\",\"Fail\")\nQ: Which function adds numbers that meet a condition?\nA: SUMIF\nQ: Which function removes extra spaces from text?\nA: TRIM\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "lookups",
+     "title": "VLOOKUP, XLOOKUP and IFERROR",
+     "body": "# VLOOKUP, XLOOKUP and IFERROR\n\nLookups find information in a table, like the price of a product from its code.\n\nPrice list in **A2:C50**: `Code | Product | Price`\n\n## VLOOKUP\n\n```\n=VLOOKUP(F2, $A$2:$C$50, 3, FALSE)\n```\n\n- `F2`: what to look for (the product code)\n- `$A$2:$C$50`: the table (the code must be in the **first** column)\n- `3`: return the 3rd column (Price)\n- `FALSE`: exact match only (almost always what you want)\n\n## XLOOKUP (Excel 365/2021 and Google Sheets)\n\nEasier and more powerful: it can look left, and it has a built-in \"not found\" message.\n\n```\n=XLOOKUP(F2, A2:A50, C2:C50, \"Not found\")\n```\n\n## INDEX + MATCH (works in every version)\n\n```\n=INDEX(C2:C50, MATCH(F2, A2:A50, 0))\n```\n\n## IFERROR: hide ugly errors\n\n```\n=IFERROR(VLOOKUP(F2, $A$2:$C$50, 3, FALSE), \"Check code\")\n```\n\n## Common errors\n\n| Error | Meaning |\n|---|---|\n| `#N/A` | Lookup value not found |\n| `#DIV/0!` | Divided by zero (or an empty cell) |\n| `#VALUE!` | Wrong type, e.g. text in a sum |\n| `#REF!` | A referenced cell was deleted |\n| `#NAME?` | Misspelt function name |\n| `#####` | Column too narrow: make it wider |\n\n```quiz\nQ: In VLOOKUP, what should the last argument be for an exact match?\nA: FALSE | 0\nQ: Which newer function can look to the left and has a built-in 'not found' value?\nA: XLOOKUP\nQ: Which error means a lookup value was not found?\nA: #N/A | N/A\nQ: What does ##### in a cell usually mean? (the column is too …)\nA: narrow | too narrow\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "charts-pivots",
+     "title": "Charts, sorting, filters and pivot tables",
+     "body": "# Charts, sorting, filters and pivot tables\n\n## Sort and filter\n\n- Click inside your table → **Data → Sort** (e.g. by Sales, largest to smallest).\n- **Ctrl+Shift+L** adds filter arrows: show only \"Nairobi\" or only \"Paid\".\n- **Conditional formatting** (Home tab) colours cells automatically: red for balances over 10,000, green for marks above 70, data bars and colour scales.\n\n## Choosing the right chart\n\n| You want to show | Use |\n|---|---|\n| Comparing categories (sales per branch) | Column or bar chart |\n| Change over time (monthly sales) | Line chart |\n| Parts of a whole (few categories) | Pie or doughnut, max 5–6 slices |\n| Relationship between two numbers | Scatter chart |\n\nSelect the data → **Insert → Recommended Charts**. Always add a clear title and axis labels.\n\n## Pivot tables: summaries in seconds\n\nSales list: `Date | Branch | Product | Amount` (thousands of rows).\n\n1. Click in the data → **Insert → PivotTable** → New worksheet.\n2. Drag **Branch** to Rows, **Product** to Columns, **Amount** to Values.\n3. Instantly see total sales per branch per product. Drag **Date** to Filters or group it by month (right-click → Group).\n\nPivot tables are the skill that most impresses employers in interviews for accounts, admin and data roles.\n\n## Protect and share\n\n- **Review → Protect Sheet** to stop formulas being changed.\n- **Data Validation** creates drop-down lists and stops wrong entries (e.g. only numbers 0–100).\n- Google Sheets: **Share** with view/comment/edit rights; changes save automatically and show **Version history**.\n\n```quiz\nQ: Which chart type is best for showing change over time?\nA: line | line chart\nQ: Which tool summarises thousands of rows by dragging fields? (two words)\nA: pivot table | pivottable\nQ: Which feature creates drop-down lists and blocks wrong entries? (two words)\nA: data validation\nQ: Which feature colours cells automatically based on their value? (two words)\nA: conditional formatting\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "practical-projects",
+     "title": "Practical Excel projects",
+     "body": "# Practical Excel projects\n\nPractise with these real-life sheets. Build each one from scratch.\n\n## 1. Shop sales book\n\nColumns: `Date | Item | Qty | Unit price | Total | Payment (Cash/M-Pesa)`\n\n- Total: `=C2*D2`\n- Today's sales: `=SUMIF(A:A, TODAY(), E:E)`\n- M-Pesa vs cash: `=SUMIF(F:F, \"M-Pesa\", E:E)`\n- A pivot table of sales per item per month.\n\n## 2. Student mark sheet\n\nColumns: `Name | English | Kiswahili | Maths | Science | Total | Mean | Grade | Position`\n\n- Total: `=SUM(B2:E2)`, Mean: `=AVERAGE(B2:E2)`\n- Grade with IFS, Position with `=RANK(F2, $F$2:$F$41)`\n- Conditional formatting: red below 40, green 70+.\n- A column chart of mean per subject.\n\n## 3. Personal budget\n\n| Category | Budget | Actual | Difference |\n|---|---|---|---|\n| Rent | 8,000 | 8,000 | `=B2-C2` |\n| Food | 6,000 | 7,200 | |\n| Transport | 3,000 | 2,650 | |\n\n- Total income, total spending, savings rate `=Savings/Income` formatted as %.\n- A doughnut chart of spending by category.\n\n## 4. Chama / SACCO contributions\n\nMembers down the side, months across the top, `=SUM` per member and per month, `=COUNTIF(B2:M2, 0)` to find missed months, and conditional formatting to highlight anyone behind.\n\n## Learn more\n\n- Microsoft's free Excel training: **support.microsoft.com/excel** (Excel video training)\n- Google Sheets help centre and the free **Google Applied Digital Skills** lessons\n- Certification: **Microsoft Office Specialist (MOS) Excel** is widely recognised by Kenyan employers.\n\n```quiz\nQ: Which function gives today's date?\nA: TODAY | TODAY()\nQ: Which function ranks a student's total among the class?\nA: RANK\nQ: Which certification is widely recognised for Excel skills? (three words, or MOS)\nA: Microsoft Office Specialist | MOS\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    }
+   ]
+  },
+  {
+   "slug": "powerpoint",
+   "title": "PowerPoint & presentations",
+   "lang": "none",
+   "summary": "Design clear slides and present with confidence: layouts, visuals, animations and speaking tips.",
+   "lessons": [
+    {
+     "slug": "slide-design",
+     "title": "Designing clear slides",
+     "body": "# Designing clear slides\n\nTools: **Microsoft PowerPoint**, free **Google Slides**, or **Canva** presentations.\n\n## The golden rules\n\n- **One idea per slide.**\n- **Few words**: a short title and at most 3–5 bullet points of a few words each. You speak the details.\n- **Big text**: titles 36–44 pt, body at least 24 pt, so the back row can read it.\n- **High contrast**: dark text on a light background or light on dark.\n- **Pictures over paragraphs**: a photo, icon or chart explains faster.\n- **Consistent design**: use one theme (Design tab) and the same fonts and colours throughout.\n\n## Useful features\n\n- **Design → Designer / Design Ideas** suggests professional layouts from your content.\n- **Slide Master** (View → Slide Master): change the logo, fonts or colours on every slide at once.\n- **Insert → SmartArt** turns bullet points into diagrams (process, cycle, hierarchy).\n- **Insert → Chart** or paste from Excel.\n- **Alignment tools**: select shapes → Shape Format → Align (left, centre, distribute).\n\n## A simple structure\n\n1. Title slide\n2. The problem or question\n3. 3 main points (one or two slides each)\n4. Evidence: numbers, chart, photo, story\n5. Summary and the action you want\n6. Questions / thank you with contact details\n\n```quiz\nQ: How many ideas should each slide have?\nA: one | 1\nQ: What is the smallest recommended body text size in points? (a number)\nA: 24 | 24 pt\nQ: Which view changes the design of every slide at once? (two words)\nA: Slide Master\nQ: Which feature turns bullet points into diagrams?\nA: SmartArt | smart art\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "animations-delivery",
+     "title": "Animations, video and presenting well",
+     "body": "# Animations, video and presenting well\n\n## Use animations carefully\n\n- **Transitions** (between slides): pick one subtle one like Fade or Morph, and use it everywhere.\n- **Animations** (on objects): use them to reveal points one at a time or show a process step by step. Avoid spinning, bouncing text.\n- **Morph** transition (PowerPoint 365/2019+): duplicate a slide, move or resize objects, and PowerPoint animates the change smoothly.\n\n## Media\n\n- **Insert → Video** or **Audio**. Embedded files make the presentation large; compress with File → Info → Compress Media.\n- Record your talk: **Record** tab (or Slide Show → Record) creates a video you can share.\n- **Export → Create a Video** turns slides into an MP4 for WhatsApp or YouTube.\n\n## Presenter tools\n\n- **F5** starts from the beginning; **Shift+F5** from the current slide.\n- **Presenter View** shows your notes and the next slide on your laptop while the audience sees only the slide.\n- Press **B** to black out the screen and bring attention back to you.\n- Type a slide number and press Enter to jump to it.\n\n## Speaking tips\n\n- Practise out loud at least 3 times and time yourself.\n- Look at people, not the screen. Don't read your slides.\n- Start with a hook: a question, a surprising number or a short story.\n- Arrive early and test the projector, clicker and sound. Carry your file as **PDF and PPTX** on a flash drive and in Google Drive.\n\n```quiz\nQ: Which key starts a slideshow from the beginning?\nA: F5\nQ: Which view shows your notes privately while presenting? (two words)\nA: Presenter View\nQ: Which key blacks out the screen during a slideshow?\nA: B\nQ: Which PowerPoint transition animates the changes between two similar slides?\nA: Morph\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    }
+   ]
+  },
+  {
+   "slug": "google-workspace",
+   "title": "Email, Google Drive & cloud tools",
+   "lang": "none",
+   "summary": "Work like a modern office: professional email, Google Drive, sharing files, online meetings and collaboration.",
+   "lessons": [
+    {
+     "slug": "email",
+     "title": "Professional email",
+     "body": "# Professional email\n\n## Set up\n\n- Use a professional address: `firstname.lastname@gmail.com` or your company domain (`info@yourbusiness.co.ke`), not `hotboy254@...`.\n- Add a **signature**: name, role, phone, website (Gmail: Settings → See all settings → Signature).\n- Add a profile photo so people recognise you.\n\n## Writing a good email\n\n1. **Subject line** says what it's about: \"Quotation for school website – Gatanga TVC\".\n2. **Greeting**: \"Dear Mr Kamau,\" or \"Hello Achieng,\".\n3. **Short body**: the purpose in the first line, details in short paragraphs, what you need and by when.\n4. **Closing**: \"Kind regards,\" + your signature.\n5. **Attachments**: PDF where possible; mention them in the email; check they're attached before sending.\n\n## To, CC and BCC\n\n| Field | Use |\n|---|---|\n| To | The people who must act |\n| CC (carbon copy) | People who should be informed |\n| BCC (blind carbon copy) | Hidden recipients: use for mass emails so addresses stay private |\n\n## Gmail power tools\n\n- **Labels** and **filters** to sort mail automatically.\n- **Schedule send** (arrow beside Send).\n- **Undo send** (set to 30 seconds in settings).\n- **Search**: `from:kra.go.ke has:attachment`, `is:unread older_than:7d`.\n- Don't click links or open attachments you weren't expecting.\n\n```quiz\nQ: Which field hides recipients from each other?\nA: BCC | blind carbon copy\nQ: Which field is for people who only need to be informed?\nA: CC | carbon copy\nQ: Which Gmail search finds emails with attachments? (write has:…)\nA: has:attachment\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "drive-collaboration",
+     "title": "Google Drive and working together",
+     "body": "# Google Drive and working together\n\n**Google Drive** gives every Google account **15 GB** free storage shared across Gmail, Drive and Photos.\n\n## Organise\n\n- Create folders by client, subject or year.\n- Upload by dragging files in, or with the Drive app on your phone (it can **scan** documents to PDF with the camera).\n- **Starred** and **Recent** find files quickly; search even finds words inside PDFs and images.\n\n## Share safely\n\nClick **Share**:\n\n| Permission | Can |\n|---|---|\n| Viewer | Only see |\n| Commenter | See and comment |\n| Editor | Change everything |\n\n- \"Anyone with the link\" is convenient but public to whoever gets the link. Use \"Restricted\" for private files (fee lists, IDs, contracts).\n- Remove access when a project ends.\n\n## Collaborate in real time\n\n- Several people edit the same Docs, Sheets or Slides file at once and see each other's cursors.\n- **Comments** (Ctrl+Alt+M) and **@mentions** assign tasks.\n- **Suggesting mode** (like Track Changes in Word) lets others approve edits.\n- **File → Version history** restores older versions.\n\n## Other cloud tools\n\n- **Google Forms**: surveys, registrations, quizzes that mark themselves; answers go to a Sheet.\n- **Google Meet / Zoom / Microsoft Teams**: video meetings. Mute when not speaking, use a headset, share your screen.\n- **OneDrive** and **Dropbox**: alternatives to Drive.\n- **Backups**: keep important files in the cloud **and** on an external drive (the 3-2-1 rule: 3 copies, 2 types of storage, 1 off-site).\n\n```quiz\nQ: How many GB of free storage does a Google account get?\nA: 15 | 15 GB\nQ: Which sharing permission can only see a file?\nA: Viewer\nQ: Which Google tool creates surveys whose answers go to a spreadsheet?\nA: Google Forms | Forms\nQ: In the 3-2-1 backup rule, how many copies should you keep?\nA: 3 | three\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    }
+   ]
+  },
+  {
+   "slug": "ai-tools",
+   "title": "AI tools for work & study",
+   "lang": "none",
+   "summary": "Use AI assistants like ChatGPT, Claude and Gemini wisely: writing prompts, real uses for business and study, and knowing their limits.",
+   "lessons": [
+    {
+     "slug": "what-is-ai",
+     "title": "What is AI?",
+     "body": "# What is AI?\n\n**Artificial intelligence (AI)** is software that does tasks that normally need human thinking: understanding language, recognising images, making predictions.\n\n## Types you'll meet\n\n| Type | Examples |\n|---|---|\n| **Generative AI / chatbots** (large language models) | ChatGPT, Claude, Gemini, Microsoft Copilot, Meta AI in WhatsApp |\n| Image generation | Canva Magic Media, Adobe Firefly, Midjourney |\n| Speech | Voice typing, transcription, translation |\n| Recommendation | YouTube, TikTok and Netflix suggestions |\n| Prediction | Fraud detection at banks and M-Pesa, credit scoring for mobile loans |\n\n## How chatbots work (simply)\n\nA **large language model (LLM)** learned patterns from huge amounts of text. When you ask something, it predicts a helpful answer one piece at a time. This makes it great at writing, summarising, explaining and brainstorming, but it can also sound confident while being **wrong** (this is called a **hallucination**).\n\n## Good uses\n\n- Drafting emails, posts, CVs and proposals (then editing them yourself).\n- Explaining a hard topic simply, or in Kiswahili.\n- Brainstorming business names, content ideas, questions to revise.\n- Summarising long documents.\n- Helping to write and debug code.\n\n## Be careful with\n\n- Facts, numbers, laws, medical and legal advice: **check** with trusted sources.\n- Private data: don't paste ID numbers, passwords, client files or patient records into public tools.\n- School and exam rules: many institutions have AI policies; using AI to cheat can lead to penalties.\n\n```quiz\nQ: What does LLM stand for?\nA: large language model\nQ: When an AI confidently gives a false answer, it's called a…\nA: hallucination\nQ: Should you paste passwords or ID numbers into a public AI chatbot? (yes or no)\nA: no\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "prompting",
+     "title": "Writing good prompts",
+     "body": "# Writing good prompts\n\nThe quality of the answer depends on the quality of your request (the **prompt**).\n\n## The recipe: Role, Task, Context, Format\n\nWeak: *\"Write a Facebook post about my salon.\"*\n\nStrong:\n\n```\nYou are a social media manager for a small beauty salon in Thika.\nWrite 3 short Facebook posts announcing a 20% discount on braids\nthis Friday and Saturday only. Our customers are working women aged 20-40.\nUse a friendly tone with a little Sheng, include 2 emojis each,\nand end with \"Book on WhatsApp 0712 345 678\".\n```\n\n## Tips\n\n- **Give context**: who it's for, your goal, your location, your budget.\n- **Say the format**: bullet list, table, 100 words, email, step-by-step.\n- **Give examples** of the style you like.\n- **Iterate**: \"Make it shorter\", \"more formal\", \"explain step 3 in detail\", \"give me 5 more options\".\n- **Ask it to ask you**: \"Before you answer, ask me any questions you need.\"\n- **Ask for reasoning or sources** for facts, then verify them.\n\n## Prompt ideas to try\n\n- \"Explain subnetting to a Form 4 student using an estate and house numbers as an example.\"\n- \"Create a 4-week study timetable for KCSE Chemistry revision, 1 hour a day.\"\n- \"Here is my CV [paste]. Improve it for an ICT support job; keep it to one page.\"\n- \"Turn these meeting notes into a short summary with action points and owners.\"\n- \"Write Python code that reads a CSV of sales and prints total sales per month. Explain each line.\"\n\n```quiz\nQ: What is the text you give an AI tool called?\nA: prompt | a prompt\nQ: In the recipe Role, Task, Context, ___ — what is the fourth part?\nA: Format\nQ: After the first answer, should you refine your request with follow-ups? (yes or no)\nA: yes\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "ai-for-business",
+     "title": "AI for business, study and earning",
+     "body": "# AI for business, study and earning\n\n## Business\n\n- **Marketing**: captions, product descriptions, ad copy, blog outlines, content calendars.\n- **Customer service**: draft replies to common questions; FAQ pages; WhatsApp message templates.\n- **Admin**: meeting summaries, letters, quotations, simple contracts to review with a lawyer.\n- **Data**: explain Excel formulas, analyse a sales table, suggest charts.\n- **Design**: Canva Magic Studio for images and layouts; remove backgrounds; resize designs.\n\n## Study\n\n- Ask for explanations at your level, then ask it to **quiz you**.\n- Turn notes into flashcards and practice questions.\n- Get feedback on your essay's structure (but write it yourself).\n- Learn to code: paste an error message and ask what it means.\n\n## Earning with AI skills\n\n- Offer social media management for small businesses, using AI to work faster.\n- Writing and editing services (always edit AI drafts to be accurate and natural).\n- Data entry and cleaning with AI-assisted Excel.\n- Building simple websites and chatbots.\n\n## Responsible use checklist\n\n- ✔ Check facts, numbers and names.\n- ✔ Keep private and client data out of public tools.\n- ✔ Be honest when work is AI-assisted if your school, client or employer requires it.\n- ✔ Add your own knowledge, local context and voice. That's what clients pay for.\n\n```quiz\nQ: Which Canva feature set includes AI image and design tools? (two words)\nA: Magic Studio\nQ: Should you check facts and numbers in AI answers? (yes or no)\nA: yes\nQ: What is the main thing clients pay for that AI can't replace? (your own knowledge, context and …)\nA: voice | your voice | judgement | experience\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    }
+   ]
+  },
+  {
+   "slug": "e-services-kenya",
+   "title": "Online government services (Kenya)",
+   "lang": "none",
+   "summary": "Use eCitizen, KRA iTax, NTSA, KUCCPS, HELB and other online services safely and confidently: a valuable skill for cyber café work too.",
+   "lessons": [
+    {
+     "slug": "ecitizen",
+     "title": "eCitizen: government services online",
+     "body": "# eCitizen: government services online\n\n**eCitizen** (ecitizen.go.ke) is the Government of Kenya's main portal for applying and paying for services online.\n\n## Services you can reach through eCitizen\n\n- **Passports** and other immigration services\n- **Certificate of Good Conduct** (DCI police clearance)\n- **Business name and company registration** (Business Registration Service)\n- **Driving licence** and vehicle services (via NTSA)\n- Birth and death certificates (Civil Registration)\n- Many county and ministry services\n\n## Creating an account\n\n1. Go to **ecitizen.go.ke** and choose **Create account** as a citizen.\n2. Enter your **ID number**, names as on your ID, phone number and email.\n3. Verify with the code sent to your phone/email.\n4. Set a strong password and keep your login private.\n\n## Paying\n\nPayments are made on the portal by **M-Pesa (Paybill)**, card or bank. Always use the **bill reference/account number** shown on your invoice, and keep the payment confirmation.\n\n## Stay safe\n\n- Only use addresses that end in **.go.ke**. Fake sites copy the look of government pages.\n- Government never asks for your password by phone.\n- Cyber café operators: log out after helping each customer, never save customers' passwords in the browser, and clear downloads.\n\n> Fees, requirements and steps change. Always read the current instructions on the official page for the service.\n\n```quiz\nQ: What is the web address of eCitizen? (ecitizen.___)\nA: ecitizen.go.ke | go.ke\nQ: Which government agency issues the Certificate of Good Conduct? (3 letters)\nA: DCI\nQ: What should official Kenyan government web addresses end with?\nA: .go.ke | go.ke\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "kra-itax",
+     "title": "KRA PIN and iTax returns",
+     "body": "# KRA PIN and iTax returns\n\nThe **Kenya Revenue Authority (KRA)** handles taxes through **iTax** (itax.kra.go.ke).\n\n## KRA PIN\n\n- A **PIN** is your tax number (e.g. A012345678Z). You need it for jobs, bank accounts, business registration, land and vehicle transactions and many tenders.\n- Getting a PIN is **free** on iTax: choose **New PIN Registration**, select Individual, and fill in your ID details.\n\n## Filing annual returns\n\nEvery person with a PIN must file an **income tax return** for the previous year by **30 June**, even if they had no income.\n\n- **Nil return**: if you had no income in the year. On iTax: Returns → **File Nil Return** → Income Tax Resident Individual.\n- **Employed**: your employer gives you a **P9 form** showing your salary and PAYE. You enter those figures in the return (iTax now pre-fills much of it).\n- Late filing attracts a **penalty**, so file early.\n\n## Other useful iTax services\n\n- **Tax Compliance Certificate (TCC)**: often required for jobs and tenders; you can apply on iTax if your returns and payments are up to date.\n- Checking and paying taxes via M-Pesa Paybill **572572** (KRA) using the payment registration number (PRN).\n- Businesses: turnover tax, VAT and PAYE returns.\n\n## Tips\n\n- Keep your iTax password and email up to date; use **Reset password** if you forget it.\n- Save every acknowledgement receipt PDF.\n- Only use itax.kra.go.ke or the official **KRA M-Service** app.\n\n> Tax rules and rates change with each Finance Act. Check the KRA website for current details.\n\n```quiz\nQ: What is the deadline for filing annual income tax returns in Kenya?\nA: 30 June | 30th June | June 30\nQ: What return do you file if you had no income? (two words)\nA: nil return | a nil return\nQ: What form does an employer give showing your yearly salary and PAYE? (2 characters)\nA: P9 | P9 form\nQ: What does TCC stand for?\nA: Tax Compliance Certificate\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "education-services",
+     "title": "KUCCPS, HELB, KNEC and other services",
+     "body": "# KUCCPS, HELB, KNEC and other services\n\n## Education\n\n| Service | Website | Used for |\n|---|---|---|\n| **KUCCPS** | kuccps.ac.ke / students' portal | Choosing university and college courses after KCSE, revising choices |\n| **HELB** | helb.co.ke | Student loans and bursaries (apply through the HELB portal or app), checking and repaying loans |\n| **KNEC** | knec.go.ke | Exams; results via the official SMS service and portal |\n| **TVETA / KNQA** | tveta.go.ke | Checking accredited TVET institutions and qualifications |\n\n## Health, pensions and work\n\n- **SHA** (Social Health Authority, which replaced NHIF in 2024): registration and contributions; check sha.go.ke.\n- **NSSF** (nssf.or.ke): pension contributions and statements.\n- **Public Service Commission** (psckjobs.go.ke) and county government websites for government job adverts.\n\n## Transport\n\n- **NTSA** services (driving licences, vehicle searches and transfers) are accessed through eCitizen.\n\n## Cyber café skills checklist\n\nIf you work in or run a cyber café, these services are a major source of income. Be able to:\n\n- Create accounts, reset passwords and verify phones/emails.\n- Scan and upload documents at the right size and format (usually PDF or JPG).\n- Take passport-style photos that meet the portal's rules.\n- Explain fees clearly and give customers every receipt.\n- Protect privacy: log out, delete downloaded ID scans, never keep customers' passwords.\n\n```quiz\nQ: Which body places KCSE students in university courses? (6 letters)\nA: KUCCPS\nQ: Which body gives student loans in Kenya? (4 letters)\nA: HELB\nQ: Which authority replaced NHIF in 2024? (3 letters)\nA: SHA\nQ: After helping a customer at a cyber café, should you log out of their account? (yes or no)\nA: yes\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    }
+   ]
+  },
+  {
+   "slug": "computer-maintenance",
+   "title": "Computer hardware & maintenance",
+   "lang": "none",
+   "summary": "Know the parts inside a computer, buy the right laptop, install Windows, fix common problems and keep computers fast and virus-free.",
+   "lessons": [
+    {
+     "slug": "hardware-parts",
+     "title": "Parts of a computer",
+     "body": "# Parts of a computer\n\n## Inside the box\n\n| Part | What it does | What to look for |\n|---|---|---|\n| **CPU** (processor) | The brain: does the calculations | Intel Core i3/i5/i7, AMD Ryzen 3/5/7; newer generation = faster |\n| **RAM** (memory) | Short-term workspace; cleared when off | 8 GB minimum today; 16 GB for design and programming |\n| **Storage** | Keeps files and programs | **SSD** (fast) rather than HDD (slow); 256–512 GB+ |\n| **Motherboard** | Connects everything | |\n| **GPU** (graphics) | Draws the screen; needed for gaming, video editing, AI | Integrated for office work; dedicated (NVIDIA/AMD) for heavy graphics |\n| **PSU** (power supply) | Converts mains power for the parts | |\n| **Battery** (laptops) | | Check its health before buying second-hand |\n\n## Input, output and ports\n\n- **Input**: keyboard, mouse, microphone, scanner, webcam.\n- **Output**: monitor, printer, speakers, projector.\n- **Ports**: USB-A, **USB-C**, HDMI (screens/projectors), Ethernet (RJ45 network), audio jack, SD card.\n\n## Units\n\n- 1 KB = 1,024 bytes · 1 MB = 1,024 KB · 1 GB = 1,024 MB · 1 TB = 1,024 GB\n- A photo ≈ 3 MB, a song ≈ 4 MB, an hour of HD video ≈ 1–3 GB.\n\n## Buying a laptop (office, school, programming)\n\n- CPU: Core i5 (8th gen or newer) or Ryzen 5\n- RAM: 8–16 GB\n- Storage: SSD 256 GB+\n- Refurbished ex-UK laptops (HP EliteBook, Dell Latitude, Lenovo ThinkPad) are good value in Kenya. Test the battery, keyboard, screen, ports and charger before paying, and ask for a warranty.\n\n```quiz\nQ: Which part is called the brain of the computer? (3 letters)\nA: CPU | processor\nQ: Which type of storage is much faster: SSD or HDD?\nA: SSD\nQ: What is the minimum RAM recommended today, in GB?\nA: 8 | 8 GB\nQ: Which port connects a laptop to a projector or TV? (4 letters)\nA: HDMI\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "windows-setup",
+     "title": "Installing Windows and software",
+     "body": "# Installing Windows and software\n\n## Make a bootable USB\n\n1. You need an **8 GB+ flash disk** (it will be erased).\n2. On a working PC, download Microsoft's **Media Creation Tool** (for Windows 10/11) from microsoft.com/software-download.\n3. Choose \"Create installation media (USB flash drive)\".\n\n## Install\n\n1. Plug in the USB and restart. Press the **boot menu key** (often F12, F9, F10 or Esc, depending on the brand) and choose the USB.\n2. Follow the setup: language → Install now → enter or skip the product key → choose **Custom install**.\n3. Select the drive, delete/format old partitions if doing a clean install (**back up files first!**), and install.\n4. After setup: run **Windows Update**, install drivers (from the manufacturer's website: HP, Dell, Lenovo), and activate Windows.\n\n## Essential software after installing\n\n- A browser (Chrome/Firefox/Edge), **Microsoft 365** or free **LibreOffice**\n- A PDF reader, **VLC** media player, **7-Zip**\n- Antivirus: the built-in **Microsoft Defender** is good; keep it on and updated.\n\n## BIOS / UEFI\n\nThe firmware settings screen (press F2 or Del at start-up) controls the boot order, Secure Boot and the date/time.\n\n## Always use genuine software\n\nCracked software is a top source of viruses and ransomware. Use genuine licences or free alternatives (LibreOffice, GIMP, Inkscape).\n\n```quiz\nQ: What is the minimum USB flash size needed for a Windows installer, in GB?\nA: 8 | 8 GB\nQ: Which built-in Windows antivirus is recommended? (two words)\nA: Microsoft Defender | Windows Defender | Defender\nQ: Where do you get the correct drivers for a laptop? (the ___ website)\nA: manufacturer | manufacturer's | the manufacturer\nQ: Name one free alternative to Microsoft Office.\nA: LibreOffice | Google Docs | WPS Office | OpenOffice\n```\n",
+     "exercise": "",
+     "starter": "",
+     "expected": "",
+     "must_contain": ""
+    },
+    {
+     "slug": "troubleshooting",
+     "title": "Fixing common computer problems",
+     "body": "# Fixing common computer problems\n\n## A simple troubleshooting method\n\n1. **Identify** the problem: what exactly happens, and when did it start?\n2. **Try the simple things first**: restart, check cables and power, check it's switched on.\n3. **Change one thing at a time** and test.\n4. **Search** the exact error message.\n5. **Document** what fixed it.\n\n## Common problems and fixes\n\n| Problem | Try |\n|---|---|\n| Computer very slow | Restart; check **Task Manager** (Ctrl+Shift+Esc) for heavy programs; remove start-up apps; free disk space; upgrade to SSD and more RAM |\n| Won't turn on | Check charger and socket; hold power for 30 s; try without the battery (older laptops) |\n| No internet | Restart router and PC; forget and reconnect Wi-Fi; run the network troubleshooter; `ipconfig /release` then `ipconfig /renew` |\n| Printer not printing | Check paper, ink and cable/Wi-Fi; clear the print queue; restart the **Print Spooler** service; reinstall the driver |\n| Frozen program | Ctrl+Shift+Esc → select it → End task |\n| Blue screen (BSOD) | Note the stop code; update drivers and Windows; check RAM and disk |\n| Overheating / fan noise | Clean vents with compressed air; use on a hard surface; replace thermal paste |\n| Deleted file | Check the Recycle Bin; OneDrive/Google Drive trash; File History backups |\n\n## Keep computers healthy\n\n- Install updates, keep antivirus on, and don't install cracked software.\n- **Disk Cleanup** / Storage Sense to delete temporary files.\n- Use a **surge protector** or UPS: Kenyan power fluctuations damage PCs.\n- **Back up** regularly to the cloud and an external drive.\n- Scan flash disks before opening files (right-click → Scan with Microsoft Defender), and turn on \"show file extensions\" to spot fake `.exe` files named like documents.\n\n## Earning from these skills\n\nComputer repair, installation, networking small offices and cyber café support are in steady demand. CompTIA **A+** is the international entry certification for IT support.\n\n```quiz\nQ: Which shortcut opens Task Manager directly?\nA: Ctrl+Shift+Esc | ctrl shift esc\nQ: Which Windows service do you restart when print jobs get stuck? (two words)\nA: Print Spooler | spooler\nQ: Which device protects a computer from power surges and short outages? (3 letters)\nA: UPS\nQ: Which certification is the entry-level standard for IT support? (CompTIA …)\nA: A+ | CompTIA A+\n```\n",
      "exercise": "",
      "starter": "",
      "expected": "",

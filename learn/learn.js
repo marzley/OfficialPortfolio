@@ -4,6 +4,27 @@
   "use strict";
   var API = "../portal/learn.php?action=";
   var LANGS = { html: "HTML", css: "CSS", javascript: "JavaScript", python: "Python", sql: "SQL" };
+  var TRACK_ICONS = { html: "fa-brands fa-html5", css: "fa-brands fa-css3-alt", javascript: "fa-brands fa-js", python: "fa-brands fa-python", sql: "fa-solid fa-database",
+    networking: "fa-solid fa-network-wired", "make-money-online": "fa-solid fa-sack-dollar", git: "fa-brands fa-git-alt", linux: "fa-brands fa-linux", php: "fa-brands fa-php",
+    cybersecurity: "fa-solid fa-shield-halved", hosting: "fa-solid fa-server", marketing: "fa-solid fa-bullhorn", "it-basics": "fa-solid fa-computer",
+    "web-design": "fa-solid fa-pen-ruler", "graphic-design": "fa-solid fa-palette", algorithms: "fa-solid fa-diagram-project", typescript: "fa-solid fa-code",
+    java: "fa-brands fa-java", "c-programming": "fa-solid fa-microchip", cpp: "fa-solid fa-gears", csharp: "fa-brands fa-microsoft", "dart-flutter": "fa-solid fa-mobile-screen",
+    go: "fa-brands fa-golang", "digital-literacy": "fa-solid fa-user-shield", "ms-word": "fa-solid fa-file-word", excel: "fa-solid fa-table",
+    powerpoint: "fa-solid fa-person-chalkboard", "google-workspace": "fa-solid fa-cloud", "ai-tools": "fa-solid fa-robot", "e-services-kenya": "fa-solid fa-landmark",
+    "computer-maintenance": "fa-solid fa-screwdriver-wrench" };
+  var TRACK_GROUPS = [
+    { title: "Web & coding", icon: "fa-solid fa-code", slugs: ["html", "css", "javascript", "python", "sql", "php", "typescript", "algorithms", "git"] },
+    { title: "More programming languages", icon: "fa-solid fa-laptop-code", slugs: ["java", "c-programming", "cpp", "csharp", "dart-flutter", "go"] },
+    { title: "Design", icon: "fa-solid fa-palette", slugs: ["web-design", "graphic-design"] },
+    { title: "ICT & digital skills", icon: "fa-solid fa-computer", slugs: ["it-basics", "digital-literacy", "ms-word", "excel", "powerpoint", "google-workspace", "ai-tools", "e-services-kenya", "computer-maintenance"] },
+    { title: "Networking, systems & security", icon: "fa-solid fa-network-wired", slugs: ["networking", "linux", "cybersecurity", "hosting"] },
+    { title: "Business & earning online", icon: "fa-solid fa-sack-dollar", slugs: ["make-money-online", "marketing"] }
+  ];
+  // Where learners can run languages this site can't run in the browser
+  var PLAYGROUNDS = { typescript: ["TypeScript Playground", "https://www.typescriptlang.org/play"], java: ["OnlineGDB (Java)", "https://www.onlinegdb.com/online_java_compiler"],
+    "c-programming": ["OnlineGDB (C)", "https://www.onlinegdb.com/online_c_compiler"], cpp: ["OnlineGDB (C++)", "https://www.onlinegdb.com/online_c++_compiler"],
+    csharp: [".NET Fiddle", "https://dotnetfiddle.net/"], "dart-flutter": ["DartPad", "https://dartpad.dev/"], go: ["Go Playground", "https://go.dev/play/"],
+    php: ["OnlineGDB (PHP)", "https://www.onlinegdb.com/online_php_interpreter"] };
   var MODES = { html: "htmlmixed", css: "htmlmixed", javascript: "javascript", python: "python", sql: "text/x-sql" };
   var STARTERS = {
     html: "<!DOCTYPE html>\n<html>\n<body>\n  <h1>Hello!</h1>\n  <p>Edit me and press Run.</p>\n</body>\n</html>",
@@ -487,24 +508,34 @@
     showSide(false);
     setTitle("");
     main.innerHTML = '<section class="hero-learn"><div><p class="eyebrow">Marzley Tech Learning Hub</p><h1>Learn tech skills free, right in your browser</h1>' +
-      '<p class="lead">14 subjects and 120+ lessons: coding with a live editor, networking and subnetting with calculators, Linux, Git, cybersecurity, and how to make money online. Practise with questions that check themselves. Works on your phone.</p>' +
+      '<p class="lead" id="hub-lead">30+ subjects and 190 lessons: coding in 13 languages with a live editor, web and graphic design, Excel, Word and everyday ICT skills, networking and subnetting, cybersecurity, AI tools and how to make money online. Practise with questions that check themselves. Works on your phone.</p>' +
       '<ul class="free-badges"><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Tutorials: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Notes: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Practice: free</li><li><i class="fa-solid fa-user" aria-hidden="true"></i> No account needed</li></ul>' +
       '<p class="hero-ctas"><a class="btn btn-solid" href="./?track=html">Start with HTML</a><a class="btn btn-line" href="./?page=practice">Open the code editor</a></p></div>' +
       '<div class="hero-code" aria-hidden="true"><pre><span class="c-k">print</span>(<span class="c-s">"Habari, Kenya!"</span>)\n<span class="c-t">&lt;h1&gt;</span>Hello<span class="c-t">&lt;/h1&gt;</span>\n<span class="c-k">SELECT</span> * <span class="c-k">FROM</span> Customers;</pre></div></section>' +
       '<section class="home-sec"><h2>Tutorials</h2><div class="track-grid" id="track-grid"><p class="muted">Loading…</p></div></section>' +
       '<section class="home-sec"><div class="sec-head"><h2>Latest videos</h2><a href="./?page=videos">All videos</a></div><div class="video-grid" id="home-videos"></div></section>' +
       '<section class="home-sec"><div class="sec-head"><h2>Free notes &amp; books</h2><a href="./?page=notes">All notes</a></div><div class="note-grid" id="home-notes"></div></section>';
-    var icons = { html: "fa-brands fa-html5", css: "fa-brands fa-css3-alt", javascript: "fa-brands fa-js", python: "fa-brands fa-python", sql: "fa-solid fa-database",
-      networking: "fa-solid fa-network-wired", "make-money-online": "fa-solid fa-sack-dollar", git: "fa-brands fa-git-alt", linux: "fa-brands fa-linux", php: "fa-brands fa-php",
-      cybersecurity: "fa-solid fa-shield-halved", hosting: "fa-solid fa-server", marketing: "fa-solid fa-bullhorn", "it-basics": "fa-solid fa-computer" };
     getCatalog().then(function (tracks) {
-      $("#track-grid").innerHTML = tracks.map(function (t) {
+      var lessons = tracks.reduce(function (n, t) { return n + t.lessons.length; }, 0);
+      if (tracks.length > 5) $("#hub-lead").firstChild.textContent = tracks.length + " subjects and " + lessons + " lessons: coding in 13 languages with a live editor, web and graphic design, Excel, Word and everyday ICT skills, networking and subnetting, cybersecurity, AI tools and how to make money online. Practise with questions that check themselves. Works on your phone.";
+      var groups = TRACK_GROUPS.map(function (g) { return { title: g.title, icon: g.icon, items: [] }; }), other = { title: "More subjects", icon: "fa-solid fa-book", items: [] };
+      tracks.forEach(function (t) {
+        var gi = -1;
+        TRACK_GROUPS.forEach(function (g, i) { if (g.slugs.indexOf(t.slug) >= 0) gi = i; });
+        (gi >= 0 ? groups[gi] : other).items.push(t);
+      });
+      groups.push(other);
+      var card = function (t) {
         var done = t.lessons.filter(function (l) { return isDone(l.id); }).length;
         var first = t.lessons[0];
-        return '<a class="track-card t-' + esc(t.lang) + " s-" + esc(t.slug) + '" href="./?track=' + esc(t.slug) + (first ? "&amp;lesson=" + esc(first.slug) : "") + '"><i class="' + (icons[t.slug] || icons[t.lang] || "fa-solid fa-book") + '" aria-hidden="true"></i>' +
+        return '<a class="track-card t-' + esc(t.lang) + " s-" + esc(t.slug) + '" href="./?track=' + esc(t.slug) + (first ? "&amp;lesson=" + esc(first.slug) : "") + '"><i class="' + (TRACK_ICONS[t.slug] || TRACK_ICONS[t.lang] || "fa-solid fa-book") + '" aria-hidden="true"></i>' +
           "<h3>" + esc(t.title) + "</h3><p>" + esc(t.summary) + '</p><span class="track-meta">' + t.lessons.length + " lessons" + (done ? " · " + done + " done" : "") + "</span>" +
           '<span class="bar" aria-hidden="true"><span style="width:' + (t.lessons.length ? Math.round(100 * done / t.lessons.length) : 0) + '%"></span></span></a>';
-      }).join("") || '<p class="muted">Tutorials are coming soon.</p>';
+      };
+      var shown = groups.filter(function (g) { return g.items.length; });
+      $("#track-grid").outerHTML = shown.length ? '<nav class="group-jump" aria-label="Subject groups">' + shown.map(function (g, i) { return '<a href="#grp-' + i + '"><i class="' + g.icon + '" aria-hidden="true"></i> ' + esc(g.title) + "</a>"; }).join("") + "</nav>" +
+        shown.map(function (g, i) { return '<div class="track-group" id="grp-' + i + '"><h3 class="group-title"><i class="' + g.icon + '" aria-hidden="true"></i> ' + esc(g.title) + ' <span class="muted">' + g.items.length + '</span></h3><div class="track-grid">' + g.items.map(card).join("") + "</div></div>"; }).join("")
+        : '<p class="muted">Tutorials are coming soon.</p>';
     }).catch(function (e) { $("#track-grid").innerHTML = '<p class="muted">' + esc(e.message) + "</p>"; });
     api("videos").then(function (j) { var v = (j.videos || []).slice(0, 3); $("#home-videos").innerHTML = v.length ? v.map(function (x) { return videoCard(x); }).join("") : '<p class="muted">Video lessons are coming soon.</p>'; })
       .catch(function () { $("#home-videos").innerHTML = '<p class="muted">Videos could not load.</p>'; });
@@ -517,6 +548,16 @@
       if (!tracks.length) { setNav("tutorials"); showSide(false); main.innerHTML = '<div class="empty"><p>Tutorials are coming soon.</p></div>'; return; }
       go("./?track=" + encodeURIComponent(tracks[0].slug), true);
     }).catch(function (e) { errorBox(e.message); });
+  }
+
+  /** "Keep learning" box under each lesson: free videos on YouTube, and an online editor for languages we can't run here. */
+  function moreBox(track, l) {
+    var q = encodeURIComponent((track.title.replace(/\s*\(.*\)\s*/, " ") + " " + l.title.replace(/^Project:\s*/, "") + " tutorial").replace(/\s+/g, " ").trim());
+    var pg = PLAYGROUNDS[track.slug];
+    return '<aside class="more-box" aria-label="Keep learning"><h2><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Keep learning</h2><ul>' +
+      '<li><a href="https://www.youtube.com/results?search_query=' + q + '" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-youtube" aria-hidden="true"></i> Watch free videos on “' + esc(l.title) + '”</a></li>' +
+      (pg ? '<li><a href="' + esc(pg[1]) + '" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-play" aria-hidden="true"></i> Run the code online: ' + esc(pg[0]) + "</a></li>" : "") +
+      '<li><a href="./?page=videos"><i class="fa-solid fa-film" aria-hidden="true"></i> Our step-by-step video lessons</a></li></ul></aside>';
   }
 
   function pageLesson(trackSlug, lessonSlug) {
@@ -537,7 +578,7 @@
           (prev ? '<a class="btn btn-line btn-sm" href="./?track=' + esc(track.slug) + "&amp;lesson=" + esc(prev.slug) + '"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> ' + esc(prev.title) + "</a>" : "<span></span>") +
           (next ? '<a class="btn btn-solid btn-sm" href="./?track=' + esc(track.slug) + "&amp;lesson=" + esc(next.slug) + '">' + esc(next.title) + ' <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>' : "<span></span>") + "</nav>";
         main.innerHTML = '<article class="lesson"><p class="crumbs"><a href="./">Learn</a> / <a href="./?track=' + esc(track.slug) + '">' + esc(track.title) + "</a></p>" + pager.replace('class="pager" aria-label="Lessons"', 'class="pager pager-top" aria-label="Previous and next lesson"') +
-          '<div class="lesson-body">' + md.html + "</div>" + (l.exercise ? '<section class="exercise" id="exercise" aria-labelledby="ex-title"><h2 id="ex-title"><i class="fa-solid fa-dumbbell" aria-hidden="true"></i> Exercise</h2><div class="ex-task">' + markdown(l.exercise).html + '</div><div id="ex-host"></div><p class="ex-result" id="ex-result" role="status" aria-live="polite"></p></section>' :
+          '<div class="lesson-body">' + md.html + "</div>" + moreBox(track, l) + (l.exercise ? '<section class="exercise" id="exercise" aria-labelledby="ex-title"><h2 id="ex-title"><i class="fa-solid fa-dumbbell" aria-hidden="true"></i> Exercise</h2><div class="ex-task">' + markdown(l.exercise).html + '</div><div id="ex-host"></div><p class="ex-result" id="ex-result" role="status" aria-live="polite"></p></section>' :
           '<p class="done-row"><button type="button" class="btn btn-line btn-sm" id="mark-done">' + (isDone(l.id) ? '<i class="fa-solid fa-check" aria-hidden="true"></i> Completed' : "Mark as completed") + "</button></p>") + pager + "</article>";
         md.blocks.forEach(function (b, n) { codeBlock(main.querySelector('[data-try="' + n + '"]'), { lang: b.lang, code: b.code }); });
         var quizDone = 0;
@@ -628,13 +669,34 @@
       (v.duration ? '<span class="dur">' + fmtDur(v.duration) + "</span>" : "") + '<span class="price ' + (v.unlocked ? "open" : "") + '">' + (v.unlocked ? '<i class="fa-solid fa-lock-open" aria-hidden="true"></i> Unlocked' : '<i class="fa-solid fa-lock" aria-hidden="true"></i> ' + ksh(v.price)) + "</span></span>" +
       "<" + hx + ">" + esc(v.title) + (v.published ? "" : ' <span class="tag">Draft</span>') + "</" + hx + '><p class="meta">' + v.views + " views · " + v.likes + " likes · " + v.comments + " comments</p></a>";
   }
+  var CHANNELS = [
+    ["freeCodeCamp.org", "Full free courses: web development, Python, JavaScript, SQL, data science", "https://www.youtube.com/@freecodecamp"],
+    ["CS50 (Harvard)", "The famous introduction to computer science and programming", "https://www.youtube.com/@cs50"],
+    ["Programming with Mosh", "Clear beginner courses: Python, JavaScript, SQL, React", "https://www.youtube.com/@programmingwithmosh"],
+    ["Traversy Media", "Web development crash courses and projects", "https://www.youtube.com/@TraversyMedia"],
+    ["Net Ninja", "Step-by-step playlists on JavaScript, React, Flutter and more", "https://www.youtube.com/@NetNinja"],
+    ["Kevin Powell", "CSS and web design explained properly", "https://www.youtube.com/@KevinPowell"],
+    ["Fireship", "Fast explainers on languages, frameworks and tools", "https://www.youtube.com/@Fireship"],
+    ["Flutter", "Official Flutter channel for mobile app development", "https://www.youtube.com/@flutterdev"],
+    ["Professor Messer", "Free CompTIA A+, Network+ and Security+ courses", "https://www.youtube.com/@professormesser"],
+    ["Jeremy's IT Lab", "A complete free Cisco CCNA course with labs", "https://www.youtube.com/@JeremysITLab"],
+    ["NetworkChuck", "Networking, Linux, cybersecurity and cloud, made fun", "https://www.youtube.com/@NetworkChuck"],
+    ["ExcelIsFun", "Thousands of Excel lessons from basics to advanced", "https://www.youtube.com/@excelisfun"],
+    ["Leila Gharani", "Practical Excel, Power BI and productivity tips", "https://www.youtube.com/@LeilaGharani"]
+  ];
+  function freeChannels() {
+    return '<section class="home-sec free-channels" aria-labelledby="fc-title"><h2 id="fc-title">Free video courses from around the web</h2>' +
+      '<p class="muted">Hand-picked YouTube channels with complete, free courses. Every lesson in our tutorials also has a “Watch free videos” link for that exact topic.</p><ul class="channel-list">' +
+      CHANNELS.map(function (c) { return '<li><a href="' + esc(c[2]) + '" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-youtube" aria-hidden="true"></i><span><strong>' + esc(c[0]) + "</strong>" + esc(c[1]) + "</span></a></li>"; }).join("") + "</ul></section>";
+  }
   function pageVideos() {
     setNav("videos");
     showSide(false);
     setTitle("Video lessons", "Step-by-step coding video lessons. Unlock each one with M-Pesa.");
     main.innerHTML = '<section class="list-page"><h1>Video lessons</h1><p class="lead">Step-by-step lessons you can pause and replay. Watching needs a free account: sign in, unlock a video once with M-Pesa and it’s yours to watch any time. Tutorials, notes and practice stay free without an account.</p><div class="video-grid" id="vid-grid"><p class="muted">Loading…</p></div></section>';
+    main.querySelector(".list-page").insertAdjacentHTML("beforeend", freeChannels());
     api("videos").then(function (j) {
-      $("#vid-grid").innerHTML = (j.videos || []).map(function (v) { return videoCard(v, "h2"); }).join("") || '<div class="empty"><i class="fa-solid fa-video" aria-hidden="true"></i><p>Video lessons are coming soon.</p></div>';
+      $("#vid-grid").innerHTML = (j.videos || []).map(function (v) { return videoCard(v, "h2"); }).join("") || '<div class="empty"><i class="fa-solid fa-video" aria-hidden="true"></i><p>Our own video lessons are coming soon. Meanwhile, try the free channels below.</p></div>';
     }).catch(function (e) { $("#vid-grid").innerHTML = '<p class="muted">' + esc(e.message) + "</p>"; });
   }
 
