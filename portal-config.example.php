@@ -12,6 +12,10 @@ return [
     // Your Google OAuth client ID (public, the same one the contact form uses)
     'google_client_id' => '532239575183-c335bvpq88npc06qnc9e05srqlr96f71.apps.googleusercontent.com',
 
+    // Anyone can create a client account with Google or an emailed code (you get an email for each one).
+    // Set to false to allow only people you've added under People.
+    'open_signup' => true,
+
     // Google accounts that can manage everything in the portal
     'admin_emails' => ['marzleytechsolutionltd@gmail.com'],
 

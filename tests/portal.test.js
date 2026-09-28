@@ -62,7 +62,7 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   const cid = one("SELECT id FROM clients WHERE email = 'client@example.com'").id;
 
   // ---------- database upgrade ----------
-  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "5");
+  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "6");
 
   // ---------- sequential invoice numbers ----------
   r = await admin("invoice_save", { client_id: cid, description: "Website build", amount: 10000, status: "unpaid" });
@@ -422,8 +422,25 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   // sign in with a one-time code
   clearMail();
   const anon = session();
-  r = await anon("code_request", { who: "nobody@example.com" });
-  ok("code request gives the same answer for unknown people", r.s === 200 && /If that matches/.test(r.j.message) && fs.readFileSync(WORK + "/mail.txt", "utf8") === "");
+  r = await anon("code_request", { who: "0799000999" });
+  ok("an unknown phone number gets the same answer and no message", r.s === 200 && /If that matches/.test(r.j.message) && fs.readFileSync(WORK + "/mail.txt", "utf8") === "");
+
+  // anyone can create an account with their email
+  const newbie = session();
+  r = await newbie("code_request", { who: "New.Person@example.com" });
+  const newCode = (fs.readFileSync(WORK + "/mail.txt", "utf8").match(/sign-in code is (\d{6})/) || [])[1];
+  ok("a new email gets a sign-up code", r.s === 200 && !!newCode && !one("SELECT id FROM clients WHERE email = 'new.person@example.com'"));
+  r = await newbie("code_verify", { who: "new.person@example.com", code: newCode === "000000" ? "111111" : "000000", name: "New Person" });
+  ok("wrong sign-up code refused, no account made", r.s === 401 && !one("SELECT id FROM clients WHERE email = 'new.person@example.com'"));
+  r = await newbie("code_verify", { who: "new.person@example.com", code: newCode, name: "Neema Wanjiru" });
+  ok("right code creates a client account and signs in", r.s === 200 && r.j.user.role === "client" && one("SELECT name FROM clients WHERE email = 'new.person@example.com'").name === "Neema Wanjiru");
+  r = await newbie("data");
+  ok("the new client sees an empty account of their own", r.s === 200 && r.j.projects.length === 0 && r.j.invoices.length === 0 && r.j.clients.length === 0);
+  ok("the owner is told about the new account", subjects().some((x) => /New portal account: Neema Wanjiru/.test(x)));
+  const gnew = session();
+  r = await gnew("dev_login", { email: "google.person@example.com" });
+  ok("signing in with a new Google account creates a client account", r.s === 200 && r.j.user.role === "client" && !!one("SELECT id FROM clients WHERE email = 'google.person@example.com'"));
+  clearMail();
   r = await anon("code_request", { who: "AMANI@example.com" });
   const mailed = fs.readFileSync(WORK + "/mail.txt", "utf8");
   const theCode = (mailed.match(/sign-in code is (\d{6})/) || [])[1];

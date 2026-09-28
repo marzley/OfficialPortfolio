@@ -17,7 +17,12 @@
   try { LANG = localStorage.getItem("marzley-portal-lang") === "sw" ? "sw" : "en"; } catch (e) {}
   var SW = {
     "Client portal": "Lango la wateja", "Sign out": "Toka", "Loading…": "Inapakia…", "Hello, ": "Habari, ",
-    "See your project’s progress, updates, files and invoices, and pay by M-Pesa. Sign in with the Google account you gave us.": "Ona maendeleo ya mradi wako, taarifa, faili na ankara, na ulipe kwa M-Pesa. Ingia kwa akaunti ya Google uliyotupa.",
+    "See your project’s progress, updates, files and invoices, and pay by M-Pesa. Sign in, or create your free account, with Google or your email.": "Ona maendeleo ya mradi wako, taarifa, faili na ankara, na ulipe kwa M-Pesa. Ingia, au fungua akaunti yako bure, kwa Google au barua pepe yako.",
+    "No Google account? Use your email instead": "Huna akaunti ya Google? Tumia barua pepe yako", "Your email (or the phone number you gave us)": "Barua pepe yako (au nambari ya simu uliyotupa)",
+    "Your name (new accounts only)": "Jina lako (kwa akaunti mpya tu)", "Need help?": "Unahitaji msaada?",
+    "Welcome! Your account is ready.": "Karibu! Akaunti yako iko tayari.",
+    "When we start a project for you, its progress, files and invoices will appear here. What would you like to do?": "Tukianza mradi wako, maendeleo yake, faili na ankara zitaonekana hapa. Ungependa kufanya nini?",
+    "Get a free quote": "Pata makadirio bure", "Learn to code (free)": "Jifunze kuandika programu (bure)", "Chat on WhatsApp": "Ongea nasi WhatsApp",
     "No access yet?": "Bado huna ruhusa?", "Message us on WhatsApp": "Tutumie ujumbe WhatsApp",
     "Your projects": "Miradi yako", "Invoices": "Ankara", "Your courses": "Kozi zako", "Support": "Msaada", "Projects": "Miradi", "Courses": "Kozi",
     "Domains & hosting": "Vikoa na upangishaji", "Planning": "Mipango", "Design": "Usanifu", "Building": "Ujenzi", "Review": "Ukaguzi", "Live": "Iko hewani", "On hold": "Imesimamishwa",
@@ -253,7 +258,15 @@
       h("a", { className: "btn btn-solid btn-sm", href: data.me.feedback.link, text: t("Rate us") })));
     var box = $("client-projects");
     box.textContent = "";
-    if (!data.projects.length) box.appendChild(h("p", { className: "portal-empty", text: t("Your project will appear here once it starts.") }));
+    var brandNew = !data.projects.length && !data.invoices.length && !(data.courses || []).length && !(data.tickets || []).length;
+    if (brandNew) box.appendChild(h("div", { className: "welcome-card" },
+      h("h3", { text: t("Welcome! Your account is ready.") }),
+      h("p", { text: t("When we start a project for you, its progress, files and invoices will appear here. What would you like to do?") }),
+      h("p", { className: "welcome-actions" },
+        h("a", { className: "btn btn-solid btn-sm", href: "../contact" }, h("i", { className: "fa-solid fa-file-signature", "aria-hidden": "true" }), " " + t("Get a free quote")),
+        h("a", { className: "btn btn-ghost btn-sm", href: "../learn/" }, h("i", { className: "fa-solid fa-laptop-code", "aria-hidden": "true" }), " " + t("Learn to code (free)")),
+        h("a", { className: "btn btn-ghost btn-sm", href: "https://wa.me/254745789590", target: "_blank", rel: "noopener noreferrer" }, h("i", { className: "fa-brands fa-whatsapp", "aria-hidden": "true" }), " " + t("Chat on WhatsApp")))));
+    else if (!data.projects.length) box.appendChild(h("p", { className: "portal-empty", text: t("Your project will appear here once it starts.") }));
     data.projects.forEach(function (p) { box.appendChild(projectCard(p, false)); });
     renderInvoices($("client-invoices"), data.invoices, false);
     renderClientCourses();
@@ -1974,17 +1987,18 @@
     codeForm.addEventListener("submit", function (e) {
       e.preventDefault();
       var who = $("code-who").value.trim(), msg = $("code-msg"), btn = $("code-btn");
-      if (!who) { msg.textContent = t("Your email or phone number (the one you gave us)"); return; }
+      if (!who) { msg.textContent = t("Your email (or the phone number you gave us)"); return; }
       btn.disabled = true;
       if ($("code-step2").hidden) {
         api("code_request", { method: "POST", body: { who: who } }).then(function (r) {
           msg.textContent = r.message;
           $("code-step2").hidden = false;
+          $("code-name-row").hidden = who.indexOf("@") < 0;
           btn.textContent = t("Sign in");
           $("code-code").focus();
         }).catch(function (x) { msg.textContent = x.message; }).then(function () { btn.disabled = false; });
       } else {
-        api("code_verify", { method: "POST", body: { who: who, code: $("code-code").value } })
+        api("code_verify", { method: "POST", body: { who: who, code: $("code-code").value, name: $("code-name").value.trim() } })
           .then(function (d) { csrf = d.csrf; me = d.user; load(); })
           .catch(function (x) { msg.textContent = x.message; btn.disabled = false; });
       }

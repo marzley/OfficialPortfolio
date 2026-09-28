@@ -726,22 +726,31 @@ switch ($action) {
     case 'code_request':
         $d = body();
         $who = strtolower(trim((string)($d['who'] ?? '')));
-        $generic = ['ok' => true, 'message' => 'If that matches a client account, we’ve sent a 6-digit code. It works for 10 minutes.'];
+        $isEmail = (bool)filter_var($who, FILTER_VALIDATE_EMAIL);
+        $open = !empty(config()['open_signup']);
+        $generic = ['ok' => true, 'message' => $isEmail && $open ? 'We’ve emailed you a 6-digit code (check spam too). It works for 10 minutes.'
+                                                                  : 'If that matches an account, we’ve sent a 6-digit code. It works for 10 minutes.'];
         if ($who === '' || !rate_ok('code_ip', 10, 3600) || !rate_ok('code_who:' . $who, 3, 900)) out($generic);
         $client = null;
-        if (filter_var($who, FILTER_VALIDATE_EMAIL)) $client = q('SELECT id, name, email, phone FROM clients WHERE email = ?', [$who])->fetch();
+        if ($isEmail) $client = q('SELECT id, name, email, phone FROM clients WHERE email = ?', [$who])->fetch();
         elseif ($msisdn = normalise_phone($who)) {
             foreach (q("SELECT id, name, email, phone FROM clients WHERE phone <> ''")->fetchAll() as $c) if (normalise_phone($c['phone']) === $msisdn) { $client = $c; break; }
         }
+        $code = str_pad((string)random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        $text = "Your Marzley Tech portal sign-in code is $code. It works for 10 minutes. Never share it with anyone, including us.";
         if ($client) {
-            $code = str_pad((string)random_int(0, 999999), 6, '0', STR_PAD_LEFT);
             q('UPDATE login_codes SET used_at = ? WHERE client_id = ? AND used_at IS NULL', [now(), $client['id']]);
-            q('INSERT INTO login_codes (client_id, code_hash, attempts, expires_at, created_at) VALUES (?, ?, 0, ?, ?)',
-                [$client['id'], hash('sha256', $client['id'] . ':' . $code), date('Y-m-d H:i:s', time() + 600), now()]);
-            $text = "Your Marzley Tech portal sign-in code is $code. It works for 10 minutes. Never share it with anyone, including us.";
-            if (filter_var($who, FILTER_VALIDATE_EMAIL)) send_mail($client['email'], "Your sign-in code: $code", "Hello {$client['name']},\n\n$text\n\nIf you didn't ask for it, you can ignore this email.", false);
+            q('INSERT INTO login_codes (client_id, email, code_hash, attempts, expires_at, created_at) VALUES (?, ?, ?, 0, ?, ?)',
+                [$client['id'], '', hash('sha256', $client['id'] . ':' . $code), date('Y-m-d H:i:s', time() + 600), now()]);
+            if ($isEmail) send_mail($client['email'], "Your sign-in code: $code", "Hello {$client['name']},\n\n$text\n\nIf you didn't ask for it, you can ignore this email.", false);
             else { if (!send_sms($client['phone'], $text)) send_mail($client['email'], "Your sign-in code: $code", "Hello {$client['name']},\n\n$text", false); }
-            audit('code_sent', filter_var($who, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone', $client['email']);
+            audit('code_sent', $isEmail ? 'email' : 'phone', $client['email']);
+        } elseif ($isEmail && $open) {
+            // A new person: the account is created once they prove the email is theirs
+            q('UPDATE login_codes SET used_at = ? WHERE client_id = 0 AND email = ? AND used_at IS NULL', [now(), $who]);
+            q('INSERT INTO login_codes (client_id, email, code_hash, attempts, expires_at, created_at) VALUES (0, ?, ?, 0, ?, ?)',
+                [$who, hash('sha256', 'new:' . $who . ':' . $code), date('Y-m-d H:i:s', time() + 600), now()]);
+            send_mail($who, "Your sign-in code: $code", "Hello,\n\n$text\n\nEnter it on the page to create your free Marzley Tech account. If you didn't ask for it, you can ignore this email.", false);
         }
         out($generic);
 
@@ -755,15 +764,22 @@ switch ($action) {
         elseif ($msisdn = normalise_phone($who)) {
             foreach (q("SELECT id, name, email, phone FROM clients WHERE phone <> ''")->fetchAll() as $c) if (normalise_phone($c['phone']) === $msisdn) { $client = $c; break; }
         }
-        $row = $client ? q('SELECT * FROM login_codes WHERE client_id = ? AND used_at IS NULL AND expires_at > ? ORDER BY id DESC LIMIT 1', [$client['id'], now()])->fetch() : null;
+        if ($client) {
+            $row = q('SELECT * FROM login_codes WHERE client_id = ? AND used_at IS NULL AND expires_at > ? ORDER BY id DESC LIMIT 1', [$client['id'], now()])->fetch();
+            $expect = $row ? hash('sha256', $client['id'] . ':' . $code) : '';
+        } else {
+            $row = filter_var($who, FILTER_VALIDATE_EMAIL) && !empty(config()['open_signup'])
+                ? q('SELECT * FROM login_codes WHERE client_id = 0 AND email = ? AND used_at IS NULL AND expires_at > ? ORDER BY id DESC LIMIT 1', [$who, now()])->fetch() : null;
+            $expect = $row ? hash('sha256', 'new:' . $who . ':' . $code) : '';
+        }
         if (!$row || strlen($code) !== 6) fail(401, 'That code is wrong or has expired. Ask for a new one.');
         if ((int)$row['attempts'] >= 5) { q('UPDATE login_codes SET used_at = ? WHERE id = ?', [now(), $row['id']]); fail(401, 'Too many wrong tries. Ask for a new code.'); }
-        if (!hash_equals($row['code_hash'], hash('sha256', $client['id'] . ':' . $code))) {
+        if (!hash_equals($row['code_hash'], $expect)) {
             q('UPDATE login_codes SET attempts = attempts + 1 WHERE id = ?', [$row['id']]);
             fail(401, 'That code is wrong or has expired. Ask for a new one.');
         }
         q('UPDATE login_codes SET used_at = ? WHERE id = ?', [now(), $row['id']]);
-        $user = sign_in($client['email'], $client['name']);
+        $user = $client ? sign_in($client['email'], $client['name']) : sign_in($who, (string)($d['name'] ?? ''));
         out(['user' => $user, 'csrf' => csrf_token()]);
 
     // ---------- growth: website payments, referrals, reviews, chat questions, mailing list ----------

@@ -5,7 +5,7 @@ if (!defined('MARZLEY_PORTAL')) {
     exit;
 }
 
-const SCHEMA_VERSION = 5;
+const SCHEMA_VERSION = 6;
 const STAFF_PERMS = ['projects' => 'Projects & files', 'clients' => 'People', 'support' => 'Support', 'courses' => 'Courses', 'money' => 'Invoices, payments & quotes', 'leads' => 'Leads'];
 const PROJECT_STATUSES = ['planning', 'design', 'build', 'review', 'live', 'on_hold'];
 const INVOICE_STATUSES = ['unpaid', 'paid', 'cancelled'];
@@ -33,6 +33,7 @@ function config(): array {
         'backup_dir' => private_dir() . '/portal-backups', 'backup_keep_days' => 14,
         'smtp' => null, 'sms' => null,
         'business_name' => 'Marzley Tech Solutions', 'kra_pin' => '', 'etims' => false,
+        'open_signup' => true,                  // anyone can create a client account (Google or email code)
     ];
     $cfg['admin_emails'] = array_map('strtolower', $cfg['admin_emails']);
     // All dates in the portal (activity log, invoices, reminders) are Kenya time
@@ -143,6 +144,7 @@ function migrate(PDO $pdo): void {
         ['leads', 'referred_by', "VARCHAR(20) NOT NULL DEFAULT ''"],
         ['feedback', 'publish_ok', "$uint NOT NULL DEFAULT 0"],
         ['feedback', 'published', "$uint NOT NULL DEFAULT 0"],
+        ['login_codes', 'email', "VARCHAR(190) NOT NULL DEFAULT ''"],   // v6: codes for people creating an account
     ];
     foreach ($columns as [$table, $col, $def]) {
         try { $pdo->exec("ALTER TABLE $table ADD COLUMN $col $def"); } catch (PDOException $e) { /* already there */ }
@@ -327,7 +329,8 @@ function sign_in(string $email, string $name): array {
                  'perms' => array_values(array_intersect(explode(',', $staff['perms']), array_keys(STAFF_PERMS)))];
     } else {
         $client = q('SELECT id, name FROM clients WHERE email = ?', [$email])->fetch();
-        if (!$client) fail(403, 'This Google account is not linked to a Marzley Tech project yet. Contact us on WhatsApp +254 745 789 590 to get access.');
+        if (!$client && empty(config()['open_signup'])) fail(403, 'This Google account is not linked to a Marzley Tech project yet. Contact us on WhatsApp +254 745 789 590 to get access.');
+        if (!$client) $client = create_client_account($email, $name);
         $user = ['email' => $email, 'name' => $client['name'] ?: $name, 'role' => 'client', 'client_id' => (int)$client['id']];
     }
     session_regenerate_id(true);
@@ -336,6 +339,18 @@ function sign_in(string $email, string $name): array {
     unset($_SESSION['csrf'], $_SESSION['expired']);
     audit('sign_in', $user['role'], $email);
     return $user;
+}
+
+/** Someone new signed up themselves: give them a client account and let the team know. */
+function create_client_account(string $email, string $name): array {
+    $name = mb_substr(trim(preg_replace('/\s+/u', ' ', $name)), 0, 120);
+    if ($name === '') $name = ucwords(str_replace(['.', '_', '-'], ' ', explode('@', $email)[0]));
+    if (!rate_ok('signup', 30, 3600)) fail(429, 'Too many new accounts right now. Please try again in an hour.');
+    q('INSERT INTO clients (name, email, phone, created_at) VALUES (?, ?, ?, ?)', [$name, $email, '', now()]);
+    $client = q('SELECT id, name FROM clients WHERE email = ?', [$email])->fetch();
+    audit('client_signup', $name, $email);
+    notify_admins("New portal account: $name", "$name ($email) created an account in the client portal.\n\nThey can now send support requests and pay invoices. To start a project for them, open People in the portal: " . portal_url());
+    return $client;
 }
 
 // ---------- input helpers ----------
