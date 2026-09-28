@@ -311,11 +311,146 @@
     }).catch(function (e) { out.textContent = ""; print(e.message, "err"); send({ type: "output", text: "", ok: false, error: e.message }); });
   }
 
+  // ---------- Helpers for the extra languages ----------
+  var ROOT = new URL("/", location.href).href;
+  var loaded = {};
+  function loadScript(path) {
+    if (!loaded[path]) loaded[path] = new Promise(function (resolve, reject) {
+      var s = document.createElement("script");
+      s.src = ROOT + path;
+      s.onload = resolve;
+      s.onerror = function () { reject(new Error("Could not load the tools for this language. Check your connection and try again.")); };
+      document.head.appendChild(s);
+    });
+    return loaded[path];
+  }
+  function showError(title, msg) {
+    out.textContent = "";
+    print(title + "\n", "err");
+    print(msg + "\n", "err");
+    send({ type: "output", text: "", ok: false, error: msg });
+  }
+
+  // ---------- TypeScript: types are checked by your editor in real projects; here we strip them and run the JavaScript ----------
+  function runTypeScript(code) {
+    loadScript("vendor/sucrase/sucrase.min.js").then(function () {
+      var js;
+      try { js = window.sucrase.transform(code, { transforms: ["typescript"] }).code; }
+      catch (e) { return showError("TypeScript error", String(e.message || e)); }
+      runWeb("javascript", js);
+    }).catch(function (e) { showError("Error", e.message); });
+  }
+
+  // ---------- React (JSX): React 18 from this site, the JSX is compiled in the browser ----------
+  function runReact(code) {
+    loadScript("vendor/sucrase/sucrase.min.js").then(function () {
+      var js;
+      try { js = window.sucrase.transform(code, { transforms: ["jsx", "typescript"], production: true }).code; }
+      catch (e) { return showError("JSX error", String(e.message || e)); }
+      var html = "<!DOCTYPE html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>" + GUARD + CONSOLE +
+        "<style>body{font:15px/1.5 system-ui,sans-serif;margin:12px}</style>" +
+        "<script src='" + ROOT + "vendor/react/react.production.min.js'><\/script><script src='" + ROOT + "vendor/react/react-dom.production.min.js'><\/script></head>" +
+        "<body><div id='root'></div><script>\n" + safeGuard(js).replace(/<\/script/gi, "<\\/script") + "\n<\/script></body></html>";
+      document.open(); document.write(html); document.close();
+    }).catch(function (e) { showError("Error", e.message); });
+  }
+
+  // ---------- Markdown: shows the formatted page ----------
+  function runMarkdown(code) {
+    loadScript("vendor/marked/marked.min.js").then(function () {
+      var body = window.marked.parse(code).replace(/<script[\s\S]*?<\/script>/gi, "").replace(/ on\w+=/gi, " data-x=");
+      var html = "<!DOCTYPE html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>" +
+        "<style>body{font:16px/1.65 system-ui,sans-serif;margin:16px;max-width:70ch;color:#0f172a}h1,h2,h3{line-height:1.25;color:#0b1b35}code{background:#f1f5f9;padding:2px 5px;border-radius:5px}" +
+        "pre{background:#0b1b35;color:#e2e8f0;padding:12px;border-radius:10px;overflow:auto}pre code{background:none;padding:0}blockquote{border-left:4px solid #ffb800;margin:0;padding:4px 14px;color:#475569}" +
+        "table{border-collapse:collapse}th,td{border:1px solid #cbd5e1;padding:6px 10px}img{max-width:100%}a{color:#1d4ed8}</style></head><body>" + body +
+        "<script>parent.postMessage({type:'output',text:document.body.innerText,ok:true},'*');<\/script></body></html>";
+      document.open(); document.write(html); document.close();
+    }).catch(function (e) { showError("Error", e.message); });
+  }
+
+  // ---------- JSON: checks it, shows where the mistake is, and formats it ----------
+  function runJson(code) {
+    out.textContent = "";
+    try {
+      var data = JSON.parse(code);
+      var count = function (v) { return Array.isArray(v) ? v.length + " items" : v && typeof v === "object" ? Object.keys(v).length + " keys" : typeof v; };
+      print("✔ Valid JSON (" + (Array.isArray(data) ? "array, " : data && typeof data === "object" ? "object, " : "") + count(data) + ")\n\n", "muted");
+      var pretty = JSON.stringify(data, null, 2);
+      print(pretty + "\n");
+      send({ type: "output", text: pretty, ok: true });
+    } catch (e) {
+      var msg = String(e.message || e), m = /position (\d+)/.exec(msg), where = "";
+      if (m) {
+        var pos = Number(m[1]), before = code.slice(0, pos), line = before.split("\n").length, col = pos - before.lastIndexOf("\n");
+        where = " (line " + line + ", column " + col + ")";
+        var src = code.split("\n")[line - 1] || "";
+        print("✘ Invalid JSON" + where + "\n", "err");
+        print(src + "\n" + " ".repeat(Math.max(0, col - 1)) + "^\n\n", "err");
+      } else print("✘ Invalid JSON\n", "err");
+      print(msg + "\n\nCommon mistakes: a comma after the last item, single quotes instead of double quotes, or keys without quotes.\n", "muted");
+      send({ type: "output", text: "", ok: false, error: msg });
+    }
+  }
+
+  // ---------- PHP 8.3 (WebAssembly) in a worker, so long-running code can be stopped ----------
+  var phpWorker = null, PHP_LIMIT = 10000;
+  function startPhpWorker() {
+    // The PHP build expects a browser page, so give it the few window/document pieces it touches
+    var src = "self.window = self; self.document = { currentScript: null, body: null, documentElement: { style: {} }, addEventListener() {}, removeEventListener() {}, querySelector() { return null; }, getElementById() { return null; } };" +
+      "self.__PHP_BASE = '" + ROOT + "vendor/php/php.js'; importScripts(self.__PHP_BASE);" +
+      "let php = null, out = [];" +
+      "self.onmessage = async (e) => {" +
+      "  try {" +
+      "    if (!php) { php = self.createPhp(); php.addEventListener('output', ev => out.push(['o', ev.detail.join('')])); php.addEventListener('error', ev => out.push(['e', ev.detail.join('')])); await php.binary; self.postMessage({ ready: true }); }" +
+      "    else await php.refresh();" +
+      "    out = []; const code = await php.run(e.data.code); self.postMessage({ done: true, out, code });" +
+      "  } catch (err) { self.postMessage({ done: true, out, fail: String(err && err.message || err) }); }" +
+      "};";
+    return new Worker(URL.createObjectURL(new Blob([src], { type: "text/javascript" })));
+  }
+  function runPhp(code) {
+    out.textContent = "";
+    var w;
+    try { w = phpWorker || (phpWorker = startPhpWorker()); } catch (e) { return showError("Error", "PHP can't run in this browser. Try a recent Chrome, Edge or Firefox."); }
+    var warm = !!w.__warm, timer = null;
+    if (!warm) print("Starting PHP… (the first run downloads it once, about 4 MB)\n", "muted");
+    var arm = function () { clearTimeout(timer); timer = setTimeout(function () { w.terminate(); phpWorker = null; out.textContent = ""; print("Your code ran for more than 10 seconds and was stopped. Check for a loop that never ends.\n", "err"); send({ type: "output", text: "", ok: false, error: "Your code ran for more than 10 seconds and was stopped." }); }, PHP_LIMIT); };
+    if (warm) arm(); else timer = setTimeout(arm, 60000);
+    w.onmessage = function (e) {
+      var d = e.data || {};
+      if (d.ready) { w.__warm = true; arm(); return; }
+      if (!d.done) return;
+      clearTimeout(timer);
+      out.textContent = "";
+      var text = "", errs = "";
+      (d.out || []).forEach(function (p) { if (p[0] === "o") text += p[1]; else errs += p[1]; });
+      var html = /<\/?(html|body|p|h[1-6]|div|table|ul|ol|br|b|strong)[\s>\/]/i.test(text);
+      if (html) {
+        var box = document.createElement("div"); box.className = "php-html";
+        var fr = document.createElement("iframe"); fr.setAttribute("sandbox", ""); fr.srcdoc = text; fr.style.cssText = "width:100%;min-height:260px;border:1px solid #cbd5e1;border-radius:8px;background:#fff";
+        print("Rendered HTML:\n", "muted"); box.appendChild(fr); out.appendChild(box); print("\nSource:\n", "muted"); print(text + "\n");
+      } else if (text) print(text + (/\n$/.test(text) ? "" : "\n"));
+      var problem = errs || d.fail || "";
+      if (/(Parse|Fatal) error|Warning:|Uncaught/.test(text) && !problem) problem = (text.match(/(Parse error|Fatal error|Warning):[^\n]*/) || [""])[0];
+      if (errs) print(errs + "\n", "err");
+      if (d.fail) print(d.fail + "\n", "err");
+      if (!text && !errs && !d.fail) print("(no output)", "muted");
+      send(problem ? { type: "output", text: text, ok: false, error: problem } : { type: "output", text: text, ok: true });
+    };
+    w.onerror = function (e) { clearTimeout(timer); e.preventDefault && e.preventDefault(); w.terminate(); phpWorker = null; showError("Error", "PHP could not start. Check your connection and try again."); };
+    w.postMessage({ code: code });
+  }
+
   window.addEventListener("message", function (e) {
     var d = e.data || {};
     if (d.type !== "run" || typeof d.code !== "string") return;
     if (d.lang === "python") runPython(d.code);
     else if (d.lang === "sql") runSql(d.code);
+    else if (d.lang === "php") runPhp(d.code);
+    else if (d.lang === "typescript") runTypeScript(d.code);
+    else if (d.lang === "react") runReact(d.code);
+    else if (d.lang === "markdown") runMarkdown(d.code);
+    else if (d.lang === "json") runJson(d.code);
     else runWeb(d.lang, d.code);
   });
   send({ type: "ready" });

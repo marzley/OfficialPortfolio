@@ -3,7 +3,7 @@
 (function () {
   "use strict";
   var API = "../portal/learn.php?action=";
-  var LANGS = { html: "HTML", css: "CSS", javascript: "JavaScript", python: "Python", sql: "SQL" };
+  var LANGS = { html: "HTML", css: "CSS", javascript: "JavaScript", python: "Python", sql: "SQL", php: "PHP", typescript: "TypeScript", react: "React", json: "JSON", markdown: "Markdown" };
   var TRACK_ICONS = { html: "fa-brands fa-html5", css: "fa-brands fa-css3-alt", javascript: "fa-brands fa-js", python: "fa-brands fa-python", sql: "fa-solid fa-database",
     networking: "fa-solid fa-network-wired", "make-money-online": "fa-solid fa-sack-dollar", git: "fa-brands fa-git-alt", linux: "fa-brands fa-linux", php: "fa-brands fa-php",
     cybersecurity: "fa-solid fa-shield-halved", hosting: "fa-solid fa-server", marketing: "fa-solid fa-bullhorn", "it-basics": "fa-solid fa-computer",
@@ -25,13 +25,19 @@
     "c-programming": ["OnlineGDB (C)", "https://www.onlinegdb.com/online_c_compiler"], cpp: ["OnlineGDB (C++)", "https://www.onlinegdb.com/online_c++_compiler"],
     csharp: [".NET Fiddle", "https://dotnetfiddle.net/"], "dart-flutter": ["DartPad", "https://dartpad.dev/"], go: ["Go Playground", "https://go.dev/play/"],
     php: ["OnlineGDB (PHP)", "https://www.onlinegdb.com/online_php_interpreter"] };
-  var MODES = { html: "htmlmixed", css: "htmlmixed", javascript: "javascript", python: "python", sql: "text/x-sql" };
+  var MODES = { html: "htmlmixed", css: "htmlmixed", javascript: "javascript", python: "python", sql: "text/x-sql", php: "application/x-httpd-php", typescript: "text/typescript", react: "jsx", json: "application/json", markdown: "markdown" };
   var STARTERS = {
     html: "<!DOCTYPE html>\n<html>\n<body>\n  <h1>Hello!</h1>\n  <p>Edit me and press Run.</p>\n</body>\n</html>",
     css: "<style>\n  h1 { color: #0b1b35; font-family: sans-serif; }\n  .box { padding: 16px; background: #fff7e0; border: 2px solid #ffb800; border-radius: 12px; }\n</style>\n<h1>Styling practice</h1>\n<div class=\"box\">Change my colours.</div>",
     javascript: "const items = [\"Unga\", \"Sugar\", \"Milk\"];\nfor (const item of items) {\n  console.log(\"Buy \" + item);\n}",
     python: "name = \"Kenya\"\nfor i in range(3):\n    print(f\"{i + 1}. Habari, {name}!\")",
     sql: "SELECT c.Name, p.Name AS Product, o.Quantity\nFROM Orders o\nJOIN Customers c ON c.CustomerID = o.CustomerID\nJOIN Products p ON p.ProductID = o.ProductID;"
+,
+    php: "<?php\n$name = \"Kenya\";\n$prices = [\"Unga\" => 180, \"Sugar\" => 150, \"Milk\" => 60];\n\necho \"Habari, $name!\\n\";\nforeach ($prices as $item => $price) {\n    echo \"$item: KSh \" . number_format($price) . \"\\n\";\n}\necho \"Total: KSh \" . array_sum($prices);",
+    typescript: "type Product = { name: string; price: number; stock: number };\n\nconst products: Product[] = [\n  { name: \"Unga 2kg\", price: 180, stock: 12 },\n  { name: \"Sugar 1kg\", price: 150, stock: 0 },\n];\n\nfunction inStock(list: Product[]): string[] {\n  return list.filter(p => p.stock > 0).map(p => p.name);\n}\n\nconsole.log(\"In stock:\", inStock(products));",
+    react: "const { useState } = React;\n\nfunction Counter() {\n  const [count, setCount] = useState(0);\n  return (\n    <div style={{ fontFamily: \"sans-serif\" }}>\n      <h2>Items in cart: {count}</h2>\n      <button onClick={() => setCount(count + 1)}>Add item</button>\n    </div>\n  );\n}\n\nReactDOM.createRoot(document.getElementById(\"root\")).render(<Counter />);",
+    json: "{\n  \"shop\": \"Mama Mboga\",\n  \"town\": \"Nakuru\",\n  \"open\": true,\n  \"products\": [\n    { \"name\": \"Sukuma\", \"price\": 20 },\n    { \"name\": \"Tomatoes\", \"price\": 10 }\n  ]\n}",
+    markdown: "# My shop\n\nWe sell **fresh vegetables** in *Nakuru*.\n\n## Prices\n\n| Item | Price |\n|------|-------|\n| Sukuma | KSh 20 |\n| Tomatoes | KSh 10 |\n\n- Open daily\n- Pay with M-Pesa\n\n> Order on WhatsApp: 0712 345 678"
   };
 
   var state = { me: null, csrf: null, editor: false, progress: [], catalog: null, gsiLoaded: false, mpesa: false };
@@ -191,7 +197,7 @@
   Runner.prototype.run = function (lang, code) {
     var self = this;
     lang = runLang(lang, code);
-    var web = lang === "html" || lang === "css" || lang === "javascript";
+    var web = lang === "html" || lang === "css" || lang === "javascript" || lang === "typescript" || lang === "react" || lang === "markdown";
     // Web code replaces the frame's page, so it gets a new frame each run. Python and SQL keep theirs (loaded once).
     var ready = web || this.frameLang !== lang || !this.frame ? this.fresh(lang) : this.ready;
     this.box.hidden = false;
@@ -212,7 +218,7 @@
           // The frame is stuck: throw it away so the next run starts a fresh one
           if (self.frame) { self.frame.remove(); self.frame = null; self.frameLang = null; }
           resolve({ text: "", ok: false, error: "timeout" });
-        }, lang === "python" ? 90000 : lang === "sql" ? 40000 : 10000);
+        }, lang === "python" || lang === "php" ? 90000 : lang === "sql" ? 40000 : 15000);
       });
     });
   };
@@ -652,6 +658,57 @@
     });
   }
 
+  // ---------- Practice page: what each language is for, tips, and examples to load ----------
+  var PRACTICE = {
+    html: { track: "html", about: "HTML is the structure of every web page: headings, text, links, images, lists, tables and forms.", uses: ["Every website", "Emails and newsletters", "Web and mobile apps"],
+      tips: ["Every page needs <html>, <head> and <body>.", "Use one <h1> per page, then <h2>, <h3>.", "Give every <img> an alt description."],
+      examples: [["Hello page", null], ["Links and images", "<h1>Our shop</h1>\n<p>Visit our <a href=\"https://marzleytechsolutions.co.ke\">website</a>.</p>\n<img src=\"https://picsum.photos/300/160\" alt=\"A random photo\">"],
+        ["Table of prices", "<table border=\"1\" cellpadding=\"8\">\n  <tr><th>Item</th><th>Price</th></tr>\n  <tr><td>Unga</td><td>KSh 180</td></tr>\n  <tr><td>Sugar</td><td>KSh 150</td></tr>\n</table>"],
+        ["Contact form", "<form>\n  <label>Name <input name=\"name\" required></label><br><br>\n  <label>Phone <input type=\"tel\" name=\"phone\"></label><br><br>\n  <button>Send</button>\n</form>"]] },
+    css: { track: "css", about: "CSS styles web pages: colours, fonts, spacing, layout, animation and making pages fit phone screens.", uses: ["Website design", "Responsive layouts", "Animations"],
+      tips: ["Use classes (.card) to style many elements at once.", "Flexbox lays out a row; Grid lays out rows and columns.", "Test at phone width: design mobile-first."],
+      examples: [["Styled box", null], ["Flexbox row", "<style>\n  .row { display: flex; gap: 12px; }\n  .row div { flex: 1; padding: 16px; background: #0b1b35; color: #fff; border-radius: 10px; }\n</style>\n<div class=\"row\"><div>One</div><div>Two</div><div>Three</div></div>"],
+        ["Card grid", "<style>\n  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; font-family: sans-serif; }\n  .card { padding: 18px; border: 1px solid #e2e8f0; border-radius: 14px; }\n</style>\n<div class=\"grid\"><div class=\"card\">Websites</div><div class=\"card\">Shops</div><div class=\"card\">Systems</div></div>"],
+        ["Button hover", "<style>\n  button { padding: 12px 22px; border: 0; border-radius: 999px; background: #ffb800; font-weight: 700; transition: transform .2s; }\n  button:hover { transform: translateY(-3px); }\n</style>\n<button>Hover me</button>"]] },
+    javascript: { track: "javascript", about: "JavaScript makes pages interactive and also runs servers (Node.js) and mobile apps (React Native).", uses: ["Interactive websites", "Web apps", "Servers with Node.js"],
+      tips: ["console.log() prints to the output.", "Use const by default, let when a value changes.", "Arrays have map, filter and reduce."],
+      examples: [["Loop over items", null], ["Functions", "function vat(amount) {\n  return amount * 0.16;\n}\nconsole.log(\"VAT on 1000:\", vat(1000));"],
+        ["Array methods", "const prices = [120, 450, 80, 300];\nconsole.log(prices.filter(p => p > 100));\nconsole.log(prices.map(p => p * 2));\nconsole.log(prices.reduce((a, b) => a + b, 0));"],
+        ["Change the page", "<h1 id=\"title\">Hello</h1>\n<button onclick=\"document.getElementById('title').textContent = 'Clicked!'\">Click me</button>"]] },
+    python: { track: "python", about: "Python is easy to read and used for automation, data analysis, AI, web back ends and teaching programming.", uses: ["Data and AI", "Automation scripts", "Web back ends"],
+      tips: ["Indentation (4 spaces) matters.", "f-strings: f\"Total: {total}\".", "input() asks the user for a value in a pop-up."],
+      examples: [["Loop and f-strings", null], ["Lists and dictionaries", "stock = {\"unga\": 12, \"sugar\": 0, \"milk\": 40}\nfor item, qty in stock.items():\n    status = \"in stock\" if qty > 0 else \"SOLD OUT\"\n    print(f\"{item}: {status}\")"],
+        ["Functions", "def grade(marks):\n    if marks >= 70: return \"A\"\n    if marks >= 50: return \"C\"\n    return \"E\"\n\nfor m in [82, 55, 31]:\n    print(m, grade(m))"],
+        ["Ask for input", "name = input(\"What is your name? \")\nprint(\"Karibu,\", name)"]] },
+    sql: { track: "sql", about: "SQL talks to databases. Practise on a sample shop database with Customers, Products and Orders.", uses: ["Websites and apps", "Reports", "Data analysis"],
+      tips: ["SELECT columns FROM table WHERE condition.", "JOIN links tables by their IDs.", "GROUP BY with COUNT or SUM makes summaries."],
+      examples: [["Join three tables", null], ["Filter and sort", "SELECT Name, Price FROM Products\nWHERE Price > 1000\nORDER BY Price DESC;"],
+        ["Count per city", "SELECT City, COUNT(*) AS Customers\nFROM Customers\nGROUP BY City\nORDER BY Customers DESC;"],
+        ["Sales per product", "SELECT p.Name, SUM(o.Quantity * p.Price) AS Sales\nFROM Orders o JOIN Products p ON p.ProductID = o.ProductID\nGROUP BY p.Name ORDER BY Sales DESC;"]] },
+    php: { track: "php", about: "PHP runs on the server behind WordPress and most cPanel websites. Here PHP 8.3 runs right in your browser.", uses: ["WordPress and CMSs", "Business systems", "M-Pesa back ends"],
+      tips: ["Start with <?php. Variables begin with $.", "echo prints; . joins strings.", "Databases and sending email need a real server (XAMPP or hosting)."],
+      examples: [["Arrays and loops", null], ["Functions", "<?php\nfunction vat(float $amount): float {\n    return $amount * 0.16;\n}\necho \"VAT: KSh \" . vat(2500);"],
+        ["Build HTML", "<?php $items = [\"Websites\", \"Online shops\", \"Systems\"]; ?>\n<h1>Our services</h1>\n<ul>\n<?php foreach ($items as $i): ?>\n  <li><?= htmlspecialchars($i) ?></li>\n<?php endforeach; ?>\n</ul>"],
+        ["Classes", "<?php\nclass Account {\n    private float $balance = 0;\n    public function deposit(float $amt): void { $this->balance += $amt; }\n    public function balance(): float { return $this->balance; }\n}\n$a = new Account();\n$a->deposit(1500);\necho \"Balance: \" . $a->balance();"]] },
+    typescript: { track: "typescript", about: "TypeScript is JavaScript with types. Here the types are removed and the code runs; your editor (VS Code) checks them in real projects.", uses: ["React and Angular apps", "Node.js back ends", "Large projects"],
+      tips: ["Describe objects with type or interface.", "string | null means either type.", "Output appears with console.log()."],
+      examples: [["Types and filter", null], ["Interfaces", "interface Customer { name: string; phone: string; email?: string }\nconst c: Customer = { name: \"Wanjiku\", phone: \"0712345678\" };\nconsole.log(`${c.name} (${c.email ?? \"no email\"})`);"],
+        ["Generics", "function first<T>(items: T[]): T | undefined {\n  return items[0];\n}\nconsole.log(first([10, 20]), first([\"a\", \"b\"]));"],
+        ["Classes", "class Cart {\n  private items: { name: string; price: number }[] = [];\n  add(name: string, price: number) { this.items.push({ name, price }); return this; }\n  total(): number { return this.items.reduce((s, i) => s + i.price, 0); }\n}\nconsole.log(new Cart().add(\"Unga\", 180).add(\"Milk\", 60).total());"]] },
+    react: { track: "javascript", about: "React builds user interfaces from components. Write JSX; React 18 runs in the output. Use React.useState and friends.", uses: ["Web apps", "Dashboards", "Mobile apps with React Native"],
+      tips: ["A component is a function that returns JSX.", "useState keeps values that change.", "Render with ReactDOM.createRoot(document.getElementById(\"root\")).render(<App />)."],
+      examples: [["Counter", null], ["List from data", "const products = [{ id: 1, name: \"Unga\", price: 180 }, { id: 2, name: \"Milk\", price: 60 }];\n\nfunction App() {\n  return (\n    <ul>\n      {products.map(p => <li key={p.id}>{p.name}: KSh {p.price}</li>)}\n    </ul>\n  );\n}\n\nReactDOM.createRoot(document.getElementById(\"root\")).render(<App />);"],
+        ["Form input", "const { useState } = React;\n\nfunction Greet() {\n  const [name, setName] = useState(\"\");\n  return (\n    <div>\n      <input placeholder=\"Your name\" value={name} onChange={e => setName(e.target.value)} />\n      <p>Karibu, {name || \"friend\"}!</p>\n    </div>\n  );\n}\n\nReactDOM.createRoot(document.getElementById(\"root\")).render(<Greet />);"]] },
+    json: { track: "javascript", about: "JSON is the text format apps and APIs use to send data. Paste JSON to check it and format it neatly.", uses: ["APIs (like M-Pesa Daraja)", "Config files", "Saving data"],
+      tips: ["Keys and text use double quotes.", "No comma after the last item.", "Values: text, numbers, true/false, null, arrays [] and objects {}."],
+      examples: [["Shop data", null], ["M-Pesa style reply", "{\n  \"MerchantRequestID\": \"29115-34620561-1\",\n  \"CheckoutRequestID\": \"ws_CO_191220191020363925\",\n  \"ResponseCode\": \"0\",\n  \"ResponseDescription\": \"Success. Request accepted for processing\",\n  \"CustomerMessage\": \"Success. Request accepted for processing\"\n}"],
+        ["Find the mistake", "{\n  \"name\": \"Otieno\",\n  \"town\": 'Kisumu',\n  \"skills\": [\"HTML\", \"CSS\",]\n}"]] },
+    markdown: { track: "git", about: "Markdown is a simple way to format text, used in README files on GitHub, notes, chats and documentation.", uses: ["GitHub README files", "Notes and docs", "Blog posts"],
+      tips: ["# makes a heading, ## a smaller one.", "**bold**, *italic*, `code`.", "- makes a bullet list; 1. a numbered list."],
+      examples: [["Shop page", null], ["README file", "# Duka App\n\nA simple shop system built with PHP and MySQL.\n\n## Features\n- Products and stock\n- M-Pesa payments\n- Sales reports\n\n## Install\n```\ngit clone https://github.com/you/duka.git\n```"],
+        ["Links and images", "Visit [Marzley Tech](https://marzleytechsolutions.co.ke).\n\n![A photo](https://picsum.photos/400/200)"]] }
+  };
+
   function pagePractice(lang) {
     setNav("practice");
     showSide(false);
@@ -659,24 +716,41 @@
     setTitle(LANGS[lang] + " online editor", "Free online " + LANGS[lang] + " editor: write code and run it in your browser.");
     main.innerHTML = '<section class="practice"><div class="practice-head"><h1>Practice</h1><div class="lang-pick" role="tablist" aria-label="Language">' +
       Object.keys(LANGS).map(function (k) { return '<button type="button" role="tab" data-lang="' + k + '" aria-selected="' + (k === lang) + '">' + LANGS[k] + "</button>"; }).join("") +
-      '</div></div><div class="practice-grid"><div class="pane"><div class="pane-bar"><span>Code</span><div><button type="button" class="try-reset" id="p-reset" title="Start again"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i><span class="sr-only">Start again</span></button>' +
+      '</div></div><div class="practice-grid"><div class="pane"><div class="pane-bar"><span>Code</span><div><label class="sr-only" for="p-example">Load an example</label><select id="p-example" class="ex-select"><option value="">Examples…</option>' +
+      PRACTICE[lang].examples.map(function (x, i) { return '<option value="' + i + '">' + esc(x[0]) + "</option>"; }).join("") + "</select>" +
+      '<button type="button" class="try-reset" id="p-reset" title="Start again"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i><span class="sr-only">Start again</span></button>' +
       '<button type="button" class="try-reset" id="p-copy" title="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i><span class="sr-only">Copy code</span></button>' +
       '<button type="button" class="btn btn-solid btn-sm" id="p-run"><i class="fa-solid fa-play" aria-hidden="true"></i> Run <kbd>Ctrl</kbd>+<kbd>Enter</kbd></button></div></div><div class="pane-editor" id="p-editor"></div></div>' +
       '<div class="pane"><div class="pane-bar"><span>Output</span></div><div class="pane-output" id="p-out"></div></div></div>' +
-      '<p class="muted small">Your code is saved on this device. Python runs fully in your browser (the first run downloads it once). SQL uses a sample shop database with Customers, Products and Orders.</p></section>';
+      practiceDetails(lang) + '</section>';
     var ed = makeEditor($("#p-editor"), store.get("code:" + lang) || STARTERS[lang], lang);
     var runner = new Runner($("#p-out"));
     var run = function () { store.set("code:" + lang, ed.getValue()); $("#p-run").disabled = true; runner.run(lang, ed.getValue()).then(function () { $("#p-run").disabled = false; }); };
     $("#p-run").addEventListener("click", run);
     $("#p-reset").addEventListener("click", function () { if (confirm("Start again with the example code?")) ed.setValue(STARTERS[lang]); });
     $("#p-copy").addEventListener("click", function () { if (navigator.clipboard) navigator.clipboard.writeText(ed.getValue()); });
+    $("#p-example").addEventListener("change", function () {
+      var ex = PRACTICE[lang].examples[this.value];
+      if (ex) { ed.setValue(ex[1] == null ? STARTERS[lang] : ex[1]); run(); }
+      this.value = "";
+    });
     main.querySelector(".practice").addEventListener("keydown", function (e) { if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); run(); } });
     main.querySelectorAll(".lang-pick button").forEach(function (b) {
       b.addEventListener("click", function () { store.set("code:" + lang, ed.getValue()); store.set("practice-lang", b.getAttribute("data-lang")); go("./?page=practice&lang=" + b.getAttribute("data-lang")); });
     });
     var t = setInterval(function () { store.set("code:" + lang, ed.getValue()); }, 5000);
     cleanup.push(function () { clearInterval(t); store.set("code:" + lang, ed.getValue()); });
-    if (lang !== "python") run();
+    if (lang !== "python" && lang !== "php") run();
+  }
+  function practiceDetails(lang) {
+    var info = PRACTICE[lang], track = info.track;
+    var note = { python: "Python runs fully in your browser. The first run downloads it once (about 10 MB).", php: "PHP 8.3 runs fully in your browser. The first run downloads it once (about 4 MB). Databases, sessions and email need a real server.",
+      sql: "SQL runs on a sample shop database with Customers, Products and Orders. Try SELECT * FROM Products;", typescript: "Types are removed before running, so type mistakes are not reported here. Use VS Code to see them.",
+      react: "React 18 and ReactDOM are ready to use. Hooks: React.useState, React.useEffect.", json: "Only data is allowed in JSON: no comments, no trailing commas.", markdown: "The output shows the formatted page, like GitHub shows a README." }[lang] || "Your code runs in a safe sandbox: it can't touch this website, your cookies or your accounts.";
+    return '<section class="practice-info" aria-labelledby="pi-title"><div class="pi-main"><h2 id="pi-title">About ' + esc(LANGS[lang]) + '</h2><p>' + esc(info.about) + '</p>' +
+      '<p class="pi-uses">' + info.uses.map(function (u) { return '<span class="tag">' + esc(u) + "</span>"; }).join(" ") + '</p><p class="muted small">' + esc(note) + ' Your code is saved on this device.</p></div>' +
+      '<div class="pi-tips"><h3>Quick tips</h3><ul>' + info.tips.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul>" +
+      '<p><a class="btn btn-line btn-sm" href="./?track=' + esc(track) + '"><i class="fa-solid fa-book-open" aria-hidden="true"></i> ' + (track === lang ? "Learn " + esc(LANGS[lang]) + " step by step" : "Related lessons") + "</a></p></div></section>";
   }
 
   // ---------- videos ----------
