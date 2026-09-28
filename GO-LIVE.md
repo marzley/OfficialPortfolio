@@ -172,6 +172,40 @@ and 400 per day in total (change `per_visitor_hour` / `daily_limit`). It uses Cl
 effort; you can set `'model' => 'claude-sonnet-5'` for a cheaper model. If the key stops working
 you get an email, and the chat falls back to its own answers.
 
+## 7d. Learning hub (marzleytechsolutions.co.ke/learn/)
+
+Free for everyone: 26 starter lessons (HTML, CSS, JavaScript, Python, SQL) with a live code editor,
+self-checking exercises, a Practice editor, and your PDF notes. Videos are unlocked per person
+with M-Pesa (KSh 50 by default; you set the price for each video).
+
+- [ ] Upload the whole zip, including `learn/` and `vendor/` (Python alone is about 14 MB).
+      The `.htaccess` files inside `learn/`, `vendor/pyodide/` and `vendor/sqljs/` must be there:
+      they let learners' code run in a locked-down box that can't touch the site or anyone's account.
+- [ ] Open the portal once as the owner: the database adds the learning hub tables and lessons by itself.
+- [ ] In Google Cloud (the same sign-in client as the portal) nothing extra is needed; learners can
+      also sign up with a 6-digit email code.
+- [ ] Portal → **Learning hub** → upload a short test video and a PDF. Open the hub in a private window,
+      sign up, pay KSh 50 with your own phone, and check the video plays and you can comment.
+- [ ] Hosting disk: videos are stored privately in `portal-files/learn/` (outside public_html).
+      Check your plan's disk space; 10 videos of 15 minutes at 720p are roughly 2–3 GB.
+
+**Uploading videos.** Export MP4 (H.264, 720p is plenty for screen recordings) from your editor or phone.
+Uploads go in 8 MB pieces, so the hosting upload limit doesn't matter, and a dropped connection
+carries on where it stopped. Keep the tab open until it says "Video uploaded". A preview picture is
+taken from the video; change it with **Picture**.
+
+**Good to know.**
+- Only people who paid (and you and staff with the Courses area) can stream a video. Nobody can
+  fully stop screen recording on the internet, but downloading is switched off in the player and
+  links don't work for anyone else.
+- If you hide a paid-for video, the people who bought it keep access. Paid videos can't be deleted.
+- Comments are seen only by people who unlocked the video, with first name and initial. Hide or
+  delete any comment from **Learning hub → Comments**.
+- Lessons are written in simple Markdown in **Learning hub → Tutorials**. A code block that starts
+  with ```` ```try-python ```` (or try-html, try-css, try-javascript, try-sql) gets a Run button.
+- If a lot of people start watching (hundreds a day), move videos to a video host such as
+  Bunny Stream (about $1 per 100 GB delivered) so your hosting isn’t slowed down.
+
 ## 8. Legal and tax
 
 - [ ] Read `/privacy` and `/terms` (linked in every page footer) and correct anything that does

@@ -397,7 +397,7 @@ def build_post(html, post, posts, kind="blog"):
 # ---------- Kiswahili ----------
 
 SW_NAV = [("Home", "Nyumbani"), ("Work", "Kazi"), ("About", "Kuhusu"), ("Services", "Huduma"),
-          ("Process", "Mchakato"), ("Pricing", "Bei"), ("Blog", "Blogu"), ("Contact", "Wasiliana")]
+          ("Process", "Mchakato"), ("Pricing", "Bei"), ("Blog", "Blogu"), ("Learn", "Jifunze"), ("Contact", "Wasiliana")]
 
 
 SW_FOOTER = [
@@ -409,6 +409,7 @@ SW_FOOTER = [
     ('href="process">Process</a>', 'href="process">Mchakato</a>'),
     ('href="pricing">Packages &amp; pricing</a>', 'href="pricing">Vifurushi na bei</a>'),
     ('href="training">Training courses</a>', 'href="training">Kozi za mafunzo</a>'),
+    ('href="learn/">Learn to code (free)</a>', 'href="learn/">Jifunze kuandika programu (bure)</a>'),
     ('href="website-check">Free website check</a>', 'href="website-check">Kagua tovuti yako bure</a>'),
     ('href="referrals">Refer &amp; earn</a>', 'href="referrals">Pendekeza upate zawadi</a>'),
     ('href="blog">Blog</a>', 'href="blog">Blogu</a>'), ('href="faq">FAQ</a>', 'href="faq">Maswali</a>'),
@@ -503,7 +504,7 @@ def write_sitemap(posts, cases=()):
         ("", "weekly", "1.0", ["img/brand/og-image.jpg", "img/kelvin/office.jpg", "img/kelvin/office-square.jpg"]),
         ("work", "weekly", "0.9", []), ("services", "monthly", "0.9", []), ("pricing", "monthly", "0.9", []),
         ("about", "monthly", "0.8", []), ("contact", "monthly", "0.8", []), ("process", "monthly", "0.7", []),
-        ("training", "monthly", "0.8", []), ("website-check", "monthly", "0.8", []), ("faq", "monthly", "0.7", []), ("referrals", "monthly", "0.6", []), ("blog", "weekly", "0.8", []), ("kiswahili", "monthly", "0.7", []),
+        ("training", "monthly", "0.8", []), ("learn/", "weekly", "0.8", []), ("website-check", "monthly", "0.8", []), ("faq", "monthly", "0.7", []), ("referrals", "monthly", "0.6", []), ("blog", "weekly", "0.8", []), ("kiswahili", "monthly", "0.7", []),
         ("privacy", "yearly", "0.3", []), ("terms", "yearly", "0.3", []),
     ] + [(p["slug"], "monthly", "0.8", []) for p in cases] + [(p["slug"], "monthly", "0.7", []) for p in posts]
     out = ['<?xml version="1.0" encoding="UTF-8"?>',

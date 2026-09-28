@@ -1,5 +1,5 @@
 <?php
-// Stand-ins for Paystack and S3 storage, so payments and off-site backups can be tested offline.
+// Stand-ins for Paystack, M-Pesa (Daraja), the Claude API and S3 storage, so payments and off-site backups can be tested offline.
 // State lives in FAKE_DIR. POST /_control sets how Paystack answers the next verify.
 $dir = getenv('FAKE_DIR');
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -27,6 +27,17 @@ if (str_starts_with($path, '/paystack/')) {
         return;
     }
 }
+
+// Safaricom Daraja stand-in: token, STK push (records the request) and STK query
+if ($path === '/oauth/v1/generate') { echo json_encode(['access_token' => 'fake-token', 'expires_in' => '3599']); return; }
+if ($path === '/mpesa/stkpush/v1/processrequest') {
+    $b = json_decode(file_get_contents('php://input'), true);
+    $id = 'ws_CO_' . bin2hex(random_bytes(6));
+    file_put_contents("$dir/stk-last.json", json_encode(['id' => $id, 'body' => $b]));
+    echo json_encode(['MerchantRequestID' => 'm-' . $id, 'CheckoutRequestID' => $id, 'ResponseCode' => '0', 'CustomerMessage' => 'Success. Request accepted for processing']);
+    return;
+}
+if ($path === '/mpesa/stkpushquery/v1/query') { echo json_encode(['ResultCode' => '0', 'ResultDesc' => 'The service request is processed successfully.']); return; }
 
 // Claude Messages API stand-in: records the request, answers with a canned reply
 if (str_starts_with($path, '/v1/messages')) {

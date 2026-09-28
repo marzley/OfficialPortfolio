@@ -28,7 +28,7 @@ cat > "$WORK/portal-config.php" <<CFG
 CFG
 cat > "$WORK/mpesa-config.php" <<CFG
 <?php return ['consumer_key' => 'k', 'consumer_secret' => 's', 'shortcode' => '174379', 'till_number' => '6095737', 'passkey' => 'p',
-  'callback_secret' => 'testsecret', 'callback_url' => 'https://example.com/callback.php?key=testsecret', 'skip_confirm' => true];
+  'callback_secret' => 'testsecret', 'base' => 'http://127.0.0.1:8898', 'callback_url' => 'https://example.com/callback.php?key=testsecret', 'skip_confirm' => true];
 CFG
 export PORTAL_CONFIG="$WORK/portal-config.php" MPESA_CONFIG="$WORK/mpesa-config.php" PORTAL_PRIVATE_DIR="$WORK/private" FAKE_DIR="$WORK/fake"
 php -S 127.0.0.1:8898 tests/fake-services.php > "$WORK/fake.log" 2>&1 &

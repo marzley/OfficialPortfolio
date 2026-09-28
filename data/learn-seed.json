@@ -1,0 +1,278 @@
+{
+ "tracks": [
+  {
+   "slug": "html",
+   "title": "HTML",
+   "lang": "html",
+   "summary": "Build the structure of every web page: headings, text, links, images, lists, tables and forms.",
+   "lessons": [
+    {
+     "slug": "introduction",
+     "title": "HTML introduction",
+     "body": "# HTML introduction\n\n**HTML** (HyperText Markup Language) describes the *structure* of a web page. Every website you visit, from Safaricom to your favourite blog, is built on HTML.\n\nHTML is made of **elements**. An element usually has an opening tag, some content and a closing tag:\n\n```html\n<p>This is a paragraph.</p>\n```\n\n## Your first page\n\nA complete HTML page looks like this. Press **Run** to see it, then change the text and run it again.\n\n```try-html\n<!DOCTYPE html>\n<html>\n<head>\n  <title>My first page</title>\n</head>\n<body>\n  <h1>Habari! Welcome to my page</h1>\n  <p>I am learning HTML with Marzley Tech.</p>\n</body>\n</html>\n```\n\n- `<!DOCTYPE html>` tells the browser this is a modern HTML page.\n- `<head>` holds information *about* the page, like its title (shown on the browser tab).\n- `<body>` holds everything you see on the page.\n\n> Tip: HTML is not case-sensitive, but we always write tags in lowercase. It is the standard.\n",
+     "exercise": "Make a page with a main heading that says **Hello Kenya** and a paragraph under it.",
+     "starter": "<!DOCTYPE html>\n<html>\n<body>\n  \n</body>\n</html>",
+     "expected": "",
+     "must_contain": "<h1>\nHello Kenya\n</h1>\n<p>"
+    },
+    {
+     "slug": "headings-paragraphs",
+     "title": "Headings and paragraphs",
+     "body": "# Headings and paragraphs\n\nHTML has six levels of headings, from `<h1>` (most important) to `<h6>` (least important). Use **one** `<h1>` per page for the main title. Search engines like Google use headings to understand your page.\n\n```try-html\n<h1>Mama Mboga Online</h1>\n<h2>Fresh vegetables</h2>\n<h3>Sukuma wiki</h3>\n<p>Fresh from Limuru every morning.</p>\n<h3>Tomatoes</h3>\n<p>Sold per kilo or per crate.</p>\n```\n\n## Paragraphs and line breaks\n\nThe `<p>` element is a paragraph. The browser ignores extra spaces and new lines in your code, so use `<br>` for a line break and `<hr>` for a horizontal line.\n\n```try-html\n<p>Marzley Tech Solutions<br>Nairobi, Kenya<br>+254 745 789 590</p>\n<hr>\n<p>This paragraph\n   has lots of     spaces\n   but shows on one line.</p>\n```\n\n## Formatting text\n\n```try-html\n<p><strong>Important:</strong> offer ends Friday.</p>\n<p>Prices are <em>negotiable</em>.</p>\n<p>Water is H<sub>2</sub>O and 10<sup>2</sup> is 100.</p>\n<p><mark>Highlighted</mark> and <small>small print</small>.</p>\n```\n",
+     "exercise": "Write an `<h2>` that says **Our services** followed by a paragraph that contains the word **websites** in bold (use `<strong>`).",
+     "starter": "<h1>Marzley Tech</h1>",
+     "expected": "",
+     "must_contain": "<h2>\nOur services\n<strong>websites</strong>"
+    },
+    {
+     "slug": "links-images",
+     "title": "Links and images",
+     "body": "# Links and images\n\n## Links\n\nA link uses the `<a>` element. The `href` attribute says where it goes.\n\n```try-html\n<p><a href=\"https://marzleytechsolutions.co.ke\">Visit Marzley Tech</a></p>\n<p><a href=\"https://wa.me/254745789590\" target=\"_blank\">Chat on WhatsApp</a> (opens a new tab)</p>\n<p><a href=\"mailto:hello@example.com\">Send us an email</a></p>\n<p><a href=\"tel:+254745789590\">Call us</a></p>\n```\n\n**Attributes** give extra information about an element. They always go in the opening tag: `name=\"value\"`.\n\n## Images\n\nThe `<img>` element shows a picture. It has no closing tag. Always add `alt` text: it is read aloud to blind users and shown if the image fails to load.\n\n```try-html\n<img src=\"https://picsum.photos/320/180\" alt=\"A random landscape photo\" width=\"320\" height=\"180\">\n<p>Photos should be small (use WebP or JPG) so pages load fast on mobile data.</p>\n```\n\n> Setting `width` and `height` stops the page from \"jumping\" while images load.\n",
+     "exercise": "Add a link with the text **Our work** that goes to `https://marzleytechsolutions.co.ke/work`.",
+     "starter": "<p>See what we've built:</p>",
+     "expected": "",
+     "must_contain": "<a\nhref=\"https://marzleytechsolutions.co.ke/work\"\nOur work"
+    },
+    {
+     "slug": "lists-tables",
+     "title": "Lists and tables",
+     "body": "# Lists and tables\n\n## Lists\n\nUse `<ul>` for an unordered (bulleted) list and `<ol>` for an ordered (numbered) list. Each item is an `<li>`.\n\n```try-html\n<h3>Shopping list</h3>\n<ul>\n  <li>Unga</li>\n  <li>Sugar</li>\n  <li>Milk</li>\n</ul>\n<h3>How to pay with M-Pesa</h3>\n<ol>\n  <li>Go to M-Pesa and choose Lipa na M-Pesa</li>\n  <li>Choose Buy Goods and Services</li>\n  <li>Enter the till number and amount</li>\n</ol>\n```\n\n## Tables\n\nTables show data in rows (`<tr>`) and cells. Header cells use `<th>`; normal cells use `<td>`.\n\n```try-html\n<table border=\"1\" cellpadding=\"6\">\n  <tr><th>Package</th><th>Price (KSh)</th></tr>\n  <tr><td>Starter website</td><td>15,000</td></tr>\n  <tr><td>Business website</td><td>35,000</td></tr>\n  <tr><td>Online shop</td><td>40,000</td></tr>\n</table>\n```\n\n> Use tables for data, not for page layout. Layout is CSS's job.\n",
+     "exercise": "Make an ordered list (`<ol>`) with three items: **Nairobi**, **Mombasa** and **Kisumu**.",
+     "starter": "",
+     "expected": "",
+     "must_contain": "<ol>\n<li>Nairobi</li>\n<li>Mombasa</li>\n<li>Kisumu</li>"
+    },
+    {
+     "slug": "forms",
+     "title": "Forms",
+     "body": "# Forms\n\nForms collect information from users: sign-ups, orders, contact messages.\n\n```try-html\n<form>\n  <p>\n    <label for=\"name\">Your name</label><br>\n    <input id=\"name\" name=\"name\" type=\"text\" placeholder=\"e.g. Wanjiku\">\n  </p>\n  <p>\n    <label for=\"phone\">Phone number</label><br>\n    <input id=\"phone\" name=\"phone\" type=\"tel\" placeholder=\"Enter your phone number\">\n  </p>\n  <p>\n    <label for=\"plan\">Package</label><br>\n    <select id=\"plan\" name=\"plan\">\n      <option>Starter</option>\n      <option>Business</option>\n      <option>Online shop</option>\n    </select>\n  </p>\n  <p>\n    <label><input type=\"checkbox\" name=\"hosting\"> I also need hosting</label>\n  </p>\n  <p>\n    <label for=\"msg\">Message</label><br>\n    <textarea id=\"msg\" name=\"message\" rows=\"3\"></textarea>\n  </p>\n  <button type=\"submit\">Send</button>\n</form>\n```\n\n- Every input should have a `<label>`. Clicking the label focuses the input, and screen readers read it out.\n- `type=\"email\"`, `type=\"tel\"` and `type=\"number\"` show the right keyboard on phones.\n- Add `required` to make a field compulsory.\n",
+     "exercise": "Build a form with an email input (`type=\"email\"`) that is `required`, and a submit button.",
+     "starter": "<form>\n  \n</form>",
+     "expected": "",
+     "must_contain": "<form\ntype=\"email\"\nrequired\n<button"
+    },
+    {
+     "slug": "semantic",
+     "title": "Semantic HTML",
+     "body": "# Semantic HTML\n\n*Semantic* elements describe their meaning. They help search engines, screen readers and other developers understand your page.\n\n```try-html\n<header>\n  <h1>Kibanda Café</h1>\n  <nav><a href=\"#menu\">Menu</a> · <a href=\"#contact\">Contact</a></nav>\n</header>\n<main>\n  <section id=\"menu\">\n    <h2>Menu</h2>\n    <article>\n      <h3>Chapati and beans</h3>\n      <p>KSh 150</p>\n    </article>\n  </section>\n</main>\n<footer id=\"contact\">\n  <p>Open daily 7am to 9pm · Kilimani, Nairobi</p>\n</footer>\n```\n\n| Element | Use it for |\n|---|---|\n| `<header>` | The top of a page or section (logo, title) |\n| `<nav>` | Main navigation links |\n| `<main>` | The main content (once per page) |\n| `<section>` | A group of related content with a heading |\n| `<article>` | Something that stands on its own (a post, a product) |\n| `<footer>` | The bottom: contacts, copyright |\n\n> Well-structured HTML ranks better on Google and works better for everyone.\n",
+     "exercise": "Wrap a heading **Welcome** in a `<header>`, and a paragraph in a `<footer>`.",
+     "starter": "",
+     "expected": "",
+     "must_contain": "<header>\n<footer>\nWelcome"
+    }
+   ]
+  },
+  {
+   "slug": "css",
+   "title": "CSS",
+   "lang": "css",
+   "summary": "Style your pages: colours, fonts, spacing, the box model, Flexbox, Grid and mobile-friendly layouts.",
+   "lessons": [
+    {
+     "slug": "introduction",
+     "title": "CSS introduction",
+     "body": "# CSS introduction\n\n**CSS** (Cascading Style Sheets) controls how HTML looks: colours, fonts, spacing and layout.\n\nA CSS rule has a **selector** (what to style) and **declarations** (how to style it):\n\n```css\nh1 {\n  color: navy;\n  font-size: 32px;\n}\n```\n\nYou can put CSS in a `<style>` element in the page. Press **Run**, then change the colours.\n\n```try-html\n<style>\n  body { font-family: system-ui, sans-serif; background: #f8fafc; }\n  h1 { color: #0b1b35; }\n  p { color: #475569; font-size: 18px; }\n</style>\n<h1>Styled with CSS</h1>\n<p>CSS makes pages look good on every screen.</p>\n```\n\n## Three ways to add CSS\n\n1. **External file** (best for real sites): `<link rel=\"stylesheet\" href=\"style.css\">`\n2. **Internal**: a `<style>` element, as above.\n3. **Inline**: `<p style=\"color: red\">` (avoid; it's hard to maintain).\n",
+     "exercise": "Make every `<p>` on the page **green** using a `<style>` rule.",
+     "starter": "<style>\n  \n</style>\n<p>Karibu!</p>",
+     "expected": "",
+     "must_contain": "p\ncolor\ngreen"
+    },
+    {
+     "slug": "selectors-colours",
+     "title": "Selectors and colours",
+     "body": "# Selectors and colours\n\n## Selectors\n\n```try-html\n<style>\n  p { color: #334155; }              /* every <p> */\n  .price { color: #047857; font-weight: bold; }   /* class=\"price\" */\n  #offer { background: #fef3c7; padding: 8px; }   /* id=\"offer\" */\n  li:hover { color: #b45309; }       /* when the mouse is over it */\n</style>\n<p>Normal paragraph.</p>\n<p class=\"price\">KSh 2,500</p>\n<p id=\"offer\">Offer: free delivery in Nairobi!</p>\n<ul><li>Hover over me</li><li>And me</li></ul>\n```\n\n- **Element** selector: `p`\n- **Class** selector: `.price` (use for things that repeat)\n- **ID** selector: `#offer` (unique, once per page)\n\n## Colours\n\nCSS colours can be names (`red`), hex (`#ffb800`), `rgb(255, 184, 0)` or `hsl(43, 100%, 50%)`.\n\n```try-html\n<style>\n  div { padding: 10px; margin: 4px 0; color: white; font-family: sans-serif; }\n</style>\n<div style=\"background: #0b1b35\">#0b1b35 navy</div>\n<div style=\"background: rgb(4, 120, 87)\">rgb(4, 120, 87) green</div>\n<div style=\"background: hsl(0, 70%, 45%)\">hsl(0, 70%, 45%) red</div>\n```\n\n> Keep enough contrast between text and background so everyone can read it.\n",
+     "exercise": "Give the paragraph with `class=\"price\"` a **red** colour using a class selector.",
+     "starter": "<style>\n  \n</style>\n<p class=\"price\">KSh 900</p>",
+     "expected": "",
+     "must_contain": ".price\ncolor"
+    },
+    {
+     "slug": "box-model",
+     "title": "The box model",
+     "body": "# The box model\n\nEvery element is a box made of four layers:\n\n1. **Content**: the text or image\n2. **Padding**: space inside the border\n3. **Border**: the line around it\n4. **Margin**: space outside, between boxes\n\n```try-html\n<style>\n  .card {\n    width: 220px;\n    padding: 16px;\n    border: 3px solid #ffb800;\n    margin: 20px;\n    border-radius: 12px;\n    background: #fff7e0;\n    font-family: sans-serif;\n  }\n  * { box-sizing: border-box; }\n</style>\n<div class=\"card\">I have padding, a border and a margin.</div>\n<div class=\"card\">So do I.</div>\n```\n\n> `box-sizing: border-box` makes `width` include padding and border. Most developers set it on everything.\n",
+     "exercise": "Give `.box` a padding of **20px** and a **2px solid** border.",
+     "starter": "<style>\n  .box {\n    \n  }\n</style>\n<div class=\"box\">Box</div>",
+     "expected": "",
+     "must_contain": "padding\n20px\nborder\n2px solid"
+    },
+    {
+     "slug": "flexbox",
+     "title": "Flexbox layout",
+     "body": "# Flexbox layout\n\n**Flexbox** lays items out in a row or column, and makes spacing and alignment easy.\n\n```try-html\n<style>\n  .row { display: flex; gap: 12px; justify-content: space-between; align-items: center;\n         padding: 12px; background: #0b1b35; font-family: sans-serif; }\n  .row a { color: white; text-decoration: none; }\n  .logo { color: #ffb800; font-weight: bold; }\n</style>\n<nav class=\"row\">\n  <span class=\"logo\">MyShop</span>\n  <div style=\"display:flex; gap:16px\">\n    <a href=\"#\">Home</a><a href=\"#\">Products</a><a href=\"#\">Contact</a>\n  </div>\n</nav>\n```\n\n| Property | What it does |\n|---|---|\n| `display: flex` | Turns on Flexbox for the children |\n| `flex-direction` | `row` (default) or `column` |\n| `justify-content` | Spacing along the row: `center`, `space-between` |\n| `align-items` | Alignment across: `center`, `flex-start` |\n| `gap` | Space between items |\n| `flex-wrap: wrap` | Lets items move to the next line on small screens |\n",
+     "exercise": "Make `.menu` a flex container with a **gap** between the items.",
+     "starter": "<style>\n  .menu {\n    \n  }\n</style>\n<div class=\"menu\"><span>Tea</span><span>Coffee</span><span>Juice</span></div>",
+     "expected": "",
+     "must_contain": "display\nflex\ngap"
+    },
+    {
+     "slug": "responsive",
+     "title": "Responsive design",
+     "body": "# Responsive design\n\nMost Kenyans browse on phones, so your site must look good on small screens. Two tools do most of the work:\n\n## 1. The viewport tag\n\nPut this in the `<head>` of every page:\n\n```html\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n```\n\n## 2. Media queries\n\nA media query applies CSS only when the screen matches. Run this, then drag the output panel narrower (or try on your phone).\n\n```try-html\n<style>\n  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; font-family: sans-serif; }\n  .grid div { background: #e0f2fe; padding: 20px; text-align: center; border-radius: 8px; }\n  @media (max-width: 600px) {\n    .grid { grid-template-columns: 1fr; }\n  }\n</style>\n<div class=\"grid\"><div>One</div><div>Two</div><div>Three</div></div>\n```\n\n> Design for mobile first, then add media queries for bigger screens.\n",
+     "exercise": "Write a media query for screens up to **600px** wide that makes `h1` smaller.",
+     "starter": "<style>\n  h1 { font-size: 48px; }\n  \n</style>\n<h1>Hello</h1>",
+     "expected": "",
+     "must_contain": "@media\nmax-width\n600px"
+    }
+   ]
+  },
+  {
+   "slug": "javascript",
+   "title": "JavaScript",
+   "lang": "javascript",
+   "summary": "Make pages interactive: variables, functions, arrays, objects, loops, the DOM and events.",
+   "lessons": [
+    {
+     "slug": "introduction",
+     "title": "JavaScript introduction",
+     "body": "# JavaScript introduction\n\n**JavaScript** makes web pages do things: react to clicks, check forms, load data and more. It runs in every browser.\n\n`console.log()` prints a value to the output. Press **Run**:\n\n```try-javascript\nconsole.log(\"Hello, Kenya!\");\nconsole.log(2 + 3);\nconsole.log(\"Total: KSh \" + (1500 * 3));\n```\n\n## Variables\n\nStore values in variables with `let` (can change) or `const` (can't change).\n\n```try-javascript\nconst name = \"Achieng\";\nlet balance = 1000;\nbalance = balance - 250;\nconsole.log(name + \" has KSh \" + balance);\nconsole.log(`${name} has KSh ${balance}`);   // template string: easier\n```\n\n## Types\n\n```try-javascript\nconsole.log(typeof \"text\");    // string\nconsole.log(typeof 42);        // number\nconsole.log(typeof true);      // boolean\nconsole.log(typeof [1, 2]);    // object (an array)\n```\n",
+     "exercise": "Create a variable `price` with the value **250** and print `price * 4`. The output should be **1000**.",
+     "starter": "let price = 0;",
+     "expected": "1000",
+     "must_contain": ""
+    },
+    {
+     "slug": "conditions",
+     "title": "Conditions",
+     "body": "# Conditions\n\nUse `if`, `else if` and `else` to run code only when something is true.\n\n```try-javascript\nconst amount = 1200;\n\nif (amount >= 1000) {\n  console.log(\"Free delivery!\");\n} else if (amount >= 500) {\n  console.log(\"Delivery: KSh 100\");\n} else {\n  console.log(\"Delivery: KSh 200\");\n}\n```\n\n## Comparison operators\n\n| Operator | Meaning |\n|---|---|\n| `===` | equal (value and type) |\n| `!==` | not equal |\n| `>` `<` `>=` `<=` | greater / less than |\n| `&&` | and |\n| `||` | or |\n\n```try-javascript\nconst age = 20, hasId = true;\nconsole.log(age >= 18 && hasId ? \"Allowed in\" : \"Not allowed\");\nconsole.log(5 == \"5\");   // true (loose, avoid)\nconsole.log(5 === \"5\");  // false (strict, use this)\n```\n",
+     "exercise": "Given `const score = 75;`, print **Pass** if the score is 50 or more, otherwise **Fail**.",
+     "starter": "const score = 75;",
+     "expected": "Pass",
+     "must_contain": ""
+    },
+    {
+     "slug": "loops-arrays",
+     "title": "Arrays and loops",
+     "body": "# Arrays and loops\n\nAn **array** holds a list of values.\n\n```try-javascript\nconst towns = [\"Nairobi\", \"Mombasa\", \"Kisumu\"];\nconsole.log(towns[0]);        // first item\nconsole.log(towns.length);    // how many\ntowns.push(\"Nakuru\");         // add one\nconsole.log(towns);\n```\n\n## Loops\n\n```try-javascript\nconst prices = [200, 450, 1200];\nlet total = 0;\nfor (const p of prices) {\n  total += p;\n}\nconsole.log(\"Total:\", total);\n\nfor (let i = 1; i <= 3; i++) {\n  console.log(\"Round \" + i);\n}\n```\n\n## Useful array methods\n\n```try-javascript\nconst prices = [200, 450, 1200];\nconsole.log(prices.map(p => p * 2));          // [400, 900, 2400]\nconsole.log(prices.filter(p => p > 300));     // [450, 1200]\nconsole.log(prices.reduce((a, b) => a + b));  // 1850\n```\n",
+     "exercise": "Use a loop (or `reduce`) to add up the numbers in `nums` and print the total. It should be **100**.",
+     "starter": "const nums = [10, 20, 30, 40];",
+     "expected": "100",
+     "must_contain": ""
+    },
+    {
+     "slug": "functions-objects",
+     "title": "Functions and objects",
+     "body": "# Functions and objects\n\nA **function** is reusable code. Give it inputs (parameters) and it can `return` a result.\n\n```try-javascript\nfunction vat(amount) {\n  return amount * 0.16;\n}\nconsole.log(vat(1000));   // 160\n\nconst withVat = (amount) => amount + vat(amount);   // arrow function\nconsole.log(withVat(1000));   // 1160\n```\n\n## Objects\n\nAn **object** groups related values as `key: value` pairs.\n\n```try-javascript\nconst product = {\n  name: \"Bluetooth speaker\",\n  price: 3500,\n  inStock: true,\n};\nconsole.log(product.name);\nproduct.price = 3200;\nconsole.log(`${product.name}: KSh ${product.price}`);\n\nconst cart = [\n  { name: \"Mouse\", price: 1200, qty: 2 },\n  { name: \"Charger\", price: 800, qty: 1 },\n];\nconst total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);\nconsole.log(\"Cart total:\", total);\n```\n",
+     "exercise": "Write a function `double(n)` that returns `n * 2`, then print `double(21)`. The output should be **42**.",
+     "starter": "function double(n) {\n  \n}\n\nconsole.log(double(21));",
+     "expected": "42",
+     "must_contain": ""
+    },
+    {
+     "slug": "dom-events",
+     "title": "The DOM and events",
+     "body": "# The DOM and events\n\nThe **DOM** is the page as JavaScript sees it. You can find elements, change them and react to clicks.\n\nRun this and click the button:\n\n```try-html\n<h2 id=\"count\">Clicks: 0</h2>\n<button id=\"btn\">Click me</button>\n<script>\n  let clicks = 0;\n  const btn = document.getElementById(\"btn\");\n  const label = document.getElementById(\"count\");\n  btn.addEventListener(\"click\", () => {\n    clicks++;\n    label.textContent = \"Clicks: \" + clicks;\n    console.log(\"Clicked\", clicks, \"times\");\n  });\n</script>\n```\n\n## A tiny calculator\n\n```try-html\n<input id=\"a\" type=\"number\" value=\"1500\"> ×\n<input id=\"b\" type=\"number\" value=\"3\">\n<button id=\"go\">=</button> <strong id=\"res\"></strong>\n<script>\n  document.getElementById(\"go\").addEventListener(\"click\", () => {\n    const a = Number(document.getElementById(\"a\").value);\n    const b = Number(document.getElementById(\"b\").value);\n    document.getElementById(\"res\").textContent = a * b;\n  });\n</script>\n```\n\n> Use `textContent` (not `innerHTML`) to show text typed by users. It's safer.\n",
+     "exercise": "Using `document.querySelector`, change the text of the `<h1>` to **Done** and print it with `console.log`.",
+     "starter": "<h1>Loading…</h1>\n<script>\n  \n</script>",
+     "expected": "Done",
+     "must_contain": "querySelector\ntextContent"
+    }
+   ]
+  },
+  {
+   "slug": "python",
+   "title": "Python",
+   "lang": "python",
+   "summary": "Learn programming with Python: variables, input and output, conditions, loops, lists, dictionaries and functions.",
+   "lessons": [
+    {
+     "slug": "introduction",
+     "title": "Python introduction",
+     "body": "# Python introduction\n\n**Python** is one of the easiest programming languages to learn, and one of the most used: for websites, data, automation and AI. It runs right here in your browser.\n\n```try-python\nprint(\"Hello, Kenya!\")\nprint(2 + 3)\nprint(\"KSh\", 1500 * 3)\n```\n\n> The first run takes a few seconds while Python loads. After that it's instant.\n\n## Variables\n\nPython doesn't need `let` or `const`. Just give a name a value.\n\n```try-python\nname = \"Kamau\"\nage = 24\nheight = 1.75\nis_student = True\n\nprint(name, \"is\", age, \"years old\")\nprint(f\"{name} is {height} m tall\")   # f-string: easiest way to mix text and values\nprint(type(age), type(height), type(name))\n```\n\n## Comments\n\nAnything after `#` is a comment. Python ignores it.\n",
+     "exercise": "Create a variable `town` with the value **Nakuru** and print `I live in Nakuru` using an f-string.",
+     "starter": "town = \"\"",
+     "expected": "I live in Nakuru",
+     "must_contain": ""
+    },
+    {
+     "slug": "numbers-strings",
+     "title": "Numbers and strings",
+     "body": "# Numbers and strings\n\n## Maths\n\n```try-python\nprint(10 + 3)   # 13\nprint(10 - 3)   # 7\nprint(10 * 3)   # 30\nprint(10 / 3)   # 3.333...\nprint(10 // 3)  # 3  (whole number division)\nprint(10 % 3)   # 1  (remainder)\nprint(2 ** 10)  # 1024 (power)\nprint(round(10 / 3, 2))\n```\n\n## Strings\n\n```try-python\nshop = \"mama mboga\"\nprint(shop.upper())\nprint(shop.title())\nprint(len(shop))\nprint(shop.replace(\"mama\", \"baba\"))\nprint(\"mboga\" in shop)\nprint(shop[0:4])   # slicing: characters 0 to 3\n```\n\n## Converting\n\n```try-python\nprice = \"250\"\nqty = 3\nprint(int(price) * qty)   # 750, after turning the text into a number\nprint(\"Total: \" + str(int(price) * qty))\n```\n",
+     "exercise": "Print the length of the string `\"Marzley Tech\"`. The output should be **12**.",
+     "starter": "text = \"Marzley Tech\"",
+     "expected": "12",
+     "must_contain": "len("
+    },
+    {
+     "slug": "conditions",
+     "title": "If statements",
+     "body": "# If statements\n\nPython uses **indentation** (4 spaces) to group code. There are no curly braces.\n\n```try-python\namount = 1200\n\nif amount >= 1000:\n    print(\"Free delivery!\")\nelif amount >= 500:\n    print(\"Delivery: KSh 100\")\nelse:\n    print(\"Delivery: KSh 200\")\n```\n\n## Combining conditions\n\n```try-python\nage = 20\nhas_id = True\n\nif age >= 18 and has_id:\n    print(\"You can vote\")\n\nmarks = 65\ngrade = \"A\" if marks >= 80 else \"B\" if marks >= 60 else \"C\"\nprint(\"Grade:\", grade)\n```\n\n## Input\n\n`input()` asks the user to type something. (Here it opens a small box.)\n\n```try-python\nname = input(\"What is your name? \")\nprint(f\"Karibu, {name}!\")\n```\n",
+     "exercise": "Given `marks = 45`, print **Pass** if marks are 50 or more, otherwise print **Fail**.",
+     "starter": "marks = 45",
+     "expected": "Fail",
+     "must_contain": "if"
+    },
+    {
+     "slug": "loops-lists",
+     "title": "Lists and loops",
+     "body": "# Lists and loops\n\n## Lists\n\n```try-python\ntowns = [\"Nairobi\", \"Mombasa\", \"Kisumu\"]\nprint(towns[0])\ntowns.append(\"Eldoret\")\nprint(towns, len(towns))\nprint(sorted(towns))\n```\n\n## for loops\n\n```try-python\nprices = [200, 450, 1200]\ntotal = 0\nfor p in prices:\n    total += p\nprint(\"Total:\", total)\nprint(\"Also:\", sum(prices))\n\nfor i in range(1, 4):\n    print(\"Round\", i)\n```\n\n## while loops\n\n```try-python\nbalance = 1000\nday = 0\nwhile balance > 0:\n    balance -= 300\n    day += 1\nprint(\"Money runs out on day\", day)\n```\n\n## List comprehensions\n\n```try-python\nprices = [200, 450, 1200]\nwith_vat = [p * 1.16 for p in prices]\nprint(with_vat)\nprint([p for p in prices if p > 300])\n```\n",
+     "exercise": "Use a loop to print the numbers **1 to 5**, each on its own line.",
+     "starter": "",
+     "expected": "1\n2\n3\n4\n5",
+     "must_contain": "for"
+    },
+    {
+     "slug": "functions-dicts",
+     "title": "Functions and dictionaries",
+     "body": "# Functions and dictionaries\n\n## Functions\n\n```try-python\ndef vat(amount):\n    return amount * 0.16\n\ndef with_vat(amount):\n    return amount + vat(amount)\n\nprint(vat(1000))\nprint(with_vat(1000))\n\ndef greet(name, greeting=\"Habari\"):\n    return f\"{greeting}, {name}!\"\n\nprint(greet(\"Njeri\"))\nprint(greet(\"Otieno\", \"Hello\"))\n```\n\n## Dictionaries\n\nA dictionary stores `key: value` pairs.\n\n```try-python\nproduct = {\"name\": \"Mouse\", \"price\": 1200, \"stock\": 15}\nprint(product[\"name\"])\nproduct[\"price\"] = 1000\nprint(product)\n\ncart = [\n    {\"name\": \"Mouse\", \"price\": 1200, \"qty\": 2},\n    {\"name\": \"Charger\", \"price\": 800, \"qty\": 1},\n]\ntotal = sum(item[\"price\"] * item[\"qty\"] for item in cart)\nprint(\"Cart total:\", total)\n\nfor key, value in product.items():\n    print(key, \"=\", value)\n```\n",
+     "exercise": "Write a function `square(n)` that returns `n * n`, then print `square(9)`. The output should be **81**.",
+     "starter": "def square(n):\n    pass\n\nprint(square(9))",
+     "expected": "81",
+     "must_contain": "def square"
+    }
+   ]
+  },
+  {
+   "slug": "sql",
+   "title": "SQL",
+   "lang": "sql",
+   "summary": "Talk to databases: SELECT, WHERE, ORDER BY, functions, GROUP BY and JOIN, on a sample Kenyan shop database.",
+   "lessons": [
+    {
+     "slug": "select",
+     "title": "SELECT",
+     "body": "# SQL SELECT\n\n**SQL** (Structured Query Language) is how programs read and change data in databases like MySQL, PostgreSQL and SQLite. Nearly every website and app uses one.\n\nYou have a sample shop database with three tables:\n\n- **Customers** (CustomerID, Name, City, Phone)\n- **Products** (ProductID, Name, Category, Price)\n- **Orders** (OrderID, CustomerID, ProductID, Quantity, OrderDate)\n\n`SELECT` reads data. `*` means every column.\n\n```try-sql\nSELECT * FROM Customers;\n```\n\nChoose columns by name:\n\n```try-sql\nSELECT Name, City FROM Customers;\n```\n\nOnly unique values:\n\n```try-sql\nSELECT DISTINCT City FROM Customers;\n```\n\n> Your changes never break anything: the sample database is fresh every time you press Run.\n",
+     "exercise": "Select only the **Name** and **Price** columns from the **Products** table.",
+     "starter": "",
+     "expected": "Name,Price",
+     "must_contain": "SELECT\nProducts"
+    },
+    {
+     "slug": "where-order",
+     "title": "WHERE and ORDER BY",
+     "body": "# WHERE and ORDER BY\n\n## WHERE filters rows\n\n```try-sql\nSELECT * FROM Customers WHERE City = 'Kisumu';\n```\n\n```try-sql\nSELECT Name, Price FROM Products WHERE Price > 1000;\n```\n\nCombine conditions with `AND`, `OR`, `NOT`, `IN`, `BETWEEN` and `LIKE`:\n\n```try-sql\nSELECT * FROM Products\nWHERE Category IN ('Storage', 'Electronics') AND Price BETWEEN 800 AND 4000;\n```\n\n```try-sql\nSELECT * FROM Customers WHERE Name LIKE 'A%';   -- names starting with A\n```\n\n## ORDER BY sorts\n\n```try-sql\nSELECT Name, Price FROM Products ORDER BY Price DESC;\n```\n\n## LIMIT\n\n```try-sql\nSELECT Name, Price FROM Products ORDER BY Price DESC LIMIT 3;\n```\n",
+     "exercise": "Select all customers from **Nairobi**.",
+     "starter": "SELECT * FROM Customers",
+     "expected": "Wanjiku Mwangi,Nairobi",
+     "must_contain": "WHERE"
+    },
+    {
+     "slug": "functions-group",
+     "title": "Functions and GROUP BY",
+     "body": "# Functions and GROUP BY\n\n## Aggregate functions\n\n```try-sql\nSELECT COUNT(*) AS products, MIN(Price) AS cheapest, MAX(Price) AS dearest, AVG(Price) AS average\nFROM Products;\n```\n\n## GROUP BY\n\n`GROUP BY` puts rows into groups, then the functions work per group.\n\n```try-sql\nSELECT City, COUNT(*) AS customers\nFROM Customers\nGROUP BY City\nORDER BY customers DESC;\n```\n\n```try-sql\nSELECT Category, COUNT(*) AS items, SUM(Price) AS total_value\nFROM Products\nGROUP BY Category;\n```\n\n## HAVING filters groups\n\n```try-sql\nSELECT City, COUNT(*) AS customers\nFROM Customers\nGROUP BY City\nHAVING COUNT(*) > 1;\n```\n",
+     "exercise": "Count how many products are in each **Category** (use `GROUP BY`).",
+     "starter": "",
+     "expected": "Accessories,2",
+     "must_contain": "GROUP BY"
+    },
+    {
+     "slug": "joins",
+     "title": "JOIN",
+     "body": "# JOIN\n\nData is split across tables. `JOIN` puts it back together using matching IDs.\n\n```try-sql\nSELECT Orders.OrderID, Customers.Name, Orders.OrderDate\nFROM Orders\nJOIN Customers ON Customers.CustomerID = Orders.CustomerID;\n```\n\nJoin three tables and do some maths:\n\n```try-sql\nSELECT c.Name AS customer, p.Name AS product, o.Quantity, p.Price * o.Quantity AS total\nFROM Orders o\nJOIN Customers c ON c.CustomerID = o.CustomerID\nJOIN Products p ON p.ProductID = o.ProductID\nORDER BY total DESC;\n```\n\n## LEFT JOIN\n\n`LEFT JOIN` keeps every row from the first table, even with no match. Who hasn't ordered yet?\n\n```try-sql\nSELECT c.Name, o.OrderID\nFROM Customers c\nLEFT JOIN Orders o ON o.CustomerID = c.CustomerID\nWHERE o.OrderID IS NULL;\n```\n",
+     "exercise": "Show each order's **OrderID** with the **product Name**, by joining Orders and Products.",
+     "starter": "",
+     "expected": "",
+     "must_contain": "JOIN\nProducts\nOrders"
+    },
+    {
+     "slug": "changing-data",
+     "title": "INSERT, UPDATE and DELETE",
+     "body": "# INSERT, UPDATE and DELETE\n\n## INSERT adds rows\n\n```try-sql\nINSERT INTO Customers (Name, City, Phone) VALUES ('Mutua Musyoka', 'Machakos', '0712000008');\nSELECT * FROM Customers;\n```\n\n## UPDATE changes rows\n\n```try-sql\nUPDATE Products SET Price = 3200 WHERE ProductID = 5;\nSELECT * FROM Products WHERE ProductID = 5;\n```\n\n> **Always** use `WHERE` with UPDATE and DELETE. Without it, *every* row changes!\n\n## DELETE removes rows\n\n```try-sql\nDELETE FROM Orders WHERE OrderID = 7;\nSELECT COUNT(*) AS orders_left FROM Orders;\n```\n\n## CREATE TABLE\n\n```try-sql\nCREATE TABLE Suppliers (SupplierID INTEGER PRIMARY KEY, Name TEXT NOT NULL, Town TEXT);\nINSERT INTO Suppliers (Name, Town) VALUES ('Nyeri Tech Distributors', 'Nyeri');\nSELECT * FROM Suppliers;\n```\n",
+     "exercise": "Insert a new product called **Webcam** in the **Electronics** category costing **2800**, then select all products.",
+     "starter": "",
+     "expected": "Webcam,Electronics,2800",
+     "must_contain": "INSERT INTO Products"
+    }
+   ]
+  }
+ ]
+}

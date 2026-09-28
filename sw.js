@@ -3,7 +3,7 @@
  * long, show the saved copy of that page, or the offline page if there is none.
  * Styles, scripts and images: use the saved copy when the network fails.
  * Change VERSION whenever offline.html or this file changes. */
-var VERSION = "marzley-v3";
+var VERSION = "marzley-v4";
 var OFFLINE_URL = "offline.html";
 var PAGE_TIMEOUT = 10000;
 var PRECACHE = [
@@ -52,6 +52,8 @@ self.addEventListener("fetch", function (event) {
   if (/\.(php|apk)$/.test(url.pathname)) return;
   // The client portal holds private data: never save any of it
   if (url.pathname.indexOf("/portal/") === 0) return;
+  // The Python and SQL runtimes are large; the browser's own cache keeps them
+  if (/^\/vendor\/(pyodide|sqljs)\//.test(url.pathname)) return;
 
   if (request.mode === "navigate") {
     var network = fetch(request);

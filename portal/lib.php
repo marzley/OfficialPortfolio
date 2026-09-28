@@ -5,7 +5,7 @@ if (!defined('MARZLEY_PORTAL')) {
     exit;
 }
 
-const SCHEMA_VERSION = 4;
+const SCHEMA_VERSION = 5;
 const STAFF_PERMS = ['projects' => 'Projects & files', 'clients' => 'People', 'support' => 'Support', 'courses' => 'Courses', 'money' => 'Invoices, payments & quotes', 'leads' => 'Leads'];
 const PROJECT_STATUSES = ['planning', 'design', 'build', 'review', 'live', 'on_hold'];
 const INVOICE_STATUSES = ['unpaid', 'paid', 'cancelled'];
@@ -101,6 +101,19 @@ function migrate(PDO $pdo): void {
         "CREATE TABLE IF NOT EXISTS audit_log (id $id, actor VARCHAR(190) NOT NULL, action VARCHAR(60) NOT NULL, detail VARCHAR(500) NOT NULL DEFAULT '', ip VARCHAR(45) NOT NULL DEFAULT '', created_at DATETIME NOT NULL)$end",
         "CREATE TABLE IF NOT EXISTS recurring_invoices (id $id, client_id $uint NOT NULL, project_id $uint NULL, description VARCHAR(300) NOT NULL, amount $uint NOT NULL, day_of_month $uint NOT NULL DEFAULT 1, due_days $uint NOT NULL DEFAULT 7, next_date DATE NOT NULL, active $uint NOT NULL DEFAULT 1, created_at DATETIME NOT NULL)$end",
         "CREATE TABLE IF NOT EXISTS reminders (id $id, kind VARCHAR(30) NOT NULL, ref_id $uint NOT NULL, stage VARCHAR(30) NOT NULL, sent_at DATETIME NOT NULL, UNIQUE (kind, ref_id, stage))$end",
+        // v5: learning hub (free tutorials and notes, paid videos)
+        "CREATE TABLE IF NOT EXISTS learners (id $id, email VARCHAR(190) NOT NULL UNIQUE, name VARCHAR(120) NOT NULL DEFAULT '', phone VARCHAR(30) NOT NULL DEFAULT '', created_at DATETIME NOT NULL, last_seen DATETIME NULL)$end",
+        "CREATE TABLE IF NOT EXISTS learn_codes (id $id, email VARCHAR(190) NOT NULL, code_hash VARCHAR(64) NOT NULL, attempts $uint NOT NULL DEFAULT 0, expires_at DATETIME NOT NULL, used_at DATETIME NULL, created_at DATETIME NOT NULL)$end",
+        "CREATE TABLE IF NOT EXISTS learn_tracks (id $id, slug VARCHAR(60) NOT NULL UNIQUE, title VARCHAR(120) NOT NULL, lang VARCHAR(20) NOT NULL, summary VARCHAR(500) NOT NULL DEFAULT '', position $uint NOT NULL DEFAULT 0, published $uint NOT NULL DEFAULT 1)$end",
+        "CREATE TABLE IF NOT EXISTS learn_lessons (id $id, track_id $uint NOT NULL, slug VARCHAR(80) NOT NULL, title VARCHAR(160) NOT NULL, position $uint NOT NULL DEFAULT 0, body TEXT NOT NULL, exercise TEXT NOT NULL, starter TEXT NOT NULL, expected TEXT NOT NULL, must_contain VARCHAR(500) NOT NULL DEFAULT '', published $uint NOT NULL DEFAULT 1, updated_at DATETIME NOT NULL, UNIQUE (track_id, slug))$end",
+        "CREATE TABLE IF NOT EXISTS learn_notes (id $id, title VARCHAR(160) NOT NULL, summary VARCHAR(500) NOT NULL DEFAULT '', track_id $uint NULL, stored_name VARCHAR(80) NOT NULL, original_name VARCHAR(200) NOT NULL, size $uint NOT NULL DEFAULT 0, pages $uint NOT NULL DEFAULT 0, downloads $uint NOT NULL DEFAULT 0, published $uint NOT NULL DEFAULT 1, created_at DATETIME NOT NULL)$end",
+        "CREATE TABLE IF NOT EXISTS learn_videos (id $id, title VARCHAR(160) NOT NULL, summary TEXT NOT NULL, track_id $uint NULL, stored_name VARCHAR(80) NOT NULL, poster_name VARCHAR(80) NULL, mime VARCHAR(40) NOT NULL, size $uint NOT NULL DEFAULT 0, duration $uint NOT NULL DEFAULT 0, price $uint NOT NULL DEFAULT 50, views $uint NOT NULL DEFAULT 0, published $uint NOT NULL DEFAULT 1, created_at DATETIME NOT NULL)$end",
+        "CREATE TABLE IF NOT EXISTS learn_unlocks (id $id, video_id $uint NOT NULL, learner_id $uint NOT NULL, amount $uint NOT NULL DEFAULT 0, receipt VARCHAR(30) NOT NULL DEFAULT '', created_at DATETIME NOT NULL, UNIQUE (video_id, learner_id))$end",
+        "CREATE TABLE IF NOT EXISTS learn_payments (id $id, checkout_id VARCHAR(100) NOT NULL UNIQUE, video_id $uint NOT NULL, learner_id $uint NOT NULL, amount $uint NOT NULL, phone VARCHAR(30) NOT NULL, status VARCHAR(20) NOT NULL DEFAULT 'pending', receipt VARCHAR(30) NULL, paid_amount $uint NULL, created_at DATETIME NOT NULL, paid_at DATETIME NULL)$end",
+        "CREATE TABLE IF NOT EXISTS learn_comments (id $id, video_id $uint NOT NULL, learner_id $uint NOT NULL, body TEXT NOT NULL, hidden $uint NOT NULL DEFAULT 0, created_at DATETIME NOT NULL)$end",
+        "CREATE TABLE IF NOT EXISTS learn_likes (id $id, video_id $uint NOT NULL, learner_id $uint NOT NULL, created_at DATETIME NOT NULL, UNIQUE (video_id, learner_id))$end",
+        "CREATE TABLE IF NOT EXISTS learn_progress (id $id, learner_id $uint NOT NULL, lesson_id $uint NOT NULL, created_at DATETIME NOT NULL, UNIQUE (learner_id, lesson_id))$end",
+        "CREATE TABLE IF NOT EXISTS learn_uploads (id $id, token VARCHAR(64) NOT NULL UNIQUE, kind VARCHAR(10) NOT NULL, name VARCHAR(200) NOT NULL, size $uint NOT NULL, received $uint NOT NULL DEFAULT 0, meta TEXT NOT NULL, created_by VARCHAR(190) NOT NULL, created_at DATETIME NOT NULL)$end",
         // v4
         "CREATE TABLE IF NOT EXISTS site_payments (id $id, checkout_id VARCHAR(100) NOT NULL UNIQUE, purpose VARCHAR(20) NOT NULL, plan VARCHAR(60) NOT NULL DEFAULT '', amount $uint NOT NULL, phone VARCHAR(30) NOT NULL, name VARCHAR(120) NOT NULL DEFAULT '', referred_by VARCHAR(20) NOT NULL DEFAULT '', status VARCHAR(20) NOT NULL DEFAULT 'pending', receipt VARCHAR(30) NULL, paid_amount $uint NULL, invoice_id $uint NULL, created_at DATETIME NOT NULL, paid_at DATETIME NULL)$end",
         "CREATE TABLE IF NOT EXISTS referrers (id $id, code VARCHAR(20) NOT NULL UNIQUE, name VARCHAR(120) NOT NULL, phone VARCHAR(30) NOT NULL, created_at DATETIME NOT NULL)$end",
@@ -135,7 +148,7 @@ function migrate(PDO $pdo): void {
         try { $pdo->exec("ALTER TABLE $table ADD COLUMN $col $def"); } catch (PDOException $e) { /* already there */ }
     }
     foreach (['CREATE INDEX audit_created ON audit_log (created_at)', 'CREATE INDEX payments_invoice ON payments (invoice_id)', 'CREATE INDEX payments_ref ON payments (reference)', 'CREATE UNIQUE INDEX payments_checkout ON payments (checkout_id)', 'CREATE INDEX queue_pending ON campaign_queue (sent_at)', 'CREATE UNIQUE INDEX referral_once ON referrals (code, referred_phone, client_id)',
-              'CREATE INDEX checks_domain ON site_checks (domain_id, checked_at)'] as $sql) {
+              'CREATE INDEX checks_domain ON site_checks (domain_id, checked_at)', 'CREATE INDEX learn_comments_video ON learn_comments (video_id)', 'CREATE INDEX learn_codes_email ON learn_codes (email)'] as $sql) {
         try { $pdo->exec($sql); } catch (PDOException $e) { /* already there */ }
     }
     if ($v < 3) {
@@ -145,6 +158,7 @@ function migrate(PDO $pdo): void {
             SELECT id, amount, CASE WHEN mpesa_receipt IS NULL OR mpesa_receipt = '' THEN 'manual' ELSE 'mpesa' END, COALESCE(mpesa_receipt, ''), 'confirmed', 'system', COALESCE(paid_at, created_at), COALESCE(paid_at, created_at)
             FROM invoices WHERE status = 'paid' AND id NOT IN (SELECT invoice_id FROM payments)");
     }
+    if ($v < 5) learn_seed($pdo);
     $pdo->prepare($sqlite ? 'INSERT OR REPLACE INTO settings (k, v) VALUES (?, ?)' : 'REPLACE INTO settings (k, v) VALUES (?, ?)')
         ->execute(['schema_version', (string)SCHEMA_VERSION]);
 }
@@ -375,6 +389,7 @@ function mpesa_config(): ?array {
 
 /** Daraja address: the sandbox for testing ('environment' => 'sandbox' in mpesa-config.php), live otherwise. */
 function mpesa_base(array $c): string {
+    if (!empty($c['base'])) return rtrim($c['base'], '/');   // tests
     return ($c['environment'] ?? 'live') === 'sandbox' ? 'https://sandbox.safaricom.co.ke' : 'https://api.safaricom.co.ke';
 }
 
@@ -1048,4 +1063,89 @@ function issue_certificate(int $clientId, int $courseId): string {
     $course = q('SELECT title FROM courses WHERE id = ?', [$courseId])->fetch();
     notify_client($clientId, 'Your certificate is ready', "Congratulations on completing {$course['title']}! Download your certificate in the portal. Certificate code: $code");
     return $code;
+}
+
+// ---------- learning hub (free tutorials and notes, videos unlocked with M-Pesa) ----------
+
+/** Fill the tutorials the first time the hub runs, from data/learn-seed.json. They can be edited in the portal afterwards. */
+function learn_seed(PDO $pdo): void {
+    if ((int)$pdo->query('SELECT COUNT(*) FROM learn_tracks')->fetchColumn() > 0) return;
+    $seed = json_decode((string)@file_get_contents(site_root() . '/data/learn-seed.json'), true);
+    if (!is_array($seed['tracks'] ?? null)) return;
+    $track = $pdo->prepare('INSERT INTO learn_tracks (slug, title, lang, summary, position, published) VALUES (?, ?, ?, ?, ?, 1)');
+    $lesson = $pdo->prepare('INSERT INTO learn_lessons (track_id, slug, title, position, body, exercise, starter, expected, must_contain, published, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)');
+    foreach ($seed['tracks'] as $i => $t) {
+        $track->execute([$t['slug'], $t['title'], $t['lang'], $t['summary'] ?? '', $i + 1]);
+        $tid = (int)$pdo->lastInsertId();
+        foreach ($t['lessons'] as $j => $l) {
+            $lesson->execute([$tid, $l['slug'], $l['title'], $j + 1, $l['body'], $l['exercise'] ?? '', $l['starter'] ?? '', $l['expected'] ?? '', $l['must_contain'] ?? '', date('Y-m-d H:i:s')]);
+        }
+    }
+}
+
+/** Private folder for hub videos, posters and notes. */
+function learn_dir(string $sub = ''): string {
+    $dir = config()['storage_dir'] . '/learn' . ($sub !== '' ? "/$sub" : '');
+    if (!is_dir($dir) && !@mkdir($dir, 0750, true)) fail(500, 'The learning hub folder could not be created.');
+    return $dir;
+}
+
+/**
+ * The signed-in learner: ['id', 'email', 'name'] or null. Anyone signed in to the client portal
+ * (owner, staff or client) is a learner too, with the same email.
+ */
+function learner(): ?array {
+    if (!empty($_SESSION['learner'])) return $_SESSION['learner'];
+    $u = current_user();
+    if (!$u) return null;
+    return $_SESSION['learner'] = learner_for($u['email'], $u['name'] ?? '');
+}
+
+function learner_for(string $email, string $name): array {
+    $email = strtolower(trim($email));
+    $row = q('SELECT id, email, name FROM learners WHERE email = ?', [$email])->fetch();
+    if (!$row) {
+        q('INSERT INTO learners (email, name, created_at) VALUES (?, ?, ?)', [$email, mb_substr($name, 0, 120), now()]);
+        $row = q('SELECT id, email, name FROM learners WHERE email = ?', [$email])->fetch();
+    }
+    return ['id' => (int)$row['id'], 'email' => $row['email'], 'name' => $row['name'] ?: $name];
+}
+
+/** Owners and staff with the Courses area see every video without paying. */
+function learn_is_editor(): bool { return can(current_user(), 'courses'); }
+
+function learn_unlocked(int $videoId, ?array $l): bool {
+    if (learn_is_editor()) return true;
+    if (!$l) return false;
+    return (bool)q('SELECT id FROM learn_unlocks WHERE video_id = ? AND learner_id = ?', [$videoId, $l['id']])->fetch();
+}
+
+/**
+ * A video unlock payment result arrived: same checks as other payments (full amount, receipt
+ * not used before, Safaricom confirms), then the learner can watch. Returns the status.
+ */
+function settle_learn_payment(string $checkoutId, array $r): string {
+    $lp = q('SELECT * FROM learn_payments WHERE checkout_id = ?', [$checkoutId])->fetch();
+    if (!$lp) return 'mismatch';
+    if ($lp['status'] !== 'pending') return $lp['status'];
+    if ((int)($r['result_code'] ?? -1) !== 0) { q("UPDATE learn_payments SET status = 'failed' WHERE id = ?", [$lp['id']]); return 'failed'; }
+    $amount = (int)($r['amount'] ?? 0);
+    $receipt = strtoupper(preg_replace('/[^A-Z0-9]/i', '', (string)($r['receipt'] ?? '')));
+    if ($amount < (int)$lp['amount'] || $receipt === '' || reference_used($receipt)
+        || q('SELECT id FROM site_payments WHERE receipt = ?', [$receipt])->fetch() || q('SELECT id FROM learn_payments WHERE receipt = ?', [$receipt])->fetch()) {
+        audit('payment_rejected', "Video unlock: amount $amount, receipt '$receipt'", 'M-Pesa');
+        q("UPDATE learn_payments SET status = 'failed' WHERE id = ?", [$lp['id']]);   // so the learner is told, and can try again
+        return 'mismatch';
+    }
+    if (empty(mpesa_config()['skip_confirm'])) {
+        $code = stk_query($checkoutId);
+        if ($code === null) return 'pending';
+        if ($code !== '0') { q("UPDATE learn_payments SET status = 'failed' WHERE id = ?", [$lp['id']]); return 'failed'; }
+    }
+    if (!q("UPDATE learn_payments SET status = 'paid', receipt = ?, paid_amount = ?, paid_at = ? WHERE id = ? AND status = 'pending'", [$receipt, $amount, now(), $lp['id']])->rowCount()) return 'paid';
+    if (!q('SELECT id FROM learn_unlocks WHERE video_id = ? AND learner_id = ?', [$lp['video_id'], $lp['learner_id']])->fetch()) {
+        q('INSERT INTO learn_unlocks (video_id, learner_id, amount, receipt, created_at) VALUES (?, ?, ?, ?, ?)', [$lp['video_id'], $lp['learner_id'], $amount, $receipt, now()]);
+    }
+    audit('video_unlocked', "Video {$lp['video_id']} KSh $amount M-Pesa $receipt", 'M-Pesa');
+    return 'paid';
 }

@@ -168,7 +168,10 @@
   function load() {
     return api("data").then(function (d) {
       data = d;
-      if (isTeam()) { renderAdmin(); show("view-admin"); }
+      if (isTeam()) {
+        renderAdmin(); show("view-admin");
+        if (location.hash === "#learn" && can("courses")) { selectTab("learn"); history.replaceState(null, "", location.pathname); }
+      }
       else { renderClient(); show("view-client"); }
     }).catch(function (e) {
       if (e.status === 401) signedOut(e.message);
@@ -497,7 +500,7 @@
     var sp = $("panel-support"), sf = filterBar(sp, ":scope > .ticket", "support requests", [["open", "Open"], ["closed", "Solved"]]);
     var firstTicket = sp.querySelector(":scope > .ticket");
     if (firstTicket) { sp.insertBefore(sf.bar, firstTicket); sf.run(); }
-    if (can("courses")) renderAdminCourses();
+    if (can("courses")) { renderAdminCourses(); if (learnData) renderLearn(); }
     if (me.role === "admin") renderActivity();
     var open = (data.tickets || []).filter(function (t) { return t.status === "open"; }).length;
     $("open-count").textContent = String(open);
@@ -680,10 +683,10 @@
       h("p", { className: "portal-meta", text: "Deposits and care plans paid with the M-Pesa forms on the website. Attach a paid one to a client to give them a receipt and keep it in their account." }), ul);
   }
 
-  var TABS = ["overview", "reports", "leads", "quotes", "growth", "projects", "clients", "invoices", "domains", "support", "courses", "activity"];
-  var TAB_NAMES = { overview: "Overview", reports: "Reports", leads: "Leads", quotes: "Quotes", growth: "Growth", projects: "Projects", clients: "People", invoices: "Invoices", domains: "Domains & hosting", support: "Support", courses: "Courses", activity: "Activity & system" };
+  var TABS = ["overview", "reports", "leads", "quotes", "growth", "projects", "clients", "invoices", "domains", "support", "courses", "learn", "activity"];
+  var TAB_NAMES = { overview: "Overview", reports: "Reports", leads: "Leads", quotes: "Quotes", growth: "Growth", projects: "Projects", clients: "People", invoices: "Invoices", domains: "Domains & hosting", support: "Support", courses: "Courses", learn: "Learning hub", activity: "Activity & system" };
   // Which area each tab belongs to (staff only see the areas the owner gave them)
-  var TAB_PERM = { reports: "money", leads: "leads", quotes: "money", growth: "leads", projects: "projects", clients: "clients", invoices: "money", domains: "money", support: "support", courses: "courses", activity: "owner" };
+  var TAB_PERM = { reports: "money", leads: "leads", quotes: "money", growth: "leads", projects: "projects", clients: "clients", invoices: "money", domains: "money", support: "support", courses: "courses", learn: "courses", activity: "owner" };
   var tabAllowed = function (name) { var p = TAB_PERM[name]; return !p || (p === "owner" ? me.role === "admin" : can(p)); };
   var KINDS = { domain: "Domain", hosting: "Hosting", ssl: "SSL certificate", email: "Email", other: "Other" };
 
@@ -1183,6 +1186,7 @@
     $("admin-crumb-page").textContent = TAB_NAMES[name];
     // The chart is drawn at the panel's real width, so redraw it once it is visible
     if (name === "reports" && data) renderReports();
+    if (name === "learn" && !learnData) { renderLearn(); loadLearn(); }
     window.scrollTo(0, 0);
   }
   var resizeTimer;
@@ -1204,6 +1208,275 @@
     });
   });
   $("admin-signout").addEventListener("click", function () { $("sign-out").click(); });
+  window.addEventListener("hashchange", function () { if (location.hash === "#learn" && data && isTeam()) { selectTab("learn"); history.replaceState(null, "", location.pathname); } });
+
+  // ---------- learning hub: videos (M-Pesa unlock), free notes, tutorials, comments ----------
+  var LAPI = "learn.php";
+  var learnData = null;
+  function lapi(action, body, query) {
+    var init = { method: body === undefined ? "GET" : "POST", headers: { Accept: "application/json" }, credentials: "same-origin" };
+    if (body !== undefined) { init.headers["Content-Type"] = "application/json"; init.headers["X-CSRF-Token"] = csrf; init.body = JSON.stringify(body); }
+    return fetch(LAPI + "?action=" + action + (query || ""), init).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) { var e = new Error(d.error || "Something went wrong."); e.status = r.status; throw e; } return d; });
+    });
+  }
+  function lsave(action, body, msg) {
+    return lapi(action, body).then(function () { toast(msg || "Saved."); return loadLearn(); }).catch(function (e) { toast(e.message, true); });
+  }
+  function loadLearn() {
+    return lapi("admin").then(function (d) { learnData = d; renderLearn(); }).catch(function (e) { $("panel-learn").textContent = e.message; });
+  }
+
+  /** Send a big file in pieces, so hosting upload limits don't matter. Resumes after a dropped connection. */
+  function chunkedUpload(file, meta, onProgress) {
+    return lapi("upload_start", Object.assign({ name: file.name, size: file.size }, meta)).then(function (s) {
+      var offset = 0, fails = 0;
+      var next = function () {
+        if (offset >= file.size) return lapi("upload_finish", { token: s.token });
+        var blob = file.slice(offset, Math.min(file.size, offset + s.chunk));
+        return fetch(LAPI + "?action=upload_chunk&token=" + s.token + "&offset=" + offset, { method: "POST", credentials: "same-origin", body: blob,
+          headers: { "Content-Type": "application/octet-stream", "X-CSRF-Token": csrf, Accept: "application/json" } })
+          .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) {
+            if (r.ok || r.status === 409) { offset = d.received; fails = 0; onProgress(offset / file.size); return next(); }
+            throw new Error(d.error || "Upload failed.");
+          }); }, function () {
+            if (++fails > 5) throw new Error("The connection keeps dropping. Please try again.");
+            return new Promise(function (res) { setTimeout(res, 2000 * fails); }).then(next);
+          });
+      };
+      return next();
+    });
+  }
+
+  /** A JPEG still (max 1280 px wide) from a video file or an image file, as a data URL. */
+  function stillFrom(file, isVideo) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file);
+      setTimeout(function () { reject(new Error("The picture took too long.")); }, 15000);
+      var draw = function (src, w, h2) {
+        var scale = Math.min(1, 1280 / w), c = document.createElement("canvas");
+        c.width = Math.round(w * scale); c.height = Math.round(h2 * scale);
+        c.getContext("2d").drawImage(src, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        resolve(c.toDataURL("image/jpeg", 0.82));
+      };
+      if (isVideo) {
+        var v = document.createElement("video");
+        v.muted = true; v.preload = "auto"; v.src = url;
+        v.addEventListener("loadedmetadata", function () { v.currentTime = isFinite(v.duration) && v.duration > 0 ? Math.min(3, v.duration / 3) : 1; });
+        v.addEventListener("seeked", function () { draw(v, v.videoWidth, v.videoHeight); });
+        v.addEventListener("error", function () { URL.revokeObjectURL(url); reject(new Error("no still")); });
+      } else {
+        var img = new Image();
+        img.onload = function () { draw(img, img.naturalWidth, img.naturalHeight); };
+        img.onerror = function () { URL.revokeObjectURL(url); reject(new Error("That picture could not be read.")); };
+        img.src = url;
+      }
+    });
+  }
+  function videoDuration(file) {
+    return new Promise(function (resolve) {
+      var v = document.createElement("video"), url = URL.createObjectURL(file);
+      v.preload = "metadata";
+      v.onloadedmetadata = function () { URL.revokeObjectURL(url); resolve(isFinite(v.duration) ? Math.round(v.duration) : 0); };
+      v.onerror = function () { URL.revokeObjectURL(url); resolve(0); };
+      v.src = url;
+    });
+  }
+
+  function trackOptions(empty) { return [["", empty || "No tutorial"]].concat((learnData.tracks || []).map(function (t) { return [t.id, t.title]; })); }
+
+  function uploadForm(kind) {
+    var video = kind === "video";
+    var file = h("input", { type: "file", accept: video ? "video/mp4,video/webm,.mp4,.m4v,.webm" : "application/pdf,.pdf", required: true });
+    var title = h("input", { maxlength: "160", required: true });
+    var summary = h("textarea", { rows: "3", maxlength: video ? "4000" : "500", placeholder: video ? "What will people learn? (shown to everyone before they pay)" : "What's in these notes?" });
+    var track = select(trackOptions());
+    var price = h("input", { type: "number", min: "1", max: "100000", value: "50" });
+    var pub = h("input", { type: "checkbox", checked: true });
+    var bar = h("progress", { max: "100", value: "0", hidden: true });
+    var status = h("p", { className: "portal-meta", role: "status", "aria-live": "polite" });
+    var btn = h("button", { type: "submit", className: "btn btn-solid" }, h("i", { className: "fa-solid fa-cloud-arrow-up", "aria-hidden": "true" }), video ? " Upload video" : " Upload PDF");
+    summary.id = "lu-" + kind;
+    file.addEventListener("change", function () { if (file.files[0] && !title.value) title.value = file.files[0].name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " "); });
+    var form = h("form", { className: "form portal-form", onsubmit: function (e) {
+      e.preventDefault();
+      var f = file.files[0];
+      if (!f) { toast("Choose a file first.", true); return; }
+      btn.disabled = true; bar.hidden = false; bar.value = 0;
+      var started = Date.now();
+      var meta = { kind: kind, title: title.value, summary: summary.value, track_id: track.value, price: price.value, published: pub.checked };
+      (video ? videoDuration(f) : Promise.resolve(0)).then(function (d) {
+        meta.duration = d;
+        return chunkedUpload(f, meta, function (p) {
+          bar.value = Math.round(p * 100);
+          var secs = (Date.now() - started) / 1000, left = p > 0.02 ? secs / p - secs : 0;
+          status.textContent = Math.round(p * 100) + "% of " + size(f.size) + (left > 5 ? " · about " + (left > 90 ? Math.round(left / 60) + " min" : Math.round(left) + " s") + " left" : "") + ". Keep this page open.";
+        });
+      }).then(function (r) {
+        if (!video) return r;
+        status.textContent = "Making the preview picture…";
+        return stillFrom(f, true).then(function (img) { return lapi("poster_save", { id: r.id, data: img }); }).catch(function () {}).then(function () { return r; });
+      }).then(function () {
+        btn.disabled = false; bar.hidden = true; status.textContent = "";
+        form.reset(); price.value = "50"; pub.checked = true;
+        toast(video ? "Video uploaded." : "Notes uploaded.");
+        loadLearn();
+      }).catch(function (err) { btn.disabled = false; status.textContent = err.message; toast(err.message, true); });
+    } },
+      h("h2", { className: "full", text: video ? "Upload a video lesson" : "Upload notes or a book (PDF)" }),
+      h("p", { className: "full portal-meta", text: video ? "MP4 (H.264) or WebM, up to 2 GB. Uploads in pieces, so large files are fine; if the connection drops it carries on. A preview picture is taken from the video automatically." :
+        "PDF up to 100 MB. Notes are free: anyone can read them in the browser and download them." }),
+      field(video ? "Video file" : "PDF file", file), field("Title", title),
+      h("div", { className: "field full" }, h("label", { for: summary.id, text: video ? "Description" : "Short description" }), summary),
+      field("Tutorial (optional)", track), video ? field("Price to unlock (KSh)", price) : null,
+      h("label", { className: "check" }, pub, h("span", { text: " Publish now" })),
+      h("div", { className: "full" }, bar, status),
+      h("div", { className: "form-foot" }, btn));
+    return form;
+  }
+
+  function videoItem(v) {
+    var li = h("li", { className: "learn-item" });
+    var body = function () {
+      li.textContent = "";
+      li.appendChild(h("div", { className: "learn-thumb" }, +v.has_poster ? h("img", { src: LAPI + "?action=poster&id=" + v.id + "&t=" + Date.now(), alt: "" }) : h("i", { className: "fa-solid fa-film", "aria-hidden": "true" })));
+      li.appendChild(h("div", null, h("strong", { text: v.title }),
+        h("span", { className: "portal-meta", text: ksh(v.price) + " · " + v.unlocks + " unlocked · " + ksh(v.revenue) + " earned · " + v.views + " views · " + v.likes + " likes · " + size(v.size) + " · " + day(v.created_at) })));
+      li.appendChild(h("span", { className: "pill pill-" + (+v.published ? "paid" : "on_hold"), text: +v.published ? "Published" : "Hidden" }));
+      var pic = h("input", { type: "file", accept: "image/*", hidden: true, onchange: function () {
+        if (!pic.files[0]) return;
+        stillFrom(pic.files[0], false).then(function (img) { return lsave("poster_save", { id: v.id, data: img }, "Picture changed."); }).catch(function (e) { toast(e.message, true); });
+      } });
+      li.appendChild(h("span", { className: "row-actions" },
+        h("a", { className: "linklike", href: "../learn/?video=" + v.id, target: "_blank", rel: "noopener", text: "View" }),
+        h("button", { type: "button", className: "linklike", onclick: edit, text: "Edit" }),
+        h("button", { type: "button", className: "linklike", onclick: function () { pic.click(); }, text: "Picture" }), pic,
+        h("button", { type: "button", className: "linklike danger", onclick: function () { if (confirm("Delete “" + v.title + "”? This can't be undone.")) lsave("video_delete", { id: v.id }, "Deleted."); }, text: "Delete" })));
+    };
+    var edit = function () {
+      var title = h("input", { maxlength: "160", value: v.title }), summary = h("textarea", { rows: "3", maxlength: "4000" }), track = select(trackOptions(), v.track_id || "");
+      var price = h("input", { type: "number", min: "1", value: v.price }), pub = h("input", { type: "checkbox", checked: +v.published === 1 });
+      summary.value = v.summary; summary.id = "ve-" + v.id;
+      li.textContent = "";
+      li.appendChild(h("form", { className: "form portal-form full-row", onsubmit: function (e) { e.preventDefault(); lsave("video_save", { id: v.id, title: title.value, summary: summary.value, track_id: track.value, price: price.value, published: pub.checked }); } },
+        field("Title", title), field("Price to unlock (KSh)", price), h("div", { className: "field full" }, h("label", { for: summary.id, text: "Description" }), summary), field("Tutorial", track),
+        h("label", { className: "check" }, pub, h("span", { text: " Published" })),
+        h("div", { className: "form-foot" }, h("button", { type: "submit", className: "btn btn-solid", text: "Save" }), h("button", { type: "button", className: "btn btn-ghost", onclick: body, text: "Cancel" }))));
+    };
+    body();
+    return li;
+  }
+
+  function noteItem(n) {
+    var li = h("li");
+    var body = function () {
+      li.textContent = "";
+      li.appendChild(h("div", null, h("strong", { text: n.title }), h("span", { className: "portal-meta", text: n.original_name + " · " + size(n.size) + " · " + n.downloads + " downloads · " + day(n.created_at) })));
+      li.appendChild(h("span", { className: "pill pill-" + (+n.published ? "paid" : "on_hold"), text: +n.published ? "Published" : "Hidden" }));
+      li.appendChild(h("span", { className: "row-actions" },
+        h("a", { className: "linklike", href: "../learn/?note=" + n.id, target: "_blank", rel: "noopener", text: "View" }),
+        h("button", { type: "button", className: "linklike", onclick: edit, text: "Edit" }),
+        h("button", { type: "button", className: "linklike danger", onclick: function () { if (confirm("Delete “" + n.title + "”?")) lsave("note_delete", { id: n.id }, "Deleted."); }, text: "Delete" })));
+    };
+    var edit = function () {
+      var title = h("input", { maxlength: "160", value: n.title }), summary = h("input", { maxlength: "500", value: n.summary }), track = select(trackOptions(), n.track_id || ""), pub = h("input", { type: "checkbox", checked: +n.published === 1 });
+      li.textContent = "";
+      li.appendChild(h("form", { className: "form portal-form full-row", onsubmit: function (e) { e.preventDefault(); lsave("note_save", { id: n.id, title: title.value, summary: summary.value, track_id: track.value, published: pub.checked }); } },
+        field("Title", title), field("Short description", summary), field("Tutorial", track), h("label", { className: "check" }, pub, h("span", { text: " Published" })),
+        h("div", { className: "form-foot" }, h("button", { type: "submit", className: "btn btn-solid", text: "Save" }), h("button", { type: "button", className: "btn btn-ghost", onclick: body, text: "Cancel" }))));
+    };
+    body();
+    return li;
+  }
+
+  function lessonForm(l, trackId, onDone) {
+    l = l || { id: 0, track_id: trackId, title: "", slug: "", position: 0, body: "# Title\n\nWrite the lesson here.\n\n```try-html\n<h1>Hello</h1>\n```\n", exercise: "", starter: "", expected: "", must_contain: "", published: 1 };
+    var ta = function (v, rows, id) { var t = h("textarea", { rows: String(rows), id: id, className: "mono" }); t.value = v || ""; return t; };
+    var uid = "le-" + (l.id || "new") + "-";
+    var track = select((learnData.tracks || []).map(function (t) { return [t.id, t.title]; }), l.track_id);
+    var title = h("input", { maxlength: "160", value: l.title, required: true }), slug = h("input", { maxlength: "80", value: l.slug, placeholder: "e.g. css-grid" });
+    var pos = h("input", { type: "number", min: "0", value: l.position }), pub = h("input", { type: "checkbox", checked: +l.published === 1 });
+    var body = ta(l.body, 16, uid + "b"), ex = ta(l.exercise, 3, uid + "x"), starter = ta(l.starter, 5, uid + "s"), expected = ta(l.expected, 2, uid + "e"), must = ta(l.must_contain, 3, uid + "m");
+    title.addEventListener("input", function () { if (!l.id) slug.value = title.value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); });
+    var big = function (label, el, hint) { return h("div", { className: "field full" }, h("label", { for: el.id, text: label }), hint ? h("small", { className: "portal-meta", text: hint }) : null, el); };
+    return h("form", { className: "form portal-form lesson-form", onsubmit: function (e) {
+      e.preventDefault();
+      lapi("lesson_save", { id: l.id, track_id: track.value, title: title.value, slug: slug.value || title.value, position: pos.value, body: body.value, exercise: ex.value, starter: starter.value, expected: expected.value, must_contain: must.value, published: pub.checked })
+        .then(function () { toast("Lesson saved."); onDone(); loadLearn(); }).catch(function (err) { toast(err.message, true); });
+    } },
+      field("Tutorial", track), field("Lesson title", title), field("Web address (slug)", slug), field("Order", pos),
+      big("Lesson (Markdown)", body, "# Heading, ## Subheading, **bold**, `code`, - lists, > tip, | tables |. A code block marked ```try-html, ```try-css, ```try-javascript, ```try-python or ```try-sql gets a Run button."),
+      big("Exercise task (optional)", ex), big("Starter code for the exercise", starter),
+      big("Expected output (optional)", expected, "The learner's output must include this text."), big("Code must include (one per line, optional)", must, "Each line must appear somewhere in the learner's code, e.g. <h1> or GROUP BY."),
+      h("label", { className: "check" }, pub, h("span", { text: " Published" })),
+      h("div", { className: "form-foot" }, h("button", { type: "submit", className: "btn btn-solid", text: "Save lesson" }), h("button", { type: "button", className: "btn btn-ghost", onclick: onDone, text: "Cancel" }),
+        l.id ? h("button", { type: "button", className: "linklike danger", onclick: function () { if (confirm("Delete this lesson?")) lsave("lesson_delete", { id: l.id }, "Deleted."); }, text: "Delete lesson" }) : null));
+  }
+
+  function renderLearn() {
+    var panel = $("panel-learn");
+    panel.textContent = "";
+    if (!learnData) { panel.appendChild(h("p", { className: "portal-meta", text: "Loading…" })); return; }
+    var d = learnData, st = d.stats;
+    var cards = [["Learners", st.learners, "fa-user-graduate", st.new_learners_30 + " new in 30 days"], ["Video income", ksh(st.revenue), "fa-sack-dollar", ksh(st.revenue_30) + " in 30 days"],
+      ["Videos unlocked", st.unlocks, "fa-lock-open", (d.videos || []).length + " videos"], ["Lessons completed", st.lessons_done, "fa-circle-check", (d.lessons || []).length + " lessons · " + (d.notes || []).length + " notes"]];
+    panel.appendChild(h("section", { className: "admin-panel" },
+      h("div", { className: "admin-panel-head" }, h("h2", { text: "Learning hub" }), h("a", { className: "btn btn-ghost", href: "../learn/", target: "_blank", rel: "noopener" }, h("i", { className: "fa-solid fa-arrow-up-right-from-square", "aria-hidden": "true" }), " Open the hub")),
+      h("p", { className: "portal-meta", text: "Free tutorials with live code and free notes for everyone; videos unlocked per person with M-Pesa. Learners sign up themselves with Google or an email code." }),
+      h("div", { className: "learn-stats" }, cards.map(function (c) {
+        return h("div", { className: "learn-stat" }, h("i", { className: "fa-solid " + c[2], "aria-hidden": "true" }), h("span", null, h("small", { text: c[0] }), h("strong", { text: String(c[1]) }), h("em", { text: c[3] })));
+      }))));
+
+    panel.appendChild(h("section", { className: "admin-panel" }, uploadForm("video"),
+      h("h3", { text: "Videos" }), (d.videos || []).length ? h("ul", { className: "admin-list" }, d.videos.map(videoItem)) : h("p", { className: "portal-empty", text: "No videos yet." })));
+    panel.appendChild(h("section", { className: "admin-panel" }, uploadForm("note"),
+      h("h3", { text: "Notes & books" }), (d.notes || []).length ? h("ul", { className: "admin-list" }, d.notes.map(noteItem)) : h("p", { className: "portal-empty", text: "No notes yet." })));
+
+    // Tutorials
+    var tut = h("section", { className: "admin-panel", "aria-labelledby": "tut-title" },
+      h("div", { className: "admin-panel-head" }, h("h2", { id: "tut-title", text: "Tutorials" })),
+      h("p", { className: "portal-meta", text: "Lessons are written in simple Markdown. Code blocks marked try-… get a live editor with a Run button. Add an exercise and it checks itself." }));
+    var editorBox = h("div");
+    tut.appendChild(editorBox);
+    var openEditor = function (l, trackId) { editorBox.textContent = ""; editorBox.appendChild(lessonForm(l, trackId, function () { editorBox.textContent = ""; })); editorBox.scrollIntoView({ behavior: "smooth", block: "start" }); };
+    (d.tracks || []).forEach(function (t) {
+      var lessons = (d.lessons || []).filter(function (l) { return +l.track_id === +t.id; });
+      tut.appendChild(h("details", { className: "learn-track" },
+        h("summary", null, h("strong", { text: t.title }), h("span", { className: "portal-meta", text: " · " + lessons.length + " lessons" + (+t.published ? "" : " · hidden") })),
+        h("ol", { className: "admin-list" }, lessons.map(function (l) {
+          return h("li", null, h("div", null, h("strong", { text: l.title }), h("span", { className: "portal-meta", text: "/learn/?track=" + t.slug + "&lesson=" + l.slug + (l.exercise ? " · exercise" : "") + (+l.published ? "" : " · hidden") })),
+            h("span", { className: "row-actions" }, h("a", { className: "linklike", href: "../learn/?track=" + encodeURIComponent(t.slug) + "&lesson=" + encodeURIComponent(l.slug), target: "_blank", rel: "noopener", text: "View" }),
+              h("button", { type: "button", className: "linklike", onclick: function () { openEditor(l); }, text: "Edit" })));
+        })),
+        h("p", null, h("button", { type: "button", className: "btn btn-ghost btn-sm", onclick: function () { openEditor(null, t.id); } }, h("i", { className: "fa-solid fa-plus", "aria-hidden": "true" }), " Add a lesson to " + t.title))));
+    });
+    var tTitle = h("input", { maxlength: "120", placeholder: "e.g. PHP" }), tSlug = h("input", { maxlength: "60", placeholder: "e.g. php" }), tLang = select([["html", "HTML"], ["css", "CSS"], ["javascript", "JavaScript"], ["python", "Python"], ["sql", "SQL"], ["none", "Other (no code runner)"]]);
+    var tSum = h("input", { maxlength: "500" });
+    tut.appendChild(h("details", null, h("summary", { className: "panel-summary", text: "Add a new tutorial (subject)" }),
+      h("form", { className: "form portal-form", onsubmit: function (e) { e.preventDefault(); lsave("track_save", { title: tTitle.value, slug: tSlug.value || tTitle.value, lang: tLang.value, summary: tSum.value, position: (d.tracks || []).length + 1, published: true }); } },
+        field("Name", tTitle), field("Web address", tSlug), field("Code runs as", tLang), field("Summary", tSum),
+        h("div", { className: "form-foot" }, h("button", { type: "submit", className: "btn btn-solid", text: "Add tutorial" })))));
+    panel.appendChild(tut);
+
+    // Comments
+    var cl = (d.comments || []).map(function (c) {
+      return h("li", null, h("div", null, h("strong", { text: (c.name || c.email) + " on “" + c.title + "”" }), h("span", { className: "lead-msg", text: c.body }), h("span", { className: "portal-meta", text: c.email + " · " + day(c.created_at) })),
+        h("span", { className: "row-actions" },
+          h("button", { type: "button", className: "linklike", onclick: function () { lsave("comment_hide", { id: c.id, hidden: !+c.hidden }, +c.hidden ? "Comment shown." : "Comment hidden."); }, text: +c.hidden ? "Show" : "Hide" }),
+          h("button", { type: "button", className: "linklike danger", onclick: function () { if (confirm("Delete this comment?")) lsave("comment_delete", { id: c.id }, "Deleted."); }, text: "Delete" })));
+    });
+    panel.appendChild(h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: "Comments" })),
+      cl.length ? h("ul", { className: "admin-list" }, cl) : h("p", { className: "portal-empty", text: "No comments yet." })));
+
+    // Payments
+    var pl = (d.payments || []).map(function (p) {
+      return h("li", null, h("div", null, h("strong", { text: ksh(p.amount) + " · " + p.title }), h("span", { className: "portal-meta", text: p.email + " · " + p.phone + " · " + day(p.created_at) + (p.receipt ? " · M-Pesa " + p.receipt : "") })),
+        h("span", { className: "pill pill-" + (p.status === "paid" ? "paid" : p.status === "pending" ? "review" : "unpaid"), text: p.status === "paid" ? "Paid" : p.status === "pending" ? "Waiting" : "Not paid" }));
+    });
+    panel.appendChild(h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: "Video payments" })),
+      pl.length ? h("ul", { className: "admin-list" }, pl) : h("p", { className: "portal-empty", text: "No video payments yet." })));
+  }
 
   // ---------- admin overview (dashboard) ----------
   var ymd = function (d) { return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); };

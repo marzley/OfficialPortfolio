@@ -94,8 +94,8 @@ if ($id !== '' && (int)$entry['result_code'] === 0) {
         require __DIR__ . '/portal/lib.php';
         try {
             $result = json_decode((string)file_get_contents($store . '/' . $id . '.json'), true) ?: [];
-            // A portal invoice, or else a payment made on the public website (deposit, care plan, demo)
-            if (settle_payment($id, $result) === 'mismatch') settle_site_payment($id, $result);
+            // A portal invoice, a payment made on the public website (deposit, care plan, demo) or a video unlock
+            if (settle_payment($id, $result) === 'mismatch' && settle_site_payment($id, $result) === 'mismatch') settle_learn_payment($id, $result);
         } catch (Throwable $e) {
             report_error('M-Pesa callback', $e->getMessage());
         }

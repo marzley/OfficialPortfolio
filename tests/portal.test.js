@@ -25,21 +25,23 @@ const clearMail = () => fs.writeFileSync(WORK + "/mail.txt", "");
 function session() {
   let cookie = "", csrf = null;
   const call = async (action, body, opts = {}) => {
-    const method = opts.method || (body === undefined ? "GET" : "POST");
+    const method = opts.method || (body === undefined && opts.raw === undefined ? "GET" : "POST");
     const headers = Object.assign({ Cookie: cookie }, csrf ? { "X-CSRF-Token": csrf } : {});
     let payload;
     if (method === "POST") {
       if (body instanceof FormData) payload = body;
       else { headers["Content-Type"] = "application/json"; payload = JSON.stringify(body || {}); }
     }
-    const r = await fetch(API + action + (opts.query || ""), { method, headers, body: payload, redirect: "manual" });
+    if (method === "POST" && opts.raw !== undefined) { headers["Content-Type"] = "application/octet-stream"; payload = opts.raw; }
+    Object.assign(headers, opts.headers || {});
+    const r = await fetch((opts.api || API) + action + (opts.query || ""), { method, headers, body: payload, redirect: "manual" });
     const sc = r.headers.get("set-cookie");
     if (sc) cookie = sc.split(";")[0];
     const text = await r.text();
     let j = null;
     try { j = JSON.parse(text); } catch (e) {}
     if (j && j.csrf) csrf = j.csrf;
-    return { s: r.status, j, text, headers: r.headers };
+    return { s: r.status, j, text, headers: r.headers, raw: text };
   };
   return call;
 }
@@ -60,7 +62,7 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   const cid = one("SELECT id FROM clients WHERE email = 'client@example.com'").id;
 
   // ---------- database upgrade ----------
-  ok("database upgraded to version 4", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "4");
+  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "5");
 
   // ---------- sequential invoice numbers ----------
   r = await admin("invoice_save", { client_id: cid, description: "Website build", amount: 10000, status: "unpaid" });
@@ -437,6 +439,179 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   ok("a code works only once", r.s === 401);
   r = await anon2("code_request", { who: "0722555666" });
   ok("code can be requested with a phone number", r.s === 200);
+
+  // ---------- learning hub: free tutorials and notes, videos unlocked with M-Pesa ----------
+  {
+    const L = { api: BASE + "/portal/learn.php?action=" };
+    const lget = (s, action, query) => s(action, undefined, Object.assign({ query }, L));
+    const lpost = (s, action, body, extra) => s(action, body, Object.assign({}, L, extra || {}));
+    const guest = session();
+    const boss = await login("admin@example.com");
+    const cl = await login("client@example.com");
+    r = await lget(guest, "catalog");
+    const lessonCount = r.j.tracks.reduce((n, t) => n + t.lessons.length, 0);
+    ok("starter tutorials are there (HTML, CSS, JavaScript, Python, SQL)", r.s === 200 && r.j.tracks.map((t) => t.slug).join() === "html,css,javascript,python,sql" && lessonCount >= 25, r.j);
+    r = await lget(guest, "lesson", "&track=python&slug=introduction");
+    ok("a lesson is free to read without signing in", r.s === 200 && /```try-python/.test(r.j.lesson.body));
+    sql("UPDATE learn_lessons SET published = 0 WHERE slug = 'semantic'");
+    r = await lget(guest, "lesson", "&track=html&slug=semantic");
+    ok("hidden lessons can’t be read", r.s === 404);
+    r = await lget(guest, "me");
+    ok("visitors aren’t signed in", r.s === 200 && r.j.learner === null && !r.j.editor);
+    r = await lpost(guest, "progress", { lesson_id: 1 });
+    ok("saving progress needs an account", r.s === 401);
+
+    // anyone can sign up with an email code
+    clearMail();
+    const stu = session();
+    await lget(stu, "me");
+    r = await lpost(stu, "code_request", { email: "Student@Example.com" });
+    const lcode = (fs.readFileSync(WORK + "/mail.txt", "utf8").match(/learning hub sign-in code is (\d{6})/) || [])[1];
+    ok("learner gets a sign-up code by email", r.s === 200 && !!lcode);
+    r = await lpost(stu, "code_verify", { email: "student@example.com", code: lcode === "000000" ? "111111" : "000000" });
+    ok("wrong learner code refused", r.s === 401);
+    r = await lpost(stu, "code_verify", { email: "student@example.com", code: lcode, name: "Achieng Otieno" });
+    ok("right code creates the learner account", r.s === 200 && r.j.learner.email === "student@example.com" && one("SELECT name FROM learners WHERE email = 'student@example.com'").name === "Achieng Otieno");
+    r = await lpost(stu, "progress", { lesson_id: 3 });
+    r = await lget(stu, "me");
+    ok("lesson progress is saved to the account", r.j.progress.includes(3));
+    r = await stu("data");
+    ok("a learner is not a portal client", r.s === 401);
+    const noCsrf = await fetch(L.api + "progress", { method: "POST", headers: { "Content-Type": "application/json", Cookie: "" }, body: "{}" });
+    ok("learner changes need the CSRF token", noCsrf.status === 403);
+
+    // the owner uploads a video in pieces, and a PDF
+    const webm = Buffer.concat([Buffer.from([0x1a, 0x45, 0xdf, 0xa3]), Buffer.alloc(3000, 7)]);
+    r = await lpost(cl, "upload_start", { kind: "video", name: "x.webm", size: 10, title: "x" });
+    ok("clients can’t upload to the learning hub", r.s === 403);
+    r = await lpost(boss, "upload_start", { kind: "video", name: "lesson.exe", size: 10, title: "x" });
+    ok("only MP4/WebM videos accepted", r.s === 400, r.j);
+    r = await lpost(boss, "upload_start", { kind: "video", name: "HTML basics.webm", size: webm.length, title: "HTML basics", summary: "Build a page", price: 50, published: true, duration: 600 });
+    const tok = r.j.token;
+    ok("video upload starts", r.s === 200 && !!tok, r.j);
+    r = await lpost(boss, "upload_chunk", undefined, { query: `&token=${tok}&offset=0`, raw: webm.subarray(0, 1000) });
+    ok("first piece received", r.s === 200 && r.j.received === 1000, r.j);
+    r = await lpost(boss, "upload_chunk", undefined, { query: `&token=${tok}&offset=0`, raw: webm.subarray(0, 1000) });
+    ok("a repeated piece is refused and says where to carry on", r.s === 409 && r.j.received === 1000);
+    r = await lpost(boss, "upload_finish", { token: tok });
+    ok("an unfinished upload can’t be saved", r.s === 400);
+    r = await lpost(boss, "upload_chunk", undefined, { query: `&token=${tok}&offset=1000`, raw: webm.subarray(1000) });
+    r = await lpost(boss, "upload_finish", { token: tok });
+    const vid = r.j && r.j.id;
+    ok("video saved when every piece arrived", r.s === 200 && vid > 0 && one(`SELECT size FROM learn_videos WHERE id = ${vid}`).size == webm.length);
+    r = await lpost(boss, "upload_start", { kind: "video", name: "fake.mp4", size: 20, title: "Fake" });
+    await lpost(boss, "upload_chunk", undefined, { query: `&token=${r.j.token}&offset=0`, raw: Buffer.from("this is not a video!") });
+    r = await lpost(boss, "upload_finish", { token: r.j.token });
+    ok("a file that isn’t really a video is rejected", r.s === 400);
+    const jpeg = "data:image/jpeg;base64," + Buffer.concat([Buffer.from([0xff, 0xd8, 0xff, 0xe0]), Buffer.alloc(100)]).toString("base64");
+    r = await lpost(boss, "poster_save", { id: vid, data: jpeg });
+    ok("preview picture saved", r.s === 200);
+    const pdf = Buffer.from("%PDF-1.4\n% test notes\n" + "x".repeat(200));
+    r = await lpost(boss, "upload_start", { kind: "note", name: "Python notes.pdf", size: pdf.length, title: "Python notes", published: true });
+    await lpost(boss, "upload_chunk", undefined, { query: `&token=${r.j.token}&offset=0`, raw: pdf });
+    r = await lpost(boss, "upload_finish", { token: r.j.token });
+    const nid = r.j && r.j.id;
+    ok("PDF notes uploaded", r.s === 200 && nid > 0);
+
+    // free notes: read in the browser or download
+    r = await lget(guest, "notes");
+    ok("notes are listed for everyone", r.j.notes.some((n) => n.id == nid));
+    let fr = await fetch(L.api + "note&id=" + nid);
+    ok("notes open in the browser without paying", fr.status === 200 && fr.headers.get("content-type") === "application/pdf" && /^inline/.test(fr.headers.get("content-disposition")));
+    fr = await fetch(L.api + "note&id=" + nid + "&dl=1");
+    ok("notes can be downloaded (and downloads are counted)", /^attachment/.test(fr.headers.get("content-disposition")) && one(`SELECT downloads FROM learn_notes WHERE id = ${nid}`).downloads == 1);
+
+    // videos are locked until paid
+    r = await lget(guest, "videos");
+    const pv = r.j.videos.find((v) => v.id == vid);
+    ok("videos are listed with their price, locked", pv && pv.price === 50 && pv.unlocked === false && pv.poster);
+    fr = await fetch(L.api + "stream&id=" + vid);
+    ok("a visitor can’t watch a locked video", fr.status === 403);
+    r = await lget(stu, "stream", "&id=" + vid);
+    ok("a learner can’t watch before paying", r.s === 403);
+    r = await lpost(stu, "comment", { id: vid, body: "Hi" });
+    ok("commenting needs the video unlocked", r.s === 403);
+    r = await lpost(stu, "like", { id: vid });
+    ok("liking needs the video unlocked", r.s === 403);
+    r = await lget(boss, "stream", "&id=" + vid);
+    ok("the owner can watch without paying", r.s === 200);
+
+    // paying with M-Pesa
+    r = await lpost(stu, "unlock", { id: vid, phone: "0712 345 678" });
+    const stk1 = JSON.parse(fs.readFileSync(WORK + "/fake/stk-last.json", "utf8"));
+    ok("unlock sends an M-Pesa prompt for the video price", r.s === 200 && r.j.checkout_id === stk1.id && stk1.body.Amount === 50 && stk1.body.PhoneNumber === "254712345678");
+    await callback(r.j.checkout_id, 30, "LRNLOW0001");
+    await sleep(300);
+    r = await lget(stu, "unlock_status", "&checkout=" + r.j.checkout_id);
+    ok("paying less doesn’t unlock the video", r.j.unlocked === false && r.j.status === "failed", r.j);
+    r = await lpost(stu, "unlock", { id: vid, phone: "0712345678" });
+    const co = r.j.checkout_id;
+    r = await lget(guest, "unlock_status", "&checkout=" + co);
+    ok("payment status is private to the learner", r.s === 401);
+    await callback(co, 50, "LRN0000001");
+    await sleep(300);
+    r = await lget(stu, "unlock_status", "&checkout=" + co);
+    ok("paying the full price unlocks the video", r.j.unlocked === true && r.j.status === "paid", r.j);
+    r = await stu("stream", undefined, Object.assign({ query: "&id=" + vid, headers: { Range: "bytes=0-3" } }, L));
+    ok("unlocked video streams, with seeking (byte ranges)", r.s === 206 && r.headers.get("content-range") === `bytes 0-3/${webm.length}` && r.headers.get("content-length") === "4");
+    await stu("stream", undefined, Object.assign({ query: "&id=" + vid, headers: { Range: "bytes=4-" } }, L));
+    ok("views counted once per person", one(`SELECT views FROM learn_videos WHERE id = ${vid}`).views == 1);
+    const stu2 = session();
+    await lpost(stu2, "dev_login", { email: "kamau@example.com", name: "Kamau Njoroge" });
+    r = await lpost(stu2, "unlock", { id: vid, phone: "0722000111" });
+    await callback(r.j.checkout_id, 50, "LRN0000001");
+    await sleep(300);
+    r = await lget(stu2, "unlock_status", "&checkout=" + r.j.checkout_id);
+    ok("an M-Pesa code can’t unlock twice", r.j.unlocked === false);
+
+    // likes and comments (only for people who unlocked)
+    r = await lpost(stu, "like", { id: vid });
+    ok("like", r.s === 200 && r.j.liked === true && r.j.likes === 1);
+    r = await lpost(stu, "like", { id: vid });
+    ok("like again to undo", r.j.liked === false && r.j.likes === 0);
+    await lpost(stu, "like", { id: vid });
+    r = await lpost(stu, "comment", { id: vid, body: "Very clear, thank you!" });
+    ok("comment posted", r.s === 200);
+    r = await lget(stu2, "video", "&id=" + vid);
+    ok("people who haven’t unlocked see the count but not the comments", r.j.video.comments === 1 && r.j.video.comment_list.length === 0);
+    sql(`INSERT INTO learn_unlocks (video_id, learner_id, amount, receipt, created_at) SELECT ${vid}, id, 50, 'MANUAL', datetime('now') FROM learners WHERE email = 'kamau@example.com'`);
+    r = await lget(stu2, "video", "&id=" + vid);
+    const cm = r.j.video.comment_list[0];
+    ok("other unlocked learners see the comment, with a short name and no email", cm && cm.body === "Very clear, thank you!" && cm.name === "Achieng O." && !JSON.stringify(r.j).includes("student@example.com") && cm.mine === false);
+    r = await lpost(stu2, "comment_delete", { id: cm.id });
+    ok("learners can’t delete other people’s comments", r.s === 404);
+    r = await lpost(boss, "comment_hide", { id: cm.id, hidden: true });
+    r = await lget(stu2, "video", "&id=" + vid);
+    ok("the owner can hide a comment", r.j.video.comment_list.length === 0 && r.j.video.comments === 0);
+
+    // managing
+    r = await lget(boss, "admin");
+    ok("hub dashboard shows income and learners", r.s === 200 && r.j.stats.revenue === 100 && r.j.stats.learners >= 2 && r.j.videos[0].unlocks === 2, r.j.stats);
+    r = await lget(stu, "admin");
+    ok("learners can’t open the hub dashboard", r.s === 401 || r.s === 403);
+    r = await lpost(boss, "video_delete", { id: vid });
+    ok("a paid-for video can’t be deleted (only hidden)", r.s === 400);
+    r = await lpost(boss, "video_save", { id: vid, title: "HTML basics", summary: "", price: 80, published: false });
+    r = await lget(guest, "videos");
+    ok("hidden videos disappear from the list", !r.j.videos.some((v) => v.id == vid));
+    r = await lget(stu, "stream", "&id=" + vid);
+    ok("people who paid keep access to a hidden video", r.s === 200);
+    r = await lget(guest, "video", "&id=" + vid);
+    ok("hidden videos can’t be opened by anyone else", r.s === 404);
+    r = await lpost(boss, "lesson_save", { id: 0, track_id: 1, title: "Audio and video", slug: "audio-video", position: 9, body: "# Audio and video\n\nUse `<video>`.", published: true });
+    r = await lget(guest, "lesson", "&track=html&slug=audio-video");
+    ok("new lessons can be written in the portal", r.s === 200 && r.j.lesson.title === "Audio and video");
+
+    // a payment the callback couldn't finish is picked up by the daily job
+    await lpost(boss, "video_save", { id: vid, title: "HTML basics", summary: "", price: 50, published: true });
+    const stu3 = session();
+    await lpost(stu3, "dev_login", { email: "wanjiru@example.com" });
+    r = await lpost(stu3, "unlock", { id: vid, phone: "0733000111" });
+    fs.mkdirSync(WORK + "/private/mpesa_results", { recursive: true });
+    fs.writeFileSync(`${WORK}/private/mpesa_results/${r.j.checkout_id}.json`, JSON.stringify({ result_code: 0, amount: 50, receipt: "LRNCRON001" }));
+    cron("daily");
+    ok("daily job completes video payments the callback missed", one(`SELECT status FROM learn_payments WHERE checkout_id = '${r.j.checkout_id}'`).status === "paid");
+  }
 
   // ---------- backups, off-site copy, uptime endpoint ----------
   const out = cron("backup");

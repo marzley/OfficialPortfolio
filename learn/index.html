@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Learn to code free: HTML, CSS, JavaScript, Python, SQL | Marzley Tech Solutions</title>
+    <meta name="description" content="Free coding tutorials with a live editor: learn HTML, CSS, JavaScript, Python and SQL in your browser, practise with exercises, read free notes and watch video lessons. By Marzley Tech Solutions, Kenya." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Learn to code free | Marzley Tech Learning Hub" />
+    <meta property="og:description" content="Tutorials with a live code editor, practice exercises, free notes and video lessons. HTML, CSS, JavaScript, Python and SQL." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="../vendor/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="../vendor/codemirror/codemirror.min.css" />
+    <link rel="stylesheet" href="../css/home.min.css" />
+    <link rel="stylesheet" href="learn.css" />
+    <script src="../js/theme-init.js"></script>
+    <script src="../vendor/codemirror/codemirror.min.js" defer></script>
+    <script src="learn.js" defer></script>
+</head>
+
+<body class="learn-body">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <button type="button" class="icon-btn side-toggle" id="side-toggle" aria-controls="learn-side" aria-expanded="false" hidden>
+                <i class="fa-solid fa-bars" aria-hidden="true"></i><span class="sr-only">Lessons</span>
+            </button>
+            <a class="brand" href="../"><img src="../img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="./">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub">
+                <a href="./?page=tutorials" data-nav="tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a>
+                <a href="./?page=practice" data-nav="practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a>
+                <a href="./?page=videos" data-nav="videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a>
+                <a href="./?page=notes" data-nav="notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a>
+            </nav>
+            <div class="learn-actions">
+                <button class="icon-btn" type="button" id="theme-btn" aria-pressed="false"><i class="fa-solid fa-moon" aria-hidden="true"></i><span class="sr-only">Dark mode</span></button>
+                <a class="btn btn-ghost btn-sm" id="manage-link" href="../portal/#learn" hidden>Manage</a>
+                <button class="btn btn-solid btn-sm" type="button" id="signin-btn">Sign in</button>
+                <div class="user-menu" id="user-menu" hidden>
+                    <button type="button" class="user-btn" id="user-btn" aria-expanded="false" aria-controls="user-pop"><span class="avatar" id="user-avatar" aria-hidden="true"></span><span class="sr-only" id="user-label"></span></button>
+                    <div class="user-pop" id="user-pop" hidden>
+                        <p class="user-name" id="user-name"></p>
+                        <p class="user-email" id="user-email"></p>
+                        <p class="user-progress" id="user-progress"></p>
+                        <button type="button" class="btn btn-ghost btn-sm" id="signout-btn">Sign out</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="learn-shell" id="learn-shell">
+        <aside class="learn-side" id="learn-side" aria-label="Lessons" hidden></aside>
+        <div class="side-scrim" id="side-scrim" hidden></div>
+        <main id="learn-main" class="learn-main" tabindex="-1">
+            <p class="learn-loading"><span class="spinner" aria-hidden="true"></span> Loading…</p>
+            <noscript><p class="learn-loading">The learning hub needs JavaScript switched on.</p></noscript>
+        </main>
+    </div>
+
+    <dialog class="learn-dialog" id="signin-dialog" aria-labelledby="signin-title">
+        <form method="dialog" class="dialog-close"><button class="icon-btn" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></form>
+        <h2 id="signin-title">Sign in to the learning hub</h2>
+        <p class="muted" id="signin-why">It’s free. Save your progress, unlock videos, like and comment.</p>
+        <div id="gsi-box" class="gsi-box"></div>
+        <p class="or"><span>or use your email</span></p>
+        <form id="code-form" class="code-form" novalidate>
+            <div class="field"><label for="c-email">Email address</label><input id="c-email" type="email" autocomplete="email" maxlength="190" required /></div>
+            <div class="field" id="c-name-row"><label for="c-name">Your name <span class="muted">(shown on your comments)</span></label><input id="c-name" autocomplete="name" maxlength="120" /></div>
+            <div class="field" id="c-code-row" hidden><label for="c-code">6-digit code from your email</label><input id="c-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" /></div>
+            <p class="form-msg" id="c-msg" role="status" aria-live="polite"></p>
+            <button type="submit" class="btn btn-solid" id="c-btn">Email me a code</button>
+        </form>
+    </dialog>
+
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="../training">Training courses</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="../privacy">Privacy</a> · <a href="../terms">Terms</a></p>
+    </footer>
+</body>
+
+</html>
