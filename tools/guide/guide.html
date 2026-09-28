@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Marzley Tech Solutions: User Guide</title>
+<style>
+  @font-face { font-family: "Inter"; src: url("file:///home/user/OfficialPortfolio/fonts/inter-var.woff2") format("woff2"); font-weight: 100 900; }
+  :root {
+    --navy: #0b1b35; --navy-2: #1e3a7a; --amber: #ffb800; --amber-text: #955a06; --amber-soft: #fff7e0;
+    --blue: #2563eb; --green: #059669; --red: #dc2626; --ink: #0f172a; --muted: #475569; --faint: #94a3b8;
+    --line: #e2e8f0; --bg: #f1f5f9; --card: #ffffff;
+  }
+  @page { size: A4; margin: 16mm 15mm 18mm; }
+  @page :first { margin: 0; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; font-family: "Inter", system-ui, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.55; }
+  h1, h2, h3, h4 { color: var(--navy); line-height: 1.2; margin: 0; }
+  h2 { font-size: 22pt; font-weight: 800; letter-spacing: -.01em; }
+  h3 { font-size: 13pt; font-weight: 750; margin: 16px 0 6px; }
+  h4 { font-size: 11pt; margin: 10px 0 4px; }
+  p { margin: 0 0 8px; }
+  ul, ol { margin: 0 0 10px; padding-left: 18px; }
+  li { margin: 0 0 3px; }
+  a { color: var(--blue); text-decoration: none; }
+  code, .mono { font-family: "SFMono-Regular", Menlo, Consolas, monospace; font-size: 9pt; background: var(--bg); padding: 1px 5px; border-radius: 4px; }
+  strong { color: var(--navy); }
+
+  /* ---------- cover ---------- */
+  .cover { height: 297mm; width: 210mm; position: relative; overflow: hidden; color: #fff; page-break-after: always;
+    background: radial-gradient(circle at 88% 12%, rgba(255,184,0,.38), transparent 42%), radial-gradient(circle at 10% 95%, rgba(37,99,235,.35), transparent 45%), linear-gradient(155deg, #1e3a7a 0%, #0b1b35 62%); }
+  .cover .grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px); background-size: 28px 28px; }
+  .cover .in { position: relative; padding: 26mm 22mm; height: 100%; display: flex; flex-direction: column; }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand img { width: 64px; height: 64px; border-radius: 50%; background: #fff; }
+  .brand b { font-size: 20pt; font-weight: 800; }
+  .brand b span { color: var(--amber); }
+  .brand small { display: block; font-size: 8.5pt; letter-spacing: .18em; text-transform: uppercase; color: #cbd5e1; font-weight: 700; }
+  .cover .kicker { margin-top: 42mm; color: var(--amber); font-weight: 800; letter-spacing: .2em; text-transform: uppercase; font-size: 10pt; }
+  .cover h1 { color: #fff; font-size: 44pt; font-weight: 850; line-height: 1.02; letter-spacing: -.02em; margin: 10px 0 16px; }
+  .cover h1 span { color: var(--amber); }
+  .cover .lede { font-size: 13pt; color: #dbe4f3; max-width: 125mm; }
+  .cover .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .cover .chips span { border: 1px solid rgba(255,255,255,.25); border-radius: 999px; padding: 5px 12px; font-size: 9pt; font-weight: 650; background: rgba(255,255,255,.06); }
+  .cover .big-logo { position: absolute; right: -22mm; bottom: 32mm; width: 118mm; opacity: .10; filter: grayscale(1) brightness(3); }
+  .cover .foot { margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; font-size: 9.5pt; color: #cbd5e1; border-top: 1px solid rgba(255,255,255,.2); padding-top: 12px; }
+  .cover .foot b { color: #fff; }
+  .bar { display: inline-block; width: 60px; height: 5px; border-radius: 3px; background: var(--amber); }
+
+  /* ---------- page furniture ---------- */
+  .sec { page-break-before: always; }
+  .sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; border-bottom: 3px solid var(--navy); padding-bottom: 8px; margin-bottom: 14px; }
+  .sec-head .num { font-size: 9pt; font-weight: 800; letter-spacing: .16em; color: var(--amber-text); text-transform: uppercase; }
+  .sec-head img { width: 30px; height: 30px; border-radius: 50%; }
+  .lead { font-size: 11.5pt; color: var(--muted); }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; break-inside: avoid; }
+  .card h4 { margin-top: 0; display: flex; align-items: center; gap: 8px; }
+  .card p, .card li { font-size: 9.5pt; }
+  .ico { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 7px; background: var(--navy); color: var(--amber); font-size: 11pt; font-weight: 800; flex: none; }
+  .shot { margin: 10px 0 12px; break-inside: avoid; }
+  .shot img { width: 100%; max-height: 95mm; object-fit: cover; object-position: top; border-radius: 10px; border: 1px solid var(--line); box-shadow: 0 6px 18px rgba(11,27,53,.12); display: block; }
+  .shot figcaption { font-size: 8.5pt; color: var(--muted); margin-top: 5px; }
+  .shot figcaption b { color: var(--amber-text); }
+  .steps { counter-reset: s; list-style: none; padding: 0; }
+  .steps li { counter-increment: s; position: relative; padding-left: 30px; margin-bottom: 7px; }
+  .steps li::before { content: counter(s); position: absolute; left: 0; top: 0; width: 21px; height: 21px; border-radius: 50%; background: var(--amber); color: var(--navy); font-weight: 800; font-size: 9pt; display: grid; place-items: center; }
+  .note { background: var(--amber-soft); border-left: 4px solid var(--amber); border-radius: 8px; padding: 9px 12px; margin: 10px 0; font-size: 9.5pt; break-inside: avoid; }
+  .note b { color: var(--amber-text); }
+  .tip { background: #eff6ff; border-left: 4px solid var(--blue); border-radius: 8px; padding: 9px 12px; margin: 10px 0; font-size: 9.5pt; break-inside: avoid; }
+  table { width: 100%; border-collapse: collapse; font-size: 9.2pt; margin: 6px 0 12px; }
+  tr { break-inside: avoid; }
+  th { background: var(--navy); color: #fff; text-align: left; padding: 6px 8px; font-weight: 700; }
+  td { border-bottom: 1px solid var(--line); padding: 6px 8px; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  .pill { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 8pt; font-weight: 700; background: var(--amber-soft); color: var(--amber-text); }
+  .pill.g { background: #ecfdf5; color: var(--green); }
+  .pill.b { background: #eff6ff; color: var(--blue); }
+
+  /* ---------- contents ---------- */
+  .toc { columns: 2; column-gap: 24px; margin-top: 10px; }
+  .toc a { display: flex; gap: 10px; color: var(--ink); padding: 7px 0; border-bottom: 1px dashed var(--line); break-inside: avoid; }
+  .toc a b { color: var(--amber-text); width: 22px; flex: none; }
+
+  /* ---------- colour swatches ---------- */
+  .swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 8px 0 14px; }
+  .sw { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; break-inside: avoid; }
+  .sw i { display: block; height: 58px; }
+  .sw div { padding: 7px 9px; font-size: 8.5pt; }
+  .sw div b { display: block; font-size: 9.5pt; }
+  .logo-row { display: flex; gap: 14px; align-items: center; margin: 8px 0 14px; }
+  .logo-box { border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: grid; place-items: center; width: 150px; height: 120px; }
+  .logo-box.dark { background: var(--navy); }
+  .logo-box img { max-width: 90px; max-height: 90px; border-radius: 50%; }
+  .type-scale p { margin: 0 0 4px; }
+
+  /* ---------- system map ---------- */
+  .map { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 12px 0; }
+  .map .node { border-radius: 12px; padding: 12px; color: #fff; background: var(--navy); break-inside: avoid; }
+  .map .node.a { background: linear-gradient(150deg, #1e3a7a, #0b1b35); }
+  .map .node.b { background: #0f2a52; }
+  .map .node h4 { color: var(--amber); margin: 0 0 4px; }
+  .map .node p { font-size: 9pt; color: #dbe4f3; margin: 0; }
+  .map .node code { background: rgba(255,255,255,.12); color: #fff; }
+  .end { background: var(--navy); color: #fff; border-radius: 14px; padding: 18px 20px; margin-top: 16px; display: flex; gap: 16px; align-items: center; break-inside: avoid; }
+  .end img { width: 64px; height: 64px; border-radius: 50%; border: 3px solid var(--amber); }
+  .end h3 { color: #fff; margin: 0 0 4px; }
+  .end p { color: #dbe4f3; margin: 0; font-size: 10pt; }
+  .end b { color: var(--amber); }
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<section class="cover">
+  <div class="grid"></div>
+  <img class="big-logo" src="marzley-logo.webp" alt="" />
+  <div class="in">
+    <div class="brand"><img src="logo-256.webp" alt="Marzley Tech Solutions logo" /><div><b>Marzley<span>Tech</span> Solutions</b><small>Technology for real solutions</small></div></div>
+    <p class="kicker">User guide · 2026</p>
+    <h1>How the Marzley Tech<br /><span>system</span> works</h1>
+    <p class="lede">A complete, friendly guide to the website, the client portal, the free learning hub and our platforms: what each part does, and how to use it step by step.</p>
+    <div class="chips"><span>Website</span><span>Client portal</span><span>M-Pesa payments</span><span>Learning hub</span><span>22-language code editor</span><span>Referrals</span></div>
+    <div class="foot"><div><b>marzleytechsolutions.co.ke</b><br />info@marzleytechsolutions.co.ke</div><div style="text-align:right"><b>Call / WhatsApp</b><br />0745 789 590</div></div>
+  </div>
+</section>
+
+<!-- ============ CONTENTS ============ -->
+<section>
+  <div class="sec-head"><div><p class="num">Contents</p><h2>What's inside</h2></div><img src="logo-256.webp" alt="" /></div>
+  <p class="lead">Use this guide to find your way around. Each section explains a part of the system, with screenshots and step-by-step instructions.</p>
+  <div class="toc">
+    <a href="#s1"><b>01</b> The system at a glance</a>
+    <a href="#s2"><b>02</b> Our brand: logo, colours and fonts</a>
+    <a href="#s3"><b>03</b> The website</a>
+    <a href="#s4"><b>04</b> Prices, quotes and paying by M-Pesa</a>
+    <a href="#s5"><b>05</b> Free website health check</a>
+    <a href="#s6"><b>06</b> The client portal</a>
+    <a href="#s7"><b>07</b> Referrals: earn KSh 2,000</a>
+    <a href="#s8"><b>08</b> The learning hub</a>
+    <a href="#s9"><b>09</b> The practice code editor (22 languages)</a>
+    <a href="#s10"><b>10</b> Video lessons and notes</a>
+    <a href="#s11"><b>11</b> Our platforms: CBET Planner, BuildPro, Jobs Connect</a>
+    <a href="#s12"><b>12</b> For the team: the admin portal</a>
+    <a href="#s13"><b>13</b> Safety, privacy, help and contacts</a>
+  </div>
+
+  <h3 id="s1" style="margin-top:22px">01 · The system at a glance</h3>
+  <p>Marzley Tech Solutions runs one connected system. Visitors find us through the <strong>website</strong>, become clients in the <strong>client portal</strong>, pay securely by <strong>M-Pesa</strong>, and anyone can learn for free in the <strong>learning hub</strong>.</p>
+  <div class="map">
+    <div class="node a"><h4>Website</h4><p>Services, work, prices, blog, free tools and contact. <code>/</code></p></div>
+    <div class="node b"><h4>Client portal</h4><p>Projects, invoices, M-Pesa payments, referrals and support. <code>/portal/</code></p></div>
+    <div class="node a"><h4>Learning hub</h4><p>32 subjects, 190 lessons, notes, videos and a 22-language code editor. <code>/learn/</code></p></div>
+    <div class="node b"><h4>Payments</h4><p>M-Pesa STK push (the prompt on your phone), Till 6095737, cards via Paystack.</p></div>
+    <div class="node a"><h4>Free tools</h4><p>Website check, price calculator, quote PDF, chat assistant.</p></div>
+    <div class="node b"><h4>Platforms</h4><p>CBET Planner, BuildPro and Jobs Connect, built by Marzley Tech.</p></div>
+  </div>
+  <div class="cols3">
+    <div class="card"><h4><span class="ico">1</span>Visitors</h4><p>Browse, check a website, get a quote, read the blog, chat on WhatsApp. No account needed.</p></div>
+    <div class="card"><h4><span class="ico">2</span>Clients</h4><p>Sign up with Google or an email code, follow projects, pay invoices, refer friends and ask for support.</p></div>
+    <div class="card"><h4><span class="ico">3</span>Learners</h4><p>Learn and practise free. A free account is only needed to watch video lessons and save progress.</p></div>
+  </div>
+</section>
+
+<!-- ============ BRAND ============ -->
+<section class="sec" id="s2">
+  <div class="sec-head"><div><p class="num">Section 02</p><h2>Our brand: logo, colours and fonts</h2></div><img src="logo-256.webp" alt="" /></div>
+  <p class="lead">Every page, invoice, quote and certificate uses the same look, so clients always recognise Marzley Tech.</p>
+  <h3>Logo</h3>
+  <div class="logo-row">
+    <div class="logo-box"><img src="logo-256.webp" alt="Logo on white" /></div>
+    <div class="logo-box dark"><img src="logo-256.webp" alt="Logo on navy" /></div>
+    <div style="flex:1"><p><strong>Wordmark:</strong> Marzley<span style="color:var(--amber-text);font-weight:800">Tech</span> (“Marzley” in navy or white, “Tech” in amber).</p><p><strong>Tagline:</strong> Technology for real solutions.</p><p style="color:var(--muted);font-size:9.5pt">Keep space around the logo, never stretch it, and use the round badge on light or navy backgrounds.</p></div>
+  </div>
+  <h3>Colour codes</h3>
+  <div class="swatches">
+    <div class="sw"><i style="background:#0b1b35"></i><div><b>Navy</b>#0b1b35 · headings, header, buttons</div></div>
+    <div class="sw"><i style="background:#1e3a7a"></i><div><b>Royal navy</b>#1e3a7a · gradients</div></div>
+    <div class="sw"><i style="background:#ffb800"></i><div><b>Amber</b>#ffb800 · main buttons, highlights</div></div>
+    <div class="sw"><i style="background:#955a06"></i><div><b>Amber text</b>#955a06 · small amber text</div></div>
+    <div class="sw"><i style="background:#2563eb"></i><div><b>Blue</b>#2563eb · links</div></div>
+    <div class="sw"><i style="background:#059669"></i><div><b>Green</b>#059669 · success, “Free”, “Live”</div></div>
+    <div class="sw"><i style="background:#475569"></i><div><b>Slate</b>#475569 · body text (muted)</div></div>
+    <div class="sw"><i style="background:#f1f5f9;border-bottom:1px solid #e2e8f0"></i><div><b>Mist</b>#f1f5f9 · page background</div></div>
+  </div>
+  <p style="font-size:9.5pt;color:var(--muted)">Dark mode uses a deep navy background (#0b1628) with the same amber accents. The 60-30-10 rule applies: mostly light/neutral, navy for structure, amber only for the main action.</p>
+  <h3>Typography</h3>
+  <div class="card type-scale">
+    <p style="font-size:24pt;font-weight:850;color:var(--navy)">Inter ExtraBold: headings</p>
+    <p style="font-size:14pt;font-weight:700;color:var(--navy)">Inter Bold: section titles and buttons</p>
+    <p style="font-size:11pt;color:var(--muted)">Inter Regular: body text, 16–17 px on screen, line height 1.6.</p>
+    <p class="mono" style="display:inline-block;margin-top:4px">Monospace: code in the learning hub</p>
+  </div>
+  <h3>Buttons and labels</h3>
+  <p><span style="display:inline-block;background:#ffb800;color:#0b1b35;font-weight:800;padding:7px 16px;border-radius:999px;font-size:9.5pt">Primary: Get a free quote</span>
+     &nbsp;<span style="display:inline-block;border:2px solid #0b1b35;color:#0b1b35;font-weight:800;padding:5px 14px;border-radius:999px;font-size:9.5pt">Secondary: See our work</span>
+     &nbsp;<span class="pill g">Free</span> <span class="pill">Education</span> <span class="pill b">Live</span></p>
+</section>
+
+<!-- ============ WEBSITE ============ -->
+<section class="sec" id="s3">
+  <div class="sec-head"><div><p class="num">Section 03</p><h2>The website</h2></div><img src="logo-256.webp" alt="" /></div>
+  <p class="lead">marzleytechsolutions.co.ke introduces Kelvin Wanyoike (Marzley) and Marzley Tech Solutions, shows our work and makes it easy to start a project.</p>
+  <figure class="shot"><img src="home.png" alt="Homepage" /><figcaption><b>Homepage.</b> “Technology for real solutions.” The top bar links to every section; the moon button switches to dark mode; the round user button opens the client portal.</figcaption></figure>
+  <div class="cols">
+    <div>
+      <h3>Main pages</h3>
+      <table>
+        <tr><th>Page</th><th>What you'll find</th></tr>
+        <tr><td><strong>Work</strong></td><td>15 projects (filter by Healthcare, Education, E-commerce, Systems, Business) and case studies.</td></tr>
+        <tr><td><strong>About</strong></td><td>Kelvin's story, skills and certifications.</td></tr>
+        <tr><td><strong>Services</strong></td><td>9 services from websites to IT support.</td></tr>
+        <tr><td><strong>Process</strong></td><td>How a project runs, from free call to launch.</td></tr>
+        <tr><td><strong>Pricing</strong></td><td>Packages, quote calculator, care plans, deposit payment.</td></tr>
+        <tr><td><strong>Blog</strong></td><td>Guides on websites, SEO, M-Pesa, coding and our platforms.</td></tr>
+        <tr><td><strong>Learn</strong></td><td>The free learning hub (section 08).</td></tr>
+        <tr><td><strong>Contact</strong></td><td>WhatsApp, phone, email, booking form and call-back.</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Helpful extras on every page</h3>
+      <ul>
+        <li><strong>WhatsApp button</strong>: chat with us any time.</li>
+        <li><strong>Chat assistant</strong>: instant answers about prices, services, M-Pesa, the learning hub and our platforms.</li>
+        <li><strong>Accessibility menu</strong>: bigger text, higher contrast, less motion, reading guide.</li>
+        <li><strong>Dark mode</strong>: easier on the eyes at night.</li>
+        <li><strong>Kiswahili page</strong>: our services explained in Kiswahili.</li>
+        <li><strong>Install as an app</strong>: add the site to your phone's home screen, or download the Android app from the About section.</li>
+      </ul>
+      <div class="tip"><b>Tip:</b> the site is built mobile-first and loads fast on mobile data, so everything works on a phone.</div>
+    </div>
+  </div>
+  <figure class="shot"><img src="services.png" alt="Services" /><figcaption><b>Services.</b> Full-stack development, UI/UX and graphics, training, website optimisation and SEO, payment integrations, digital skills facilitation, hosting and care, IT support and networking, content and marketing.</figcaption></figure>
+</section>
+
+<!-- ============ PRICES ============ -->
+<section class="sec" id="s4">
+  <div class="sec-head"><div><p class="num">Section 04</p><h2>Prices, quotes and paying by M-Pesa</h2></div><img src="logo-256.webp" alt="" /></div>
+  <figure class="shot"><img src="pricing.png" alt="Pricing packages" /><figcaption><b>Pricing page.</b> Four packages with clear starting prices.</figcaption></figure>
+  <div class="cols">
+    <div>
+      <h3>Website packages</h3>
+      <table>
+        <tr><th>Package</th><th>From</th></tr>
+        <tr><td>Landing page</td><td>KSh 15,000</td></tr>
+        <tr><td>Small business website</td><td>KSh 25,000</td></tr>
+        <tr><td>E-commerce</td><td>KSh 40,000</td></tr>
+        <tr><td>Corporate / custom system</td><td>KSh 60,000</td></tr>
+      </table>
+      <h3>Care plans (monthly)</h3>
+      <table>
+        <tr><th>Plan</th><th>Price</th><th>Includes</th></tr>
+        <tr><td>Basic</td><td>KSh 1,500</td><td>Monthly backups, updates, uptime monitoring, WhatsApp help</td></tr>
+        <tr><td>Business</td><td>KSh 3,500</td><td>Weekly backups, 1 hour of changes, monthly speed &amp; SEO check</td></tr>
+        <tr><td>Premium</td><td>KSh 7,500</td><td>Daily backups, 3 hours of changes, priority 24/7</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Get an instant quote</h3>
+      <ol class="steps">
+        <li>On <strong>Pricing</strong>, choose a package in the quote calculator.</li>
+        <li>Tick add-ons (M-Pesa payments, logo, domain and hosting…).</li>
+        <li>See the estimate update instantly.</li>
+        <li>Type your name and click <strong>Download PDF quote</strong>: a branded quote you can share or print.</li>
+      </ol>
+      <h3>Pay a deposit with M-Pesa</h3>
+      <ol class="steps">
+        <li>In <strong>Pay a deposit</strong>, pick an amount, enter your name and Safaricom number.</li>
+        <li>Press <strong>Pay with M-Pesa</strong>: a prompt appears on your phone.</li>
+        <li>Enter your M-Pesa PIN. The page confirms the payment and shows your receipt code.</li>
+      </ol>
+      <div class="note"><b>Prefer to pay manually?</b> Use <strong>Buy Goods Till 6095737</strong>, then send us the M-Pesa message on WhatsApp. We never ask for your PIN.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CHECK ============ -->
+<section class="sec" id="s5">
+  <div class="sec-head"><div><p class="num">Section 05</p><h2>Free website health check</h2></div><img src="logo-256.webp" alt="" /></div>
+  <p class="lead">Anyone can test any website in seconds and get a score out of 100 with a plain-language tip for each problem.</p>
+  <figure class="shot"><img src="check.png" alt="Website check" /><figcaption><b>Website check</b> at /website-check. Type an address like yourbusiness.co.ke and press <b>Check my website</b>.</figcaption></figure>
+  <div class="cols3">
+    <div class="card"><h4><span class="ico">🔒</span>Security</h4><p>https, a valid certificate, and http:// sending visitors to the secure version.</p></div>
+    <div class="card"><h4><span class="ico">⚡</span>Speed</h4><p>Loading time, page size and compression.</p></div>
+    <div class="card"><h4><span class="ico">📱</span>Mobile</h4><p>Whether the page is set up for phone screens.</p></div>
+    <div class="card"><h4><span class="ico">G</span>Google basics</h4><p>Title, search description, one main heading, image descriptions, language.</p></div>
+    <div class="card"><h4><span class="ico">↗</span>Sharing</h4><p>Preview image for WhatsApp and Facebook, and a site icon.</p></div>
+    <div class="card"><h4><span class="ico">✓</span>Next step</h4><p>Low score? One tap sends your result to us on WhatsApp for a fix quote.</p></div>
+  </div>
+</section>
+
+<!-- ============ PORTAL ============ -->
+<section class="sec" id="s6">
+  <div class="sec-head"><div><p class="num">Section 06</p><h2>The client portal</h2></div><img src="logo-256.webp" alt="" /></div>
+  <p class="lead">Your private dashboard at <strong>marzleytechsolutions.co.ke/portal/</strong>: follow your projects, pay, download statements, refer friends and get support. Anyone can create an account.</p>
+  <div class="cols">
+    <div>
+      <h3>Create an account or sign in</h3>
+      <ol class="steps">
+        <li>Open the portal (the round user button at the top of the website, or <strong>Client login</strong>).</li>
+        <li>Choose <strong>Sign in with Google</strong>, or type your email and press <strong>Email me a code</strong>.</li>
+        <li>Enter the 6-digit code from your email (and your name the first time).</li>
+        <li>You're in. You get a <strong>client ID</strong> (e.g. MT-0005) and a personal referral code.</li>
+      </ol>
+      <div class="tip"><b>Kiswahili:</b> press the <b>Kiswahili</b> button at the top of the portal to switch language.</div>
+    </div>
+    <figure class="shot"><img src="portal-signin.png" alt="Portal sign in" /><figcaption><b>Sign-in page.</b> Google or a one-time email code, with no password to remember.</figcaption></figure>
+  </div>
+  <figure class="shot"><img src="portal-dash.png" alt="Client dashboard" /><figcaption><b>Client dashboard: Overview.</b> Active projects, balance to pay, amount paid, support requests and referral rewards at a glance.</figcaption></figure>
+  <table>
+    <tr><th style="width:24%">Tab</th><th>What you can do</th></tr>
+    <tr><td><strong>Overview</strong></td><td>Summary cards, project progress, next payment and quick actions.</td></tr>
+    <tr><td><strong>Projects</strong></td><td>Each project's status (e.g. design, development, live), progress, files and approvals.</td></tr>
+    <tr><td><strong>Request a project</strong></td><td>Describe a new website, system or change; we reply with a quote in the portal.</td></tr>
+    <tr><td><strong>Payments</strong></td><td>Invoices and balances; <strong>pay by M-Pesa</strong> (prompt on your phone) or card; download receipts and a full <strong>statement</strong>.</td></tr>
+    <tr><td><strong>Referrals</strong></td><td>Your referral link and code, and the progress of everyone you referred (section 07).</td></tr>
+    <tr><td><strong>Support</strong></td><td>Open a support request and follow our replies.</td></tr>
+    <tr><td><strong>Courses</strong></td><td>Training courses you're enrolled in and certificates (shows when you have courses).</td></tr>
+    <tr><td><strong>Domains</strong></td><td>Your domains and renewal dates (shows when we manage a domain for you).</td></tr>
+    <tr><td><strong>Profile</strong></td><td>Your name, phone (for M-Pesa and referral rewards) and account details.</td></tr>
+  </table>
+</section>
+
+<!-- ============ REFERRALS ============ -->
+<section class="sec" id="s7">
+  <div class="sec-head"><div><p class="num">Section 07</p><h2>Referrals: earn KSh 2,000</h2></div><img src="logo-256.webp" alt="" /></div>
+  <p class="lead">Know a business, school or clinic that needs a website or system? Share your link. When they become a client and their work is done, you receive <strong>KSh 2,000 by M-Pesa</strong> (or off your next invoice).</p>
+  <figure class="shot"><img src="portal-referrals.png" alt="Referrals tab" /><figcaption><b>Referrals tab.</b> Your client ID, your referral code, your link with Copy and Share on WhatsApp buttons, and the four steps.</figcaption></figure>
+  <table>
+    <tr><th>Stage</th><th>What it means</th></tr>
+    <tr><td><span class="pill b">Enquired</span></td><td>Your friend used your link or code to contact us.</td></tr>
+    <tr><td><span class="pill b">Signed up</span></td><td>They created a client account.</td></tr>
+    <tr><td><span class="pill">Project started</span></td><td>We started their project.</td></tr>
+    <tr><td><span class="pill">Paid</span></td><td>They paid for the project.</td></tr>
+    <tr><td><span class="pill g">Reward due</span></td><td>Their work is done (the project went live). Your KSh 2,000 is ready.</td></tr>
+    <tr><td><span class="pill g">Reward paid</span></td><td>We sent the reward to your M-Pesa number.</td></tr>
+  </table>
+  <div class="note"><b>Make sure</b> your phone number is saved in <b>Profile</b> so we can send your reward. You can also get a referral link without an account on the website's <b>Referrals</b> page.</div>
+</section>
+
+<!-- ============ LEARN ============ -->
+<section class="sec" id="s8">
+  <div class="sec-head"><div><p class="num">Section 08</p><h2>The learning hub</h2></div><img src="logo-256.webp" alt="" /></div>
+  <p class="lead">Free lessons for everyone at <strong>/learn/</strong>: 32 subjects, 190 lessons and over 600 practice questions. No account needed for tutorials, notes and practice.</p>
+  <figure class="shot"><img src="learn.png" alt="Learning hub home" /><figcaption><b>Learning hub home.</b> Subjects grouped into Web &amp; coding, More programming languages, Design, ICT &amp; digital skills, Networking &amp; security, and Business &amp; earning online.</figcaption></figure>
+  <div class="cols">
+    <div>
+      <h3>Subjects</h3>
+      <ul>
+        <li><strong>Coding:</strong> HTML, CSS, JavaScript, Python, SQL, PHP, TypeScript, Java, C, C++, C#, Dart &amp; Flutter, Go, algorithms, Git.</li>
+        <li><strong>Design:</strong> web design &amp; UI/UX, graphic design with Canva.</li>
+        <li><strong>ICT &amp; digital skills:</strong> computer basics, online safety, Word, Excel, PowerPoint, email &amp; Google Drive, AI tools, eCitizen &amp; KRA iTax, computer maintenance.</li>
+        <li><strong>Networking &amp; security:</strong> networking and CIDR subnetting (with calculators), Linux, cybersecurity, hosting.</li>
+        <li><strong>Business:</strong> making money online, digital marketing &amp; SEO.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>How a lesson works</h3>
+      <ol class="steps">
+        <li>Pick a subject; the lesson list appears on the left (menu button on phones).</li>
+        <li>Read the notes and press <strong>Run</strong> on the <em>Try it</em> code boxes to see results instantly.</li>
+        <li>Answer the <strong>practice questions</strong>; they check themselves.</li>
+        <li>Complete the <strong>exercise</strong> and press <strong>Check my answer</strong>.</li>
+        <li>Use <strong>Keep learning</strong> for free videos on the topic, then go to the next lesson.</li>
+      </ol>
+      <div class="tip"><b>Save your progress:</b> sign in (free) so completed lessons follow you to any device.</div>
+    </div>
+  </div>
+  <figure class="shot"><img src="lesson.png" alt="A lesson" /><figcaption><b>A lesson.</b> Notes, runnable examples, questions and an exercise, with previous/next buttons.</figcaption></figure>
+</section>
+
+<!-- ============ PRACTICE ============ -->
+<section class="sec" id="s9">
+  <div class="sec-head"><div><p class="num">Section 09</p><h2>The practice code editor</h2></div><img src="logo-256.webp" alt="" /></div>
+  <p class="lead">Write and run code in <strong>22 languages</strong> right in the browser, on a phone or computer. Open it from <strong>Practice</strong> in the learning hub.</p>
+  <figure class="shot"><img src="practice.png" alt="Practice editor with error help" /><figcaption><b>Practice editor.</b> Choose a language, write code, press <b>Run</b> (or Ctrl + Enter). If something is wrong, the line turns red and a <b>“What went wrong”</b> box explains the problem and how to fix it.</figcaption></figure>
+  <table>
+    <tr><th style="width:18%">Group</th><th>Languages</th><th style="width:36%">How it runs</th></tr>
+    <tr><td><strong>Web</strong></td><td>HTML, CSS, JavaScript, TypeScript, React, Sass, JSON, Markdown</td><td>Instantly in your browser</td></tr>
+    <tr><td><strong>Programming</strong></td><td>Python, PHP, C, C++, Lua, Ruby, Prolog</td><td>In your browser (Python, PHP and Ruby download once the first time)</td></tr>
+    <tr><td></td><td>C#, Java, Go, Rust, Kotlin</td><td>On Compiler Explorer (godbolt.org), a free online compiler. Needs internet, a few seconds.</td></tr>
+    <tr><td><strong>Data</strong></td><td>SQL (sample shop database), Regex tester</td><td>Instantly in your browser</td></tr>
+  </table>
+  <div class="cols">
+    <div class="card"><h4><span class="ico">▶</span>Useful buttons</h4><ul>
+      <li><strong>Examples…</strong> loads ready-made programs.</li>
+      <li><strong>↺ Reset</strong> brings back the starter code.</li>
+      <li><strong>Copy</strong> copies your code.</li>
+      <li>Your code is <strong>saved on your device</strong> automatically.</li>
+      <li>The <strong>About</strong> panel explains the language, gives tips and links to its lessons.</li></ul></div>
+    <div class="card"><h4><span class="ico">!</span>When code goes wrong</h4><ul>
+      <li>The error line is <strong>highlighted red</strong>; click “Line N” to jump to it.</li>
+      <li><strong>What went wrong</strong> and <strong>How to fix it</strong> in plain English, with an example.</li>
+      <li>HTML/CSS get tips: unclosed tags, missing ; or }, “colour” instead of color, missing units.</li>
+      <li>Code that runs forever is <strong>stopped after 10 seconds</strong>; the page never freezes.</li></ul></div>
+  </div>
+  <div class="note"><b>Safe by design:</b> learners' code runs in a sealed sandbox. It cannot reach the website, cookies, accounts or payments, and it doesn't load our server.</div>
+</section>
+
+<!-- ============ VIDEOS ============ -->
+<section class="sec" id="s10">
+  <div class="sec-head"><div><p class="num">Section 10</p><h2>Video lessons and notes</h2></div><img src="logo-256.webp" alt="" /></div>
+  <figure class="shot"><img src="videos.png" alt="Videos page" /><figcaption><b>Video lessons.</b> Our own step-by-step videos, plus hand-picked free YouTube channels.</figcaption></figure>
+  <div class="cols">
+    <div>
+      <h3>Watch a video lesson</h3>
+      <ol class="steps">
+        <li>Open <strong>Videos</strong> and choose a lesson (price shown, usually <strong>KSh 50</strong>).</li>
+        <li><strong>Sign in</strong> (free) with Google or an email code.</li>
+        <li>On the video page (<em>“Unlock this video”</em>), enter your M-Pesa number, then your PIN on the phone prompt.</li>
+        <li>The video unlocks at once and stays yours to watch any time. Like it and join the comments.</li>
+      </ol>
+    </div>
+    <div>
+      <h3>Free notes</h3>
+      <p>The <strong>Notes</strong> page has PDF notes you can read in the browser or download for revision, with no account needed.</p>
+      <h3>Free videos elsewhere</h3>
+      <p>Every lesson has a <strong>Watch free videos</strong> link for that exact topic, and the Videos page lists trusted channels (freeCodeCamp, CS50, Jeremy's IT Lab, ExcelIsFun and more).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PLATFORMS ============ -->
+<section class="sec" id="s11">
+  <div class="sec-head"><div><p class="num">Section 11</p><h2>Our platforms</h2></div><img src="logo-256.webp" alt="" /></div>
+  <p class="lead">Systems built and run by Marzley Tech Solutions. Each has its own blog post and case study on the website.</p>
+  <div class="card" style="margin-bottom:10px"><h4><span class="ico">C</span>CBET Planner · <a href="https://cbetplanner.co.ke/">cbetplanner.co.ke</a></h4>
+    <p>For TVET trainers: upload a curriculum and generate learning plans, session plans, information sheets and assessments in the CBET format. Review and edit everything before downloading.</p></div>
+  <div class="card" style="margin-bottom:10px"><h4><span class="ico">B</span>BuildPro · <a href="https://buildprov1.cbetplanner.co.ke/">buildprov1.cbetplanner.co.ke</a></h4>
+    <p>For architects and building engineers: from site survey to drawings, a 3D model, structural design, quantity takeoff and BQ, materials, costing and documentation, with an AI design assistant and revision tracking.</p></div>
+  <div class="card"><h4><span class="ico">J</span>Jobs Connect · <a href="https://jobs.marzleytechsolutions.co.ke/">jobs.marzleytechsolutions.co.ke</a></h4>
+    <p>Connects skilled professionals with customers. Describe a job, get matched with verified pros nearby, pay safely with <strong>M-Pesa escrow</strong> (released when the job is done), leave a review. Riders can enrol in the <strong>delivery module</strong> and customers can send parcels. English and Kiswahili.</p></div>
+</section>
+
+<!-- ============ ADMIN ============ -->
+<section class="sec" id="s12">
+  <div class="sec-head"><div><p class="num">Section 12</p><h2>For the team: the admin portal</h2></div><img src="logo-256.webp" alt="" /></div>
+  <p class="lead">Staff sign in to the same portal address. Admin accounts see the management tabs below.</p>
+  <table>
+    <tr><th style="width:22%">Tab</th><th>Used for</th></tr>
+    <tr><td>Overview &amp; Reports</td><td>Income, open work, charts and monthly reports.</td></tr>
+    <tr><td>Leads &amp; Quotes</td><td>Enquiries from the website, WhatsApp and portal requests; send quotes and convert leads into clients.</td></tr>
+    <tr><td>Growth</td><td>Referrals (mark “Work done” to release a reward), client reviews to publish on the website, the mailing list and questions asked in the chat assistant.</td></tr>
+    <tr><td>Projects</td><td>Create projects, update status and progress, share files; marking a project <strong>Live</strong> makes any referral reward due.</td></tr>
+    <tr><td>People</td><td>Clients and staff: client IDs, contact details and team access.</td></tr>
+    <tr><td>Invoices</td><td>Create invoices and payment links; M-Pesa and card payments are matched automatically; reminders and PDFs.</td></tr>
+    <tr><td>Domains &amp; hosting</td><td>Domain and hosting renewals and expiry alerts.</td></tr>
+    <tr><td>Support</td><td>Reply to client support requests.</td></tr>
+    <tr><td>Courses</td><td>Training students, lessons and verifiable certificates.</td></tr>
+    <tr><td>Learning hub</td><td>Edit subjects and lessons, upload videos (with poster images) and PDF notes, set video prices, moderate comments.</td></tr>
+    <tr><td>Activity &amp; system</td><td>A log of important actions, backups and system health.</td></tr>
+  </table>
+  <div class="tip"><b>Updating the site:</b> content is edited in the project files and published by uploading the site package to cPanel (extract and overwrite), then pressing Ctrl + F5. Payment keys and database passwords live in <code>portal-config.php</code> one folder above public_html, never in the website files.</div>
+</section>
+
+<!-- ============ HELP ============ -->
+<section class="sec" id="s13">
+  <div class="sec-head"><div><p class="num">Section 13</p><h2>Safety, privacy, help and contacts</h2></div><img src="logo-256.webp" alt="" /></div>
+  <div class="cols">
+    <div>
+      <h3>Safety and privacy</h3>
+      <ul>
+        <li>The whole site uses <strong>https</strong> (the padlock).</li>
+        <li>Sign-in uses Google or one-time email codes: no passwords to steal.</li>
+        <li>M-Pesa payments are confirmed by Safaricom; <strong>we never ask for your PIN</strong>.</li>
+        <li>Your data is handled under Kenya's Data Protection Act (2019). See the Privacy page.</li>
+        <li>Analytics cookies are only used if you accept them.</li>
+      </ul>
+      <h3>Quick fixes</h3>
+      <table>
+        <tr><th>If…</th><th>Try this</th></tr>
+        <tr><td>A page looks old or broken</td><td>Press <strong>Ctrl + F5</strong> (or clear the browser's cached files on a phone).</td></tr>
+        <tr><td>No M-Pesa prompt</td><td>Check the number (07… or 01…), unlock your phone, try again, or pay Till 6095737.</td></tr>
+        <tr><td>No sign-in code</td><td>Check spam/promotions, wait a minute, then request a new code.</td></tr>
+        <tr><td>Code stopped after 10 s</td><td>A loop never ends; read the “What went wrong” box.</td></tr>
+        <tr><td>C#/Java/Go won't run</td><td>They need internet (online compiler). Try again, or use the link shown.</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Contact us</h3>
+      <table>
+        <tr><td><strong>Phone &amp; WhatsApp</strong></td><td>0745 789 590</td></tr>
+        <tr><td><strong>Email</strong></td><td>info@marzleytechsolutions.co.ke</td></tr>
+        <tr><td><strong>Website</strong></td><td>marzleytechsolutions.co.ke</td></tr>
+        <tr><td><strong>Client portal</strong></td><td>marzleytechsolutions.co.ke/portal/</td></tr>
+        <tr><td><strong>Learning hub</strong></td><td>marzleytechsolutions.co.ke/learn/</td></tr>
+        <tr><td><strong>M-Pesa Till</strong></td><td>6095737 (Buy Goods)</td></tr>
+        <tr><td><strong>Hours</strong></td><td>Open 24/7</td></tr>
+      </table>
+      <div class="end">
+        <img src="headshot.jpg" alt="Kelvin Wanyoike" />
+        <div><h3>Kelvin G. Wanyoike (Marzley)</h3><p>Founder, developer and ICT trainer.<br /><b>Technology for real solutions.</b></p></div>
+      </div>
+    </div>
+  </div>
+</section>
+</body>
+</html>

@@ -207,7 +207,11 @@
       } catch (e) {
         try { py.runPython("__mz_guard_off()"); } catch (e2) {}
         var stopped = /CodeTookTooLong: (.*)/.exec(String(e.message || e));
-        var msg = stopped ? stopped[1] : String(e.message || e).split("\n").filter(function (l) { return l && !/^\s*File "\/lib\//.test(l) && !/_pyodide/.test(l); }).join("\n");
+        var all = String(e.message || e).split("\n"), first = -1;
+        all.forEach(function (l, i) { if (first < 0 && /File "<exec>"/.test(l)) first = i; });
+        // Show only the part of the traceback about the learner's own code
+        if (first > 0) all = ["Traceback (most recent call last):"].concat(all.slice(first));
+        var msg = stopped ? stopped[1] : all.filter(function (l) { return l && !/^\s*File "\/lib\//.test(l) && !/_pyodide/.test(l); }).join("\n");
         print(msg.trim() + "\n", "err");
         send({ type: "output", text: text.join("\n"), ok: false, error: msg, detail: msg });
       }
