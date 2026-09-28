@@ -10,7 +10,7 @@ $reply = function (int $code, array $data) { http_response_code($code); echo jso
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') $reply(405, ['ok' => false]);
 if (trim((string)($_POST['_gotcha'] ?? '')) !== '') $reply(200, ['ok' => true]);   // spam bots fill the hidden field
 
-const BUSINESS_EMAIL = 'marzleytechsolutionltd@gmail.com';
+const BUSINESS_EMAIL = 'info@marzleytechsolutions.co.ke';
 
 $get = function (array $keys, int $max) {
     foreach ($keys as $k) {

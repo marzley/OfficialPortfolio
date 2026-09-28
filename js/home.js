@@ -240,7 +240,7 @@
     var waLinks = [document.getElementById("booking-wa"), document.getElementById("fallback-wa")];
     var mailLink = document.getElementById("fallback-mail");
     var WA_NUMBER = "254745789590";
-    var EMAIL = "marzleytechsolutionltd@gmail.com";
+    var EMAIL = "info@marzleytechsolutions.co.ke";
 
     var fieldValue = function (name) {
       var el = form.elements[name];
@@ -1389,7 +1389,7 @@
         "<ul class=\"notes\"><li>This is a starting estimate. The final price depends on your exact requirements and is confirmed before work begins.</li>" +
         "<li>Domain and hosting renew yearly. Other add-ons are one-off costs.</li>" +
         "<li>Payment by M-Pesa (Till 6095737), bank transfer or card.</li></ul>" +
-        "<div class=\"foot\"><span>+254 745 789 590</span><span>marzleytechsolutionltd@gmail.com</span><span>marzleytechsolutions.co.ke</span><span>Kenya · Open 24/7</span></div>" +
+        "<div class=\"foot\"><span>+254 745 789 590</span><span>info@marzleytechsolutions.co.ke</span><span>marzleytechsolutions.co.ke</span><span>Kenya · Open 24/7</span></div>" +
         "</div><script src=\"" + esc(new URL("js/print-page.js", document.baseURI).href) + "\"><\/script></body></html>";
       var w = window.open("", "_blank");
       if (!w) { alert("Please allow pop-ups for this site to download your quote."); return; }

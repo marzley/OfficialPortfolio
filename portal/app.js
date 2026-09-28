@@ -2072,7 +2072,7 @@
       (paid ? "<div class=\"stamp\">PAID" + (inv.mpesa_receipt ? " · M-PESA " + esc(inv.mpesa_receipt) : "") + "</div>" :
         "<p class=\"notes\">Pay by M-Pesa in the client portal, or Buy Goods Till 6095737 with reference " + esc(inv.number) + ".</p>") +
       "<div class=\"foot\">" + esc((data.org && data.org.name) || "Marzley Tech Solutions") + (data.org && data.org.kra_pin ? " · KRA PIN " + esc(data.org.kra_pin) : "") +
-      " · +254 745 789 590 · marzleytechsolutionltd@gmail.com · marzleytechsolutions.co.ke · Kenya" +
+      " · +254 745 789 590 · info@marzleytechsolutions.co.ke · marzleytechsolutions.co.ke · Kenya" +
       (data.org && data.org.etims ? "<br>An eTIMS tax invoice is issued for this " + (paid ? "payment" : "invoice") + " on request." : "") + "</div></div>";
     printDoc((paid ? "Receipt " : "Invoice ") + inv.number, css, body);
   }

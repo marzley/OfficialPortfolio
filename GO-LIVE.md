@@ -97,7 +97,7 @@ admin emails automatically (at most one email per hour).
 - [ ] cPanel → **Email Deliverability**: click *Repair* / *Install the suggested record* for
       **SPF** and **DKIM** until both show valid.
 - [ ] Add a **DMARC** record (cPanel → *Zone Editor* → Add record → TXT):
-      name `_dmarc`, value `v=DMARC1; p=quarantine; rua=mailto:marzleytechsolutionltd@gmail.com`
+      name `_dmarc`, value `v=DMARC1; p=quarantine; rua=mailto:info@marzleytechsolutions.co.ke`
 - [ ] Test: https://www.mail-tester.com, send a portal email (e.g. post a project update to a test
       client using that address) and aim for 9/10 or more.
 
