@@ -185,7 +185,13 @@
         };
         window.addEventListener("message", onMsg);
         self.frame.contentWindow.postMessage({ type: "run", lang: lang, code: code }, "*");
-        setTimeout(function () { if (!done) { window.removeEventListener("message", onMsg); resolve({ text: "", ok: false, error: "timeout" }); } }, lang === "python" ? 90000 : 8000);
+        setTimeout(function () {
+          if (done) return;
+          window.removeEventListener("message", onMsg);
+          // The frame is stuck: throw it away so the next run starts a fresh one
+          if (self.frame) { self.frame.remove(); self.frame = null; self.frameLang = null; }
+          resolve({ text: "", ok: false, error: "timeout" });
+        }, lang === "python" ? 90000 : lang === "sql" ? 40000 : 10000);
       });
     });
   };
