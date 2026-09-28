@@ -479,7 +479,7 @@
         ' src="../portal/learn.php?action=stream&amp;id=' + v.id + '"></video>';
       var video = p.querySelector("video");
       video.addEventListener("contextmenu", function (e) { e.preventDefault(); });
-      watermark(p, video, v.watermark || (state.me && state.me.email) || "");
+      watermark(p, video, "Marzley Tech Solutions");
       return;
     }
     p.innerHTML = '<div class="locked"' + (v.poster ? ' style="background-image:url(\'../portal/' + esc(v.poster) + '\')"' : "") + '><div class="lock-card">' +
@@ -488,8 +488,8 @@
   }
 
   /**
-   * The viewer's email and M-Pesa number, drifting across the video (plus a faint tiled copy that
-   * can't be cropped out), so any screen recording shows who it came from. Fullscreen goes through
+   * "Marzley Tech Solutions" drifting across the video (plus a faint tiled copy that can't be
+   * cropped out), so any screen recording is branded as ours. Fullscreen goes through
    * our own button, which keeps the watermark on screen (the browser's own fullscreen would hide it).
    */
   function watermark(box, video, text) {

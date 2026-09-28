@@ -552,10 +552,6 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
     await sleep(300);
     r = await lget(stu, "unlock_status", "&checkout=" + co);
     ok("paying the full price unlocks the video", r.j.unlocked === true && r.j.status === "paid", r.j);
-    r = await lget(stu, "video", "&id=" + vid);
-    ok("the video carries a watermark naming the viewer and their M-Pesa number", /^student@example\.com · 0712345678 · #\d+$/.test(r.j.video.watermark || ""), r.j.video.watermark);
-    r = await lget(guest, "video", "&id=" + vid);
-    ok("no watermark details are sent before unlocking", r.j.video.watermark === undefined);
     r = await stu("stream", undefined, Object.assign({ query: "&id=" + vid, headers: { Range: "bytes=0-3" } }, L));
     ok("unlocked video streams, with seeking (byte ranges)", r.s === 206 && r.headers.get("content-range") === `bytes 0-3/${webm.length}` && r.headers.get("content-length") === "4");
     await stu("stream", undefined, Object.assign({ query: "&id=" + vid, headers: { Range: "bytes=4-" } }, L));

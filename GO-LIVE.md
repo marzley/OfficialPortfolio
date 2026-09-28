@@ -197,10 +197,9 @@ taken from the video; change it with **Picture**.
 **Good to know.**
 - Only people who paid (and you and staff with the Courses area) can stream a video. Downloading is
   switched off in the player and links don't work for anyone else.
-- Every video shows the viewer's email, M-Pesa number and learner number, faintly tiled and drifting
-  across the picture (also in full screen). No website can block screen recording, but any recording
-  that gets shared shows who it came from. If someone removes the watermark with browser tools, the
-  video stops. For hard blocking (a black screen when recording) use a DRM video host such as VdoCipher.
+- Every video shows "Marzley Tech Solutions", faintly tiled and drifting across the picture (also in
+  full screen), so any recording that gets shared is clearly your content. If someone removes the
+  watermark with browser tools, the video stops. For hard blocking (a black screen when recording) use a DRM video host such as VdoCipher.
 - If you hide a paid-for video, the people who bought it keep access. Paid videos can't be deleted.
 - Comments are seen only by people who unlocked the video, with first name and initial. Hide or
   delete any comment from **Learning hub → Comments**.
