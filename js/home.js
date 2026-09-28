@@ -1295,7 +1295,7 @@
 
   /* ---------- hero role rotator ---------- */
   var roleEl = document.getElementById("role-word");
-  var roles = ["web developer", "UI/UX designer", "systems builder", "IT trainer"];
+  var roles = ["a web developer", "an app developer", "a UI/UX designer", "a systems builder", "a digital skills facilitator", "a Jitume facilitator"];
   if (roleEl) {
     var roleIndex = 0;
     setInterval(function () {

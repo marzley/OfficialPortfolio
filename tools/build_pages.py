@@ -34,8 +34,8 @@ PAGES = [
     {
         "slug": "about",
         "label": "About",
-        "title": "About Kelvin Wanyoike (Marzley) | Marzley Tech Solutions",
-        "description": "Kelvin Wanyoike, known as Marzley, is a web developer, designer and IT trainer in Kenya and the founder of Marzley Tech Solutions.",
+        "title": "Kelvin Wanyoike (Marzley): Web & App Developer in Kenya",
+        "description": "Kelvin Wanyoike (Marzley): web and app developer, designer, ICT trainer, digital skills and Jitume facilitator in Kenya, founder of Marzley Tech Solutions.",
         "sections": ["about", "learnhub", "testimonials"],
     },
     {
@@ -418,9 +418,22 @@ def build_post(html, post, posts, kind="blog"):
         article["articleSection"] = "Case study"
     nodes = [web_page(post["slug"], post["title"], post["description"]), article,
              breadcrumbs((parent_name, parent_slug), (post["title"], post["slug"]))]
+    faq = post_faq(post["body"])
+    if faq:
+        nodes.append({"@type": "FAQPage", "@id": url + "#faq", "mainEntity": faq})
     page = make_page(html, post["slug"], fit_title(post.get("seo_title") or post["title"]), post["description"],
                      body, nodes, parent_slug, ["post"])
     return page.replace('<meta property="og:type" content="website" />', '<meta property="og:type" content="article" />', 1)
+
+
+def post_faq(body):
+    """Question/answer pairs from a post's <div data-faq> block, for FAQPage schema."""
+    block = re.search(r"<div[^>]*data-faq[^>]*>(.*?)</div>", body, re.S)
+    if not block:
+        return []
+    plain = lambda h: htmllib.unescape(re.sub(r"<[^>]+>", "", h)).strip()
+    return [{"@type": "Question", "name": plain(q), "acceptedAnswer": {"@type": "Answer", "text": plain(a)}}
+            for q, a in re.findall(r"<summary>(.*?)</summary>\s*<p>(.*?)</p>", block.group(1), re.S)]
 
 
 # ---------- Kiswahili ----------
@@ -431,7 +444,7 @@ SW_NAV = [("Home", "Nyumbani"), ("Work", "Kazi"), ("About", "Kuhusu"), ("Service
 
 SW_FOOTER = [
     (">Technology for real solutions<", ">Teknolojia kwa suluhisho halisi<"),
-    ("<h4>Explore</h4>", "<h4>Gundua</h4>"), ("<h4>Work</h4>", "<h4>Kazi</h4>"),
+    ("<h4>Explore</h4>", "<h4>Gundua</h4>"), ("<h4>Guides</h4>", "<h4>Miongozo</h4>"), ("<h4>Work</h4>", "<h4>Kazi</h4>"),
     ("<h4>Contact</h4>", "<h4>Mawasiliano</h4>"), ("<h4>Support</h4>", "<h4>Tuunge mkono</h4>"),
     ('href="./">Home</a>', 'href="./">Nyumbani</a>'), ('href="work">Work</a>', 'href="work">Kazi zetu</a>'),
     ('href="about">About</a>', 'href="about">Kuhusu</a>'), ('href="services">Services</a>', 'href="services">Huduma</a>'),
