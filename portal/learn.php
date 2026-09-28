@@ -222,6 +222,13 @@ switch ($action) {
         $v = video_row((int)($_GET['id'] ?? 0), $editor);
         $pv = public_video($v, $me);
         $pv['liked'] = $me && q('SELECT id FROM learn_likes WHERE video_id = ? AND learner_id = ?', [$v['id'], $me['id']])->fetch() ? true : false;
+        // Shown moving across the video: who is watching, so a screen recording can be traced back
+        if ($pv['unlocked']) {
+            $who = $me ? $me['email'] : (current_user()['email'] ?? '');
+            $paid = $me ? q("SELECT phone FROM learn_payments WHERE learner_id = ? AND video_id = ? AND status = 'paid' ORDER BY id DESC LIMIT 1", [$me['id'], $v['id']])->fetch() : null;
+            $phone = $paid ? '0' . substr(preg_replace('/\D/', '', $paid['phone']), 3) : '';
+            $pv['watermark'] = trim($who . ($phone !== '' ? ' · ' . $phone : '') . ($me ? ' · #' . $me['id'] : ''));
+        }
         // Comments are for people who unlocked the video
         $pv['comment_list'] = [];
         if ($pv['unlocked']) {

@@ -439,6 +439,7 @@
   }
 
   function pageVideo(id) {
+    while (cleanup.length) { try { cleanup.pop()(); } catch (e) {} }
     setNav("videos");
     showSide(false);
     main.innerHTML = '<p class="learn-loading"><span class="spinner" aria-hidden="true"></span> Loading…</p>';
@@ -474,14 +475,86 @@
   function renderPlayer(v) {
     var p = $("#player");
     if (v.unlocked) {
-      p.innerHTML = '<video controls playsinline preload="metadata" controlslist="nodownload" disablepictureinpicture' + (v.poster ? ' poster="../portal/' + esc(v.poster) + '"' : "") +
+      p.innerHTML = '<video controls playsinline preload="metadata" controlslist="nodownload nofullscreen noremoteplayback" disablepictureinpicture disableremoteplayback' + (v.poster ? ' poster="../portal/' + esc(v.poster) + '"' : "") +
         ' src="../portal/learn.php?action=stream&amp;id=' + v.id + '"></video>';
-      p.querySelector("video").addEventListener("contextmenu", function (e) { e.preventDefault(); });
+      var video = p.querySelector("video");
+      video.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+      watermark(p, video, v.watermark || (state.me && state.me.email) || "");
       return;
     }
     p.innerHTML = '<div class="locked"' + (v.poster ? ' style="background-image:url(\'../portal/' + esc(v.poster) + '\')"' : "") + '><div class="lock-card">' +
       '<i class="fa-solid fa-lock" aria-hidden="true"></i><h2>Unlock this video for ' + ksh(v.price) + '</h2><p>Pay once with M-Pesa and watch any time, plus join the comments.</p><div id="unlock-area"></div></div></div>';
     unlockArea(v);
+  }
+
+  /**
+   * The viewer's email and M-Pesa number, drifting across the video (plus a faint tiled copy that
+   * can't be cropped out), so any screen recording shows who it came from. Fullscreen goes through
+   * our own button, which keeps the watermark on screen (the browser's own fullscreen would hide it).
+   */
+  function watermark(box, video, text) {
+    if (!text) return;
+    var tile = document.createElement("canvas");
+    tile.width = 460; tile.height = 220;
+    var g = tile.getContext("2d");
+    g.translate(230, 110); g.rotate(-0.35);
+    g.font = "600 15px system-ui, sans-serif"; g.textAlign = "center";
+    g.fillStyle = "rgba(255,255,255,0.07)"; g.fillText(text, 0, 0);
+    var layer = el('<div class="wm" aria-hidden="true"><div class="wm-tile"></div><span class="wm-tag"></span></div>');
+    layer.querySelector(".wm-tile").style.backgroundImage = "url(" + tile.toDataURL() + ")";
+    var tag = layer.querySelector(".wm-tag");
+    tag.textContent = text;
+    box.appendChild(layer);
+    var move = function () {
+      tag.style.opacity = "0";
+      setTimeout(function () {
+        tag.style.left = (4 + Math.random() * 56) + "%";
+        tag.style.top = (6 + Math.random() * 70) + "%";
+        tag.style.opacity = "";
+      }, 400);
+    };
+    move();
+    var timer = setInterval(move, 7000);
+    // If someone removes or hides the watermark in the browser's tools, the video stops
+    var guard = new MutationObserver(function () {
+      var gone = !box.contains(layer) || !layer.contains(tag) || getComputedStyle(layer).display === "none" || getComputedStyle(tag).visibility === "hidden" || tag.textContent !== text;
+      if (gone) { video.pause(); video.removeAttribute("src"); video.load(); box.innerHTML = '<div class="empty"><p>The video stopped. Please reload the page.</p></div>'; guard.disconnect(); }
+    });
+    guard.observe(box, { childList: true, subtree: true, attributes: true, characterData: true });
+    cleanup.push(function () { clearInterval(timer); guard.disconnect(); });
+
+    var fs = document.fullscreenEnabled || document.webkitFullscreenEnabled;
+    if (fs) {
+      var btn = el('<button type="button" class="wm-full" title="Full screen (F)"><i class="fa-solid fa-expand" aria-hidden="true"></i><span class="sr-only">Full screen</span></button>');
+      box.appendChild(btn);
+      var toggle = function () {
+        var cur = document.fullscreenElement || document.webkitFullscreenElement;
+        if (cur) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+        else (box.requestFullscreen || box.webkitRequestFullscreen).call(box);
+      };
+      btn.addEventListener("click", toggle);
+      video.addEventListener("dblclick", function (e) { e.preventDefault(); toggle(); });
+      var onKey = function (e) { if ((e.key === "f" || e.key === "F") && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) toggle(); };
+      document.addEventListener("keydown", onKey);
+      var onFs = function () {
+        // The player's own fullscreen button would show the bare video without the watermark: switch to ours
+        if ((document.fullscreenElement || document.webkitFullscreenElement) === video) {
+          var ex = (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+          Promise.resolve(ex).then(function () { return (box.requestFullscreen || box.webkitRequestFullscreen).call(box); }).catch(function () {
+            var hint = el('<p class="wm-hint" role="status">For full screen, use this button <i class="fa-solid fa-arrow-up-right" aria-hidden="true"></i></p>');
+            box.appendChild(hint);
+            btn.classList.add("pulse");
+            setTimeout(function () { hint.remove(); btn.classList.remove("pulse"); }, 3500);
+          });
+          return;
+        }
+        btn.querySelector("i").className = "fa-solid " + ((document.fullscreenElement || document.webkitFullscreenElement) ? "fa-compress" : "fa-expand"); };
+      document.addEventListener("fullscreenchange", onFs);
+      document.addEventListener("webkitfullscreenchange", onFs);
+      cleanup.push(function () { document.removeEventListener("keydown", onKey); document.removeEventListener("fullscreenchange", onFs); document.removeEventListener("webkitfullscreenchange", onFs); });
+    }
+    // iPhones only have the built-in fullscreen player, which would hide the watermark: keep it inline
+    video.addEventListener("webkitbeginfullscreen", function () { try { video.webkitExitFullscreen(); } catch (e) {} });
   }
 
   function unlockArea(v) {
