@@ -258,6 +258,7 @@ def read_posts(folder=POSTS_DIR):
             "tag": info.get("tag", "Guide"),
             "minutes": max(1, math.ceil(words / 200)),
             "image": info.get("image"),
+            "image_alt": info.get("image_alt"),
             "live": info.get("live"),
             "body": m.group(2).strip(),
         })
@@ -341,12 +342,12 @@ def build_post(html, post, posts, kind="blog"):
             '                </section>\n'
         )
     hero = ""
-    if not case and og_image(post["slug"]):
+    if not case and not post.get("image") and og_image(post["slug"]):
         hero += ('                        <figure class="post-hero"><img src="%s" alt="" width="1200" height="630" loading="eager" /></figure>\n'
                  % og_image(post["slug"]))
     if post.get("image"):
         hero += ('                        <figure class="post-hero"><img src="%s" alt="%s" loading="eager" /></figure>\n'
-                 % (e(post["image"]), e(post["title"].split(":")[0] + " screenshot")))
+                 % (e(post["image"]), e(post.get("image_alt") or post["title"].split(":")[0] + " screenshot")))
     if post.get("live"):
         hero += ('                        <p class="post-live"><a class="btn btn-solid" href="%s" target="_blank" rel="noopener noreferrer">'
                  'Visit the live site <span aria-hidden="true">↗</span></a></p>\n' % e(post["live"]))
