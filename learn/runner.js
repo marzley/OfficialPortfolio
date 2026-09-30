@@ -23,7 +23,13 @@
     "['log','info','warn','error'].forEach(function(k){console[k]=function(){show(fmt(arguments),k==='error'?'#fca5a5':k==='warn'?'#fcd34d':'');};});" +
     "var firstErr='';window.addEventListener('error',function(e){var m=String(e.message||'');var t=/Your loop ran/.test(m)?m.replace(/^Uncaught Error: /,''):'Error: '+m+(e.lineno?' (line '+e.lineno+')':'');if(!firstErr)firstErr=t;show(t,'#fca5a5');});" +
     "window.__report=function(){parent.postMessage({type:'output',text:lines.join('\\n'),ok:!firstErr,error:firstErr,detail:firstErr},'*');};" +
-    "window.addEventListener('load',function(){setTimeout(window.__report,150);});})();<\/script>";
+    "window.addEventListener('load',function(){setTimeout(window.__report,150);});" +
+    // The sandbox blocks real form submission (and with it the submit event), so learners' submit
+    // handlers would never run. Fire the submit event ourselves after the browser's own checks.
+    "function fire(f,b){if(!f.noValidate&&!(b&&b.formNoValidate)&&!f.reportValidity())return;var ev;try{ev=new SubmitEvent('submit',{bubbles:true,cancelable:true,submitter:b||null});}catch(x){ev=new Event('submit',{bubbles:true,cancelable:true});}f.dispatchEvent(ev);}" +
+    "document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('button,input[type=submit]');if(!b||!b.form||e.defaultPrevented)return;if(b.tagName==='BUTTON'&&(b.getAttribute('type')||'submit').toLowerCase()!=='submit')return;e.preventDefault();fire(b.form,b);});" +
+    "document.addEventListener('keydown',function(e){var el=e.target;if(e.key!=='Enter'||e.defaultPrevented||el.tagName!=='INPUT'||!el.form||/^(button|submit|reset|checkbox|radio|file)$/i.test(el.type))return;e.preventDefault();fire(el.form,el.form.querySelector('button:not([type]),button[type=submit],input[type=submit]'));});" +
+    "})();<\/script>";
 
   // ---------- Loop guard for JavaScript ----------
   // Adds a time check inside every for / while / do loop, so a loop that never ends is stopped after
@@ -473,7 +479,9 @@
       w["__" + lang] = true;
       out.textContent = "";
       // The quick in-browser C/C++ interpreters don't cover everything: fall back to the full online compiler
-      if ((lang === "c" || lang === "cpp") && d.err && !d.out && /cannot find library|not supported|unsupported|can't assign|not implemented|unknown type|undefined identifier|is not defined/i.test(d.err)) {
+      // (JSCPP's parser doesn't know classes, references, auto or range-for, so its parse errors fall back too;
+      // real mistakes then get the full compiler's clearer message.)
+      if ((lang === "c" || lang === "cpp") && d.err && !d.out && (/cannot find library|not supported|unsupported|can't assign|not implemented|unknown type|undefined identifier|is not defined/i.test(d.err) || (lang === "cpp" && /Parsing Failure/i.test(d.err)))) {
         return runRemote(lang, code, "This code needs the full compiler, so it's running on Compiler Explorer (godbolt.org)…");
       }
       if (lang === "sass" && d.out) {

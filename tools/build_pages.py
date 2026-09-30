@@ -607,6 +607,7 @@ def write_sitemap(posts, cases=()):
     seed = json.loads((ROOT / "data" / "learn-seed.json").read_text(encoding="utf-8"))
     urls += [("learn/?page=" + pg, "weekly", "0.6", []) for pg in ("practice", "videos", "notes")]
     urls += [("learn/?track=%s&lesson=%s" % (t["slug"], l["slug"]), "monthly", "0.6", []) for t in seed["tracks"] for l in t["lessons"]]
+    urls += [("learn/?book=" + t["slug"], "monthly", "0.6", []) for t in seed["tracks"]]   # whole-subject course notes
     out = ['<?xml version="1.0" encoding="UTF-8"?>',
            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',
            '        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">']

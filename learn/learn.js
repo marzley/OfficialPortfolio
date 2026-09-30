@@ -145,6 +145,7 @@
         if (/^try-/.test(lang)) { blocks.push({ lang: lang.slice(4), code: code.join("\n") }); out.push('<div data-try="' + (blocks.length - 1) + '"></div>'); }
         else if (lang === "quiz") { quizzes.push(code.join("\n")); out.push('<div data-quiz="' + (quizzes.length - 1) + '"></div>'); }
         else if (/^tool-/.test(lang)) out.push('<div data-tool="' + esc(lang.slice(5)) + '"></div>');
+        else if (lang === "youtube") code.forEach(function (l) { var p = l.split("|"); if (p[0].trim()) out.push(ytEmbed(p[0].trim(), (p[1] || "").trim())); });
         else out.push('<pre class="code-sample"><code>' + esc(code.join("\n")) + "</code></pre>");
         continue;
       }
@@ -536,10 +537,10 @@
     setMeta('meta[name="twitter:title"]', "content", title);
     setMeta('meta[property="og:description"]', "content", desc);
   }
-  /** One clean address per page for search engines: /learn/?track=…&lesson=…, ?page=…, ?video=…, ?note=… */
+  /** One clean address per page for search engines: /learn/?track=…&lesson=…, ?page=…, ?video=…, ?note=…, ?book=… */
   function setCanonical() {
     var p = new URLSearchParams(location.search), keep = new URLSearchParams();
-    ["track", "lesson", "video", "note", "page"].forEach(function (k) { if (p.get(k) && !(k === "page" && (p.get("track") || p.get("video") || p.get("note")))) keep.set(k, p.get(k)); });
+    ["track", "lesson", "video", "note", "book", "page"].forEach(function (k) { if (p.get(k) && !(k === "page" && (p.get("track") || p.get("video") || p.get("note") || p.get("book")))) keep.set(k, p.get(k)); });
     var url = (/marzleytechsolutions\.co\.ke$/.test(location.hostname) ? "https://marzleytechsolutions.co.ke" : location.origin) + location.pathname + (keep.toString() ? "?" + keep.toString() : "");
     var link = document.querySelector('link[rel="canonical"]');
     if (!link) { link = document.createElement("link"); link.rel = "canonical"; document.head.appendChild(link); }
@@ -584,7 +585,7 @@
     showSide(false);
     setTitle("");
     main.innerHTML = '<section class="hero-learn"><div><p class="eyebrow">Marzley Tech Learning Hub</p><h1>Learn tech skills free, right in your browser</h1>' +
-      '<p class="lead" id="hub-lead">30+ subjects and 190 lessons: coding in 13 languages with a live editor, web and graphic design, Excel, Word and everyday ICT skills, networking and subnetting, cybersecurity, AI tools and how to make money online. Practise with questions that check themselves. Works on your phone.</p>' +
+      '<p class="lead" id="hub-lead">30+ subjects and 330+ lessons: coding in 13 languages with a live editor, web and graphic design, Excel, Word and everyday ICT skills, networking and subnetting, cybersecurity, AI tools and how to make money online. Practise with questions that check themselves. Works on your phone.</p>' +
       '<ul class="free-badges"><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Tutorials: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Notes: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Practice: free</li><li><i class="fa-solid fa-user" aria-hidden="true"></i> No account needed</li></ul>' +
       '<p class="hero-ctas"><a class="btn btn-solid" href="./?track=html">Start with HTML</a><a class="btn btn-line" href="./?page=practice">Open the code editor</a></p></div>' +
       '<div class="hero-code" aria-hidden="true"><pre><span class="c-k">print</span>(<span class="c-s">"Habari, Kenya!"</span>)\n<span class="c-t">&lt;h1&gt;</span>Hello<span class="c-t">&lt;/h1&gt;</span>\n<span class="c-k">SELECT</span> * <span class="c-k">FROM</span> Customers;</pre></div></section>' +
@@ -626,6 +627,50 @@
     }).catch(function (e) { errorBox(e.message); });
   }
 
+  // ---------- YouTube videos inside lessons (click to load, privacy-friendly youtube-nocookie) ----------
+  function ytEmbed(id, title) {
+    if (!/^[\w-]{11}$|^PL[\w-]{10,}$/.test(id)) return "";
+    var list = /^PL/.test(id);
+    var watch = list ? "https://www.youtube.com/playlist?list=" + id : "https://www.youtube.com/watch?v=" + id;
+    return '<figure class="yt" data-yt="' + esc(id) + '">' +
+      '<button type="button" class="yt-play" aria-label="Play video: ' + esc(title || "YouTube video") + '">' +
+      (list ? '<span class="yt-list"><i class="fa-solid fa-list" aria-hidden="true"></i> Playlist</span>' : '<img src="https://i.ytimg.com/vi/' + esc(id) + '/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />') +
+      '<span class="yt-btn" aria-hidden="true"><i class="fa-solid fa-play"></i></span></button>' +
+      '<figcaption><i class="fa-brands fa-youtube" aria-hidden="true"></i> ' + esc(title || "Video") +
+      ' · <a href="' + watch + '" target="_blank" rel="noopener noreferrer">Watch on YouTube</a></figcaption></figure>';
+  }
+  function ytPlay(fig) {
+    var id = fig.getAttribute("data-yt");
+    var src = /^PL/.test(id) ? "https://www.youtube-nocookie.com/embed/videoseries?list=" + encodeURIComponent(id) + "&autoplay=1"
+      : "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(id) + "?autoplay=1&rel=0";
+    var frame = el('<iframe title="YouTube video" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>');
+    frame.src = src;
+    fig.querySelector(".yt-play").replaceWith(frame);
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest(".yt-play");
+    if (b) ytPlay(b.closest(".yt"));
+  });
+  var videoMap = null;
+  function getVideoMap() {
+    if (!videoMap) videoMap = fetch("../data/learn-videos.json", { cache: "no-cache" }).then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; });
+    return videoMap;
+  }
+  /** Adds "Watch this lesson" videos after the lesson's first paragraph (unless the lesson embeds its own). */
+  function lessonVideos(track, l, host) {
+    if (!host || host.querySelector(".yt")) return;
+    getVideoMap().then(function (m) {
+      var keys = (m.lessons || {})[track.slug + "/" + l.slug] || (m.tracks || {})[track.slug] || [];
+      var vids = keys.map(function (k) { return (m.videos || {})[k]; }).filter(Boolean);
+      if (!vids.length || !host.isConnected) return;
+      var box = el('<section class="lesson-video" aria-label="Video lesson"><h2><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Watch and learn</h2>' + ytEmbed(vids[0].id, vids[0].title) +
+        (vids.length > 1 ? '<details class="more-videos"><summary>More videos on this topic (' + (vids.length - 1) + ")</summary>" + vids.slice(1).map(function (v) { return ytEmbed(v.id, v.title); }).join("") + "</details>" : "") +
+        '<p class="yt-note">Free videos from YouTube creators. They load only when you press play.</p></section>');
+      var first = host.querySelector(":scope > p");
+      if (first) first.after(box); else host.prepend(box);
+    });
+  }
+
   /** "Keep learning" box under each lesson: free videos on YouTube, and an online editor for languages we can't run here. */
   function moreBox(track, l) {
     var q = encodeURIComponent((track.title.replace(/\s*\(.*\)\s*/, " ") + " " + l.title.replace(/^Project:\s*/, "") + " tutorial").replace(/\s+/g, " ").trim());
@@ -657,6 +702,7 @@
           '<div class="lesson-body">' + md.html + "</div>" + moreBox(track, l) + (l.exercise ? '<section class="exercise" id="exercise" aria-labelledby="ex-title"><h2 id="ex-title"><i class="fa-solid fa-dumbbell" aria-hidden="true"></i> Exercise</h2><div class="ex-task">' + markdown(l.exercise).html + '</div><div id="ex-host"></div><p class="ex-result" id="ex-result" role="status" aria-live="polite"></p></section>' :
           '<p class="done-row"><button type="button" class="btn btn-line btn-sm" id="mark-done">' + (isDone(l.id) ? '<i class="fa-solid fa-check" aria-hidden="true"></i> Completed' : "Mark as completed") + "</button></p>") + pager + "</article>";
         md.blocks.forEach(function (b, n) { codeBlock(main.querySelector('[data-try="' + n + '"]'), { lang: b.lang, code: b.code }); });
+        lessonVideos(track, l, main.querySelector(".lesson-body"));
         var quizDone = 0;
         md.quizzes.forEach(function (q, n) {
           renderQuiz(main.querySelector('[data-quiz="' + n + '"]'), q, function () {
@@ -1103,11 +1149,84 @@
   function pageNotes() {
     setNav("notes");
     showSide(false);
-    setTitle("Free notes and books", "Free programming notes and books. Read them online or download the PDF.");
-    main.innerHTML = '<section class="list-page"><h1>Notes &amp; books</h1><p class="lead">Free to read here or download. New notes are added regularly.</p><div class="note-grid" id="note-grid"><p class="muted">Loading…</p></div></section>';
+    setTitle("Free notes and books", "Free course notes for every subject, from the basics up: read online, print or save as PDF. Plus free programming notes and books.");
+    main.innerHTML = '<section class="list-page"><h1>Notes &amp; books</h1><p class="lead">Complete course notes for every subject, from the basics all the way up. Read them online, print them or save them as a PDF. Free, no account needed.</p>' +
+      '<h2 class="notes-h">Course notes</h2><div class="book-grid" id="book-grid"><p class="muted">Loading…</p></div>' +
+      '<h2 class="notes-h">PDF notes &amp; books</h2><div class="note-grid" id="note-grid"><p class="muted">Loading…</p></div></section>';
+    getCatalog().then(function (tracks) {
+      $("#book-grid").innerHTML = tracks.map(function (t) {
+        return '<a class="book-card" href="./?book=' + esc(t.slug) + '"><i class="' + (TRACK_ICONS[t.slug] || TRACK_ICONS[t.lang] || "fa-solid fa-book") + '" aria-hidden="true"></i><span><strong>' + esc(t.title) + " notes</strong>" +
+          '<span class="muted">' + t.lessons.length + " topics · read, print or save as PDF</span></span></a>";
+      }).join("") || '<p class="muted">Course notes are coming soon.</p>';
+    }).catch(function (e) { $("#book-grid").innerHTML = '<p class="muted">' + esc(e.message) + "</p>"; });
     api("notes").then(function (j) {
-      $("#note-grid").innerHTML = (j.notes || []).map(function (n) { return noteCard(n, "h2"); }).join("") || '<div class="empty"><i class="fa-solid fa-book" aria-hidden="true"></i><p>Notes are coming soon.</p></div>';
+      $("#note-grid").innerHTML = (j.notes || []).map(function (n) { return noteCard(n, "h2"); }).join("") || '<p class="muted">More downloadable PDF notes are coming soon. Meanwhile, every course above can be saved as a PDF.</p>';
     }).catch(function (e) { $("#note-grid").innerHTML = '<p class="muted">' + esc(e.message) + "</p>"; });
+  }
+
+  /** A whole subject as one notes book: every lesson in order, with code, questions and answers, ready to print or save as PDF. */
+  function pageBook(slug) {
+    setNav("notes");
+    showSide(false);
+    main.innerHTML = '<p class="learn-loading"><span class="spinner" aria-hidden="true"></span> Loading the notes…</p>';
+    getCatalog().then(function (tracks) {
+      var track = tracks.filter(function (t) { return t.slug === slug; })[0];
+      if (!track) return errorBox("Those notes were not found.");
+      setTitle(track.title + " notes", "Free " + track.title + " course notes: all " + track.lessons.length + " topics from the basics up, with examples and practice questions. Read online or save as PDF.");
+      var queue = track.lessons.slice(), done = {}, loaded = 0;
+      var fetchOne = function () {
+        var item = queue.shift();
+        if (!item) return Promise.resolve();
+        return api("lesson", undefined, "&track=" + encodeURIComponent(track.slug) + "&slug=" + encodeURIComponent(item.slug))
+          .then(function (j) { done[item.slug] = j.lesson; }, function () { done[item.slug] = null; })
+          .then(function () { loaded++; var s = $("#book-progress"); if (s) s.textContent = loaded + " of " + track.lessons.length; return fetchOne(); });
+      };
+      main.innerHTML = '<p class="learn-loading"><span class="spinner" aria-hidden="true"></span> Loading the notes… <span id="book-progress"></span></p>';
+      return Promise.all([fetchOne(), fetchOne(), fetchOne(), fetchOne()]).then(function () {
+        var toc = track.lessons.map(function (l, i) { return '<li><a href="#n-' + esc(l.slug) + '">' + esc(l.title) + "</a></li>"; }).join("");
+        var parts = track.lessons.map(function (item, i) {
+          var l = done[item.slug];
+          if (!l) return '<section class="book-part" id="n-' + esc(item.slug) + '"><h2>' + (i + 1) + ". " + esc(item.title) + '</h2><p class="muted">This topic could not load. <a href="./?track=' + esc(track.slug) + "&amp;lesson=" + esc(item.slug) + '">Open it online</a>.</p></section>';
+          return '<section class="book-part" id="n-' + esc(item.slug) + '"><p class="book-num">Topic ' + (i + 1) + " of " + track.lessons.length + "</p>" + bookBody(l, track) +
+            '<p class="book-open"><a href="./?track=' + esc(track.slug) + "&amp;lesson=" + esc(item.slug) + '"><i class="fa-solid fa-laptop-code" aria-hidden="true"></i> Open the interactive lesson (run the code, check your answers, watch the video)</a></p></section>';
+        }).join("");
+        main.innerHTML = '<article class="book"><p class="crumbs"><a href="./?page=notes">Notes</a></p>' +
+          '<header class="book-head"><p class="eyebrow">Marzley Tech Learning Hub · Course notes</p><h1>' + esc(track.title) + " notes</h1><p class=\"lead\">" + esc(track.summary || "") + "</p>" +
+          '<p class="book-tools"><button type="button" class="btn btn-solid btn-sm" id="book-print"><i class="fa-solid fa-print" aria-hidden="true"></i> Print or save as PDF</button>' +
+          '<a class="btn btn-line btn-sm" href="./?track=' + esc(track.slug) + '"><i class="fa-solid fa-play" aria-hidden="true"></i> Start the interactive course</a></p>' +
+          '<p class="muted book-meta">' + track.lessons.length + " topics · free to read, print and share · marzleytechsolutions.co.ke/learn</p></header>" +
+          '<nav class="book-toc" aria-label="Contents"><h2>Contents</h2><ol>' + toc + "</ol></nav>" + parts +
+          '<footer class="book-foot">© Marzley Tech Solutions · Free learning hub: marzleytechsolutions.co.ke/learn · Questions? WhatsApp 0745 789 590</footer></article>';
+        $("#book-print").addEventListener("click", function () { window.print(); });
+      });
+    }).catch(function (e) { errorBox(e.message); });
+  }
+
+  /** A lesson rendered for reading and printing: runnable examples become plain code, quizzes show their answers. */
+  function bookBody(l, track) {
+    var md = markdown(l.body);
+    var box = el("<div>" + md.html + "</div>");
+    md.blocks.forEach(function (b, n) {
+      var h = box.querySelector('[data-try="' + n + '"]');
+      if (h) h.outerHTML = '<pre class="code-sample"><code>' + esc(b.code) + "</code></pre>";
+    });
+    md.quizzes.forEach(function (q, n) {
+      var h = box.querySelector('[data-quiz="' + n + '"]');
+      if (!h) return;
+      var items = [], cur = null;
+      String(q).split("\n").forEach(function (line) {
+        var m = line.match(/^\s*([QAH]):\s*(.*)$/);
+        if (!m) return;
+        if (m[1] === "Q") { cur = { q: m[2] }; items.push(cur); }
+        else if (cur && m[1] === "A") cur.a = m[2].split("|")[0].trim();
+      });
+      h.outerHTML = '<section class="book-quiz"><h3><i class="fa-solid fa-circle-question" aria-hidden="true"></i> Check yourself</h3><ol>' + items.map(function (it) {
+        return "<li>" + inline(it.q) + (it.a ? ' <details><summary>Answer</summary><strong>' + esc(it.a) + "</strong></details>" : "") + "</li>";
+      }).join("") + "</ol></section>";
+    });
+    box.querySelectorAll("[data-tool]").forEach(function (h) { h.outerHTML = '<p class="muted"><i class="fa-solid fa-calculator" aria-hidden="true"></i> An interactive tool is available in the online lesson.</p>'; });
+    var ex = l.exercise ? '<section class="book-ex"><h3><i class="fa-solid fa-dumbbell" aria-hidden="true"></i> Exercise</h3>' + markdown(l.exercise).html + "</section>" : "";
+    return box.innerHTML + ex;
   }
 
   var pdfLib = null;
@@ -1306,6 +1425,7 @@
     if (p.get("track")) return pageLesson(p.get("track"), p.get("lesson"));
     if (p.get("video")) return pageVideo(p.get("video"));
     if (p.get("note")) return pageNote(p.get("note"));
+    if (p.get("book")) return pageBook(p.get("book"));
     var page = p.get("page");
     if (page === "tutorials") return pageTutorials();
     if (page === "practice") return pagePractice(p.get("lang"));

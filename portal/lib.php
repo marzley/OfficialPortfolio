@@ -1181,7 +1181,8 @@ function issue_certificate(int $clientId, int $courseId): string {
 
 /**
  * Add the tutorials from data/learn-seed.json: new subjects and lessons are added when the file's
- * "version" goes up. Lessons already in the database (including ones edited in the portal) are never changed.
+ * "version" changes. Lessons already in the database (including ones edited in the portal) keep their
+ * content; only their position follows the seed, so new lessons appear in the right place.
  */
 function learn_seed(PDO $pdo): void {
     $seed = json_decode((string)@file_get_contents(site_root() . '/data/learn-seed.json'), true);
@@ -1194,6 +1195,7 @@ function learn_seed(PDO $pdo): void {
     $addTrack = $pdo->prepare('INSERT INTO learn_tracks (slug, title, lang, summary, position, published) VALUES (?, ?, ?, ?, ?, 1)');
     $findLesson = $pdo->prepare('SELECT id FROM learn_lessons WHERE track_id = ? AND slug = ?');
     $addLesson = $pdo->prepare('INSERT INTO learn_lessons (track_id, slug, title, position, body, exercise, starter, expected, must_contain, published, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)');
+    $setPosition = $pdo->prepare('UPDATE learn_lessons SET position = ? WHERE id = ?');
     foreach ($seed['tracks'] as $i => $t) {
         $findTrack->execute([$t['slug']]);
         $tid = (int)$findTrack->fetchColumn();
@@ -1203,7 +1205,12 @@ function learn_seed(PDO $pdo): void {
         }
         foreach ($t['lessons'] as $j => $l) {
             $findLesson->execute([$tid, $l['slug']]);
-            if ($findLesson->fetchColumn()) continue;
+            $lid = (int)$findLesson->fetchColumn();
+            if ($lid) {
+                // Keep the lesson's content, but follow the seed's order so new lessons slot in between
+                $setPosition->execute([$j + 1, $lid]);
+                continue;
+            }
             $addLesson->execute([$tid, $l['slug'], $l['title'], $j + 1, $l['body'], $l['exercise'] ?? '', $l['starter'] ?? '', $l['expected'] ?? '', $l['must_contain'] ?? '', date('Y-m-d H:i:s')]);
         }
     }
