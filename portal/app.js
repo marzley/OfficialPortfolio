@@ -1469,6 +1469,45 @@
         h("div", { className: "form-foot" }, h("button", { type: "submit", className: "btn btn-solid", text: "Add tutorial" })))));
     panel.appendChild(tut);
 
+    // Lesson likes and reviews: read everything, reply as Marzley Tech, hide or delete
+    var rvAll = d.reviews || [], rvTop = rvAll.filter(function (r) { return !r.parent_id; });
+    var rvItem = function (r) {
+      var replies = rvAll.filter(function (x) { return +x.parent_id === +r.id; }).reverse();
+      var box = h("div");
+      var url = "../learn/?track=" + encodeURIComponent(r.track) + "&lesson=" + encodeURIComponent(r.slug) + "#reviews";
+      var replyText = h("textarea", { rows: "2", maxlength: "2000", placeholder: "Reply as Marzley Tech…", "aria-label": "Reply to " + (r.name || r.email) });
+      var replyForm = h("form", { className: "form portal-form review-reply", hidden: true, onsubmit: function (e) {
+        e.preventDefault();
+        if (!replyText.value.trim()) return;
+        lsave("review", { lesson_id: +r.lesson_id, parent_id: +r.id, body: replyText.value }, "Reply posted. Everyone can see it on the lesson.");
+      } }, replyText, h("div", { className: "form-foot" }, h("button", { type: "submit", className: "btn btn-solid btn-sm", text: "Post reply" })));
+      box.appendChild(h("div", null,
+        h("strong", { text: (+r.is_staff ? "Marzley Tech" : (r.name || r.email)) + (r.rating ? " · " + "★★★★★".slice(0, +r.rating) + "☆☆☆☆☆".slice(0, 5 - +r.rating) : "") }),
+        h("span", { className: "lead-msg", text: r.body }),
+        h("span", { className: "portal-meta", text: r.track_title + " › " + r.lesson + " · " + (+r.is_staff ? "" : r.email + " · ") + day(r.created_at) + (+r.hidden ? " · hidden" : "") })));
+      replies.forEach(function (x) {
+        box.appendChild(h("div", { className: "review-sub" + (+x.hidden ? " is-hidden" : "") },
+          h("span", { className: "lead-msg", text: "↳ " + (+x.is_staff ? "Marzley Tech" : (x.name || x.email)) + ": " + x.body }),
+          h("span", { className: "row-actions" },
+            h("button", { type: "button", className: "linklike", onclick: function () { lsave("review_hide", { id: x.id, hidden: !+x.hidden }, +x.hidden ? "Reply shown." : "Reply hidden."); }, text: +x.hidden ? "Show" : "Hide" }),
+            h("button", { type: "button", className: "linklike danger", onclick: function () { if (confirm("Delete this reply?")) lsave("review_delete", { id: x.id }, "Deleted."); }, text: "Delete" }))));
+      });
+      box.appendChild(replyForm);
+      return h("li", { className: +r.hidden ? "is-hidden" : "" }, box,
+        h("span", { className: "row-actions" },
+          h("button", { type: "button", className: "linklike", onclick: function () { replyForm.hidden = !replyForm.hidden; if (!replyForm.hidden) replyText.focus(); }, text: "Reply" }),
+          h("a", { className: "linklike", href: url, target: "_blank", rel: "noopener", text: "View" }),
+          h("button", { type: "button", className: "linklike", onclick: function () { lsave("review_hide", { id: r.id, hidden: !+r.hidden }, +r.hidden ? "Review shown." : "Review hidden."); }, text: +r.hidden ? "Show" : "Hide" }),
+          h("button", { type: "button", className: "linklike danger", onclick: function () { if (confirm("Delete this review" + (replies.length ? " and its " + replies.length + " replies" : "") + "?")) lsave("review_delete", { id: r.id }, "Deleted."); }, text: "Delete" })));
+    };
+    var st = d.stats || {};
+    var unanswered = rvTop.filter(function (r) { return !+r.is_staff && !rvAll.some(function (x) { return +x.parent_id === +r.id && +x.is_staff; }); }).length;
+    panel.appendChild(h("section", { className: "admin-panel", id: "lesson-reviews" },
+      h("div", { className: "admin-panel-head" }, h("h2", { text: "Lesson reviews & comments" })),
+      h("p", { className: "portal-meta", text: (st.reviews || 0) + " reviews · " + (st.lesson_likes || 0) + " lesson likes · " + unanswered + " waiting for a reply. Your replies show on the lesson as “Marzley Tech · Tutor”. You get an email for each new review." }),
+      (d.top_lessons || []).length ? h("p", { className: "portal-meta", text: "Most liked: " + d.top_lessons.slice(0, 5).map(function (t) { return t.title + " (" + t.likes + ")"; }).join(", ") }) : "",
+      rvTop.length ? h("ul", { className: "admin-list" }, rvTop.map(rvItem)) : h("p", { className: "portal-empty", text: "No lesson reviews yet." })));
+
     // Comments
     var cl = (d.comments || []).map(function (c) {
       return h("li", null, h("div", null, h("strong", { text: (c.name || c.email) + " on “" + c.title + "”" }), h("span", { className: "lead-msg", text: c.body }), h("span", { className: "portal-meta", text: c.email + " · " + day(c.created_at) })),

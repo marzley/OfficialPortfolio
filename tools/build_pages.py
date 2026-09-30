@@ -626,6 +626,28 @@ def write_sitemap(posts, cases=()):
     (ROOT / "sitemap.xml").write_text("\n".join(out) + "\n", encoding="utf-8", newline="")
 
 
+def learn_search_index(posts):
+    """data/learn-search.json: every lesson (title, headings and plain text) and blog post, for the
+    learning hub's live search. Loaded only when someone starts typing."""
+    seed = json.loads((ROOT / "data" / "learn-seed.json").read_text(encoding="utf-8"))
+
+    def plain(md):
+        md = re.sub(r"^```(quiz|youtube)\n.*?^```", " ", md, flags=re.S | re.M)   # answers and video ids aren't searchable text
+        md = re.sub(r"^```[\w-]*$", " ", md, flags=re.M)
+        md = re.sub(r"!?\[([^\]]*)\]\([^)]*\)", r"\1", md)
+        md = re.sub(r"[#*`>|_]+|-{3,}", " ", md)
+        return re.sub(r"\s+", " ", md).strip()
+
+    lessons = []
+    for t in seed["tracks"]:
+        for l in t["lessons"]:
+            heads = [h.strip() for h in re.findall(r"^#{2,3}\s+(.+)$", l["body"], re.M)]
+            lessons.append([t["slug"], l["slug"], l["title"], " · ".join(heads)[:600], plain(l["body"])[:5000]])
+    data = {"tracks": [[t["slug"], t["title"], t["summary"]] for t in seed["tracks"]], "lessons": lessons,
+            "posts": [[p["slug"], p["title"], p["description"], p["tag"]] for p in posts]}
+    (ROOT / "data" / "learn-search.json").write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+
+
 def learn_seo():
     """Give /learn/ what search engines need before JavaScript runs: structured data listing every
     subject as a free course, and a plain list of links to every lesson (replaced by the app when it loads)."""
@@ -806,6 +828,7 @@ def main():
     subset_icons()
     inline_css()
     learn_seo()
+    learn_search_index(posts)
     version_assets()
     sync_csp_hash()
     print("wrote sitemap.xml")

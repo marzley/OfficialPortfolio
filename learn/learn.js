@@ -8,22 +8,38 @@
     networking: "fa-solid fa-network-wired", "make-money-online": "fa-solid fa-sack-dollar", git: "fa-brands fa-git-alt", linux: "fa-brands fa-linux", php: "fa-brands fa-php",
     cybersecurity: "fa-solid fa-shield-halved", hosting: "fa-solid fa-server", marketing: "fa-solid fa-bullhorn", "it-basics": "fa-solid fa-computer",
     "web-design": "fa-solid fa-pen-ruler", "graphic-design": "fa-solid fa-palette", algorithms: "fa-solid fa-diagram-project", typescript: "fa-solid fa-code",
+    "app-dev-basics": "fa-solid fa-mobile-screen-button", flutter: "fa-solid fa-layer-group", "kotlin-android": "fa-brands fa-android", react: "fa-brands fa-react",
+    "react-native": "fa-solid fa-mobile", "apis-backend": "fa-solid fa-plug",
     java: "fa-brands fa-java", "c-programming": "fa-solid fa-microchip", cpp: "fa-solid fa-gears", csharp: "fa-brands fa-microsoft", "dart-flutter": "fa-solid fa-mobile-screen",
     go: "fa-brands fa-golang", "digital-literacy": "fa-solid fa-user-shield", "ms-word": "fa-solid fa-file-word", excel: "fa-solid fa-table",
     powerpoint: "fa-solid fa-person-chalkboard", "google-workspace": "fa-solid fa-cloud", "ai-tools": "fa-solid fa-robot", "e-services-kenya": "fa-solid fa-landmark",
     "computer-maintenance": "fa-solid fa-screwdriver-wrench" };
   var TRACK_GROUPS = [
     { title: "Web & coding", icon: "fa-solid fa-code", slugs: ["html", "css", "javascript", "python", "sql", "php", "typescript", "algorithms", "git"] },
-    { title: "More programming languages", icon: "fa-solid fa-laptop-code", slugs: ["java", "c-programming", "cpp", "csharp", "dart-flutter", "go"] },
+    { title: "App development", icon: "fa-solid fa-mobile-screen-button", slugs: ["app-dev-basics", "dart-flutter", "flutter", "kotlin-android", "react", "react-native", "apis-backend"] },
+    { title: "More programming languages", icon: "fa-solid fa-laptop-code", slugs: ["java", "c-programming", "cpp", "csharp", "go"] },
     { title: "Design", icon: "fa-solid fa-palette", slugs: ["web-design", "graphic-design"] },
     { title: "ICT & digital skills", icon: "fa-solid fa-computer", slugs: ["it-basics", "digital-literacy", "ms-word", "excel", "powerpoint", "google-workspace", "ai-tools", "e-services-kenya", "computer-maintenance"] },
     { title: "Networking, systems & security", icon: "fa-solid fa-network-wired", slugs: ["networking", "linux", "cybersecurity", "hosting"] },
     { title: "Business & earning online", icon: "fa-solid fa-sack-dollar", slugs: ["make-money-online", "marketing"] }
   ];
+  /** Subjects sorted into TRACK_GROUPS (plus "More subjects" for any new ones), empty groups left out. */
+  function groupTracks(tracks) {
+    var groups = TRACK_GROUPS.map(function (g) { return { title: g.title, icon: g.icon, items: [] }; }), other = { title: "More subjects", icon: "fa-solid fa-book", items: [] };
+    tracks.forEach(function (t) {
+      var gi = -1;
+      TRACK_GROUPS.forEach(function (g, i) { if (g.slugs.indexOf(t.slug) >= 0) gi = i; });
+      (gi >= 0 ? groups[gi] : other).items.push(t);
+    });
+    groups.forEach(function (g, i) { var order = TRACK_GROUPS[i].slugs; g.items.sort(function (a, b) { return order.indexOf(a.slug) - order.indexOf(b.slug); }); });
+    groups.push(other);
+    return groups.filter(function (g) { return g.items.length; });
+  }
   // Where learners can run languages this site can't run in the browser
   var PLAYGROUNDS = { typescript: ["TypeScript Playground", "https://www.typescriptlang.org/play"], java: ["OnlineGDB (Java)", "https://www.onlinegdb.com/online_java_compiler"],
     "c-programming": ["OnlineGDB (C)", "https://www.onlinegdb.com/online_c_compiler"], cpp: ["OnlineGDB (C++)", "https://www.onlinegdb.com/online_c++_compiler"],
-    csharp: [".NET Fiddle", "https://dotnetfiddle.net/"], "dart-flutter": ["DartPad", "https://dartpad.dev/"], go: ["Go Playground", "https://go.dev/play/"],
+    csharp: [".NET Fiddle", "https://dotnetfiddle.net/"], "dart-flutter": ["DartPad", "https://dartpad.dev/"], flutter: ["DartPad (Flutter)", "https://dartpad.dev/"],
+    "kotlin-android": ["Kotlin Playground", "https://play.kotlinlang.org/"], "react-native": ["Expo Snack", "https://snack.expo.dev/"], go: ["Go Playground", "https://go.dev/play/"],
     php: ["OnlineGDB (PHP)", "https://www.onlinegdb.com/online_php_interpreter"] };
   var MODES = { html: "htmlmixed", css: "htmlmixed", javascript: "javascript", python: "python", sql: "text/x-sql", php: "application/x-httpd-php", typescript: "text/typescript", react: "jsx", json: "application/json", markdown: "markdown", c: "text/x-csrc", cpp: "text/x-c++src", csharp: "text/x-csharp", java: "text/x-java", go: "text/x-go", rust: "text/x-rustsrc", kotlin: "text/x-kotlin", lua: "text/x-lua", ruby: "text/x-ruby", sass: "text/x-scss", regex: "text/plain", prolog: "text/plain" };
   var STARTERS = {
@@ -566,10 +582,142 @@
     return api("catalog").then(function (j) { state.catalog = j.tracks || []; return state.catalog; });
   }
 
+  // ---------- live search over every lesson, subject and blog post (data/learn-search.json, built by tools/build_pages.py) ----------
+  var searchIndex = null;
+  function getSearchIndex() {
+    if (!searchIndex) searchIndex = fetch("../data/learn-search.json", { cache: "no-cache" }).then(function (r) { if (!r.ok) throw new Error("Search could not load."); return r.json(); }).then(function (d) {
+      var names = {};
+      (d.tracks || []).forEach(function (t) { names[t[0]] = t[1]; });
+      return {
+        names: names,
+        tracks: (d.tracks || []).map(function (t) { return { slug: t[0], title: t[1], summary: t[2], hay: (t[1] + " " + t[2]).toLowerCase() }; }),
+        lessons: (d.lessons || []).map(function (l) { return { track: l[0], slug: l[1], title: l[2], heads: l[3], text: l[4], t: l[2].toLowerCase(), h: l[3].toLowerCase(), x: l[4].toLowerCase(), n: (names[l[0]] || "").toLowerCase() }; }),
+        posts: (d.posts || []).map(function (p) { return { slug: p[0], title: p[1], summary: p[2], tag: p[3], hay: (p[1] + " " + p[2] + " " + p[3]).toLowerCase() }; })
+      };
+    }).catch(function (e) { searchIndex = null; throw e; });
+    return searchIndex;
+  }
+  function searchWords(q) { return String(q).toLowerCase().replace(/[^\w#+.\-\s]/g, " ").split(/\s+/).filter(function (w) { return w.length > 0; }).slice(0, 8); }
+  function countOf(hay, w) { var n = 0, i = hay.indexOf(w); while (i >= 0 && n < 20) { n++; i = hay.indexOf(w, i + w.length); } return n; }
+  /** Every word must appear somewhere; titles count most, then headings, the subject name, then the text. */
+  function searchRun(ix, q, limit) {
+    var words = searchWords(q), phrase = String(q).toLowerCase().trim();
+    if (!words.length) return { tracks: [], lessons: [], posts: [], total: 0 };
+    var every = function (hay) { return words.every(function (w) { return hay.indexOf(w) >= 0; }); };
+    var lessons = [];
+    ix.lessons.forEach(function (l) {
+      if (!every(l.t + " " + l.h + " " + l.n + " " + l.x)) return;
+      var score = 0;
+      words.forEach(function (w) { score += (l.t.indexOf(w) >= 0 ? 12 : 0) + (l.h.indexOf(w) >= 0 ? 5 : 0) + (l.n.indexOf(w) >= 0 ? 4 : 0) + Math.min(countOf(l.x, w), 10); });
+      if (l.t.indexOf(phrase) >= 0) score += 30;
+      if (l.t.indexOf(phrase) === 0) score += 10;
+      lessons.push({ l: l, score: score });
+    });
+    lessons.sort(function (a, b) { return b.score - a.score; });
+    return {
+      tracks: ix.tracks.filter(function (t) { return every(t.hay); }).slice(0, 4),
+      posts: ix.posts.filter(function (p) { return every(p.hay); }).slice(0, limit > 20 ? 10 : 3),
+      lessons: lessons.slice(0, limit).map(function (x) { return x.l; }),
+      total: lessons.length
+    };
+  }
+  function markWords(text, words) {
+    var out = esc(text);
+    words.filter(function (w) { return w.length > 1; }).forEach(function (w) {
+      out = out.replace(new RegExp("(" + esc(w).replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "gi"), "<mark>$1</mark>");
+    });
+    return out;
+  }
+  function snippet(l, words) {
+    var at = -1;
+    words.some(function (w) { at = l.x.indexOf(w); return at >= 0; });
+    if (at < 0) return l.text.slice(0, 140);
+    var start = Math.max(0, at - 60), part = l.text.slice(start, start + 160);
+    return (start ? "…" : "") + part.replace(/^\S*\s/, start ? "" : part.split(" ")[0] + " ") + "…";
+  }
+  /** A search box with live results. opts.page: results shown in the page (not a drop-down), opts.q: starting text. */
+  function searchUI(host, opts) {
+    if (!host) return;
+    opts = opts || {};
+    var id = "s" + Math.random().toString(36).slice(2, 8);
+    host.innerHTML = '<div class="lsearch' + (opts.page ? " lsearch-page" : "") + (opts.big ? " lsearch-big" : "") + '" role="search">' +
+      '<label class="sr-only" for="' + id + '">Search lessons and notes</label><div class="lsearch-box"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>' +
+      '<input type="search" id="' + id + '" autocomplete="off" spellcheck="false" enterkeyhint="search" placeholder="' + esc(opts.placeholder || "Search lessons, e.g. flexbox, loops, subnetting") + '" aria-controls="' + id + '-r" />' +
+      (opts.page ? "" : '<kbd aria-hidden="true">/</kbd>') + '</div><div class="lsearch-res" id="' + id + '-r"' + (opts.page ? "" : " hidden") + '></div></div>';
+    var input = host.querySelector("input"), res = host.querySelector(".lsearch-res"), timer = 0, last = null;
+    if (opts.q) input.value = opts.q;
+    var close = function () { if (!opts.page) res.hidden = true; };
+    var render = function () {
+      var q = input.value.trim();
+      if (!q) { res.innerHTML = opts.page ? '<p class="muted">Type a word to search every lesson, subject and blog post.</p>' : ""; if (!opts.page) res.hidden = true; return; }
+      if (q === last && !res.hidden) return;
+      last = q;
+      res.hidden = false;
+      if (!searchIndex) res.innerHTML = '<p class="lsearch-msg"><span class="spinner" aria-hidden="true"></span> Searching…</p>';
+      getSearchIndex().then(function (ix) {
+        if (input.value.trim() !== q) return;
+        var r = searchRun(ix, q, opts.page ? 100 : 8), words = searchWords(q);
+        var html = "";
+        if (r.tracks.length) html += '<p class="lsearch-h">Subjects</p><ul class="lsearch-list">' + r.tracks.map(function (t) {
+          return '<li><a href="./?track=' + esc(t.slug) + '"><i class="' + (TRACK_ICONS[t.slug] || "fa-solid fa-book") + '" aria-hidden="true"></i><span><strong>' + markWords(t.title, words) + "</strong><small>" + esc(t.summary) + "</small></span></a></li>";
+        }).join("") + "</ul>";
+        if (r.lessons.length) html += '<p class="lsearch-h">Lessons <span>' + (r.total > r.lessons.length ? r.lessons.length + " of " + r.total : r.total) + "</span></p><ul class=\"lsearch-list\">" + r.lessons.map(function (l) {
+          return '<li><a href="./?track=' + esc(l.track) + "&amp;lesson=" + esc(l.slug) + '"><i class="' + (TRACK_ICONS[l.track] || "fa-solid fa-book-open") + '" aria-hidden="true"></i><span><strong>' + markWords(l.title, words) + '</strong><small class="lsearch-sub">' + esc(ix.names[l.track] || "") + "</small><small>" + markWords(snippet(l, words), words) + "</small></span></a></li>";
+        }).join("") + "</ul>";
+        if (r.posts.length) html += '<p class="lsearch-h">Blog</p><ul class="lsearch-list">' + r.posts.map(function (p) {
+          return '<li><a href="../' + esc(p.slug) + '"><i class="fa-solid fa-newspaper" aria-hidden="true"></i><span><strong>' + markWords(p.title, words) + "</strong><small>" + esc(p.summary) + "</small></span></a></li>";
+        }).join("") + "</ul>";
+        if (!html) html = '<p class="lsearch-msg">Nothing found for “' + esc(q) + '”. Try a shorter word, like <em>loop</em> or <em>table</em>.</p>';
+        else if (!opts.page && r.total > r.lessons.length) html += '<a class="lsearch-all" href="./?page=search&amp;q=' + encodeURIComponent(q) + '">See all ' + r.total + " results <i class=\"fa-solid fa-arrow-right\" aria-hidden=\"true\"></i></a>";
+        res.innerHTML = html;
+        if (opts.page) history.replaceState(history.state, "", "./?page=search&q=" + encodeURIComponent(q));
+      }).catch(function (e) { res.innerHTML = '<p class="lsearch-msg">' + esc(e.message) + "</p>"; });
+    };
+    input.addEventListener("input", function () { clearTimeout(timer); timer = setTimeout(render, 120); });
+    input.addEventListener("focus", function () { if (input.value.trim()) { last = null; render(); } getSearchIndex().catch(function () {}); });
+    input.addEventListener("keydown", function (e) {
+      var links = [].slice.call(res.querySelectorAll("a"));
+      if (e.key === "ArrowDown" && links.length) { e.preventDefault(); links[0].focus(); }
+      else if (e.key === "Escape") { if (input.value) input.value = ""; render(); close(); }
+      else if (e.key === "Enter") { e.preventDefault(); if (!opts.page && input.value.trim()) go("./?page=search&q=" + encodeURIComponent(input.value.trim())); }
+    });
+    res.addEventListener("keydown", function (e) {
+      var links = [].slice.call(res.querySelectorAll("a")), i = links.indexOf(document.activeElement);
+      if (e.key === "ArrowDown" && i < links.length - 1) { e.preventDefault(); links[i + 1].focus(); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); (i > 0 ? links[i - 1] : input).focus(); }
+      else if (e.key === "Escape") { input.focus(); close(); }
+    });
+    if (!opts.page) document.addEventListener("click", function (e) { if (host.isConnected && !host.contains(e.target)) close(); });
+    res.addEventListener("click", function (e) { if (e.target.closest("a")) close(); });
+    if (opts.q || opts.page) render();
+    if (opts.focus) input.focus();
+    return input;
+  }
+  function pageSearch(q) {
+    setNav("");
+    showSide(false);
+    setTitle(q ? "Search: " + q : "Search lessons", "Search every free lesson, subject and blog post on the Marzley Tech learning hub.");
+    main.innerHTML = '<section class="search-page"><h1><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Search the learning hub</h1><div id="search-host"></div></section>';
+    searchUI($("#search-host"), { page: true, q: q, focus: !q, big: true });
+  }
+  // "/" jumps to the nearest search box
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "/" || e.ctrlKey || e.metaKey || e.altKey || /input|textarea|select/i.test((document.activeElement || {}).tagName || "") || (document.activeElement && document.activeElement.isContentEditable)) return;
+    var box = [].slice.call(document.querySelectorAll(".lsearch input")).filter(function (i) { return i.offsetParent; })[0];
+    e.preventDefault();
+    if (box) box.focus(); else go("./?page=search");
+  });
+
   function renderSide(track, lessonSlug) {
     var tracks = state.catalog || [];
-    side.innerHTML = '<nav class="track-tabs" aria-label="Subjects">' + tracks.map(function (t) {
-      return '<a href="./?track=' + esc(t.slug) + '" class="' + (t.slug === track.slug ? "is-current" : "") + '"' + (t.slug === track.slug ? ' aria-current="true"' : "") + ">" + esc(t.title) + "</a>";
+    var groups = groupTracks(tracks);
+    side.innerHTML = '<div class="side-search" id="side-search"></div><nav class="subject-menu" aria-label="Subjects"><h2 class="side-title side-title-top">Subjects</h2>' + groups.map(function (g) {
+      var here = g.items.some(function (t) { return t.slug === track.slug; });
+      return '<details class="subj-group"' + (here ? " open" : "") + '><summary><i class="' + g.icon + '" aria-hidden="true"></i><span>' + esc(g.title) + '</span><span class="subj-n">' + g.items.length + '</span><i class="fa-solid fa-chevron-down subj-caret" aria-hidden="true"></i></summary>' +
+        '<ul class="subj-list">' + g.items.map(function (t) {
+          var cur = t.slug === track.slug;
+          return '<li><a href="./?track=' + esc(t.slug) + '" class="' + (cur ? "is-current" : "") + '"' + (cur ? ' aria-current="true"' : "") + '><i class="' + (TRACK_ICONS[t.slug] || "fa-solid fa-book") + '" aria-hidden="true"></i><span>' + esc(t.title) + '</span><span class="subj-n">' + t.lessons.length + "</span></a></li>";
+        }).join("") + "</ul></details>";
     }).join("") + "</nav>" +
       '<h2 class="side-title">' + esc(track.title) + ' tutorial</h2><ol class="lesson-list">' + track.lessons.map(function (l) {
         var cur = l.slug === lessonSlug;
@@ -577,6 +725,7 @@
           '<i class="fa-solid fa-circle-check tick" aria-hidden="true"></i><span>' + esc(l.title) + "</span>" + (isDone(l.id) ? '<span class="sr-only"> (done)</span>' : "") + "</a></li>";
       }).join("") + "</ol>" +
       (LANGS[track.lang] ? '<a class="side-practice" href="./?page=practice&amp;lang=' + esc(track.lang) + '"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice ' + esc(track.title) + "</a>" : "");
+    searchUI($("#side-search"), { placeholder: "Search all lessons…" });
   }
 
   // ---------- pages ----------
@@ -586,22 +735,16 @@
     setTitle("");
     main.innerHTML = '<section class="hero-learn"><div><p class="eyebrow">Marzley Tech Learning Hub</p><h1>Learn tech skills free, right in your browser</h1>' +
       '<p class="lead" id="hub-lead">30+ subjects and 330+ lessons: coding in 13 languages with a live editor, web and graphic design, Excel, Word and everyday ICT skills, networking and subnetting, cybersecurity, AI tools and how to make money online. Practise with questions that check themselves. Works on your phone.</p>' +
-      '<ul class="free-badges"><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Tutorials: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Notes: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Practice: free</li><li><i class="fa-solid fa-user" aria-hidden="true"></i> No account needed</li></ul>' +
+      '<div id="hub-search"></div><ul class="free-badges"><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Tutorials: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Notes: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Practice: free</li><li><i class="fa-solid fa-user" aria-hidden="true"></i> No account needed</li></ul>' +
       '<p class="hero-ctas"><a class="btn btn-solid" href="./?track=html">Start with HTML</a><a class="btn btn-line" href="./?page=practice">Open the code editor</a></p></div>' +
       '<div class="hero-code" aria-hidden="true"><pre><span class="c-k">print</span>(<span class="c-s">"Habari, Kenya!"</span>)\n<span class="c-t">&lt;h1&gt;</span>Hello<span class="c-t">&lt;/h1&gt;</span>\n<span class="c-k">SELECT</span> * <span class="c-k">FROM</span> Customers;</pre></div></section>' +
       '<section class="home-sec"><h2>Tutorials</h2><div class="track-grid" id="track-grid"><p class="muted">Loading…</p></div></section>' +
       '<section class="home-sec"><div class="sec-head"><h2>Latest videos</h2><a href="./?page=videos">All videos</a></div><div class="video-grid" id="home-videos"></div></section>' +
       '<section class="home-sec"><div class="sec-head"><h2>Free notes &amp; books</h2><a href="./?page=notes">All notes</a></div><div class="note-grid" id="home-notes"></div></section>';
+    searchUI($("#hub-search"), { big: true, placeholder: "What do you want to learn? e.g. Flutter, Excel VLOOKUP, subnetting" });
     getCatalog().then(function (tracks) {
       var lessons = tracks.reduce(function (n, t) { return n + t.lessons.length; }, 0);
       if (tracks.length > 5) $("#hub-lead").firstChild.textContent = tracks.length + " subjects and " + lessons + " lessons: coding in 13 languages with a live editor, web and graphic design, Excel, Word and everyday ICT skills, networking and subnetting, cybersecurity, AI tools and how to make money online. Practise with questions that check themselves. Works on your phone.";
-      var groups = TRACK_GROUPS.map(function (g) { return { title: g.title, icon: g.icon, items: [] }; }), other = { title: "More subjects", icon: "fa-solid fa-book", items: [] };
-      tracks.forEach(function (t) {
-        var gi = -1;
-        TRACK_GROUPS.forEach(function (g, i) { if (g.slugs.indexOf(t.slug) >= 0) gi = i; });
-        (gi >= 0 ? groups[gi] : other).items.push(t);
-      });
-      groups.push(other);
       var card = function (t) {
         var done = t.lessons.filter(function (l) { return isDone(l.id); }).length;
         var first = t.lessons[0];
@@ -609,7 +752,7 @@
           "<h3>" + esc(t.title) + "</h3><p>" + esc(t.summary) + '</p><span class="track-meta">' + t.lessons.length + " lessons" + (done ? " · " + done + " done" : "") + "</span>" +
           '<span class="bar" aria-hidden="true"><span style="width:' + (t.lessons.length ? Math.round(100 * done / t.lessons.length) : 0) + '%"></span></span></a>';
       };
-      var shown = groups.filter(function (g) { return g.items.length; });
+      var shown = groupTracks(tracks);
       $("#track-grid").outerHTML = shown.length ? '<nav class="group-jump" aria-label="Subject groups">' + shown.map(function (g, i) { return '<a href="#grp-' + i + '"><i class="' + g.icon + '" aria-hidden="true"></i> ' + esc(g.title) + "</a>"; }).join("") + "</nav>" +
         shown.map(function (g, i) { return '<div class="track-group" id="grp-' + i + '"><h3 class="group-title"><i class="' + g.icon + '" aria-hidden="true"></i> ' + esc(g.title) + ' <span class="muted">' + g.items.length + '</span></h3><div class="track-grid">' + g.items.map(card).join("") + "</div></div>"; }).join("")
         : '<p class="muted">Tutorials are coming soon.</p>';
@@ -700,7 +843,7 @@
           (next ? '<a class="btn btn-solid btn-sm" href="./?track=' + esc(track.slug) + "&amp;lesson=" + esc(next.slug) + '">' + esc(next.title) + ' <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>' : "<span></span>") + "</nav>";
         main.innerHTML = '<article class="lesson"><p class="crumbs"><a href="./">Learn</a> / <a href="./?track=' + esc(track.slug) + '">' + esc(track.title) + "</a></p>" + pager.replace('class="pager" aria-label="Lessons"', 'class="pager pager-top" aria-label="Previous and next lesson"') +
           '<div class="lesson-body">' + md.html + "</div>" + moreBox(track, l) + (l.exercise ? '<section class="exercise" id="exercise" aria-labelledby="ex-title"><h2 id="ex-title"><i class="fa-solid fa-dumbbell" aria-hidden="true"></i> Exercise</h2><div class="ex-task">' + markdown(l.exercise).html + '</div><div id="ex-host"></div><p class="ex-result" id="ex-result" role="status" aria-live="polite"></p></section>' :
-          '<p class="done-row"><button type="button" class="btn btn-line btn-sm" id="mark-done">' + (isDone(l.id) ? '<i class="fa-solid fa-check" aria-hidden="true"></i> Completed' : "Mark as completed") + "</button></p>") + pager + "</article>";
+          '<p class="done-row"><button type="button" class="btn btn-line btn-sm" id="mark-done">' + (isDone(l.id) ? '<i class="fa-solid fa-check" aria-hidden="true"></i> Completed' : "Mark as completed") + "</button></p>") + pager + '<section class="lesson-social" id="reviews" aria-label="Likes and reviews"></section></article>';
         md.blocks.forEach(function (b, n) { codeBlock(main.querySelector('[data-try="' + n + '"]'), { lang: b.lang, code: b.code }); });
         lessonVideos(track, l, main.querySelector(".lesson-body"));
         var quizDone = 0;
@@ -711,11 +854,90 @@
         });
         main.querySelectorAll("[data-tool]").forEach(function (h) { var fn = TOOLS[h.getAttribute("data-tool")]; if (fn) fn(h); });
         if (l.exercise) exercise(l, track);
+        lessonSocial(l, $("#reviews"));
         var md2 = $("#mark-done");
         if (md2) md2.addEventListener("click", function () { markDone(l.id); md2.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i> Completed'; });
         main.focus({ preventScroll: true });
       });
     }).catch(function (e) { errorBox(e.message); });
+  }
+
+  // ---------- likes, star ratings and comments under each lesson (everyone reads them; signing in lets you post) ----------
+  function stars(n, label) {
+    var out = "";
+    for (var i = 1; i <= 5; i++) out += '<i class="fa-' + (n >= i - 0.25 ? "solid fa-star" : n >= i - 0.75 ? "solid fa-star-half-stroke" : "regular fa-star") + '" aria-hidden="true"></i>';
+    return '<span class="stars" role="img" aria-label="' + esc(label || n + " out of 5 stars") + '">' + out + "</span>";
+  }
+  function lessonSocial(l, box) {
+    if (!box) return;
+    var openAfter = location.hash === "#reviews";
+    var load = function (keepOpen) {
+      return api("lesson_social", undefined, "&lesson_id=" + l.id).then(function (d) { if (box.isConnected) draw(d, keepOpen); })
+        .catch(function () { box.innerHTML = ""; });
+    };
+    var item = function (c, d, isReply) {
+      var tools = [];
+      if (!isReply && state.me) tools.push('<button type="button" class="linklike" data-reply="' + c.id + '">Reply</button>');
+      if (d.editor) tools.push('<button type="button" class="linklike" data-hide="' + c.id + '" data-hidden="' + (c.hidden ? 1 : 0) + '">' + (c.hidden ? "Show" : "Hide") + "</button>");
+      if (c.mine || d.editor) tools.push('<button type="button" class="linklike danger" data-del="' + c.id + '">Delete</button>');
+      return '<li class="comment rv' + (c.hidden ? " is-hidden" : "") + (c.staff ? " rv-staff" : "") + '" id="rv-' + c.id + '"><span class="avatar" aria-hidden="true">' + (c.staff ? '<i class="fa-solid fa-graduation-cap"></i>' : esc((c.name || "?").charAt(0).toUpperCase())) + "</span><div class=\"rv-main\">" +
+        '<p class="c-head"><strong>' + esc(c.name) + "</strong>" + (c.staff ? ' <span class="tag tag-staff">Tutor</span>' : "") + (c.rating ? " " + stars(c.rating) : "") + " <span>" + esc(timeAgo(c.created_at)) + "</span>" +
+        (c.hidden ? ' <span class="tag">Hidden</span>' : "") + (d.editor && c.email ? ' <span class="muted small">' + esc(c.email) + "</span>" : "") + "</p>" +
+        '<p class="c-body">' + esc(c.body).replace(/\n/g, "<br>") + "</p>" + (tools.length ? '<p class="rv-tools">' + tools.join(" · ") + "</p>" : "") +
+        (c.replies && c.replies.length ? '<ul class="comment-list rv-replies">' + c.replies.map(function (r) { return item(r, d, true); }).join("") + "</ul>" : "") +
+        (isReply ? "" : '<div class="rv-reply-host" data-for="' + c.id + '"></div>') + "</div></li>";
+    };
+    var draw = function (d, keepOpen) {
+      var n = d.reviews.length, r = d.rating;
+      box.innerHTML = '<div class="ls-bar"><p class="ls-q">Was this lesson helpful?</p>' +
+        '<button type="button" class="pill-btn ls-like" aria-pressed="' + d.liked + '"><i class="fa-' + (d.liked ? "solid" : "regular") + ' fa-thumbs-up" aria-hidden="true"></i> ' + (d.liked ? "Liked" : "Like") + ' <span class="ls-n">' + d.likes + '</span><span class="sr-only"> likes</span></button>' +
+        (r.count ? '<span class="ls-rating">' + stars(r.average, "Rated " + r.average + " out of 5") + " <strong>" + r.average + "</strong> <span class=\"muted\">(" + plural(r.count, "rating") + ")</span></span>" : '<span class="ls-rating muted">No ratings yet</span>') + "</div>" +
+        '<details class="ls-reviews"' + (keepOpen || openAfter ? " open" : "") + '><summary><span class="ls-sum"><i class="fa-regular fa-comments" aria-hidden="true"></i> Reviews &amp; comments <span class="subj-n">' + n + '</span></span><span class="muted small">Ask a question, share a tip or rate this lesson</span><i class="fa-solid fa-chevron-down subj-caret" aria-hidden="true"></i></summary>' +
+        (state.me ? '<form class="c-form rv-form" novalidate><span class="avatar" aria-hidden="true">' + esc(((state.me.name) || "?").charAt(0).toUpperCase()) + '</span><div class="c-field">' +
+          '<fieldset class="star-pick"><legend>Your rating (optional)</legend><div class="star-row">' + [5, 4, 3, 2, 1].map(function (v) { return '<input type="radio" name="rv-stars" id="rv-s' + v + '" value="' + v + '"><label for="rv-s' + v + '" title="' + v + ' star' + (v > 1 ? "s" : "") + '"><i class="fa-solid fa-star" aria-hidden="true"></i><span class="sr-only">' + v + " star" + (v > 1 ? "s" : "") + "</span></label>"; }).join("") + "</div></fieldset>" +
+          '<label for="rv-text" class="sr-only">Your review or question</label><textarea id="rv-text" rows="3" maxlength="2000" placeholder="What did you think? Ask a question or share a tip…"></textarea>' +
+          '<div class="c-actions"><p class="u-msg" role="status" aria-live="polite"></p><button type="submit" class="btn btn-solid btn-sm">Post</button></div></div></form>'
+          : '<p class="rv-signin"><button type="button" class="btn btn-line btn-sm" data-signin>Sign in to like, rate and comment</button> <span class="muted small">It’s free. Everyone can read the reviews.</span></p>') +
+        '<ul class="comment-list rv-list">' + (n ? d.reviews.map(function (c) { return item(c, d, false); }).join("") : '<li class="muted">No reviews yet. Be the first to say what you think.</li>') + "</ul></details>";
+      if (openAfter) { openAfter = false; box.scrollIntoView({ block: "start" }); }
+    };
+    box.addEventListener("click", function (e) {
+      var t = e.target.closest("button");
+      if (!t) return;
+      if (t.classList.contains("ls-like") || t.hasAttribute("data-signin")) {
+        if (!state.me) return openSignin("Sign in to like lessons, rate them and comment. It’s free.");
+        t.disabled = true;
+        return api("lesson_like", { lesson_id: l.id }).then(function (j) {
+          t.disabled = false;
+          t.setAttribute("aria-pressed", j.liked);
+          t.innerHTML = '<i class="fa-' + (j.liked ? "solid" : "regular") + ' fa-thumbs-up" aria-hidden="true"></i> ' + (j.liked ? "Liked" : "Like") + ' <span class="ls-n">' + j.likes + '</span><span class="sr-only"> likes</span>';
+        }).catch(function (err) { t.disabled = false; alert(err.message); });
+      }
+      if (t.hasAttribute("data-del")) {
+        if (!confirm("Delete this comment" + (box.querySelector("#rv-" + t.getAttribute("data-del") + " .rv-replies") ? " and its replies" : "") + "?")) return;
+        return api("review_delete", { id: Number(t.getAttribute("data-del")) }).then(function () { load(true); }).catch(function (err) { alert(err.message); });
+      }
+      if (t.hasAttribute("data-hide")) return api("review_hide", { id: Number(t.getAttribute("data-hide")), hidden: t.getAttribute("data-hidden") !== "1" }).then(function () { load(true); }).catch(function (err) { alert(err.message); });
+      if (t.hasAttribute("data-reply")) {
+        var host = box.querySelector('.rv-reply-host[data-for="' + t.getAttribute("data-reply") + '"]');
+        if (host.firstChild) { host.innerHTML = ""; return; }
+        host.innerHTML = '<form class="rv-reply" novalidate><label class="sr-only" for="rp-' + t.getAttribute("data-reply") + '">Your reply</label><textarea id="rp-' + t.getAttribute("data-reply") + '" rows="2" maxlength="2000" placeholder="Write a reply…"></textarea>' +
+          '<div class="c-actions"><p class="u-msg" role="status" aria-live="polite"></p><button type="button" class="linklike" data-cancel>Cancel</button> <button type="submit" class="btn btn-solid btn-sm">Reply</button></div></form>';
+        host.querySelector("textarea").focus();
+      }
+      if (t.hasAttribute("data-cancel")) t.closest(".rv-reply-host").innerHTML = "";
+    });
+    box.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var f = e.target, text = f.querySelector("textarea").value.trim(), msg = f.querySelector(".u-msg"), btn = f.querySelector("button[type=submit]");
+      if (!text) { msg.textContent = "Please write something first."; return; }
+      var body = { lesson_id: l.id, body: text };
+      if (f.classList.contains("rv-reply")) body.parent_id = Number(f.parentNode.getAttribute("data-for"));
+      else { var st = f.querySelector("input[name=rv-stars]:checked"); if (st) body.rating = Number(st.value); }
+      btn.disabled = true;
+      api("review", body).then(function () { load(true); }).catch(function (err) { btn.disabled = false; msg.textContent = err.message; });
+    });
+    load(false);
   }
 
   function norm(s) { return String(s).replace(/\r/g, "").split("\n").map(function (x) { return x.trim().replace(/\s+/g, " "); }).filter(Boolean).join("\n").toLowerCase(); }
@@ -1431,6 +1653,7 @@
     if (page === "practice") return pagePractice(p.get("lang"));
     if (page === "videos") return pageVideos();
     if (page === "notes") return pageNotes();
+    if (page === "search") return pageSearch(p.get("q") || "");
     pageHome();
   }
   document.addEventListener("click", function (e) {

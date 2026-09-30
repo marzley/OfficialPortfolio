@@ -10,7 +10,7 @@ install_error_alerts('learning hub');
 start_session();
 $action = $_GET['action'] ?? '';
 $method = $_SERVER['REQUEST_METHOD'];
-const LEARN_GET = ['me', 'catalog', 'lesson', 'videos', 'video', 'notes', 'note', 'poster', 'stream', 'unlock_status', 'admin'];
+const LEARN_GET = ['me', 'catalog', 'lesson', 'lesson_social', 'videos', 'video', 'notes', 'note', 'poster', 'stream', 'unlock_status', 'admin'];
 const VIDEO_TYPES = ['mp4' => 'video/mp4', 'm4v' => 'video/mp4', 'webm' => 'video/webm'];
 const VIDEO_MAX = 2048 * 1024 * 1024;   // 2 GB
 const NOTE_MAX = 100 * 1024 * 1024;     // 100 MB
@@ -302,6 +302,88 @@ switch ($action) {
         if (!$n) fail(404, 'Comment not found.');
         out(['ok' => true]);
 
+    // ---------- likes and reviews on lessons (anyone can read; signed-in learners post) ----------
+
+    case 'lesson_social':
+        $lid = (int)($_GET['lesson_id'] ?? 0);
+        if (!q("SELECT id FROM learn_lessons WHERE id = ? AND $pub", [$lid])->fetch()) fail(404, 'Lesson not found.');
+        $vis = $editor ? '' : 'AND r.hidden = 0';
+        $rows = q("SELECT r.id, r.parent_id, r.rating, r.body, r.is_staff, r.hidden, r.created_at, r.learner_id, l.name, l.email FROM learn_reviews r JOIN learners l ON l.id = r.learner_id WHERE r.lesson_id = ? $vis ORDER BY r.id", [$lid])->fetchAll();
+        $top = [];
+        $replies = [];
+        foreach ($rows as $r) {
+            $item = ['id' => (int)$r['id'], 'name' => $r['is_staff'] ? 'Marzley Tech' : public_name($r['name'], $r['email']), 'staff' => (bool)$r['is_staff'],
+                     'rating' => $r['rating'] ? (int)$r['rating'] : null, 'body' => $r['body'], 'created_at' => $r['created_at'],
+                     'mine' => $me && (int)$r['learner_id'] === (int)$me['id'], 'hidden' => (bool)$r['hidden'], 'replies' => []];
+            if ($editor) $item['email'] = $r['email'];
+            if ($r['parent_id']) $replies[(int)$r['parent_id']][] = $item; else $top[] = $item;
+        }
+        foreach ($top as &$t) $t['replies'] = $replies[$t['id']] ?? [];
+        unset($t);
+        $rated = q('SELECT COUNT(*) AS n, AVG(rating) AS a FROM learn_reviews WHERE lesson_id = ? AND parent_id IS NULL AND rating IS NOT NULL AND hidden = 0', [$lid])->fetch();
+        out([
+            'likes' => (int)q('SELECT COUNT(*) AS n FROM learn_lesson_likes WHERE lesson_id = ?', [$lid])->fetch()['n'],
+            'liked' => $me ? (bool)q('SELECT id FROM learn_lesson_likes WHERE lesson_id = ? AND learner_id = ?', [$lid, $me['id']])->fetch() : false,
+            'rating' => ['count' => (int)$rated['n'], 'average' => $rated['n'] ? round((float)$rated['a'], 1) : null],
+            'reviews' => array_reverse($top),   // newest first; replies stay oldest first under each one
+            'count' => count($rows), 'editor' => $editor,
+        ]);
+
+    case 'lesson_like':
+        $l = need_learner();
+        $lid = (int)(body()['lesson_id'] ?? 0);
+        if (!q("SELECT id FROM learn_lessons WHERE id = ? AND $pub", [$lid])->fetch()) fail(404, 'Lesson not found.');
+        if (q('SELECT id FROM learn_lesson_likes WHERE lesson_id = ? AND learner_id = ?', [$lid, $l['id']])->fetch()) {
+            q('DELETE FROM learn_lesson_likes WHERE lesson_id = ? AND learner_id = ?', [$lid, $l['id']]);
+            $liked = false;
+        } else {
+            q('INSERT INTO learn_lesson_likes (lesson_id, learner_id, created_at) VALUES (?, ?, ?)', [$lid, $l['id'], now()]);
+            $liked = true;
+        }
+        out(['liked' => $liked, 'likes' => (int)q('SELECT COUNT(*) AS n FROM learn_lesson_likes WHERE lesson_id = ?', [$lid])->fetch()['n']]);
+
+    case 'review':
+        $l = need_learner();
+        $d = body();
+        $lid = (int)($d['lesson_id'] ?? 0);
+        $lesson = q("SELECT l.id, l.title, l.slug, t.slug AS track FROM learn_lessons l JOIN learn_tracks t ON t.id = l.track_id WHERE l.id = ? AND " . ($editor ? '1 = 1' : 'l.published = 1'), [$lid])->fetch();
+        if (!$lesson) fail(404, 'Lesson not found.');
+        $text = trim(preg_replace("/[ \t]+/u", ' ', str_in($d, 'body', 2000)));
+        if ($text === '') fail(400, 'Please write something first.');
+        $parent = (int)($d['parent_id'] ?? 0);
+        if ($parent && !q('SELECT id FROM learn_reviews WHERE id = ? AND lesson_id = ? AND parent_id IS NULL', [$parent, $lid])->fetch()) fail(404, 'That comment was removed.');
+        $rating = $parent ? 0 : (int)($d['rating'] ?? 0);
+        if ($rating < 0 || $rating > 5) fail(400, 'Rate the lesson from 1 to 5 stars.');
+        if (!$editor && !rate_ok('learn_review:' . $l['id'], 15, 3600)) fail(429, 'You’re posting very fast. Please wait a little.');
+        // one star rating per person per lesson: a new rating replaces their old one
+        if ($rating) q('UPDATE learn_reviews SET rating = NULL WHERE lesson_id = ? AND learner_id = ? AND parent_id IS NULL', [$lid, $l['id']]);
+        q('INSERT INTO learn_reviews (lesson_id, learner_id, parent_id, rating, body, is_staff, hidden, created_at) VALUES (?, ?, ?, ?, ?, ?, 0, ?)',
+            [$lid, $l['id'], $parent ?: null, $rating ?: null, $text, $editor ? 1 : 0, now()]);
+        if (!$editor) {
+            $who = public_name($l['name'], $l['email']);
+            foreach (config()['admin_emails'] as $to) {
+                send_mail($to, ($parent ? 'New reply' : 'New review') . ' on “' . $lesson['title'] . '”',
+                    "$who wrote" . ($rating ? " ($rating/5 stars)" : '') . ":\n\n$text\n\nReply or delete it in the portal (Learning hub > Lesson reviews), or on the lesson:\n" .
+                    rtrim(config()['site_url'] ?? 'https://marzleytechsolutions.co.ke', '/') . "/learn/?track={$lesson['track']}&lesson={$lesson['slug']}#reviews", false);
+            }
+        }
+        out(['ok' => true]);
+
+    case 'review_delete':
+        $l = need_learner();
+        $id = (int)(body()['id'] ?? 0);
+        $n = $editor ? q('DELETE FROM learn_reviews WHERE id = ?', [$id])->rowCount()
+                     : q('DELETE FROM learn_reviews WHERE id = ? AND learner_id = ?', [$id, $l['id']])->rowCount();
+        if (!$n) fail(404, 'Comment not found.');
+        q('DELETE FROM learn_reviews WHERE parent_id = ?', [$id]);   // its replies go with it
+        out(['ok' => true]);
+
+    case 'review_hide':
+        need_editor();
+        $d = body();
+        q('UPDATE learn_reviews SET hidden = ? WHERE id = ?', [empty($d['hidden']) ? 0 : 1, (int)($d['id'] ?? 0)]);
+        out(['ok' => true]);
+
     // ---------- managing the hub (owner, or staff with the Courses area) ----------
 
     case 'admin':
@@ -322,6 +404,9 @@ switch ($action) {
             'videos' => $videos,
             'notes' => q('SELECT id, title, summary, track_id, original_name, size, downloads, published, created_at FROM learn_notes ORDER BY created_at DESC')->fetchAll(),
             'comments' => $comments, 'payments' => $payments,
+            'reviews' => q('SELECT r.id, r.lesson_id, r.parent_id, r.rating, r.body, r.is_staff, r.hidden, r.created_at, l.name, l.email, s.title AS lesson, s.slug, t.slug AS track, t.title AS track_title
+                FROM learn_reviews r JOIN learners l ON l.id = r.learner_id JOIN learn_lessons s ON s.id = r.lesson_id JOIN learn_tracks t ON t.id = s.track_id ORDER BY r.id DESC LIMIT 300')->fetchAll(),
+            'top_lessons' => q('SELECT s.title, t.title AS track_title, COUNT(k.id) AS likes FROM learn_lesson_likes k JOIN learn_lessons s ON s.id = k.lesson_id JOIN learn_tracks t ON t.id = s.track_id GROUP BY s.id, s.title, t.title ORDER BY likes DESC LIMIT 10')->fetchAll(),
             'stats' => [
                 'learners' => (int)q('SELECT COUNT(*) AS n FROM learners')->fetch()['n'],
                 'new_learners_30' => (int)q('SELECT COUNT(*) AS n FROM learners WHERE created_at >= ?', [date('Y-m-d H:i:s', time() - 30 * 86400)])->fetch()['n'],
@@ -329,6 +414,8 @@ switch ($action) {
                 'revenue_30' => (int)q('SELECT COALESCE(SUM(amount), 0) AS n FROM learn_unlocks WHERE created_at >= ?', [date('Y-m-d H:i:s', time() - 30 * 86400)])->fetch()['n'],
                 'unlocks' => (int)q('SELECT COUNT(*) AS n FROM learn_unlocks')->fetch()['n'],
                 'lessons_done' => (int)q('SELECT COUNT(*) AS n FROM learn_progress')->fetch()['n'],
+                'lesson_likes' => (int)q('SELECT COUNT(*) AS n FROM learn_lesson_likes')->fetch()['n'],
+                'reviews' => (int)q('SELECT COUNT(*) AS n FROM learn_reviews WHERE parent_id IS NULL')->fetch()['n'],
             ],
         ]);
 

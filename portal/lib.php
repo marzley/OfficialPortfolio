@@ -5,7 +5,7 @@ if (!defined('MARZLEY_PORTAL')) {
     exit;
 }
 
-const SCHEMA_VERSION = 7;
+const SCHEMA_VERSION = 8;
 const STAFF_PERMS = ['projects' => 'Projects & files', 'clients' => 'People', 'support' => 'Support', 'courses' => 'Courses', 'money' => 'Invoices, payments & quotes', 'leads' => 'Leads'];
 const PROJECT_STATUSES = ['planning', 'design', 'build', 'review', 'live', 'on_hold'];
 const INVOICE_STATUSES = ['unpaid', 'paid', 'cancelled'];
@@ -113,6 +113,9 @@ function migrate(PDO $pdo): void {
         "CREATE TABLE IF NOT EXISTS learn_payments (id $id, checkout_id VARCHAR(100) NOT NULL UNIQUE, video_id $uint NOT NULL, learner_id $uint NOT NULL, amount $uint NOT NULL, phone VARCHAR(30) NOT NULL, status VARCHAR(20) NOT NULL DEFAULT 'pending', receipt VARCHAR(30) NULL, paid_amount $uint NULL, created_at DATETIME NOT NULL, paid_at DATETIME NULL)$end",
         "CREATE TABLE IF NOT EXISTS learn_comments (id $id, video_id $uint NOT NULL, learner_id $uint NOT NULL, body TEXT NOT NULL, hidden $uint NOT NULL DEFAULT 0, created_at DATETIME NOT NULL)$end",
         "CREATE TABLE IF NOT EXISTS learn_likes (id $id, video_id $uint NOT NULL, learner_id $uint NOT NULL, created_at DATETIME NOT NULL, UNIQUE (video_id, learner_id))$end",
+        // v8: likes and reviews on tutorial lessons (everyone can read them; signed-in learners post; staff replies are marked)
+        "CREATE TABLE IF NOT EXISTS learn_lesson_likes (id $id, lesson_id $uint NOT NULL, learner_id $uint NOT NULL, created_at DATETIME NOT NULL, UNIQUE (lesson_id, learner_id))$end",
+        "CREATE TABLE IF NOT EXISTS learn_reviews (id $id, lesson_id $uint NOT NULL, learner_id $uint NOT NULL, parent_id $uint NULL, rating $uint NULL, body TEXT NOT NULL, is_staff $uint NOT NULL DEFAULT 0, hidden $uint NOT NULL DEFAULT 0, created_at DATETIME NOT NULL)$end",
         "CREATE TABLE IF NOT EXISTS learn_progress (id $id, learner_id $uint NOT NULL, lesson_id $uint NOT NULL, created_at DATETIME NOT NULL, UNIQUE (learner_id, lesson_id))$end",
         "CREATE TABLE IF NOT EXISTS learn_uploads (id $id, token VARCHAR(64) NOT NULL UNIQUE, kind VARCHAR(10) NOT NULL, name VARCHAR(200) NOT NULL, size $uint NOT NULL, received $uint NOT NULL DEFAULT 0, meta TEXT NOT NULL, created_by VARCHAR(190) NOT NULL, created_at DATETIME NOT NULL)$end",
         // v4
@@ -152,7 +155,7 @@ function migrate(PDO $pdo): void {
         try { $pdo->exec("ALTER TABLE $table ADD COLUMN $col $def"); } catch (PDOException $e) { /* already there */ }
     }
     foreach (['CREATE INDEX audit_created ON audit_log (created_at)', 'CREATE INDEX payments_invoice ON payments (invoice_id)', 'CREATE INDEX payments_ref ON payments (reference)', 'CREATE UNIQUE INDEX payments_checkout ON payments (checkout_id)', 'CREATE INDEX queue_pending ON campaign_queue (sent_at)', 'CREATE UNIQUE INDEX referral_once ON referrals (code, referred_phone, client_id)',
-              'CREATE INDEX checks_domain ON site_checks (domain_id, checked_at)', 'CREATE INDEX learn_comments_video ON learn_comments (video_id)', 'CREATE INDEX learn_codes_email ON learn_codes (email)'] as $sql) {
+              'CREATE INDEX checks_domain ON site_checks (domain_id, checked_at)', 'CREATE INDEX learn_comments_video ON learn_comments (video_id)', 'CREATE INDEX learn_codes_email ON learn_codes (email)', 'CREATE INDEX learn_reviews_lesson ON learn_reviews (lesson_id)'] as $sql) {
         try { $pdo->exec($sql); } catch (PDOException $e) { /* already there */ }
     }
     if ($v < 3) {

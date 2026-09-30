@@ -62,7 +62,7 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   const cid = one("SELECT id FROM clients WHERE email = 'client@example.com'").id;
 
   // ---------- database upgrade ----------
-  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "7");
+  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "8");
 
   // ---------- sequential invoice numbers ----------
   r = await admin("invoice_save", { client_id: cid, description: "Website build", amount: 10000, status: "unpaid" });
@@ -649,6 +649,40 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
     r = await lpost(boss, "comment_hide", { id: cm.id, hidden: true });
     r = await lget(stu2, "video", "&id=" + vid);
     ok("the owner can hide a comment", r.j.video.comment_list.length === 0 && r.j.video.comments === 0);
+
+    // likes, star ratings and comments on free lessons: anyone reads, learners post, the owner replies and moderates
+    const lsn = one("SELECT l.id FROM learn_lessons l JOIN learn_tracks t ON t.id = l.track_id WHERE t.slug = 'python' AND l.slug = 'introduction'").id;
+    r = await lpost(guest, "lesson_like", { lesson_id: lsn });
+    ok("liking a lesson needs an account", r.s === 401);
+    r = await lpost(stu, "lesson_like", { lesson_id: lsn });
+    ok("lesson liked", r.s === 200 && r.j.liked === true && r.j.likes === 1);
+    await lpost(stu2, "lesson_like", { lesson_id: lsn });
+    r = await lpost(stu2, "lesson_like", { lesson_id: lsn });
+    ok("like a lesson again to undo", r.j.liked === false && r.j.likes === 1);
+    clearMail();
+    r = await lpost(stu, "review", { lesson_id: lsn, body: "Great intro!", rating: 4 });
+    ok("review posted", r.s === 200);
+    ok("the owner is emailed about new reviews", /Achieng O. wrote \(4\/5 stars\)/.test(fs.readFileSync(WORK + "/mail.txt", "utf8")));
+    r = await lpost(stu, "review", { lesson_id: lsn, body: "Changed my mind, it's perfect", rating: 5 });
+    r = await lpost(stu, "review", { lesson_id: lsn, body: "x", rating: 9 });
+    ok("ratings must be 1 to 5", r.s === 400);
+    r = await lget(guest, "lesson_social", "&lesson_id=" + lsn);
+    ok("everyone can read lesson reviews and likes, without emails", r.s === 200 && r.j.likes === 1 && r.j.reviews.length === 2 && r.j.reviews[0].name === "Achieng O." && !JSON.stringify(r.j).includes("student@example.com"));
+    ok("one star rating per person counts", r.j.rating.count === 1 && r.j.rating.average === 5);
+    const rvId = r.j.reviews[1].id;
+    r = await lpost(boss, "review", { lesson_id: lsn, parent_id: rvId, body: "Thank you, keep going!" });
+    r = await lget(stu2, "lesson_social", "&lesson_id=" + lsn);
+    const rv = r.j.reviews.find((x) => x.id === rvId);
+    ok("the owner’s reply shows under the review, marked as the tutor", rv.replies.length === 1 && rv.replies[0].staff === true && rv.replies[0].name === "Marzley Tech");
+    r = await lpost(stu2, "review_delete", { id: rvId });
+    ok("learners can’t delete other people’s reviews", r.s === 404);
+    r = await lget(boss, "admin");
+    ok("the owner sees every lesson review in the portal", r.j.reviews.some((x) => x.id === rvId && x.email === "student@example.com") && r.j.stats.reviews === 2 && r.j.stats.lesson_likes === 1);
+    r = await lpost(boss, "review_hide", { id: rvId, hidden: true });
+    r = await lget(guest, "lesson_social", "&lesson_id=" + lsn);
+    ok("hidden reviews disappear for everyone else", r.j.reviews.length === 1);
+    r = await lpost(boss, "review_delete", { id: rvId });
+    ok("the owner can delete a review (and its replies go too)", r.s === 200 && one("SELECT COUNT(*) AS n FROM learn_reviews WHERE parent_id = " + rvId).n == 0);
 
     // managing
     r = await lget(boss, "admin");
