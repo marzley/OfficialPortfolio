@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Core components, styling and Flexbox layouts | Marzley Learn</title>
+    <meta name="description" content="React Native gives you a small set of core components that map to native views on Android and iPhone. Layout uses Flexbox , like CSS, with a few…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/react-native/react-native-components-styling/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Core components, styling and Flexbox layouts | Marzley Learn" />
+    <meta property="og:description" content="React Native gives you a small set of core components that map to native views on Android and iPhone. Layout uses Flexbox , like CSS, with a few…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/react-native/react-native-components-styling/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Core components, styling and Flexbox layouts | Marzley Learn" />
+    <meta name="twitter:description" content="React Native gives you a small set of core components that map to native views on Android and iPhone. Layout uses Flexbox , like CSS, with a few…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/react-native/react-native-components-styling/#lesson","name":"Core components, styling and Flexbox layouts","description":"React Native gives you a small set of core components that map to native views on Android and iPhone. Layout uses Flexbox , like CSS, with a few…","url":"https://marzleytechsolutions.co.ke/learn/react-native/react-native-components-styling/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/react-native/#course","name":"React Native apps (Expo)","url":"https://marzleytechsolutions.co.ke/learn/react-native/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"React Native apps (Expo)","item":"https://marzleytechsolutions.co.ke/learn/react-native/"},{"@type":"ListItem","position":4,"name":"Core components, styling and Flexbox layouts","item":"https://marzleytechsolutions.co.ke/learn/react-native/react-native-components-styling/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/react-native/">React Native apps (Expo)</a> / <span>Core components, styling and Flexbox layouts</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=react-native&amp;lesson=react-native-components-styling"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Core components, styling and Flexbox layouts</h1>
+<p>React Native gives you a small set of <strong>core components</strong> that map to native views on Android and iPhone. Layout uses <strong>Flexbox</strong>, like CSS, with a few differences.</p>
+<h2>The core components</h2>
+<div class="static-table"><table><thead><tr><th>Component</th><th>Use</th></tr></thead><tbody><tr><td><code>View</code></td><td>A box: layout container</td></tr><tr><td><code>Text</code></td><td>Any text</td></tr><tr><td><code>Image</code></td><td>Local or remote images</td></tr><tr><td><code>ScrollView</code></td><td>Scrollable content (short lists, forms)</td></tr><tr><td><code>FlatList</code> / <code>SectionList</code></td><td>Long, efficient lists (next lesson)</td></tr><tr><td><code>TextInput</code></td><td>Text entry</td></tr><tr><td><code>Pressable</code></td><td>Anything tappable, with pressed feedback</td></tr><tr><td><code>Switch</code></td><td>On/off toggle</td></tr><tr><td><code>ActivityIndicator</code></td><td>Loading spinner</td></tr><tr><td><code>Modal</code></td><td>A pop-up screen</td></tr><tr><td><code>KeyboardAvoidingView</code></td><td>Moves content up when the keyboard opens</td></tr><tr><td><code>SafeAreaView</code> (from <code>react-native-safe-area-context</code>)</td><td>Keeps content away from the notch and system bars</td></tr></tbody></table></div>
+<h2>Styling</h2>
+<p>Styles are JavaScript objects. Property names are <strong>camelCase</strong> and numbers are <strong>density-independent pixels</strong> (no <code>px</code>):</p>
+<figure class="static-code"><figcaption>JSX</figcaption><pre><code class="language-jsx">import { View, Text, Image, StyleSheet } from &quot;react-native&quot;;
+
+export function ProductCard({ name, price, imageUrl, inStock }) {
+  return (
+    &lt;View style={styles.card}&gt;
+      &lt;Image source={{ uri: imageUrl }} style={styles.image} resizeMode=&quot;cover&quot; /&gt;
+      &lt;View style={styles.info}&gt;
+        &lt;Text style={styles.name} numberOfLines={1}&gt;{name}&lt;/Text&gt;
+        &lt;Text style={styles.price}&gt;KSh {price.toLocaleString()}&lt;/Text&gt;
+        &lt;Text style={[styles.badge, !inStock &amp;&amp; styles.soldOut]}&gt;{inStock ? &quot;In stock&quot; : &quot;Sold out&quot;}&lt;/Text&gt;
+      &lt;/View&gt;
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  card: {
+    flexDirection: &quot;row&quot;,
+    backgroundColor: &quot;#fff&quot;,
+    borderRadius: 14,
+    padding: 12,
+    marginHorizontal: 16,
+    marginVertical: 6,
+    elevation: 2,                                   // Android shadow
+    shadowColor: &quot;#000&quot;, shadowOpacity: 0.08, shadowRadius: 8, shadowOffset: { width: 0, height: 3 },   // iPhone shadow
+  },
+  image: { width: 72, height: 72, borderRadius: 10, backgroundColor: &quot;#f1f5f9&quot; },
+  info: { flex: 1, marginLeft: 12, justifyContent: &quot;center&quot; },
+  name: { fontSize: 16, fontWeight: &quot;700&quot;, color: &quot;#0b1b35&quot; },
+  price: { fontSize: 15, color: &quot;#0b7a5a&quot;, marginTop: 2 },
+  badge: { marginTop: 6, alignSelf: &quot;flex-start&quot;, fontSize: 12, color: &quot;#166534&quot;, backgroundColor: &quot;#dcfce7&quot;, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 999, overflow: &quot;hidden&quot; },
+  soldOut: { color: &quot;#991b1b&quot;, backgroundColor: &quot;#fee2e2&quot; },
+});</code></pre></figure>
+<ul><li>Combine styles with an array: <code>style={[styles.badge, !inStock &amp;&amp; styles.soldOut]}</code> (later styles win).</li><li><strong>Remote images need a width and height</strong>.</li><li><code>numberOfLines={1}</code> cuts long text with "…".</li></ul>
+<h2>Flexbox in React Native</h2>
+<p>Differences from web CSS:</p>
+<div class="static-table"><table><thead><tr><th>Property</th><th>React Native default</th><th>Web default</th></tr></thead><tbody><tr><td><code>flexDirection</code></td><td><strong>column</strong></td><td>row</td></tr><tr><td><code>alignContent</code></td><td>flex-start</td><td>stretch</td></tr><tr><td><code>flex: 1</code></td><td>Takes the available space</td><td>Similar</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>JSX</figcaption><pre><code class="language-jsx">import { View, Text, StyleSheet } from &quot;react-native&quot;;
+
+export default function Dashboard() {
+  return (
+    &lt;View style={s.screen}&gt;
+      &lt;Text style={s.title}&gt;Today&lt;/Text&gt;
+      &lt;View style={s.row}&gt;
+        &lt;View style={[s.tile, { backgroundColor: &quot;#dcfce7&quot; }]}&gt;
+          &lt;Text style={s.value}&gt;KSh 8,640&lt;/Text&gt;
+          &lt;Text&gt;Sales&lt;/Text&gt;
+        &lt;/View&gt;
+        &lt;View style={[s.tile, { backgroundColor: &quot;#fef3c7&quot; }]}&gt;
+          &lt;Text style={s.value}&gt;3&lt;/Text&gt;
+          &lt;Text&gt;Low stock&lt;/Text&gt;
+        &lt;/View&gt;
+      &lt;/View&gt;
+      &lt;View style={s.spacer} /&gt;
+      &lt;Text style={s.footer}&gt;Synced 2 minutes ago&lt;/Text&gt;
+    &lt;/View&gt;
+  );
+}
+
+const s = StyleSheet.create({
+  screen: { flex: 1, padding: 16, backgroundColor: &quot;#f8fafc&quot; },
+  title: { fontSize: 24, fontWeight: &quot;800&quot;, marginBottom: 12 },
+  row: { flexDirection: &quot;row&quot;, gap: 12 },                 // gap works in recent React Native versions
+  tile: { flex: 1, padding: 16, borderRadius: 14 },        // two tiles share the row equally
+  value: { fontSize: 22, fontWeight: &quot;800&quot; },
+  spacer: { flex: 1 },                                      // pushes the footer to the bottom
+  footer: { textAlign: &quot;center&quot;, color: &quot;#64748b&quot; },
+});</code></pre></figure>
+<h2>Text input and the keyboard</h2>
+<figure class="static-code"><figcaption>JSX</figcaption><pre><code class="language-jsx">import { useState } from &quot;react&quot;;
+import { View, Text, TextInput, Pressable, KeyboardAvoidingView, Platform, StyleSheet } from &quot;react-native&quot;;
+
+export default function PhoneForm() {
+  const [phone, setPhone] = useState(&quot;&quot;);
+  const digits = phone.replace(/\D/g, &quot;&quot;);
+  const valid = /^(0[17]\d{8}|254[17]\d{8})$/.test(digits);
+
+  return (
+    &lt;KeyboardAvoidingView behavior={Platform.OS === &quot;ios&quot; ? &quot;padding&quot; : undefined} style={st.screen}&gt;
+      &lt;Text style={st.label}&gt;M-Pesa number&lt;/Text&gt;
+      &lt;TextInput
+        value={phone}
+        onChangeText={setPhone}                 // gives the text directly (not an event)
+        placeholder=&quot;0712 345 678&quot;
+        keyboardType=&quot;phone-pad&quot;
+        maxLength={16}
+        style={[st.input, phone &amp;&amp; !valid &amp;&amp; st.inputError]}
+      /&gt;
+      {phone !== &quot;&quot; &amp;&amp; !valid &amp;&amp; &lt;Text style={st.error}&gt;Enter a Safaricom or Airtel number&lt;/Text&gt;}
+      &lt;Pressable
+        disabled={!valid}
+        onPress={() =&gt; alert(&quot;We&#x27;d now send an M-Pesa prompt (through our server)&quot;)}
+        style={({ pressed }) =&gt; [st.button, !valid &amp;&amp; { opacity: 0.4 }, pressed &amp;&amp; { opacity: 0.8 }]}
+      &gt;
+        &lt;Text style={st.buttonText}&gt;Pay&lt;/Text&gt;
+      &lt;/Pressable&gt;
+    &lt;/KeyboardAvoidingView&gt;
+  );
+}
+
+const st = StyleSheet.create({
+  screen: { flex: 1, padding: 20, justifyContent: &quot;center&quot; },
+  label: { fontWeight: &quot;700&quot;, marginBottom: 6 },
+  input: { borderWidth: 1, borderColor: &quot;#cbd5e1&quot;, borderRadius: 12, padding: 14, fontSize: 18 },
+  inputError: { borderColor: &quot;#dc2626&quot; },
+  error: { color: &quot;#dc2626&quot;, marginTop: 6 },
+  button: { marginTop: 16, backgroundColor: &quot;#0b7a5a&quot;, padding: 16, borderRadius: 12, alignItems: &quot;center&quot; },
+  buttonText: { color: &quot;white&quot;, fontWeight: &quot;700&quot;, fontSize: 16 },
+});</code></pre></figure>
+<h2>Platform differences</h2>
+<figure class="static-code"><figcaption>JS</figcaption><pre><code class="language-js">import { Platform } from &quot;react-native&quot;;
+
+const fontFamily = Platform.select({ ios: &quot;System&quot;, android: &quot;Roboto&quot; });
+if (Platform.OS === &quot;android&quot;) {
+  // Android-only behaviour
+}</code></pre></figure>
+<p>Most code works on both; use <code>Platform</code> only for small differences.</p>
+<h2>UI libraries</h2>
+<p><strong>React Native Paper</strong> (Material Design), <strong>Tamagui</strong> and <strong>NativeWind</strong> (Tailwind-style classes) give you ready components and theming. Start with core components so you understand what they do.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the default flexDirection in React Native?</p><details><summary>Show answer</summary><p>column</p></details></li><li><p>Which component makes anything tappable with pressed feedback?</p><details><summary>Show answer</summary><p>Pressable</p></details></li><li><p>Which TextInput prop gives the typed text directly?</p><details><summary>Show answer</summary><p>onChangeText</p></details></li><li><p>Which keyboardType shows a number pad for phone numbers?</p><details><summary>Show answer</summary><p>phone-pad</p></details></li><li><p>How do you combine two styles on one component?</p><details><summary>Show answer</summary><p>an array</p></details></li><li><p>Which module tells you whether the app runs on Android or iOS?</p><details><summary>Show answer</summary><p>Platform</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 5 in <a href="/learn/react-native/">React Native apps (Expo)</a> · <a href="/learn/?book=react-native">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/react-native/react-native-intro/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> React Native and Expo: setup and your first app</a><a class="btn btn-solid btn-sm" href="/learn/react-native/react-native-lists-navigation/">Lists with FlatList and navigation with Expo Router <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

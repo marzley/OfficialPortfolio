@@ -150,13 +150,20 @@ Add the `http` package (`flutter pub add http`), then:
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+class Order {                                   // a short version of the Order class above
+  final int id;
+  final double total;
+  Order(this.id, this.total);
+  factory Order.fromJson(Map<String, dynamic> json) => Order(json['id'] as int, (json['total'] as num).toDouble());
+}
+
 Future<List<Order>> loadOrders() async {
   final res = await http.get(Uri.parse('https://example.com/api/orders'));
   if (res.statusCode != 200) {
     throw Exception('Server error ${res.statusCode}');
   }
   final data = jsonDecode(res.body) as List;
-  return data.map((e) => Order.fromJson(e)).toList();
+  return data.map((e) => Order.fromJson(e as Map<String, dynamic>)).toList();
 }
 ```
 

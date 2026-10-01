@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>State, APIs and storing data on the phone | Marzley Learn</title>
+    <meta name="description" content="Free React Native apps (Expo) lesson: State, APIs and storing data on the phone." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/react-native/react-native-state-data/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="State, APIs and storing data on the phone | Marzley Learn" />
+    <meta property="og:description" content="Free React Native apps (Expo) lesson: State, APIs and storing data on the phone." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/react-native/react-native-state-data/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="State, APIs and storing data on the phone | Marzley Learn" />
+    <meta name="twitter:description" content="Free React Native apps (Expo) lesson: State, APIs and storing data on the phone." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/react-native/react-native-state-data/#lesson","name":"State, APIs and storing data on the phone","description":"Free React Native apps (Expo) lesson: State, APIs and storing data on the phone.","url":"https://marzleytechsolutions.co.ke/learn/react-native/react-native-state-data/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/react-native/#course","name":"React Native apps (Expo)","url":"https://marzleytechsolutions.co.ke/learn/react-native/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"React Native apps (Expo)","item":"https://marzleytechsolutions.co.ke/learn/react-native/"},{"@type":"ListItem","position":4,"name":"State, APIs and storing data on the phone","item":"https://marzleytechsolutions.co.ke/learn/react-native/react-native-state-data/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/react-native/">React Native apps (Expo)</a> / <span>State, APIs and storing data on the phone</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=react-native&amp;lesson=react-native-state-data"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>State, APIs and storing data on the phone</h1>
+<h2>Loading from an API with fetch</h2>
+<figure class="static-code"><figcaption>JSX</figcaption><pre><code class="language-jsx">import { useEffect, useState, useCallback } from &quot;react&quot;;
+import { View, Text, FlatList, ActivityIndicator, Pressable } from &quot;react-native&quot;;
+
+const API = &quot;https://jsonplaceholder.typicode.com&quot;;
+
+export default function Customers() {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(&quot;&quot;);
+
+  const load = useCallback(async () =&gt; {
+    setLoading(true);
+    setError(&quot;&quot;);
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() =&gt; controller.abort(), 15000);        // give up after 15 s on bad networks
+      const res = await fetch(`${API}/users`, { signal: controller.signal, headers: { Accept: &quot;application/json&quot; } });
+      clearTimeout(timer);
+      if (!res.ok) throw new Error(`Server error ${res.status}`);
+      setItems(await res.json());
+    } catch (e) {
+      setError(e.name === &quot;AbortError&quot; ? &quot;The network is slow. Try again.&quot; : &quot;Could not load. Check your internet.&quot;);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() =&gt; { load(); }, [load]);
+
+  if (loading) return &lt;ActivityIndicator style={{ marginTop: 40 }} size=&quot;large&quot; /&gt;;
+  if (error) {
+    return (
+      &lt;View style={{ padding: 24, alignItems: &quot;center&quot; }}&gt;
+        &lt;Text&gt;{error}&lt;/Text&gt;
+        &lt;Pressable onPress={load} style={{ marginTop: 12 }}&gt;&lt;Text style={{ color: &quot;#0b7a5a&quot;, fontWeight: &quot;700&quot; }}&gt;Try again&lt;/Text&gt;&lt;/Pressable&gt;
+      &lt;/View&gt;
+    );
+  }
+  return (
+    &lt;FlatList
+      data={items}
+      keyExtractor={(u) =&gt; String(u.id)}
+      renderItem={({ item }) =&gt; (
+        &lt;View style={{ padding: 16, borderBottomWidth: 1, borderColor: &quot;#eee&quot; }}&gt;
+          &lt;Text style={{ fontWeight: &quot;700&quot; }}&gt;{item.name}&lt;/Text&gt;
+          &lt;Text&gt;{item.email}&lt;/Text&gt;
+        &lt;/View&gt;
+      )}
+    /&gt;
+  );
+}</code></pre></figure>
+<p>Sending data:</p>
+<figure class="static-code"><figcaption>JS</figcaption><pre><code class="language-js">async function createOrder(token, order) {
+  const res = await fetch(&quot;https://api.example.co.ke/v1/orders&quot;, {
+    method: &quot;POST&quot;,
+    headers: { &quot;Content-Type&quot;: &quot;application/json&quot;, Authorization: `Bearer ${token}` },
+    body: JSON.stringify(order),
+  });
+  if (res.status === 401) throw new Error(&quot;Please sign in again&quot;);
+  if (!res.ok) throw new Error(&quot;Could not place the order&quot;);
+  return res.json();
+}</code></pre></figure>
+<blockquote><p><strong>Security:</strong> never put API secrets (M-Pesa keys, payment keys, database passwords) in a React Native app. Anyone can unpack the app and read them. The app calls <strong>your</strong> server; your server holds the secrets.</p></blockquote>
+<h2>Sharing state across screens with context</h2>
+<figure class="static-code"><figcaption>JSX</figcaption><pre><code class="language-jsx">import { createContext, useContext, useReducer } from &quot;react&quot;;
+
+const CartContext = createContext(null);
+
+function reducer(cart, action) {
+  switch (action.type) {
+    case &quot;add&quot;: return { ...cart, [action.id]: (cart[action.id] || 0) + 1 };
+    case &quot;remove&quot;: {
+      const next = { ...cart };
+      if ((next[action.id] || 0) &lt;= 1) delete next[action.id]; else next[action.id] -= 1;
+      return next;
+    }
+    case &quot;clear&quot;: return {};
+    default: return cart;
+  }
+}
+
+export function CartProvider({ children }) {
+  const [cart, dispatch] = useReducer(reducer, {});
+  const count = Object.values(cart).reduce((a, b) =&gt; a + b, 0);
+  return &lt;CartContext.Provider value={{ cart, count, dispatch }}&gt;{children}&lt;/CartContext.Provider&gt;;
+}
+
+export function useCart() {
+  const ctx = useContext(CartContext);
+  if (!ctx) throw new Error(&quot;useCart must be used inside CartProvider&quot;);
+  return ctx;
+}</code></pre></figure>
+<p>Wrap the app in <code>&lt;CartProvider&gt;</code> in <code>app/_layout.jsx</code>, then any screen can call <code>const { count, dispatch } = useCart();</code>. For bigger apps, <strong>Zustand</strong> is a popular, simple global store, and <strong>TanStack Query</strong> handles server data, caching and refetching.</p>
+<h2>Storing data on the phone</h2>
+<div class="static-table"><table><thead><tr><th>Need</th><th>Library</th></tr></thead><tbody><tr><td>Small values: settings, cached lists</td><td><code>@react-native-async-storage/async-storage</code></td></tr><tr><td>Secrets: login tokens</td><td><code>expo-secure-store</code> (encrypted)</td></tr><tr><td>Structured data, offline records, search</td><td><code>expo-sqlite</code></td></tr><tr><td>Files</td><td><code>expo-file-system</code></td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>JS</figcaption><pre><code class="language-js">import AsyncStorage from &quot;@react-native-async-storage/async-storage&quot;;
+import * as SecureStore from &quot;expo-secure-store&quot;;
+
+export async function saveSettings(settings) {
+  await AsyncStorage.setItem(&quot;settings&quot;, JSON.stringify(settings));
+}
+
+export async function loadSettings() {
+  const raw = await AsyncStorage.getItem(&quot;settings&quot;);
+  return raw ? JSON.parse(raw) : { theme: &quot;system&quot;, language: &quot;en&quot; };
+}
+
+export async function saveToken(token) {
+  await SecureStore.setItemAsync(&quot;authToken&quot;, token);       // encrypted on the device
+}
+
+export async function getToken() {
+  return SecureStore.getItemAsync(&quot;authToken&quot;);
+}</code></pre></figure>
+<h2>SQLite for offline records</h2>
+<figure class="static-code"><figcaption>JS</figcaption><pre><code class="language-js">import * as SQLite from &quot;expo-sqlite&quot;;
+
+const db = await SQLite.openDatabaseAsync(&quot;duka.db&quot;);
+
+await db.execAsync(`
+  CREATE TABLE IF NOT EXISTS sales (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    product TEXT NOT NULL,
+    qty INTEGER NOT NULL,
+    price INTEGER NOT NULL,
+    synced INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL
+  );
+`);
+
+export async function recordSale(product, qty, price) {
+  await db.runAsync(&quot;INSERT INTO sales (product, qty, price, created_at) VALUES (?, ?, ?, ?)&quot;,
+    product, qty, price, new Date().toISOString());          // ? placeholders prevent SQL injection
+}
+
+export async function unsyncedSales() {
+  return db.getAllAsync(&quot;SELECT * FROM sales WHERE synced = 0&quot;);
+}</code></pre></figure>
+<p>Record sales offline, then send <code>unsyncedSales()</code> to the server when online and mark them <code>synced = 1</code>. Practise the SQL in the <strong>SQL</strong> subject.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which built-in function calls APIs in React Native?</p><details><summary>Show answer</summary><p>fetch</p></details></li><li><p>Where should a login token be stored in an Expo app?</p><details><summary>Show answer</summary><p>expo-secure-store</p></details></li><li><p>Which library stores small settings as key-value pairs?</p><details><summary>Show answer</summary><p>AsyncStorage</p></details></li><li><p>Which Expo library gives you an SQLite database?</p><details><summary>Show answer</summary><p>expo-sqlite</p></details></li><li><p>Should M-Pesa secret keys be inside the app? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which React feature shares state like a cart across screens?</p><details><summary>Show answer</summary><p>context</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 5 in <a href="/learn/react-native/">React Native apps (Expo)</a> · <a href="/learn/?book=react-native">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/react-native/react-native-lists-navigation/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Lists with FlatList and navigation with Expo Router</a><a class="btn btn-solid btn-sm" href="/learn/react-native/react-native-device-and-publish/">Phone features, then building and publishing with EAS <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

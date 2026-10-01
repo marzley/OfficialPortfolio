@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Building an API with Node.js and Express | Marzley Learn</title>
+    <meta name="description" content="Node.js runs JavaScript on the server, so you can use one language for your React website, React Native app and backend. Express is the most widely…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/apis-backend/node-express-api/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Building an API with Node.js and Express | Marzley Learn" />
+    <meta property="og:description" content="Node.js runs JavaScript on the server, so you can use one language for your React website, React Native app and backend. Express is the most widely…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/apis-backend/node-express-api/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Building an API with Node.js and Express | Marzley Learn" />
+    <meta name="twitter:description" content="Node.js runs JavaScript on the server, so you can use one language for your React website, React Native app and backend. Express is the most widely…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/apis-backend/node-express-api/#lesson","name":"Building an API with Node.js and Express","description":"Node.js runs JavaScript on the server, so you can use one language for your React website, React Native app and backend. Express is the most widely…","url":"https://marzleytechsolutions.co.ke/learn/apis-backend/node-express-api/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/apis-backend/#course","name":"APIs & backends for apps","url":"https://marzleytechsolutions.co.ke/learn/apis-backend/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"APIs & backends for apps","item":"https://marzleytechsolutions.co.ke/learn/apis-backend/"},{"@type":"ListItem","position":4,"name":"Building an API with Node.js and Express","item":"https://marzleytechsolutions.co.ke/learn/apis-backend/node-express-api/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/apis-backend/">APIs &amp; backends for apps</a> / <span>Building an API with Node.js and Express</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=apis-backend&amp;lesson=node-express-api"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Building an API with Node.js and Express</h1>
+<p><strong>Node.js</strong> runs JavaScript on the server, so you can use one language for your React website, React Native app and backend. <strong>Express</strong> is the most widely used Node web framework: small, flexible and easy to learn.</p>
+<h2>Setup</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">mkdir duka-api &amp;&amp; cd duka-api
+npm init -y
+npm install express</code></pre></figure>
+<p>Add <code>&quot;type&quot;: &quot;module&quot;</code> to <code>package.json</code> to use <code>import</code> syntax.</p>
+<h2>A complete small API</h2>
+<figure class="static-code"><figcaption>JS</figcaption><pre><code class="language-js">// server.js
+import express from &quot;express&quot;;
+
+const app = express();
+app.use(express.json({ limit: &quot;100kb&quot; }));           // parse JSON bodies (with a size limit)
+
+let nextId = 3;
+const products = [
+  { id: 1, name: &quot;Unga 2kg&quot;, price: 180, stock: 12 },
+  { id: 2, name: &quot;Sugar 1kg&quot;, price: 150, stock: 0 },
+];
+
+app.get(&quot;/v1/products&quot;, (req, res) =&gt; {
+  const q = String(req.query.q || &quot;&quot;).toLowerCase();
+  res.json({ data: products.filter((p) =&gt; p.name.toLowerCase().includes(q)) });
+});
+
+app.get(&quot;/v1/products/:id&quot;, (req, res) =&gt; {
+  const product = products.find((p) =&gt; p.id === Number(req.params.id));
+  if (!product) return res.status(404).json({ error: { message: &quot;Product not found&quot; } });
+  res.json({ data: product });
+});
+
+app.post(&quot;/v1/products&quot;, (req, res) =&gt; {
+  const { name, price } = req.body ?? {};
+  if (typeof name !== &quot;string&quot; || name.trim().length &lt; 2 || !Number.isInteger(price) || price &lt;= 0) {
+    return res.status(422).json({ error: { message: &quot;Name and a whole-number price above 0 are required&quot; } });
+  }
+  const product = { id: nextId++, name: name.trim(), price, stock: 0 };
+  products.push(product);
+  res.status(201).json({ data: product });
+});
+
+// errors thrown anywhere end up here
+app.use((err, req, res, next) =&gt; {
+  console.error(err);
+  res.status(500).json({ error: { message: &quot;Something went wrong&quot; } });
+});
+
+const port = process.env.PORT || 3000;
+app.listen(port, () =&gt; console.log(`API running on http://localhost:${port}`));</code></pre></figure>
+<p>Run it with <code>node server.js</code> (or <code>node --watch server.js</code> to restart on every save) and test with <code>curl http://localhost:3000/v1/products</code>.</p>
+<h2>Middleware: code that runs before your routes</h2>
+<p>Middleware functions receive <code>(req, res, next)</code>. They're used for logging, authentication, rate limiting and validation:</p>
+<figure class="static-code"><figcaption>JS</figcaption><pre><code class="language-js">function requireAuth(req, res, next) {
+  const token = (req.headers.authorization || &quot;&quot;).replace(&quot;Bearer &quot;, &quot;&quot;);
+  const user = verifyToken(token);                  // your function: check a session or JWT
+  if (!user) return res.status(401).json({ error: { message: &quot;Please sign in&quot; } });
+  req.user = user;                                  // available to the route
+  next();
+}
+
+function requireRole(role) {
+  return (req, res, next) =&gt;
+    req.user.role === role ? next() : res.status(403).json({ error: { message: &quot;Not allowed&quot; } });
+}
+
+function verifyToken(token) {
+  return token === &quot;demo-token&quot; ? { id: 7, role: &quot;owner&quot; } : null;
+}
+
+// usage: app.delete(&quot;/v1/products/:id&quot;, requireAuth, requireRole(&quot;owner&quot;), (req, res) =&gt; { ... });</code></pre></figure>
+<h2>Routing logic you can run</h2>
+<p>The logic inside routes is plain JavaScript. Here's a sales summary like an API would compute:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const sales = [
+  { id: 1, productId: 1, qty: 2, price: 180, method: &quot;mpesa&quot;, at: &quot;2026-10-01T09:15:00+03:00&quot; },
+  { id: 2, productId: 2, qty: 1, price: 150, method: &quot;cash&quot;, at: &quot;2026-10-01T10:02:00+03:00&quot; },
+  { id: 3, productId: 1, qty: 5, price: 180, method: &quot;mpesa&quot;, at: &quot;2026-10-01T16:40:00+03:00&quot; },
+  { id: 4, productId: 3, qty: 3, price: 60, method: &quot;credit&quot;, at: &quot;2026-09-30T18:20:00+03:00&quot; },
+];
+
+function dailyReport(sales, day) {
+  const today = sales.filter((s) =&gt; s.at.startsWith(day));
+  const byMethod = {};
+  for (const s of today) byMethod[s.method] = (byMethod[s.method] || 0) + s.qty * s.price;
+  const total = Object.values(byMethod).reduce((a, b) =&gt; a + b, 0);
+  return { day, count: today.length, total, byMethod };
+}
+
+console.log(JSON.stringify(dailyReport(sales, &quot;2026-10-01&quot;), null, 2));</code></pre></figure>
+<h2>Connecting a database</h2>
+<p>Popular choices:</p>
+<div class="static-table"><table><thead><tr><th>Database</th><th>Node library</th></tr></thead><tbody><tr><td>PostgreSQL</td><td><code>pg</code>, or an ORM like <strong>Prisma</strong> or <strong>Drizzle</strong></td></tr><tr><td>MySQL</td><td><code>mysql2</code></td></tr><tr><td>SQLite</td><td><code>better-sqlite3</code></td></tr><tr><td>MongoDB</td><td><code>mongodb</code>, <code>mongoose</code></td></tr></tbody></table></div>
+<p>Always use <strong>parameterised queries</strong> (<code>db.query(&quot;SELECT * FROM products WHERE id = $1&quot;, [id])</code>), never string concatenation.</p>
+<h2>Configuration and secrets</h2>
+<p>Read secrets from <strong>environment variables</strong>, never from code:</p>
+<figure class="static-code"><figcaption>JS</figcaption><pre><code class="language-js">const config = {
+  port: Number(process.env.PORT || 3000),
+  databaseUrl: process.env.DATABASE_URL,
+  mpesaConsumerKey: process.env.MPESA_CONSUMER_KEY,
+};
+if (!config.databaseUrl) throw new Error(&quot;DATABASE_URL is not set&quot;);</code></pre></figure>
+<p>Locally, keep them in a <code>.env</code> file (listed in <code>.gitignore</code>) and load it with <code>node --env-file=.env server.js</code> (Node 20+).</p>
+<h2>Production essentials</h2>
+<ul><li><strong>helmet</strong> (security headers), <strong>cors</strong> (allowed origins), <strong>express-rate-limit</strong> (stop abuse).</li><li>Input validation with <strong>zod</strong> or similar.</li><li>Logging (pino), health-check endpoint (<code>GET /health</code>).</li><li>Run with a process manager (pm2) or on a platform (Render, Railway, Fly.io, a VPS). See the deployment lesson.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which Express function parses JSON request bodies?</p><details><summary>Show answer</summary><p>express.json</p></details></li><li><p>How do you read :id from /v1/products/:id in Express?</p><details><summary>Show answer</summary><p>req.params.id</p></details></li><li><p>How do you read ?q= from the URL in Express?</p><details><summary>Show answer</summary><p>req.query.q</p></details></li><li><p>Functions that run before routes, receiving (req, res, next), are called?</p><details><summary>Show answer</summary><p>middleware</p></details></li><li><p>Where should secrets like database URLs come from?</p><details><summary>Show answer</summary><p>environment variables</p></details></li><li><p>Which package adds security headers to Express?</p><details><summary>Show answer</summary><p>helmet</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 7 in <a href="/learn/apis-backend/">APIs &amp; backends for apps</a> · <a href="/learn/?book=apis-backend">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/apis-backend/php-json-api/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Building a JSON API in PHP and MySQL</a><a class="btn btn-solid btn-sm" href="/learn/apis-backend/auth-passwords-tokens/">Logins: hashed passwords, sessions, tokens, JWT and OTP codes <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

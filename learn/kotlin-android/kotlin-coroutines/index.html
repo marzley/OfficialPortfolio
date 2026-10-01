@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Coroutines and Flow (doing slow work without freezing…</title>
+    <meta name="description" content="Network calls, database queries and file reads are slow . If an app does them on the main (UI) thread, the screen freezes, and after about 5 seconds…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/kotlin-android/kotlin-coroutines/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Coroutines and Flow (doing slow work without freezing…" />
+    <meta property="og:description" content="Network calls, database queries and file reads are slow . If an app does them on the main (UI) thread, the screen freezes, and after about 5 seconds…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/kotlin-android/kotlin-coroutines/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Coroutines and Flow (doing slow work without freezing…" />
+    <meta name="twitter:description" content="Network calls, database queries and file reads are slow . If an app does them on the main (UI) thread, the screen freezes, and after about 5 seconds…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/kotlin-android/kotlin-coroutines/#lesson","name":"Coroutines and Flow (doing slow work without freezing the app)","description":"Network calls, database queries and file reads are slow . If an app does them on the main (UI) thread, the screen freezes, and after about 5 seconds…","url":"https://marzleytechsolutions.co.ke/learn/kotlin-android/kotlin-coroutines/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/kotlin-android/#course","name":"Android apps with Kotlin","url":"https://marzleytechsolutions.co.ke/learn/kotlin-android/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Android apps with Kotlin","item":"https://marzleytechsolutions.co.ke/learn/kotlin-android/"},{"@type":"ListItem","position":4,"name":"Coroutines and Flow (doing slow work without freezing the app)","item":"https://marzleytechsolutions.co.ke/learn/kotlin-android/kotlin-coroutines/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/kotlin-android/">Android apps with Kotlin</a> / <span>Coroutines and Flow (doing slow work without freezing the app)</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=kotlin-android&amp;lesson=kotlin-coroutines"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Coroutines and Flow (doing slow work without freezing the app)</h1>
+<p>Network calls, database queries and file reads are <strong>slow</strong>. If an app does them on the main (UI) thread, the screen freezes, and after about 5 seconds Android shows "App isn't responding". <strong>Coroutines</strong> let you write slow work in simple, top-to-bottom code that doesn't block the screen.</p>
+<blockquote><p>Coroutines come from the <code>kotlinx.coroutines</code> library, which Android projects include by default. The online runner on this page doesn't include it, so these examples are for reading and for running in Android Studio.</p></blockquote>
+<h2>suspend functions</h2>
+<p>A <code>suspend</code> function can <strong>pause</strong> while waiting (for the network, a timer, the database) without blocking the thread, then continue where it left off:</p>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">import kotlinx.coroutines.*
+
+suspend fun fetchBalance(phone: String): Int {
+    delay(1000)              // pretend network call: pauses this coroutine, not the whole app
+    return 2450
+}
+
+fun main() = runBlocking {   // runBlocking: only for small programs and tests
+    println(&quot;Checking balance…&quot;)
+    val balance = fetchBalance(&quot;0712345678&quot;)
+    println(&quot;Balance: KSh $balance&quot;)
+}</code></pre></figure>
+<h2>launch and async</h2>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">import kotlinx.coroutines.*
+
+suspend fun loadProducts(): List&lt;String&gt; { delay(800); return listOf(&quot;Unga&quot;, &quot;Sugar&quot;) }
+suspend fun loadOrders(): Int { delay(1200); return 14 }
+
+fun main() = runBlocking {
+    // launch: start work, don&#x27;t need a result back
+    val job = launch {
+        repeat(3) { i -&gt;
+            println(&quot;Syncing batch ${i + 1}&quot;)
+            delay(300)
+        }
+    }
+
+    // async: start work that returns a result; both run at the same time
+    val products = async { loadProducts() }
+    val orders = async { loadOrders() }
+    println(&quot;Products: ${products.await()}, orders today: ${orders.await()}&quot;)   // ~1.2 s total, not 2 s
+
+    job.join()
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Builder</th><th>Use</th></tr></thead><tbody><tr><td><code>launch { }</code></td><td>Fire-and-forget work (save, sync, log)</td></tr><tr><td><code>async { } ... await()</code></td><td>Work that returns a value; run several in parallel</td></tr><tr><td><code>withContext(Dispatchers.IO) { }</code></td><td>Switch to a background thread for blocking I/O</td></tr></tbody></table></div>
+<h2>Dispatchers: which thread runs the work</h2>
+<div class="static-table"><table><thead><tr><th>Dispatcher</th><th>For</th></tr></thead><tbody><tr><td><code>Dispatchers.Main</code></td><td>Updating the UI (Android)</td></tr><tr><td><code>Dispatchers.IO</code></td><td>Network, database, files</td></tr><tr><td><code>Dispatchers.Default</code></td><td>Heavy calculations (sorting big lists, parsing)</td></tr></tbody></table></div>
+<p>Libraries like <strong>Retrofit</strong> and <strong>Room</strong> already switch threads for you when you use their <code>suspend</code> functions.</p>
+<h2>Structured concurrency and viewModelScope</h2>
+<p>In Android, you don't create coroutines anywhere: you launch them in a <strong>scope</strong> tied to a lifecycle, so they're <strong>cancelled automatically</strong> when no longer needed:</p>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+
+class OrdersViewModel(private val repo: OrdersRepository) : ViewModel() {
+    fun refresh() {
+        viewModelScope.launch {          // cancelled when the screen&#x27;s ViewModel is cleared
+            try {
+                val orders = repo.fetchOrders()
+                // update UI state with orders
+            } catch (e: Exception) {
+                // show an error message
+            }
+        }
+    }
+}
+
+interface OrdersRepository { suspend fun fetchOrders(): List&lt;String&gt; }</code></pre></figure>
+<h2>Flow: streams of values over time</h2>
+<p>A <code>suspend</code> function returns <strong>one</strong> value. A <strong>Flow</strong> emits <strong>many</strong> values over time: live database results, a countdown, download progress.</p>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+
+fun countdown(from: Int): Flow&lt;Int&gt; = flow {
+    for (i in from downTo 0) {
+        emit(i)
+        delay(1000)
+    }
+}
+
+fun main() = runBlocking {
+    countdown(3)
+        .map { if (it == 0) &quot;Offer ended&quot; else &quot;Offer ends in $it s&quot; }
+        .collect { println(it) }
+}</code></pre></figure>
+<p>In Android, <strong>StateFlow</strong> holds the current screen state; the UI collects it and redraws when it changes (next lessons). <strong>Room</strong> returns <code>Flow&lt;List&lt;Product&gt;&gt;</code>, so lists update automatically when the database changes.</p>
+<h2>Cancellation and timeouts</h2>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">import kotlinx.coroutines.*
+
+fun main() = runBlocking {
+    val result = withTimeoutOrNull(2000) {      // give up after 2 seconds
+        delay(5000)
+        &quot;Done&quot;
+    }
+    println(result ?: &quot;Timed out: please check your connection&quot;)
+}</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword marks a function that can pause without blocking a thread?</p><details><summary>Show answer</summary><p>suspend</p></details></li><li><p>Which builder starts work that returns a value you can await?</p><details><summary>Show answer</summary><p>async</p></details></li><li><p>Which dispatcher is for network and database work?</p><details><summary>Show answer</summary><p>Dispatchers.IO</p></details></li><li><p>Which scope cancels coroutines automatically when a ViewModel is cleared?</p><details><summary>Show answer</summary><p>viewModelScope</p></details></li><li><p>What emits many values over time: suspend function or Flow?</p><details><summary>Show answer</summary><p>Flow</p></details></li><li><p>About how long can the main thread be blocked before Android shows "App isn't responding"? Give seconds.</p><details><summary>Show answer</summary><p>5</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 10 in <a href="/learn/kotlin-android/">Android apps with Kotlin</a> · <a href="/learn/?book=kotlin-android">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/kotlin-android/kotlin-classes-null-safety/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Kotlin classes, data classes, sealed classes and null safety</a><a class="btn btn-solid btn-sm" href="/learn/kotlin-android/android-studio-first-app/">Android Studio and your first Android app <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

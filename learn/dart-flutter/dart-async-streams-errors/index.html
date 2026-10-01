@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dart async in depth: Futures, Streams, timeouts, retries…</title>
+    <meta name="description" content="Almost everything a real app does takes time: loading products from an API, waiting for an M-Pesa callback, reading a file, counting down an OTP timer…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-async-streams-errors/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Dart async in depth: Futures, Streams, timeouts, retries…" />
+    <meta property="og:description" content="Almost everything a real app does takes time: loading products from an API, waiting for an M-Pesa callback, reading a file, counting down an OTP timer…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-async-streams-errors/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Dart async in depth: Futures, Streams, timeouts, retries…" />
+    <meta name="twitter:description" content="Almost everything a real app does takes time: loading products from an API, waiting for an M-Pesa callback, reading a file, counting down an OTP timer…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-async-streams-errors/#lesson","name":"Dart async in depth: Futures, Streams, timeouts, retries and isolates","description":"Almost everything a real app does takes time: loading products from an API, waiting for an M-Pesa callback, reading a file, counting down an OTP timer…","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-async-streams-errors/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/#course","name":"Dart & Flutter (mobile apps)","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Dart & Flutter (mobile apps)","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},{"@type":"ListItem","position":4,"name":"Dart async in depth: Futures, Streams, timeouts, retries and isolates","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-async-streams-errors/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> / <span>Dart async in depth: Futures, Streams, timeouts, retries and isolates</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=dart-flutter&amp;lesson=dart-async-streams-errors"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Dart async in depth: Futures, Streams, timeouts, retries and isolates</h1>
+<p>Almost everything a real app does takes time: loading products from an API, waiting for an M-Pesa callback, reading a file, counting down an OTP timer. Dart handles this with <strong>Futures</strong> (one value later) and <strong>Streams</strong> (many values over time). This lesson goes deep, with complete programs you can run.</p>
+<blockquote><p>Revise the basics in <strong>Dart classes, JSON models and async/await</strong> first.</p></blockquote>
+<h2>How Dart runs async code: the event loop</h2>
+<p>Dart runs your code on <strong>one thread</strong> with an <strong>event loop</strong>. When you <code>await</code> something, Dart doesn't freeze: it parks your function, handles other events (taps, animations, other Futures), and comes back when the result is ready.</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">Future&lt;void&gt; main() async {
+  print(&#x27;1. start&#x27;);
+  Future(() =&gt; print(&#x27;4. a Future (event queue)&#x27;));
+  Future.microtask(() =&gt; print(&#x27;3. a microtask (runs first)&#x27;));
+  print(&#x27;2. end of main\&#x27;s synchronous code&#x27;);
+  await Future.delayed(Duration.zero);
+  print(&#x27;5. after await&#x27;);
+}</code></pre></figure>
+<p>The order is always: synchronous code, then <strong>microtasks</strong>, then <strong>events</strong> (Futures, timers, I/O). This is why a long loop with no <code>await</code> freezes a Flutter screen: the event loop can't draw frames until the loop finishes.</p>
+<h2>Running Futures one after another vs at the same time</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;dart:async&#x27;;
+
+Future&lt;String&gt; fetch(String name, int ms) async {
+  await Future.delayed(Duration(milliseconds: ms));
+  return &#x27;$name loaded&#x27;;
+}
+
+Future&lt;void&gt; main() async {
+  final sw = Stopwatch()..start();
+
+  // One after another: total ≈ 300 + 200 + 100 ms
+  await fetch(&#x27;products&#x27;, 300);
+  await fetch(&#x27;customers&#x27;, 200);
+  await fetch(&#x27;settings&#x27;, 100);
+  print(&#x27;sequential: ~${(sw.elapsedMilliseconds / 100).round() * 100} ms&#x27;);
+
+  sw.reset();
+  // At the same time: total ≈ the slowest one (300 ms)
+  final results = await Future.wait([
+    fetch(&#x27;products&#x27;, 300),
+    fetch(&#x27;customers&#x27;, 200),
+    fetch(&#x27;settings&#x27;, 100),
+  ]);
+  print(&#x27;parallel: ~${(sw.elapsedMilliseconds / 100).round() * 100} ms&#x27;);
+  print(results);
+
+  // Records version: different types, all at once
+  final (count, name) = await (Future.value(42), Future.value(&#x27;Duka&#x27;)).wait;
+  print(&#x27;$name has $count products&#x27;);
+}</code></pre></figure>
+<p>Use <code>Future.wait</code> when requests <strong>don't depend on each other</strong> (a dashboard loading sales, stock and customers). Use sequential <code>await</code> when one needs the result of another (log in, <strong>then</strong> load the user's shop).</p>
+<h2>Error handling with async code</h2>
+<p><code>await</code> turns a failed Future into an exception you can catch with <code>try</code>/<code>catch</code>. Create your own exception types so the UI can show the right message:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">class ApiException implements Exception {
+  final int status;
+  final String message;
+  ApiException(this.status, this.message);
+  @override
+  String toString() =&gt; &#x27;ApiException($status): $message&#x27;;
+}
+
+class NoInternetException implements Exception {}
+
+Future&lt;Map&lt;String, dynamic&gt;&gt; loadOrder(int id) async {
+  await Future.delayed(const Duration(milliseconds: 50));
+  if (id == 0) throw NoInternetException();
+  if (id == 404) throw ApiException(404, &#x27;Order not found&#x27;);
+  return {&#x27;id&#x27;: id, &#x27;total&#x27;: 1240};
+}
+
+String friendlyMessage(Object e) =&gt; switch (e) {
+      NoInternetException() =&gt; &#x27;No internet. Check your connection and try again.&#x27;,
+      ApiException(status: 404) =&gt; &#x27;We could not find that order.&#x27;,
+      ApiException(status: &gt;= 500) =&gt; &#x27;Our server has a problem. Please try again shortly.&#x27;,
+      _ =&gt; &#x27;Something went wrong.&#x27;,
+    };
+
+Future&lt;void&gt; main() async {
+  for (final id in [7, 404, 0]) {
+    try {
+      final order = await loadOrder(id);
+      print(&#x27;Order ${order[&#x27;id&#x27;]}: KSh ${order[&#x27;total&#x27;]}&#x27;);
+    } on NoInternetException {
+      print(&#x27;(offline) ${friendlyMessage(NoInternetException())}&#x27;);
+    } catch (e) {
+      print(friendlyMessage(e));
+    } finally {
+      print(&#x27;  hide the loading spinner for order $id&#x27;);
+    }
+  }
+}</code></pre></figure>
+<p><strong>Never</strong> leave a Future's error unhandled: in Flutter it shows up as a red error or a silent failure. Always <code>await</code> inside <code>try</code>, or attach <code>.catchError</code>.</p>
+<h2>Timeouts</h2>
+<p>Mobile networks in Kenya can be slow or drop. Never wait forever:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;dart:async&#x27;;
+
+Future&lt;String&gt; slowServer() async {
+  await Future.delayed(const Duration(seconds: 3));
+  return &#x27;data&#x27;;
+}
+
+Future&lt;void&gt; main() async {
+  try {
+    final data = await slowServer().timeout(const Duration(milliseconds: 500));
+    print(data);
+  } on TimeoutException {
+    print(&#x27;The server took too long. Showing saved data instead.&#x27;);
+  }
+}</code></pre></figure>
+<h2>Retries with exponential backoff</h2>
+<p>When a request fails because of a bad connection, try again, waiting a little longer each time (200 ms, 400 ms, 800 ms...). <strong>Only retry safe requests</strong> (GETs, or payments protected by an idempotency key):</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;dart:async&#x27;;
+
+int attempts = 0;
+
+Future&lt;String&gt; flakyRequest() async {
+  attempts++;
+  await Future.delayed(const Duration(milliseconds: 20));
+  if (attempts &lt; 3) throw TimeoutException(&#x27;network dropped&#x27;);
+  return &#x27;products loaded on attempt $attempts&#x27;;
+}
+
+Future&lt;T&gt; retry&lt;T&gt;(Future&lt;T&gt; Function() task, {int maxAttempts = 4, int baseMs = 100}) async {
+  for (var attempt = 1;; attempt++) {
+    try {
+      return await task();
+    } on TimeoutException catch (e) {
+      if (attempt &gt;= maxAttempts) rethrow;
+      final wait = baseMs * (1 &lt;&lt; (attempt - 1));        // 100, 200, 400 ...
+      print(&#x27;attempt $attempt failed (${e.message}); retrying in $wait ms&#x27;);
+      await Future.delayed(Duration(milliseconds: wait));
+    }
+  }
+}
+
+Future&lt;void&gt; main() async {
+  print(await retry(flakyRequest));
+}</code></pre></figure>
+<h2>Streams: many values over time</h2>
+<p>A <strong>Stream</strong> delivers values one by one: a countdown, live order updates, a chat, GPS positions, Firestore documents. You listen with <code>await for</code> or <code>.listen()</code>.</p>
+<h3>Making a stream with <code>async*</code></h3>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">// OTP resend countdown, like &quot;Resend code in 5s&quot;
+Stream&lt;int&gt; countdown(int from) async* {
+  for (var s = from; s &gt;= 0; s--) {
+    yield s;                                         // send a value to listeners
+    await Future.delayed(const Duration(milliseconds: 100));   // 1 second in a real app
+  }
+}
+
+Future&lt;void&gt; main() async {
+  await for (final s in countdown(5)) {
+    print(s == 0 ? &#x27;You can resend the code now&#x27; : &#x27;Resend code in ${s}s&#x27;);
+  }
+}</code></pre></figure>
+<h3>Transforming streams</h3>
+<p>Streams have the same helpers as lists (<code>map</code>, <code>where</code>, <code>take</code>), applied as values arrive:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">Stream&lt;Map&lt;String, Object&gt;&gt; orderFeed() async* {
+  final orders = [
+    {&#x27;id&#x27;: 1, &#x27;total&#x27;: 450, &#x27;status&#x27;: &#x27;paid&#x27;},
+    {&#x27;id&#x27;: 2, &#x27;total&#x27;: 12000, &#x27;status&#x27;: &#x27;pending&#x27;},
+    {&#x27;id&#x27;: 3, &#x27;total&#x27;: 3000, &#x27;status&#x27;: &#x27;paid&#x27;},
+    {&#x27;id&#x27;: 4, &#x27;total&#x27;: 800, &#x27;status&#x27;: &#x27;cancelled&#x27;},
+    {&#x27;id&#x27;: 5, &#x27;total&#x27;: 15500, &#x27;status&#x27;: &#x27;paid&#x27;},
+  ];
+  for (final o in orders) {
+    await Future.delayed(const Duration(milliseconds: 30));
+    yield o;
+  }
+}
+
+Future&lt;void&gt; main() async {
+  final paidTotals = orderFeed()
+      .where((o) =&gt; o[&#x27;status&#x27;] == &#x27;paid&#x27;)
+      .map((o) =&gt; o[&#x27;total&#x27;] as int);
+
+  var runningTotal = 0;
+  await for (final t in paidTotals) {
+    runningTotal += t;
+    print(&#x27;new paid order KSh $t, today so far KSh $runningTotal&#x27;);
+  }
+
+  // Reduce a whole stream to one value
+  final biggest = await orderFeed().map((o) =&gt; o[&#x27;total&#x27;] as int).reduce((a, b) =&gt; a &gt; b ? a : b);
+  print(&#x27;biggest order: KSh $biggest&#x27;);
+}</code></pre></figure>
+<h3>StreamController: push values yourself</h3>
+<p>A <code>StreamController</code> lets one part of your app <strong>push</strong> events and others <strong>listen</strong>, for example a cart that several screens watch:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;dart:async&#x27;;
+
+class CartService {
+  final _items = &lt;String, int&gt;{};
+  final _controller = StreamController&lt;int&gt;.broadcast();   // broadcast: many listeners
+
+  Stream&lt;int&gt; get count =&gt; _controller.stream;
+
+  void add(String item) {
+    _items.update(item, (q) =&gt; q + 1, ifAbsent: () =&gt; 1);
+    _controller.add(_items.values.fold(0, (a, b) =&gt; a + b));
+  }
+
+  Future&lt;void&gt; dispose() =&gt; _controller.close();
+}
+
+Future&lt;void&gt; main() async {
+  final cart = CartService();
+  final badge = cart.count.listen((n) =&gt; print(&#x27;cart badge shows $n&#x27;));
+  final checkout = cart.count.listen((n) =&gt; print(&#x27;  checkout button: ${n &gt; 0 ? &quot;enabled&quot; : &quot;disabled&quot;}&#x27;));
+
+  cart.add(&#x27;Unga&#x27;);
+  cart.add(&#x27;Sugar&#x27;);
+  cart.add(&#x27;Unga&#x27;);
+  await Future.delayed(Duration.zero);     // let the events be delivered
+
+  await badge.cancel();
+  await checkout.cancel();
+  await cart.dispose();
+}</code></pre></figure>
+<p><strong>Always cancel subscriptions and close controllers</strong> when a screen is closed (in Flutter: in <code>dispose()</code>), otherwise you leak memory and get "setState called after dispose" errors. In Flutter, <code>StreamBuilder</code> listens and cancels for you.</p>
+<h2>Debounce: wait until the user stops typing</h2>
+<p>A search box shouldn't call the API on every key press. <strong>Debouncing</strong> waits until the user pauses:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;dart:async&#x27;;
+
+class Debouncer {
+  final Duration delay;
+  Timer? _timer;
+  Debouncer(this.delay);
+
+  void run(void Function() action) {
+    _timer?.cancel();                // a new key press cancels the previous wait
+    _timer = Timer(delay, action);
+  }
+}
+
+Future&lt;void&gt; main() async {
+  final search = Debouncer(const Duration(milliseconds: 300));
+  var apiCalls = 0;
+
+  for (final text in [&#x27;u&#x27;, &#x27;un&#x27;, &#x27;ung&#x27;, &#x27;unga&#x27;]) {
+    search.run(() {
+      apiCalls++;
+      print(&#x27;search API called with &quot;$text&quot;&#x27;);
+    });
+    await Future.delayed(const Duration(milliseconds: 80));   // user typing fast
+  }
+  await Future.delayed(const Duration(milliseconds: 400));
+  print(&#x27;API calls: $apiCalls (instead of 4)&#x27;);
+}</code></pre></figure>
+<h2>Isolates: heavy work without freezing the screen</h2>
+<p>Async code still runs on the <strong>same thread</strong>. Heavy CPU work (parsing a huge JSON file, processing images, big reports) freezes the UI. Move it to another <strong>isolate</strong> with <code>Isolate.run</code> (Flutter also has <code>compute()</code>):</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;dart:isolate&#x27;;
+
+// Pretend this is a heavy report over thousands of sales
+int heavyReport(int n) {
+  var total = 0;
+  for (var i = 1; i &lt;= n; i++) {
+    total += (i * 37) % 101;
+  }
+  return total;
+}
+
+Future&lt;void&gt; main() async {
+  print(&#x27;UI stays responsive while the report runs...&#x27;);
+  final result = await Isolate.run(() =&gt; heavyReport(20000000));
+  print(&#x27;Report total: $result&#x27;);
+}</code></pre></figure>
+<p>Isolates <strong>don't share memory</strong>: data is copied in and out. Use them only for genuinely heavy work (more than about 16 ms, one frame).</p>
+<h2>Async in Flutter: FutureBuilder and StreamBuilder</h2>
+<p>You don't need to run these here (they need a Flutter project), but this is how the ideas above appear in widgets:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+class OrdersScreen extends StatefulWidget {
+  const OrdersScreen({super.key});
+  @override
+  State&lt;OrdersScreen&gt; createState() =&gt; _OrdersScreenState();
+}
+
+class _OrdersScreenState extends State&lt;OrdersScreen&gt; {
+  // Create the Future ONCE (in initState), not inside build()
+  late final Future&lt;List&lt;String&gt;&gt; _orders = loadOrders();
+
+  Future&lt;List&lt;String&gt;&gt; loadOrders() async {
+    await Future.delayed(const Duration(seconds: 1));
+    return [&#x27;Order 1001: KSh 1,240&#x27;, &#x27;Order 1002: KSh 450&#x27;];
+  }
+
+  Stream&lt;int&gt; countdown() async* {
+    for (var s = 30; s &gt;= 0; s--) {
+      yield s;
+      await Future.delayed(const Duration(seconds: 1));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;Orders&#x27;)),
+      body: Column(
+        children: [
+          StreamBuilder&lt;int&gt;(
+            stream: countdown(),
+            builder: (context, snap) =&gt; Text(&#x27;Refreshing in ${snap.data ?? 30}s&#x27;),
+          ),
+          Expanded(
+            child: FutureBuilder&lt;List&lt;String&gt;&gt;(
+              future: _orders,
+              builder: (context, snap) {
+                if (snap.connectionState != ConnectionState.done) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snap.hasError) {
+                  return Center(child: Text(&#x27;Could not load orders: ${snap.error}&#x27;));
+                }
+                final orders = snap.data!;
+                if (orders.isEmpty) return const Center(child: Text(&#x27;No orders yet&#x27;));
+                return ListView(children: [for (final o in orders) ListTile(title: Text(o))]);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}</code></pre></figure>
+<p>Every async screen needs <strong>four states</strong>: loading, error, empty and data. Forgetting the error and empty states is the most common beginner mistake.</p>
+<h2>Summary</h2>
+<div class="static-table"><table><thead><tr><th>Need</th><th>Tool</th></tr></thead><tbody><tr><td>One value later</td><td><code>Future</code>, <code>async</code>/<code>await</code></td></tr><tr><td>Several independent requests</td><td><code>Future.wait</code> or a record's <code>.wait</code></td></tr><tr><td>Don't wait forever</td><td><code>.timeout()</code></td></tr><tr><td>Flaky networks</td><td>Retry with exponential backoff (safe requests only)</td></tr><tr><td>Many values over time</td><td><code>Stream</code>, <code>async*</code>/<code>yield</code>, <code>await for</code></td></tr><tr><td>Push events to many listeners</td><td><code>StreamController.broadcast()</code></td></tr><tr><td>Search-as-you-type</td><td>Debounce with a <code>Timer</code></td></tr><tr><td>Heavy CPU work</td><td><code>Isolate.run</code> / <code>compute()</code></td></tr></tbody></table></div>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>How many threads does a single Dart isolate run your code on?</p><details><summary>Show answer</summary><p>1</p></details></li><li><p>Which runs first: a microtask or a Future event?</p><details><summary>Show answer</summary><p>microtask</p></details></li><li><p>Which function runs several independent Futures at the same time?</p><details><summary>Show answer</summary><p>Future.wait</p></details></li><li><p>Which exception does .timeout() throw?</p><details><summary>Show answer</summary><p>TimeoutException</p></details></li><li><p>Which keyword sends a value out of an async* function?</p><details><summary>Show answer</summary><p>yield</p></details></li><li><p>Which StreamController constructor allows many listeners?</p><details><summary>Show answer</summary><p>broadcast</p></details></li><li><p>What technique waits until the user stops typing before searching?</p><details><summary>Show answer</summary><p>debounce</p></details></li><li><p>Which function runs heavy work on another isolate?</p><details><summary>Show answer</summary><p>Isolate.run</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 10 in <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> · <a href="/learn/?book=dart-flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/dart-flutter/dart-generics-enums-records/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Dart in depth: generics, enums, records, extensions and sealed classes</a><a class="btn btn-solid btn-sm" href="/learn/dart-flutter/dart-testing-clean-code/">Testing and structuring Dart &amp; Flutter apps: unit tests, widget tests, repositories <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

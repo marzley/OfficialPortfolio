@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Building a JSON API in PHP and MySQL | Marzley Learn</title>
+    <meta name="description" content="PHP runs on almost every cPanel hosting plan in Kenya, which makes it the cheapest way to host an API for your app. You&#x27;ll build a small, secure…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/apis-backend/php-json-api/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Building a JSON API in PHP and MySQL | Marzley Learn" />
+    <meta property="og:description" content="PHP runs on almost every cPanel hosting plan in Kenya, which makes it the cheapest way to host an API for your app. You&#x27;ll build a small, secure…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/apis-backend/php-json-api/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Building a JSON API in PHP and MySQL | Marzley Learn" />
+    <meta name="twitter:description" content="PHP runs on almost every cPanel hosting plan in Kenya, which makes it the cheapest way to host an API for your app. You&#x27;ll build a small, secure…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/apis-backend/php-json-api/#lesson","name":"Building a JSON API in PHP and MySQL","description":"PHP runs on almost every cPanel hosting plan in Kenya, which makes it the cheapest way to host an API for your app. You'll build a small, secure…","url":"https://marzleytechsolutions.co.ke/learn/apis-backend/php-json-api/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/apis-backend/#course","name":"APIs & backends for apps","url":"https://marzleytechsolutions.co.ke/learn/apis-backend/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"APIs & backends for apps","item":"https://marzleytechsolutions.co.ke/learn/apis-backend/"},{"@type":"ListItem","position":4,"name":"Building a JSON API in PHP and MySQL","item":"https://marzleytechsolutions.co.ke/learn/apis-backend/php-json-api/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/apis-backend/">APIs &amp; backends for apps</a> / <span>Building a JSON API in PHP and MySQL</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=apis-backend&amp;lesson=php-json-api"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Building a JSON API in PHP and MySQL</h1>
+<p>PHP runs on almost every cPanel hosting plan in Kenya, which makes it the cheapest way to host an API for your app. You'll build a small, secure products API with <strong>plain PHP and PDO</strong> (the same ideas apply in Laravel).</p>
+<blockquote><p>Learn PHP basics first in the <strong>PHP &amp; MySQL</strong> subject. The <code>try-php</code> examples below run in your browser.</p></blockquote>
+<h2>JSON in PHP</h2>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$products = [
+    [&#x27;id&#x27; =&gt; 1, &#x27;name&#x27; =&gt; &#x27;Unga 2kg&#x27;, &#x27;price&#x27; =&gt; 180, &#x27;stock&#x27; =&gt; 12],
+    [&#x27;id&#x27; =&gt; 2, &#x27;name&#x27; =&gt; &#x27;Sugar 1kg&#x27;, &#x27;price&#x27; =&gt; 150, &#x27;stock&#x27; =&gt; 0],
+];
+
+// PHP array -&gt; JSON text (what the API sends)
+echo json_encode([&#x27;data&#x27; =&gt; $products], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), &quot;\n&quot;;
+
+// JSON text -&gt; PHP array (what the API receives)
+$body = &#x27;{&quot;name&quot;: &quot;Milk 500ml&quot;, &quot;price&quot;: 60}&#x27;;
+$input = json_decode($body, true);          // true = associative array
+echo &quot;New product: {$input[&#x27;name&#x27;]} at KSh {$input[&#x27;price&#x27;]}\n&quot;;
+
+var_dump(json_decode(&#x27;{bad json&#x27;, true));    // NULL when the JSON is invalid: always check
+echo json_last_error_msg(), &quot;\n&quot;;</code></pre></figure>
+<h2>Project layout</h2>
+<figure class="static-code"><pre><code>public_html/
+└── api/
+    ├── index.php          ← every request comes here (front controller)
+    └── .htaccess          ← sends /api/products/17 to index.php
+private/                   ← OUTSIDE public_html
+    └── config.php         ← database password and secrets</code></pre></figure>
+<p><code>.htaccess</code> (Apache):</p>
+<figure class="static-code"><figcaption>APACHE</figcaption><pre><code class="language-apache">RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [QSA,L]</code></pre></figure>
+<h2>Helpers: responding and reading input</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+function respond(int $status, array $payload): never {
+    http_response_code($status);
+    header(&#x27;Content-Type: application/json; charset=utf-8&#x27;);
+    echo json_encode($payload, JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+function fail(int $status, string $message, array $fields = []): never {
+    respond($status, [&#x27;error&#x27; =&gt; array_filter([&#x27;message&#x27; =&gt; $message, &#x27;fields&#x27; =&gt; $fields])]);
+}
+
+function body(): array {
+    $data = json_decode(file_get_contents(&#x27;php://input&#x27;), true);
+    if (!is_array($data)) fail(400, &#x27;Send a JSON body.&#x27;);
+    return $data;
+}</code></pre></figure>
+<h2>The database connection (PDO)</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+$config = require __DIR__ . &#x27;/../../private/config.php&#x27;;   // [&#x27;db_dsn&#x27; =&gt; ..., &#x27;db_user&#x27; =&gt; ..., &#x27;db_pass&#x27; =&gt; ...]
+
+$pdo = new PDO($config[&#x27;db_dsn&#x27;], $config[&#x27;db_user&#x27;], $config[&#x27;db_pass&#x27;], [
+    PDO::ATTR_ERRMODE =&gt; PDO::ERRMODE_EXCEPTION,          // errors become exceptions
+    PDO::ATTR_DEFAULT_FETCH_MODE =&gt; PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES =&gt; false,                  // real prepared statements
+]);</code></pre></figure>
+<p><strong>Never</strong> put the password in a file inside <code>public_html</code>, and never commit it to Git.</p>
+<h2>Routing and endpoints</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+// index.php (after the helpers and $pdo above)
+$method = $_SERVER[&#x27;REQUEST_METHOD&#x27;];
+$path = trim(parse_url($_SERVER[&#x27;REQUEST_URI&#x27;], PHP_URL_PATH), &#x27;/&#x27;);     // e.g. &quot;api/products/17&quot;
+$parts = explode(&#x27;/&#x27;, preg_replace(&#x27;#^api/?#&#x27;, &#x27;&#x27;, $path));             // [&quot;products&quot;, &quot;17&quot;]
+$resource = $parts[0] ?? &#x27;&#x27;;
+$id = isset($parts[1]) ? (int)$parts[1] : null;
+
+try {
+    if ($resource === &#x27;products&#x27; &amp;&amp; $method === &#x27;GET&#x27; &amp;&amp; $id === null) {
+        $q = &#x27;%&#x27; . trim($_GET[&#x27;q&#x27;] ?? &#x27;&#x27;) . &#x27;%&#x27;;
+        $page = max(1, (int)($_GET[&#x27;page&#x27;] ?? 1));
+        $per = 20;
+        $stmt = $pdo-&gt;prepare(&#x27;SELECT id, name, price, stock FROM products WHERE name LIKE ? ORDER BY name LIMIT ? OFFSET ?&#x27;);
+        $stmt-&gt;bindValue(1, $q);
+        $stmt-&gt;bindValue(2, $per, PDO::PARAM_INT);
+        $stmt-&gt;bindValue(3, ($page - 1) * $per, PDO::PARAM_INT);
+        $stmt-&gt;execute();
+        respond(200, [&#x27;data&#x27; =&gt; $stmt-&gt;fetchAll(), &#x27;meta&#x27; =&gt; [&#x27;page&#x27; =&gt; $page]]);
+    }
+
+    if ($resource === &#x27;products&#x27; &amp;&amp; $method === &#x27;GET&#x27; &amp;&amp; $id) {
+        $stmt = $pdo-&gt;prepare(&#x27;SELECT id, name, price, stock FROM products WHERE id = ?&#x27;);
+        $stmt-&gt;execute([$id]);
+        $product = $stmt-&gt;fetch() ?: fail(404, &#x27;Product not found.&#x27;);
+        respond(200, [&#x27;data&#x27; =&gt; $product]);
+    }
+
+    if ($resource === &#x27;products&#x27; &amp;&amp; $method === &#x27;POST&#x27;) {
+        $user = require_user($pdo);                         // see the auth lesson
+        if ($user[&#x27;role&#x27;] !== &#x27;owner&#x27;) fail(403, &#x27;Only owners can add products.&#x27;);
+        $in = body();
+        $name = trim((string)($in[&#x27;name&#x27;] ?? &#x27;&#x27;));
+        $price = filter_var($in[&#x27;price&#x27;] ?? null, FILTER_VALIDATE_INT, [&#x27;options&#x27; =&gt; [&#x27;min_range&#x27; =&gt; 1]]);
+        $errors = [];
+        if (mb_strlen($name) &lt; 2 || mb_strlen($name) &gt; 80) $errors[&#x27;name&#x27;] = &#x27;Name must be 2 to 80 characters&#x27;;
+        if ($price === false) $errors[&#x27;price&#x27;] = &#x27;Price must be a whole number above 0&#x27;;
+        if ($errors) fail(422, &#x27;Please check the highlighted fields.&#x27;, $errors);
+
+        $stmt = $pdo-&gt;prepare(&#x27;INSERT INTO products (shop_id, name, price, stock) VALUES (?, ?, ?, 0)&#x27;);
+        $stmt-&gt;execute([$user[&#x27;shop_id&#x27;], $name, $price]);
+        respond(201, [&#x27;data&#x27; =&gt; [&#x27;id&#x27; =&gt; (int)$pdo-&gt;lastInsertId(), &#x27;name&#x27; =&gt; $name, &#x27;price&#x27; =&gt; $price, &#x27;stock&#x27; =&gt; 0]]);
+    }
+
+    fail(404, &#x27;Not found.&#x27;);
+} catch (Throwable $e) {
+    error_log(&#x27;API error: &#x27; . $e-&gt;getMessage());           // details in the server log
+    fail(500, &#x27;Something went wrong. Please try again.&#x27;);   // nothing technical for users
+}</code></pre></figure>
+<h2>Prepared statements: why they matter</h2>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+// Never build SQL by pasting user input into the query:
+$name = &quot;x&#x27; OR &#x27;1&#x27;=&#x27;1&quot;;
+$unsafe = &quot;SELECT * FROM users WHERE name = &#x27;$name&#x27;&quot;;
+echo &quot;Dangerous query: $unsafe\n&quot;;          // the WHERE clause is now always true: SQL injection!
+
+// With PDO prepared statements, input is sent separately and can never change the query:
+echo &quot;Safe query: SELECT * FROM users WHERE name = ?  (value sent separately)\n&quot;;</code></pre></figure>
+<p>Every <code>?</code> in a prepared statement is filled with data safely. This single habit prevents one of the most common and damaging attacks.</p>
+<h2>CORS: letting your website call the API</h2>
+<p>Browsers block a website on one domain from calling an API on another unless the API allows it. Allow only your own front-end:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+$allowed = [&#x27;https://duka.co.ke&#x27;, &#x27;https://app.duka.co.ke&#x27;];
+$origin = $_SERVER[&#x27;HTTP_ORIGIN&#x27;] ?? &#x27;&#x27;;
+if (in_array($origin, $allowed, true)) {
+    header(&quot;Access-Control-Allow-Origin: $origin&quot;);
+    header(&#x27;Access-Control-Allow-Headers: Content-Type, Authorization&#x27;);
+    header(&#x27;Access-Control-Allow-Methods: GET, POST, PATCH, DELETE&#x27;);
+}
+if ($_SERVER[&#x27;REQUEST_METHOD&#x27;] === &#x27;OPTIONS&#x27;) exit;     // the browser&#x27;s preflight check</code></pre></figure>
+<p>Mobile apps aren't affected by CORS (it's a browser rule).</p>
+<h2>Testing your API</h2>
+<ul><li><strong>Postman</strong> or <strong>Insomnia</strong>: send requests and see responses.</li><li><strong>curl</strong> in the terminal: <code>curl -s https://yoursite.co.ke/api/products?q=unga</code></li><li>Write down a test checklist: valid input, invalid input, missing token, wrong shop's data, huge page numbers.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which PHP function turns an array into JSON?</p><details><summary>Show answer</summary><p>json_encode</p></details></li><li><p>What second argument makes json_decode return an associative array?</p><details><summary>Show answer</summary><p>true</p></details></li><li><p>Which PHP database extension supports prepared statements across databases?</p><details><summary>Show answer</summary><p>PDO</p></details></li><li><p>What attack do prepared statements prevent?</p><details><summary>Show answer</summary><p>SQL injection</p></details></li><li><p>Which public web folder must the database password file never be inside?</p><details><summary>Show answer</summary><p>public_html</p></details></li><li><p>Which browser rule controls whether a website can call an API on another domain?</p><details><summary>Show answer</summary><p>CORS</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 7 in <a href="/learn/apis-backend/">APIs &amp; backends for apps</a> · <a href="/learn/?book=apis-backend">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/apis-backend/designing-rest-apis/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Designing a good REST API</a><a class="btn btn-solid btn-sm" href="/learn/apis-backend/node-express-api/">Building an API with Node.js and Express <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

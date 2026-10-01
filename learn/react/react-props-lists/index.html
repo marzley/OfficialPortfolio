@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Props, lists and conditional rendering | React for web apps</title>
+    <meta name="description" content="Components become useful when you can pass them data . That data is called props (properties)." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/react/react-props-lists/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Props, lists and conditional rendering | React for web apps" />
+    <meta property="og:description" content="Components become useful when you can pass them data . That data is called props (properties)." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/react/react-props-lists/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Props, lists and conditional rendering | React for web apps" />
+    <meta name="twitter:description" content="Components become useful when you can pass them data . That data is called props (properties)." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/react/react-props-lists/#lesson","name":"Props, lists and conditional rendering","description":"Components become useful when you can pass them data . That data is called props (properties).","url":"https://marzleytechsolutions.co.ke/learn/react/react-props-lists/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/react/#course","name":"React for web apps","url":"https://marzleytechsolutions.co.ke/learn/react/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"React for web apps","item":"https://marzleytechsolutions.co.ke/learn/react/"},{"@type":"ListItem","position":4,"name":"Props, lists and conditional rendering","item":"https://marzleytechsolutions.co.ke/learn/react/react-props-lists/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/react/">React for web apps</a> / <span>Props, lists and conditional rendering</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=react&amp;lesson=react-props-lists"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Props, lists and conditional rendering</h1>
+<p>Components become useful when you can <strong>pass them data</strong>. That data is called <strong>props</strong> (properties).</p>
+<h2>Props</h2>
+<figure class="static-code"><figcaption>React · runs live in the interactive lesson</figcaption><pre><code class="language-react">function ProductCard({ name, price, inStock }) {      // props come in as one object; we destructure it
+  return (
+    &lt;div style={{ border: &quot;1px solid #e2e8f0&quot;, borderRadius: 10, padding: 12, margin: &quot;8px 0&quot;, fontFamily: &quot;sans-serif&quot; }}&gt;
+      &lt;strong&gt;{name}&lt;/strong&gt;
+      &lt;div&gt;KSh {price.toLocaleString()}&lt;/div&gt;
+      &lt;small style={{ color: inStock ? &quot;green&quot; : &quot;crimson&quot; }}&gt;{inStock ? &quot;In stock&quot; : &quot;Sold out&quot;}&lt;/small&gt;
+    &lt;/div&gt;
+  );
+}
+
+function App() {
+  return (
+    &lt;div&gt;
+      &lt;ProductCard name=&quot;Unga 2kg&quot; price={180} inStock={true} /&gt;
+      &lt;ProductCard name=&quot;Cooking oil 3L&quot; price={1150} inStock={false} /&gt;
+      &lt;ProductCard name=&quot;Solar lantern&quot; price={1850} inStock /&gt;
+    &lt;/div&gt;
+  );
+}
+
+ReactDOM.createRoot(document.getElementById(&quot;root&quot;)).render(&lt;App /&gt;);</code></pre></figure>
+<ul><li>Strings can be passed in quotes; numbers, booleans, arrays, objects and functions in <code>{ }</code>.</li><li>Writing just <code>inStock</code> means <code>inStock={true}</code>.</li><li>Props are <strong>read-only</strong>: a component must never change its own props.</li></ul>
+<h2>Rendering lists with map</h2>
+<figure class="static-code"><figcaption>React · runs live in the interactive lesson</figcaption><pre><code class="language-react">const products = [
+  { id: 1, name: &quot;Unga 2kg&quot;, price: 180, stock: 12 },
+  { id: 2, name: &quot;Sugar 1kg&quot;, price: 150, stock: 0 },
+  { id: 3, name: &quot;Milk 500ml&quot;, price: 60, stock: 40 },
+  { id: 4, name: &quot;Bread&quot;, price: 65, stock: 8 },
+];
+
+function ProductRow({ product }) {
+  return (
+    &lt;li style={{ padding: &quot;6px 0&quot;, color: product.stock === 0 ? &quot;#94a3b8&quot; : &quot;inherit&quot; }}&gt;
+      {product.name}: KSh {product.price} {product.stock === 0 &amp;&amp; &lt;em&gt;(sold out)&lt;/em&gt;}
+    &lt;/li&gt;
+  );
+}
+
+function ProductList({ items }) {
+  if (items.length === 0) return &lt;p&gt;No products yet.&lt;/p&gt;;
+  return (
+    &lt;ul style={{ fontFamily: &quot;sans-serif&quot; }}&gt;
+      {items.map((p) =&gt; &lt;ProductRow key={p.id} product={p} /&gt;)}
+    &lt;/ul&gt;
+  );
+}
+
+function App() {
+  const available = products.filter((p) =&gt; p.stock &gt; 0);
+  const total = products.reduce((sum, p) =&gt; sum + p.price * p.stock, 0);
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;All products&lt;/h2&gt;
+      &lt;ProductList items={products} /&gt;
+      &lt;p&gt;{available.length} of {products.length} in stock · stock value KSh {total.toLocaleString()}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+ReactDOM.createRoot(document.getElementById(&quot;root&quot;)).render(&lt;App /&gt;);</code></pre></figure>
+<p><strong>Keys:</strong> every item in a list needs a unique, stable <code>key</code> (usually its database <code>id</code>). React uses keys to know which item is which when the list changes. Don't use the array index if items can be added, removed or reordered.</p>
+<h2>Conditional rendering</h2>
+<div class="static-table"><table><thead><tr><th>Pattern</th><th>Use</th></tr></thead><tbody><tr><td><code>{cond ? &lt;A /&gt; : &lt;B /&gt;}</code></td><td>Show one thing or another</td></tr><tr><td><code>{cond &amp;&amp; &lt;A /&gt;}</code></td><td>Show something only if true</td></tr><tr><td><code>if (...) return ...</code> early</td><td>Whole different output (loading, empty, error)</td></tr></tbody></table></div>
+<p>Careful: <code>{count &amp;&amp; &lt;p&gt;…&lt;/p&gt;}</code> shows a <code>0</code> on screen when <code>count</code> is 0. Use <code>{count &gt; 0 &amp;&amp; …}</code>.</p>
+<h2>children: components that wrap content</h2>
+<figure class="static-code"><figcaption>React · runs live in the interactive lesson</figcaption><pre><code class="language-react">function Card({ title, children }) {
+  return (
+    &lt;section style={{ border: &quot;1px solid #e2e8f0&quot;, borderRadius: 12, padding: 16, margin: 8, fontFamily: &quot;sans-serif&quot; }}&gt;
+      &lt;h3 style={{ marginTop: 0 }}&gt;{title}&lt;/h3&gt;
+      {children}
+    &lt;/section&gt;
+  );
+}
+
+function App() {
+  return (
+    &lt;&gt;
+      &lt;Card title=&quot;Delivery&quot;&gt;
+        &lt;p&gt;Within Thika: KSh 150. Upcountry by bus: KSh 400.&lt;/p&gt;
+      &lt;/Card&gt;
+      &lt;Card title=&quot;Pay with M-Pesa&quot;&gt;
+        &lt;ol&gt;
+          &lt;li&gt;Lipa na M-Pesa → Buy Goods&lt;/li&gt;
+          &lt;li&gt;Till number 123456&lt;/li&gt;
+        &lt;/ol&gt;
+      &lt;/Card&gt;
+    &lt;/&gt;
+  );
+}
+
+ReactDOM.createRoot(document.getElementById(&quot;root&quot;)).render(&lt;App /&gt;);</code></pre></figure>
+<p>Anything between <code>&lt;Card&gt;</code> and <code>&lt;/Card&gt;</code> arrives as the <code>children</code> prop. Layouts, modals and cards are built this way.</p>
+<h2>Thinking in components</h2>
+<ol><li>Draw the screen and box each part (header, search, product list, product row, cart summary).</li><li>Each box becomes a component.</li><li>Decide what data each needs (props) and where that data lives (next lesson: state).</li></ol>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is data passed into a component called?</p><details><summary>Show answer</summary><p>props</p></details></li><li><p>Can a component change its own props? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which array method turns a list of data into a list of elements?</p><details><summary>Show answer</summary><p>map</p></details></li><li><p>What unique attribute does each list item need?</p><details><summary>Show answer</summary><p>key</p></details></li><li><p>Which prop holds the content placed between a component's opening and closing tags?</p><details><summary>Show answer</summary><p>children</p></details></li><li><p>What appears on screen if you write {count &amp;&amp; &lt;p&gt;Items&lt;/p&gt;} and count is 0?</p><details><summary>Show answer</summary><p>0</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 6 in <a href="/learn/react/">React for web apps</a> · <a href="/learn/?book=react">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/react/react-intro/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> React introduction: components and JSX</a><a class="btn btn-solid btn-sm" href="/learn/react/react-state-events/">State, events and forms <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Taking M-Pesa payments in your app (the safe way)</title>
+    <meta name="description" content="In Kenya, an app that sells something almost always needs M-Pesa . Safaricom&#x27;s Daraja API lets your system send an STK push : a PIN prompt appears on…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/app-dev-basics/mpesa-in-apps/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Taking M-Pesa payments in your app (the safe way)" />
+    <meta property="og:description" content="In Kenya, an app that sells something almost always needs M-Pesa . Safaricom&#x27;s Daraja API lets your system send an STK push : a PIN prompt appears on…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/app-dev-basics/mpesa-in-apps/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Taking M-Pesa payments in your app (the safe way)" />
+    <meta name="twitter:description" content="In Kenya, an app that sells something almost always needs M-Pesa . Safaricom&#x27;s Daraja API lets your system send an STK push : a PIN prompt appears on…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/app-dev-basics/mpesa-in-apps/#lesson","name":"Taking M-Pesa payments in your app (the safe way)","description":"In Kenya, an app that sells something almost always needs M-Pesa . Safaricom's Daraja API lets your system send an STK push : a PIN prompt appears on…","url":"https://marzleytechsolutions.co.ke/learn/app-dev-basics/mpesa-in-apps/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/app-dev-basics/#course","name":"App development fundamentals","url":"https://marzleytechsolutions.co.ke/learn/app-dev-basics/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"App development fundamentals","item":"https://marzleytechsolutions.co.ke/learn/app-dev-basics/"},{"@type":"ListItem","position":4,"name":"Taking M-Pesa payments in your app (the safe way)","item":"https://marzleytechsolutions.co.ke/learn/app-dev-basics/mpesa-in-apps/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/app-dev-basics/">App development fundamentals</a> / <span>Taking M-Pesa payments in your app (the safe way)</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=app-dev-basics&amp;lesson=mpesa-in-apps"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Taking M-Pesa payments in your app (the safe way)</h1>
+<p>In Kenya, an app that sells something almost always needs <strong>M-Pesa</strong>. Safaricom's <strong>Daraja API</strong> lets your system send an <strong>STK push</strong>: a PIN prompt appears on the customer's phone, they enter their PIN, and your system gets confirmation automatically. This lesson explains the full flow and the security rules. (The code for the backend is in <strong>APIs &amp; backends → M-Pesa Daraja</strong>.)</p>
+<h2>The golden rule</h2>
+<blockquote><p><strong>The app never talks to Daraja directly. Your server does.</strong></p></blockquote>
+<p>Daraja needs a <strong>consumer key, consumer secret and passkey</strong>. If they're inside your app, anyone can extract them and misuse your till. The app talks to <strong>your backend</strong>; the backend talks to Safaricom.</p>
+<h2>The STK push flow</h2>
+<figure class="static-code"><pre><code>1. Customer taps &quot;Pay KSh 1,240&quot; in the app
+2. App → your server:  POST /api/pay  { order_id: 1042, phone: &quot;0712345678&quot; }
+3. Server: checks the order and amount FROM ITS OWN DATABASE (never trusts the app&#x27;s amount)
+4. Server → Daraja: get an access token, then send the STK push request
+5. Daraja → customer&#x27;s phone: PIN prompt &quot;Pay KSh 1,240 to Duka Connect?&quot;
+6. Customer enters PIN
+7. Daraja → your server&#x27;s CALLBACK URL: result (success + M-Pesa receipt, or failure/cancel)
+8. Server: marks order 1042 as paid, saves the receipt (e.g. SGH4XXXXXX)
+9. App: asks the server for the order status (or gets a push notification) → shows &quot;Paid ✓&quot;</code></pre></figure>
+<h2>Why the server checks the amount</h2>
+<p>If the app sends "amount: 1240", a tampered app could send "amount: 1". The server must look up order 1042, compute the amount itself, and only then request the payment. <strong>Never trust money values from the app.</strong></p>
+<h2>The callback: the step beginners get wrong</h2>
+<p>Safaricom sends the result to a <strong>callback URL</strong> on your server (it must be public HTTPS). Rules:</p>
+<ul><li><strong>Don't mark an order paid when the STK push is sent</strong>; only when the callback says the payment succeeded.</li><li>The callback can arrive <strong>late or not at all</strong>. Also check the status with Daraja's <strong>STK query</strong> if no callback arrives within a minute or two, and run a scheduled job to settle stragglers.</li><li><strong>Make it idempotent</strong>: if the same callback arrives twice, don't record the payment twice (check the receipt number is unique).</li><li><strong>Verify</strong> the result matches the request you made (checkout request ID, amount, phone).</li><li>Log every callback for troubleshooting.</li></ul>
+<h2>What the user sees</h2>
+<div class="static-table"><table><thead><tr><th>Moment</th><th>App shows</th></tr></thead><tbody><tr><td>After tapping Pay</td><td>"Check your phone and enter your M-Pesa PIN" with a spinner</td></tr><tr><td>Success</td><td>"Payment received. Receipt SGH4XXXXXX"</td></tr><tr><td>Cancelled</td><td>"Payment cancelled. Try again?"</td></tr><tr><td>Insufficient funds / timeout</td><td>A clear message and a retry button</td></tr><tr><td>No answer after ~2 minutes</td><td>"We're still checking your payment" (and keep checking on the server)</td></tr></tbody></table></div>
+<h2>Other payment options</h2>
+<div class="static-table"><table><thead><tr><th>Option</th><th>Use</th></tr></thead><tbody><tr><td><strong>Till (Buy Goods) / Paybill</strong></td><td>The money goes straight to the business's own number</td></tr><tr><td><strong>C2B validation/confirmation</strong></td><td>When customers pay to your Paybill from the M-Pesa menu, your server is notified</td></tr><tr><td><strong>B2C</strong></td><td>Your business sends money to customers (refunds, payouts, salaries)</td></tr><tr><td><strong>Paystack, Flutterwave, Pesapal</strong></td><td>Cards and M-Pesa through one provider, useful for international customers</td></tr><tr><td><strong>Google Play Billing</strong></td><td>Required for selling <strong>digital goods</strong> inside Android apps distributed on Google Play (check Google's current policy)</td></tr></tbody></table></div>
+<h2>Testing</h2>
+<p>Daraja has a <strong>sandbox</strong> with test credentials: build and test the whole flow there first. When going live, Safaricom reviews your application and links your production Paybill/Till. Make a few real small payments (KSh 1 to 10) before launch.</p>
+<h2>Checklist before launch</h2>
+<ul><li>[ ] Secrets only on the server, in environment variables or a config file outside the public folder</li><li>[ ] Amount computed by the server</li><li>[ ] Callback URL is public HTTPS and logs everything</li><li>[ ] Duplicate callbacks can't double-credit</li><li>[ ] STK query / scheduled job settles missed callbacks</li><li>[ ] Clear messages for every outcome</li><li>[ ] Receipts stored and shown to the customer</li></ul>
+<p>Marzley Tech Solutions integrates M-Pesa into websites, apps and systems. Read <a href="/how-to-add-mpesa-payments-to-your-website">how to add M-Pesa payments to your website</a>.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Should an app call the Daraja API directly with the consumer secret? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>What is the PIN prompt that appears on the customer's phone called?</p><details><summary>Show answer</summary><p>STK push</p></details></li><li><p>Who should calculate the amount to charge: the app or the server?</p><details><summary>Show answer</summary><p>the server</p></details></li><li><p>Safaricom sends the payment result to which URL on your server?</p><details><summary>Show answer</summary><p>the callback URL</p></details></li><li><p>Making sure a duplicate callback can't record a payment twice is called making it ...?</p><details><summary>Show answer</summary><p>idempotent</p></details></li><li><p>Which M-Pesa API sends money from a business to customers?</p><details><summary>Show answer</summary><p>B2C</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 8 in <a href="/learn/app-dev-basics/">App development fundamentals</a> · <a href="/learn/?book=app-dev-basics">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/app-dev-basics/data-offline-security/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Data, offline use, logins and security in apps</a><a class="btn btn-solid btn-sm" href="/learn/app-dev-basics/testing-and-publishing/">Testing apps and publishing on Google Play and the App Store <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

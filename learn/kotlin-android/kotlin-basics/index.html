@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kotlin basics: variables, types, strings and decisions</title>
+    <meta name="description" content="Kotlin is Google&#x27;s preferred language for Android. It&#x27;s modern, concise and safe: it prevents whole classes of bugs (like the famous &quot;null pointer&quot;…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/kotlin-android/kotlin-basics/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Kotlin basics: variables, types, strings and decisions" />
+    <meta property="og:description" content="Kotlin is Google&#x27;s preferred language for Android. It&#x27;s modern, concise and safe: it prevents whole classes of bugs (like the famous &quot;null pointer&quot;…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/kotlin-android/kotlin-basics/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Kotlin basics: variables, types, strings and decisions" />
+    <meta name="twitter:description" content="Kotlin is Google&#x27;s preferred language for Android. It&#x27;s modern, concise and safe: it prevents whole classes of bugs (like the famous &quot;null pointer&quot;…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/kotlin-android/kotlin-basics/#lesson","name":"Kotlin basics: variables, types, strings and decisions","description":"Kotlin is Google's preferred language for Android. It's modern, concise and safe: it prevents whole classes of bugs (like the famous \"null pointer\"…","url":"https://marzleytechsolutions.co.ke/learn/kotlin-android/kotlin-basics/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/kotlin-android/#course","name":"Android apps with Kotlin","url":"https://marzleytechsolutions.co.ke/learn/kotlin-android/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Android apps with Kotlin","item":"https://marzleytechsolutions.co.ke/learn/kotlin-android/"},{"@type":"ListItem","position":4,"name":"Kotlin basics: variables, types, strings and decisions","item":"https://marzleytechsolutions.co.ke/learn/kotlin-android/kotlin-basics/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/kotlin-android/">Android apps with Kotlin</a> / <span>Kotlin basics: variables, types, strings and decisions</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=kotlin-android&amp;lesson=kotlin-basics"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Kotlin basics: variables, types, strings and decisions</h1>
+<p><strong>Kotlin</strong> is Google's preferred language for Android. It's modern, concise and safe: it prevents whole classes of bugs (like the famous "null pointer" crash) that plagued older Java apps. Kotlin also runs on servers, desktops and even iPhone (Kotlin Multiplatform).</p>
+<blockquote><p>The Kotlin examples on this page run on a free online compiler when you press <strong>Run</strong> (it takes a few seconds). You can also paste them into <strong>play.kotlinlang.org</strong>.</p></blockquote>
+<h2>Your first program</h2>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">fun main() {
+    println(&quot;Habari, Kenya!&quot;)
+    println(&quot;Welcome to Android development with Kotlin&quot;)
+}</code></pre></figure>
+<p>Every Kotlin program starts at <code>fun main()</code>. <code>println</code> prints a line. No semicolons needed.</p>
+<h2>Variables: val and var</h2>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">fun main() {
+    val shopName = &quot;Mama Mboga&quot;     // val: can&#x27;t be changed (read-only)
+    var stock = 24                  // var: can change
+    stock = stock - 3
+    println(&quot;$shopName has $stock items left&quot;)
+
+    val price: Int = 180            // you can state the type...
+    val vatRate = 0.16              // ...or let Kotlin infer it (Double)
+    val total = price * (1 + vatRate)
+    println(&quot;Price with VAT: KSh $total&quot;)
+}</code></pre></figure>
+<p><strong>Rule:</strong> use <code>val</code> by default; use <code>var</code> only when the value must change. Read-only values make code easier to reason about.</p>
+<h2>Basic types</h2>
+<div class="static-table"><table><thead><tr><th>Type</th><th>Example</th><th>Use</th></tr></thead><tbody><tr><td><code>Int</code></td><td><code>42</code></td><td>Whole numbers</td></tr><tr><td><code>Long</code></td><td><code>254712345678L</code></td><td>Big whole numbers (phone numbers as numbers, timestamps)</td></tr><tr><td><code>Double</code></td><td><code>1240.50</code></td><td>Decimal numbers</td></tr><tr><td><code>Boolean</code></td><td><code>true</code></td><td>Yes/no</td></tr><tr><td><code>String</code></td><td><code>&quot;Unga&quot;</code></td><td>Text</td></tr><tr><td><code>Char</code></td><td><code>&#x27;K&#x27;</code></td><td>One character</td></tr></tbody></table></div>
+<p>Convert between them explicitly: <code>&quot;180&quot;.toInt()</code>, <code>42.toString()</code>, <code>3.99.toInt()</code> (gives 3), <code>&quot;12.5&quot;.toDoubleOrNull()</code> (gives <code>null</code> if not a number instead of crashing).</p>
+<h2>String templates</h2>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">fun main() {
+    val name = &quot;Achieng&quot;
+    val items = 3
+    val amount = 1240
+    println(&quot;Hello $name, you bought $items items&quot;)      // $variable
+    println(&quot;Total with delivery: KSh ${amount + 150}&quot;)   // ${expression}
+    println(&quot;Name in capitals: ${name.uppercase()}, length ${name.length}&quot;)
+
+    val receipt = &quot;&quot;&quot;
+        RECEIPT
+        Customer: $name
+        Total:    KSh $amount
+    &quot;&quot;&quot;.trimIndent()                                      // multi-line string
+    println(receipt)
+}</code></pre></figure>
+<h2>Decisions: if is an expression</h2>
+<p>In Kotlin, <code>if</code> <strong>returns a value</strong>:</p>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">fun main() {
+    val marks = 68
+    val grade = if (marks &gt;= 70) &quot;A&quot; else if (marks &gt;= 50) &quot;C&quot; else &quot;E&quot;
+    println(&quot;Marks $marks -&gt; grade $grade&quot;)
+
+    val balance = 300
+    val price = 450
+    if (balance &gt;= price) {
+        println(&quot;Payment approved&quot;)
+    } else {
+        println(&quot;Insufficient balance: you need KSh ${price - balance} more&quot;)
+    }
+}</code></pre></figure>
+<h2>when: Kotlin's powerful switch</h2>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">fun deliveryFee(town: String): Int = when (town.lowercase()) {
+    &quot;nairobi&quot;, &quot;kiambu&quot; -&gt; 200
+    &quot;thika&quot;, &quot;machakos&quot;, &quot;kajiado&quot; -&gt; 350
+    &quot;mombasa&quot;, &quot;kisumu&quot;, &quot;nakuru&quot; -&gt; 600
+    else -&gt; 800
+}
+
+fun describe(amount: Int): String = when {
+    amount &lt;= 0 -&gt; &quot;Invalid amount&quot;
+    amount &lt; 1000 -&gt; &quot;Small order&quot;
+    amount in 1000..9999 -&gt; &quot;Medium order&quot;
+    else -&gt; &quot;Large order&quot;
+}
+
+fun main() {
+    for (town in listOf(&quot;Nairobi&quot;, &quot;Thika&quot;, &quot;Kisumu&quot;, &quot;Garissa&quot;)) {
+        println(&quot;$town: KSh ${deliveryFee(town)}&quot;)
+    }
+    println(describe(1500))
+}</code></pre></figure>
+<p><code>when</code> can match values, ranges (<code>in 1000..9999</code>), types and conditions. It's used everywhere in Android code.</p>
+<h2>Loops and ranges</h2>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">fun main() {
+    for (i in 1..5) print(&quot;$i &quot;)             // 1 to 5
+    println()
+    for (i in 10 downTo 0 step 2) print(&quot;$i &quot;)
+    println()
+    for (i in 0 until 3) print(&quot;$i &quot;)        // 0, 1, 2 (until excludes the end)
+    println()
+
+    var savings = 0
+    var week = 0
+    while (savings &lt; 5000) {
+        week++
+        savings += 750
+    }
+    println(&quot;Reached KSh $savings after $week weeks&quot;)
+}</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword declares a read-only variable in Kotlin?</p><details><summary>Show answer</summary><p>val</p></details></li><li><p>Which keyword declares a variable that can change?</p><details><summary>Show answer</summary><p>var</p></details></li><li><p>Where does every Kotlin program start? Write the function.</p><details><summary>Show answer</summary><p>main</p></details></li><li><p>Complete the template to print a variable called name: "Hello ..."</p><details><summary>Show answer</summary><p>$name</p></details></li><li><p>Which Kotlin keyword is a powerful replacement for switch?</p><details><summary>Show answer</summary><p>when</p></details></li><li><p>Does 0 until 3 include 3? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Write a function <code>vat(amount: Double): Double</code> that returns 16% of the amount, and print the VAT on <strong>2500.0</strong>. The output should be <strong>400.0</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=kotlin-android&amp;lesson=kotlin-basics#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 1 of 10 in <a href="/learn/kotlin-android/">Android apps with Kotlin</a> · <a href="/learn/?book=kotlin-android">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><span></span><a class="btn btn-solid btn-sm" href="/learn/kotlin-android/kotlin-functions-collections/">Kotlin functions, lambdas and collections <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -6,7 +6,7 @@ go, php, kotlinc) and reports failures. Browser-only JavaScript (DOM, fetch, loc
 HTML are skipped. Examples learners copy elsewhere are checked too: ```dart programs run with
 `dart`, Flutter screens go through `flutter analyze`, ```kotlin programs with fun main run with
 kotlinc, and ```jsx / try-react must at least parse (esbuild). Point KOTLIN_HOME, DART_SDK,
-FLUTTER_ROOT and ESBUILD at the tools if they aren't on the PATH; missing tools are skipped.
+FLUTTER_ROOT, ESBUILD (and KOTLIN_LIBS, a folder of jars such as kotlinx-coroutines) at the tools if they aren't on the PATH; missing tools are skipped.
 
     python3 tools/learn_check.py            # all lessons
     python3 tools/learn_check.py python     # one subject
@@ -61,11 +61,16 @@ def flutter_app():
 
 def run_block(lang, code, tmp):
     if lang == "kotlin":
-        if "fun main" not in code or re.search(r"^import (android|androidx|kotlinx|retrofit2|okhttp3)\.", code, re.M):
-            return None                      # an Android screen: needs Android Studio, not checked here
+        libs = sorted(str(p) for p in Path(os.environ.get("KOTLIN_LIBS", "/nonexistent")).glob("*.jar"))
+        uses_lib = re.search(r"^import kotlinx\.", code, re.M)
+        if "fun main" not in code or re.search(r"^import (android|androidx|retrofit2|okhttp3)\.", code, re.M) or (uses_lib and not libs):
+            return None                      # an Android screen (needs Android Studio) or a missing library: not checked here
         Path(tmp, "main.kt").write_text(code)
-        rc, out = run([KOTLINC, "main.kt", "-include-runtime", "-nowarn", "-d", "main.jar"], tmp)
-        return (rc, out) if rc else run(["java", "-jar", "main.jar"], tmp)
+        cp = ["-cp", ":".join(libs)] if libs else []
+        rc, out = run([KOTLINC, "main.kt", "-include-runtime", "-nowarn", "-d", "main.jar"] + cp, tmp)
+        if rc:
+            return rc, out
+        return run(["java", "-cp", ":".join(["main.jar"] + libs), "MainKt"], tmp)
     if lang == "dart":
         if re.search(r"^import 'package:", code, re.M):     # Flutter or packages: analyse it inside a Flutter project
             app = flutter_app()
@@ -76,8 +81,9 @@ def run_block(lang, code, tmp):
             return None                      # a fragment
         Path(tmp, "main.dart").write_text(code)
         return run([DART, "run", "main.dart"], tmp)
-    if lang in ("jsx", "react", "tsx"):
-        p = subprocess.run([ESBUILD, "--loader=" + ("tsx" if lang == "tsx" else "jsx"), "--log-level=error"], input=code, capture_output=True, text=True, timeout=60)
+    if lang in ("jsx", "react", "tsx", "js"):
+        loader = {"tsx": "tsx", "js": "jsx"}.get(lang, "jsx")
+        p = subprocess.run([ESBUILD, "--loader=" + loader, "--format=esm", "--log-level=error"], input=code, capture_output=True, text=True, timeout=60)
         return p.returncode, p.stderr.strip()
     if lang == "python":
         return run([sys.executable, "-c", code], tmp, stdin="test\n" * 5)
@@ -193,11 +199,11 @@ def main():
             if lang == "quiz":
                 fails += check_quiz(code, where)
                 continue
-            if not lang.startswith("try-") and lang not in ("dart", "kotlin", "jsx", "tsx"):
+            if not lang.startswith("try-") and lang not in ("dart", "kotlin", "jsx", "tsx", "js"):
                 continue
             lang = lang[4:] if lang.startswith("try-") else lang
             need = {"javascript": "node", "typescript": "node", "c": "gcc", "cpp": "g++", "java": "javac", "go": "go", "php": "php",
-                    "kotlin": "kotlinc", "dart": "dart", "jsx": "esbuild", "tsx": "esbuild", "react": "esbuild"}.get(lang)
+                    "kotlin": "kotlinc", "dart": "dart", "jsx": "esbuild", "tsx": "esbuild", "react": "esbuild", "js": "esbuild"}.get(lang)
             if need and not have[need] or (lang == "dart" and "import 'package:" in code and not FLUTTER):
                 skipped += 1
                 continue

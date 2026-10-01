@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>How backends work: HTTP, REST, JSON and status codes</title>
+    <meta name="description" content="Every serious app (mobile or web) has a backend : a server that stores data, checks who&#x27;s allowed to do what, takes payments and sends notifications…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/apis-backend/how-backends-work/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="How backends work: HTTP, REST, JSON and status codes" />
+    <meta property="og:description" content="Every serious app (mobile or web) has a backend : a server that stores data, checks who&#x27;s allowed to do what, takes payments and sends notifications…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/apis-backend/how-backends-work/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="How backends work: HTTP, REST, JSON and status codes" />
+    <meta name="twitter:description" content="Every serious app (mobile or web) has a backend : a server that stores data, checks who&#x27;s allowed to do what, takes payments and sends notifications…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/apis-backend/how-backends-work/#lesson","name":"How backends work: HTTP, REST, JSON and status codes","description":"Every serious app (mobile or web) has a backend : a server that stores data, checks who's allowed to do what, takes payments and sends notifications…","url":"https://marzleytechsolutions.co.ke/learn/apis-backend/how-backends-work/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/apis-backend/#course","name":"APIs & backends for apps","url":"https://marzleytechsolutions.co.ke/learn/apis-backend/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"APIs & backends for apps","item":"https://marzleytechsolutions.co.ke/learn/apis-backend/"},{"@type":"ListItem","position":4,"name":"How backends work: HTTP, REST, JSON and status codes","item":"https://marzleytechsolutions.co.ke/learn/apis-backend/how-backends-work/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/apis-backend/">APIs &amp; backends for apps</a> / <span>How backends work: HTTP, REST, JSON and status codes</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=apis-backend&amp;lesson=how-backends-work"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>How backends work: HTTP, REST, JSON and status codes</h1>
+<p>Every serious app (mobile or web) has a <strong>backend</strong>: a server that stores data, checks who's allowed to do what, takes payments and sends notifications. The app (the <strong>client</strong>) talks to it through an <strong>API</strong> over the internet.</p>
+<figure class="static-code"><pre><code> Phone app / website (client)                     Server (backend)
+ ─────────────────────────────                     ───────────────────────────────
+  GET /api/products  ───────── HTTPS request ────►  check token → query database
+                     ◄──────── HTTPS response ────  200 OK + JSON list of products</code></pre></figure>
+<h2>HTTP in one minute</h2>
+<p>A <strong>request</strong> has:</p>
+<div class="static-table"><table><thead><tr><th>Part</th><th>Example</th></tr></thead><tbody><tr><td><strong>Method</strong></td><td><code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>PATCH</code>, <code>DELETE</code></td></tr><tr><td><strong>URL</strong></td><td><code>https://api.duka.co.ke/v1/products?category=food</code></td></tr><tr><td><strong>Headers</strong></td><td><code>Authorization: Bearer abc123</code>, <code>Content-Type: application/json</code></td></tr><tr><td><strong>Body</strong> (for POST/PUT/PATCH)</td><td><code>{&quot;name&quot;: &quot;Unga 2kg&quot;, &quot;price&quot;: 180}</code></td></tr></tbody></table></div>
+<p>A <strong>response</strong> has a <strong>status code</strong>, headers and usually a JSON body.</p>
+<h2>Methods: what you want to do</h2>
+<div class="static-table"><table><thead><tr><th>Method</th><th>Meaning</th><th>Example</th></tr></thead><tbody><tr><td><code>GET</code></td><td>Read</td><td><code>GET /products</code> (list), <code>GET /products/17</code> (one)</td></tr><tr><td><code>POST</code></td><td>Create</td><td><code>POST /orders</code> with the order in the body</td></tr><tr><td><code>PUT</code></td><td>Replace</td><td><code>PUT /products/17</code> with the full product</td></tr><tr><td><code>PATCH</code></td><td>Update some fields</td><td><code>PATCH /products/17</code> with <code>{&quot;price&quot;: 190}</code></td></tr><tr><td><code>DELETE</code></td><td>Delete</td><td><code>DELETE /products/17</code></td></tr></tbody></table></div>
+<h2>Status codes you must know</h2>
+<div class="static-table"><table><thead><tr><th>Code</th><th>Meaning</th><th>When</th></tr></thead><tbody><tr><td><strong>200</strong> OK</td><td>Success</td><td>Reading or updating worked</td></tr><tr><td><strong>201</strong> Created</td><td>Created</td><td>A new order or user was created</td></tr><tr><td><strong>204</strong> No Content</td><td>Success, nothing to return</td><td>After a delete</td></tr><tr><td><strong>400</strong> Bad Request</td><td>Invalid input</td><td>Missing field, wrong format</td></tr><tr><td><strong>401</strong> Unauthorized</td><td>Not signed in / bad token</td><td>Token missing or expired</td></tr><tr><td><strong>403</strong> Forbidden</td><td>Signed in but not allowed</td><td>An attendant trying to delete products</td></tr><tr><td><strong>404</strong> Not Found</td><td>Doesn't exist</td><td>Wrong ID</td></tr><tr><td><strong>409</strong> Conflict</td><td>Clashes with current state</td><td>Email already registered</td></tr><tr><td><strong>422</strong> Unprocessable</td><td>Valid JSON but fails validation</td><td>Price is negative</td></tr><tr><td><strong>429</strong> Too Many Requests</td><td>Rate limit hit</td><td>Too many login attempts</td></tr><tr><td><strong>500</strong> Server Error</td><td>Bug or failure on the server</td><td>Never show the technical details to users</td></tr></tbody></table></div>
+<p><strong>2xx</strong> = success, <strong>4xx</strong> = the client's fault, <strong>5xx</strong> = the server's fault.</p>
+<h2>JSON: the language of APIs</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">// What a server sends back (as text)
+const responseText = `{
+  &quot;orders&quot;: [
+    {&quot;id&quot;: 1042, &quot;customer&quot;: &quot;Wanjiku&quot;, &quot;total&quot;: 1240, &quot;paid&quot;: true},
+    {&quot;id&quot;: 1043, &quot;customer&quot;: &quot;Otieno&quot;, &quot;total&quot;: 560, &quot;paid&quot;: false}
+  ],
+  &quot;page&quot;: 1,
+  &quot;total_pages&quot;: 3
+}`;
+
+const data = JSON.parse(responseText);            // text -&gt; JavaScript objects
+const unpaid = data.orders.filter(o =&gt; !o.paid);
+console.log(&quot;Unpaid orders:&quot;, unpaid.map(o =&gt; o.id));
+console.log(&quot;Total value:&quot;, data.orders.reduce((s, o) =&gt; s + o.total, 0));
+
+const newOrder = { customer: &quot;Amina&quot;, items: [{ productId: 17, qty: 2 }] };
+console.log(JSON.stringify(newOrder));             // objects -&gt; text to send in a request</code></pre></figure>
+<p>JSON rules: keys in <strong>double quotes</strong>, strings in double quotes, no trailing commas, no comments. Values can be strings, numbers, <code>true</code>/<code>false</code>, <code>null</code>, arrays and objects.</p>
+<h2>What a backend does with a request</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">// A tiny simulated backend: route the request, check auth, validate, respond
+const db = { products: [{ id: 1, name: &quot;Unga 2kg&quot;, price: 180 }, { id: 2, name: &quot;Sugar 1kg&quot;, price: 150 }] };
+const tokens = { &quot;secret-token-123&quot;: { userId: 7, role: &quot;owner&quot; } };
+
+function handle(req) {
+  const user = tokens[(req.headers.Authorization || &quot;&quot;).replace(&quot;Bearer &quot;, &quot;&quot;)];
+  if (!user) return { status: 401, body: { error: &quot;Please sign in&quot; } };
+
+  if (req.method === &quot;GET&quot; &amp;&amp; req.path === &quot;/products&quot;) {
+    return { status: 200, body: db.products };
+  }
+  if (req.method === &quot;POST&quot; &amp;&amp; req.path === &quot;/products&quot;) {
+    if (user.role !== &quot;owner&quot;) return { status: 403, body: { error: &quot;Only owners can add products&quot; } };
+    const { name, price } = req.body || {};
+    if (!name || typeof price !== &quot;number&quot; || price &lt;= 0) return { status: 422, body: { error: &quot;Name and a positive price are required&quot; } };
+    const product = { id: db.products.length + 1, name, price };
+    db.products.push(product);
+    return { status: 201, body: product };
+  }
+  return { status: 404, body: { error: &quot;Not found&quot; } };
+}
+
+const auth = { Authorization: &quot;Bearer secret-token-123&quot; };
+console.log(handle({ method: &quot;GET&quot;, path: &quot;/products&quot;, headers: {} }));
+console.log(handle({ method: &quot;POST&quot;, path: &quot;/products&quot;, headers: auth, body: { name: &quot;Milk&quot;, price: -5 } }));
+console.log(handle({ method: &quot;POST&quot;, path: &quot;/products&quot;, headers: auth, body: { name: &quot;Milk 500ml&quot;, price: 60 } }));
+console.log(handle({ method: &quot;GET&quot;, path: &quot;/orders&quot;, headers: auth }));</code></pre></figure>
+<p>Real backends (PHP, Node.js, Python, Kotlin...) do exactly these steps: <strong>route → authenticate → authorise → validate → do the work (database) → respond with a status code and JSON</strong>.</p>
+<h2>REST in short</h2>
+<p><strong>REST</strong> is a style for APIs where URLs name <strong>resources</strong> (nouns) and methods say what to do:</p>
+<div class="static-table"><table><thead><tr><th>Good (REST)</th><th>Avoid</th></tr></thead><tbody><tr><td><code>GET /orders/1042</code></td><td><code>GET /getOrder?id=1042</code></td></tr><tr><td><code>POST /orders</code></td><td><code>POST /createNewOrder</code></td></tr><tr><td><code>GET /customers/7/orders</code></td><td><code>GET /ordersForCustomer?c=7</code></td></tr></tbody></table></div>
+<p>Other API styles you'll hear about: <strong>GraphQL</strong> (the client asks for exactly the fields it needs) and <strong>webhooks</strong> (the server calls <em>your</em> URL when something happens, like M-Pesa's payment callback).</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which HTTP method reads data?</p><details><summary>Show answer</summary><p>GET</p></details></li><li><p>Which HTTP method creates something new?</p><details><summary>Show answer</summary><p>POST</p></details></li><li><p>Which status code means "created"?</p><details><summary>Show answer</summary><p>201</p></details></li><li><p>Which status code means the user isn't signed in or the token is bad?</p><details><summary>Show answer</summary><p>401</p></details></li><li><p>Which status code means signed in but not allowed?</p><details><summary>Show answer</summary><p>403</p></details></li><li><p>Which JavaScript function turns JSON text into objects?</p><details><summary>Show answer</summary><p>JSON.parse</p></details></li><li><p>A server calling your URL when something happens (like an M-Pesa payment) is called a ...?</p><details><summary>Show answer</summary><p>webhook</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>The server returned <code>{&quot;items&quot;:[{&quot;name&quot;:&quot;Unga&quot;,&quot;qty&quot;:2,&quot;price&quot;:180},{&quot;name&quot;:&quot;Milk&quot;,&quot;qty&quot;:3,&quot;price&quot;:60}]}</code>. Parse it and print the <strong>order total</strong> (qty × price, added up). The answer is <strong>540</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=apis-backend&amp;lesson=how-backends-work#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 1 of 7 in <a href="/learn/apis-backend/">APIs &amp; backends for apps</a> · <a href="/learn/?book=apis-backend">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><span></span><a class="btn btn-solid btn-sm" href="/learn/apis-backend/designing-rest-apis/">Designing a good REST API <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

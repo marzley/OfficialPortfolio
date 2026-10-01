@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kotlin functions, lambdas and collections | Marzley Learn</title>
+    <meta name="description" content="Android apps are full of lists (products, messages, orders) and small functions that transform them. Kotlin makes this beautifully short." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/kotlin-android/kotlin-functions-collections/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Kotlin functions, lambdas and collections | Marzley Learn" />
+    <meta property="og:description" content="Android apps are full of lists (products, messages, orders) and small functions that transform them. Kotlin makes this beautifully short." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/kotlin-android/kotlin-functions-collections/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Kotlin functions, lambdas and collections | Marzley Learn" />
+    <meta name="twitter:description" content="Android apps are full of lists (products, messages, orders) and small functions that transform them. Kotlin makes this beautifully short." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/kotlin-android/kotlin-functions-collections/#lesson","name":"Kotlin functions, lambdas and collections","description":"Android apps are full of lists (products, messages, orders) and small functions that transform them. Kotlin makes this beautifully short.","url":"https://marzleytechsolutions.co.ke/learn/kotlin-android/kotlin-functions-collections/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/kotlin-android/#course","name":"Android apps with Kotlin","url":"https://marzleytechsolutions.co.ke/learn/kotlin-android/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Android apps with Kotlin","item":"https://marzleytechsolutions.co.ke/learn/kotlin-android/"},{"@type":"ListItem","position":4,"name":"Kotlin functions, lambdas and collections","item":"https://marzleytechsolutions.co.ke/learn/kotlin-android/kotlin-functions-collections/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/kotlin-android/">Android apps with Kotlin</a> / <span>Kotlin functions, lambdas and collections</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=kotlin-android&amp;lesson=kotlin-functions-collections"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Kotlin functions, lambdas and collections</h1>
+<p>Android apps are full of lists (products, messages, orders) and small functions that transform them. Kotlin makes this beautifully short.</p>
+<h2>Functions</h2>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">// A normal function
+fun withVat(amount: Double, rate: Double = 0.16): Double {
+    return amount * (1 + rate)
+}
+
+// One-expression functions can use =
+fun square(n: Int) = n * n
+
+// Named arguments make calls readable
+fun greet(name: String, title: String = &quot;&quot;, shout: Boolean = false): String {
+    val text = if (title.isEmpty()) &quot;Habari $name&quot; else &quot;Habari $title $name&quot;
+    return if (shout) text.uppercase() else text
+}
+
+fun main() {
+    println(withVat(1000.0))              // uses the default rate
+    println(withVat(1000.0, rate = 0.0))  // named argument
+    println(square(12))
+    println(greet(&quot;Otieno&quot;, title = &quot;Dr.&quot;, shout = true))
+}</code></pre></figure>
+<p><strong>Default</strong> and <strong>named arguments</strong> are used constantly in Jetpack Compose: <code>Text(text = &quot;Hi&quot;, fontSize = 20.sp, color = Color.Red)</code>.</p>
+<h2>Lambdas: functions as values</h2>
+<p>A <strong>lambda</strong> is a small function without a name, written in braces:</p>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">fun main() {
+    val double = { x: Int -&gt; x * 2 }
+    println(double(21))
+
+    // A function that takes another function
+    fun applyDiscount(price: Int, rule: (Int) -&gt; Int): Int = rule(price)
+
+    println(applyDiscount(1000) { it - 100 })          // `it` is the single parameter
+    println(applyDiscount(1000) { (it * 0.9).toInt() })
+}</code></pre></figure>
+<p>When the last parameter is a function, you can put the lambda <strong>outside the parentheses</strong>. That's why Compose code looks like <code>Button(onClick = { ... }) { Text(&quot;Pay&quot;) }</code>.</p>
+<h2>Lists, sets and maps</h2>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">fun main() {
+    val towns = listOf(&quot;Nyeri&quot;, &quot;Meru&quot;, &quot;Embu&quot;)          // read-only list
+    val cart = mutableListOf(&quot;Unga&quot;, &quot;Sugar&quot;)             // can change
+    cart.add(&quot;Milk&quot;)
+    cart.remove(&quot;Sugar&quot;)
+    println(&quot;$towns | $cart | first: ${cart.first()} | size: ${cart.size}&quot;)
+
+    val unique = setOf(&quot;Wanjiku&quot;, &quot;Otieno&quot;, &quot;Wanjiku&quot;)     // no duplicates
+    println(unique)
+
+    val prices = mapOf(&quot;Unga&quot; to 180, &quot;Sugar&quot; to 150, &quot;Milk&quot; to 60)
+    println(&quot;Milk costs ${prices[&quot;Milk&quot;]}&quot;)
+    println(&quot;Bread costs ${prices[&quot;Bread&quot;] ?: &quot;not sold here&quot;}&quot;)
+    for ((item, price) in prices) println(&quot;$item: KSh $price&quot;)
+
+    val stock = mutableMapOf(&quot;Unga&quot; to 12)
+    stock[&quot;Rice&quot;] = 20
+    stock[&quot;Unga&quot;] = stock.getValue(&quot;Unga&quot;) - 2
+    println(stock)
+}</code></pre></figure>
+<h2>Collection operations (the real power)</h2>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">data class Product(val name: String, val price: Int, val stock: Int, val category: String)
+
+fun main() {
+    val products = listOf(
+        Product(&quot;Unga 2kg&quot;, 180, 12, &quot;Food&quot;),
+        Product(&quot;Sugar 1kg&quot;, 150, 0, &quot;Food&quot;),
+        Product(&quot;Soap&quot;, 120, 30, &quot;Home&quot;),
+        Product(&quot;Cooking oil 1L&quot;, 350, 4, &quot;Food&quot;),
+        Product(&quot;Matches&quot;, 10, 100, &quot;Home&quot;),
+    )
+
+    val inStock = products.filter { it.stock &gt; 0 }
+    val names = inStock.map { it.name }
+    val stockValue = products.sumOf { it.price * it.stock }
+    val cheapest = products.minByOrNull { it.price }
+    val byCategory = products.groupBy { it.category }
+    val sorted = products.sortedByDescending { it.price }
+    val anyOut = products.any { it.stock == 0 }
+
+    println(&quot;In stock: $names&quot;)
+    println(&quot;Stock value: KSh $stockValue&quot;)
+    println(&quot;Cheapest: ${cheapest?.name}&quot;)
+    println(&quot;Categories: ${byCategory.mapValues { (_, list) -&gt; list.size }}&quot;)
+    println(&quot;Most expensive: ${sorted.first().name}&quot;)
+    println(&quot;Anything sold out? $anyOut&quot;)
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Function</th><th>Does</th></tr></thead><tbody><tr><td><code>filter { }</code></td><td>Keep items that match</td></tr><tr><td><code>map { }</code></td><td>Transform each item</td></tr><tr><td><code>sumOf { }</code></td><td>Add up a value</td></tr><tr><td><code>minByOrNull</code> / <code>maxByOrNull</code></td><td>Smallest / largest by a value</td></tr><tr><td><code>groupBy { }</code></td><td>Group into a map</td></tr><tr><td><code>sortedBy</code> / <code>sortedByDescending</code></td><td>Sort</td></tr><tr><td><code>any</code> / <code>all</code> / <code>none</code></td><td>Yes/no checks</td></tr><tr><td><code>first()</code> / <code>firstOrNull { }</code></td><td>Find items</td></tr><tr><td><code>take(n)</code> / <code>drop(n)</code></td><td>Part of the list</td></tr></tbody></table></div>
+<h2>Extension functions</h2>
+<p>Add your own functions to existing types:</p>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">fun Int.toKsh(): String = &quot;KSh &quot; + &quot;%,d&quot;.format(this)
+
+fun String.isKenyanPhone(): Boolean {
+    val digits = filter { it.isDigit() }
+    return Regex(&quot;^(0[17]\\d{8}|254[17]\\d{8})$&quot;).matches(digits)
+}
+
+fun main() {
+    println(125000.toKsh())
+    println(&quot;0712 345 678&quot;.isKenyanPhone())
+    println(&quot;12345&quot;.isKenyanPhone())
+}</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the default name of a lambda's single parameter?</p><details><summary>Show answer</summary><p>it</p></details></li><li><p>Which function keeps only items that match a condition?</p><details><summary>Show answer</summary><p>filter</p></details></li><li><p>Which function transforms every item in a list?</p><details><summary>Show answer</summary><p>map</p></details></li><li><p>Which list type can you add items to?</p><details><summary>Show answer</summary><p>mutableListOf</p></details></li><li><p>Which operator gives a default when a value is null, as in prices["Bread"] ?: "none"?</p><details><summary>Show answer</summary><p>?:</p></details></li><li><p>Adding your own function to an existing type like Int is called an ... function?</p><details><summary>Show answer</summary><p>extension</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Given the list of prices, print the <strong>total of prices above 100</strong> using <code>filter</code> and <code>sum</code>. The answer is <strong>680</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=kotlin-android&amp;lesson=kotlin-functions-collections#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 2 of 10 in <a href="/learn/kotlin-android/">Android apps with Kotlin</a> · <a href="/learn/?book=kotlin-android">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/kotlin-android/kotlin-basics/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Kotlin basics: variables, types, strings and decisions</a><a class="btn btn-solid btn-sm" href="/learn/kotlin-android/kotlin-classes-null-safety/">Kotlin classes, data classes, sealed classes and null safety <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

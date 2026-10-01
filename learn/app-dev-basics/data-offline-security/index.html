@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Data, offline use, logins and security in apps</title>
+    <meta name="description" content="Behind every screen is data: where it lives, how it travels, how it survives a lost connection, and who is allowed to see it. Getting this right is…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/app-dev-basics/data-offline-security/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Data, offline use, logins and security in apps" />
+    <meta property="og:description" content="Behind every screen is data: where it lives, how it travels, how it survives a lost connection, and who is allowed to see it. Getting this right is…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/app-dev-basics/data-offline-security/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Data, offline use, logins and security in apps" />
+    <meta name="twitter:description" content="Behind every screen is data: where it lives, how it travels, how it survives a lost connection, and who is allowed to see it. Getting this right is…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/app-dev-basics/data-offline-security/#lesson","name":"Data, offline use, logins and security in apps","description":"Behind every screen is data: where it lives, how it travels, how it survives a lost connection, and who is allowed to see it. Getting this right is…","url":"https://marzleytechsolutions.co.ke/learn/app-dev-basics/data-offline-security/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/app-dev-basics/#course","name":"App development fundamentals","url":"https://marzleytechsolutions.co.ke/learn/app-dev-basics/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"App development fundamentals","item":"https://marzleytechsolutions.co.ke/learn/app-dev-basics/"},{"@type":"ListItem","position":4,"name":"Data, offline use, logins and security in apps","item":"https://marzleytechsolutions.co.ke/learn/app-dev-basics/data-offline-security/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/app-dev-basics/">App development fundamentals</a> / <span>Data, offline use, logins and security in apps</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=app-dev-basics&amp;lesson=data-offline-security"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Data, offline use, logins and security in apps</h1>
+<p>Behind every screen is data: where it lives, how it travels, how it survives a lost connection, and who is allowed to see it. Getting this right is what separates a toy app from one a SACCO or hospital can trust.</p>
+<h2>Where app data lives</h2>
+<div class="static-table"><table><thead><tr><th>Place</th><th>What goes there</th><th>Examples</th></tr></thead><tbody><tr><td><strong>On the phone: key-value storage</strong></td><td>Small settings</td><td>Theme, language, last-used phone number</td></tr><tr><td><strong>On the phone: secure storage</strong> (Android Keystore / iOS Keychain)</td><td>Secrets</td><td>Login tokens, PINs</td></tr><tr><td><strong>On the phone: local database</strong> (SQLite, Room, Drift)</td><td>Structured data, offline copies</td><td>Products, sales recorded offline, cached orders</td></tr><tr><td><strong>On the server: database</strong> (MySQL, PostgreSQL, Firestore)</td><td>The source of truth shared by all users</td><td>Accounts, all shops' sales, payments</td></tr><tr><td><strong>Cloud file storage</strong></td><td>Large files</td><td>Photos, PDFs, receipts</td></tr></tbody></table></div>
+<h2>How data travels: APIs and JSON</h2>
+<p>The app sends <strong>HTTPS requests</strong> to the backend's <strong>API</strong> and gets <strong>JSON</strong> back:</p>
+<figure class="static-code"><figcaption>JSON</figcaption><pre><code class="language-json">{
+  &quot;id&quot;: 1042,
+  &quot;customer&quot;: &quot;Wanjiku&quot;,
+  &quot;total&quot;: 1240,
+  &quot;status&quot;: &quot;paid&quot;,
+  &quot;items&quot;: [{ &quot;name&quot;: &quot;Unga 2kg&quot;, &quot;qty&quot;: 2, &quot;price&quot;: 180 }]
+}</code></pre></figure>
+<p>Learn to build these APIs in <strong>APIs &amp; backends</strong>, and to call them in <strong>Flutter</strong>, <strong>Kotlin</strong> or <strong>React Native</strong>.</p>
+<h2>Offline-first: apps that keep working</h2>
+<p>Many users lose signal in buildings, on the road or upcountry. An <strong>offline-first</strong> app:</p>
+<ol><li><strong>Reads from the local database first</strong>: screens appear instantly, with or without internet.</li><li><strong>Fetches updates</strong> from the server when online and saves them locally.</li><li><strong>Saves changes locally</strong> (with a "not yet synced" flag) when offline, and <strong>syncs</strong> when the connection returns.</li><li>Handles <strong>conflicts</strong>: if two people edited the same record, the newest change wins, or the user chooses.</li><li>Tells the user what's happening: "Offline: 3 sales will sync when you're back online."</li></ol>
+<h2>Logins and accounts</h2>
+<div class="static-table"><table><thead><tr><th>Method</th><th>Notes</th></tr></thead><tbody><tr><td>Phone number + SMS code (OTP)</td><td>Most familiar in Kenya; SMS costs money per message</td></tr><tr><td>Email + password</td><td>Needs password reset; hash passwords on the server (never store them as text)</td></tr><tr><td>Google sign-in</td><td>One tap on Android; no password to manage</td></tr><tr><td>PIN or fingerprint</td><td>For quick re-entry after the first login (local only)</td></tr></tbody></table></div>
+<p>After login, the server issues a <strong>token</strong> (a long random string or a signed JWT). The app sends it with every request (<code>Authorization: Bearer …</code>) and stores it in <strong>secure storage</strong>. Tokens should expire; refresh them or ask the user to sign in again.</p>
+<h2>Security rules every app developer must follow</h2>
+<ol><li><strong>Never put secrets in the app.</strong> M-Pesa consumer secrets, payment keys, database passwords and AI API keys must live on the <strong>server</strong>. Anyone can unpack an APK and read its contents.</li><li><strong>HTTPS only.</strong> Android blocks plain HTTP by default in release builds; don't disable that.</li><li><strong>The server decides who can do what.</strong> Never trust the app: check permissions on the server for every request (a shop attendant must not see another shop's data, even if they change an ID in the request).</li><li><strong>Validate all input on the server</strong>: lengths, types, ranges. Use parameterised SQL queries to prevent SQL injection.</li><li><strong>Store passwords hashed</strong> (bcrypt or Argon2), never plain or reversibly encrypted.</li><li><strong>Ask only for permissions you need</strong>, at the moment you need them.</li><li><strong>Keep dependencies updated</strong> and remove unused libraries.</li><li><strong>Log and monitor</strong>: failed logins, errors, unusual activity.</li><li><strong>Back up</strong> the server database daily, off-site, and test restoring it.</li></ol>
+<p>The <strong>OWASP Mobile Top 10</strong> lists the most common mobile security risks; read it before publishing an app that handles money or personal data. Learn more in the <strong>Cybersecurity</strong> subject.</p>
+<h2>Personal data and the law</h2>
+<p>Kenya's <strong>Data Protection Act (2019)</strong> applies to apps that collect personal data (names, phone numbers, IDs, locations, health information):</p>
+<ul><li>Collect only what you need, for a clear purpose, and tell users in a <strong>privacy policy</strong> (Google Play requires one).</li><li>Get consent where needed, and let users ask for their data to be corrected or deleted.</li><li>Protect data with access controls and encryption.</li><li>Organisations processing personal data may need to register with the <strong>Office of the Data Protection Commissioner (ODPC)</strong>.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Where should an app store a login token?</p><details><summary>Show answer</summary><p>secure storage</p></details></li><li><p>Where must M-Pesa and payment secret keys live?</p><details><summary>Show answer</summary><p>on the server</p></details></li><li><p>An app that reads from local data first and syncs later is called ...-first?</p><details><summary>Show answer</summary><p>offline</p></details></li><li><p>How should passwords be stored on the server?</p><details><summary>Show answer</summary><p>hashed</p></details></li><li><p>Which list describes the most common mobile security risks?</p><details><summary>Show answer</summary><p>OWASP Mobile Top 10</p></details></li><li><p>Which Kenyan law covers personal data collected by apps?</p><details><summary>Show answer</summary><p>Data Protection Act</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 8 in <a href="/learn/app-dev-basics/">App development fundamentals</a> · <a href="/learn/?book=app-dev-basics">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/app-dev-basics/mobile-ui-ux/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Mobile UI/UX design that people love</a><a class="btn btn-solid btn-sm" href="/learn/app-dev-basics/mpesa-in-apps/">Taking M-Pesa payments in your app (the safe way) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

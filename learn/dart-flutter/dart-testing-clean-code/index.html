@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Testing and structuring Dart &amp; Flutter apps: unit tests,…</title>
+    <meta name="description" content="An app that &quot;works on my phone&quot; isn&#x27;t finished. Professional apps are structured so each part has one job, and tested so you can change code without…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-testing-clean-code/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Testing and structuring Dart &amp; Flutter apps: unit tests,…" />
+    <meta property="og:description" content="An app that &quot;works on my phone&quot; isn&#x27;t finished. Professional apps are structured so each part has one job, and tested so you can change code without…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-testing-clean-code/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Testing and structuring Dart &amp; Flutter apps: unit tests,…" />
+    <meta name="twitter:description" content="An app that &quot;works on my phone&quot; isn&#x27;t finished. Professional apps are structured so each part has one job, and tested so you can change code without…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-testing-clean-code/#lesson","name":"Testing and structuring Dart & Flutter apps: unit tests, widget tests, repositories","description":"An app that \"works on my phone\" isn't finished. Professional apps are structured so each part has one job, and tested so you can change code without…","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-testing-clean-code/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/#course","name":"Dart & Flutter (mobile apps)","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Dart & Flutter (mobile apps)","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},{"@type":"ListItem","position":4,"name":"Testing and structuring Dart & Flutter apps: unit tests, widget tests, repositories","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-testing-clean-code/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> / <span>Testing and structuring Dart &amp; Flutter apps: unit tests, widget tests, repositories</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=dart-flutter&amp;lesson=dart-testing-clean-code"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Testing and structuring Dart &amp; Flutter apps: unit tests, widget tests, repositories</h1>
+<p>An app that "works on my phone" isn't finished. Professional apps are <strong>structured</strong> so each part has one job, and <strong>tested</strong> so you can change code without breaking checkout or payments. Clients pay more for apps that don't break with every update.</p>
+<h2>Layers: who does what</h2>
+<div class="static-table"><table><thead><tr><th>Layer</th><th>Job</th><th>Example</th></tr></thead><tbody><tr><td><strong>UI (widgets)</strong></td><td>Show state, send user actions</td><td><code>ProductListScreen</code>, <code>CartBadge</code></td></tr><tr><td><strong>State / logic</strong></td><td>Decide what happens, hold screen state</td><td><code>CartController</code>, <code>ProductsNotifier</code></td></tr><tr><td><strong>Repository</strong></td><td>One place to get and save data</td><td><code>ProductRepository</code></td></tr><tr><td><strong>Data sources</strong></td><td>Talk to the API, database or cache</td><td><code>ApiClient</code>, <code>LocalCache</code></td></tr><tr><td><strong>Models</strong></td><td>Plain data classes</td><td><code>Product</code>, <code>Order</code></td></tr></tbody></table></div>
+<p>Rules: widgets never call <code>http</code> directly, and logic never imports Flutter widgets. That makes logic <strong>testable without a phone</strong>.</p>
+<p>A common folder layout (feature-first):</p>
+<figure class="static-code"><pre><code>lib/
+├── main.dart
+├── core/                 api_client.dart, formatters.dart, theme.dart
+└── features/
+    ├── products/
+    │   ├── product.dart              (model)
+    │   ├── product_repository.dart   (data)
+    │   ├── products_controller.dart  (logic)
+    │   └── products_screen.dart      (UI)
+    └── cart/ ...
+test/
+├── features/cart/cart_controller_test.dart
+└── widget/cart_badge_test.dart</code></pre></figure>
+<h2>Depend on abstractions, not concrete classes</h2>
+<p>If your logic uses an <strong>abstract</strong> repository, tests can pass in a fake one with fixed data: no internet, no server, instant results.</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">class Product {
+  final int id;
+  final String name;
+  final int price;
+  final int stock;
+  const Product(this.id, this.name, this.price, this.stock);
+}
+
+abstract interface class ProductRepository {
+  Future&lt;List&lt;Product&gt;&gt; all();
+}
+
+// The real one would call your API with http/dio. This fake is used in tests and demos.
+class FakeProductRepository implements ProductRepository {
+  final List&lt;Product&gt; items;
+  final bool fail;
+  FakeProductRepository(this.items, {this.fail = false});
+
+  @override
+  Future&lt;List&lt;Product&gt;&gt; all() async {
+    if (fail) throw Exception(&#x27;offline&#x27;);
+    return items;
+  }
+}
+
+class ProductsController {
+  final ProductRepository repo;
+  ProductsController(this.repo);
+
+  List&lt;Product&gt; products = [];
+  String? error;
+  bool loading = false;
+
+  Future&lt;void&gt; load() async {
+    loading = true;
+    error = null;
+    try {
+      products = await repo.all();
+    } catch (_) {
+      error = &#x27;Could not load products. Pull down to retry.&#x27;;
+    } finally {
+      loading = false;
+    }
+  }
+
+  List&lt;Product&gt; get inStock =&gt; products.where((p) =&gt; p.stock &gt; 0).toList();
+  List&lt;Product&gt; search(String q) =&gt;
+      products.where((p) =&gt; p.name.toLowerCase().contains(q.toLowerCase().trim())).toList();
+}
+
+Future&lt;void&gt; main() async {
+  final ok = ProductsController(FakeProductRepository(const [
+    Product(1, &#x27;Unga 2kg&#x27;, 180, 12),
+    Product(2, &#x27;Sugar 1kg&#x27;, 150, 0),
+    Product(3, &#x27;Unga ya Ngano&#x27;, 210, 4),
+  ]));
+  await ok.load();
+  print(&#x27;loaded ${ok.products.length}, in stock ${ok.inStock.length}&#x27;);
+  print(&#x27;search &quot;unga&quot;: ${ok.search(&quot;unga&quot;).map((p) =&gt; p.name).toList()}&#x27;);
+
+  final offline = ProductsController(FakeProductRepository(const [], fail: true));
+  await offline.load();
+  print(&#x27;error shown: ${offline.error}&#x27;);
+}</code></pre></figure>
+<p>The real <code>ApiProductRepository</code> and the fake share one interface, so the controller never knows which one it got. In the app you pass the real one (often through <strong>Provider</strong>, <strong>Riverpod</strong> or <strong>get_it</strong>); in tests, the fake.</p>
+<h2>Unit tests</h2>
+<p>Tests live in the <code>test/</code> folder and run with <code>flutter test</code> (or <code>dart test</code> for pure Dart packages). A test <strong>arranges</strong> data, <strong>acts</strong>, then <strong>asserts</strong> the result with <code>expect</code>.</p>
+<p>First, the logic to test (<code>lib/features/cart/cart.dart</code>):</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">class Cart {
+  final Map&lt;String, ({int price, int qty})&gt; _lines = {};
+
+  void add(String name, int price, {int qty = 1}) {
+    if (qty &lt;= 0) throw ArgumentError(&#x27;qty must be positive&#x27;);
+    final current = _lines[name];
+    _lines[name] = (price: price, qty: (current?.qty ?? 0) + qty);
+  }
+
+  void remove(String name) =&gt; _lines.remove(name);
+
+  int get count =&gt; _lines.values.fold(0, (sum, l) =&gt; sum + l.qty);
+  int get subtotal =&gt; _lines.values.fold(0, (sum, l) =&gt; sum + l.price * l.qty);
+
+  // 16% VAT included in prices (Kenya): VAT part = subtotal * 16 / 116, rounded
+  int get vatIncluded =&gt; (subtotal * 16 / 116).round();
+
+  int deliveryFee() =&gt; subtotal &gt;= 2000 || subtotal == 0 ? 0 : 150;
+  int get total =&gt; subtotal + deliveryFee();
+}
+
+void main() {
+  final cart = Cart()
+    ..add(&#x27;Unga 2kg&#x27;, 180, qty: 2)
+    ..add(&#x27;Cooking oil 1L&#x27;, 320)
+    ..add(&#x27;Unga 2kg&#x27;, 180);
+  print(&#x27;items: ${cart.count}, subtotal: ${cart.subtotal}, delivery: ${cart.deliveryFee()}, total: ${cart.total}&#x27;);
+  print(&#x27;VAT included: ${cart.vatIncluded}&#x27;);
+}</code></pre></figure>
+<p>And its tests (<code>test/cart_test.dart</code>). In a Flutter project you import <code>flutter_test</code> and your own file (for an app named <code>duka</code>: <code>import &#x27;package:duka/features/cart/cart.dart&#x27;;</code>); pure Dart packages use <code>package:test/test.dart</code>, which has the same functions. Here a short copy of <code>Cart</code> is included so the file stands alone:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter_test/flutter_test.dart&#x27;;
+
+// In your project this comes from: import &#x27;package:duka/features/cart/cart.dart&#x27;;
+class Cart {
+  final Map&lt;String, ({int price, int qty})&gt; _lines = {};
+  void add(String name, int price, {int qty = 1}) {
+    if (qty &lt;= 0) throw ArgumentError(&#x27;qty must be positive&#x27;);
+    _lines[name] = (price: price, qty: (_lines[name]?.qty ?? 0) + qty);
+  }
+  int get count =&gt; _lines.values.fold(0, (sum, l) =&gt; sum + l.qty);
+  int get subtotal =&gt; _lines.values.fold(0, (sum, l) =&gt; sum + l.price * l.qty);
+  int deliveryFee() =&gt; subtotal &gt;= 2000 || subtotal == 0 ? 0 : 150;
+  int get total =&gt; subtotal + deliveryFee();
+}
+
+void main() {
+  group(&#x27;Cart&#x27;, () {
+    late Cart cart;
+    setUp(() =&gt; cart = Cart());          // a fresh cart before every test
+
+    test(&#x27;starts empty with no delivery fee&#x27;, () {
+      expect(cart.count, 0);
+      expect(cart.total, 0);
+    });
+
+    test(&#x27;adding the same item twice increases its quantity&#x27;, () {
+      cart.add(&#x27;Unga 2kg&#x27;, 180);
+      cart.add(&#x27;Unga 2kg&#x27;, 180, qty: 2);
+      expect(cart.count, 3);
+      expect(cart.subtotal, 540);
+    });
+
+    test(&#x27;charges KSh 150 delivery below KSh 2,000&#x27;, () {
+      cart.add(&#x27;Sugar 1kg&#x27;, 150);
+      expect(cart.deliveryFee(), 150);
+      expect(cart.total, 300);
+    });
+
+    test(&#x27;free delivery from KSh 2,000&#x27;, () {
+      cart.add(&#x27;Rice 5kg&#x27;, 1000, qty: 2);
+      expect(cart.deliveryFee(), 0);
+    });
+
+    test(&#x27;rejects zero or negative quantity&#x27;, () {
+      expect(() =&gt; cart.add(&#x27;Milk&#x27;, 60, qty: 0), throwsArgumentError);
+    });
+  });
+}</code></pre></figure>
+<p>Test the <strong>edges</strong>: empty cart, exactly KSh 2,000, zero quantity, a failed API call. Bugs hide at boundaries.</p>
+<h3>A tiny test runner you can run here</h3>
+<p>To see the idea without installing packages, here is a mini <code>expect</code> in plain Dart:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">var passed = 0, failed = 0;
+
+void check(String name, Object? actual, Object? expected) {
+  if (actual == expected) {
+    passed++;
+    print(&#x27;PASS  $name&#x27;);
+  } else {
+    failed++;
+    print(&#x27;FAIL  $name: expected $expected, got $actual&#x27;);
+  }
+}
+
+int deliveryFee(int subtotal) =&gt; subtotal &gt;= 2000 || subtotal == 0 ? 0 : 150;
+
+String? validatePhone(String input) {
+  final d = input.replaceAll(RegExp(r&#x27;\D&#x27;), &#x27;&#x27;);
+  if (d.isEmpty) return &#x27;Enter your phone number&#x27;;
+  if (!RegExp(r&#x27;^(0|254)[17]\d{8}$&#x27;).hasMatch(d)) return &#x27;Enter a valid Safaricom or Airtel number&#x27;;
+  return null;     // null means valid
+}
+
+void main() {
+  check(&#x27;empty cart has no delivery fee&#x27;, deliveryFee(0), 0);
+  check(&#x27;KSh 1,999 pays delivery&#x27;, deliveryFee(1999), 150);
+  check(&#x27;KSh 2,000 is free&#x27;, deliveryFee(2000), 0);
+  check(&#x27;valid 07 number&#x27;, validatePhone(&#x27;0712 345 678&#x27;), null);
+  check(&#x27;valid 254 number&#x27;, validatePhone(&#x27;254112345678&#x27;), null);
+  check(&#x27;empty phone&#x27;, validatePhone(&#x27;&#x27;), &#x27;Enter your phone number&#x27;);
+  check(&#x27;too short&#x27;, validatePhone(&#x27;07123&#x27;), &#x27;Enter a valid Safaricom or Airtel number&#x27;);
+  print(&#x27;\n$passed passed, $failed failed&#x27;);
+}</code></pre></figure>
+<h2>Testing async code and errors</h2>
+<p><code>test</code> waits for <code>async</code> test bodies. Use matchers like <code>throwsA</code>, <code>completion</code> and <code>emitsInOrder</code>:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter_test/flutter_test.dart&#x27;;
+
+Stream&lt;int&gt; countdown(int from) async* {
+  for (var s = from; s &gt;= 0; s--) {
+    yield s;
+  }
+}
+
+Future&lt;int&gt; loadStock(String item) async {
+  if (item.isEmpty) throw ArgumentError(&#x27;item required&#x27;);
+  return 12;
+}
+
+void main() {
+  test(&#x27;loads stock&#x27;, () async {
+    expect(await loadStock(&#x27;unga&#x27;), 12);
+  });
+
+  test(&#x27;fails for an empty item name&#x27;, () {
+    expect(loadStock(&#x27;&#x27;), throwsA(isA&lt;ArgumentError&gt;()));
+  });
+
+  test(&#x27;countdown emits 3, 2, 1, 0 then closes&#x27;, () {
+    expect(countdown(3), emitsInOrder([3, 2, 1, 0, emitsDone]));
+  });
+}</code></pre></figure>
+<h2>Widget tests</h2>
+<p>Widget tests build a widget in a fake screen, tap and type, and check what's shown. They run in seconds, without an emulator:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+import &#x27;package:flutter_test/flutter_test.dart&#x27;;
+
+class CounterButton extends StatefulWidget {
+  const CounterButton({super.key});
+  @override
+  State&lt;CounterButton&gt; createState() =&gt; _CounterButtonState();
+}
+
+class _CounterButtonState extends State&lt;CounterButton&gt; {
+  int qty = 1;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          key: const Key(&#x27;minus&#x27;),
+          icon: const Icon(Icons.remove),
+          onPressed: qty &gt; 1 ? () =&gt; setState(() =&gt; qty--) : null,
+        ),
+        Text(&#x27;$qty&#x27;, key: const Key(&#x27;qty&#x27;)),
+        IconButton(
+          key: const Key(&#x27;plus&#x27;),
+          icon: const Icon(Icons.add),
+          onPressed: () =&gt; setState(() =&gt; qty++),
+        ),
+      ],
+    );
+  }
+}
+
+void main() {
+  testWidgets(&#x27;quantity goes up and never below 1&#x27;, (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: Scaffold(body: CounterButton())));
+
+    expect(find.text(&#x27;1&#x27;), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key(&#x27;plus&#x27;)));
+    await tester.pump();                       // rebuild after setState
+    expect(find.text(&#x27;2&#x27;), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key(&#x27;minus&#x27;)));
+    await tester.tap(find.byKey(const Key(&#x27;minus&#x27;)));   // disabled at 1: nothing happens
+    await tester.pump();
+    expect(find.text(&#x27;1&#x27;), findsOneWidget);
+  });
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Test type</th><th>Speed</th><th>Tests</th><th>Tool</th></tr></thead><tbody><tr><td><strong>Unit</strong></td><td>Milliseconds</td><td>Functions and classes (cart, validators, controllers)</td><td><code>test</code> / <code>flutter_test</code></td></tr><tr><td><strong>Widget</strong></td><td>Fast</td><td>One screen or widget, taps and text</td><td><code>flutter_test</code> (<code>testWidgets</code>)</td></tr><tr><td><strong>Integration</strong></td><td>Slow</td><td>The whole app on a device or emulator</td><td><code>integration_test</code></td></tr></tbody></table></div>
+<p>Aim for <strong>many</strong> unit tests, <strong>some</strong> widget tests and <strong>a few</strong> integration tests for critical flows (sign in, checkout, pay).</p>
+<h2>Code quality tools</h2>
+<ul><li><code>dart format .</code> formats code consistently.</li><li><code>dart analyze</code> (or <code>flutter analyze</code>) finds bugs and style problems; configure rules in <code>analysis_options.yaml</code> with <code>flutter_lints</code> or <code>very_good_analysis</code>.</li><li><code>flutter test --coverage</code> shows which lines your tests exercise.</li><li><strong>CI</strong>: run format, analyze and test on every push with GitHub Actions, so broken code never reaches the Play Store.</li></ul>
+<p>A minimal GitHub Actions workflow (<code>.github/workflows/ci.yml</code>):</p>
+<figure class="static-code"><figcaption>YAML</figcaption><pre><code class="language-yaml">name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter pub get
+      - run: dart format --set-exit-if-changed .
+      - run: flutter analyze
+      - run: flutter test</code></pre></figure>
+<h2>Checklist before you hand an app to a client</h2>
+<ul><li>[ ] Logic separated from widgets; data through repositories</li><li>[ ] Unit tests for money, validation and status rules</li><li>[ ] Widget tests for key screens (login, cart)</li><li>[ ] Loading, error and empty states on every screen</li><li>[ ] <code>flutter analyze</code> clean; code formatted</li><li>[ ] Secrets (API keys, M-Pesa passkey) on the server, never in the app</li><li>[ ] Release build tested on a low-end Android phone</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which folder holds a Dart project's tests?</p><details><summary>Show answer</summary><p>test</p></details></li><li><p>Which function checks a result in a Dart test?</p><details><summary>Show answer</summary><p>expect</p></details></li><li><p>Which function runs before every test in a group?</p><details><summary>Show answer</summary><p>setUp</p></details></li><li><p>Which function writes a widget test?</p><details><summary>Show answer</summary><p>testWidgets</p></details></li><li><p>After a tap, which tester method rebuilds the widget?</p><details><summary>Show answer</summary><p>pump</p></details></li><li><p>Which command finds bugs and style problems in Dart code?</p><details><summary>Show answer</summary><p>dart analyze</p></details></li><li><p>Should there be more unit tests or integration tests? (unit or integration)</p><details><summary>Show answer</summary><p>unit</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 10 in <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> · <a href="/learn/?book=dart-flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/dart-flutter/dart-async-streams-errors/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Dart async in depth: Futures, Streams, timeouts, retries and isolates</a><a class="btn btn-solid btn-sm" href="/learn/dart-flutter/flutter-widgets/">Flutter widgets and layouts <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

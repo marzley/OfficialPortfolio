@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Firebase, Supabase and deploying your backend securely</title>
+    <meta name="description" content="You don&#x27;t always need to write your own server. Backend-as-a-Service (BaaS) platforms give you login, a database, file storage and more, ready to use…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/apis-backend/baas-and-deploying/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Firebase, Supabase and deploying your backend securely" />
+    <meta property="og:description" content="You don&#x27;t always need to write your own server. Backend-as-a-Service (BaaS) platforms give you login, a database, file storage and more, ready to use…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/apis-backend/baas-and-deploying/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Firebase, Supabase and deploying your backend securely" />
+    <meta name="twitter:description" content="You don&#x27;t always need to write your own server. Backend-as-a-Service (BaaS) platforms give you login, a database, file storage and more, ready to use…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/apis-backend/baas-and-deploying/#lesson","name":"Firebase, Supabase and deploying your backend securely","description":"You don't always need to write your own server. Backend-as-a-Service (BaaS) platforms give you login, a database, file storage and more, ready to use…","url":"https://marzleytechsolutions.co.ke/learn/apis-backend/baas-and-deploying/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/apis-backend/#course","name":"APIs & backends for apps","url":"https://marzleytechsolutions.co.ke/learn/apis-backend/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"APIs & backends for apps","item":"https://marzleytechsolutions.co.ke/learn/apis-backend/"},{"@type":"ListItem","position":4,"name":"Firebase, Supabase and deploying your backend securely","item":"https://marzleytechsolutions.co.ke/learn/apis-backend/baas-and-deploying/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/apis-backend/">APIs &amp; backends for apps</a> / <span>Firebase, Supabase and deploying your backend securely</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=apis-backend&amp;lesson=baas-and-deploying"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Firebase, Supabase and deploying your backend securely</h1>
+<p>You don't always need to write your own server. <strong>Backend-as-a-Service (BaaS)</strong> platforms give you login, a database, file storage and more, ready to use. And when you do write your own backend, it must be deployed securely so it stays online and safe.</p>
+<h2>Backend-as-a-Service options</h2>
+<div class="static-table"><table><thead><tr><th>Platform</th><th>Database</th><th>Strengths</th><th>Watch out</th></tr></thead><tbody><tr><td><strong>Firebase</strong> (Google)</td><td>Firestore (NoSQL documents), Realtime Database</td><td>Excellent Flutter/Android support, real-time sync, offline cache, push notifications, Crashlytics</td><td>Pricing by reads/writes; NoSQL data modelling; vendor lock-in</td></tr><tr><td><strong>Supabase</strong></td><td>PostgreSQL (SQL)</td><td>Real SQL with joins, auto-generated APIs, row-level security, open source</td><td>Newer ecosystem; learn Postgres security policies</td></tr><tr><td><strong>Appwrite</strong></td><td>Document database</td><td>Open source, self-hostable</td><td>Smaller community</td></tr><tr><td><strong>Your own API</strong> (PHP/Node + MySQL/PostgreSQL)</td><td>Any</td><td>Full control, predictable hosting costs, easy M-Pesa callbacks</td><td>You maintain security and uptime</td></tr></tbody></table></div>
+<p><strong>A common, practical mix in Kenya:</strong> Firebase Authentication and Cloud Messaging (push notifications) + your own PHP or Node API with MySQL for business data and M-Pesa.</p>
+<h2>Security rules are your backend logic</h2>
+<p>With Firebase and Supabase the app talks <strong>directly</strong> to the database, so <strong>security rules decide everything</strong>. Without them, anyone can read or delete your data.</p>
+<p>Firestore rules (only the shop owner can read or write their shop's products):</p>
+<figure class="static-code"><pre><code>match /shops/{shopId}/products/{productId} {
+  allow read, write: if request.auth != null
+    &amp;&amp; get(/databases/$(database)/documents/shops/$(shopId)).data.owner == request.auth.uid;
+}</code></pre></figure>
+<p>Supabase row-level security (PostgreSQL):</p>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">alter table products enable row level security;
+
+create policy &quot;owners manage their products&quot;
+on products for all
+using (shop_id in (select id from shops where owner = auth.uid()))
+with check (shop_id in (select id from shops where owner = auth.uid()));</code></pre></figure>
+<p>Payments still need a server you control (Firebase <strong>Cloud Functions</strong> or Supabase <strong>Edge Functions</strong>, or your own API), because secrets like the M-Pesa passkey can't live in the app.</p>
+<h2>Deploying your own backend</h2>
+<h3>Option 1: cPanel shared hosting (PHP)</h3>
+<p>Cheap and common in Kenya. Good for PHP APIs with moderate traffic.</p>
+<ol><li>Upload code to a folder; only the public entry point (e.g. <code>public_html/api/index.php</code>) is inside <code>public_html</code>.</li><li>Put <code>config.php</code> (database password, Daraja keys) <strong>outside</strong> <code>public_html</code>.</li><li>Create the MySQL database and user in cPanel; give the user only the permissions it needs.</li><li>Turn on <strong>AutoSSL</strong> for HTTPS and force HTTPS in <code>.htaccess</code>.</li><li>Set up <strong>cron jobs</strong> for scheduled work (settling pending M-Pesa payments, sending reminders, backups).</li><li>Choose the PHP version in <strong>MultiPHP Manager</strong> (use a supported version).</li></ol>
+<h3>Option 2: platforms (Node, Python, PHP containers)</h3>
+<p><strong>Render</strong>, <strong>Railway</strong>, <strong>Fly.io</strong>: connect your GitHub repo, set environment variables in the dashboard, and they build and run your app with HTTPS. Managed PostgreSQL is usually available alongside. Easy to start; check pricing as traffic grows.</p>
+<h3>Option 3: a VPS (more control)</h3>
+<p>A virtual server (DigitalOcean, Hetzner, AWS Lightsail, local providers) where you install Nginx, Node/PHP and the database yourself. More work (updates, firewall, backups) but full control.</p>
+<h2>Environment variables and secrets</h2>
+<div class="static-table"><table><thead><tr><th>Do</th><th>Don't</th></tr></thead><tbody><tr><td>Keep secrets in environment variables or a private config file</td><td>Commit <code>.env</code> or <code>config.php</code> with real values to GitHub</td></tr><tr><td>Use different keys for sandbox and production</td><td>Reuse your production database password anywhere else</td></tr><tr><td>Rotate keys if they leak</td><td>Paste secrets into chat apps or tickets</td></tr></tbody></table></div>
+<p>If a secret is ever committed to a public repository, consider it <strong>leaked</strong>: change it immediately, even after deleting the commit.</p>
+<h2>The production checklist</h2>
+<ul><li>[ ] <strong>HTTPS</strong> only, with HTTP redirected</li><li>[ ] <strong>Backups</strong>: daily database dumps copied <strong>off the server</strong>, and a tested restore</li><li>[ ] <strong>Monitoring</strong>: an uptime check (e.g. a <code>/health</code> endpoint pinged every few minutes) and alerts by email or SMS</li><li>[ ] <strong>Logs</strong> for errors and payments, without passwords or full card/ID numbers</li><li>[ ] <strong>Rate limiting</strong> on login, OTP and payment endpoints</li><li>[ ] <strong>CORS</strong> allows only your own front-ends</li><li>[ ] <strong>Security headers</strong> (HSTS, X-Content-Type-Options, a Content-Security-Policy for web pages)</li><li>[ ] <strong>Updates</strong>: PHP/Node versions and libraries kept current</li><li>[ ] <strong>Least privilege</strong>: the database user can't drop tables; admin panels behind strong logins</li><li>[ ] <strong>Data protection</strong>: privacy policy, only necessary personal data, deletion on request (Kenya Data Protection Act)</li></ul>
+<h2>Health check endpoint</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">// What a /health endpoint typically reports (monitoring tools call it every few minutes)
+function health({ dbOk, lastBackupHoursAgo, pendingPayments }) {
+  const problems = [];
+  if (!dbOk) problems.push(&quot;database unreachable&quot;);
+  if (lastBackupHoursAgo &gt; 26) problems.push(`last backup ${lastBackupHoursAgo} hours ago`);
+  if (pendingPayments &gt; 20) problems.push(`${pendingPayments} payments still pending`);
+  return { status: problems.length ? 503 : 200, body: { ok: problems.length === 0, problems } };
+}
+
+console.log(health({ dbOk: true, lastBackupHoursAgo: 3, pendingPayments: 2 }));
+console.log(health({ dbOk: true, lastBackupHoursAgo: 40, pendingPayments: 35 }));</code></pre></figure>
+<h2>Where to go next</h2>
+<ul><li>Build the <strong>Duka Connect</strong> API from this subject with PHP or Node, and connect the <strong>Flutter</strong>, <strong>Kotlin</strong> or <strong>React Native</strong> app you built.</li><li>Add M-Pesa in the sandbox, then go live.</li><li>Write a README with setup steps and an API reference: it's your portfolio piece.</li></ul>
+<p>Need a production backend built and hosted? Marzley Tech Solutions builds and maintains APIs, M-Pesa integrations and systems: <a href="/contact">contact us</a>.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does BaaS stand for?</p><details><summary>Show answer</summary><p>Backend as a Service</p></details></li><li><p>Which BaaS uses PostgreSQL with row-level security?</p><details><summary>Show answer</summary><p>Supabase</p></details></li><li><p>With Firebase, what decides who can read and write data?</p><details><summary>Show answer</summary><p>security rules</p></details></li><li><p>Config files with secrets must be placed outside which cPanel folder?</p><details><summary>Show answer</summary><p>public_html</p></details></li><li><p>Which cPanel feature runs scheduled jobs?</p><details><summary>Show answer</summary><p>cron</p></details></li><li><p>A secret committed to a public repo should be considered what? (one word)</p><details><summary>Show answer</summary><p>leaked</p></details></li></ol></section></div><p class="static-meta">Lesson 7 of 7 in <a href="/learn/apis-backend/">APIs &amp; backends for apps</a> · <a href="/learn/?book=apis-backend">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/apis-backend/mpesa-daraja-api/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> M-Pesa Daraja API: STK push and callbacks step by step</a><span></span></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

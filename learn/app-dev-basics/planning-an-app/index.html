@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Planning an app: requirements, user stories, MVP and data</title>
+    <meta name="description" content="Most failed apps fail before any code is written : nobody agreed what the app must do, the scope kept growing, or it solved a problem nobody had. An…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/app-dev-basics/planning-an-app/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Planning an app: requirements, user stories, MVP and data" />
+    <meta property="og:description" content="Most failed apps fail before any code is written : nobody agreed what the app must do, the scope kept growing, or it solved a problem nobody had. An…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/app-dev-basics/planning-an-app/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Planning an app: requirements, user stories, MVP and data" />
+    <meta name="twitter:description" content="Most failed apps fail before any code is written : nobody agreed what the app must do, the scope kept growing, or it solved a problem nobody had. An…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/app-dev-basics/planning-an-app/#lesson","name":"Planning an app: requirements, user stories, MVP and data","description":"Most failed apps fail before any code is written : nobody agreed what the app must do, the scope kept growing, or it solved a problem nobody had. An…","url":"https://marzleytechsolutions.co.ke/learn/app-dev-basics/planning-an-app/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/app-dev-basics/#course","name":"App development fundamentals","url":"https://marzleytechsolutions.co.ke/learn/app-dev-basics/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"App development fundamentals","item":"https://marzleytechsolutions.co.ke/learn/app-dev-basics/"},{"@type":"ListItem","position":4,"name":"Planning an app: requirements, user stories, MVP and data","item":"https://marzleytechsolutions.co.ke/learn/app-dev-basics/planning-an-app/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/app-dev-basics/">App development fundamentals</a> / <span>Planning an app: requirements, user stories, MVP and data</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=app-dev-basics&amp;lesson=planning-an-app"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Planning an app: requirements, user stories, MVP and data</h1>
+<p>Most failed apps fail <strong>before any code is written</strong>: nobody agreed what the app must do, the scope kept growing, or it solved a problem nobody had. An hour of planning saves weeks of rework. We'll plan a real example: <strong>"Duka Connect"</strong>, an app for small shops to record sales and stock and let regular customers order.</p>
+<h2>1. The problem statement</h2>
+<p>One or two sentences everyone agrees on:</p>
+<blockquote><p><em>Small shop owners in Kenyan towns lose money because they don't know what's selling, what's running out, or which customers owe them. Duka Connect lets them record sales, track stock and credit, and take orders from regular customers on their phone.</em></p></blockquote>
+<h2>2. Users and their goals</h2>
+<div class="static-table"><table><thead><tr><th>User</th><th>Goal</th></tr></thead><tbody><tr><td>Shop owner</td><td>See today's sales, low stock and debts at a glance</td></tr><tr><td>Shop attendant</td><td>Record a sale in under 10 seconds</td></tr><tr><td>Regular customer</td><td>Order and pay by M-Pesa without calling</td></tr><tr><td>Admin (you)</td><td>Manage shops and subscriptions</td></tr></tbody></table></div>
+<h2>3. User stories</h2>
+<p>User stories describe features from the user's side: <strong>As a [user], I want [action] so that [benefit].</strong></p>
+<ul><li>As an <strong>attendant</strong>, I want to record a sale by tapping products, so that sales are quick even when the shop is busy.</li><li>As an <strong>owner</strong>, I want an alert when stock is low, so that I reorder before running out.</li><li>As an <strong>owner</strong>, I want to record credit sales and see who owes what, so that I can follow up.</li><li>As a <strong>customer</strong>, I want to pay by M-Pesa in the app, so that I don't need cash.</li></ul>
+<p>Each story gets <strong>acceptance criteria</strong>: <em>"Given stock of 3 and a low-stock level of 5, when the owner opens the app, then a low-stock badge shows the product."</em></p>
+<h2>4. MoSCoW: what goes in version 1</h2>
+<div class="static-table"><table><thead><tr><th>Must have (MVP)</th><th>Should have</th><th>Could have</th><th>Won't have (yet)</th></tr></thead><tbody><tr><td>Products, stock, record sales, daily total, low-stock alerts, login</td><td>Credit/debts, M-Pesa payments</td><td>Customer ordering, reports by month</td><td>Multi-branch, loyalty points, AI forecasting</td></tr></tbody></table></div>
+<p>The <strong>MVP</strong> (minimum viable product) is only the <strong>Must have</strong> column. Launch it, get real users, then build the rest based on what they actually use.</p>
+<h2>5. Screens and flow</h2>
+<p>List screens and how users move between them (draw boxes and arrows on paper or in Figma):</p>
+<figure class="static-code"><pre><code>Login → Home (today&#x27;s total, low stock, quick actions)
+         ├── Sell → choose products → confirm → receipt
+         ├── Stock → product list → add / edit product
+         ├── Debts → customer → record payment
+         └── Settings</code></pre></figure>
+<h2>6. The data model</h2>
+<p>What information must be stored, and how it connects:</p>
+<div class="static-table"><table><thead><tr><th>Table</th><th>Fields</th></tr></thead><tbody><tr><td>shops</td><td>id, name, owner_phone, town, plan, created_at</td></tr><tr><td>users</td><td>id, shop_id, name, phone, role (owner/attendant), password_hash</td></tr><tr><td>products</td><td>id, shop_id, name, price, stock, low_at</td></tr><tr><td>sales</td><td>id, shop_id, user_id, total, method (cash/mpesa/credit), customer_id, created_at</td></tr><tr><td>sale_items</td><td>id, sale_id, product_id, qty, price</td></tr><tr><td>customers</td><td>id, shop_id, name, phone, balance</td></tr></tbody></table></div>
+<p>Practise designing and querying tables like these in the <strong>SQL</strong> subject. Getting the data model right early makes everything else easier.</p>
+<h2>7. Non-functional requirements</h2>
+<p>Not features, but qualities the app must have:</p>
+<ul><li>Works on <strong>cheap Android phones</strong> (2 GB RAM, Android 8+).</li><li>Recording a sale works <strong>offline</strong> and syncs later.</li><li>Each screen loads in under <strong>2 seconds</strong> on 3G.</li><li>Data is <strong>backed up daily</strong>; personal data handled under the <strong>Data Protection Act</strong>.</li><li>Available in <strong>English and Kiswahili</strong>.</li></ul>
+<h2>8. Estimate and plan the work</h2>
+<p>Break the MVP into tasks of half a day to two days each, estimate them, and add <strong>30% buffer</strong> for the unexpected. Plan in <strong>1 to 2 week sprints</strong>, each ending with something the client can try.</p>
+<h2>Planning template</h2>
+<figure class="static-code"><pre><code>App name:
+Problem statement:
+Users and goals:
+User stories (with acceptance criteria):
+MVP (Must have):
+Later (Should / Could):
+Screens and flow:
+Data model:
+Non-functional requirements:
+Tech stack:
+Timeline and budget:</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>In the user story format "As a ..., I want ... so that ...", what comes after "As a"?</p><details><summary>Show answer</summary><p>user</p></details></li><li><p>In MoSCoW, which column becomes the MVP?</p><details><summary>Show answer</summary><p>Must have</p></details></li><li><p>How much buffer should you add to estimates? Give a percentage.</p><details><summary>Show answer</summary><p>30%</p></details></li><li><p>Qualities like speed, offline use and security are called ...-functional requirements?</p><details><summary>Show answer</summary><p>non</p></details></li><li><p>Which table in the data model links each sold product to a sale?</p><details><summary>Show answer</summary><p>sale_items</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 8 in <a href="/learn/app-dev-basics/">App development fundamentals</a> · <a href="/learn/?book=app-dev-basics">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/app-dev-basics/choosing-your-stack/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Choosing your stack and setting up your tools</a><a class="btn btn-solid btn-sm" href="/learn/app-dev-basics/mobile-ui-ux/">Mobile UI/UX design that people love <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

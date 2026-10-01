@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>M-Pesa Daraja API: STK push and callbacks step by step</title>
+    <meta name="description" content="Safaricom&#x27;s Daraja API lets your backend request M-Pesa payments. The most used feature is Lipa na M-Pesa Online (STK push) : your server asks…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/apis-backend/mpesa-daraja-api/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="M-Pesa Daraja API: STK push and callbacks step by step" />
+    <meta property="og:description" content="Safaricom&#x27;s Daraja API lets your backend request M-Pesa payments. The most used feature is Lipa na M-Pesa Online (STK push) : your server asks…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/apis-backend/mpesa-daraja-api/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="M-Pesa Daraja API: STK push and callbacks step by step" />
+    <meta name="twitter:description" content="Safaricom&#x27;s Daraja API lets your backend request M-Pesa payments. The most used feature is Lipa na M-Pesa Online (STK push) : your server asks…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/apis-backend/mpesa-daraja-api/#lesson","name":"M-Pesa Daraja API: STK push and callbacks step by step","description":"Safaricom's Daraja API lets your backend request M-Pesa payments. The most used feature is Lipa na M-Pesa Online (STK push) : your server asks…","url":"https://marzleytechsolutions.co.ke/learn/apis-backend/mpesa-daraja-api/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/apis-backend/#course","name":"APIs & backends for apps","url":"https://marzleytechsolutions.co.ke/learn/apis-backend/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"APIs & backends for apps","item":"https://marzleytechsolutions.co.ke/learn/apis-backend/"},{"@type":"ListItem","position":4,"name":"M-Pesa Daraja API: STK push and callbacks step by step","item":"https://marzleytechsolutions.co.ke/learn/apis-backend/mpesa-daraja-api/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/apis-backend/">APIs &amp; backends for apps</a> / <span>M-Pesa Daraja API: STK push and callbacks step by step</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=apis-backend&amp;lesson=mpesa-daraja-api"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>M-Pesa Daraja API: STK push and callbacks step by step</h1>
+<p>Safaricom's <strong>Daraja API</strong> lets your backend request M-Pesa payments. The most used feature is <strong>Lipa na M-Pesa Online (STK push)</strong>: your server asks Safaricom to show a PIN prompt on the customer's phone, and Safaricom tells your server the result through a <strong>callback</strong>.</p>
+<blockquote><p>The overall flow and safety rules are in <strong>App development fundamentals → M-Pesa in apps</strong>. This lesson is the backend side. Always build and test in the <strong>sandbox</strong> first (developer.safaricom.co.ke).</p></blockquote>
+<h2>What you need</h2>
+<div class="static-table"><table><thead><tr><th>Item</th><th>Where from</th></tr></thead><tbody><tr><td><strong>Consumer key and secret</strong></td><td>Your app on the Daraja portal</td></tr><tr><td><strong>Shortcode</strong></td><td>Your Paybill or Till (sandbox: the test shortcode Daraja gives you)</td></tr><tr><td><strong>Passkey</strong></td><td>Daraja (sandbox passkey) or Safaricom when going live</td></tr><tr><td><strong>Callback URL</strong></td><td>A public <strong>HTTPS</strong> URL on your server</td></tr></tbody></table></div>
+<p>Keep all of them on the <strong>server</strong>, in a config file outside <code>public_html</code> or in environment variables.</p>
+<h2>Step 1: get an access token</h2>
+<p>Daraja uses OAuth: send your key and secret (Basic auth) and receive a token valid for about an hour.</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+function daraja_token(array $cfg): string {
+    $ch = curl_init($cfg[&#x27;base&#x27;] . &#x27;/oauth/v1/generate?grant_type=client_credentials&#x27;);
+    curl_setopt_array($ch, [
+        CURLOPT_HTTPHEADER =&gt; [&#x27;Authorization: Basic &#x27; . base64_encode($cfg[&#x27;key&#x27;] . &#x27;:&#x27; . $cfg[&#x27;secret&#x27;])],
+        CURLOPT_RETURNTRANSFER =&gt; true,
+        CURLOPT_TIMEOUT =&gt; 20,
+    ]);
+    $res = json_decode((string)curl_exec($ch), true);
+    curl_close($ch);
+    if (empty($res[&#x27;access_token&#x27;])) throw new RuntimeException(&#x27;Could not get a Daraja token&#x27;);
+    return $res[&#x27;access_token&#x27;];      // cache it for ~55 minutes instead of asking every time
+}</code></pre></figure>
+<p><code>base</code> is <code>https://sandbox.safaricom.co.ke</code> for testing and <code>https://api.safaricom.co.ke</code> in production.</p>
+<h2>Step 2: the password and timestamp</h2>
+<p>The STK push needs a <strong>timestamp</strong> (<code>YYYYMMDDHHmmss</code>, Kenyan time) and a <strong>password</strong> = base64(shortcode + passkey + timestamp). You can run this:</p>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+date_default_timezone_set(&#x27;Africa/Nairobi&#x27;);
+
+$shortcode = &#x27;174379&#x27;;                                   // the sandbox test shortcode
+$passkey = &#x27;your-passkey-from-daraja&#x27;;                   // placeholder: never publish a real passkey
+$timestamp = date(&#x27;YmdHis&#x27;);
+$password = base64_encode($shortcode . $passkey . $timestamp);
+
+echo &quot;Timestamp: $timestamp\n&quot;;
+echo &quot;Password:  $password\n&quot;;
+echo &quot;Decoded:   &quot;, base64_decode($password), &quot;\n&quot;;       // shortcode + passkey + timestamp</code></pre></figure>
+<h2>Step 3: normalise the phone number</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">// Daraja wants 2547XXXXXXXX or 2541XXXXXXXX
+function toMsisdn(input) {
+  const d = String(input).replace(/\D/g, &quot;&quot;);
+  if (/^0[17]\d{8}$/.test(d)) return &quot;254&quot; + d.slice(1);
+  if (/^254[17]\d{8}$/.test(d)) return d;
+  if (/^[17]\d{8}$/.test(d)) return &quot;254&quot; + d;
+  return null;
+}
+
+for (const p of [&quot;0712 345 678&quot;, &quot;+254 712-345-678&quot;, &quot;712345678&quot;, &quot;0112345678&quot;, &quot;12345&quot;]) {
+  console.log(p.padEnd(18), &quot;-&gt;&quot;, toMsisdn(p));
+}</code></pre></figure>
+<h2>Step 4: send the STK push</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+function stk_push(array $cfg, string $phone, int $amount, string $orderRef): array {
+    date_default_timezone_set(&#x27;Africa/Nairobi&#x27;);
+    $timestamp = date(&#x27;YmdHis&#x27;);
+    $body = [
+        &#x27;BusinessShortCode&#x27; =&gt; $cfg[&#x27;shortcode&#x27;],
+        &#x27;Password&#x27; =&gt; base64_encode($cfg[&#x27;shortcode&#x27;] . $cfg[&#x27;passkey&#x27;] . $timestamp),
+        &#x27;Timestamp&#x27; =&gt; $timestamp,
+        &#x27;TransactionType&#x27; =&gt; &#x27;CustomerPayBillOnline&#x27;,     // &#x27;CustomerBuyGoodsOnline&#x27; for a Till
+        &#x27;Amount&#x27; =&gt; $amount,                              // whole shillings, computed by YOUR server
+        &#x27;PartyA&#x27; =&gt; $phone,                               // 2547XXXXXXXX
+        &#x27;PartyB&#x27; =&gt; $cfg[&#x27;shortcode&#x27;],                    // for a Till: the till number
+        &#x27;PhoneNumber&#x27; =&gt; $phone,
+        &#x27;CallBackURL&#x27; =&gt; $cfg[&#x27;callback_url&#x27;],
+        &#x27;AccountReference&#x27; =&gt; $orderRef,                  // e.g. &quot;ORDER1042&quot; (shown to the customer)
+        &#x27;TransactionDesc&#x27; =&gt; &#x27;Payment for &#x27; . $orderRef,
+    ];
+    $ch = curl_init($cfg[&#x27;base&#x27;] . &#x27;/mpesa/stkpush/v1/processrequest&#x27;);
+    curl_setopt_array($ch, [
+        CURLOPT_POST =&gt; true,
+        CURLOPT_HTTPHEADER =&gt; [&#x27;Authorization: Bearer &#x27; . daraja_token($cfg), &#x27;Content-Type: application/json&#x27;],
+        CURLOPT_POSTFIELDS =&gt; json_encode($body),
+        CURLOPT_RETURNTRANSFER =&gt; true,
+        CURLOPT_TIMEOUT =&gt; 30,
+    ]);
+    $res = json_decode((string)curl_exec($ch), true) ?: [];
+    curl_close($ch);
+    return $res;     // on success: ResponseCode &quot;0&quot; and a CheckoutRequestID: save it with the order
+}</code></pre></figure>
+<p>Save the <strong>CheckoutRequestID</strong> against the order with status <code>pending</code>. <strong>Don't</strong> mark the order paid yet.</p>
+<h2>Step 5: handle the callback</h2>
+<p>Safaricom POSTs JSON to your callback URL. A successful payment looks like this (shortened):</p>
+<figure class="static-code"><figcaption>JSON</figcaption><pre><code class="language-json">{
+  &quot;Body&quot;: {
+    &quot;stkCallback&quot;: {
+      &quot;MerchantRequestID&quot;: &quot;29115-34620561-1&quot;,
+      &quot;CheckoutRequestID&quot;: &quot;ws_CO_011020261430123456&quot;,
+      &quot;ResultCode&quot;: 0,
+      &quot;ResultDesc&quot;: &quot;The service request is processed successfully.&quot;,
+      &quot;CallbackMetadata&quot;: {
+        &quot;Item&quot;: [
+          { &quot;Name&quot;: &quot;Amount&quot;, &quot;Value&quot;: 1240 },
+          { &quot;Name&quot;: &quot;MpesaReceiptNumber&quot;, &quot;Value&quot;: &quot;SJ12ABC3DE&quot; },
+          { &quot;Name&quot;: &quot;TransactionDate&quot;, &quot;Value&quot;: 20261001143045 },
+          { &quot;Name&quot;: &quot;PhoneNumber&quot;, &quot;Value&quot;: 254712345678 }
+        ]
+      }
+    }
+  }
+}</code></pre></figure>
+<p>A non-zero <code>ResultCode</code> means failure (for example <code>1032</code> = cancelled by the user, <code>1</code> = insufficient balance). Parse it safely:</p>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$raw = &#x27;{&quot;Body&quot;:{&quot;stkCallback&quot;:{&quot;CheckoutRequestID&quot;:&quot;ws_CO_011020261430123456&quot;,&quot;ResultCode&quot;:0,&quot;ResultDesc&quot;:&quot;OK&quot;,
+  &quot;CallbackMetadata&quot;:{&quot;Item&quot;:[{&quot;Name&quot;:&quot;Amount&quot;,&quot;Value&quot;:1240},{&quot;Name&quot;:&quot;MpesaReceiptNumber&quot;,&quot;Value&quot;:&quot;SJ12ABC3DE&quot;},{&quot;Name&quot;:&quot;PhoneNumber&quot;,&quot;Value&quot;:254712345678}]}}}}&#x27;;
+
+$cb = json_decode($raw, true)[&#x27;Body&#x27;][&#x27;stkCallback&#x27;] ?? null;
+if (!$cb) { echo &quot;Not an STK callback\n&quot;; exit; }
+
+$meta = [];
+foreach ($cb[&#x27;CallbackMetadata&#x27;][&#x27;Item&#x27;] ?? [] as $item) {
+    $meta[$item[&#x27;Name&#x27;]] = $item[&#x27;Value&#x27;] ?? null;
+}
+
+$checkout = $cb[&#x27;CheckoutRequestID&#x27;];
+if ((int)$cb[&#x27;ResultCode&#x27;] === 0) {
+    echo &quot;PAID: checkout $checkout, KSh {$meta[&#x27;Amount&#x27;]}, receipt {$meta[&#x27;MpesaReceiptNumber&#x27;]}\n&quot;;
+    // 1. find the pending order by CheckoutRequestID
+    // 2. check the amount matches what you requested
+    // 3. if this receipt is already recorded, stop (duplicate callback)
+    // 4. mark the order paid, save the receipt, notify the customer
+} else {
+    echo &quot;NOT PAID ({$cb[&#x27;ResultCode&#x27;]}): {$cb[&#x27;ResultDesc&#x27;]}\n&quot;;
+}</code></pre></figure>
+<p>Callback rules:</p>
+<ul><li><strong>Respond quickly</strong> with a success JSON (<code>{&quot;ResultCode&quot;:0,&quot;ResultDesc&quot;:&quot;Accepted&quot;}</code>) and do slow work after.</li><li><strong>Idempotent</strong>: store receipts with a UNIQUE constraint so a repeated callback can't double-credit.</li><li><strong>Verify</strong> the CheckoutRequestID belongs to a pending order and the <strong>amount matches</strong>.</li><li><strong>Log</strong> every raw callback.</li><li>Callbacks can be <strong>late or missing</strong>: use the <strong>STK Push Query</strong> endpoint (<code>/mpesa/stkpushquery/v1/query</code>) for orders still pending after a couple of minutes, and a scheduled job (cron) to settle the rest.</li></ul>
+<h2>Going live</h2>
+<ol><li>Build and test fully in the sandbox (success, cancel, wrong PIN, timeout).</li><li>Apply on the Daraja portal to go live with your Paybill/Till; Safaricom gives production credentials and the passkey.</li><li>Switch <code>base</code> to production, update credentials (in your private config only).</li><li>Test with a few real KSh 1 to 10 payments before launch.</li></ol>
+<p>Other Daraja APIs: <strong>C2B</strong> (notifications when customers pay your Paybill from the M-Pesa menu), <strong>B2C</strong> (pay customers: refunds, salaries), <strong>Transaction Status</strong> and <strong>Account Balance</strong>.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the sandbox base URL host for Daraja? Write the domain.</p><details><summary>Show answer</summary><p>sandbox.safaricom.co.ke</p></details></li><li><p>The STK password is base64 of shortcode + passkey + ...?</p><details><summary>Show answer</summary><p>timestamp</p></details></li><li><p>In what format is the timestamp? Write the pattern.</p><details><summary>Show answer</summary><p>YYYYMMDDHHmmss</p></details></li><li><p>Which ResultCode means the payment succeeded?</p><details><summary>Show answer</summary><p>0</p></details></li><li><p>Which ID links the callback to the order you saved?</p><details><summary>Show answer</summary><p>CheckoutRequestID</p></details></li><li><p>Which endpoint checks a pending payment when no callback arrives?</p><details><summary>Show answer</summary><p>STK Push Query</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 7 in <a href="/learn/apis-backend/">APIs &amp; backends for apps</a> · <a href="/learn/?book=apis-backend">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/apis-backend/auth-passwords-tokens/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Logins: hashed passwords, sessions, tokens, JWT and OTP codes</a><a class="btn btn-solid btn-sm" href="/learn/apis-backend/baas-and-deploying/">Firebase, Supabase and deploying your backend securely <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

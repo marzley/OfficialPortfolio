@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jetpack Compose basics: layouts, modifiers and Material 3</title>
+    <meta name="description" content="In Jetpack Compose you describe your UI with Kotlin functions. When data changes, Compose redraws the parts that changed. No XML layouts, no findViewById ." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/kotlin-android/compose-basics/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Jetpack Compose basics: layouts, modifiers and Material 3" />
+    <meta property="og:description" content="In Jetpack Compose you describe your UI with Kotlin functions. When data changes, Compose redraws the parts that changed. No XML layouts, no findViewById ." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/kotlin-android/compose-basics/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Jetpack Compose basics: layouts, modifiers and Material 3" />
+    <meta name="twitter:description" content="In Jetpack Compose you describe your UI with Kotlin functions. When data changes, Compose redraws the parts that changed. No XML layouts, no findViewById ." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/kotlin-android/compose-basics/#lesson","name":"Jetpack Compose basics: layouts, modifiers and Material 3","description":"In Jetpack Compose you describe your UI with Kotlin functions. When data changes, Compose redraws the parts that changed. No XML layouts, no findViewById .","url":"https://marzleytechsolutions.co.ke/learn/kotlin-android/compose-basics/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/kotlin-android/#course","name":"Android apps with Kotlin","url":"https://marzleytechsolutions.co.ke/learn/kotlin-android/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Android apps with Kotlin","item":"https://marzleytechsolutions.co.ke/learn/kotlin-android/"},{"@type":"ListItem","position":4,"name":"Jetpack Compose basics: layouts, modifiers and Material 3","item":"https://marzleytechsolutions.co.ke/learn/kotlin-android/compose-basics/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/kotlin-android/">Android apps with Kotlin</a> / <span>Jetpack Compose basics: layouts, modifiers and Material 3</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=kotlin-android&amp;lesson=compose-basics"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Jetpack Compose basics: layouts, modifiers and Material 3</h1>
+<p>In <strong>Jetpack Compose</strong> you describe your UI with Kotlin functions. When data changes, Compose redraws the parts that changed. No XML layouts, no <code>findViewById</code>.</p>
+<h2>Layout building blocks</h2>
+<div class="static-table"><table><thead><tr><th>Composable</th><th>Arranges children</th></tr></thead><tbody><tr><td><code>Column</code></td><td>Top to bottom</td></tr><tr><td><code>Row</code></td><td>Left to right</td></tr><tr><td><code>Box</code></td><td>On top of each other (like a stack)</td></tr><tr><td><code>LazyColumn</code> / <code>LazyRow</code></td><td>Scrollable lists that only build visible items (next lesson)</td></tr><tr><td><code>Spacer</code></td><td>Empty space</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">@Composable
+fun OrderCard(orderId: Int, customer: String, total: Int, paid: Boolean) {
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+        shape = RoundedCornerShape(16.dp),
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(&quot;Order #$orderId&quot;, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                AssistChip(onClick = {}, label = { Text(if (paid) &quot;Paid&quot; else &quot;Unpaid&quot;) })
+            }
+            Spacer(Modifier.height(8.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.Person, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(6.dp))
+                Text(customer)
+            }
+            HorizontalDivider(Modifier.padding(vertical = 8.dp))
+            Text(&quot;KSh $total&quot;, style = MaterialTheme.typography.titleLarge)
+        }
+    }
+}</code></pre></figure>
+<h2>Modifiers: size, spacing, appearance, behaviour</h2>
+<p>Modifiers are chained, and <strong>order matters</strong> (padding before background gives a different result from background before padding):</p>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">Text(
+    &quot;Pay with M-Pesa&quot;,
+    modifier = Modifier
+        .fillMaxWidth()                         // as wide as the parent allows
+        .padding(16.dp)                         // space outside the background
+        .background(Color(0xFF0B7A5A), RoundedCornerShape(12.dp))
+        .padding(vertical = 14.dp)              // space inside the background
+        .clickable { /* start payment */ },
+    color = Color.White,
+    textAlign = TextAlign.Center,
+)</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Modifier</th><th>Does</th></tr></thead><tbody><tr><td><code>padding(16.dp)</code></td><td>Space around</td></tr><tr><td><code>fillMaxWidth()</code>, <code>fillMaxSize()</code>, <code>size(48.dp)</code>, <code>height(56.dp)</code></td><td>Size</td></tr><tr><td><code>weight(1f)</code> (inside Row/Column)</td><td>Share remaining space (like Flutter's Expanded)</td></tr><tr><td><code>background(color, shape)</code></td><td>Background</td></tr><tr><td><code>clip(CircleShape)</code></td><td>Cut to a shape</td></tr><tr><td><code>border(1.dp, Color.Gray, shape)</code></td><td>Border</td></tr><tr><td><code>clickable { }</code></td><td>Make it tappable</td></tr><tr><td><code>verticalScroll(rememberScrollState())</code></td><td>Make a Column scroll</td></tr></tbody></table></div>
+<h2>Text, images, buttons and inputs</h2>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">@Composable
+fun ProductHeader() {
+    Column(Modifier.padding(16.dp)) {
+        Image(
+            painter = painterResource(R.drawable.unga),          // an image in res/drawable
+            contentDescription = &quot;Unga packet&quot;,
+            modifier = Modifier.fillMaxWidth().height(180.dp).clip(RoundedCornerShape(12.dp)),
+            contentScale = ContentScale.Crop,
+        )
+        Text(&quot;Unga 2kg&quot;, style = MaterialTheme.typography.headlineSmall)
+        Text(&quot;KSh 180&quot;, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = { }) { Text(&quot;Add to cart&quot;) }          // filled: the main action
+            OutlinedButton(onClick = { }) { Text(&quot;Details&quot;) }      // secondary
+            TextButton(onClick = { }) { Text(&quot;Share&quot;) }            // least important
+        }
+    }
+}</code></pre></figure>
+<p>For images from the internet, use the <strong>Coil</strong> library: <code>AsyncImage(model = url, contentDescription = ...)</code>.</p>
+<h2>Material 3 theming</h2>
+<p>The project template creates <code>ui/theme/Theme.kt</code>. Use the theme's colours and text styles instead of hard-coding them, so dark mode and branding work everywhere:</p>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">Text(&quot;Available balance&quot;, style = MaterialTheme.typography.bodySmall)
+Text(&quot;KSh 12,450&quot;, style = MaterialTheme.typography.displaySmall, color = MaterialTheme.colorScheme.primary)
+Surface(color = MaterialTheme.colorScheme.primaryContainer) { /* ... */ }</code></pre></figure>
+<p>On Android 12+, the template can use <strong>dynamic colour</strong> (colours from the user's wallpaper). For a brand, set your own <code>lightColorScheme(primary = ...)</code> and <code>darkColorScheme(...)</code>.</p>
+<h2>Scaffold: the standard screen</h2>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeScreen() {
+    Scaffold(
+        topBar = { TopAppBar(title = { Text(&quot;Duka&quot;) }) },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(onClick = { }, icon = { Icon(Icons.Default.Add, null) }, text = { Text(&quot;New sale&quot;) })
+        },
+    ) { padding -&gt;
+        Column(Modifier.padding(padding).padding(16.dp)) {
+            Text(&quot;Today&#x27;s sales&quot;, style = MaterialTheme.typography.titleMedium)
+            Text(&quot;KSh 8,640&quot;, style = MaterialTheme.typography.displaySmall)
+        }
+    }
+}</code></pre></figure>
+<h2>Thinking in Compose</h2>
+<ul><li><strong>UI = function(state)</strong>: given the same data, a composable shows the same thing.</li><li>Composables can run <strong>many times</strong> (recomposition). Keep them fast and free of side effects (no network calls inside).</li><li>Build small, reusable composables (<code>OrderCard</code>, <code>PriceTag</code>) and combine them.</li><li>Use <code>@Preview</code> for each component to design quickly.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which composable arranges children from top to bottom?</p><details><summary>Show answer</summary><p>Column</p></details></li><li><p>Which composable arranges children from left to right?</p><details><summary>Show answer</summary><p>Row</p></details></li><li><p>Which composable stacks children on top of each other?</p><details><summary>Show answer</summary><p>Box</p></details></li><li><p>Inside a Row, which modifier makes a child share the remaining space?</p><details><summary>Show answer</summary><p>weight</p></details></li><li><p>Does the order of modifiers matter? (yes or no)</p><details><summary>Show answer</summary><p>yes</p></details></li><li><p>Which library loads images from the internet in Compose?</p><details><summary>Show answer</summary><p>Coil</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 10 in <a href="/learn/kotlin-android/">Android apps with Kotlin</a> · <a href="/learn/?book=kotlin-android">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/kotlin-android/android-studio-first-app/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Android Studio and your first Android app</a><a class="btn btn-solid btn-sm" href="/learn/kotlin-android/compose-state-lists/">Compose state, lists and forms <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>State, events and forms | React for web apps</title>
+    <meta name="description" content="Props come from the parent. State is data a component owns that changes over time: a counter, the text in a search box, items in a cart. When state…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/react/react-state-events/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="State, events and forms | React for web apps" />
+    <meta property="og:description" content="Props come from the parent. State is data a component owns that changes over time: a counter, the text in a search box, items in a cart. When state…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/react/react-state-events/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="State, events and forms | React for web apps" />
+    <meta name="twitter:description" content="Props come from the parent. State is data a component owns that changes over time: a counter, the text in a search box, items in a cart. When state…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/react/react-state-events/#lesson","name":"State, events and forms","description":"Props come from the parent. State is data a component owns that changes over time: a counter, the text in a search box, items in a cart. When state…","url":"https://marzleytechsolutions.co.ke/learn/react/react-state-events/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/react/#course","name":"React for web apps","url":"https://marzleytechsolutions.co.ke/learn/react/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"React for web apps","item":"https://marzleytechsolutions.co.ke/learn/react/"},{"@type":"ListItem","position":4,"name":"State, events and forms","item":"https://marzleytechsolutions.co.ke/learn/react/react-state-events/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/react/">React for web apps</a> / <span>State, events and forms</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=react&amp;lesson=react-state-events"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>State, events and forms</h1>
+<p>Props come from the parent. <strong>State</strong> is data a component owns that changes over time: a counter, the text in a search box, items in a cart. When state changes, React re-renders the component.</p>
+<h2>useState</h2>
+<figure class="static-code"><figcaption>React · runs live in the interactive lesson</figcaption><pre><code class="language-react">const { useState } = React;
+
+function Counter() {
+  const [count, setCount] = useState(0);        // [current value, function to change it]
+
+  return (
+    &lt;div style={{ fontFamily: &quot;sans-serif&quot; }}&gt;
+      &lt;h2&gt;Items in cart: {count}&lt;/h2&gt;
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Add item&lt;/button&gt;{&quot; &quot;}
+      &lt;button onClick={() =&gt; setCount(Math.max(0, count - 1))} disabled={count === 0}&gt;Remove item&lt;/button&gt;{&quot; &quot;}
+      &lt;button onClick={() =&gt; setCount(0)}&gt;Clear&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+ReactDOM.createRoot(document.getElementById(&quot;root&quot;)).render(&lt;Counter /&gt;);</code></pre></figure>
+<p>Rules of state:</p>
+<ol><li><strong>Never change state directly</strong> (<code>count = 5</code> does nothing). Always use the setter.</li><li>When the new value depends on the old one, use the <strong>updater form</strong>: <code>setCount(c =&gt; c + 1)</code>.</li><li>For objects and arrays, create <strong>new copies</strong> instead of changing them:</li></ol>
+<figure class="static-code"><figcaption>JS</figcaption><pre><code class="language-js">setUser({ ...user, name: &quot;Amina&quot; });          // copy the object, change one field
+setItems([...items, newItem]);                // add
+setItems(items.filter(i =&gt; i.id !== id));     // remove
+setItems(items.map(i =&gt; i.id === id ? { ...i, qty: i.qty + 1 } : i));   // update one</code></pre></figure>
+<h2>Events</h2>
+<figure class="static-code"><figcaption>React · runs live in the interactive lesson</figcaption><pre><code class="language-react">const { useState } = React;
+
+function LikeButton() {
+  const [liked, setLiked] = useState(false);
+  const [likes, setLikes] = useState(41);
+
+  function toggle() {
+    setLiked(!liked);
+    setLikes((n) =&gt; (liked ? n - 1 : n + 1));
+  }
+
+  return (
+    &lt;button onClick={toggle} style={{ fontSize: 18, padding: &quot;8px 16px&quot;, borderRadius: 999 }}&gt;
+      {liked ? &quot;❤️&quot; : &quot;🤍&quot;} {likes}
+    &lt;/button&gt;
+  );
+}
+
+ReactDOM.createRoot(document.getElementById(&quot;root&quot;)).render(&lt;LikeButton /&gt;);</code></pre></figure>
+<p>Pass the <strong>function</strong> (<code>onClick={toggle}</code>), don't call it (<code>onClick={toggle()}</code> would run on every render).</p>
+<h2>Controlled inputs and forms</h2>
+<p>In React, form inputs are usually <strong>controlled</strong>: their value comes from state, and typing updates the state.</p>
+<figure class="static-code"><figcaption>React · runs live in the interactive lesson</figcaption><pre><code class="language-react">const { useState } = React;
+
+function normalisePhone(text) {
+  const d = text.replace(/\D/g, &quot;&quot;);
+  if (/^0[17]\d{8}$/.test(d)) return &quot;254&quot; + d.slice(1);
+  if (/^254[17]\d{8}$/.test(d)) return d;
+  return null;
+}
+
+function CheckoutForm() {
+  const [form, setForm] = useState({ name: &quot;&quot;, phone: &quot;&quot;, area: &quot;Thika&quot; });
+  const [submitted, setSubmitted] = useState(false);
+  const [done, setDone] = useState(&quot;&quot;);
+
+  const errors = {
+    name: form.name.trim().split(&quot; &quot;).length &lt; 2 ? &quot;Enter your first and last name&quot; : &quot;&quot;,
+    phone: normalisePhone(form.phone) ? &quot;&quot; : &quot;Enter a number like 0712 345 678&quot;,
+  };
+  const valid = !errors.name &amp;&amp; !errors.phone;
+
+  function update(e) {
+    setForm({ ...form, [e.target.name]: e.target.value });   // one handler for all fields
+  }
+
+  function submit(e) {
+    e.preventDefault();                                         // stop the page reloading
+    setSubmitted(true);
+    if (valid) setDone(`Order placed! We&#x27;ll send an M-Pesa prompt to ${normalisePhone(form.phone)}.`);
+  }
+
+  const field = { display: &quot;block&quot;, width: &quot;100%&quot;, padding: 8, margin: &quot;4px 0 2px&quot;, boxSizing: &quot;border-box&quot; };
+  return (
+    &lt;form onSubmit={submit} noValidate style={{ fontFamily: &quot;sans-serif&quot;, maxWidth: 340 }}&gt;
+      &lt;label&gt;Full name&lt;input name=&quot;name&quot; value={form.name} onChange={update} style={field} /&gt;&lt;/label&gt;
+      {submitted &amp;&amp; errors.name &amp;&amp; &lt;small style={{ color: &quot;crimson&quot; }}&gt;{errors.name}&lt;/small&gt;}
+
+      &lt;label style={{ display: &quot;block&quot;, marginTop: 10 }}&gt;M-Pesa number
+        &lt;input name=&quot;phone&quot; type=&quot;tel&quot; value={form.phone} onChange={update} style={field} placeholder=&quot;0712 345 678&quot; /&gt;
+      &lt;/label&gt;
+      {submitted &amp;&amp; errors.phone &amp;&amp; &lt;small style={{ color: &quot;crimson&quot; }}&gt;{errors.phone}&lt;/small&gt;}
+
+      &lt;label style={{ display: &quot;block&quot;, marginTop: 10 }}&gt;Delivery area
+        &lt;select name=&quot;area&quot; value={form.area} onChange={update} style={field}&gt;
+          &lt;option&gt;Thika&lt;/option&gt;&lt;option&gt;Ruiru&lt;/option&gt;&lt;option&gt;Juja&lt;/option&gt;&lt;option&gt;Nairobi CBD&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/label&gt;
+
+      &lt;button type=&quot;submit&quot; style={{ marginTop: 14, padding: &quot;10px 16px&quot; }}&gt;Place order&lt;/button&gt;
+      {done &amp;&amp; &lt;p style={{ color: &quot;green&quot; }}&gt;{done}&lt;/p&gt;}
+    &lt;/form&gt;
+  );
+}
+
+ReactDOM.createRoot(document.getElementById(&quot;root&quot;)).render(&lt;CheckoutForm /&gt;);</code></pre></figure>
+<h2>Lifting state up</h2>
+<p>When two components need the same state, move it to their <strong>closest common parent</strong>, and pass the value and a setter down as props:</p>
+<figure class="static-code"><figcaption>React · runs live in the interactive lesson</figcaption><pre><code class="language-react">const { useState } = React;
+
+function Search({ value, onChange }) {
+  return &lt;input placeholder=&quot;Search products&quot; value={value} onChange={(e) =&gt; onChange(e.target.value)} style={{ padding: 8, width: 240 }} /&gt;;
+}
+
+function Results({ query }) {
+  const all = [&quot;Unga&quot;, &quot;Sugar&quot;, &quot;Salt&quot;, &quot;Soap&quot;, &quot;Sukuma&quot;, &quot;Milk&quot;];
+  const found = all.filter((p) =&gt; p.toLowerCase().includes(query.toLowerCase()));
+  return &lt;ul&gt;{found.map((p) =&gt; &lt;li key={p}&gt;{p}&lt;/li&gt;)}&lt;/ul&gt;;
+}
+
+function App() {
+  const [query, setQuery] = useState(&quot;&quot;);        // lives in the parent, shared by both children
+  return (
+    &lt;div style={{ fontFamily: &quot;sans-serif&quot; }}&gt;
+      &lt;Search value={query} onChange={setQuery} /&gt;
+      &lt;Results query={query} /&gt;
+    &lt;/div&gt;
+  );
+}
+
+ReactDOM.createRoot(document.getElementById(&quot;root&quot;)).render(&lt;App /&gt;);</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which hook adds state to a component?</p><details><summary>Show answer</summary><p>useState</p></details></li><li><p>Should you change state by assigning to it directly? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which form of the setter should you use when the new value depends on the old: setCount(count + 1) or setCount(c =&gt; c + 1)?</p><details><summary>Show answer</summary><p>setCount(c =&gt; c + 1)</p></details></li><li><p>Which method stops a form submit from reloading the page?</p><details><summary>Show answer</summary><p>preventDefault</p></details></li><li><p>An input whose value comes from state is called a ... input?</p><details><summary>Show answer</summary><p>controlled</p></details></li><li><p>Moving shared state to the closest common parent is called lifting state ...?</p><details><summary>Show answer</summary><p>up</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 6 in <a href="/learn/react/">React for web apps</a> · <a href="/learn/?book=react">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/react/react-props-lists/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Props, lists and conditional rendering</a><a class="btn btn-solid btn-sm" href="/learn/react/react-effects-data/">useEffect and loading data <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

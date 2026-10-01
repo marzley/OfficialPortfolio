@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lists with FlatList and navigation with Expo Router</title>
+    <meta name="description" content="Free React Native apps (Expo) lesson: Lists with FlatList and navigation with Expo Router." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/react-native/react-native-lists-navigation/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Lists with FlatList and navigation with Expo Router" />
+    <meta property="og:description" content="Free React Native apps (Expo) lesson: Lists with FlatList and navigation with Expo Router." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/react-native/react-native-lists-navigation/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Lists with FlatList and navigation with Expo Router" />
+    <meta name="twitter:description" content="Free React Native apps (Expo) lesson: Lists with FlatList and navigation with Expo Router." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/react-native/react-native-lists-navigation/#lesson","name":"Lists with FlatList and navigation with Expo Router","description":"Free React Native apps (Expo) lesson: Lists with FlatList and navigation with Expo Router.","url":"https://marzleytechsolutions.co.ke/learn/react-native/react-native-lists-navigation/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/react-native/#course","name":"React Native apps (Expo)","url":"https://marzleytechsolutions.co.ke/learn/react-native/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"React Native apps (Expo)","item":"https://marzleytechsolutions.co.ke/learn/react-native/"},{"@type":"ListItem","position":4,"name":"Lists with FlatList and navigation with Expo Router","item":"https://marzleytechsolutions.co.ke/learn/react-native/react-native-lists-navigation/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/react-native/">React Native apps (Expo)</a> / <span>Lists with FlatList and navigation with Expo Router</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=react-native&amp;lesson=react-native-lists-navigation"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Lists with FlatList and navigation with Expo Router</h1>
+<h2>FlatList: fast lists of any length</h2>
+<p><code>FlatList</code> renders only the rows near the screen, so it stays smooth with thousands of items. Never use <code>ScrollView</code> + <code>map</code> for long lists.</p>
+<figure class="static-code"><figcaption>JSX</figcaption><pre><code class="language-jsx">import { useState, useCallback } from &quot;react&quot;;
+import { FlatList, View, Text, Pressable, RefreshControl, StyleSheet } from &quot;react-native&quot;;
+
+const ORDERS = Array.from({ length: 50 }, (_, i) =&gt; ({
+  id: String(1000 + i),
+  customer: [&quot;Wanjiku&quot;, &quot;Otieno&quot;, &quot;Amina&quot;, &quot;Kamau&quot;, &quot;Chebet&quot;][i % 5],
+  total: 300 + ((i * 137) % 4000),
+  paid: i % 3 !== 0,
+}));
+
+function OrderRow({ order, onPress }) {
+  return (
+    &lt;Pressable onPress={() =&gt; onPress(order)} style={({ pressed }) =&gt; [st.row, pressed &amp;&amp; { backgroundColor: &quot;#f1f5f9&quot; }]}&gt;
+      &lt;View style={{ flex: 1 }}&gt;
+        &lt;Text style={st.title}&gt;Order #{order.id}&lt;/Text&gt;
+        &lt;Text style={st.sub}&gt;{order.customer}&lt;/Text&gt;
+      &lt;/View&gt;
+      &lt;View style={{ alignItems: &quot;flex-end&quot; }}&gt;
+        &lt;Text style={st.total}&gt;KSh {order.total.toLocaleString()}&lt;/Text&gt;
+        &lt;Text style={{ color: order.paid ? &quot;#166534&quot; : &quot;#b45309&quot; }}&gt;{order.paid ? &quot;Paid&quot; : &quot;Unpaid&quot;}&lt;/Text&gt;
+      &lt;/View&gt;
+    &lt;/Pressable&gt;
+  );
+}
+
+export default function Orders() {
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() =&gt; {
+    setRefreshing(true);
+    setTimeout(() =&gt; setRefreshing(false), 1000);       // pretend to reload from the API
+  }, []);
+
+  return (
+    &lt;FlatList
+      data={ORDERS}
+      keyExtractor={(item) =&gt; item.id}                  // a unique key per row
+      renderItem={({ item }) =&gt; &lt;OrderRow order={item} onPress={(o) =&gt; console.log(&quot;open&quot;, o.id)} /&gt;}
+      ItemSeparatorComponent={() =&gt; &lt;View style={st.sep} /&gt;}
+      ListHeaderComponent={&lt;Text style={st.header}&gt;Today&#x27;s orders&lt;/Text&gt;}
+      ListEmptyComponent={&lt;Text style={{ padding: 16 }}&gt;No orders yet&lt;/Text&gt;}
+      refreshControl={&lt;RefreshControl refreshing={refreshing} onRefresh={onRefresh} /&gt;}   // pull to refresh
+      onEndReached={() =&gt; console.log(&quot;load the next page&quot;)}                                // infinite scroll
+      onEndReachedThreshold={0.5}
+    /&gt;
+  );
+}
+
+const st = StyleSheet.create({
+  header: { fontSize: 22, fontWeight: &quot;800&quot;, padding: 16 },
+  row: { flexDirection: &quot;row&quot;, padding: 16, backgroundColor: &quot;white&quot; },
+  title: { fontWeight: &quot;700&quot;, fontSize: 16 },
+  sub: { color: &quot;#64748b&quot; },
+  total: { fontWeight: &quot;700&quot; },
+  sep: { height: 1, backgroundColor: &quot;#e2e8f0&quot; },
+});</code></pre></figure>
+<p>For grids use <code>numColumns={2}</code>; for grouped lists (by date, by category) use <code>SectionList</code>.</p>
+<h2>Navigation with Expo Router</h2>
+<p><strong>Expo Router</strong> uses <strong>files as routes</strong>: every file in <code>app/</code> becomes a screen, like pages on a website.</p>
+<figure class="static-code"><pre><code>app/
+├── _layout.jsx            ← root layout: a Stack navigator
+├── (tabs)/
+│   ├── _layout.jsx        ← bottom tabs
+│   ├── index.jsx          ← &quot;/&quot;            (Home tab)
+│   ├── orders.jsx         ← &quot;/orders&quot;      (Orders tab)
+│   └── account.jsx        ← &quot;/account&quot;     (Account tab)
+└── product/[id].jsx       ← &quot;/product/17&quot;  (a dynamic route)</code></pre></figure>
+<h3>Root layout: a stack</h3>
+<figure class="static-code"><figcaption>JSX</figcaption><pre><code class="language-jsx">import { Stack } from &quot;expo-router&quot;;
+
+export default function RootLayout() {
+  return (
+    &lt;Stack&gt;
+      &lt;Stack.Screen name=&quot;(tabs)&quot; options={{ headerShown: false }} /&gt;
+      &lt;Stack.Screen name=&quot;product/[id]&quot; options={{ title: &quot;Product&quot; }} /&gt;
+    &lt;/Stack&gt;
+  );
+}</code></pre></figure>
+<h3>Tabs layout</h3>
+<figure class="static-code"><figcaption>JSX</figcaption><pre><code class="language-jsx">import { Tabs } from &quot;expo-router&quot;;
+import { Ionicons } from &quot;@expo/vector-icons&quot;;
+
+export default function TabsLayout() {
+  return (
+    &lt;Tabs screenOptions={{ tabBarActiveTintColor: &quot;#0b7a5a&quot; }}&gt;
+      &lt;Tabs.Screen name=&quot;index&quot; options={{ title: &quot;Home&quot;, tabBarIcon: ({ color, size }) =&gt; &lt;Ionicons name=&quot;home&quot; color={color} size={size} /&gt; }} /&gt;
+      &lt;Tabs.Screen name=&quot;orders&quot; options={{ title: &quot;Orders&quot;, tabBarIcon: ({ color, size }) =&gt; &lt;Ionicons name=&quot;receipt&quot; color={color} size={size} /&gt; }} /&gt;
+      &lt;Tabs.Screen name=&quot;account&quot; options={{ title: &quot;Account&quot;, tabBarIcon: ({ color, size }) =&gt; &lt;Ionicons name=&quot;person&quot; color={color} size={size} /&gt; }} /&gt;
+    &lt;/Tabs&gt;
+  );
+}</code></pre></figure>
+<h3>Moving between screens and passing data</h3>
+<figure class="static-code"><figcaption>JSX</figcaption><pre><code class="language-jsx">// app/(tabs)/index.jsx
+import { Link, useRouter } from &quot;expo-router&quot;;
+import { View, Text, Pressable } from &quot;react-native&quot;;
+
+export default function Home() {
+  const router = useRouter();
+  return (
+    &lt;View style={{ padding: 16, gap: 12 }}&gt;
+      &lt;Link href=&quot;/product/17&quot;&gt;&lt;Text&gt;Open Unga 2kg (a link)&lt;/Text&gt;&lt;/Link&gt;
+      &lt;Pressable onPress={() =&gt; router.push({ pathname: &quot;/product/[id]&quot;, params: { id: &quot;18&quot; } })}&gt;
+        &lt;Text&gt;Open Sugar 1kg (in code)&lt;/Text&gt;
+      &lt;/Pressable&gt;
+    &lt;/View&gt;
+  );
+}</code></pre></figure>
+<figure class="static-code"><figcaption>JSX</figcaption><pre><code class="language-jsx">// app/product/[id].jsx
+import { useLocalSearchParams, useRouter } from &quot;expo-router&quot;;
+import { View, Text, Pressable } from &quot;react-native&quot;;
+
+export default function Product() {
+  const { id } = useLocalSearchParams();         // &quot;17&quot; from /product/17
+  const router = useRouter();
+  return (
+    &lt;View style={{ padding: 16 }}&gt;
+      &lt;Text style={{ fontSize: 22 }}&gt;Product {id}&lt;/Text&gt;
+      &lt;Pressable onPress={() =&gt; router.back()}&gt;&lt;Text&gt;Back&lt;/Text&gt;&lt;/Pressable&gt;
+    &lt;/View&gt;
+  );
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Call</th><th>Does</th></tr></thead><tbody><tr><td><code>router.push(&quot;/orders&quot;)</code></td><td>Open a screen (Back returns)</td></tr><tr><td><code>router.replace(&quot;/(tabs)&quot;)</code></td><td>Replace the current screen (after login)</td></tr><tr><td><code>router.back()</code></td><td>Go back</td></tr><tr><td><code>&lt;Link href=&quot;…&quot;&gt;</code></td><td>A tappable link</td></tr></tbody></table></div>
+<p>Pass <strong>IDs</strong> in routes, then load full data on the next screen (from state, cache or the API). Don't pass large objects through URLs.</p>
+<p>(Before Expo Router, apps used <strong>React Navigation</strong> directly with <code>createNativeStackNavigator</code>; Expo Router is built on it, so the concepts are the same.)</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which component renders long lists efficiently?</p><details><summary>Show answer</summary><p>FlatList</p></details></li><li><p>Which FlatList prop gives each row a unique key?</p><details><summary>Show answer</summary><p>keyExtractor</p></details></li><li><p>Which prop adds pull-to-refresh to a FlatList?</p><details><summary>Show answer</summary><p>refreshControl</p></details></li><li><p>In Expo Router, which folder holds the screen files?</p><details><summary>Show answer</summary><p>app</p></details></li><li><p>Which hook reads the id from /product/[id]?</p><details><summary>Show answer</summary><p>useLocalSearchParams</p></details></li><li><p>Which router method goes back to the previous screen?</p><details><summary>Show answer</summary><p>back</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 5 in <a href="/learn/react-native/">React Native apps (Expo)</a> · <a href="/learn/?book=react-native">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/react-native/react-native-components-styling/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Core components, styling and Flexbox layouts</a><a class="btn btn-solid btn-sm" href="/learn/react-native/react-native-state-data/">State, APIs and storing data on the phone <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

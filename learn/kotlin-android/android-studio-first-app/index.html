@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Android Studio and your first Android app | Marzley Learn</title>
+    <meta name="description" content="Time to build a real Android app. You&#x27;ll install Android Studio , create a project with Jetpack Compose (the modern way to build Android screens)…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/kotlin-android/android-studio-first-app/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Android Studio and your first Android app | Marzley Learn" />
+    <meta property="og:description" content="Time to build a real Android app. You&#x27;ll install Android Studio , create a project with Jetpack Compose (the modern way to build Android screens)…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/kotlin-android/android-studio-first-app/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Android Studio and your first Android app | Marzley Learn" />
+    <meta name="twitter:description" content="Time to build a real Android app. You&#x27;ll install Android Studio , create a project with Jetpack Compose (the modern way to build Android screens)…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/kotlin-android/android-studio-first-app/#lesson","name":"Android Studio and your first Android app","description":"Time to build a real Android app. You'll install Android Studio , create a project with Jetpack Compose (the modern way to build Android screens)…","url":"https://marzleytechsolutions.co.ke/learn/kotlin-android/android-studio-first-app/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/kotlin-android/#course","name":"Android apps with Kotlin","url":"https://marzleytechsolutions.co.ke/learn/kotlin-android/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Android apps with Kotlin","item":"https://marzleytechsolutions.co.ke/learn/kotlin-android/"},{"@type":"ListItem","position":4,"name":"Android Studio and your first Android app","item":"https://marzleytechsolutions.co.ke/learn/kotlin-android/android-studio-first-app/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/kotlin-android/">Android apps with Kotlin</a> / <span>Android Studio and your first Android app</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=kotlin-android&amp;lesson=android-studio-first-app"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Android Studio and your first Android app</h1>
+<p>Time to build a real Android app. You'll install <strong>Android Studio</strong>, create a project with <strong>Jetpack Compose</strong> (the modern way to build Android screens), understand the project structure and run it on your phone.</p>
+<h2>Install Android Studio</h2>
+<ol><li>Download from <strong>developer.android.com/studio</strong> (Windows, macOS or Linux; about 1 GB, plus SDK downloads).</li><li>Run the setup wizard with the <strong>Standard</strong> options. It installs the Android SDK, build tools and an emulator image.</li><li>Minimum practical computer: <strong>8 GB RAM</strong>, 20 GB free disk, SSD strongly recommended.</li></ol>
+<h2>Create a project</h2>
+<p><strong>File → New → New Project → Empty Activity</strong> (the Compose template), then:</p>
+<div class="static-table"><table><thead><tr><th>Field</th><th>Example</th><th>Notes</th></tr></thead><tbody><tr><td>Name</td><td>Duka</td><td>Shown under the icon</td></tr><tr><td>Package name</td><td><code>ke.co.marzley.duka</code></td><td>Your <strong>application ID</strong>: unique, can't change after publishing</td></tr><tr><td>Minimum SDK</td><td>API 24 (Android 7.0)</td><td>Covers almost all phones in use; lower = more phones, fewer features</td></tr><tr><td>Build configuration language</td><td>Kotlin DSL</td><td><code>build.gradle.kts</code> files</td></tr></tbody></table></div>
+<h2>The project structure</h2>
+<figure class="static-code"><pre><code>app/
+├── src/main/
+│   ├── java/ke/co/marzley/duka/
+│   │   ├── MainActivity.kt        ← the entry screen
+│   │   └── ui/theme/              ← colours, typography, theme
+│   ├── res/                       ← resources: icons (mipmap), strings, images (drawable)
+│   └── AndroidManifest.xml        ← app name, icon, permissions, activities
+├── build.gradle.kts               ← app settings: versions, dependencies
+gradle/libs.versions.toml           ← library versions in one place</code></pre></figure>
+<ul><li><strong>Activity</strong>: a screen container. Modern Compose apps usually have <strong>one</strong> activity and many composable screens.</li><li><strong>AndroidManifest.xml</strong>: declares the app's name, icon, permissions (like <code>INTERNET</code>) and the starting activity.</li><li><strong>Gradle</strong>: the build system. It downloads libraries and builds the APK/AAB. The first build takes a while.</li></ul>
+<h2>MainActivity explained</h2>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">package ke.co.marzley.duka
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import ke.co.marzley.duka.ui.theme.DukaTheme
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {                       // the UI is Compose from here on
+            DukaTheme {
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding -&gt;
+                    Welcome(name = &quot;Mama Mboga&quot;, modifier = Modifier.padding(innerPadding))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun Welcome(name: String, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.fillMaxSize().padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Text(&quot;Karibu, $name!&quot;, style = MaterialTheme.typography.headlineMedium)
+        Spacer(Modifier.height(8.dp))
+        Text(&quot;Fresh vegetables delivered daily.&quot;)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun WelcomePreview() {
+    DukaTheme { Welcome(&quot;Mama Mboga&quot;) }
+}</code></pre></figure>
+<ul><li><code>setContent { }</code> sets the screen's content using <strong>composable</strong> functions.</li><li><code>@Composable</code> marks functions that describe UI.</li><li><code>@Preview</code> shows the composable in Android Studio's design pane without running the app.</li><li><code>Scaffold</code> provides the standard screen layout (top bar, content, floating button), and <code>innerPadding</code> keeps content clear of system bars.</li></ul>
+<h2>Run the app</h2>
+<p><strong>On your phone (recommended):</strong></p>
+<ol><li>Settings → About phone → tap <strong>Build number</strong> 7 times.</li><li>Settings → System → Developer options → <strong>USB debugging</strong> on.</li><li>Connect with USB, allow debugging, select the phone in Android Studio's device menu, press <strong>Run ▶</strong>.</li></ol>
+<p>Or use <strong>wireless debugging</strong> (Android 11+) from Developer options and pair through Android Studio.</p>
+<p><strong>On the emulator:</strong> Device Manager → create a virtual device (a Pixel with a recent system image) → Run. Enable virtualisation in your BIOS if it's slow.</p>
+<h2>Logcat and debugging</h2>
+<ul><li><strong>Logcat</strong> shows your app's logs and crashes. Log with <code>Log.d(&quot;Duka&quot;, &quot;Loaded ${items.size} products&quot;)</code>.</li><li>When the app crashes, Logcat shows a red <strong>stack trace</strong>: find the first line that mentions <strong>your</strong> package and file.</li><li>Click beside a line number to set a <strong>breakpoint</strong>, then use <strong>Debug</strong> instead of Run to pause and inspect variables.</li></ul>
+<h2>Dependencies</h2>
+<p>Libraries are added in <code>app/build.gradle.kts</code> (versions often live in <code>gradle/libs.versions.toml</code>):</p>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">dependencies {
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))     // keeps Compose library versions compatible
+    implementation(libs.androidx.material3)
+    // added in later lessons: navigation-compose, lifecycle-viewmodel-compose, retrofit, room
+}</code></pre></figure>
+<p>After editing, click <strong>Sync Now</strong>.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the modern toolkit for building Android screens in Kotlin called?</p><details><summary>Show answer</summary><p>Jetpack Compose</p></details></li><li><p>Which file declares the app's permissions and starting activity?</p><details><summary>Show answer</summary><p>AndroidManifest.xml</p></details></li><li><p>Which annotation marks a function that describes UI?</p><details><summary>Show answer</summary><p>@Composable</p></details></li><li><p>Which annotation shows a composable in Android Studio's design pane?</p><details><summary>Show answer</summary><p>@Preview</p></details></li><li><p>Which tool shows your app's logs and crash stack traces?</p><details><summary>Show answer</summary><p>Logcat</p></details></li><li><p>What is the build system that downloads libraries and builds the app?</p><details><summary>Show answer</summary><p>Gradle</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 10 in <a href="/learn/kotlin-android/">Android apps with Kotlin</a> · <a href="/learn/?book=kotlin-android">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/kotlin-android/kotlin-coroutines/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Coroutines and Flow (doing slow work without freezing the app)</a><a class="btn btn-solid btn-sm" href="/learn/kotlin-android/compose-basics/">Jetpack Compose basics: layouts, modifiers and Material 3 <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

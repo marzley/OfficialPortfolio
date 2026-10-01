@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Project: a shop with cart, then real-world React tooling</title>
+    <meta name="description" content="Let&#x27;s combine everything into a small but complete shop: product grid, search, category filter, cart with quantities, totals, delivery choice and a…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/react/react-project-and-tooling/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Project: a shop with cart, then real-world React tooling" />
+    <meta property="og:description" content="Let&#x27;s combine everything into a small but complete shop: product grid, search, category filter, cart with quantities, totals, delivery choice and a…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/react/react-project-and-tooling/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Project: a shop with cart, then real-world React tooling" />
+    <meta name="twitter:description" content="Let&#x27;s combine everything into a small but complete shop: product grid, search, category filter, cart with quantities, totals, delivery choice and a…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/react/react-project-and-tooling/#lesson","name":"Project: a shop with cart, then real-world React tooling","description":"Let's combine everything into a small but complete shop: product grid, search, category filter, cart with quantities, totals, delivery choice and a…","url":"https://marzleytechsolutions.co.ke/learn/react/react-project-and-tooling/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/react/#course","name":"React for web apps","url":"https://marzleytechsolutions.co.ke/learn/react/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"React for web apps","item":"https://marzleytechsolutions.co.ke/learn/react/"},{"@type":"ListItem","position":4,"name":"Project: a shop with cart, then real-world React tooling","item":"https://marzleytechsolutions.co.ke/learn/react/react-project-and-tooling/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/react/">React for web apps</a> / <span>Project: a shop with cart, then real-world React tooling</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=react&amp;lesson=react-project-and-tooling"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Project: a shop with cart, then real-world React tooling</h1>
+<p>Let's combine everything into a small but complete shop: product grid, search, category filter, cart with quantities, totals, delivery choice and a checkout summary. Then you'll learn how real React projects are created, structured and deployed.</p>
+<h2>The shop</h2>
+<figure class="static-code"><figcaption>React · runs live in the interactive lesson</figcaption><pre><code class="language-react">const { useState, useMemo, useReducer } = React;
+
+const PRODUCTS = [
+  { id: 1, name: &quot;Unga 2kg&quot;, price: 180, cat: &quot;Food&quot;, emoji: &quot;🌾&quot; },
+  { id: 2, name: &quot;Sugar 1kg&quot;, price: 150, cat: &quot;Food&quot;, emoji: &quot;🍬&quot; },
+  { id: 3, name: &quot;Cooking oil 1L&quot;, price: 350, cat: &quot;Food&quot;, emoji: &quot;🫒&quot; },
+  { id: 4, name: &quot;Bar soap&quot;, price: 120, cat: &quot;Home&quot;, emoji: &quot;🧼&quot; },
+  { id: 5, name: &quot;Solar lantern&quot;, price: 1850, cat: &quot;Electronics&quot;, emoji: &quot;🔦&quot; },
+  { id: 6, name: &quot;Phone charger&quot;, price: 450, cat: &quot;Electronics&quot;, emoji: &quot;🔌&quot; },
+];
+const DELIVERY = { pickup: 0, thika: 150, nairobi: 300 };
+const ksh = (n) =&gt; &quot;KSh &quot; + n.toLocaleString(&quot;en-KE&quot;);
+
+function cartReducer(cart, action) {
+  switch (action.type) {
+    case &quot;add&quot;: return { ...cart, [action.id]: (cart[action.id] || 0) + 1 };
+    case &quot;remove&quot;: {
+      const qty = (cart[action.id] || 0) - 1;
+      const next = { ...cart };
+      if (qty &lt;= 0) delete next[action.id]; else next[action.id] = qty;
+      return next;
+    }
+    case &quot;clear&quot;: return {};
+    default: return cart;
+  }
+}
+
+function ProductCard({ p, qty, onAdd }) {
+  return (
+    &lt;div style={{ border: &quot;1px solid #e2e8f0&quot;, borderRadius: 12, padding: 12, textAlign: &quot;center&quot; }}&gt;
+      &lt;div style={{ fontSize: 36 }}&gt;{p.emoji}&lt;/div&gt;
+      &lt;strong&gt;{p.name}&lt;/strong&gt;
+      &lt;div&gt;{ksh(p.price)}&lt;/div&gt;
+      &lt;button onClick={onAdd} style={{ marginTop: 6 }}&gt;{qty ? `Add another (${qty})` : &quot;Add to cart&quot;}&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+function Cart({ cart, dispatch, delivery, setDelivery }) {
+  const lines = Object.entries(cart).map(([id, qty]) =&gt; ({ ...PRODUCTS.find((p) =&gt; p.id === Number(id)), qty }));
+  const subtotal = lines.reduce((s, l) =&gt; s + l.price * l.qty, 0);
+  const total = subtotal + (lines.length ? DELIVERY[delivery] : 0);
+  if (!lines.length) return &lt;p&gt;Your cart is empty.&lt;/p&gt;;
+  return (
+    &lt;div&gt;
+      {lines.map((l) =&gt; (
+        &lt;div key={l.id} style={{ display: &quot;flex&quot;, justifyContent: &quot;space-between&quot;, padding: &quot;4px 0&quot; }}&gt;
+          &lt;span&gt;{l.name} × {l.qty}&lt;/span&gt;
+          &lt;span&gt;
+            {ksh(l.price * l.qty)}{&quot; &quot;}
+            &lt;button onClick={() =&gt; dispatch({ type: &quot;remove&quot;, id: l.id })}&gt;−&lt;/button&gt;
+            &lt;button onClick={() =&gt; dispatch({ type: &quot;add&quot;, id: l.id })}&gt;+&lt;/button&gt;
+          &lt;/span&gt;
+        &lt;/div&gt;
+      ))}
+      &lt;label&gt;Delivery:{&quot; &quot;}
+        &lt;select value={delivery} onChange={(e) =&gt; setDelivery(e.target.value)}&gt;
+          &lt;option value=&quot;pickup&quot;&gt;Pick up (free)&lt;/option&gt;
+          &lt;option value=&quot;thika&quot;&gt;Thika (KSh 150)&lt;/option&gt;
+          &lt;option value=&quot;nairobi&quot;&gt;Nairobi (KSh 300)&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/label&gt;
+      &lt;p&gt;Subtotal {ksh(subtotal)} · &lt;strong&gt;Total {ksh(total)}&lt;/strong&gt;&lt;/p&gt;
+      &lt;button onClick={() =&gt; alert(`We&#x27;d now send an M-Pesa prompt for ${ksh(total)} (through the shop&#x27;s server).`)}&gt;Pay with M-Pesa&lt;/button&gt;{&quot; &quot;}
+      &lt;button onClick={() =&gt; dispatch({ type: &quot;clear&quot; })}&gt;Clear cart&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+function App() {
+  const [query, setQuery] = useState(&quot;&quot;);
+  const [cat, setCat] = useState(&quot;All&quot;);
+  const [delivery, setDelivery] = useState(&quot;thika&quot;);
+  const [cart, dispatch] = useReducer(cartReducer, {});
+
+  const visible = useMemo(() =&gt; PRODUCTS.filter((p) =&gt;
+    (cat === &quot;All&quot; || p.cat === cat) &amp;&amp; p.name.toLowerCase().includes(query.toLowerCase())), [query, cat]);
+  const count = Object.values(cart).reduce((a, b) =&gt; a + b, 0);
+
+  return (
+    &lt;div style={{ fontFamily: &quot;sans-serif&quot;, maxWidth: 720 }}&gt;
+      &lt;h2&gt;Duka Online 🛒 &lt;small style={{ fontSize: 14 }}&gt;({count} in cart)&lt;/small&gt;&lt;/h2&gt;
+      &lt;input placeholder=&quot;Search…&quot; value={query} onChange={(e) =&gt; setQuery(e.target.value)} style={{ padding: 6 }} /&gt;{&quot; &quot;}
+      {[&quot;All&quot;, &quot;Food&quot;, &quot;Home&quot;, &quot;Electronics&quot;].map((c) =&gt; (
+        &lt;button key={c} onClick={() =&gt; setCat(c)} style={{ fontWeight: c === cat ? &quot;bold&quot; : &quot;normal&quot;, margin: 2 }}&gt;{c}&lt;/button&gt;
+      ))}
+      &lt;div style={{ display: &quot;grid&quot;, gridTemplateColumns: &quot;repeat(auto-fill, minmax(150px, 1fr))&quot;, gap: 10, margin: &quot;12px 0&quot; }}&gt;
+        {visible.map((p) =&gt; &lt;ProductCard key={p.id} p={p} qty={cart[p.id]} onAdd={() =&gt; dispatch({ type: &quot;add&quot;, id: p.id })} /&gt;)}
+      &lt;/div&gt;
+      {visible.length === 0 &amp;&amp; &lt;p&gt;No products match.&lt;/p&gt;}
+      &lt;h3&gt;Cart&lt;/h3&gt;
+      &lt;Cart cart={cart} dispatch={dispatch} delivery={delivery} setDelivery={setDelivery} /&gt;
+    &lt;/div&gt;
+  );
+}
+
+ReactDOM.createRoot(document.getElementById(&quot;root&quot;)).render(&lt;App /&gt;);</code></pre></figure>
+<p><strong>Challenges:</strong> save the cart to localStorage with the <code>useLocalStorage</code> hook from the last lesson; add a checkout form with phone validation; split the code into files (next section).</p>
+<h2>Creating a real React project</h2>
+<p>The live editor is great for learning. Real projects use a <strong>build tool</strong> on your computer. Install <strong>Node.js</strong> (LTS), then:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">npm create vite@latest duka-shop -- --template react
+cd duka-shop
+npm install
+npm run dev          # opens a local dev server with instant reload</code></pre></figure>
+<p>Project structure:</p>
+<figure class="static-code"><pre><code>duka-shop/
+├── index.html
+├── package.json          ← scripts and dependencies
+└── src/
+    ├── main.jsx          ← renders &lt;App /&gt; into #root
+    ├── App.jsx
+    ├── components/       ← ProductCard.jsx, Cart.jsx, ...
+    ├── hooks/            ← useLocalStorage.js
+    └── api/              ← functions that call your backend</code></pre></figure>
+<p>Each component gets its own file and is shared with <code>export</code> / <code>import</code>:</p>
+<figure class="static-code"><figcaption>JSX</figcaption><pre><code class="language-jsx">// src/components/ProductCard.jsx
+export default function ProductCard({ product, onAdd }) {
+  return &lt;button onClick={onAdd}&gt;{product.name}&lt;/button&gt;;
+}</code></pre></figure>
+<figure class="static-code"><figcaption>JSX</figcaption><pre><code class="language-jsx">// src/App.jsx
+import ProductCard from &quot;./components/ProductCard.jsx&quot;;
+
+export default function App() {
+  return &lt;ProductCard product={{ name: &quot;Unga 2kg&quot; }} onAdd={() =&gt; {}} /&gt;;
+}</code></pre></figure>
+<h2>Useful libraries</h2>
+<div class="static-table"><table><thead><tr><th>Need</th><th>Library</th></tr></thead><tbody><tr><td>Pages and URLs</td><td><strong>React Router</strong></td></tr><tr><td>Server data, caching</td><td><strong>TanStack Query</strong></td></tr><tr><td>Forms and validation</td><td><strong>React Hook Form</strong> + <strong>Zod</strong></td></tr><tr><td>Styling</td><td><strong>Tailwind CSS</strong>, CSS Modules</td></tr><tr><td>Global state</td><td><strong>Zustand</strong>, Redux Toolkit</td></tr><tr><td>Full framework with server rendering and SEO</td><td><strong>Next.js</strong></td></tr><tr><td>Types</td><td><strong>TypeScript</strong> (see the TypeScript subject)</td></tr></tbody></table></div>
+<h2>Building and deploying</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">npm run build        # creates an optimised dist/ folder</code></pre></figure>
+<ul><li><strong>Static hosting</strong>: upload <code>dist/</code> to Netlify, Vercel, GitHub Pages or <strong>cPanel</strong> (into <code>public_html</code>). For React Router on cPanel, add an <code>.htaccess</code> rule that sends unknown paths to <code>index.html</code>.</li><li><strong>API calls</strong>: point your app at your backend (PHP/Node) with HTTPS. Keep secrets on the server, never in React code, because everything in the bundle is visible to users.</li><li><strong>SEO</strong>: single-page apps are harder for search engines; for public marketing sites, use Next.js or pre-rendering.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command creates a new React project with Vite?</p><details><summary>Show answer</summary><p>npm create vite@latest</p></details></li><li><p>Which command starts the local development server?</p><details><summary>Show answer</summary><p>npm run dev</p></details></li><li><p>Which command creates the optimised production files?</p><details><summary>Show answer</summary><p>npm run build</p></details></li><li><p>Which library adds pages and URLs to a React app?</p><details><summary>Show answer</summary><p>React Router</p></details></li><li><p>Should API secret keys be put in React code? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which folder does npm run build create with Vite?</p><details><summary>Show answer</summary><p>dist</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 6 in <a href="/learn/react/">React for web apps</a> · <a href="/learn/?book=react">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/react/react-more-hooks/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> More hooks: useRef, useMemo, useReducer, context and custom hooks</a><span></span></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

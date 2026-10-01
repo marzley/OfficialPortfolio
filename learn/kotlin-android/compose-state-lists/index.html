@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Compose state, lists and forms | Android apps with Kotlin</title>
+    <meta name="description" content="Apps react to people: tapping, typing, scrolling. In Compose, state is data that can change, and when it changes, the composables that read it…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/kotlin-android/compose-state-lists/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Compose state, lists and forms | Android apps with Kotlin" />
+    <meta property="og:description" content="Apps react to people: tapping, typing, scrolling. In Compose, state is data that can change, and when it changes, the composables that read it…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/kotlin-android/compose-state-lists/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Compose state, lists and forms | Android apps with Kotlin" />
+    <meta name="twitter:description" content="Apps react to people: tapping, typing, scrolling. In Compose, state is data that can change, and when it changes, the composables that read it…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/kotlin-android/compose-state-lists/#lesson","name":"Compose state, lists and forms","description":"Apps react to people: tapping, typing, scrolling. In Compose, state is data that can change, and when it changes, the composables that read it…","url":"https://marzleytechsolutions.co.ke/learn/kotlin-android/compose-state-lists/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/kotlin-android/#course","name":"Android apps with Kotlin","url":"https://marzleytechsolutions.co.ke/learn/kotlin-android/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Android apps with Kotlin","item":"https://marzleytechsolutions.co.ke/learn/kotlin-android/"},{"@type":"ListItem","position":4,"name":"Compose state, lists and forms","item":"https://marzleytechsolutions.co.ke/learn/kotlin-android/compose-state-lists/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/kotlin-android/">Android apps with Kotlin</a> / <span>Compose state, lists and forms</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=kotlin-android&amp;lesson=compose-state-lists"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Compose state, lists and forms</h1>
+<p>Apps react to people: tapping, typing, scrolling. In Compose, <strong>state</strong> is data that can change, and when it changes, the composables that read it <strong>recompose</strong> (redraw).</p>
+<h2>remember and mutableStateOf</h2>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">@Composable
+fun QuantityPicker(item: String) {
+    var qty by remember { mutableStateOf(1) }       // state that survives recomposition
+
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(item, Modifier.weight(1f))
+        IconButton(onClick = { if (qty &gt; 1) qty-- }, enabled = qty &gt; 1) {
+            Icon(Icons.Default.Remove, contentDescription = &quot;Less&quot;)
+        }
+        Text(&quot;$qty&quot;, style = MaterialTheme.typography.titleLarge)
+        IconButton(onClick = { qty++ }) {
+            Icon(Icons.Default.Add, contentDescription = &quot;More&quot;)
+        }
+    }
+}</code></pre></figure>
+<ul><li><code>mutableStateOf(1)</code> creates observable state; changing it triggers recomposition.</li><li><code>remember { }</code> keeps the value across recompositions (without it, <code>qty</code> would reset every redraw).</li><li><code>rememberSaveable { }</code> also survives screen rotation and the app being sent to the background.</li></ul>
+<h2>State hoisting: the key pattern</h2>
+<p>Make composables <strong>stateless</strong> by passing the value in and sending events out. The parent owns the state:</p>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">@Composable
+fun QuantityRow(qty: Int, onChange: (Int) -&gt; Unit) {           // stateless: easy to reuse and test
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        IconButton(onClick = { onChange(qty - 1) }, enabled = qty &gt; 0) { Icon(Icons.Default.Remove, &quot;Less&quot;) }
+        Text(&quot;$qty&quot;)
+        IconButton(onClick = { onChange(qty + 1) }) { Icon(Icons.Default.Add, &quot;More&quot;) }
+    }
+}
+
+@Composable
+fun CartLine(name: String, price: Int) {
+    var qty by rememberSaveable { mutableStateOf(0) }           // state lives here
+    Column {
+        Text(name)
+        QuantityRow(qty = qty, onChange = { qty = it })
+        Text(&quot;Subtotal: KSh ${qty * price}&quot;)
+    }
+}</code></pre></figure>
+<p><strong>State flows down, events flow up.</strong> This is called <strong>unidirectional data flow</strong>, and it's how all good Compose apps are structured.</p>
+<h2>Lists with LazyColumn</h2>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">data class Txn(val id: Int, val who: String, val amount: Int)
+
+@Composable
+fun Statement(txns: List&lt;Txn&gt;, onOpen: (Txn) -&gt; Unit) {
+    LazyColumn(
+        contentPadding = PaddingValues(vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        item { Text(&quot;M-Pesa statement&quot;, style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(16.dp)) }
+        items(txns, key = { it.id }) { t -&gt;                     // keys keep each row&#x27;s state with the right item
+            val received = t.amount &gt; 0
+            ListItem(
+                headlineContent = { Text(t.who) },
+                trailingContent = {
+                    Text(
+                        (if (received) &quot;+&quot; else &quot;-&quot;) + &quot;KSh ${kotlin.math.abs(t.amount)}&quot;,
+                        color = if (received) Color(0xFF1B7F3B) else Color(0xFFB3261E),
+                        fontWeight = FontWeight.Bold,
+                    )
+                },
+                modifier = Modifier.clickable { onOpen(t) },
+            )
+        }
+    }
+}</code></pre></figure>
+<p><code>LazyColumn</code> only composes the rows on screen, so lists with thousands of items stay smooth. Use <code>LazyVerticalGrid(columns = GridCells.Adaptive(160.dp))</code> for product grids.</p>
+<h2>A form with validation</h2>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">@Composable
+fun SignUpForm(onSubmit: (name: String, phone: String) -&gt; Unit) {
+    var name by rememberSaveable { mutableStateOf(&quot;&quot;) }
+    var phone by rememberSaveable { mutableStateOf(&quot;&quot;) }
+    var tried by remember { mutableStateOf(false) }
+
+    val phoneOk = Regex(&quot;^(0[17]\\d{8}|254[17]\\d{8})$&quot;).matches(phone.filter { it.isDigit() })
+    val nameOk = name.trim().contains(&quot; &quot;)
+
+    Column(Modifier.padding(16.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        OutlinedTextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text(&quot;Full name&quot;) },
+            isError = tried &amp;&amp; !nameOk,
+            supportingText = { if (tried &amp;&amp; !nameOk) Text(&quot;Enter your first and last name&quot;) },
+            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words, imeAction = ImeAction.Next),
+            modifier = Modifier.fillMaxWidth(),
+        )
+        OutlinedTextField(
+            value = phone,
+            onValueChange = { phone = it },
+            label = { Text(&quot;M-Pesa number&quot;) },
+            placeholder = { Text(&quot;0712 345 678&quot;) },
+            isError = tried &amp;&amp; !phoneOk,
+            supportingText = { if (tried &amp;&amp; !phoneOk) Text(&quot;Enter a number like 0712 345 678&quot;) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Done),
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Button(
+            onClick = { tried = true; if (nameOk &amp;&amp; phoneOk) onSubmit(name.trim(), phone) },
+            modifier = Modifier.fillMaxWidth().height(52.dp),
+        ) { Text(&quot;Create account&quot;) }
+    }
+}</code></pre></figure>
+<h2>Side effects: doing things at the right time</h2>
+<p>Composables can recompose often, so actions like loading data or showing a snackbar go in <strong>effect handlers</strong>:</p>
+<div class="static-table"><table><thead><tr><th>Effect</th><th>Use</th></tr></thead><tbody><tr><td><code>LaunchedEffect(key) { }</code></td><td>Run a coroutine when the composable appears or <code>key</code> changes (load data, start a timer)</td></tr><tr><td><code>rememberCoroutineScope()</code></td><td>Launch coroutines from click handlers</td></tr><tr><td><code>DisposableEffect(key) { onDispose { } }</code></td><td>Set up and clean up (listeners, sensors)</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">@Composable
+fun SaveButton(snackbar: SnackbarHostState) {
+    val scope = rememberCoroutineScope()
+    Button(onClick = { scope.launch { snackbar.showSnackbar(&quot;Saved&quot;) } }) { Text(&quot;Save&quot;) }
+}</code></pre></figure>
+<p>Usually your data loading belongs in a <strong>ViewModel</strong> (lesson 9), not in composables.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which function creates observable state in Compose?</p><details><summary>Show answer</summary><p>mutableStateOf</p></details></li><li><p>Which function keeps state across recompositions?</p><details><summary>Show answer</summary><p>remember</p></details></li><li><p>Which variant also survives screen rotation?</p><details><summary>Show answer</summary><p>rememberSaveable</p></details></li><li><p>Moving state up to the parent and passing value plus events down is called state ...?</p><details><summary>Show answer</summary><p>hoisting</p></details></li><li><p>Which composable shows a long, efficient scrolling list?</p><details><summary>Show answer</summary><p>LazyColumn</p></details></li><li><p>Which effect runs a coroutine when a composable first appears?</p><details><summary>Show answer</summary><p>LaunchedEffect</p></details></li></ol></section></div><p class="static-meta">Lesson 7 of 10 in <a href="/learn/kotlin-android/">Android apps with Kotlin</a> · <a href="/learn/?book=kotlin-android">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/kotlin-android/compose-basics/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Jetpack Compose basics: layouts, modifiers and Material 3</a><a class="btn btn-solid btn-sm" href="/learn/kotlin-android/navigation-and-mvvm/">Navigation, ViewModel and MVVM architecture <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

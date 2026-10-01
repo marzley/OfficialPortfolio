@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Logins: hashed passwords, sessions, tokens, JWT and OTP…</title>
+    <meta name="description" content="Authentication ( who are you? ) and authorisation ( what may you do? ) protect every app&#x27;s data. Getting them wrong exposes customers&#x27; information and…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/apis-backend/auth-passwords-tokens/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Logins: hashed passwords, sessions, tokens, JWT and OTP…" />
+    <meta property="og:description" content="Authentication ( who are you? ) and authorisation ( what may you do? ) protect every app&#x27;s data. Getting them wrong exposes customers&#x27; information and…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/apis-backend/auth-passwords-tokens/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Logins: hashed passwords, sessions, tokens, JWT and OTP…" />
+    <meta name="twitter:description" content="Authentication ( who are you? ) and authorisation ( what may you do? ) protect every app&#x27;s data. Getting them wrong exposes customers&#x27; information and…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/apis-backend/auth-passwords-tokens/#lesson","name":"Logins: hashed passwords, sessions, tokens, JWT and OTP codes","description":"Authentication ( who are you? ) and authorisation ( what may you do? ) protect every app's data. Getting them wrong exposes customers' information and…","url":"https://marzleytechsolutions.co.ke/learn/apis-backend/auth-passwords-tokens/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/apis-backend/#course","name":"APIs & backends for apps","url":"https://marzleytechsolutions.co.ke/learn/apis-backend/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"APIs & backends for apps","item":"https://marzleytechsolutions.co.ke/learn/apis-backend/"},{"@type":"ListItem","position":4,"name":"Logins: hashed passwords, sessions, tokens, JWT and OTP codes","item":"https://marzleytechsolutions.co.ke/learn/apis-backend/auth-passwords-tokens/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/apis-backend/">APIs &amp; backends for apps</a> / <span>Logins: hashed passwords, sessions, tokens, JWT and OTP codes</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=apis-backend&amp;lesson=auth-passwords-tokens"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Logins: hashed passwords, sessions, tokens, JWT and OTP codes</h1>
+<p>Authentication (<strong>who are you?</strong>) and authorisation (<strong>what may you do?</strong>) protect every app's data. Getting them wrong exposes customers' information and money, so learn the safe patterns.</p>
+<h2>Rule 1: never store passwords, store hashes</h2>
+<p>A <strong>hash</strong> is a one-way scramble: you can check a password against it, but you can't turn it back into the password. Use slow, salted algorithms built for passwords: <strong>bcrypt</strong> or <strong>Argon2</strong>. PHP has them built in:</p>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$password = &#x27;Mombasa2026!&#x27;;
+
+$hash = password_hash($password, PASSWORD_DEFAULT);   // bcrypt today; a random salt is included
+echo &quot;Stored in the database: &quot;, $hash, &quot;\n&quot;;
+echo &quot;Length: &quot;, strlen($hash), &quot; characters\n&quot;;
+
+var_dump(password_verify(&#x27;Mombasa2026!&#x27;, $hash));     // true: correct password
+var_dump(password_verify(&#x27;mombasa2026!&#x27;, $hash));     // false: wrong password
+
+// The same password gives a different hash each time (different salt):
+var_dump(password_hash($password, PASSWORD_DEFAULT) === $hash);</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Never</th><th>Always</th></tr></thead><tbody><tr><td>Store passwords as plain text</td><td><code>password_hash()</code> / bcrypt / Argon2</td></tr><tr><td>Use MD5 or SHA-1 for passwords</td><td>Slow password-hashing algorithms</td></tr><tr><td>Email passwords to users</td><td>Password reset links that expire</td></tr><tr><td>Say "wrong password" vs "no such user"</td><td>"Wrong email or password" (don't reveal which accounts exist)</td></tr></tbody></table></div>
+<h2>Sessions vs tokens</h2>
+<div class="static-table"><table><thead><tr><th></th><th>Sessions (cookies)</th><th>Tokens (Bearer / JWT)</th></tr></thead><tbody><tr><td>How</td><td>Server stores the login; browser sends a session cookie</td><td>Server gives the app a token; the app sends <code>Authorization: Bearer &lt;token&gt;</code></td></tr><tr><td>Best for</td><td>Websites on the same domain</td><td>Mobile apps and APIs used by several clients</td></tr><tr><td>Logout</td><td>Delete the session on the server</td><td>Delete the token on the server (opaque tokens) or wait for expiry (JWT)</td></tr><tr><td>Protect against</td><td>CSRF (use SameSite cookies and CSRF tokens)</td><td>Token theft (HTTPS, secure storage, short expiry)</td></tr></tbody></table></div>
+<h2>Opaque tokens (simple and safe)</h2>
+<p>Create a long random token, store its <strong>hash</strong> in the database with the user ID and expiry, and give the token to the app:</p>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$token = bin2hex(random_bytes(32));           // 64 random hex characters: give this to the app once
+$stored = hash(&#x27;sha256&#x27;, $token);             // store only the hash (a database leak doesn&#x27;t leak tokens)
+$expires = date(&#x27;Y-m-d H:i:s&#x27;, time() + 30 * 86400);
+
+echo &quot;Token for the app: $token\n&quot;;
+echo &quot;Stored hash: $stored\n&quot;;
+echo &quot;Expires: $expires\n&quot;;
+
+// On each request: hash the token the app sent and look it up
+$sent = $token;
+var_dump(hash_equals($stored, hash(&#x27;sha256&#x27;, $sent)));   // constant-time comparison</code></pre></figure>
+<h2>JWT (JSON Web Tokens)</h2>
+<p>A JWT is three base64url parts: <strong>header.payload.signature</strong>. The payload is <strong>readable by anyone</strong> (it's only encoded, not encrypted); the <strong>signature</strong> proves the server issued it and nobody changed it.</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">// Decode (not verify!) a JWT&#x27;s payload, to see what&#x27;s inside
+const jwt = &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.&quot; +
+            &quot;eyJzdWIiOiI3Iiwicm9sZSI6Im93bmVyIiwic2hvcCI6MTIsImV4cCI6MTc5MTAwMDAwMH0.&quot; +
+            &quot;signature-goes-here&quot;;
+
+function decodePart(part) {
+  const base64 = part.replace(/-/g, &quot;+&quot;).replace(/_/g, &quot;/&quot;);
+  return JSON.parse(atob(base64));
+}
+
+const [header, payload] = jwt.split(&quot;.&quot;);
+console.log(&quot;Header:&quot;, decodePart(header));
+console.log(&quot;Payload:&quot;, decodePart(payload));
+console.log(&quot;Expires:&quot;, new Date(decodePart(payload).exp * 1000).toISOString());</code></pre></figure>
+<p>JWT rules:</p>
+<ul><li><strong>Verify the signature on the server</strong> with a well-tested library; never trust a token you only decoded.</li><li>Never put secrets or sensitive personal data in the payload.</li><li>Keep access tokens <strong>short-lived</strong> (minutes to hours) and use <strong>refresh tokens</strong> to get new ones.</li><li>Opaque tokens are often simpler for small apps because you can revoke them instantly.</li></ul>
+<h2>Phone number login with OTP codes</h2>
+<p>Very common in Kenya:</p>
+<ol><li>User enters a phone number.</li><li>Server creates a <strong>6-digit random code</strong>, stores its <strong>hash</strong> and an <strong>expiry</strong> (5 to 10 minutes), and sends it by SMS (through an SMS provider such as Africa's Talking or your telco's bulk SMS).</li><li>User types the code; server checks the hash, expiry and number of attempts.</li><li>Server issues a session or token.</li></ol>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$phone = &#x27;254712345678&#x27;;
+$code = str_pad((string)random_int(0, 999999), 6, &#x27;0&#x27;, STR_PAD_LEFT);   // cryptographically secure
+$record = [&#x27;phone&#x27; =&gt; $phone, &#x27;code_hash&#x27; =&gt; hash(&#x27;sha256&#x27;, &quot;$phone:$code&quot;), &#x27;expires&#x27; =&gt; time() + 600, &#x27;attempts&#x27; =&gt; 0];
+
+echo &quot;SMS to $phone: Your Duka code is $code (valid 10 minutes)\n&quot;;
+
+function check(array &amp;$r, string $entered): string {
+    if (time() &gt; $r[&#x27;expires&#x27;]) return &#x27;Code expired&#x27;;
+    if ($r[&#x27;attempts&#x27;] &gt;= 5) return &#x27;Too many tries&#x27;;
+    $r[&#x27;attempts&#x27;]++;
+    return hash_equals($r[&#x27;code_hash&#x27;], hash(&#x27;sha256&#x27;, $r[&#x27;phone&#x27;] . &#x27;:&#x27; . $entered)) ? &#x27;Signed in&#x27; : &#x27;Wrong code&#x27;;
+}
+
+echo check($record, &#x27;000000&#x27; === $code ? &#x27;111111&#x27; : &#x27;000000&#x27;), &quot;\n&quot;;
+echo check($record, $code), &quot;\n&quot;;</code></pre></figure>
+<p>Protect OTP endpoints with <strong>rate limits</strong> per phone and per IP: SMS costs money, and attackers can abuse them.</p>
+<h2>Authorisation: checking permissions on every request</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const user = { id: 7, shopId: 12, role: &quot;attendant&quot; };
+const sale = { id: 5001, shopId: 12, total: 1240 };
+const otherShopSale = { id: 5002, shopId: 99, total: 800 };
+
+function can(user, action, resource) {
+  if (resource.shopId !== user.shopId) return false;        // never another shop&#x27;s data
+  if (action === &quot;read&quot;) return true;
+  if (action === &quot;refund&quot;) return user.role === &quot;owner&quot;;    // only owners refund
+  return false;
+}
+
+console.log(&quot;read own sale:&quot;, can(user, &quot;read&quot;, sale));
+console.log(&quot;refund own sale:&quot;, can(user, &quot;refund&quot;, sale));
+console.log(&quot;read other shop&#x27;s sale:&quot;, can(user, &quot;read&quot;, otherShopSale));</code></pre></figure>
+<p>The most common real-world API bug is <strong>broken object-level authorisation</strong>: the API returns <code>/sales/5002</code> to anyone who asks, without checking it belongs to their shop. Always check ownership.</p>
+<h2>Checklist</h2>
+<ul><li>[ ] Passwords hashed with bcrypt/Argon2</li><li>[ ] Tokens long and random, stored hashed, with expiry</li><li>[ ] HTTPS everywhere; tokens in secure storage on phones</li><li>[ ] Rate limits on login, OTP and password reset</li><li>[ ] Ownership checked for every record</li><li>[ ] Generic login errors; audit log of sign-ins</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which PHP function hashes a password safely?</p><details><summary>Show answer</summary><p>password_hash</p></details></li><li><p>Which PHP function checks a password against its hash?</p><details><summary>Show answer</summary><p>password_verify</p></details></li><li><p>Should MD5 be used for passwords? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>How many parts does a JWT have?</p><details><summary>Show answer</summary><p>3</p></details></li><li><p>Is a JWT payload encrypted or just encoded?</p><details><summary>Show answer</summary><p>encoded</p></details></li><li><p>Which PHP function generates a cryptographically secure random number for OTP codes?</p><details><summary>Show answer</summary><p>random_int</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 7 in <a href="/learn/apis-backend/">APIs &amp; backends for apps</a> · <a href="/learn/?book=apis-backend">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/apis-backend/node-express-api/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Building an API with Node.js and Express</a><a class="btn btn-solid btn-sm" href="/learn/apis-backend/mpesa-daraja-api/">M-Pesa Daraja API: STK push and callbacks step by step <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

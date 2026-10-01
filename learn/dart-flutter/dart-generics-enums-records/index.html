@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dart in depth: generics, enums, records, extensions and…</title>
+    <meta name="description" content="You know variables, functions, lists, classes and async. This lesson covers the features that make professional Flutter code short, safe and easy to…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-generics-enums-records/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Dart in depth: generics, enums, records, extensions and…" />
+    <meta property="og:description" content="You know variables, functions, lists, classes and async. This lesson covers the features that make professional Flutter code short, safe and easy to…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-generics-enums-records/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Dart in depth: generics, enums, records, extensions and…" />
+    <meta name="twitter:description" content="You know variables, functions, lists, classes and async. This lesson covers the features that make professional Flutter code short, safe and easy to…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-generics-enums-records/#lesson","name":"Dart in depth: generics, enums, records, extensions and sealed classes","description":"You know variables, functions, lists, classes and async. This lesson covers the features that make professional Flutter code short, safe and easy to…","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-generics-enums-records/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/#course","name":"Dart & Flutter (mobile apps)","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Dart & Flutter (mobile apps)","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},{"@type":"ListItem","position":4,"name":"Dart in depth: generics, enums, records, extensions and sealed classes","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-generics-enums-records/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> / <span>Dart in depth: generics, enums, records, extensions and sealed classes</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=dart-flutter&amp;lesson=dart-generics-enums-records"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Dart in depth: generics, enums, records, extensions and sealed classes</h1>
+<p>You know variables, functions, lists, classes and async. This lesson covers the features that make professional Flutter code short, safe and easy to change: <strong>generics</strong>, <strong>enhanced enums</strong>, <strong>records and patterns</strong>, <strong>extension methods</strong> and <strong>sealed classes</strong>. Every example is a complete program you can run with <code>dart run</code> (or paste into DartPad at dartpad.dev).</p>
+<h2>Generics: one class, many types</h2>
+<p>A <strong>generic</strong> type has a placeholder (usually <code>T</code>) that is filled in when you use it. You already use generics: <code>List&lt;String&gt;</code>, <code>Map&lt;String, int&gt;</code>, <code>Future&lt;User&gt;</code>.</p>
+<p>Writing your own is how you avoid copy-pasting the same class for products, customers and orders:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">// A result of an operation that can succeed with a value of type T, or fail with a message.
+class Result&lt;T&gt; {
+  final T? value;
+  final String? error;
+  const Result.ok(T this.value) : error = null;
+  const Result.fail(String this.error) : value = null;
+  bool get isOk =&gt; error == null;
+}
+
+class Product {
+  final String name;
+  final int price;
+  const Product(this.name, this.price);
+  @override
+  String toString() =&gt; &#x27;$name (KSh $price)&#x27;;
+}
+
+Result&lt;int&gt; parsePrice(String text) {
+  final n = int.tryParse(text.trim());
+  if (n == null) return const Result.fail(&#x27;Price must be a number&#x27;);
+  if (n &lt;= 0) return const Result.fail(&#x27;Price must be above 0&#x27;);
+  return Result.ok(n);
+}
+
+Result&lt;Product&gt; makeProduct(String name, String priceText) {
+  if (name.trim().length &lt; 2) return const Result.fail(&#x27;Name is too short&#x27;);
+  final price = parsePrice(priceText);
+  if (!price.isOk) return Result.fail(price.error!);
+  return Result.ok(Product(name.trim(), price.value!));
+}
+
+void main() {
+  for (final input in [(&#x27;Unga 2kg&#x27;, &#x27;180&#x27;), (&#x27;U&#x27;, &#x27;50&#x27;), (&#x27;Sugar&#x27;, &#x27;abc&#x27;), (&#x27;Milk&#x27;, &#x27;-5&#x27;)]) {
+    final r = makeProduct(input.$1, input.$2);
+    print(r.isOk ? &#x27;OK: ${r.value}&#x27; : &#x27;Error: ${r.error}&#x27;);
+  }
+}</code></pre></figure>
+<h3>Generic functions and bounds</h3>
+<p><code>T extends num</code> means "T can be any number type", so you can use <code>+</code> and <code>&gt;</code> on it:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">T largest&lt;T extends num&gt;(List&lt;T&gt; items) {
+  var best = items.first;
+  for (final x in items) {
+    if (x &gt; best) best = x;
+  }
+  return best;
+}
+
+// A generic cache: works for any key and value types
+class Cache&lt;K, V&gt; {
+  final _store = &lt;K, V&gt;{};
+  int hits = 0, misses = 0;
+
+  V getOrAdd(K key, V Function() create) {
+    if (_store.containsKey(key)) {
+      hits++;
+      return _store[key] as V;
+    }
+    misses++;
+    return _store[key] = create();
+  }
+}
+
+void main() {
+  print(largest([3, 9, 4]));           // int
+  print(largest([2.5, 1.75, 2.9]));    // double
+
+  final prices = Cache&lt;String, int&gt;();
+  for (final item in [&#x27;unga&#x27;, &#x27;sugar&#x27;, &#x27;unga&#x27;, &#x27;unga&#x27;]) {
+    prices.getOrAdd(item, () =&gt; item == &#x27;unga&#x27; ? 180 : 150);
+  }
+  print(&#x27;hits: ${prices.hits}, misses: ${prices.misses}&#x27;);
+}</code></pre></figure>
+<h2>Enhanced enums</h2>
+<p>An <code>enum</code> is a fixed set of values. In Dart, enums can have <strong>fields, constructors and methods</strong>, which removes lots of <code>if</code>/<code>switch</code> code:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">enum OrderStatus {
+  pending(&#x27;Waiting for payment&#x27;, false),
+  paid(&#x27;Paid&#x27;, false),
+  shipped(&#x27;On the way&#x27;, false),
+  delivered(&#x27;Delivered&#x27;, true),
+  cancelled(&#x27;Cancelled&#x27;, true);
+
+  final String label;
+  final bool isFinal;
+  const OrderStatus(this.label, this.isFinal);
+
+  // Which status can come next?
+  List&lt;OrderStatus&gt; get next =&gt; switch (this) {
+        OrderStatus.pending =&gt; [OrderStatus.paid, OrderStatus.cancelled],
+        OrderStatus.paid =&gt; [OrderStatus.shipped, OrderStatus.cancelled],
+        OrderStatus.shipped =&gt; [OrderStatus.delivered],
+        OrderStatus.delivered || OrderStatus.cancelled =&gt; [],
+      };
+
+  bool canMoveTo(OrderStatus other) =&gt; next.contains(other);
+}
+
+void main() {
+  for (final s in OrderStatus.values) {
+    print(&#x27;${s.name.padRight(10)} ${s.label.padRight(20)} final: ${s.isFinal}&#x27;);
+  }
+  print(OrderStatus.pending.canMoveTo(OrderStatus.paid));      // true
+  print(OrderStatus.delivered.canMoveTo(OrderStatus.pending)); // false
+  print(OrderStatus.values.byName(&#x27;shipped&#x27;).label);          // from a JSON string
+}</code></pre></figure>
+<p><code>values.byName(&#x27;shipped&#x27;)</code> turns the text from an API back into the enum. It throws if the name doesn't exist, so validate API data first.</p>
+<h2>Records: return several values without a class</h2>
+<p>A <strong>record</strong> groups values together: <code>(int, String)</code> or with names <code>({int total, int count})</code>. Great for returning more than one thing from a function:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">({int total, int count, double average}) summarise(List&lt;int&gt; sales) {
+  final total = sales.fold(0, (sum, s) =&gt; sum + s);
+  return (total: total, count: sales.length, average: sales.isEmpty ? 0 : total / sales.length);
+}
+
+(String, int) splitItem(String text) {
+  final parts = text.split(&#x27;x&#x27;);
+  return (parts[0].trim(), int.parse(parts[1].trim()));
+}
+
+void main() {
+  final s = summarise([1200, 450, 3000, 800]);
+  print(&#x27;Total ${s.total}, ${s.count} sales, average ${s.average.toStringAsFixed(1)}&#x27;);
+
+  // Destructuring: unpack a record into variables
+  final (name, qty) = splitItem(&#x27;Unga 2kg x 3&#x27;);
+  print(&#x27;$name: $qty&#x27;);
+
+  final (:total, :count, average: _) = summarise([100, 200]);
+  print(&#x27;$total from $count&#x27;);
+}</code></pre></figure>
+<h2>Patterns and switch expressions</h2>
+<p><strong>Patterns</strong> let you check the shape of data and pull values out in one step. They are perfect for JSON from an API:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">String describe(Object? json) =&gt; switch (json) {
+      {&#x27;type&#x27;: &#x27;sale&#x27;, &#x27;amount&#x27;: int amount} when amount &gt;= 10000 =&gt; &#x27;Big sale: KSh $amount&#x27;,
+      {&#x27;type&#x27;: &#x27;sale&#x27;, &#x27;amount&#x27;: int amount} =&gt; &#x27;Sale: KSh $amount&#x27;,
+      {&#x27;type&#x27;: &#x27;refund&#x27;, &#x27;amount&#x27;: int amount, &#x27;reason&#x27;: String reason} =&gt; &#x27;Refund KSh $amount ($reason)&#x27;,
+      [] =&gt; &#x27;Empty list&#x27;,
+      [var first, ...] =&gt; &#x27;List starting with $first&#x27;,
+      null =&gt; &#x27;Nothing received&#x27;,
+      _ =&gt; &#x27;Unknown data&#x27;,
+    };
+
+void main() {
+  print(describe({&#x27;type&#x27;: &#x27;sale&#x27;, &#x27;amount&#x27;: 1240}));
+  print(describe({&#x27;type&#x27;: &#x27;sale&#x27;, &#x27;amount&#x27;: 25000}));
+  print(describe({&#x27;type&#x27;: &#x27;refund&#x27;, &#x27;amount&#x27;: 300, &#x27;reason&#x27;: &#x27;damaged&#x27;}));
+  print(describe({&#x27;type&#x27;: &#x27;sale&#x27;, &#x27;amount&#x27;: &#x27;1240&#x27;}));   // amount is a String, not int
+  print(describe([5, 6, 7]));
+  print(describe(null));
+
+  // if-case: check and extract in an if statement
+  final Object data = {&#x27;phone&#x27;: &#x27;0712345678&#x27;};
+  if (data case {&#x27;phone&#x27;: String phone} when phone.length == 10) {
+    print(&#x27;Valid phone field: $phone&#x27;);
+  }
+}</code></pre></figure>
+<p>Notice that <code>&#x27;1240&#x27;</code> (text) doesn't match <code>int amount</code>. Patterns check <strong>types</strong>, which catches bad API data before it crashes your app.</p>
+<h2>Sealed classes: every case handled</h2>
+<p>A <code>sealed</code> class has a fixed set of subclasses in the same file. When you <code>switch</code> over it, Dart <strong>forces</strong> you to handle every subclass. This is the cleanest way to model screen states (loading, loaded, error) and payment results:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">sealed class PaymentState {}
+
+class Idle extends PaymentState {}
+
+class WaitingForPin extends PaymentState {
+  final String checkoutId;
+  WaitingForPin(this.checkoutId);
+}
+
+class Paid extends PaymentState {
+  final String receipt;
+  final int amount;
+  Paid(this.receipt, this.amount);
+}
+
+class Failed extends PaymentState {
+  final int code;
+  final String message;
+  Failed(this.code, this.message);
+}
+
+String screenText(PaymentState state) =&gt; switch (state) {
+      Idle() =&gt; &#x27;Tap &quot;Pay with M-Pesa&quot;&#x27;,
+      WaitingForPin(:final checkoutId) =&gt; &#x27;Enter your M-Pesa PIN on your phone ($checkoutId)&#x27;,
+      Paid(:final receipt, :final amount) =&gt; &#x27;Paid KSh $amount. Receipt $receipt&#x27;,
+      Failed(code: 1032) =&gt; &#x27;You cancelled the payment&#x27;,
+      Failed(:final message) =&gt; &#x27;Payment failed: $message&#x27;,
+    };
+
+void main() {
+  final states = &lt;PaymentState&gt;[
+    Idle(),
+    WaitingForPin(&#x27;ws_CO_0110&#x27;),
+    Paid(&#x27;SJ12ABC3DE&#x27;, 1240),
+    Failed(1032, &#x27;Request cancelled by user&#x27;),
+    Failed(1, &#x27;Insufficient balance&#x27;),
+  ];
+  for (final s in states) {
+    print(screenText(s));
+  }
+}</code></pre></figure>
+<p>If you add a new subclass (say <code>Refunded</code>) and forget it in the switch, the code <strong>won't compile</strong> until you handle it. That is how big apps stay bug-free when they grow.</p>
+<h2>Extension methods: add methods to existing types</h2>
+<p>You can't edit <code>int</code> or <code>String</code>, but you can <strong>extend</strong> them. Use this for formatting money, phone numbers and dates everywhere in your app:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">extension Money on int {
+  String get ksh {
+    final digits = toString();
+    final buf = StringBuffer();
+    for (var i = 0; i &lt; digits.length; i++) {
+      if (i &gt; 0 &amp;&amp; (digits.length - i) % 3 == 0) buf.write(&#x27;,&#x27;);
+      buf.write(digits[i]);
+    }
+    return &#x27;KSh $buf&#x27;;
+  }
+}
+
+extension KenyanPhone on String {
+  String? get msisdn {
+    final d = replaceAll(RegExp(r&#x27;\D&#x27;), &#x27;&#x27;);
+    if (RegExp(r&#x27;^0[17]\d{8}$&#x27;).hasMatch(d)) return &#x27;254${d.substring(1)}&#x27;;
+    if (RegExp(r&#x27;^254[17]\d{8}$&#x27;).hasMatch(d)) return d;
+    return null;
+  }
+}
+
+extension SumBy&lt;T&gt; on Iterable&lt;T&gt; {
+  int sumBy(int Function(T) pick) =&gt; fold(0, (total, x) =&gt; total + pick(x));
+}
+
+void main() {
+  print(1240.ksh);          // KSh 1,240
+  print(1500000.ksh);       // KSh 1,500,000
+  print(&#x27;0712 345 678&#x27;.msisdn);
+  print(&#x27;12345&#x27;.msisdn);
+
+  final cart = [(&#x27;Unga&#x27;, 180, 2), (&#x27;Sugar&#x27;, 150, 1)];
+  print(cart.sumBy((item) =&gt; item.$2 * item.$3).ksh);
+}</code></pre></figure>
+<h2>Immutability and <code>copyWith</code></h2>
+<p>In Flutter, state objects should be <strong>immutable</strong>: instead of changing an object, create a new one with the changes. The <code>copyWith</code> pattern makes that easy:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">class CartItem {
+  final String name;
+  final int price;
+  final int qty;
+  const CartItem({required this.name, required this.price, this.qty = 1});
+
+  CartItem copyWith({String? name, int? price, int? qty}) =&gt;
+      CartItem(name: name ?? this.name, price: price ?? this.price, qty: qty ?? this.qty);
+
+  int get subtotal =&gt; price * qty;
+
+  @override
+  bool operator ==(Object other) =&gt;
+      other is CartItem &amp;&amp; other.name == name &amp;&amp; other.price == price &amp;&amp; other.qty == qty;
+
+  @override
+  int get hashCode =&gt; Object.hash(name, price, qty);
+
+  @override
+  String toString() =&gt; &#x27;$name x$qty = $subtotal&#x27;;
+}
+
+void main() {
+  const a = CartItem(name: &#x27;Unga 2kg&#x27;, price: 180);
+  final b = a.copyWith(qty: 3);
+  print(a);                       // unchanged
+  print(b);
+  print(a == const CartItem(name: &#x27;Unga 2kg&#x27;, price: 180));   // true: same values
+  print(a == b);                                              // false
+}</code></pre></figure>
+<p>Overriding <code>==</code> and <code>hashCode</code> means two objects with the same values are equal, so Flutter (and state libraries like Riverpod and Bloc) can tell when something really changed. Packages like <strong>freezed</strong> generate this code for you in larger apps.</p>
+<h2>Summary</h2>
+<div class="static-table"><table><thead><tr><th>Feature</th><th>Use it for</th></tr></thead><tbody><tr><td>Generics <code>&lt;T&gt;</code></td><td>Reusable classes and functions (Result, Cache, Repository)</td></tr><tr><td>Enhanced enums</td><td>Statuses with labels, colours and rules</td></tr><tr><td>Records <code>(a, b)</code></td><td>Returning several values; quick groups</td></tr><tr><td>Patterns / <code>switch</code> expressions</td><td>Safely reading JSON and branching on shapes</td></tr><tr><td>Sealed classes</td><td>Screen states and results where every case must be handled</td></tr><tr><td>Extensions</td><td>Formatting money, phones and dates everywhere</td></tr><tr><td>Immutability + <code>copyWith</code></td><td>Predictable Flutter state</td></tr></tbody></table></div>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>In List&lt;T&gt;, what is T called? (one word)</p><details><summary>Show answer</summary><p>generic</p></details></li><li><p>Which keyword limits a generic, as in &lt;T ... num&gt;?</p><details><summary>Show answer</summary><p>extends</p></details></li><li><p>Which enum method turns the text 'shipped' into OrderStatus.shipped?</p><details><summary>Show answer</summary><p>byName</p></details></li><li><p>What is (int, String) called in Dart?</p><details><summary>Show answer</summary><p>record</p></details></li><li><p>Which class modifier makes switch force you to handle every subclass?</p><details><summary>Show answer</summary><p>sealed</p></details></li><li><p>Which keyword adds new methods to an existing type like int?</p><details><summary>Show answer</summary><p>extension</p></details></li><li><p>What is the method called that makes a changed copy of an immutable object?</p><details><summary>Show answer</summary><p>copyWith</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 10 in <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> · <a href="/learn/?book=dart-flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/dart-flutter/dart-classes-async/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Dart classes, JSON models and async/await</a><a class="btn btn-solid btn-sm" href="/learn/dart-flutter/dart-async-streams-errors/">Dart async in depth: Futures, Streams, timeouts, retries and isolates <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

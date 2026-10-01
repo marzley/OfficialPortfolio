@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Phone features, then building and publishing with EAS</title>
+    <meta name="description" content="Free React Native apps (Expo) lesson: Phone features, then building and publishing with EAS." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/react-native/react-native-device-and-publish/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Phone features, then building and publishing with EAS" />
+    <meta property="og:description" content="Free React Native apps (Expo) lesson: Phone features, then building and publishing with EAS." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/react-native/react-native-device-and-publish/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Phone features, then building and publishing with EAS" />
+    <meta name="twitter:description" content="Free React Native apps (Expo) lesson: Phone features, then building and publishing with EAS." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/react-native/react-native-device-and-publish/#lesson","name":"Phone features, then building and publishing with EAS","description":"Free React Native apps (Expo) lesson: Phone features, then building and publishing with EAS.","url":"https://marzleytechsolutions.co.ke/learn/react-native/react-native-device-and-publish/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/react-native/#course","name":"React Native apps (Expo)","url":"https://marzleytechsolutions.co.ke/learn/react-native/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"React Native apps (Expo)","item":"https://marzleytechsolutions.co.ke/learn/react-native/"},{"@type":"ListItem","position":4,"name":"Phone features, then building and publishing with EAS","item":"https://marzleytechsolutions.co.ke/learn/react-native/react-native-device-and-publish/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/react-native/">React Native apps (Expo)</a> / <span>Phone features, then building and publishing with EAS</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=react-native&amp;lesson=react-native-device-and-publish"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Phone features, then building and publishing with EAS</h1>
+<h2>Phone features with Expo libraries</h2>
+<p>Install with <code>npx expo install &lt;package&gt;</code> (it picks versions compatible with your Expo SDK).</p>
+<div class="static-table"><table><thead><tr><th>Feature</th><th>Package</th></tr></thead><tbody><tr><td>Camera and gallery</td><td><code>expo-image-picker</code>, <code>expo-camera</code></td></tr><tr><td>Location</td><td><code>expo-location</code></td></tr><tr><td>Calls, SMS, WhatsApp, maps, websites</td><td><code>Linking</code> (built in)</td></tr><tr><td>Push notifications</td><td><code>expo-notifications</code></td></tr><tr><td>Sharing files and text</td><td><code>expo-sharing</code>, <code>Share</code> (built in)</td></tr><tr><td>QR and barcode scanning</td><td><code>expo-camera</code></td></tr><tr><td>Fingerprint/face unlock</td><td><code>expo-local-authentication</code></td></tr></tbody></table></div>
+<h3>Calls, WhatsApp and maps</h3>
+<figure class="static-code"><figcaption>JSX</figcaption><pre><code class="language-jsx">import { Linking, Alert, Pressable, Text, View } from &quot;react-native&quot;;
+
+const PHONE = &quot;254745789590&quot;;
+
+async function open(url) {
+  try {
+    await Linking.openURL(url);
+  } catch (e) {
+    Alert.alert(&quot;Can&#x27;t open&quot;, &quot;No app on this phone can open that.&quot;);
+  }
+}
+
+export default function Contact() {
+  const msg = encodeURIComponent(&quot;Hello, I&#x27;d like to order 2 packets of unga.&quot;);
+  return (
+    &lt;View style={{ padding: 16, gap: 12 }}&gt;
+      &lt;Pressable onPress={() =&gt; open(`tel:+${PHONE}`)}&gt;&lt;Text&gt;📞 Call&lt;/Text&gt;&lt;/Pressable&gt;
+      &lt;Pressable onPress={() =&gt; open(`https://wa.me/${PHONE}?text=${msg}`)}&gt;&lt;Text&gt;💬 WhatsApp&lt;/Text&gt;&lt;/Pressable&gt;
+      &lt;Pressable onPress={() =&gt; open(`sms:+${PHONE}?body=${msg}`)}&gt;&lt;Text&gt;✉️ SMS&lt;/Text&gt;&lt;/Pressable&gt;
+      &lt;Pressable onPress={() =&gt; open(&quot;https://www.google.com/maps/search/?api=1&amp;query=Thika+Town&quot;)}&gt;&lt;Text&gt;🗺️ Directions&lt;/Text&gt;&lt;/Pressable&gt;
+    &lt;/View&gt;
+  );
+}</code></pre></figure>
+<h3>Taking a photo</h3>
+<figure class="static-code"><figcaption>JSX</figcaption><pre><code class="language-jsx">import { useState } from &quot;react&quot;;
+import { View, Image, Pressable, Text } from &quot;react-native&quot;;
+import * as ImagePicker from &quot;expo-image-picker&quot;;
+
+export default function ReceiptPhoto() {
+  const [uri, setUri] = useState(null);
+
+  async function takePhoto() {
+    const { granted } = await ImagePicker.requestCameraPermissionsAsync();
+    if (!granted) return alert(&quot;Camera permission is needed to photograph the receipt.&quot;);
+    const result = await ImagePicker.launchCameraAsync({ quality: 0.7 });   // smaller files, faster uploads
+    if (!result.canceled) setUri(result.assets[0].uri);
+  }
+
+  return (
+    &lt;View style={{ padding: 16, gap: 12 }}&gt;
+      &lt;Pressable onPress={takePhoto}&gt;&lt;Text style={{ fontWeight: &quot;700&quot; }}&gt;Take receipt photo&lt;/Text&gt;&lt;/Pressable&gt;
+      {uri &amp;&amp; &lt;Image source={{ uri }} style={{ width: &quot;100%&quot;, height: 320, borderRadius: 12 }} /&gt;}
+    &lt;/View&gt;
+  );
+}</code></pre></figure>
+<h3>Location</h3>
+<figure class="static-code"><figcaption>JS</figcaption><pre><code class="language-js">import * as Location from &quot;expo-location&quot;;
+
+export async function currentPosition() {
+  const { status } = await Location.requestForegroundPermissionsAsync();
+  if (status !== &quot;granted&quot;) throw new Error(&quot;We need your location to find the nearest branch.&quot;);
+  const pos = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+  return { lat: pos.coords.latitude, lng: pos.coords.longitude };
+}</code></pre></figure>
+<p><strong>Permission rules:</strong> ask only when the user taps the feature, explain why first, and keep the app usable if they say no.</p>
+<h2>Configuring the app (app.json)</h2>
+<figure class="static-code"><figcaption>JSON</figcaption><pre><code class="language-json">{
+  &quot;expo&quot;: {
+    &quot;name&quot;: &quot;Duka&quot;,
+    &quot;slug&quot;: &quot;duka&quot;,
+    &quot;version&quot;: &quot;1.0.0&quot;,
+    &quot;icon&quot;: &quot;./assets/icon.png&quot;,
+    &quot;splash&quot;: { &quot;image&quot;: &quot;./assets/splash.png&quot;, &quot;backgroundColor&quot;: &quot;#0b1b35&quot; },
+    &quot;android&quot;: {
+      &quot;package&quot;: &quot;ke.co.marzley.duka&quot;,
+      &quot;versionCode&quot;: 1,
+      &quot;adaptiveIcon&quot;: { &quot;foregroundImage&quot;: &quot;./assets/adaptive-icon.png&quot;, &quot;backgroundColor&quot;: &quot;#0b1b35&quot; }
+    },
+    &quot;ios&quot;: { &quot;bundleIdentifier&quot;: &quot;ke.co.marzley.duka&quot; }
+  }
+}</code></pre></figure>
+<p>The Android <code>package</code> is your permanent application ID on Google Play.</p>
+<h2>Building with EAS (Expo Application Services)</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">npm install -g eas-cli
+eas login                      # free Expo account
+eas build:configure
+eas build -p android --profile preview      # an installable APK to share for testing
+eas build -p android --profile production   # an AAB for Google Play</code></pre></figure>
+<p>EAS builds in the cloud, so you <strong>don't need Android Studio</strong>, and it can build <strong>iPhone</strong> apps without a Mac (you still need an Apple Developer account to publish). EAS manages your signing keys; download a backup of the Android keystore.</p>
+<p><strong>Over-the-air updates:</strong> <code>eas update</code> pushes JavaScript and asset changes to installed apps without a new store release (native changes still need a new build). Follow the store rules: don't change what the app fundamentally does through updates.</p>
+<h2>Publishing</h2>
+<ul><li><strong>Google Play</strong>: create the app in Play Console (US$25 once), complete the store listing and app content, run closed testing (new personal accounts need <strong>12 testers for 14 days</strong>), then upload the AAB (or use <code>eas submit -p android</code>). Full steps: <strong>App development fundamentals → Testing and publishing</strong>.</li><li><strong>App Store</strong>: Apple Developer Program (US$99 per year), App Store Connect listing, <code>eas submit -p ios</code>.</li></ul>
+<h2>A project to build</h2>
+<p><strong>"Mtaa Deliveries"</strong>: a small delivery app.</p>
+<ol><li>Tabs: New request, My requests, Account.</li><li>New request form: pickup, drop-off, phone, item description, photo.</li><li>Save requests locally (SQLite) and send them to an API.</li><li>"Call rider" and "WhatsApp rider" buttons with <code>Linking</code>.</li><li>Build an APK with EAS and test it on two phones; then publish.</li></ol>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command installs an Expo package with compatible versions?</p><details><summary>Show answer</summary><p>npx expo install</p></details></li><li><p>Which built-in module opens tel:, sms: and https: links?</p><details><summary>Show answer</summary><p>Linking</p></details></li><li><p>Which Expo library takes photos or picks images from the gallery?</p><details><summary>Show answer</summary><p>expo-image-picker</p></details></li><li><p>Which service builds React Native apps in the cloud?</p><details><summary>Show answer</summary><p>EAS</p></details></li><li><p>Which EAS command pushes JavaScript updates without a new store release?</p><details><summary>Show answer</summary><p>eas update</p></details></li><li><p>In app.json, which Android field is the permanent application ID?</p><details><summary>Show answer</summary><p>package</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 5 in <a href="/learn/react-native/">React Native apps (Expo)</a> · <a href="/learn/?book=react-native">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/react-native/react-native-state-data/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> State, APIs and storing data on the phone</a><span></span></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kotlin classes, data classes, sealed classes and null safety</title>
+    <meta name="description" content="Apps model real things (products, users, orders) as classes , and they handle missing data all the time. Kotlin&#x27;s class features and null safety make…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/kotlin-android/kotlin-classes-null-safety/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Kotlin classes, data classes, sealed classes and null safety" />
+    <meta property="og:description" content="Apps model real things (products, users, orders) as classes , and they handle missing data all the time. Kotlin&#x27;s class features and null safety make…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/kotlin-android/kotlin-classes-null-safety/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Kotlin classes, data classes, sealed classes and null safety" />
+    <meta name="twitter:description" content="Apps model real things (products, users, orders) as classes , and they handle missing data all the time. Kotlin&#x27;s class features and null safety make…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/kotlin-android/kotlin-classes-null-safety/#lesson","name":"Kotlin classes, data classes, sealed classes and null safety","description":"Apps model real things (products, users, orders) as classes , and they handle missing data all the time. Kotlin's class features and null safety make…","url":"https://marzleytechsolutions.co.ke/learn/kotlin-android/kotlin-classes-null-safety/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/kotlin-android/#course","name":"Android apps with Kotlin","url":"https://marzleytechsolutions.co.ke/learn/kotlin-android/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Android apps with Kotlin","item":"https://marzleytechsolutions.co.ke/learn/kotlin-android/"},{"@type":"ListItem","position":4,"name":"Kotlin classes, data classes, sealed classes and null safety","item":"https://marzleytechsolutions.co.ke/learn/kotlin-android/kotlin-classes-null-safety/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/kotlin-android/">Android apps with Kotlin</a> / <span>Kotlin classes, data classes, sealed classes and null safety</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=kotlin-android&amp;lesson=kotlin-classes-null-safety"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Kotlin classes, data classes, sealed classes and null safety</h1>
+<p>Apps model real things (products, users, orders) as <strong>classes</strong>, and they handle missing data all the time. Kotlin's class features and <strong>null safety</strong> make both clean and crash-resistant.</p>
+<h2>Classes</h2>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">class BankAccount(val owner: String, private var balance: Int = 0) {
+    fun deposit(amount: Int) {
+        require(amount &gt; 0) { &quot;Deposit must be positive&quot; }
+        balance += amount
+    }
+
+    fun withdraw(amount: Int): Boolean {
+        if (amount &gt; balance) return false
+        balance -= amount
+        return true
+    }
+
+    fun balance() = balance
+}
+
+fun main() {
+    val acc = BankAccount(&quot;Wanjiru&quot;)
+    acc.deposit(5000)
+    println(&quot;Withdraw 2000: ${acc.withdraw(2000)}&quot;)
+    println(&quot;Withdraw 9000: ${acc.withdraw(9000)}&quot;)
+    println(&quot;${acc.owner} has KSh ${acc.balance()}&quot;)
+}</code></pre></figure>
+<p><code>private</code> keeps <code>balance</code> hidden, so it can only change through <code>deposit</code> and <code>withdraw</code>. That's <strong>encapsulation</strong>.</p>
+<h2>Data classes: perfect for app data</h2>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">data class Order(val id: Int, val customer: String, val total: Int, val paid: Boolean = false)
+
+fun main() {
+    val o1 = Order(1042, &quot;Kamau&quot;, 1240)
+    val o2 = Order(1042, &quot;Kamau&quot;, 1240)
+    println(o1)                     // readable toString for free
+    println(o1 == o2)               // compares contents: true
+    val paid = o1.copy(paid = true) // a changed copy (the original stays the same)
+    println(paid)
+    val (id, customer) = paid       // destructuring
+    println(&quot;Order $id for $customer&quot;)
+}</code></pre></figure>
+<p>Data classes give you <code>toString</code>, <code>equals</code>, <code>copy</code> and destructuring automatically. Android UI state is usually a data class that you <code>copy</code> when something changes.</p>
+<h2>Enums and sealed classes</h2>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">enum class PaymentMethod { CASH, MPESA, CARD }
+
+// A sealed class: a fixed set of possible results, each carrying different data
+sealed class PaymentResult {
+    data class Success(val receipt: String) : PaymentResult()
+    data class Failed(val reason: String) : PaymentResult()
+    object Cancelled : PaymentResult()
+}
+
+fun message(r: PaymentResult): String = when (r) {      // the compiler checks every case is handled
+    is PaymentResult.Success -&gt; &quot;Paid. Receipt ${r.receipt}&quot;
+    is PaymentResult.Failed -&gt; &quot;Payment failed: ${r.reason}&quot;
+    PaymentResult.Cancelled -&gt; &quot;You cancelled the payment&quot;
+}
+
+fun main() {
+    println(PaymentMethod.MPESA)
+    listOf(PaymentResult.Success(&quot;SGH4XXXXXX&quot;), PaymentResult.Failed(&quot;Insufficient funds&quot;), PaymentResult.Cancelled)
+        .forEach { println(message(it)) }
+}</code></pre></figure>
+<p><strong>Sealed classes</strong> are how Android apps model screen states (<code>Loading</code>, <code>Success(data)</code>, <code>Error(message)</code>), and <code>when</code> makes sure you handle every one.</p>
+<h2>Interfaces and inheritance</h2>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">interface Payable {
+    fun amountDue(): Int
+}
+
+open class Customer(val name: String)                    // open: can be inherited
+
+class CreditCustomer(name: String, private val owed: Int) : Customer(name), Payable {
+    override fun amountDue() = owed
+}
+
+fun main() {
+    val c = CreditCustomer(&quot;Fatuma&quot;, 2300)
+    println(&quot;${c.name} owes KSh ${c.amountDue()}&quot;)
+}</code></pre></figure>
+<h2>Null safety: no more "null pointer" crashes</h2>
+<p>A normal type <strong>can't be null</strong>. Add <code>?</code> to allow null, and Kotlin forces you to handle it:</p>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">fun findPhone(name: String): String? =                   // may return null
+    mapOf(&quot;Kamau&quot; to &quot;0712345678&quot;, &quot;Amina&quot; to &quot;0722000111&quot;)[name]
+
+fun main() {
+    val phone: String? = findPhone(&quot;Otieno&quot;)
+
+    println(phone?.length)                               // safe call: null if phone is null
+    println(phone ?: &quot;No phone saved&quot;)                   // elvis: default value
+    val len = phone?.length ?: 0
+    println(&quot;Length: $len&quot;)
+
+    findPhone(&quot;Amina&quot;)?.let { println(&quot;Calling $it&quot;) }  // run only if not null
+
+    val input = &quot;12x&quot;
+    val qty = input.toIntOrNull() ?: 1                   // safe conversion
+    println(&quot;Quantity: $qty&quot;)
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Operator</th><th>Meaning</th></tr></thead><tbody><tr><td><code>String?</code></td><td>May be null</td></tr><tr><td><code>a?.b</code></td><td>Call only if <code>a</code> isn't null; otherwise the result is null</td></tr><tr><td><code>a ?: b</code></td><td>Use <code>b</code> if <code>a</code> is null</td></tr><tr><td><code>a?.let { }</code></td><td>Run the block only when <code>a</code> isn't null</td></tr><tr><td><code>a!!</code></td><td>"I promise it's not null": crashes if it is. Avoid.</td></tr></tbody></table></div>
+<h2>Objects and companion objects</h2>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">object AppConfig {                       // a single shared instance
+    const val APP_NAME = &quot;Duka Connect&quot;
+    var darkMode = false
+}
+
+class Receipt private constructor(val number: String) {
+    companion object {                   // like &quot;static&quot; in other languages
+        private var counter = 1000
+        fun next() = Receipt(&quot;R&quot; + counter++)
+    }
+}
+
+fun main() {
+    println(AppConfig.APP_NAME)
+    println(Receipt.next().number)
+    println(Receipt.next().number)
+}</code></pre></figure>
+<h2>Handling errors</h2>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">fun parseAmount(text: String): Result&lt;Int&gt; = runCatching {
+    val n = text.trim().toInt()
+    require(n &gt; 0) { &quot;Amount must be more than zero&quot; }
+    n
+}
+
+fun main() {
+    for (t in listOf(&quot;500&quot;, &quot;abc&quot;, &quot;-20&quot;)) {
+        parseAmount(t)
+            .onSuccess { println(&quot;OK: $it&quot;) }
+            .onFailure { println(&quot;Error for &#x27;$t&#x27;: ${it.message}&quot;) }
+    }
+}</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which kind of class automatically gets toString, equals and copy?</p><details><summary>Show answer</summary><p>data class</p></details></li><li><p>Which kind of class represents a fixed set of possible states?</p><details><summary>Show answer</summary><p>sealed class</p></details></li><li><p>How do you mark a type that can be null? Write it for String.</p><details><summary>Show answer</summary><p>String?</p></details></li><li><p>What does the safe call operator look like?</p><details><summary>Show answer</summary><p>?.</p></details></li><li><p>Which operator crashes if the value is null and should be avoided?</p><details><summary>Show answer</summary><p>!!</p></details></li><li><p>Which keyword lets a class be inherited from?</p><details><summary>Show answer</summary><p>open</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 10 in <a href="/learn/kotlin-android/">Android apps with Kotlin</a> · <a href="/learn/?book=kotlin-android">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/kotlin-android/kotlin-functions-collections/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Kotlin functions, lambdas and collections</a><a class="btn btn-solid btn-sm" href="/learn/kotlin-android/kotlin-coroutines/">Coroutines and Flow (doing slow work without freezing the app) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

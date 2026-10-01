@@ -157,17 +157,24 @@ Future&lt;void&gt; main() async {
 <figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;dart:convert&#x27;;
 import &#x27;package:http/http.dart&#x27; as http;
 
+class Order {                                   // a short version of the Order class above
+  final int id;
+  final double total;
+  Order(this.id, this.total);
+  factory Order.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Order(json[&#x27;id&#x27;] as int, (json[&#x27;total&#x27;] as num).toDouble());
+}
+
 Future&lt;List&lt;Order&gt;&gt; loadOrders() async {
   final res = await http.get(Uri.parse(&#x27;https://example.com/api/orders&#x27;));
   if (res.statusCode != 200) {
     throw Exception(&#x27;Server error ${res.statusCode}&#x27;);
   }
   final data = jsonDecode(res.body) as List;
-  return data.map((e) =&gt; Order.fromJson(e)).toList();
+  return data.map((e) =&gt; Order.fromJson(e as Map&lt;String, dynamic&gt;)).toList();
 }</code></pre></figure>
 <h2>Streams (values over time)</h2>
 <p>A <strong>Stream</strong> delivers many values over time: live chat messages, location updates, a countdown. <code>await for</code> reads them one by one, and Flutter's <code>StreamBuilder</code> widget redraws the screen on each value.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword makes a field unchangeable after the object is created?</p><details><summary>Show answer</summary><p>final</p></details></li><li><p>What kind of constructor usually builds a model from JSON? (one word)</p><details><summary>Show answer</summary><p>factory</p></details></li><li><p>Which Dart function turns a JSON string into maps and lists?</p><details><summary>Show answer</summary><p>jsonDecode</p></details></li><li><p>What type represents a value that will arrive later in Dart?</p><details><summary>Show answer</summary><p>Future</p></details></li><li><p>Which function waits for several Futures at the same time?</p><details><summary>Show answer</summary><p>Future.wait</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 7 in <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> · <a href="/learn/?book=dart-flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/dart-flutter/dart-functions-collections/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Dart functions, lists, maps and null safety</a><a class="btn btn-solid btn-sm" href="/learn/dart-flutter/flutter-widgets/">Flutter widgets and layouts <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword makes a field unchangeable after the object is created?</p><details><summary>Show answer</summary><p>final</p></details></li><li><p>What kind of constructor usually builds a model from JSON? (one word)</p><details><summary>Show answer</summary><p>factory</p></details></li><li><p>Which Dart function turns a JSON string into maps and lists?</p><details><summary>Show answer</summary><p>jsonDecode</p></details></li><li><p>What type represents a value that will arrive later in Dart?</p><details><summary>Show answer</summary><p>Future</p></details></li><li><p>Which function waits for several Futures at the same time?</p><details><summary>Show answer</summary><p>Future.wait</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 10 in <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> · <a href="/learn/?book=dart-flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/dart-flutter/dart-functions-collections/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Dart functions, lists, maps and null safety</a><a class="btn btn-solid btn-sm" href="/learn/dart-flutter/dart-generics-enums-records/">Dart in depth: generics, enums, records, extensions and sealed classes <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

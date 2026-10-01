@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Navigation, ViewModel and MVVM architecture | Marzley Learn</title>
+    <meta name="description" content="Real apps have many screens and logic that must survive rotation and keep code organised. Google&#x27;s recommended architecture uses Navigation Compose …" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/kotlin-android/navigation-and-mvvm/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Navigation, ViewModel and MVVM architecture | Marzley Learn" />
+    <meta property="og:description" content="Real apps have many screens and logic that must survive rotation and keep code organised. Google&#x27;s recommended architecture uses Navigation Compose …" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/kotlin-android/navigation-and-mvvm/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Navigation, ViewModel and MVVM architecture | Marzley Learn" />
+    <meta name="twitter:description" content="Real apps have many screens and logic that must survive rotation and keep code organised. Google&#x27;s recommended architecture uses Navigation Compose …" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/kotlin-android/navigation-and-mvvm/#lesson","name":"Navigation, ViewModel and MVVM architecture","description":"Real apps have many screens and logic that must survive rotation and keep code organised. Google's recommended architecture uses Navigation Compose …","url":"https://marzleytechsolutions.co.ke/learn/kotlin-android/navigation-and-mvvm/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/kotlin-android/#course","name":"Android apps with Kotlin","url":"https://marzleytechsolutions.co.ke/learn/kotlin-android/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Android apps with Kotlin","item":"https://marzleytechsolutions.co.ke/learn/kotlin-android/"},{"@type":"ListItem","position":4,"name":"Navigation, ViewModel and MVVM architecture","item":"https://marzleytechsolutions.co.ke/learn/kotlin-android/navigation-and-mvvm/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/kotlin-android/">Android apps with Kotlin</a> / <span>Navigation, ViewModel and MVVM architecture</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=kotlin-android&amp;lesson=navigation-and-mvvm"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Navigation, ViewModel and MVVM architecture</h1>
+<p>Real apps have many screens and logic that must survive rotation and keep code organised. Google's recommended architecture uses <strong>Navigation Compose</strong>, <strong>ViewModels</strong> with <strong>StateFlow</strong>, and <strong>repositories</strong>: commonly called <strong>MVVM</strong> (Model, View, ViewModel).</p>
+<h2>The architecture in one picture</h2>
+<figure class="static-code"><pre><code>UI layer        Composable screens  ← observe state, send events
+                     │ events ▲ state (StateFlow)
+                ViewModel          ← holds screen state, calls the repository
+                     │
+Data layer      Repository          ← single source of truth: decides network vs local database
+                ├── Remote data source (Retrofit API)
+                └── Local data source (Room database)</code></pre></figure>
+<ul><li><strong>Screens</strong> don't know where data comes from.</li><li><strong>ViewModels</strong> survive rotation and hold UI state.</li><li><strong>Repositories</strong> hide the details of APIs and databases, so you can test and change them.</li></ul>
+<h2>Navigation Compose</h2>
+<p>Add the dependency <code>androidx.navigation:navigation-compose</code>. Define destinations and a <code>NavHost</code>:</p>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">@Composable
+fun DukaNavHost() {
+    val navController = rememberNavController()
+
+    NavHost(navController = navController, startDestination = &quot;products&quot;) {
+        composable(&quot;products&quot;) {
+            ProductsScreen(onOpen = { id -&gt; navController.navigate(&quot;product/$id&quot;) })
+        }
+        composable(
+            route = &quot;product/{id}&quot;,
+            arguments = listOf(navArgument(&quot;id&quot;) { type = NavType.IntType }),
+        ) { entry -&gt;
+            val id = entry.arguments?.getInt(&quot;id&quot;) ?: return@composable
+            ProductDetailScreen(productId = id, onBack = { navController.popBackStack() })
+        }
+        composable(&quot;cart&quot;) { CartScreen() }
+    }
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Call</th><th>Does</th></tr></thead><tbody><tr><td><code>navController.navigate(&quot;cart&quot;)</code></td><td>Open a screen</td></tr><tr><td><code>navController.popBackStack()</code></td><td>Go back</td></tr><tr><td><code>navigate(&quot;home&quot;) { popUpTo(&quot;login&quot;) { inclusive = true } }</code></td><td>After login: remove the login screen from the back stack</td></tr></tbody></table></div>
+<p>(Newer Navigation versions also support <strong>type-safe routes</strong> using <code>@Serializable</code> classes instead of strings; the ideas are the same.)</p>
+<p>A <strong>bottom navigation bar</strong> combines <code>NavigationBar</code> + <code>NavigationBarItem</code> with <code>navController.navigate(route)</code> and highlights the current route from <code>navController.currentBackStackEntryAsState()</code>.</p>
+<h2>ViewModel + StateFlow</h2>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">data class ProductsUiState(
+    val loading: Boolean = true,
+    val products: List&lt;Product&gt; = emptyList(),
+    val error: String? = null,
+    val query: String = &quot;&quot;,
+)
+
+data class Product(val id: Int, val name: String, val price: Int, val stock: Int)
+
+class ProductsViewModel(private val repo: ProductRepository) : ViewModel() {
+
+    private val _state = MutableStateFlow(ProductsUiState())
+    val state: StateFlow&lt;ProductsUiState&gt; = _state.asStateFlow()   // screens can read, not change
+
+    init { load() }
+
+    fun load() {
+        viewModelScope.launch {
+            _state.update { it.copy(loading = true, error = null) }
+            try {
+                val items = repo.getProducts()
+                _state.update { it.copy(loading = false, products = items) }
+            } catch (e: Exception) {
+                _state.update { it.copy(loading = false, error = &quot;Could not load products. Check your internet.&quot;) }
+            }
+        }
+    }
+
+    fun onQueryChange(q: String) = _state.update { it.copy(query = q) }
+}
+
+interface ProductRepository { suspend fun getProducts(): List&lt;Product&gt; }</code></pre></figure>
+<h2>The screen observes the state</h2>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">@Composable
+fun ProductsScreen(viewModel: ProductsViewModel = viewModel(), onOpen: (Int) -&gt; Unit) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val visible = state.products.filter { it.name.contains(state.query, ignoreCase = true) }
+
+    Column {
+        OutlinedTextField(
+            value = state.query,
+            onValueChange = viewModel::onQueryChange,
+            label = { Text(&quot;Search&quot;) },
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
+        )
+        when {
+            state.loading -&gt; Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+            state.error != null -&gt; Column(Modifier.padding(16.dp)) {
+                Text(state.error!!)
+                TextButton(onClick = viewModel::load) { Text(&quot;Try again&quot;) }
+            }
+            visible.isEmpty() -&gt; Text(&quot;No products found&quot;, Modifier.padding(16.dp))
+            else -&gt; LazyColumn {
+                items(visible, key = { it.id }) { p -&gt;
+                    ListItem(
+                        headlineContent = { Text(p.name) },
+                        supportingContent = { Text(&quot;KSh ${p.price}&quot;) },
+                        trailingContent = { Text(if (p.stock == 0) &quot;Out&quot; else &quot;${p.stock} left&quot;) },
+                        modifier = Modifier.clickable { onOpen(p.id) },
+                    )
+                }
+            }
+        }
+    }
+}</code></pre></figure>
+<p><code>collectAsStateWithLifecycle()</code> (from <code>lifecycle-runtime-compose</code>) collects the flow only while the screen is visible.</p>
+<h2>Creating ViewModels with dependencies</h2>
+<p>ViewModels often need a repository. Options:</p>
+<ul><li>A <code>ViewModelProvider.Factory</code> (simple projects).</li><li><strong>Hilt</strong> (Google's dependency injection library): annotate with <code>@HiltViewModel</code> and <code>@Inject constructor(...)</code>, then get it with <code>hiltViewModel()</code>. Most professional apps use Hilt or Koin.</li></ul>
+<h2>Why this structure pays off</h2>
+<div class="static-table"><table><thead><tr><th>Without architecture</th><th>With MVVM</th></tr></thead><tbody><tr><td>Rotating the phone reloads data and loses input</td><td>ViewModel keeps the state</td></tr><tr><td>Network code inside screens</td><td>Screens only draw state</td></tr><tr><td>Hard to test</td><td>ViewModels and repositories are plain Kotlin: easy to unit-test</td></tr><tr><td>Changing from API to database means rewriting screens</td><td>Only the repository changes</td></tr></tbody></table></div>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does MVVM stand for? Write the three words after Model.</p><details><summary>Show answer</summary><p>View ViewModel</p></details></li><li><p>Which component survives screen rotation and holds UI state?</p><details><summary>Show answer</summary><p>ViewModel</p></details></li><li><p>Which class hides whether data comes from the network or the database?</p><details><summary>Show answer</summary><p>repository</p></details></li><li><p>Which call opens another screen with Navigation Compose?</p><details><summary>Show answer</summary><p>navigate</p></details></li><li><p>Which flow type holds the current screen state?</p><details><summary>Show answer</summary><p>StateFlow</p></details></li><li><p>Which Google library is used for dependency injection?</p><details><summary>Show answer</summary><p>Hilt</p></details></li></ol></section></div><p class="static-meta">Lesson 8 of 10 in <a href="/learn/kotlin-android/">Android apps with Kotlin</a> · <a href="/learn/?book=kotlin-android">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/kotlin-android/compose-state-lists/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Compose state, lists and forms</a><a class="btn btn-solid btn-sm" href="/learn/kotlin-android/retrofit-and-room/">Data: Retrofit for APIs and Room for the local database <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>
