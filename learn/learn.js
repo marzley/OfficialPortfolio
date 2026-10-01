@@ -9,7 +9,7 @@
     cybersecurity: "fa-solid fa-shield-halved", hosting: "fa-solid fa-server", marketing: "fa-solid fa-bullhorn", "it-basics": "fa-solid fa-computer",
     "web-design": "fa-solid fa-pen-ruler", "graphic-design": "fa-solid fa-palette", algorithms: "fa-solid fa-diagram-project", typescript: "fa-solid fa-code",
     "app-dev-basics": "fa-solid fa-mobile-screen-button", flutter: "fa-solid fa-layer-group", "kotlin-android": "fa-brands fa-android", react: "fa-brands fa-react",
-    "react-native": "fa-solid fa-mobile", "apis-backend": "fa-solid fa-plug",
+    "react-native": "fa-solid fa-mobile", "apis-backend": "fa-solid fa-plug", "artificial-intelligence": "fa-solid fa-brain",
     java: "fa-brands fa-java", "c-programming": "fa-solid fa-microchip", cpp: "fa-solid fa-gears", csharp: "fa-brands fa-microsoft", "dart-flutter": "fa-solid fa-mobile-screen",
     go: "fa-brands fa-golang", "digital-literacy": "fa-solid fa-user-shield", "ms-word": "fa-solid fa-file-word", excel: "fa-solid fa-table",
     powerpoint: "fa-solid fa-person-chalkboard", "google-workspace": "fa-solid fa-cloud", "ai-tools": "fa-solid fa-robot", "e-services-kenya": "fa-solid fa-landmark",
@@ -17,9 +17,10 @@
   var TRACK_GROUPS = [
     { title: "Web & coding", icon: "fa-solid fa-code", slugs: ["html", "css", "javascript", "python", "sql", "php", "typescript", "algorithms", "git"] },
     { title: "App development", icon: "fa-solid fa-mobile-screen-button", slugs: ["app-dev-basics", "dart-flutter", "flutter", "kotlin-android", "react", "react-native", "apis-backend"] },
+    { title: "Artificial intelligence (AI)", icon: "fa-solid fa-brain", slugs: ["artificial-intelligence", "ai-tools"] },
     { title: "More programming languages", icon: "fa-solid fa-laptop-code", slugs: ["java", "c-programming", "cpp", "csharp", "go"] },
     { title: "Design", icon: "fa-solid fa-palette", slugs: ["web-design", "graphic-design"] },
-    { title: "ICT & digital skills", icon: "fa-solid fa-computer", slugs: ["it-basics", "digital-literacy", "ms-word", "excel", "powerpoint", "google-workspace", "ai-tools", "e-services-kenya", "computer-maintenance"] },
+    { title: "ICT & digital skills", icon: "fa-solid fa-computer", slugs: ["it-basics", "digital-literacy", "ms-word", "excel", "powerpoint", "google-workspace", "e-services-kenya", "computer-maintenance"] },
     { title: "Networking, systems & security", icon: "fa-solid fa-network-wired", slugs: ["networking", "linux", "cybersecurity", "hosting"] },
     { title: "Business & earning online", icon: "fa-solid fa-sack-dollar", slugs: ["make-money-online", "marketing"] }
   ];
@@ -734,7 +735,7 @@
     showSide(false);
     setTitle("");
     main.innerHTML = '<section class="hero-learn"><div><p class="eyebrow">Marzley Tech Learning Hub</p><h1>Learn tech skills free, right in your browser</h1>' +
-      '<p class="lead" id="hub-lead">30+ subjects and 350+ lessons: coding in 13 languages with a live editor, web and graphic design, Excel, Word and everyday ICT skills, networking and subnetting, cybersecurity, AI tools and how to make money online. Practise with questions that check themselves. Works on your phone.</p>' +
+      '<p class="lead" id="hub-lead">30+ subjects and 375+ lessons: coding in 13 languages with a live editor, web and graphic design, Excel, Word and everyday ICT skills, networking and subnetting, cybersecurity, AI tools and how to make money online. Practise with questions that check themselves. Works on your phone.</p>' +
       '<div id="hub-search"></div><ul class="free-badges"><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Tutorials: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Notes: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Practice: free</li><li><i class="fa-solid fa-user" aria-hidden="true"></i> No account needed</li></ul>' +
       '<p class="hero-ctas"><a class="btn btn-solid" href="./?track=html">Start with HTML</a><a class="btn btn-line" href="./?page=practice">Open the code editor</a></p></div>' +
       '<div class="hero-code" aria-hidden="true"><pre><span class="c-k">print</span>(<span class="c-s">"Habari, Kenya!"</span>)\n<span class="c-t">&lt;h1&gt;</span>Hello<span class="c-t">&lt;/h1&gt;</span>\n<span class="c-k">SELECT</span> * <span class="c-k">FROM</span> Customers;</pre></div></section>' +
