@@ -1,0 +1,72 @@
+<!--
+title: "Prompt engineering guide: from beginner to pro"
+seo_title: "Prompt Engineering Guide: Beginner to Pro"
+description: Learn prompt engineering properly: clear instructions, context, examples, structure, reasoning, system prompts, grounding and testing.
+date: 2026-10-01
+tag: AI
+-->
+<p><strong>Prompt engineering</strong> is the skill of writing instructions that get reliable, high-quality results from AI models. For everyday users it means better answers. For developers and businesses it means AI features that work the same way for thousands of users. This guide goes from basics to professional techniques.</p>
+
+<h2>Level 1: the fundamentals</h2>
+<ul>
+    <li><strong>Be clear and specific</strong>: say exactly what you want, for whom and why.</li>
+    <li><strong>Give context</strong>: background facts, audience, purpose, constraints.</li>
+    <li><strong>Specify the format</strong>: table, bullets, JSON, word limit, language.</li>
+    <li><strong>Show examples</strong> of good output (few-shot prompting).</li>
+    <li><strong>Iterate</strong>: treat the first answer as a draft.</li>
+</ul>
+<p>The simple formula: <strong>role, task, context, format, examples</strong>. See <a href="how-to-write-good-ai-prompts">how to write good AI prompts</a> for everyday examples.</p>
+
+<h2>Level 2: techniques that raise quality</h2>
+<h3>Explain the why</h3>
+<p>Models follow instructions better when they know the purpose: <em>“Keep answers under 80 words because customers read them on small phone screens”</em> works better than a bare limit.</p>
+
+<h3>Structure long prompts</h3>
+<p>Separate instructions, context and data clearly, for example with headings or tags such as <code>&lt;curriculum&gt;…&lt;/curriculum&gt;</code> and <code>&lt;instructions&gt;…&lt;/instructions&gt;</code>. Put long documents first and your question at the end.</p>
+
+<h3>Ask for step-by-step reasoning on hard problems</h3>
+<p>For maths, planning and analysis, ask the model to work through the problem before answering, or to check its answer afterwards. Many modern models also have built-in “thinking” modes that do this automatically.</p>
+
+<h3>Break work into a chain</h3>
+<p>Instead of one giant prompt: research → outline → draft → review → final. Each step is easier to check and improve.</p>
+
+<h3>Ground answers in sources</h3>
+<p><em>“Answer using only the documents below. If the answer isn’t there, say you don’t know.”</em> This is the core of retrieval-augmented generation (RAG) and the best defence against hallucinations.</p>
+
+<h3>Let the model ask questions</h3>
+<p><em>“Before you start, ask me any questions you need.”</em> Cheap and very effective.</p>
+
+<h2>Level 3: prompt engineering for AI products</h2>
+<h3>System prompts</h3>
+<p>Apps set a <strong>system prompt</strong> that applies to every conversation: who the assistant is, who it serves, what it may and may not do, its sources, tone, format and what to do when unsure (hand over to a human).</p>
+
+<h3>Structured outputs</h3>
+<p>When code needs to read the answer, ask for a defined format (for example JSON with named fields). Many AI APIs can enforce a schema so the output always parses.</p>
+
+<h3>Tools</h3>
+<p>Describe tools (like <code>check_order_status</code>) clearly: what they do, when to use them and what each parameter means. Good tool descriptions are prompt engineering too.</p>
+
+<h3>Test with an evaluation set</h3>
+<p>Professionals don’t judge prompts by one good answer. They build a set of 30 to 100 real inputs with expected results, run every prompt change against it and track the score: correct facts, right format, appropriate refusals, tone. Change one thing at a time.</p>
+
+<h3>Security: prompt injection</h3>
+<p>Text from users, websites or documents can contain instructions that try to hijack your assistant (“ignore your rules and…”). Treat such text as data, limit what tools can do, require human approval for risky actions, and never put secrets in prompts.</p>
+
+<h2>Common mistakes</h2>
+<ul>
+    <li>Vague instructions and no context.</li>
+    <li>Contradictory rules piled up over time.</li>
+    <li>Writing in ALL CAPS and “NEVER” everywhere instead of explaining the reason.</li>
+    <li>Not testing on tricky, real inputs.</li>
+    <li>Trusting outputs without checking facts.</li>
+</ul>
+
+<h2>Practise for free</h2>
+<p>Our free <a href="learn/?track=artificial-intelligence">AI from zero to pro</a> course covers prompting with a live exercise, fact-checking, custom assistants, AI APIs, RAG and agents. Business owners: see <a href="how-to-use-ai-in-business-kenya">AI in business</a>. Trainers: see <a href="prompt-engineering-for-teachers-and-trainers">prompt engineering for teachers and trainers</a>.</p>
+
+<h2>Frequently asked questions</h2>
+<div class="faq post-faq" data-faq>
+    <details><summary>What is prompt engineering?</summary><p>Prompt engineering is designing instructions, context and examples so that AI models produce reliable, high-quality results, from everyday questions to AI features in apps.</p></details>
+    <details><summary>Is prompt engineering a real job?</summary><p>Yes, usually as part of AI engineering, automation or product roles: writing system prompts, designing workflows and testing them with evaluation sets.</p></details>
+    <details><summary>What is a system prompt?</summary><p>Instructions an app gives an AI model for every conversation: its role, rules, sources, tone, format and what to do when unsure.</p></details>
+</div>
