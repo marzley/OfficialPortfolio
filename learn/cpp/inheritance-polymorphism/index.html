@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Inheritance, virtual functions and polymorphism | C++</title>
+    <meta name="description" content="The Classes lesson showed how to bundle data and functions. Now we&#x27;ll build class families : a base class with shared behaviour and derived classes…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/cpp/inheritance-polymorphism/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Inheritance, virtual functions and polymorphism | C++" />
+    <meta property="og:description" content="The Classes lesson showed how to bundle data and functions. Now we&#x27;ll build class families : a base class with shared behaviour and derived classes…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/cpp/inheritance-polymorphism/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Inheritance, virtual functions and polymorphism | C++" />
+    <meta name="twitter:description" content="The Classes lesson showed how to bundle data and functions. Now we&#x27;ll build class families : a base class with shared behaviour and derived classes…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/cpp/inheritance-polymorphism/#lesson","name":"Inheritance, virtual functions and polymorphism","description":"The Classes lesson showed how to bundle data and functions. Now we'll build class families : a base class with shared behaviour and derived classes…","url":"https://marzleytechsolutions.co.ke/learn/cpp/inheritance-polymorphism/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/cpp/#course","name":"C++","url":"https://marzleytechsolutions.co.ke/learn/cpp/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"C++","item":"https://marzleytechsolutions.co.ke/learn/cpp/"},{"@type":"ListItem","position":4,"name":"Inheritance, virtual functions and polymorphism","item":"https://marzleytechsolutions.co.ke/learn/cpp/inheritance-polymorphism/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/cpp/">C++</a> / <span>Inheritance, virtual functions and polymorphism</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=cpp&amp;lesson=inheritance-polymorphism"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Inheritance, virtual functions and polymorphism</h1>
+<p>The <em>Classes</em> lesson showed how to bundle data and functions. Now we'll build class <strong>families</strong>: a base class with shared behaviour and derived classes that specialise it, all used through one common interface.</p>
+<h2>Inheritance</h2>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Employee {
+protected:                       // visible to derived classes
+    string name;
+    double salary;
+public:
+    Employee(string n, double s) : name(n), salary(s) {}     // initialiser list
+    virtual double monthlyPay() const { return salary; }     // virtual: can be overridden
+    virtual ~Employee() {}                                   // virtual destructor for base classes
+    void describe() const { cout &lt;&lt; name &lt;&lt; &quot; earns KSh &quot; &lt;&lt; monthlyPay() &lt;&lt; endl; }
+};
+
+class SalesAgent : public Employee {
+    double sales;
+public:
+    SalesAgent(string n, double s, double sales) : Employee(n, s), sales(sales) {}
+    double monthlyPay() const override { return salary + sales * 0.05; }
+};
+
+class Intern : public Employee {
+public:
+    Intern(string n) : Employee(n, 15000) {}
+};
+
+int main() {
+    Employee e(&quot;Njoroge&quot;, 45000);
+    SalesAgent a(&quot;Adhiambo&quot;, 30000, 400000);
+    Intern i(&quot;Kevin&quot;);
+    e.describe();
+    a.describe();
+    i.describe();
+    return 0;
+}</code></pre></figure>
+<ul><li><code>class SalesAgent : public Employee</code> means "a SalesAgent <strong>is an</strong> Employee".</li><li>The constructor calls the base constructor in its <strong>initialiser list</strong>: <code>: Employee(n, s)</code>.</li><li><code>protected</code> members are visible to derived classes but not outside.</li></ul>
+<h2>virtual and override: runtime polymorphism</h2>
+<p><code>describe()</code> calls <code>monthlyPay()</code>. Because <code>monthlyPay</code> is <strong>virtual</strong>, C++ calls the version of the <strong>actual object</strong> at runtime, so the sales agent's commission is included even though <code>describe</code> lives in <code>Employee</code>.</p>
+<ul><li><code>override</code> asks the compiler to confirm you're really overriding a virtual function (it catches typos).</li><li>A base class with virtual functions should have a <strong>virtual destructor</strong>, so deleting through a base pointer cleans up correctly.</li></ul>
+<h2>Using the family through base pointers</h2>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;memory&gt;
+#include &lt;cmath&gt;
+using namespace std;
+
+class Shape {
+public:
+    virtual double area() const = 0;      // pure virtual: Shape is abstract
+    virtual string name() const = 0;
+    virtual ~Shape() = default;
+};
+
+class Rectangle : public Shape {
+    double w, h;
+public:
+    Rectangle(double w, double h) : w(w), h(h) {}
+    double area() const override { return w * h; }
+    string name() const override { return &quot;Rectangle&quot;; }
+};
+
+class Circle : public Shape {
+    double r;
+public:
+    explicit Circle(double r) : r(r) {}
+    double area() const override { return M_PI * r * r; }
+    string name() const override { return &quot;Circle&quot;; }
+};
+
+int main() {
+    vector&lt;unique_ptr&lt;Shape&gt;&gt; plot;                  // smart pointers free memory automatically
+    plot.push_back(make_unique&lt;Rectangle&gt;(20, 15));
+    plot.push_back(make_unique&lt;Circle&gt;(4));
+    double total = 0;
+    for (const auto &amp;s : plot) {
+        cout &lt;&lt; s-&gt;name() &lt;&lt; &quot;: &quot; &lt;&lt; s-&gt;area() &lt;&lt; &quot; m2&quot; &lt;&lt; endl;
+        total += s-&gt;area();
+    }
+    cout &lt;&lt; &quot;Total area: &quot; &lt;&lt; total &lt;&lt; &quot; m2&quot; &lt;&lt; endl;
+    return 0;
+}</code></pre></figure>
+<ul><li><code>= 0</code> makes a <strong>pure virtual</strong> function; a class with one is <strong>abstract</strong> (can't be created directly).</li><li><code>unique_ptr</code> (from <code>&lt;memory&gt;</code>) owns an object and deletes it automatically: no manual <code>delete</code>, no leaks. Prefer smart pointers over raw <code>new</code>/<code>delete</code> in modern C++.</li></ul>
+<h2>Access levels in inheritance</h2>
+<div class="static-table"><table><thead><tr><th>Base member</th><th>Accessible in derived class?</th><th>Accessible outside?</th></tr></thead><tbody><tr><td><code>public</code></td><td>Yes</td><td>Yes</td></tr><tr><td><code>protected</code></td><td>Yes</td><td>No</td></tr><tr><td><code>private</code></td><td>No</td><td>No</td></tr></tbody></table></div>
+<h2>Composition: "has a" vs "is a"</h2>
+<p>Inheritance models <strong>is a</strong> (a Circle <em>is a</em> Shape). Many designs are better with <strong>composition</strong>, <strong>has a</strong>: a <code>Car</code> <em>has an</em> <code>Engine</code> member rather than inheriting from <code>Engine</code>. A good rule: prefer composition unless there's a true "is a" relationship.</p>
+<h2>The rule of zero</h2>
+<p>If your class only uses members that manage themselves (<code>string</code>, <code>vector</code>, smart pointers), you don't need to write a destructor, copy constructor or assignment operator at all: the compiler's versions are correct. That's the modern C++ "rule of zero".</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword lets a derived class replace a base class function at runtime?</p><details><summary>Show answer</summary><p>virtual</p></details></li><li><p>Which keyword asks the compiler to check that you are overriding a virtual function?</p><details><summary>Show answer</summary><p>override</p></details></li><li><p>What does = 0 after a virtual function make it? (two words)</p><details><summary>Show answer</summary><p>pure virtual</p></details></li><li><p>Which smart pointer owns an object and deletes it automatically?</p><details><summary>Show answer</summary><p>unique_ptr</p></details></li><li><p>Should a base class with virtual functions have a virtual destructor? (yes or no)</p><details><summary>Show answer</summary><p>yes</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 7 in <a href="/learn/cpp/">C++</a> · <a href="/learn/?book=cpp">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/cpp/classes/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Classes and objects in C++</a><a class="btn btn-solid btn-sm" href="/learn/cpp/project-inventory/">Project: a shop inventory manager in C++ <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

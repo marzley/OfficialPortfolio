@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Transitions and animations | CSS</title>
+    <meta name="description" content="Free CSS lesson: Transitions and animations." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/css/transitions-animations/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Transitions and animations | CSS" />
+    <meta property="og:description" content="Free CSS lesson: Transitions and animations." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/css/transitions-animations/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Transitions and animations | CSS" />
+    <meta name="twitter:description" content="Free CSS lesson: Transitions and animations." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/css/transitions-animations/#lesson","name":"Transitions and animations","description":"Free CSS lesson: Transitions and animations.","url":"https://marzleytechsolutions.co.ke/learn/css/transitions-animations/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/css/#course","name":"CSS","url":"https://marzleytechsolutions.co.ke/learn/css/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"CSS","item":"https://marzleytechsolutions.co.ke/learn/css/"},{"@type":"ListItem","position":4,"name":"Transitions and animations","item":"https://marzleytechsolutions.co.ke/learn/css/transitions-animations/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/css/">CSS</a> / <span>Transitions and animations</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=transitions-animations"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Transitions and animations</h1>
+<h2>Transitions: smooth changes</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .btn { background: #ffb800; border: 0; padding: 14px 22px; border-radius: 10px; font: bold 16px sans-serif; cursor: pointer;
+         transition: transform .2s ease, box-shadow .2s ease; }
+  .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,.2); }
+&lt;/style&gt;
+&lt;button class=&quot;btn&quot;&gt;Hover me&lt;/button&gt;</code></pre></figure>
+<h2>Keyframe animations</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .dot { width: 20px; height: 20px; background: #16a34a; border-radius: 50%; animation: pulse 1.2s infinite; display: inline-block; }
+  .loader { width: 36px; height: 36px; border: 4px solid #e2e8f0; border-top-color: #ffb800; border-radius: 50%; animation: spin .8s linear infinite; margin-top: 16px; }
+&lt;/style&gt;
+&lt;span class=&quot;dot&quot;&gt;&lt;/span&gt; Online
+&lt;div class=&quot;loader&quot;&gt;&lt;/div&gt;</code></pre></figure>
+<h2>Be kind with motion</h2>
+<p>Some people get dizzy from animation. Respect their setting:</p>
+<figure class="static-code"><figcaption>CSS</figcaption><pre><code class="language-css">@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}</code></pre></figure>
+<p>Animate only <code>transform</code> and <code>opacity</code> for smooth performance on phones.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which property smoothly animates a change like a hover effect?</p><details><summary>Show answer</summary><p>transition</p></details></li><li><p>Which at-rule defines the steps of an animation?</p><details><summary>Show answer</summary><p>@keyframes</p></details></li><li><p>Which media query respects users who dislike motion?</p><details><summary>Show answer</summary><p>prefers-reduced-motion</p></details></li></ol></section></div><p class="static-meta">Lesson 15 of 17 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/transforms-filters/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Transforms, filters and object-fit</a><a class="btn btn-solid btn-sm" href="/learn/css/variables-dark-mode/">CSS variables and dark mode <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Data structures: stacks, queues and more | Marzley Learn</title>
+    <meta name="description" content="A data structure is a way of organising data so the operations you need are fast." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/algorithms/data-structures/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Data structures: stacks, queues and more | Marzley Learn" />
+    <meta property="og:description" content="A data structure is a way of organising data so the operations you need are fast." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/algorithms/data-structures/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Data structures: stacks, queues and more | Marzley Learn" />
+    <meta name="twitter:description" content="A data structure is a way of organising data so the operations you need are fast." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/data-structures/#lesson","name":"Data structures: stacks, queues and more","description":"A data structure is a way of organising data so the operations you need are fast.","url":"https://marzleytechsolutions.co.ke/learn/algorithms/data-structures/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/#course","name":"Algorithms & problem solving","url":"https://marzleytechsolutions.co.ke/learn/algorithms/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Algorithms & problem solving","item":"https://marzleytechsolutions.co.ke/learn/algorithms/"},{"@type":"ListItem","position":4,"name":"Data structures: stacks, queues and more","item":"https://marzleytechsolutions.co.ke/learn/algorithms/data-structures/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> / <span>Data structures: stacks, queues and more</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=data-structures"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Data structures: stacks, queues and more</h1>
+<p>A <strong>data structure</strong> is a way of organising data so the operations you need are fast.</p>
+<h2>Stack: last in, first out (LIFO)</h2>
+<p>Like a pile of plates. Used for the browser's Back button and undo.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">history = []
+history.append(&quot;home&quot;)        # push
+history.append(&quot;pricing&quot;)
+history.append(&quot;contact&quot;)
+print(&quot;Back to:&quot;, history.pop())   # pop removes the last one
+print(history)</code></pre></figure>
+<h2>Queue: first in, first out (FIFO)</h2>
+<p>Like a bank queue. Used for print jobs, messages, customer support tickets.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">from collections import deque
+queue = deque()
+queue.append(&quot;Wanjiku&quot;)       # join the queue
+queue.append(&quot;Otieno&quot;)
+queue.append(&quot;Amina&quot;)
+print(&quot;Serving:&quot;, queue.popleft())
+print(&quot;Waiting:&quot;, list(queue))</code></pre></figure>
+<h2>Dictionary (hash map)</h2>
+<p>Key → value, with very fast lookups. Used everywhere: user accounts by email, prices by product.</p>
+<h2>Tree</h2>
+<p>Items arranged in a hierarchy: folders on a computer, the HTML DOM, a company org chart.</p>
+<h2>Graph</h2>
+<p>Points (nodes) connected by lines (edges): roads between towns, friends on social media, routers on the internet. Google Maps finds routes with graph algorithms such as Dijkstra's.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">roads = {
+    &quot;Nairobi&quot;: [&quot;Nakuru&quot;, &quot;Thika&quot;, &quot;Machakos&quot;],
+    &quot;Nakuru&quot;: [&quot;Nairobi&quot;, &quot;Eldoret&quot;, &quot;Kisumu&quot;],
+    &quot;Eldoret&quot;: [&quot;Nakuru&quot;],
+    &quot;Kisumu&quot;: [&quot;Nakuru&quot;],
+    &quot;Thika&quot;: [&quot;Nairobi&quot;],
+    &quot;Machakos&quot;: [&quot;Nairobi&quot;, &quot;Mombasa&quot;],
+    &quot;Mombasa&quot;: [&quot;Machakos&quot;],
+}
+
+def route(start, goal):
+    # breadth-first search: finds the route with the fewest towns
+    queue, seen = [[start]], {start}
+    while queue:
+        path = queue.pop(0)
+        if path[-1] == goal:
+            return path
+        for nxt in roads[path[-1]]:
+            if nxt not in seen:
+                seen.add(nxt)
+                queue.append(path + [nxt])
+
+print(&quot; -&gt; &quot;.join(route(&quot;Kisumu&quot;, &quot;Mombasa&quot;)))</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which data structure is last in, first out?</p><details><summary>Show answer</summary><p>stack</p></details></li><li><p>Which data structure is first in, first out?</p><details><summary>Show answer</summary><p>queue</p></details></li><li><p>Folders inside folders on a computer form which data structure?</p><details><summary>Show answer</summary><p>tree</p></details></li><li><p>Towns connected by roads form which data structure?</p><details><summary>Show answer</summary><p>graph</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Use a list as a <strong>stack</strong>: push <code>&quot;a&quot;</code>, <code>&quot;b&quot;</code> and <code>&quot;c&quot;</code>, then pop once and print the popped value.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=data-structures#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 6 of 11 in <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> · <a href="/learn/?book=algorithms">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/algorithms/big-o/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Big O: how fast is your code?</a><a class="btn btn-solid btn-sm" href="/learn/algorithms/stacks-queues/">Stacks and queues <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

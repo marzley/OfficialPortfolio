@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CSS units: px, %, em, rem, vw, vh and ch | CSS</title>
+    <meta name="description" content="Every size in CSS needs a unit . Picking the right one is what makes a layout work on a small phone and a big monitor." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/css/units-sizing/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="CSS units: px, %, em, rem, vw, vh and ch | CSS" />
+    <meta property="og:description" content="Every size in CSS needs a unit . Picking the right one is what makes a layout work on a small phone and a big monitor." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/css/units-sizing/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="CSS units: px, %, em, rem, vw, vh and ch | CSS" />
+    <meta name="twitter:description" content="Every size in CSS needs a unit . Picking the right one is what makes a layout work on a small phone and a big monitor." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/css/units-sizing/#lesson","name":"CSS units: px, %, em, rem, vw, vh and ch","description":"Every size in CSS needs a unit . Picking the right one is what makes a layout work on a small phone and a big monitor.","url":"https://marzleytechsolutions.co.ke/learn/css/units-sizing/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/css/#course","name":"CSS","url":"https://marzleytechsolutions.co.ke/learn/css/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"CSS","item":"https://marzleytechsolutions.co.ke/learn/css/"},{"@type":"ListItem","position":4,"name":"CSS units: px, %, em, rem, vw, vh and ch","item":"https://marzleytechsolutions.co.ke/learn/css/units-sizing/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/css/">CSS</a> / <span>CSS units: px, %, em, rem, vw, vh and ch</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=units-sizing"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>CSS units: px, %, em, rem, vw, vh and ch</h1>
+<p>Every size in CSS needs a <strong>unit</strong>. Picking the right one is what makes a layout work on a small phone <em>and</em> a big monitor.</p>
+<h2>Absolute: px</h2>
+<p><code>px</code> is a fixed size. <code>16px</code> is roughly the normal text size. Good for borders (<code>1px</code>), shadows and small details.</p>
+<h2>Relative to the parent: %</h2>
+<p><code>width: 50%</code> means half the width of the <strong>parent</strong> element.</p>
+<h2>Relative to fonts: em and rem</h2>
+<div class="static-table"><table><thead><tr><th>Unit</th><th>Relative to</th><th>Example</th></tr></thead><tbody><tr><td><code>em</code></td><td>The element's <strong>own</strong> font size</td><td><code>padding: 0.5em</code> grows with the text</td></tr><tr><td><code>rem</code></td><td>The <strong>root</strong> (<code>&lt;html&gt;</code>) font size, usually 16px</td><td><code>1.5rem</code> = 24px</td></tr></tbody></table></div>
+<p>Use <code>rem</code> for font sizes and spacing across the site. Use <code>em</code> when something should scale with its own text, like button padding.</p>
+<h2>Relative to the screen: vw and vh</h2>
+<ul><li><code>1vw</code> = 1% of the viewport (screen) <strong>width</strong>.</li><li><code>1vh</code> = 1% of the viewport <strong>height</strong>. <code>min-height: 100vh</code> fills the screen.</li><li>On phones the address bar changes the height; <code>100dvh</code> (dynamic viewport height) fixes this in modern browsers.</li></ul>
+<h2>Relative to characters: ch</h2>
+<p><code>1ch</code> is the width of the "0" character. <code>max-width: 65ch</code> keeps lines readable.</p>
+<h2>See them side by side</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  body { font-family: system-ui, sans-serif; }
+  .bar { background: #ffb800; margin: 6px 0; padding: 4px; white-space: nowrap; }
+  .px  { width: 200px; }
+  .pct { width: 50%; }
+  .rem { width: 15rem; }
+  .vw  { width: 40vw; }
+  .ch  { width: 20ch; }
+  .btn { font-size: 14px; padding: 0.6em 1.2em; background: #0b1b35; color: #fff; border: 0; border-radius: 0.5em; }
+  .btn.big { font-size: 22px; }
+&lt;/style&gt;
+&lt;div class=&quot;bar px&quot;&gt;200px (fixed)&lt;/div&gt;
+&lt;div class=&quot;bar pct&quot;&gt;50% of the parent&lt;/div&gt;
+&lt;div class=&quot;bar rem&quot;&gt;15rem (15 × 16px = 240px)&lt;/div&gt;
+&lt;div class=&quot;bar vw&quot;&gt;40vw (40% of the screen)&lt;/div&gt;
+&lt;div class=&quot;bar ch&quot;&gt;20ch (20 characters)&lt;/div&gt;
+&lt;p&gt;&lt;button class=&quot;btn&quot;&gt;Small&lt;/button&gt; &lt;button class=&quot;btn big&quot;&gt;Big&lt;/button&gt;&lt;/p&gt;
+&lt;p&gt;Both buttons use &lt;code&gt;padding: 0.6em 1.2em&lt;/code&gt;, so the padding grows with the text.&lt;/p&gt;</code></pre></figure>
+<p>Resize the preview window: the <code>%</code> and <code>vw</code> bars change, <code>px</code> stays the same.</p>
+<h2>Useful sizing functions</h2>
+<figure class="static-code"><figcaption>CSS</figcaption><pre><code class="language-css">width: min(100%, 720px);            /* never wider than 720px, never wider than the parent */
+font-size: clamp(1rem, 2.5vw, 1.5rem);
+height: calc(100vh - 64px);         /* full screen minus a 64px header */</code></pre></figure>
+<h2>Which unit when?</h2>
+<div class="static-table"><table><thead><tr><th>Job</th><th>Best unit</th></tr></thead><tbody><tr><td>Font sizes</td><td><code>rem</code> (or <code>clamp()</code> with <code>rem</code> and <code>vw</code>)</td></tr><tr><td>Spacing (margin, padding, gap)</td><td><code>rem</code></td></tr><tr><td>Button padding</td><td><code>em</code></td></tr><tr><td>Borders</td><td><code>px</code></td></tr><tr><td>Layout widths</td><td><code>%</code>, <code>fr</code> (grid), <code>min()</code></td></tr><tr><td>Full-screen sections</td><td><code>vh</code> / <code>dvh</code></td></tr><tr><td>Text column width</td><td><code>ch</code></td></tr></tbody></table></div>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which unit is relative to the root html font size?</p><details><summary>Show answer</summary><p>rem</p></details></li><li><p>If the root font size is 16px, how many pixels is 2rem?</p><details><summary>Show answer</summary><p>32</p></details></li><li><p>Which unit equals 1% of the screen width?</p><details><summary>Show answer</summary><p>vw</p></details></li><li><p>Which unit is good for a readable text width, based on characters?</p><details><summary>Show answer</summary><p>ch</p></details></li><li><p>Which CSS function can subtract a header height from 100vh?</p><details><summary>Show answer</summary><p>calc</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Make the <code>.box</code> <strong>50%</strong> wide with padding of <strong>1rem</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=units-sizing#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 4 of 17 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/fonts-text/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Fonts and text styling</a><a class="btn btn-solid btn-sm" href="/learn/css/backgrounds-borders-shadows/">Backgrounds, borders, rounded corners and shadows <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

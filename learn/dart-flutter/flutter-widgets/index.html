@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Flutter widgets and layouts | Dart &amp; Flutter (mobile apps)</title>
+    <meta name="description" content="In Flutter, everything is a widget : text, buttons, padding, rows, whole screens." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/dart-flutter/flutter-widgets/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Flutter widgets and layouts | Dart &amp; Flutter (mobile apps)" />
+    <meta property="og:description" content="In Flutter, everything is a widget : text, buttons, padding, rows, whole screens." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/dart-flutter/flutter-widgets/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Flutter widgets and layouts | Dart &amp; Flutter (mobile apps)" />
+    <meta name="twitter:description" content="In Flutter, everything is a widget : text, buttons, padding, rows, whole screens." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/flutter-widgets/#lesson","name":"Flutter widgets and layouts","description":"In Flutter, everything is a widget : text, buttons, padding, rows, whole screens.","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/flutter-widgets/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/#course","name":"Dart & Flutter (mobile apps)","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Dart & Flutter (mobile apps)","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},{"@type":"ListItem","position":4,"name":"Flutter widgets and layouts","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/flutter-widgets/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> / <span>Flutter widgets and layouts</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=dart-flutter&amp;lesson=flutter-widgets"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Flutter widgets and layouts</h1>
+<p>In Flutter, <strong>everything is a widget</strong>: text, buttons, padding, rows, whole screens.</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+void main() =&gt; runApp(const ShopApp());
+
+class ShopApp extends StatelessWidget {
+  const ShopApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: &#x27;Duka&#x27;,
+      theme: ThemeData(colorSchemeSeed: Colors.amber),
+      home: Scaffold(
+        appBar: AppBar(title: const Text(&#x27;Duka Online&#x27;)),
+        body: ListView(
+          padding: const EdgeInsets.all(16),
+          children: const [
+            ListTile(leading: Icon(Icons.shopping_bag), title: Text(&#x27;Unga 2kg&#x27;), trailing: Text(&#x27;KSh 180&#x27;)),
+            ListTile(leading: Icon(Icons.local_drink), title: Text(&#x27;Milk 500ml&#x27;), trailing: Text(&#x27;KSh 60&#x27;)),
+          ],
+        ),
+      ),
+    );
+  }
+}</code></pre></figure>
+<h2>Common layout widgets</h2>
+<div class="static-table"><table><thead><tr><th>Widget</th><th>Does</th></tr></thead><tbody><tr><td><code>Column</code> / <code>Row</code></td><td>Stack children vertically / horizontally</td></tr><tr><td><code>Padding</code>, <code>SizedBox</code></td><td>Space around / between things</td></tr><tr><td><code>Container</code></td><td>Box with colour, border, size</td></tr><tr><td><code>ListView</code></td><td>Scrolling list</td></tr><tr><td><code>Expanded</code></td><td>Take the remaining space</td></tr><tr><td><code>Stack</code></td><td>Place widgets on top of each other</td></tr></tbody></table></div>
+<h2>Stateful widgets</h2>
+<p>When something changes (a counter, a form), use a <code>StatefulWidget</code> and call <code>setState()</code>:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">class Counter extends StatefulWidget {
+  const Counter({super.key});
+  @override
+  State&lt;Counter&gt; createState() =&gt; _CounterState();
+}
+
+class _CounterState extends State&lt;Counter&gt; {
+  int items = 0;
+  @override
+  Widget build(BuildContext context) =&gt; ElevatedButton(
+        onPressed: () =&gt; setState(() =&gt; items++),
+        child: Text(&#x27;Items in cart: $items&#x27;),
+      );
+}</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>In Flutter, everything on screen is a…</p><details><summary>Show answer</summary><p>widget</p></details></li><li><p>Which widget stacks children vertically?</p><details><summary>Show answer</summary><p>Column</p></details></li><li><p>Which method tells Flutter to redraw after data changes?</p><details><summary>Show answer</summary><p>setState</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 7 in <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> · <a href="/learn/?book=dart-flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/dart-flutter/dart-classes-async/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Dart classes, JSON models and async/await</a><a class="btn btn-solid btn-sm" href="/learn/dart-flutter/flutter-layouts/">Flutter layouts: Row, Column, Stack, ListView and responsive screens <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

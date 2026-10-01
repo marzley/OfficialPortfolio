@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Build a CRUD app with PHP and MySQL (create, read,…</title>
+    <meta name="description" content="Almost every business system is CRUD underneath: C reate, R ead, U pdate, D elete records. A customer list, a stock list, a student register: same…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/php/crud-app/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Build a CRUD app with PHP and MySQL (create, read,…" />
+    <meta property="og:description" content="Almost every business system is CRUD underneath: C reate, R ead, U pdate, D elete records. A customer list, a stock list, a student register: same…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/php/crud-app/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Build a CRUD app with PHP and MySQL (create, read,…" />
+    <meta name="twitter:description" content="Almost every business system is CRUD underneath: C reate, R ead, U pdate, D elete records. A customer list, a stock list, a student register: same…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/php/crud-app/#lesson","name":"Build a CRUD app with PHP and MySQL (create, read, update, delete)","description":"Almost every business system is CRUD underneath: C reate, R ead, U pdate, D elete records. A customer list, a stock list, a student register: same…","url":"https://marzleytechsolutions.co.ke/learn/php/crud-app/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/php/#course","name":"PHP & MySQL","url":"https://marzleytechsolutions.co.ke/learn/php/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"PHP & MySQL","item":"https://marzleytechsolutions.co.ke/learn/php/"},{"@type":"ListItem","position":4,"name":"Build a CRUD app with PHP and MySQL (create, read, update, delete)","item":"https://marzleytechsolutions.co.ke/learn/php/crud-app/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/php/">PHP &amp; MySQL</a> / <span>Build a CRUD app with PHP and MySQL (create, read, update, delete)</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=php&amp;lesson=crud-app"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Build a CRUD app with PHP and MySQL</h1>
+<p>Almost every business system is <strong>CRUD</strong> underneath: <strong>C</strong>reate, <strong>R</strong>ead, <strong>U</strong>pdate, <strong>D</strong>elete records. A customer list, a stock list, a student register: same pattern. Let's build a complete, secure one for products.</p>
+<h2>The database table</h2>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">CREATE TABLE products (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(120) NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  stock INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;</code></pre></figure>
+<h2>db.php: one connection for every page</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+// Keep the real password in a config file outside public_html
+$pdo = new PDO(
+    &#x27;mysql:host=localhost;dbname=shop;charset=utf8mb4&#x27;,
+    &#x27;shop_user&#x27;,
+    &#x27;your-strong-password&#x27;,
+    [
+        PDO::ATTR_ERRMODE =&gt; PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE =&gt; PDO::FETCH_ASSOC,
+    ]
+);
+
+function e(?string $s): string { return htmlspecialchars((string)$s, ENT_QUOTES, &#x27;UTF-8&#x27;); }</code></pre></figure>
+<h2>Read: list products (index.php)</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+require __DIR__ . &#x27;/db.php&#x27;;
+$search = trim($_GET[&#x27;q&#x27;] ?? &#x27;&#x27;);
+$stmt = $pdo-&gt;prepare(&#x27;SELECT * FROM products WHERE name LIKE ? ORDER BY name&#x27;);
+$stmt-&gt;execute([&#x27;%&#x27; . $search . &#x27;%&#x27;]);
+$products = $stmt-&gt;fetchAll();
+?&gt;
+&lt;form&gt;&lt;input name=&quot;q&quot; value=&quot;&lt;?= e($search) ?&gt;&quot; placeholder=&quot;Search&quot;&gt; &lt;button&gt;Search&lt;/button&gt;&lt;/form&gt;
+&lt;a href=&quot;edit.php&quot;&gt;+ Add product&lt;/a&gt;
+&lt;table&gt;
+  &lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;Price&lt;/th&gt;&lt;th&gt;Stock&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;/tr&gt;
+  &lt;?php foreach ($products as $p): ?&gt;
+  &lt;tr&gt;
+    &lt;td&gt;&lt;?= e($p[&#x27;name&#x27;]) ?&gt;&lt;/td&gt;
+    &lt;td&gt;KSh &lt;?= number_format($p[&#x27;price&#x27;], 2) ?&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;?= (int)$p[&#x27;stock&#x27;] ?&gt;&lt;/td&gt;
+    &lt;td&gt;
+      &lt;a href=&quot;edit.php?id=&lt;?= (int)$p[&#x27;id&#x27;] ?&gt;&quot;&gt;Edit&lt;/a&gt;
+      &lt;form method=&quot;post&quot; action=&quot;delete.php&quot; style=&quot;display:inline&quot; onsubmit=&quot;return confirm(&#x27;Delete this product?&#x27;)&quot;&gt;
+        &lt;input type=&quot;hidden&quot; name=&quot;id&quot; value=&quot;&lt;?= (int)$p[&#x27;id&#x27;] ?&gt;&quot;&gt;
+        &lt;button&gt;Delete&lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;?php endforeach; ?&gt;
+&lt;/table&gt;</code></pre></figure>
+<h2>Create and Update: one form (edit.php)</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+require __DIR__ . &#x27;/db.php&#x27;;
+$id = (int)($_GET[&#x27;id&#x27;] ?? 0);
+$product = [&#x27;name&#x27; =&gt; &#x27;&#x27;, &#x27;price&#x27; =&gt; &#x27;&#x27;, &#x27;stock&#x27; =&gt; 0];
+$errors = [];
+
+if ($id) {
+    $stmt = $pdo-&gt;prepare(&#x27;SELECT * FROM products WHERE id = ?&#x27;);
+    $stmt-&gt;execute([$id]);
+    $product = $stmt-&gt;fetch() ?: exit(&#x27;Product not found&#x27;);
+}
+
+if ($_SERVER[&#x27;REQUEST_METHOD&#x27;] === &#x27;POST&#x27;) {
+    $product = [
+        &#x27;name&#x27;  =&gt; trim($_POST[&#x27;name&#x27;] ?? &#x27;&#x27;),
+        &#x27;price&#x27; =&gt; $_POST[&#x27;price&#x27;] ?? &#x27;&#x27;,
+        &#x27;stock&#x27; =&gt; $_POST[&#x27;stock&#x27;] ?? 0,
+    ];
+    // Validate on the server: never trust the browser
+    if ($product[&#x27;name&#x27;] === &#x27;&#x27; || mb_strlen($product[&#x27;name&#x27;]) &gt; 120) $errors[] = &#x27;Name is required (max 120 characters).&#x27;;
+    if (!is_numeric($product[&#x27;price&#x27;]) || $product[&#x27;price&#x27;] &lt; 0) $errors[] = &#x27;Price must be a positive number.&#x27;;
+    if (filter_var($product[&#x27;stock&#x27;], FILTER_VALIDATE_INT) === false) $errors[] = &#x27;Stock must be a whole number.&#x27;;
+
+    if (!$errors) {
+        if ($id) {
+            $stmt = $pdo-&gt;prepare(&#x27;UPDATE products SET name = ?, price = ?, stock = ? WHERE id = ?&#x27;);
+            $stmt-&gt;execute([$product[&#x27;name&#x27;], $product[&#x27;price&#x27;], $product[&#x27;stock&#x27;], $id]);
+        } else {
+            $stmt = $pdo-&gt;prepare(&#x27;INSERT INTO products (name, price, stock) VALUES (?, ?, ?)&#x27;);
+            $stmt-&gt;execute([$product[&#x27;name&#x27;], $product[&#x27;price&#x27;], $product[&#x27;stock&#x27;]]);
+        }
+        header(&#x27;Location: index.php&#x27;);   // Post/Redirect/Get: refreshing won&#x27;t resubmit
+        exit;
+    }
+}
+?&gt;
+&lt;h1&gt;&lt;?= $id ? &#x27;Edit&#x27; : &#x27;Add&#x27; ?&gt; product&lt;/h1&gt;
+&lt;?php foreach ($errors as $err): ?&gt;&lt;p style=&quot;color:red&quot;&gt;&lt;?= e($err) ?&gt;&lt;/p&gt;&lt;?php endforeach; ?&gt;
+&lt;form method=&quot;post&quot;&gt;
+  &lt;label&gt;Name &lt;input name=&quot;name&quot; value=&quot;&lt;?= e($product[&#x27;name&#x27;]) ?&gt;&quot; required maxlength=&quot;120&quot;&gt;&lt;/label&gt;
+  &lt;label&gt;Price &lt;input name=&quot;price&quot; type=&quot;number&quot; step=&quot;0.01&quot; min=&quot;0&quot; value=&quot;&lt;?= e((string)$product[&#x27;price&#x27;]) ?&gt;&quot; required&gt;&lt;/label&gt;
+  &lt;label&gt;Stock &lt;input name=&quot;stock&quot; type=&quot;number&quot; value=&quot;&lt;?= (int)$product[&#x27;stock&#x27;] ?&gt;&quot;&gt;&lt;/label&gt;
+  &lt;button&gt;Save&lt;/button&gt;
+&lt;/form&gt;</code></pre></figure>
+<h2>Delete (delete.php)</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+require __DIR__ . &#x27;/db.php&#x27;;
+if ($_SERVER[&#x27;REQUEST_METHOD&#x27;] !== &#x27;POST&#x27;) { http_response_code(405); exit; }
+$stmt = $pdo-&gt;prepare(&#x27;DELETE FROM products WHERE id = ?&#x27;);
+$stmt-&gt;execute([(int)($_POST[&#x27;id&#x27;] ?? 0)]);
+header(&#x27;Location: index.php&#x27;);</code></pre></figure>
+<h2>The security checklist (why each line is there)</h2>
+<div class="static-table"><table><thead><tr><th>Risk</th><th>Protection in this code</th></tr></thead><tbody><tr><td><strong>SQL injection</strong></td><td>Prepared statements with <code>?</code> placeholders, never string-joined SQL</td></tr><tr><td><strong>XSS</strong> (scripts in data)</td><td>Every output goes through <code>e()</code> = <code>htmlspecialchars</code></td></tr><tr><td>Bad data</td><td>Server-side validation even though the form has <code>required</code></td></tr><tr><td>Deleting by visiting a link</td><td>Delete only accepts <strong>POST</strong></td></tr><tr><td>Double submit on refresh</td><td>Redirect after saving (Post/Redirect/Get)</td></tr><tr><td><strong>CSRF</strong> (another site submitting your forms)</td><td>Add a CSRF token for real apps (below)</td></tr><tr><td>Anyone editing</td><td>Put these pages behind a login (Sessions lesson)</td></tr></tbody></table></div>
+<h3>Adding a CSRF token</h3>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">session_start();
+$_SESSION[&#x27;csrf&#x27;] ??= bin2hex(random_bytes(32));
+// in every form:
+echo &#x27;&lt;input type=&quot;hidden&quot; name=&quot;csrf&quot; value=&quot;&#x27; . $_SESSION[&#x27;csrf&#x27;] . &#x27;&quot;&gt;&#x27;;
+// when handling POST:
+if (!hash_equals($_SESSION[&#x27;csrf&#x27;], $_POST[&#x27;csrf&#x27;] ?? &#x27;&#x27;)) { http_response_code(403); exit(&#x27;Invalid request&#x27;); }</code></pre></figure>
+<h2>Pagination for big tables</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">$page = max(1, (int)($_GET[&#x27;page&#x27;] ?? 1));
+$perPage = 20;
+$stmt = $pdo-&gt;prepare(&#x27;SELECT * FROM products ORDER BY name LIMIT ? OFFSET ?&#x27;);
+$stmt-&gt;bindValue(1, $perPage, PDO::PARAM_INT);
+$stmt-&gt;bindValue(2, ($page - 1) * $perPage, PDO::PARAM_INT);
+$stmt-&gt;execute();</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does the C in CRUD stand for?</p><details><summary>Show answer</summary><p>Create</p></details></li><li><p>Which PDO feature stops SQL injection? (two words)</p><details><summary>Show answer</summary><p>prepared statements</p></details></li><li><p>Which function escapes output to stop XSS?</p><details><summary>Show answer</summary><p>htmlspecialchars</p></details></li><li><p>Which HTTP method should a delete action accept?</p><details><summary>Show answer</summary><p>POST</p></details></li><li><p>After saving a form, what should you do so refreshing doesn't resubmit? (one word)</p><details><summary>Show answer</summary><p>redirect</p></details></li></ol></section></div><p class="static-meta">Lesson 8 of 13 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/mysql-pdo/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> MySQL with PDO</a><a class="btn btn-solid btn-sm" href="/learn/php/sessions-login/">Sessions and a login system <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

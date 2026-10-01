@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Subnet masks | Networking</title>
+    <meta name="description" content="A subnet mask is 32 bits that mark which part of an IP address is the network (1s) and which part is the host (0s). The 1s are always together on the left." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/networking/subnet-masks/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Subnet masks | Networking" />
+    <meta property="og:description" content="A subnet mask is 32 bits that mark which part of an IP address is the network (1s) and which part is the host (0s). The 1s are always together on the left." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/networking/subnet-masks/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Subnet masks | Networking" />
+    <meta name="twitter:description" content="A subnet mask is 32 bits that mark which part of an IP address is the network (1s) and which part is the host (0s). The 1s are always together on the left." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/networking/subnet-masks/#lesson","name":"Subnet masks","description":"A subnet mask is 32 bits that mark which part of an IP address is the network (1s) and which part is the host (0s). The 1s are always together on the left.","url":"https://marzleytechsolutions.co.ke/learn/networking/subnet-masks/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/networking/#course","name":"Networking","url":"https://marzleytechsolutions.co.ke/learn/networking/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Networking","item":"https://marzleytechsolutions.co.ke/learn/networking/"},{"@type":"ListItem","position":4,"name":"Subnet masks","item":"https://marzleytechsolutions.co.ke/learn/networking/subnet-masks/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/networking/">Networking</a> / <span>Subnet masks</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=networking&amp;lesson=subnet-masks"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Subnet masks</h1>
+<p>A <strong>subnet mask</strong> is 32 bits that mark which part of an IP address is the <strong>network</strong> (1s) and which part is the <strong>host</strong> (0s). The 1s are always together on the left.</p>
+<figure class="static-code"><pre><code>IP address:  192.168.10.77   = 11000000.10101000.00001010.01001101
+Mask:        255.255.255.0   = 11111111.11111111.11111111.00000000
+                               |------- network --------||- host -|</code></pre></figure>
+<h2>Finding the network address: the AND operation</h2>
+<p>The network address = <strong>IP AND mask</strong>, bit by bit (1 AND 1 = 1, anything else = 0).</p>
+<figure class="static-code"><pre><code>01001101   (77)
+AND
+00000000   (mask octet 0)
+= 00000000 (0)      → network 192.168.10.0</code></pre></figure>
+<p>With a mask ending in 224:</p>
+<figure class="static-code"><pre><code>01001101   (77)
+AND
+11100000   (224)
+= 01000000 (64)     → network 192.168.10.64</code></pre></figure>
+<h2>Mask ↔ prefix table (last octet)</h2>
+<div class="static-table"><table><thead><tr><th>Mask</th><th>Prefix</th><th>Host bits</th><th>Total addresses</th><th>Usable hosts</th></tr></thead><tbody><tr><td>255.255.255.0</td><td>/24</td><td>8</td><td>256</td><td>254</td></tr><tr><td>255.255.255.128</td><td>/25</td><td>7</td><td>128</td><td>126</td></tr><tr><td>255.255.255.192</td><td>/26</td><td>6</td><td>64</td><td>62</td></tr><tr><td>255.255.255.224</td><td>/27</td><td>5</td><td>32</td><td>30</td></tr><tr><td>255.255.255.240</td><td>/28</td><td>4</td><td>16</td><td>14</td></tr><tr><td>255.255.255.248</td><td>/29</td><td>3</td><td>8</td><td>6</td></tr><tr><td>255.255.255.252</td><td>/30</td><td>2</td><td>4</td><td>2</td></tr><tr><td>255.255.255.254</td><td>/31</td><td>1</td><td>2</td><td>2 (point-to-point links only)</td></tr><tr><td>255.255.255.255</td><td>/32</td><td>0</td><td>1</td><td>1 (a single host)</td></tr></tbody></table></div>
+<p>The same pattern repeats in the third octet: 255.255.128.0 = /17, 255.255.192.0 = /18, 255.255.224.0 = /19, 255.255.240.0 = /20, 255.255.248.0 = /21, 255.255.252.0 = /22, 255.255.254.0 = /23.</p>
+<h2>Why two addresses are not usable</h2>
+<p>In every normal subnet:</p>
+<ul><li>The <strong>first</strong> address (all host bits 0) is the <strong>network address</strong>, the name of the subnet.</li><li>The <strong>last</strong> address (all host bits 1) is the <strong>broadcast address</strong>.</li></ul>
+<p>So usable hosts = total − 2.</p>
+<h2>The wildcard mask</h2>
+<p>Routers (Cisco ACLs, OSPF) often use a <strong>wildcard mask</strong>, the mask inverted: 255.255.255.255 − mask.</p>
+<ul><li>Mask 255.255.255.0 → wildcard <strong>0.0.0.255</strong></li><li>Mask 255.255.255.224 → wildcard <strong>0.0.0.31</strong></li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What prefix length is the mask 255.255.255.192?</p><details><summary>Show answer</summary><p>/26</p></details></li><li><p>What mask matches /28?</p><details><summary>Show answer</summary><p>255.255.255.240</p></details></li><li><p>How many usable hosts does a /29 give?</p><details><summary>Show answer</summary><p>6</p></details></li><li><p>What is the network address of 192.168.10.77 with mask 255.255.255.224?</p><details><summary>Show answer</summary><p>192.168.10.64</p></details></li><li><p>What is the wildcard mask for 255.255.255.248?</p><details><summary>Show answer</summary><p>0.0.0.7</p></details></li><li><p>What mask matches /20?</p><details><summary>Show answer</summary><p>255.255.240.0</p></details></li></ol></section>
+<p><strong>Learn more:</strong> <a href="https://www.practicalnetworking.net/series/subnetting/subnetting/" target="_blank" rel="noopener noreferrer">Practical Networking: subnetting mastery</a></p></div><p class="static-meta">Lesson 6 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/ipv4-addresses/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> IPv4 addresses</a><a class="btn btn-solid btn-sm" href="/learn/networking/cidr/">CIDR notation and calculations <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

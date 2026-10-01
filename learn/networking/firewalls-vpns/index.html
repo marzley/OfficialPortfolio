@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Firewalls, VPNs and remote access | Networking</title>
+    <meta name="description" content="Every network connected to the internet is constantly probed by automated attacks. Firewalls decide what traffic is allowed, and VPNs let people…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/networking/firewalls-vpns/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Firewalls, VPNs and remote access | Networking" />
+    <meta property="og:description" content="Every network connected to the internet is constantly probed by automated attacks. Firewalls decide what traffic is allowed, and VPNs let people…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/networking/firewalls-vpns/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Firewalls, VPNs and remote access | Networking" />
+    <meta name="twitter:description" content="Every network connected to the internet is constantly probed by automated attacks. Firewalls decide what traffic is allowed, and VPNs let people…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/networking/firewalls-vpns/#lesson","name":"Firewalls, VPNs and remote access","description":"Every network connected to the internet is constantly probed by automated attacks. Firewalls decide what traffic is allowed, and VPNs let people…","url":"https://marzleytechsolutions.co.ke/learn/networking/firewalls-vpns/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/networking/#course","name":"Networking","url":"https://marzleytechsolutions.co.ke/learn/networking/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Networking","item":"https://marzleytechsolutions.co.ke/learn/networking/"},{"@type":"ListItem","position":4,"name":"Firewalls, VPNs and remote access","item":"https://marzleytechsolutions.co.ke/learn/networking/firewalls-vpns/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/networking/">Networking</a> / <span>Firewalls, VPNs and remote access</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=networking&amp;lesson=firewalls-vpns"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Firewalls, VPNs and remote access</h1>
+<p>Every network connected to the internet is constantly probed by automated attacks. <strong>Firewalls</strong> decide what traffic is allowed, and <strong>VPNs</strong> let people connect safely from outside. Both are core skills for network and IT support jobs.</p>
+<h2>What a firewall does</h2>
+<p>A firewall checks each connection against <strong>rules</strong> and allows or blocks it. Rules usually look at:</p>
+<ul><li>Source and destination <strong>IP address</strong>,</li><li><strong>Port</strong> and protocol (TCP 443 = HTTPS, TCP 22 = SSH, UDP 53 = DNS),</li><li><strong>Direction</strong> (inbound from the internet, or outbound to it),</li><li>Connection <strong>state</strong> (is this a reply to something we started?).</li></ul>
+<h3>Example rule table for a small office</h3>
+<div class="static-table"><table><thead><tr><th>#</th><th>Direction</th><th>From</th><th>To</th><th>Port</th><th>Action</th><th>Why</th></tr></thead><tbody><tr><td>1</td><td>Out</td><td>LAN</td><td>Any</td><td>80, 443</td><td>Allow</td><td>Browsing</td></tr><tr><td>2</td><td>Out</td><td>LAN</td><td>Any</td><td>53</td><td>Allow</td><td>DNS</td></tr><tr><td>3</td><td>In</td><td>Any</td><td>Web server</td><td>443</td><td>Allow</td><td>Public website</td></tr><tr><td>4</td><td>In</td><td>Office VPN users</td><td>LAN</td><td>Any</td><td>Allow</td><td>Remote staff</td></tr><tr><td>5</td><td>In</td><td>Any</td><td>Any</td><td>Any</td><td><strong>Deny</strong></td><td>Default: block everything else</td></tr></tbody></table></div>
+<p>Rules are read <strong>top to bottom</strong>; the first match wins. A good firewall ends with <strong>deny all</strong>: anything not explicitly allowed is blocked ("default deny").</p>
+<h2>Types of firewall</h2>
+<div class="static-table"><table><thead><tr><th>Type</th><th>Where</th><th>Example</th></tr></thead><tbody><tr><td>Host firewall</td><td>On each computer</td><td>Windows Defender Firewall, <code>ufw</code> on Linux</td></tr><tr><td>Network firewall</td><td>Between the LAN and the internet</td><td>Router firewall, pfSense, MikroTik, FortiGate</td></tr><tr><td>Web application firewall (WAF)</td><td>In front of websites</td><td>Cloudflare, ModSecurity</td></tr><tr><td>Stateful</td><td>Remembers connections, allows replies automatically</td><td>Almost all modern firewalls</td></tr><tr><td>Next-generation (NGFW)</td><td>Also inspects apps, users, malware</td><td>FortiGate, Palo Alto, Sophos</td></tr></tbody></table></div>
+<h3>ufw on a Linux server</h3>
+<figure class="static-code"><pre><code>sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow 22/tcp        # SSH (better: only from your IP)
+sudo ufw allow 80,443/tcp    # web
+sudo ufw enable
+sudo ufw status numbered</code></pre></figure>
+<blockquote><p>Always allow SSH <strong>before</strong> enabling a firewall on a remote server, or you'll lock yourself out.</p></blockquote>
+<h2>NAT and port forwarding</h2>
+<p>Home and office networks use private addresses (192.168.x.x) behind <strong>NAT</strong>, which already blocks unsolicited inbound connections. To make a device inside reachable (e.g. a CCTV recorder), you add <strong>port forwarding</strong>: "send outside port 8443 to 192.168.1.50:443". Every forwarded port is a door into your network, so forward only what's needed, change default passwords, and prefer a VPN instead.</p>
+<h2>VPNs: a private tunnel over the internet</h2>
+<p>A <strong>VPN</strong> (Virtual Private Network) encrypts traffic between two points so it can cross the internet safely.</p>
+<div class="static-table"><table><thead><tr><th>Type</th><th>Use</th><th>Examples</th></tr></thead><tbody><tr><td><strong>Remote-access VPN</strong></td><td>A staff member at home connects to the office network</td><td>WireGuard, OpenVPN, FortiClient, Tailscale</td></tr><tr><td><strong>Site-to-site VPN</strong></td><td>The Nairobi branch and Mombasa branch networks join as one</td><td>IPsec between two routers</td></tr><tr><td><strong>Consumer "privacy" VPN</strong></td><td>Hides your browsing from the local network (café Wi-Fi)</td><td>Commercial apps</td></tr></tbody></table></div>
+<p>What a VPN does and doesn't do:</p>
+<ul><li>✅ Encrypts traffic on untrusted networks (public Wi-Fi).</li><li>✅ Lets remote staff reach internal systems without exposing them to the internet.</li><li>❌ Doesn't make you anonymous or stop malware.</li><li>❌ A free VPN app may sell your data. Choose carefully.</li></ul>
+<h3>A WireGuard config (just to see the shape)</h3>
+<figure class="static-code"><pre><code>[Interface]
+PrivateKey = &lt;client private key&gt;
+Address = 10.8.0.2/24
+DNS = 1.1.1.1
+
+[Peer]
+PublicKey = &lt;server public key&gt;
+Endpoint = vpn.example.co.ke:51820
+AllowedIPs = 192.168.10.0/24     # only office traffic goes through the tunnel
+PersistentKeepalive = 25</code></pre></figure>
+<h2>Remote access safely</h2>
+<ul><li>Never expose <strong>RDP</strong> (port 3389) directly to the internet: it's one of the most attacked services. Put it behind a VPN.</li><li>Use <strong>SSH keys</strong> instead of passwords for Linux servers, and disable root login.</li><li>Turn on <strong>multi-factor authentication</strong> for VPNs and admin panels.</li><li>Keep router and firewall firmware updated.</li><li>Log and review failed login attempts.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>In a firewall rule list, which rule applies: the first match or the last match?</p><details><summary>Show answer</summary><p>first</p></details></li><li><p>What should the final firewall rule usually be? (two words)</p><details><summary>Show answer</summary><p>deny all</p></details></li><li><p>What connects a branch network to head office permanently over the internet? (two words, hyphen allowed)</p><details><summary>Show answer</summary><p>site-to-site</p></details></li><li><p>Which remote desktop port should never be exposed directly to the internet?</p><details><summary>Show answer</summary><p>3389</p></details></li><li><p>Name a modern, fast VPN protocol that starts with W.</p><details><summary>Show answer</summary><p>WireGuard</p></details></li></ol></section></div><p class="static-meta">Lesson 22 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/network-security/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Network security basics</a><a class="btn btn-solid btn-sm" href="/learn/networking/python-networking/">Networking with Python (practice) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

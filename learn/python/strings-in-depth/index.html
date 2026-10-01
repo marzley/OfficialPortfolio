@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Strings in depth: slicing, methods and f-strings | Python</title>
+    <meta name="description" content="Text is everywhere: names, phone numbers, SMS messages, receipts. Python has excellent tools for it." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/python/strings-in-depth/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Strings in depth: slicing, methods and f-strings | Python" />
+    <meta property="og:description" content="Text is everywhere: names, phone numbers, SMS messages, receipts. Python has excellent tools for it." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/python/strings-in-depth/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Strings in depth: slicing, methods and f-strings | Python" />
+    <meta name="twitter:description" content="Text is everywhere: names, phone numbers, SMS messages, receipts. Python has excellent tools for it." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/python/strings-in-depth/#lesson","name":"Strings in depth: slicing, methods and f-strings","description":"Text is everywhere: names, phone numbers, SMS messages, receipts. Python has excellent tools for it.","url":"https://marzleytechsolutions.co.ke/learn/python/strings-in-depth/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/python/#course","name":"Python","url":"https://marzleytechsolutions.co.ke/learn/python/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Python","item":"https://marzleytechsolutions.co.ke/learn/python/"},{"@type":"ListItem","position":4,"name":"Strings in depth: slicing, methods and f-strings","item":"https://marzleytechsolutions.co.ke/learn/python/strings-in-depth/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/python/">Python</a> / <span>Strings in depth: slicing, methods and f-strings</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=strings-in-depth"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Strings in depth: slicing, methods and f-strings</h1>
+<p>Text is everywhere: names, phone numbers, SMS messages, receipts. Python has excellent tools for it.</p>
+<h2>Indexing and slicing</h2>
+<p>Each character has a position (index), starting at <strong>0</strong>. Negative indexes count from the end.</p>
+<figure class="static-code"><pre><code> K  e  n  y  a
+ 0  1  2  3  4
+-5 -4 -3 -2 -1</code></pre></figure>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">word = &quot;Kenya&quot;
+print(word[0], word[-1])      # K a
+print(word[1:4])              # &quot;eny&quot;  (from 1 up to, not including, 4)
+print(word[:3], word[2:])     # &quot;Ken&quot; &quot;nya&quot;
+print(word[::-1])             # &quot;ayneK&quot; reversed
+print(len(word))              # 5
+
+phone = &quot;0712345678&quot;
+print(&quot;Last 4 digits:&quot;, phone[-4:])
+print(&quot;Masked:&quot;, phone[:4] + &quot;***&quot; + phone[-3:])</code></pre></figure>
+<p>Strings are <strong>immutable</strong>: <code>word[0] = &quot;k&quot;</code> is an error. Methods return a <em>new</em> string instead.</p>
+<h2>Everyday string methods</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">raw = &quot;  mama NJERI&#x27;s bakery  &quot;
+print(raw.strip())                 # remove spaces at both ends
+print(raw.strip().title())         # &quot;Mama Njeri&#x27;S Bakery&quot; (title case)
+print(raw.upper(), raw.lower())
+print(&quot;0712 345 678&quot;.replace(&quot; &quot;, &quot;&quot;))
+print(&quot;nairobi,mombasa,kisumu&quot;.split(&quot;,&quot;))
+print(&quot; - &quot;.join([&quot;Nyeri&quot;, &quot;Meru&quot;, &quot;Embu&quot;]))
+print(&quot;Nairobi&quot;.startswith(&quot;Nai&quot;), &quot;photo.jpg&quot;.endswith(&quot;.jpg&quot;))
+print(&quot;banana&quot;.count(&quot;a&quot;), &quot;banana&quot;.find(&quot;n&quot;), &quot;banana&quot;.find(&quot;x&quot;))
+print(&quot;2026&quot;.isdigit(), &quot;abc&quot;.isalpha(), &quot;   &quot;.isspace())
+print(&quot;7&quot;.zfill(3), &quot;Hi&quot;.center(10, &quot;*&quot;))</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Method</th><th>Does</th></tr></thead><tbody><tr><td><code>strip()</code>, <code>lstrip()</code>, <code>rstrip()</code></td><td>Remove spaces (or given characters)</td></tr><tr><td><code>upper()</code>, <code>lower()</code>, <code>title()</code>, <code>capitalize()</code></td><td>Change case</td></tr><tr><td><code>replace(old, new)</code></td><td>Swap text</td></tr><tr><td><code>split(sep)</code></td><td>String → list</td></tr><tr><td><code>sep.join(list)</code></td><td>List → string</td></tr><tr><td><code>find(x)</code></td><td>Position, or -1 if missing</td></tr><tr><td><code>startswith()</code>, <code>endswith()</code></td><td>Checks</td></tr><tr><td><code>isdigit()</code>, <code>isalpha()</code></td><td>What kind of characters</td></tr></tbody></table></div>
+<h2>f-strings: the best way to build text</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">name = &quot;Achieng&quot;
+amount = 12500.5
+items = 3
+
+print(f&quot;Hello {name}!&quot;)
+print(f&quot;{items} items cost KSh {amount:,.2f}&quot;)     # 12,500.50
+print(f&quot;{&#x27;Item&#x27;:&lt;10}{&#x27;Price&#x27;:&gt;10}&quot;)                 # align left / right
+print(f&quot;{&#x27;Sugar&#x27;:&lt;10}{160:&gt;10}&quot;)
+print(f&quot;{&#x27;Oil&#x27;:&lt;10}{350:&gt;10}&quot;)
+print(f&quot;Paid: {0.875:.0%}&quot;)                         # 88%
+print(f&quot;{name=}&quot;)                                   # shows name=&#x27;Achieng&#x27; (debugging)
+print(f&quot;Next year you&#x27;ll pay {amount * 1.1:,.0f}&quot;)  # maths inside</code></pre></figure>
+<p>Format codes after the <code>:</code>:</p>
+<div class="static-table"><table><thead><tr><th>Code</th><th>Meaning</th><th>Example output</th></tr></thead><tbody><tr><td><code>,</code></td><td>Thousands separator</td><td><code>12,500</code></td></tr><tr><td><code>.2f</code></td><td>2 decimal places</td><td><code>12500.50</code></td></tr><tr><td><code>.0%</code></td><td>Percentage</td><td><code>88%</code></td></tr><tr><td><code>&lt;10</code> / <code>&gt;10</code> / <code>^10</code></td><td>Left / right / centre in 10 spaces</td><td></td></tr><tr><td><code>05d</code></td><td>Pad with zeros to 5 digits</td><td><code>00042</code></td></tr></tbody></table></div>
+<h2>Escape characters and raw strings</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">print(&quot;Line one\nLine two&quot;)      # \n new line
+print(&quot;Name:\tAmina&quot;)            # \t tab
+print(&quot;She said \&quot;karibu\&quot;&quot;)     # \&quot; a quote inside quotes
+print(&#x27;It\&#x27;s fine&#x27;)
+print(r&quot;C:\new\folder&quot;)          # raw string: backslashes stay as they are
+
+message = &quot;&quot;&quot;This is a
+multi-line string,
+great for SMS templates.&quot;&quot;&quot;
+print(message)</code></pre></figure>
+<h2>Looping over text</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">sms = &quot;Your M-Pesa balance is Ksh1,250.00&quot;
+digits = &quot;&quot;
+for ch in sms:
+    if ch.isdigit():
+        digits += ch
+print(digits)                    # 125000
+
+vowels = sum(1 for ch in &quot;Harambee&quot; if ch.lower() in &quot;aeiou&quot;)
+print(&quot;Vowels:&quot;, vowels)</code></pre></figure>
+<h2>Mini project: clean and validate a phone number</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def clean_phone(text):
+    digits = &quot;&quot;.join(ch for ch in text if ch.isdigit())
+    if digits.startswith(&quot;254&quot;) and len(digits) == 12:
+        digits = &quot;0&quot; + digits[3:]
+    if len(digits) == 10 and digits[:2] in (&quot;07&quot;, &quot;01&quot;):
+        return digits
+    return None
+
+for p in [&quot;0712 345 678&quot;, &quot;+254 712-345-678&quot;, &quot;12345&quot;, &quot;0110 123 456&quot;]:
+    print(f&quot;{p:&lt;20} -&gt; {clean_phone(p)}&quot;)</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is "Nairobi"[0]?</p><details><summary>Show answer</summary><p>N</p></details></li><li><p>What is "Nairobi"[-1]?</p><details><summary>Show answer</summary><p>i</p></details></li><li><p>What does "Kenya"[1:3] give?</p><details><summary>Show answer</summary><p>en</p></details></li><li><p>Which method turns "a,b,c" into a list?</p><details><summary>Show answer</summary><p>split</p></details></li><li><p>How do you show 2 decimal places in an f-string? Write the format code after the colon.</p><details><summary>Show answer</summary><p>.2f</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Given <code>phone = &quot;0712345678&quot;</code>, print the masked number <strong>0712</strong><em>678</em>* using slicing.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=strings-in-depth#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 5 of 19 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/operators-booleans/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Operators, booleans and making decisions</a><a class="btn btn-solid btn-sm" href="/learn/python/conditions/">If statements <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

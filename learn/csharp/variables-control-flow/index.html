@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Variables, types, conditions and loops in C# | C#</title>
+    <meta name="description" content="C (said &quot;C sharp&quot;) is Microsoft&#x27;s main language: it builds Windows apps, web APIs with ASP.NET, games with Unity , and business systems in many banks…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/csharp/variables-control-flow/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Variables, types, conditions and loops in C# | C#" />
+    <meta property="og:description" content="C (said &quot;C sharp&quot;) is Microsoft&#x27;s main language: it builds Windows apps, web APIs with ASP.NET, games with Unity , and business systems in many banks…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/csharp/variables-control-flow/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Variables, types, conditions and loops in C# | C#" />
+    <meta name="twitter:description" content="C (said &quot;C sharp&quot;) is Microsoft&#x27;s main language: it builds Windows apps, web APIs with ASP.NET, games with Unity , and business systems in many banks…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/csharp/variables-control-flow/#lesson","name":"Variables, types, conditions and loops in C#","description":"C (said \"C sharp\") is Microsoft's main language: it builds Windows apps, web APIs with ASP.NET, games with Unity , and business systems in many banks…","url":"https://marzleytechsolutions.co.ke/learn/csharp/variables-control-flow/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/csharp/#course","name":"C#","url":"https://marzleytechsolutions.co.ke/learn/csharp/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"C#","item":"https://marzleytechsolutions.co.ke/learn/csharp/"},{"@type":"ListItem","position":4,"name":"Variables, types, conditions and loops in C#","item":"https://marzleytechsolutions.co.ke/learn/csharp/variables-control-flow/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/csharp/">C#</a> / <span>Variables, types, conditions and loops in C#</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=csharp&amp;lesson=variables-control-flow"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Variables, types, conditions and loops in C#</h1>
+<p>C# (said "C sharp") is Microsoft's main language: it builds Windows apps, web APIs with ASP.NET, games with <strong>Unity</strong>, and business systems in many banks and companies. Its syntax will feel familiar if you know Java or JavaScript.</p>
+<blockquote><p>Examples run on Compiler Explorer (online), so they need internet and take a few seconds. Keep the <code>Program</code> class and <code>Main</code> method.</p></blockquote>
+<h2>Variables and types</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+
+class Program
+{
+    static void Main()
+    {
+        int students = 45;
+        double fee = 12500.50;
+        decimal balance = 15000.75m;      // decimal: exact, use for money (note the m)
+        bool isPaid = true;
+        char grade = &#x27;A&#x27;;
+        string school = &quot;Alliance High&quot;;
+        var town = &quot;Kikuyu&quot;;               // var: the compiler infers string
+        const double Vat = 0.16;
+
+        Console.WriteLine(school + &quot; in &quot; + town + &quot; has &quot; + students + &quot; students.&quot;);
+        Console.WriteLine($&quot;Fee: KSh {fee:N2}, balance: KSh {balance:N2}, paid: {isPaid}, grade {grade}&quot;);
+        Console.WriteLine($&quot;VAT on 1000 is {1000 * Vat}&quot;);
+    }
+}</code></pre></figure>
+<p><code>$&quot;...{value}...&quot;</code> is <strong>string interpolation</strong>; <code>:N2</code> formats with thousands separators and 2 decimals.</p>
+<div class="static-table"><table><thead><tr><th>Type</th><th>Holds</th><th>Example</th></tr></thead><tbody><tr><td><code>int</code></td><td>Whole numbers</td><td><code>int qty = 3;</code></td></tr><tr><td><code>long</code></td><td>Big whole numbers</td><td><code>long pop = 52000000;</code></td></tr><tr><td><code>double</code></td><td>Decimals (fast, approximate)</td><td><code>double rate = 3.5;</code></td></tr><tr><td><code>decimal</code></td><td>Exact decimals for <strong>money</strong></td><td><code>decimal price = 199.99m;</code></td></tr><tr><td><code>bool</code></td><td><code>true</code> / <code>false</code></td><td></td></tr><tr><td><code>char</code></td><td>One character</td><td><code>&#x27;K&#x27;</code></td></tr><tr><td><code>string</code></td><td>Text</td><td><code>&quot;Nairobi&quot;</code></td></tr></tbody></table></div>
+<h2>Conversions</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+
+class Program
+{
+    static void Main()
+    {
+        string input = &quot;250&quot;;
+        int qty = int.Parse(input);
+        double price = double.Parse(&quot;180.5&quot;);
+        Console.WriteLine(qty * price);
+
+        if (int.TryParse(&quot;abc&quot;, out int value))       // safe: no crash on bad input
+            Console.WriteLine(&quot;Number: &quot; + value);
+        else
+            Console.WriteLine(&quot;Not a number&quot;);
+
+        int whole = (int)9.99;                         // cast: cuts the decimals -&gt; 9
+        Console.WriteLine(whole + &quot; &quot; + Convert.ToString(42) + &quot; &quot; + Math.Round(12.567, 2));
+    }
+}</code></pre></figure>
+<p>Prefer <code>TryParse</code> for user input: it returns <code>false</code> instead of throwing an exception.</p>
+<h2>Conditions</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+
+class Program
+{
+    static void Main()
+    {
+        int[] marks = { 92, 67, 45 };
+        foreach (int mark in marks)
+        {
+            string grade;
+            if (mark &gt;= 80) grade = &quot;A&quot;;
+            else if (mark &gt;= 60) grade = &quot;B&quot;;
+            else if (mark &gt;= 50) grade = &quot;C&quot;;
+            else grade = &quot;Fail&quot;;
+            Console.WriteLine($&quot;{mark}: {grade}&quot;);
+        }
+
+        string day = &quot;SAT&quot;;
+        switch (day)
+        {
+            case &quot;SAT&quot;:
+            case &quot;SUN&quot;:
+                Console.WriteLine(&quot;Weekend&quot;);
+                break;
+            default:
+                Console.WriteLine(&quot;Weekday&quot;);
+                break;
+        }
+
+        int age = 20;
+        string status = age &gt;= 18 ? &quot;adult&quot; : &quot;minor&quot;;   // ternary
+        Console.WriteLine(status);
+    }
+}</code></pre></figure>
+<h2>Loops</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+
+class Program
+{
+    static void Main()
+    {
+        for (int i = 1; i &lt;= 3; i++)
+            Console.WriteLine(&quot;Round &quot; + i);
+
+        decimal savings = 0;
+        int week = 0;
+        while (savings &lt; 10000m)
+        {
+            savings += 1500m;
+            week++;
+        }
+        Console.WriteLine($&quot;KSh 10,000 reached in week {week}&quot;);
+
+        string[] towns = { &quot;Nyeri&quot;, &quot;Meru&quot;, &quot;Embu&quot; };
+        foreach (string t in towns)
+            Console.Write(t + &quot; &quot;);
+        Console.WriteLine();
+    }
+}</code></pre></figure>
+<h2>Methods</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+
+class Program
+{
+    static decimal WithVat(decimal amount, decimal rate = 16m)
+    {
+        return Math.Round(amount * (1 + rate / 100), 2);
+    }
+
+    static bool IsValidPhone(string phone)
+    {
+        return phone.Length == 10 &amp;&amp; (phone.StartsWith(&quot;07&quot;) || phone.StartsWith(&quot;01&quot;));
+    }
+
+    static void Main()
+    {
+        Console.WriteLine(WithVat(1000m));
+        Console.WriteLine(WithVat(1000m, 0m));
+        Console.WriteLine(IsValidPhone(&quot;0712345678&quot;) + &quot; &quot; + IsValidPhone(&quot;12345&quot;));
+    }
+}</code></pre></figure>
+<p>C# methods use <strong>PascalCase</strong> names (<code>WithVat</code>, <code>IsValidPhone</code>), unlike Java's camelCase.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which C# type should you use for money?</p><details><summary>Show answer</summary><p>decimal</p></details></li><li><p>What letter must follow a decimal literal like 199.99?</p><details><summary>Show answer</summary><p>m</p></details></li><li><p>Which method converts a string to an int without crashing on bad input?</p><details><summary>Show answer</summary><p>int.TryParse</p></details></li><li><p>What symbol starts an interpolated string in C#?</p><details><summary>Show answer</summary><p>$</p></details></li><li><p>Which loop goes through every item in an array?</p><details><summary>Show answer</summary><p>foreach</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 7 in <a href="/learn/csharp/">C#</a> · <a href="/learn/?book=csharp">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/csharp/introduction/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> C# introduction</a><a class="btn btn-solid btn-sm" href="/learn/csharp/lists-dictionaries-linq/">Lists, dictionaries and LINQ queries <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

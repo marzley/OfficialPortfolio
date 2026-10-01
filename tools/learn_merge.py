@@ -37,11 +37,22 @@ SRC = ROOT / "content" / "learn"
 PARTS = ("exercise", "starter", "expected", "must_contain")
 
 
+def header(text):
+    """key: value lines; a value may be wrapped in quotes (needed when it contains a colon)."""
+    head = {}
+    for k, v in re.findall(r"^(\w+):\s*(.*)$", text, re.M):
+        v = v.strip()
+        if len(v) >= 2 and v[0] == v[-1] and v[0] in "\"'":
+            v = v[1:-1]
+        head[k] = v
+    return head
+
+
 def parse(path):
     text = path.read_text(encoding="utf-8").replace("\r\n", "\n")
     m = re.match(r"---\n(.*?)\n---\n", text, re.S)
     assert m, "%s: missing --- header" % path
-    head = dict(re.findall(r"^(\w+):\s*(.*)$", m.group(1), re.M))
+    head = header(m.group(1))
     rest = text[m.end():]
     pieces = re.split(r"^=== (\w+) ===\n", rest, flags=re.M)
     lesson = {"slug": head["slug"], "title": head["title"], "body": pieces[0].strip() + "\n"}
@@ -60,7 +71,7 @@ def main():
     for folder in sorted(p for p in SRC.iterdir() if p.is_dir()):
         meta = folder / "_track.md"
         if meta.exists():
-            head = dict(re.findall(r"^(\w+):\s*(.*)$", meta.read_text(encoding="utf-8").split("---")[1], re.M))
+            head = header(meta.read_text(encoding="utf-8").split("---")[1])
             if folder.name not in tracks:
                 tracks[folder.name] = {"slug": folder.name, "lessons": []}
                 seed["tracks"].append(tracks[folder.name])

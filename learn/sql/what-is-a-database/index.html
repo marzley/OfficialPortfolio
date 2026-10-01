@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>What is a database? Tables, rows, keys and SQL | SQL</title>
+    <meta name="description" content="Every app you use stores data somewhere: M-Pesa keeps transactions, KCSE results live in tables of students and marks, an online shop stores products…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/sql/what-is-a-database/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="What is a database? Tables, rows, keys and SQL | SQL" />
+    <meta property="og:description" content="Every app you use stores data somewhere: M-Pesa keeps transactions, KCSE results live in tables of students and marks, an online shop stores products…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/sql/what-is-a-database/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="What is a database? Tables, rows, keys and SQL | SQL" />
+    <meta name="twitter:description" content="Every app you use stores data somewhere: M-Pesa keeps transactions, KCSE results live in tables of students and marks, an online shop stores products…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/sql/what-is-a-database/#lesson","name":"What is a database? Tables, rows, keys and SQL","description":"Every app you use stores data somewhere: M-Pesa keeps transactions, KCSE results live in tables of students and marks, an online shop stores products…","url":"https://marzleytechsolutions.co.ke/learn/sql/what-is-a-database/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/sql/#course","name":"SQL","url":"https://marzleytechsolutions.co.ke/learn/sql/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"SQL","item":"https://marzleytechsolutions.co.ke/learn/sql/"},{"@type":"ListItem","position":4,"name":"What is a database? Tables, rows, keys and SQL","item":"https://marzleytechsolutions.co.ke/learn/sql/what-is-a-database/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/sql/">SQL</a> / <span>What is a database? Tables, rows, keys and SQL</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=what-is-a-database"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>What is a database? Tables, rows, keys and SQL</h1>
+<p>Every app you use stores data somewhere: M-Pesa keeps transactions, KCSE results live in tables of students and marks, an online shop stores products and orders. That "somewhere" is usually a <strong>database</strong>.</p>
+<h2>Why not just use Excel?</h2>
+<p>A spreadsheet is great for one person and a few thousand rows. A database is built for:</p>
+<ul><li><strong>Many users at once</strong> (thousands of customers paying at the same time),</li><li><strong>Millions of rows</strong>, searched in milliseconds,</li><li><strong>Rules</strong> that keep data correct (an order must belong to a real customer),</li><li><strong>Security</strong>: who may read or change what,</li><li><strong>Safety</strong>: transactions and backups so money never "half moves".</li></ul>
+<h2>Tables, rows and columns</h2>
+<p>A <strong>relational database</strong> stores data in <strong>tables</strong>. Each table is about one kind of thing.</p>
+<p><strong>Customers</strong></p>
+<div class="static-table"><table><thead><tr><th>CustomerID</th><th>Name</th><th>City</th><th>Phone</th></tr></thead><tbody><tr><td>1</td><td>Wanjiku Mwangi</td><td>Nairobi</td><td>0712000001</td></tr><tr><td>2</td><td>Otieno Odhiambo</td><td>Kisumu</td><td>0712000002</td></tr><tr><td>3</td><td>Achieng Atieno</td><td>Kisumu</td><td>0712000003</td></tr></tbody></table></div>
+<ul><li>A <strong>column</strong> (field) is one piece of information: <code>Name</code>, <code>City</code>.</li><li>A <strong>row</strong> (record) is one customer.</li><li>Each column has a <strong>data type</strong>: text, whole number, decimal, date...</li></ul>
+<h2>Keys: how tables connect</h2>
+<ul><li>A <strong>primary key</strong> uniquely identifies each row (<code>CustomerID</code>). No two customers share it.</li><li>A <strong>foreign key</strong> is a column that points to another table's primary key.</li></ul>
+<p><strong>Orders</strong></p>
+<div class="static-table"><table><thead><tr><th>OrderID</th><th>CustomerID</th><th>ProductID</th><th>Quantity</th><th>OrderDate</th></tr></thead><tbody><tr><td>1</td><td>1</td><td>5</td><td>1</td><td>2026-08-02</td></tr><tr><td>2</td><td>2</td><td>2</td><td>3</td><td>2026-08-05</td></tr></tbody></table></div>
+<p><code>Orders.CustomerID = 1</code> means "this order belongs to Wanjiku". Instead of copying her name and phone into every order, we store it <strong>once</strong> and link to it. That's the "relational" idea.</p>
+<h2>Our practice database</h2>
+<p>Every SQL example in this tutorial runs on a small shop database, fresh every time you press <strong>Run</strong>:</p>
+<ul><li><strong>Customers</strong> (CustomerID, Name, City, Phone)</li><li><strong>Products</strong> (ProductID, Name, Category, Price)</li><li><strong>Orders</strong> (OrderID, CustomerID, ProductID, Quantity, OrderDate)</li></ul>
+<p>Try looking at each table:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT * FROM Customers;
+SELECT * FROM Products;
+SELECT * FROM Orders;</code></pre></figure>
+<h2>What is SQL?</h2>
+<p><strong>SQL</strong> (Structured Query Language, said "S-Q-L" or "sequel") is the language for talking to relational databases. It's declarative: you say <strong>what</strong> you want, and the database figures out <strong>how</strong> to get it.</p>
+<div class="static-table"><table><thead><tr><th>Group</th><th>Commands</th><th>Does</th></tr></thead><tbody><tr><td>Query</td><td><code>SELECT</code></td><td>Read data</td></tr><tr><td>Change data</td><td><code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code></td><td>Add, edit, remove rows</td></tr><tr><td>Define structure</td><td><code>CREATE</code>, <code>ALTER</code>, <code>DROP</code></td><td>Make and change tables</td></tr><tr><td>Control access</td><td><code>GRANT</code>, <code>REVOKE</code></td><td>Permissions</td></tr><tr><td>Transactions</td><td><code>BEGIN</code>, <code>COMMIT</code>, <code>ROLLBACK</code></td><td>All-or-nothing changes</td></tr></tbody></table></div>
+<h2>Popular database systems</h2>
+<div class="static-table"><table><thead><tr><th>System</th><th>Where you'll meet it</th></tr></thead><tbody><tr><td><strong>MySQL / MariaDB</strong></td><td>Most shared hosting (cPanel), WordPress, PHP sites</td></tr><tr><td><strong>PostgreSQL</strong></td><td>Modern web apps, very powerful</td></tr><tr><td><strong>SQLite</strong></td><td>Inside phones, apps and this tutorial: a whole database in one file</td></tr><tr><td><strong>SQL Server</strong></td><td>Many banks and corporates</td></tr><tr><td><strong>Oracle</strong></td><td>Large enterprises</td></tr></tbody></table></div>
+<p>The SQL you learn here works in all of them with only small differences.</p>
+<h2>Writing SQL: the rules</h2>
+<ul><li>Keywords aren't case-sensitive, but writing them in CAPITALS makes queries easier to read.</li><li>End each statement with <code>;</code>.</li><li>Text values go in <strong>single quotes</strong>: <code>&#x27;Nairobi&#x27;</code>.</li><li><code>--</code> starts a comment.</li></ul>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">-- Customers in Kisumu, sorted by name
+SELECT Name, Phone
+FROM Customers
+WHERE City = &#x27;Kisumu&#x27;
+ORDER BY Name;</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>In a table, what is one record called: a row or a column?</p><details><summary>Show answer</summary><p>row</p></details></li><li><p>Which kind of key uniquely identifies each row?</p><details><summary>Show answer</summary><p>primary key</p></details></li><li><p>Which kind of key points to a row in another table?</p><details><summary>Show answer</summary><p>foreign key</p></details></li><li><p>Which SQL command reads data?</p><details><summary>Show answer</summary><p>SELECT</p></details></li><li><p>Which database runs inside phones and this tutorial, stored in one file?</p><details><summary>Show answer</summary><p>SQLite</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Show the <strong>Name</strong> and <strong>Price</strong> of every product.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=what-is-a-database#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 1 of 14 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><span></span><a class="btn btn-solid btn-sm" href="/learn/sql/select/">SELECT <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

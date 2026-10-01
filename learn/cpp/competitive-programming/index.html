@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>C++ for competitive programming | C++</title>
+    <meta name="description" content="C++ is the most popular language in coding contests because it&#x27;s fast and its Standard Template Library (STL) has ready-made data structures and…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/cpp/competitive-programming/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="C++ for competitive programming | C++" />
+    <meta property="og:description" content="C++ is the most popular language in coding contests because it&#x27;s fast and its Standard Template Library (STL) has ready-made data structures and…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/cpp/competitive-programming/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="C++ for competitive programming | C++" />
+    <meta name="twitter:description" content="C++ is the most popular language in coding contests because it&#x27;s fast and its Standard Template Library (STL) has ready-made data structures and…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/cpp/competitive-programming/#lesson","name":"C++ for competitive programming","description":"C++ is the most popular language in coding contests because it's fast and its Standard Template Library (STL) has ready-made data structures and…","url":"https://marzleytechsolutions.co.ke/learn/cpp/competitive-programming/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/cpp/#course","name":"C++","url":"https://marzleytechsolutions.co.ke/learn/cpp/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"C++","item":"https://marzleytechsolutions.co.ke/learn/cpp/"},{"@type":"ListItem","position":4,"name":"C++ for competitive programming","item":"https://marzleytechsolutions.co.ke/learn/cpp/competitive-programming/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/cpp/">C++</a> / <span>C++ for competitive programming</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=cpp&amp;lesson=competitive-programming"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>C++ for competitive programming</h1>
+<p>C++ is the most popular language in coding contests because it's fast and its <strong>Standard Template Library (STL)</strong> has ready-made data structures and algorithms.</p>
+<h2>A typical contest template</h2>
+<figure class="static-code"><figcaption>C++</figcaption><pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin &gt;&gt; n;
+    vector&lt;long long&gt; a(n);
+    for (auto&amp; x : a) cin &gt;&gt; x;
+
+    long long best = *max_element(a.begin(), a.end());
+    long long sum = accumulate(a.begin(), a.end(), 0LL);
+    cout &lt;&lt; best &lt;&lt; &quot; &quot; &lt;&lt; sum &lt;&lt; &quot;\n&quot;;
+}</code></pre></figure>
+<h2>STL cheat sheet</h2>
+<div class="static-table"><table><thead><tr><th>Need</th><th>Use</th></tr></thead><tbody><tr><td>Dynamic array</td><td><code>vector&lt;int&gt;</code></td></tr><tr><td>Sorted unique values</td><td><code>set&lt;int&gt;</code></td></tr><tr><td>Key → value (sorted)</td><td><code>map&lt;string,int&gt;</code></td></tr><tr><td>Fast lookup (unsorted)</td><td><code>unordered_map&lt;string,int&gt;</code></td></tr><tr><td>Queue / stack</td><td><code>queue&lt;int&gt;</code>, <code>stack&lt;int&gt;</code></td></tr><tr><td>Always get the biggest</td><td><code>priority_queue&lt;int&gt;</code></td></tr><tr><td>Sort / binary search</td><td><code>sort()</code>, <code>lower_bound()</code></td></tr></tbody></table></div>
+<h2>Practice sites</h2>
+<ul><li><strong>Codeforces</strong>, <strong>AtCoder</strong>, <strong>LeetCode</strong>, <strong>HackerRank</strong></li><li><strong>Kattis</strong> and ICPC regional contests for universities</li></ul>
+<p>Contests teach you algorithms quickly, and good ratings impress employers.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does STL stand for?</p><details><summary>Show answer</summary><p>Standard Template Library</p></details></li><li><p>Which container always gives you the biggest item first? (two words joined by _)</p><details><summary>Show answer</summary><p>priority_queue</p></details></li><li><p>Which STL function sorts a vector?</p><details><summary>Show answer</summary><p>sort</p></details></li></ol></section></div><p class="static-meta">Lesson 7 of 7 in <a href="/learn/cpp/">C++</a> · <a href="/learn/?book=cpp">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/cpp/project-inventory/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Project: a shop inventory manager in C++</a><span></span></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

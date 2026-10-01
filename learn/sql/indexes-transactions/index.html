@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Indexes, transactions and keeping data safe | SQL</title>
+    <meta name="description" content="Two ideas separate a toy database from a real one: indexes keep it fast as it grows, and transactions keep it correct when things go wrong." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/sql/indexes-transactions/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Indexes, transactions and keeping data safe | SQL" />
+    <meta property="og:description" content="Two ideas separate a toy database from a real one: indexes keep it fast as it grows, and transactions keep it correct when things go wrong." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/sql/indexes-transactions/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Indexes, transactions and keeping data safe | SQL" />
+    <meta name="twitter:description" content="Two ideas separate a toy database from a real one: indexes keep it fast as it grows, and transactions keep it correct when things go wrong." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/sql/indexes-transactions/#lesson","name":"Indexes, transactions and keeping data safe","description":"Two ideas separate a toy database from a real one: indexes keep it fast as it grows, and transactions keep it correct when things go wrong.","url":"https://marzleytechsolutions.co.ke/learn/sql/indexes-transactions/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/sql/#course","name":"SQL","url":"https://marzleytechsolutions.co.ke/learn/sql/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"SQL","item":"https://marzleytechsolutions.co.ke/learn/sql/"},{"@type":"ListItem","position":4,"name":"Indexes, transactions and keeping data safe","item":"https://marzleytechsolutions.co.ke/learn/sql/indexes-transactions/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/sql/">SQL</a> / <span>Indexes, transactions and keeping data safe</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=indexes-transactions"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Indexes, transactions and keeping data safe</h1>
+<p>Two ideas separate a toy database from a real one: <strong>indexes</strong> keep it fast as it grows, and <strong>transactions</strong> keep it correct when things go wrong.</p>
+<h2>Indexes: the book's index for your table</h2>
+<p>Without an index, finding customers in Kisumu means reading <strong>every row</strong> (a "full table scan"). With 10 rows that's nothing; with 5 million M-Pesa transactions it's painfully slow. An <strong>index</strong> is a sorted lookup structure, like the index at the back of a textbook.</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE INDEX idx_customers_city ON Customers(City);
+CREATE INDEX idx_orders_customer_date ON Orders(CustomerID, OrderDate);
+
+EXPLAIN QUERY PLAN SELECT * FROM Customers WHERE City = &#x27;Kisumu&#x27;;
+EXPLAIN QUERY PLAN SELECT * FROM Customers WHERE Name = &#x27;Amina Hassan&#x27;;</code></pre></figure>
+<p>The first plan says <strong>SEARCH ... USING INDEX</strong>; the second says <strong>SCAN</strong> (reads every row) because there's no index on <code>Name</code>. In MySQL use <code>EXPLAIN SELECT ...</code>.</p>
+<h3>When to add an index</h3>
+<div class="static-table"><table><thead><tr><th>Add an index on...</th><th>Because</th></tr></thead><tbody><tr><td>Columns in <code>WHERE</code> you search often (phone, email, city)</td><td>Fast look-ups</td></tr><tr><td>Foreign keys (<code>Orders.CustomerID</code>)</td><td>Fast joins</td></tr><tr><td>Columns you <code>ORDER BY</code> on big tables</td><td>Avoids sorting</td></tr><tr><td>Columns that must be unique</td><td><code>CREATE UNIQUE INDEX</code> also enforces it</td></tr></tbody></table></div>
+<h3>The cost of indexes</h3>
+<ul><li>Each index uses disk space.</li><li>Every <code>INSERT</code>, <code>UPDATE</code> and <code>DELETE</code> must update the indexes too, so writes get slightly slower.</li><li>Don't index everything: index what your real queries use.</li></ul>
+<h2>Transactions: all or nothing</h2>
+<p>Moving KSh 1,000 from Amina to Brian needs <strong>two</strong> updates. If the power goes off between them, money vanishes. A <strong>transaction</strong> groups statements so either <strong>all</strong> happen or <strong>none</strong> do.</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE TABLE Wallets (Owner TEXT PRIMARY KEY, Balance INTEGER NOT NULL CHECK (Balance &gt;= 0));
+INSERT INTO Wallets VALUES (&#x27;Amina&#x27;, 5000), (&#x27;Brian&#x27;, 1200);
+
+BEGIN TRANSACTION;
+UPDATE Wallets SET Balance = Balance - 1000 WHERE Owner = &#x27;Amina&#x27;;
+UPDATE Wallets SET Balance = Balance + 1000 WHERE Owner = &#x27;Brian&#x27;;
+COMMIT;
+
+SELECT * FROM Wallets;</code></pre></figure>
+<p>If something fails, <code>ROLLBACK</code> undoes everything since <code>BEGIN</code>:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE TABLE Wallets (Owner TEXT PRIMARY KEY, Balance INTEGER NOT NULL);
+INSERT INTO Wallets VALUES (&#x27;Amina&#x27;, 5000), (&#x27;Brian&#x27;, 1200);
+
+BEGIN;
+UPDATE Wallets SET Balance = Balance - 1000 WHERE Owner = &#x27;Amina&#x27;;
+-- Imagine the second update failed here (network error, crash...)
+ROLLBACK;
+
+SELECT * FROM Wallets;   -- Amina still has 5000</code></pre></figure>
+<p>In application code the pattern is:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">$pdo-&gt;beginTransaction();
+try {
+    $pdo-&gt;prepare(&quot;UPDATE wallets SET balance = balance - ? WHERE owner = ?&quot;)-&gt;execute([1000, &#x27;Amina&#x27;]);
+    $pdo-&gt;prepare(&quot;UPDATE wallets SET balance = balance + ? WHERE owner = ?&quot;)-&gt;execute([1000, &#x27;Brian&#x27;]);
+    $pdo-&gt;commit();
+} catch (Throwable $e) {
+    $pdo-&gt;rollBack();   // nothing changed
+    throw $e;
+}</code></pre></figure>
+<h2>ACID: what a good database promises</h2>
+<div class="static-table"><table><thead><tr><th>Letter</th><th>Means</th><th>In plain words</th></tr></thead><tbody><tr><td><strong>A</strong>tomicity</td><td>All or nothing</td><td>No half-finished transfers</td></tr><tr><td><strong>C</strong>onsistency</td><td>Rules always hold</td><td>Constraints (CHECK, FOREIGN KEY) are never broken</td></tr><tr><td><strong>I</strong>solation</td><td>Transactions don't disturb each other</td><td>Two cashiers don't sell the last item twice</td></tr><tr><td><strong>D</strong>urability</td><td>Committed means saved</td><td>Survives a crash or power cut</td></tr></tbody></table></div>
+<h2>Keeping data safe</h2>
+<ol><li><strong>Backups</strong>: schedule daily automatic backups (cPanel, <code>mysqldump</code>) and test restoring one.</li><li><strong>Least privilege</strong>: the website's database user shouldn't be able to <code>DROP</code> tables.</li><li><strong>Prepared statements</strong>: never build SQL by joining user input into a string. That's how <strong>SQL injection</strong> attacks work (see the PHP and Cybersecurity tutorials).</li><li><strong>Soft deletes</strong>: add a <code>DeletedAt</code> column instead of really deleting important records.</li><li><strong>Audit columns</strong>: <code>CreatedAt</code>, <code>UpdatedAt</code>, <code>CreatedBy</code> help you trace problems.</li></ol>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE TABLE Invoices (
+  InvoiceID INTEGER PRIMARY KEY,
+  Amount INTEGER NOT NULL,
+  CreatedAt TEXT DEFAULT (DATETIME(&#x27;now&#x27;)),
+  DeletedAt TEXT
+);
+INSERT INTO Invoices (Amount) VALUES (2500), (4000);
+UPDATE Invoices SET DeletedAt = DATETIME(&#x27;now&#x27;) WHERE InvoiceID = 1;   -- &quot;delete&quot; softly
+SELECT * FROM Invoices WHERE DeletedAt IS NULL;                        -- active invoices</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What speeds up searches on a column, like the index of a book?</p><details><summary>Show answer</summary><p>index</p></details></li><li><p>Which command permanently saves a transaction's changes?</p><details><summary>Show answer</summary><p>COMMIT</p></details></li><li><p>Which command undoes everything since BEGIN?</p><details><summary>Show answer</summary><p>ROLLBACK</p></details></li><li><p>What does the A in ACID stand for?</p><details><summary>Show answer</summary><p>Atomicity</p></details></li><li><p>Do indexes make INSERTs slightly faster or slower?</p><details><summary>Show answer</summary><p>slower</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Create an index called <strong>idx_products_category</strong> on <code>Products(Category)</code>.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=indexes-transactions#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 11 of 14 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/keys-design/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Keys, relationships and table design</a><a class="btn btn-solid btn-sm" href="/learn/sql/subqueries-views/">Subqueries, CASE, views and indexes <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

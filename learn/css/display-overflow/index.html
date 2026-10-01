@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>display, visibility and overflow | CSS</title>
+    <meta name="description" content="The display property decides how a box behaves in the layout. It&#x27;s the switch that turns on Flexbox and Grid, hides things, and fixes &quot;why won&#x27;t my…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/css/display-overflow/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="display, visibility and overflow | CSS" />
+    <meta property="og:description" content="The display property decides how a box behaves in the layout. It&#x27;s the switch that turns on Flexbox and Grid, hides things, and fixes &quot;why won&#x27;t my…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/css/display-overflow/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="display, visibility and overflow | CSS" />
+    <meta name="twitter:description" content="The display property decides how a box behaves in the layout. It&#x27;s the switch that turns on Flexbox and Grid, hides things, and fixes &quot;why won&#x27;t my…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/css/display-overflow/#lesson","name":"display, visibility and overflow","description":"The display property decides how a box behaves in the layout. It's the switch that turns on Flexbox and Grid, hides things, and fixes \"why won't my…","url":"https://marzleytechsolutions.co.ke/learn/css/display-overflow/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/css/#course","name":"CSS","url":"https://marzleytechsolutions.co.ke/learn/css/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"CSS","item":"https://marzleytechsolutions.co.ke/learn/css/"},{"@type":"ListItem","position":4,"name":"display, visibility and overflow","item":"https://marzleytechsolutions.co.ke/learn/css/display-overflow/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/css/">CSS</a> / <span>display, visibility and overflow</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=display-overflow"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>display, visibility and overflow</h1>
+<p>The <code>display</code> property decides <strong>how a box behaves</strong> in the layout. It's the switch that turns on Flexbox and Grid, hides things, and fixes "why won't my width work?" problems.</p>
+<h2>The main display values</h2>
+<div class="static-table"><table><thead><tr><th>Value</th><th>Behaviour</th></tr></thead><tbody><tr><td><code>block</code></td><td>New line, full width, width/height work</td></tr><tr><td><code>inline</code></td><td>Sits in the text line; <strong>width, height and top/bottom margins are ignored</strong></td></tr><tr><td><code>inline-block</code></td><td>Sits in the line <strong>and</strong> width/height/padding work</td></tr><tr><td><code>flex</code></td><td>Children are laid out in a row or column (Flexbox lesson)</td></tr><tr><td><code>grid</code></td><td>Children are placed on a grid (Grid lesson)</td></tr><tr><td><code>none</code></td><td>Removed completely, takes no space</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  body { font-family: sans-serif; }
+  span { background: #ffb800; padding: 6px; margin: 6px; }
+  .w { width: 140px; height: 50px; }
+  .ib { display: inline-block; }
+  .b { display: block; }
+&lt;/style&gt;
+&lt;p&gt;Inline: &lt;span class=&quot;w&quot;&gt;width ignored&lt;/span&gt; text continues&lt;/p&gt;
+&lt;p&gt;Inline-block: &lt;span class=&quot;w ib&quot;&gt;width works&lt;/span&gt; text continues&lt;/p&gt;
+&lt;p&gt;Block: &lt;span class=&quot;w b&quot;&gt;full new line&lt;/span&gt; text continues&lt;/p&gt;</code></pre></figure>
+<h2>Hiding things</h2>
+<div class="static-table"><table><thead><tr><th>Method</th><th>Takes space?</th><th>Screen readers?</th></tr></thead><tbody><tr><td><code>display: none</code></td><td>No</td><td>Hidden</td></tr><tr><td><code>visibility: hidden</code></td><td><strong>Yes</strong>, leaves a gap</td><td>Hidden</td></tr><tr><td><code>opacity: 0</code></td><td>Yes</td><td>Still read out</td></tr><tr><td><code>hidden</code> attribute in HTML</td><td>No</td><td>Hidden</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .row div { display: inline-block; width: 70px; padding: 10px; background: #0b1b35; color: #fff; margin: 2px; text-align: center; }
+  .gone { display: none; }
+  .invisible { visibility: hidden; }
+&lt;/style&gt;
+&lt;div class=&quot;row&quot;&gt;&lt;div&gt;1&lt;/div&gt;&lt;div class=&quot;gone&quot;&gt;2&lt;/div&gt;&lt;div&gt;3&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;row&quot;&gt;&lt;div&gt;1&lt;/div&gt;&lt;div class=&quot;invisible&quot;&gt;2&lt;/div&gt;&lt;div&gt;3&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Row 1 uses display:none (no gap). Row 2 uses visibility:hidden (gap stays).&lt;/p&gt;</code></pre></figure>
+<h2>Overflow: when content is too big</h2>
+<p>When content doesn't fit in a box with a fixed size, <code>overflow</code> decides what happens:</p>
+<div class="static-table"><table><thead><tr><th>Value</th><th>Result</th></tr></thead><tbody><tr><td><code>visible</code> (default)</td><td>Spills out of the box</td></tr><tr><td><code>hidden</code></td><td>Cut off</td></tr><tr><td><code>scroll</code></td><td>Always shows scrollbars</td></tr><tr><td><code>auto</code></td><td>Scrollbars only when needed</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .box { width: 220px; height: 70px; border: 2px solid #0b1b35; margin: 10px 0; font-family: sans-serif; }
+  .hidden { overflow: hidden; }
+  .auto { overflow: auto; }
+  .table-wrap { overflow-x: auto; max-width: 260px; border: 1px solid #ccc; }
+  table { border-collapse: collapse; }
+  td { border: 1px solid #ccc; padding: 6px 14px; white-space: nowrap; }
+&lt;/style&gt;
+&lt;div class=&quot;box&quot;&gt;Visible: this long text does not fit in the box so it spills out below the border and over other things.&lt;/div&gt;
+&lt;br&gt;&lt;br&gt;
+&lt;div class=&quot;box hidden&quot;&gt;Hidden: this long text does not fit in the box so the extra is cut off and nobody can see it.&lt;/div&gt;
+&lt;div class=&quot;box auto&quot;&gt;Auto: this long text does not fit in the box, so a scrollbar appears only because it is needed here.&lt;/div&gt;
+&lt;div class=&quot;table-wrap&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Name&lt;/td&gt;&lt;td&gt;Phone&lt;/td&gt;&lt;td&gt;Town&lt;/td&gt;&lt;td&gt;Balance&lt;/td&gt;&lt;td&gt;Status&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;</code></pre></figure>
+<blockquote><p>Tip: wrap wide tables in a div with <code>overflow-x: auto</code>. On phones they scroll sideways instead of breaking the whole page.</p></blockquote>
+<h2>A common bug: the page scrolls sideways on phones</h2>
+<p>Usually one element is wider than the screen: a big image, a long word or a <code>width: 500px</code> box. Fixes:</p>
+<figure class="static-code"><figcaption>CSS</figcaption><pre><code class="language-css">img, video { max-width: 100%; height: auto; }
+.long-links { overflow-wrap: anywhere; }
+.box { width: min(100%, 500px); }</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which display value ignores width and height?</p><details><summary>Show answer</summary><p>inline</p></details></li><li><p>Which display value sits in the line but lets width and height work?</p><details><summary>Show answer</summary><p>inline-block</p></details></li><li><p>Which hides an element and leaves no gap: display none or visibility hidden?</p><details><summary>Show answer</summary><p>display none</p></details></li><li><p>Which overflow value shows scrollbars only when needed?</p><details><summary>Show answer</summary><p>auto</p></details></li><li><p>What overflow-x value lets a wide table scroll on phones?</p><details><summary>Show answer</summary><p>auto</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Make <code>.menu a</code> links <strong>inline-block</strong> with <strong>padding: 10px</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=display-overflow#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 7 of 17 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/box-model/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> The box model</a><a class="btn btn-solid btn-sm" href="/learn/css/pseudo-classes-elements/">Pseudo-classes and pseudo-elements (:hover, ::before) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

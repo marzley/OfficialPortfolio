@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TypeScript in real projects | TypeScript</title>
+    <meta name="description" content="Free TypeScript lesson: TypeScript in real projects." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/typescript/typescript-in-practice/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="TypeScript in real projects | TypeScript" />
+    <meta property="og:description" content="Free TypeScript lesson: TypeScript in real projects." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/typescript/typescript-in-practice/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="TypeScript in real projects | TypeScript" />
+    <meta name="twitter:description" content="Free TypeScript lesson: TypeScript in real projects." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/typescript/typescript-in-practice/#lesson","name":"TypeScript in real projects","description":"Free TypeScript lesson: TypeScript in real projects.","url":"https://marzleytechsolutions.co.ke/learn/typescript/typescript-in-practice/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/typescript/#course","name":"TypeScript","url":"https://marzleytechsolutions.co.ke/learn/typescript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"TypeScript","item":"https://marzleytechsolutions.co.ke/learn/typescript/"},{"@type":"ListItem","position":4,"name":"TypeScript in real projects","item":"https://marzleytechsolutions.co.ke/learn/typescript/typescript-in-practice/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/typescript/">TypeScript</a> / <span>TypeScript in real projects</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=typescript&amp;lesson=typescript-in-practice"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>TypeScript in real projects</h1>
+<h2>Typing data from an API</h2>
+<figure class="static-code"><pre><code>interface Product { id: number; name: string; price: number; }
+
+async function loadProducts(): Promise&lt;Product[]&gt; {
+  const res = await fetch(&quot;/api/products&quot;);
+  if (!res.ok) throw new Error(&quot;Could not load products&quot;);
+  return res.json() as Promise&lt;Product[]&gt;;
+}
+
+loadProducts().then(list =&gt; {
+  list.forEach(p =&gt; console.log(p.name, p.price.toFixed(2)));
+});</code></pre></figure>
+<h2>Where TypeScript is used</h2>
+<ul><li><strong>React</strong> with Vite or Next.js: <code>npm create vite@latest my-app -- --template react-ts</code></li><li><strong>Angular</strong> (TypeScript by default)</li><li><strong>Node.js</strong> back ends with Express or NestJS</li><li><strong>React Native</strong> mobile apps</li></ul>
+<h2>Useful built-in helper types</h2>
+<div class="static-table"><table><thead><tr><th>Type</th><th>What it does</th></tr></thead><tbody><tr><td><code>Partial&lt;T&gt;</code></td><td>All fields optional (good for update forms)</td></tr><tr><td><code>Required&lt;T&gt;</code></td><td>All fields required</td></tr><tr><td><code>Pick&lt;T, &quot;a&quot; | &quot;b&quot;&gt;</code></td><td>Only some fields</td></tr><tr><td><code>Omit&lt;T, &quot;id&quot;&gt;</code></td><td>All fields except some</td></tr><tr><td><code>Record&lt;string, number&gt;</code></td><td>An object map, e.g. prices by product name</td></tr></tbody></table></div>
+<h2>Tips</h2>
+<ul><li>Turn on <code>&quot;strict&quot;: true</code> in <code>tsconfig.json</code>: it catches the most bugs.</li><li>Avoid <code>any</code>: it switches type checking off. Use <code>unknown</code> and check the value instead.</li><li>Learn JavaScript first; TypeScript is easy once JavaScript makes sense.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which tsconfig setting turns on the strictest, most helpful checks?</p><details><summary>Show answer</summary><p>strict</p></details></li><li><p>Which helper type makes every field optional?</p><details><summary>Show answer</summary><p>Partial</p></details></li><li><p>Which type switches off type checking and should be avoided?</p><details><summary>Show answer</summary><p>any</p></details></li></ol></section></div><p class="static-meta">Lesson 7 of 7 in <a href="/learn/typescript/">TypeScript</a> · <a href="/learn/?book=typescript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/typescript/classes-enums-modules/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Classes, enums and organising a TypeScript project</a><span></span></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

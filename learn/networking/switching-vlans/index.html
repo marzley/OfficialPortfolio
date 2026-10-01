@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Switching, MAC addresses, ARP and VLANs | Networking</title>
+    <meta name="description" content="Free Networking lesson: Switching, MAC addresses, ARP and VLANs." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/networking/switching-vlans/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Switching, MAC addresses, ARP and VLANs | Networking" />
+    <meta property="og:description" content="Free Networking lesson: Switching, MAC addresses, ARP and VLANs." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/networking/switching-vlans/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Switching, MAC addresses, ARP and VLANs | Networking" />
+    <meta name="twitter:description" content="Free Networking lesson: Switching, MAC addresses, ARP and VLANs." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/networking/switching-vlans/#lesson","name":"Switching, MAC addresses, ARP and VLANs","description":"Free Networking lesson: Switching, MAC addresses, ARP and VLANs.","url":"https://marzleytechsolutions.co.ke/learn/networking/switching-vlans/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/networking/#course","name":"Networking","url":"https://marzleytechsolutions.co.ke/learn/networking/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Networking","item":"https://marzleytechsolutions.co.ke/learn/networking/"},{"@type":"ListItem","position":4,"name":"Switching, MAC addresses, ARP and VLANs","item":"https://marzleytechsolutions.co.ke/learn/networking/switching-vlans/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/networking/">Networking</a> / <span>Switching, MAC addresses, ARP and VLANs</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=networking&amp;lesson=switching-vlans"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Switching, MAC addresses, ARP and VLANs</h1>
+<h2>MAC addresses</h2>
+<p>Every network card has a <strong>MAC address</strong>: 48 bits written in hex, e.g. <code>3C:52:82:1A:0F:9B</code>. The first half (OUI) identifies the maker. MAC addresses are used for delivery <strong>inside</strong> a LAN (layer 2); IP addresses for delivery <strong>between</strong> networks (layer 3).</p>
+<h2>How a switch learns</h2>
+<p>A switch keeps a <strong>MAC address table</strong> (CAM table):</p>
+<ol><li>A frame arrives on port 3 from MAC A → the switch <strong>learns</strong> "A is on port 3".</li><li>If it knows the destination's port, it <strong>forwards</strong> only there.</li><li>If not, it <strong>floods</strong> the frame out of all other ports.</li><li>Entries age out after about 5 minutes.</li></ol>
+<p>This is why switches are much better than old <strong>hubs</strong>, which repeated everything to everyone.</p>
+<h2>ARP: finding the MAC for an IP</h2>
+<p>Before sending to 192.168.1.20 on the same LAN, a PC must know its MAC. It <strong>broadcasts</strong> an ARP request: "Who has 192.168.1.20? Tell 192.168.1.5." The owner replies with its MAC, which is cached. See yours with <code>arp -a</code>.</p>
+<p>For addresses in other networks, the PC ARPs for the <strong>gateway's</strong> MAC instead.</p>
+<h2>VLANs</h2>
+<p>A <strong>VLAN</strong> (Virtual LAN) splits one physical switch into several separate networks. Examples in a school: VLAN 10 Staff, VLAN 20 Students, VLAN 30 Guests Wi-Fi, VLAN 40 CCTV.</p>
+<p>Benefits: security (students can't reach the finance PCs), smaller broadcast areas, and flexible moves.</p>
+<ul><li><strong>Access port</strong>: belongs to one VLAN (for PCs, printers).</li><li><strong>Trunk port</strong>: carries many VLANs between switches or to a router, <strong>tagging</strong> each frame with its VLAN ID (<strong>IEEE 802.1Q</strong>, 12 bits → VLANs 1–4094).</li><li>VLANs talk to each other only through a <strong>router</strong> or <strong>layer 3 switch</strong> (inter-VLAN routing, "router on a stick").</li><li>Each VLAN normally gets its own <strong>IP subnet</strong>, e.g. VLAN 10 = 10.10.10.0/24.</li></ul>
+<h2>Loops and STP</h2>
+<p>Redundant cables between switches create <strong>loops</strong> that can flood a network in seconds (broadcast storm). <strong>Spanning Tree Protocol (STP)</strong> blocks extra paths and re-enables them if a link fails.</p>
+<h2>Cisco example</h2>
+<figure class="static-code"><pre><code>Switch(config)# vlan 20
+Switch(config-vlan)# name STUDENTS
+Switch(config)# interface fa0/5
+Switch(config-if)# switchport mode access
+Switch(config-if)# switchport access vlan 20
+Switch(config)# interface gi0/1
+Switch(config-if)# switchport mode trunk</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>How many bits long is a MAC address?</p><details><summary>Show answer</summary><p>48</p></details></li><li><p>Which protocol finds the MAC address for a known IPv4 address?</p><details><summary>Show answer</summary><p>ARP</p></details></li><li><p>What does a switch do with a frame for an unknown destination MAC?</p><details><summary>Show answer</summary><p>flood</p></details></li><li><p>Which standard tags VLANs on trunk links?</p><details><summary>Show answer</summary><p>802.1Q</p></details></li><li><p>What kind of port carries many VLANs between switches?</p><details><summary>Show answer</summary><p>trunk</p></details></li><li><p>Which protocol prevents loops between switches?</p><details><summary>Show answer</summary><p>STP</p></details></li></ol></section></div><p class="static-meta">Lesson 16 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/nat-routing/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> NAT, gateways and routing</a><a class="btn btn-solid btn-sm" href="/learn/networking/packet-tracer-first-lab/">Your first lab in Cisco Packet Tracer <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

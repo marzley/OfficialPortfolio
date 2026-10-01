@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Conditions, loops and functions | C programming</title>
+    <meta name="description" content="Free C programming lesson: Conditions, loops and functions." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/c-programming/control-functions/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Conditions, loops and functions | C programming" />
+    <meta property="og:description" content="Free C programming lesson: Conditions, loops and functions." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/c-programming/control-functions/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Conditions, loops and functions | C programming" />
+    <meta name="twitter:description" content="Free C programming lesson: Conditions, loops and functions." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/c-programming/control-functions/#lesson","name":"Conditions, loops and functions","description":"Free C programming lesson: Conditions, loops and functions.","url":"https://marzleytechsolutions.co.ke/learn/c-programming/control-functions/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/c-programming/#course","name":"C programming","url":"https://marzleytechsolutions.co.ke/learn/c-programming/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"C programming","item":"https://marzleytechsolutions.co.ke/learn/c-programming/"},{"@type":"ListItem","position":4,"name":"Conditions, loops and functions","item":"https://marzleytechsolutions.co.ke/learn/c-programming/control-functions/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/c-programming/">C programming</a> / <span>Conditions, loops and functions</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=c-programming&amp;lesson=control-functions"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Conditions, loops and functions</h1>
+<figure class="static-code"><figcaption>C</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+// A function that returns the larger of two numbers
+int max(int a, int b) {
+    return a &gt; b ? a : b;
+}
+
+int main(void) {
+    int marks = 58;
+
+    if (marks &gt;= 50) {
+        printf(&quot;Pass\n&quot;);
+    } else {
+        printf(&quot;Fail\n&quot;);
+    }
+
+    for (int i = 1; i &lt;= 5; i++) {
+        printf(&quot;%d x 7 = %d\n&quot;, i, i * 7);
+    }
+
+    int n = 10;
+    while (n &gt; 0) {
+        n -= 3;
+    }
+
+    printf(&quot;Bigger: %d\n&quot;, max(12, 40));
+    return 0;
+}</code></pre></figure>
+<h2>Arrays and strings</h2>
+<figure class="static-code"><figcaption>C</figcaption><pre><code class="language-c">int scores[5] = {45, 78, 92, 60, 71};
+int total = 0;
+for (int i = 0; i &lt; 5; i++) total += scores[i];
+printf(&quot;Average: %.1f\n&quot;, total / 5.0);
+
+char name[20] = &quot;Wanjiru&quot;;          // a string is an array of characters ending in &#x27;\0&#x27;
+printf(&quot;%s has %zu letters\n&quot;, name, strlen(name));   // needs #include &lt;string.h&gt;</code></pre></figure>
+<p>C doesn't check array limits: writing to <code>scores[10]</code> corrupts memory instead of giving a nice error. This is the cause of many security bugs, so always check your indexes.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What character ends every C string? (write it as in code)</p><details><summary>Show answer</summary><p>'\0'</p></details></li><li><p>Which format specifier prints a string?</p><details><summary>Show answer</summary><p>%s</p></details></li><li><p>Does C stop you from writing past the end of an array? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 8 in <a href="/learn/c-programming/">C programming</a> · <a href="/learn/?book=c-programming">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/c-programming/variables-types-io/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Variables, data types, printf and scanf</a><a class="btn btn-solid btn-sm" href="/learn/c-programming/arrays-strings/">Arrays and strings in C <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Strings, numbers and operators | JavaScript</title>
+    <meta name="description" content="Most programs are about text (names, messages, receipts) and numbers (prices, totals, dates). This lesson gives you the tools for both." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/javascript/strings-numbers-operators/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Strings, numbers and operators | JavaScript" />
+    <meta property="og:description" content="Most programs are about text (names, messages, receipts) and numbers (prices, totals, dates). This lesson gives you the tools for both." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/javascript/strings-numbers-operators/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Strings, numbers and operators | JavaScript" />
+    <meta name="twitter:description" content="Most programs are about text (names, messages, receipts) and numbers (prices, totals, dates). This lesson gives you the tools for both." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/javascript/strings-numbers-operators/#lesson","name":"Strings, numbers and operators","description":"Most programs are about text (names, messages, receipts) and numbers (prices, totals, dates). This lesson gives you the tools for both.","url":"https://marzleytechsolutions.co.ke/learn/javascript/strings-numbers-operators/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/javascript/#course","name":"JavaScript","url":"https://marzleytechsolutions.co.ke/learn/javascript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/"},{"@type":"ListItem","position":4,"name":"Strings, numbers and operators","item":"https://marzleytechsolutions.co.ke/learn/javascript/strings-numbers-operators/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/javascript/">JavaScript</a> / <span>Strings, numbers and operators</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=strings-numbers-operators"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Strings, numbers and operators</h1>
+<p>Most programs are about text (names, messages, receipts) and numbers (prices, totals, dates). This lesson gives you the tools for both.</p>
+<h2>Arithmetic operators</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const a = 17, b = 5;
+console.log(a + b);   // 22 add
+console.log(a - b);   // 12 subtract
+console.log(a * b);   // 85 multiply
+console.log(a / b);   // 3.4 divide
+console.log(a % b);   // 2  remainder (modulo)
+console.log(a ** 2);  // 289 power
+
+let total = 100;
+total += 50;   // same as total = total + 50
+total *= 2;
+total++;       // add 1
+console.log(total); // 301</code></pre></figure>
+<p><code>%</code> (remainder) is surprisingly useful: <code>n % 2 === 0</code> tests for even numbers.</p>
+<h2>Rounding and money</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const price = 1234.5678;
+console.log(Math.round(price));      // 1235
+console.log(Math.floor(price));      // 1234
+console.log(Math.ceil(price));       // 1235
+console.log(price.toFixed(2));       // &quot;1234.57&quot; (a string)
+console.log((1500).toLocaleString(&quot;en-KE&quot;));  // &quot;1,500&quot;
+console.log(0.1 + 0.2);              // 0.30000000000000004 !</code></pre></figure>
+<blockquote><p>Computers store decimals in binary, so <code>0.1 + 0.2</code> isn't exactly <code>0.3</code>. For money, work in <strong>whole cents</strong> (or whole shillings) and format at the end.</p></blockquote>
+<h2>Useful Math functions</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">console.log(Math.max(3, 19, 7), Math.min(3, 19, 7));
+console.log(Math.abs(-40));
+console.log(Math.sqrt(144));
+const dice = Math.floor(Math.random() * 6) + 1;   // random 1 to 6
+console.log(&quot;Dice:&quot;, dice);</code></pre></figure>
+<h2>Strings</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const first = &quot;Grace&quot;, last = &quot;Achieng&quot;;
+const full = first + &quot; &quot; + last;                // joining (concatenation)
+const greeting = `Habari ${first}! Your balance is KSh ${(2500).toLocaleString()}.`; // template literal
+console.log(full);
+console.log(greeting);
+console.log(full.length);             // 13
+console.log(full.toUpperCase());      // GRACE ACHIENG
+console.log(full[0], full.at(-1));    // G g</code></pre></figure>
+<p>Template literals use <strong>backticks</strong> and <code>${...}</code> to drop values into text. They can also span several lines.</p>
+<h2>String methods you'll use every day</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const phone = &quot;  0712 345 678 &quot;;
+console.log(phone.trim());                          // remove spaces at the ends
+console.log(phone.replaceAll(&quot; &quot;, &quot;&quot;));             // &quot;0712345678&quot;
+console.log(&quot;Nairobi&quot;.includes(&quot;robi&quot;));            // true
+console.log(&quot;Nairobi&quot;.startsWith(&quot;Nai&quot;));           // true
+console.log(&quot;Nairobi&quot;.indexOf(&quot;r&quot;));                // 3
+console.log(&quot;Nairobi&quot;.slice(0, 3));                 // &quot;Nai&quot;
+console.log(&quot;a,b,c&quot;.split(&quot;,&quot;));                    // [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;]
+console.log([&quot;x&quot;, &quot;y&quot;].join(&quot; - &quot;));                // &quot;x - y&quot;
+console.log(&quot;7&quot;.padStart(3, &quot;0&quot;));                  // &quot;007&quot;
+console.log(&quot;ha&quot;.repeat(3));                        // &quot;hahaha&quot;</code></pre></figure>
+<h2>Comparison and logical operators</h2>
+<div class="static-table"><table><thead><tr><th>Operator</th><th>Meaning</th></tr></thead><tbody><tr><td><code>===</code>, <code>!==</code></td><td>Equal / not equal (strict)</td></tr><tr><td><code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code></td><td>Greater, less...</td></tr><tr><td><code>&amp;&amp;</code></td><td>AND: both must be true</td></tr><tr><td><code>||</code></td><td>OR: at least one true</td></tr><tr><td><code>!</code></td><td>NOT</td></tr><tr><td><code>??</code></td><td>Use a default if the value is <code>null</code> or <code>undefined</code></td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const age = 20, hasId = true;
+console.log(age &gt;= 18 &amp;&amp; hasId);        // true
+console.log(age &lt; 13 || age &gt; 65);      // false
+console.log(!hasId);                    // false
+
+const nickname = null;
+console.log(nickname ?? &quot;Guest&quot;);       // &quot;Guest&quot;
+const status = age &gt;= 18 ? &quot;adult&quot; : &quot;minor&quot;;   // ternary operator
+console.log(status);</code></pre></figure>
+<h2>Project: format an M-Pesa style message</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const amount = 1250;
+const to = &quot;JOYCE WAMBUI&quot;;
+const balance = 8430.5;
+const code = &quot;SJ&quot; + Math.random().toString(36).slice(2, 10).toUpperCase();
+console.log(`${code} Confirmed. Ksh${amount.toFixed(2)} sent to ${to} on ${new Date().toLocaleDateString(&quot;en-KE&quot;)}. New M-PESA balance is Ksh${balance.toLocaleString(&quot;en-KE&quot;, { minimumFractionDigits: 2 })}.`);</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is 17 % 5?</p><details><summary>Show answer</summary><p>2</p></details></li><li><p>Which characters wrap a template literal?</p><details><summary>Show answer</summary><p>backticks</p></details></li><li><p>Which method removes spaces from both ends of a string?</p><details><summary>Show answer</summary><p>trim</p></details></li><li><p>What does "Kenya".length return?</p><details><summary>Show answer</summary><p>5</p></details></li><li><p>Which operator gives a default value when something is null or undefined?</p><details><summary>Show answer</summary><p>??</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Use a <strong>template literal</strong> to log exactly: <strong>Total: KSh 4500</strong> where 4500 comes from the variables <code>price = 1500</code> and <code>qty = 3</code>.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=strings-numbers-operators#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 3 of 19 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/variables-types/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Variables and data types</a><a class="btn btn-solid btn-sm" href="/learn/javascript/conditions/">Conditions <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

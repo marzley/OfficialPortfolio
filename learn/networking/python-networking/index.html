@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Networking with Python (practice) | Networking</title>
+    <meta name="description" content="Python&#x27;s built-in ipaddress module does subnetting for you. It is perfect for checking your work, planning networks and writing small network tools…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/networking/python-networking/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Networking with Python (practice) | Networking" />
+    <meta property="og:description" content="Python&#x27;s built-in ipaddress module does subnetting for you. It is perfect for checking your work, planning networks and writing small network tools…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/networking/python-networking/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Networking with Python (practice) | Networking" />
+    <meta name="twitter:description" content="Python&#x27;s built-in ipaddress module does subnetting for you. It is perfect for checking your work, planning networks and writing small network tools…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/networking/python-networking/#lesson","name":"Networking with Python (practice)","description":"Python's built-in ipaddress module does subnetting for you. It is perfect for checking your work, planning networks and writing small network tools…","url":"https://marzleytechsolutions.co.ke/learn/networking/python-networking/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/networking/#course","name":"Networking","url":"https://marzleytechsolutions.co.ke/learn/networking/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Networking","item":"https://marzleytechsolutions.co.ke/learn/networking/"},{"@type":"ListItem","position":4,"name":"Networking with Python (practice)","item":"https://marzleytechsolutions.co.ke/learn/networking/python-networking/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/networking/">Networking</a> / <span>Networking with Python (practice)</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=networking&amp;lesson=python-networking"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Networking with Python</h1>
+<p>Python's built-in <strong>ipaddress</strong> module does subnetting for you. It is perfect for checking your work, planning networks and writing small network tools. Run each example and change the numbers.</p>
+<h2>Look at a network</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import ipaddress
+
+net = ipaddress.ip_network(&quot;192.168.10.0/26&quot;)
+print(&quot;Network:  &quot;, net.network_address)
+print(&quot;Broadcast:&quot;, net.broadcast_address)
+print(&quot;Mask:     &quot;, net.netmask)
+print(&quot;Hosts:    &quot;, net.num_addresses - 2)
+hosts = list(net.hosts())
+print(&quot;First host:&quot;, hosts[0], &quot; Last host:&quot;, hosts[-1])</code></pre></figure>
+<h2>Which subnet is a host in?</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import ipaddress
+
+iface = ipaddress.ip_interface(&quot;10.14.200.9/19&quot;)
+print(&quot;Network of this host:&quot;, iface.network)
+print(&quot;Is private?&quot;, iface.ip.is_private)</code></pre></figure>
+<h2>Split a network into subnets</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import ipaddress
+
+net = ipaddress.ip_network(&quot;192.168.50.0/24&quot;)
+for i, sub in enumerate(net.subnets(new_prefix=27), start=1):
+    hosts = list(sub.hosts())
+    print(f&quot;{i}. {sub}  hosts {hosts[0]} - {hosts[-1]}  broadcast {sub.broadcast_address}&quot;)</code></pre></figure>
+<h2>Plan with VLSM</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import ipaddress, math
+
+needs = {&quot;Sales&quot;: 100, &quot;Admin&quot;: 50, &quot;IT&quot;: 20, &quot;Guests&quot;: 10, &quot;Link 1&quot;: 2, &quot;Link 2&quot;: 2}
+start = ipaddress.ip_address(&quot;192.168.10.0&quot;)
+for name, hosts in sorted(needs.items(), key=lambda x: -x[1]):
+    prefix = 32 - math.ceil(math.log2(hosts + 2))
+    sub = ipaddress.ip_network(f&quot;{start}/{prefix}&quot;)
+    print(f&quot;{name:7} needs {hosts:3} -&gt; {sub}&quot;)
+    start = sub.broadcast_address + 1</code></pre></figure>
+<h2>Summarise networks</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import ipaddress
+
+nets = [ipaddress.ip_network(f&quot;192.168.{i}.0/24&quot;) for i in range(8, 12)]
+print(list(ipaddress.collapse_addresses(nets)))</code></pre></figure>
+<h2>IPv6 too</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import ipaddress
+
+a = ipaddress.ip_address(&quot;2001:0db8:0000:0000:0000:0000:0000:0001&quot;)
+print(&quot;Short form:&quot;, a.compressed)
+print(&quot;Long form: &quot;, a.exploded)</code></pre></figure>
+<p>Challenge: change the VLSM example to your own school or office and print a full IP plan.</p>
+<p><strong>Learn more:</strong> <a href="https://docs.python.org/3/library/ipaddress.html" target="_blank" rel="noopener noreferrer">Python ipaddress documentation</a></p></div><p class="static-meta">Lesson 23 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/firewalls-vpns/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Firewalls, VPNs and remote access</a><a class="btn btn-solid btn-sm" href="/learn/networking/careers-certs/">Networking careers and certifications <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

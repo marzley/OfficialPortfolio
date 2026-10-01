@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Formulas and cell references: relative, absolute and mixed</title>
+    <meta name="description" content="The real power of a spreadsheet is that one formula can be copied down hundreds of rows. To do that correctly you must understand cell references , the…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/excel/formulas-cell-references/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Formulas and cell references: relative, absolute and mixed" />
+    <meta property="og:description" content="The real power of a spreadsheet is that one formula can be copied down hundreds of rows. To do that correctly you must understand cell references , the…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/excel/formulas-cell-references/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Formulas and cell references: relative, absolute and mixed" />
+    <meta name="twitter:description" content="The real power of a spreadsheet is that one formula can be copied down hundreds of rows. To do that correctly you must understand cell references , the…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/excel/formulas-cell-references/#lesson","name":"Formulas and cell references: relative, absolute and mixed","description":"The real power of a spreadsheet is that one formula can be copied down hundreds of rows. To do that correctly you must understand cell references , the…","url":"https://marzleytechsolutions.co.ke/learn/excel/formulas-cell-references/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/excel/#course","name":"Excel & Google Sheets","url":"https://marzleytechsolutions.co.ke/learn/excel/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Excel & Google Sheets","item":"https://marzleytechsolutions.co.ke/learn/excel/"},{"@type":"ListItem","position":4,"name":"Formulas and cell references: relative, absolute and mixed","item":"https://marzleytechsolutions.co.ke/learn/excel/formulas-cell-references/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/excel/">Excel &amp; Google Sheets</a> / <span>Formulas and cell references: relative, absolute and mixed</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=excel&amp;lesson=formulas-cell-references"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Formulas and cell references: relative, absolute and mixed</h1>
+<p>The real power of a spreadsheet is that one formula can be copied down hundreds of rows. To do that correctly you must understand <strong>cell references</strong>, the most important concept in Excel and Google Sheets.</p>
+<h2>Formulas recap</h2>
+<p>Every formula starts with <code>=</code>:</p>
+<div class="static-table"><table><thead><tr><th>Formula</th><th>Result</th></tr></thead><tbody><tr><td><code>=B2*C2</code></td><td>Multiply two cells</td></tr><tr><td><code>=SUM(D2:D10)</code></td><td>Add a range</td></tr><tr><td><code>=D11*16%</code></td><td>16% of a cell</td></tr><tr><td><code>=(B2+C2)/2</code></td><td>Brackets control the order</td></tr></tbody></table></div>
+<p>Order of operations: brackets, then <code>^</code> (power), then <code>*</code> and <code>/</code>, then <code>+</code> and <code>-</code>.</p>
+<h2>Relative references (the default)</h2>
+<p>In this price list, D2 has <code>=B2*C2</code>:</p>
+<div class="static-table"><table><thead><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr></thead><tbody><tr><td>1</td><td>Item</td><td>Price</td><td>Qty</td><td>Total</td></tr><tr><td>2</td><td>Unga</td><td>180</td><td>3</td><td><code>=B2*C2</code> → 540</td></tr><tr><td>3</td><td>Sugar</td><td>160</td><td>2</td><td><code>=B3*C3</code> → 320</td></tr><tr><td>4</td><td>Oil</td><td>350</td><td>1</td><td><code>=B4*C4</code> → 350</td></tr></tbody></table></div>
+<p>When you copy D2 down (drag the <strong>fill handle</strong>, the small square at the cell's corner, or double-click it), Excel <strong>adjusts</strong> the references: row 3 gets <code>=B3*C3</code>. That's a <strong>relative</strong> reference: it means "the cell two to the left, on my row".</p>
+<h2>Absolute references: $ locks a cell</h2>
+<p>Now add VAT using a rate stored in one cell, <strong>F1 = 16%</strong>. In E2 you type <code>=D2*F1</code> and copy down... row 3 becomes <code>=D3*F2</code>, which is empty. Wrong!</p>
+<p>Lock the rate with dollar signs: <code>=D2*$F$1</code>. Now every row uses F1.</p>
+<div class="static-table"><table><thead><tr><th></th><th>D</th><th>E (VAT)</th><th></th><th>F</th></tr></thead><tbody><tr><td>1</td><td>Total</td><td>VAT</td><td></td><td><strong>16%</strong></td></tr><tr><td>2</td><td>540</td><td><code>=D2*$F$1</code> → 86.40</td><td></td><td></td></tr><tr><td>3</td><td>320</td><td><code>=D3*$F$1</code> → 51.20</td><td></td><td></td></tr></tbody></table></div>
+<blockquote><p>Shortcut: after typing a reference, press <strong>F4</strong> to cycle through <code>F1</code> → <code>$F$1</code> → <code>F$1</code> → <code>$F1</code>.</p></blockquote>
+<h2>Mixed references</h2>
+<div class="static-table"><table><thead><tr><th>Reference</th><th>Column</th><th>Row</th><th>Use when</th></tr></thead><tbody><tr><td><code>B2</code></td><td>changes</td><td>changes</td><td>Normal row-by-row formulas</td></tr><tr><td><code>$B$2</code></td><td>fixed</td><td>fixed</td><td>One constant cell (rate, target)</td></tr><tr><td><code>$B2</code></td><td>fixed</td><td>changes</td><td>Always read column B, any row</td></tr><tr><td><code>B$2</code></td><td>changes</td><td>fixed</td><td>Always read row 2, any column</td></tr></tbody></table></div>
+<p>Classic example: a <strong>multiplication table</strong> or a <strong>price grid</strong>. In B2, <code>=$A2*B$1</code> copied across and down multiplies each row header by each column header.</p>
+<h2>Referencing other sheets</h2>
+<figure class="static-code"><pre><code>=Prices!B2                (cell B2 on the sheet called Prices)
+=SUM(&#x27;Term 1&#x27;!C2:C40)     (quote sheet names that contain spaces)</code></pre></figure>
+<h2>Named ranges: easier to read</h2>
+<p>Select F1, type a name like <code>VAT</code> in the <strong>Name Box</strong> (left of the formula bar) and press Enter. Now write <code>=D2*VAT</code>: clear, and automatically absolute.</p>
+<h2>Common errors and what they mean</h2>
+<div class="static-table"><table><thead><tr><th>Error</th><th>Meaning</th><th>Usual fix</th></tr></thead><tbody><tr><td><code>#DIV/0!</code></td><td>Dividing by zero or an empty cell</td><td><code>=IFERROR(A2/B2, 0)</code> or check B2</td></tr><tr><td><code>#VALUE!</code></td><td>Text where a number is expected</td><td>Remove spaces/letters from numbers</td></tr><tr><td><code>#REF!</code></td><td>A referenced cell was deleted</td><td>Undo, or fix the formula</td></tr><tr><td><code>#NAME?</code></td><td>Misspelled function or name</td><td>Check spelling: <code>=SUM</code>, not <code>=SUMM</code></td></tr><tr><td><code>#N/A</code></td><td>Lookup value not found</td><td>See the Lookups lesson</td></tr><tr><td><code>######</code></td><td>Column too narrow</td><td>Widen the column</td></tr></tbody></table></div>
+<p>Show all formulas at once with <strong>Ctrl + `</strong> (the key left of 1), great for checking a sheet.</p>
+<h2>Practice</h2>
+<p>Build a fee sheet: columns Name, Fee, Paid, Balance (<code>=B2-C2</code>), and a <strong>% paid</strong> column <code>=C2/B2</code> formatted as a percentage. Add a cell with a late-payment penalty rate and a Penalty column that uses it with an absolute reference.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What symbol locks a column or row in a cell reference?</p><details><summary>Show answer</summary><p>$</p></details></li><li><p>Which key cycles through $F$1, F$1 and $F1 after typing a reference?</p><details><summary>Show answer</summary><p>F4</p></details></li><li><p>You copy =B2*C2 down one row. What does it become?</p><details><summary>Show answer</summary><p>=B3*C3</p></details></li><li><p>Which error appears when dividing by zero?</p><details><summary>Show answer</summary><p>#DIV/0!</p></details></li><li><p>Which reference always reads column B but lets the row change: $B2 or B$2?</p><details><summary>Show answer</summary><p>$B2</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 10 in <a href="/learn/excel/">Excel &amp; Google Sheets</a> · <a href="/learn/?book=excel">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/excel/basics/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Spreadsheet basics</a><a class="btn btn-solid btn-sm" href="/learn/excel/functions/">Essential functions: SUM, AVERAGE, IF and COUNTIF <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

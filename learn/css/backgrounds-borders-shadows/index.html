@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Backgrounds, borders, rounded corners and shadows | CSS</title>
+    <meta name="description" content="These four properties turn plain boxes into buttons, cards and banners." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/css/backgrounds-borders-shadows/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Backgrounds, borders, rounded corners and shadows | CSS" />
+    <meta property="og:description" content="These four properties turn plain boxes into buttons, cards and banners." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/css/backgrounds-borders-shadows/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Backgrounds, borders, rounded corners and shadows | CSS" />
+    <meta name="twitter:description" content="These four properties turn plain boxes into buttons, cards and banners." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/css/backgrounds-borders-shadows/#lesson","name":"Backgrounds, borders, rounded corners and shadows","description":"These four properties turn plain boxes into buttons, cards and banners.","url":"https://marzleytechsolutions.co.ke/learn/css/backgrounds-borders-shadows/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/css/#course","name":"CSS","url":"https://marzleytechsolutions.co.ke/learn/css/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"CSS","item":"https://marzleytechsolutions.co.ke/learn/css/"},{"@type":"ListItem","position":4,"name":"Backgrounds, borders, rounded corners and shadows","item":"https://marzleytechsolutions.co.ke/learn/css/backgrounds-borders-shadows/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/css/">CSS</a> / <span>Backgrounds, borders, rounded corners and shadows</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=backgrounds-borders-shadows"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Backgrounds, borders, rounded corners and shadows</h1>
+<p>These four properties turn plain boxes into buttons, cards and banners.</p>
+<h2>Backgrounds</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .box { padding: 18px; margin: 10px 0; color: #fff; border-radius: 10px; font-family: sans-serif; }
+  .solid { background-color: #0b1b35; }
+  .gradient { background: linear-gradient(135deg, #0b1b35, #2563eb); }
+  .radial { background: radial-gradient(circle at top left, #ffb800, #b45309); }
+  .photo {
+    background-image: linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)), url(&quot;https://picsum.photos/id/1018/900/400&quot;);
+    background-size: cover;
+    background-position: center;
+    min-height: 120px;
+  }
+&lt;/style&gt;
+&lt;div class=&quot;box solid&quot;&gt;Solid colour&lt;/div&gt;
+&lt;div class=&quot;box gradient&quot;&gt;Linear gradient&lt;/div&gt;
+&lt;div class=&quot;box radial&quot;&gt;Radial gradient&lt;/div&gt;
+&lt;div class=&quot;box photo&quot;&gt;Photo with a dark overlay so white text stays readable&lt;/div&gt;</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Property</th><th>What it does</th></tr></thead><tbody><tr><td><code>background-color</code></td><td>A flat colour</td></tr><tr><td><code>background-image</code></td><td><code>url(...)</code> or a gradient</td></tr><tr><td><code>background-size</code></td><td><code>cover</code> fills the box (may crop), <code>contain</code> shows it all</td></tr><tr><td><code>background-position</code></td><td><code>center</code>, <code>top</code>, <code>50% 20%</code></td></tr><tr><td><code>background-repeat</code></td><td><code>no-repeat</code>, <code>repeat</code></td></tr><tr><td><code>background</code></td><td>Shorthand for all of the above</td></tr></tbody></table></div>
+<blockquote><p>Tip: a dark gradient layered over a photo (like <code>.photo</code> above) is the professional way to keep text readable on busy pictures.</p></blockquote>
+<h2>Borders</h2>
+<figure class="static-code"><figcaption>CSS</figcaption><pre><code class="language-css">border: 2px solid #0b1b35;        /* width style colour */
+border-bottom: 3px dashed #ffb800;
+border-left: 4px solid #16a34a;   /* great for &quot;note&quot; boxes */</code></pre></figure>
+<p>Styles: <code>solid</code>, <code>dashed</code>, <code>dotted</code>, <code>double</code>, <code>none</code>.</p>
+<h2>Rounded corners</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .r { display: inline-block; width: 90px; height: 90px; margin: 6px; background: #ffb800; text-align: center; line-height: 90px; font-family: sans-serif; }
+  .r1 { border-radius: 8px; }
+  .r2 { border-radius: 24px; }
+  .r3 { border-radius: 50%; }
+  .r4 { border-radius: 24px 0 24px 0; }
+  .pill { display: inline-block; padding: 6px 16px; border-radius: 999px; background: #0b1b35; color: #fff; font-family: sans-serif; }
+&lt;/style&gt;
+&lt;div class=&quot;r r1&quot;&gt;8px&lt;/div&gt;&lt;div class=&quot;r r2&quot;&gt;24px&lt;/div&gt;&lt;div class=&quot;r r3&quot;&gt;50%&lt;/div&gt;&lt;div class=&quot;r r4&quot;&gt;mixed&lt;/div&gt;
+&lt;p&gt;&lt;span class=&quot;pill&quot;&gt;A pill badge&lt;/span&gt;&lt;/p&gt;</code></pre></figure>
+<p><code>border-radius: 50%</code> on a square makes a circle: perfect for profile photos.</p>
+<h2>Shadows</h2>
+<p><code>box-shadow: x y blur spread colour;</code></p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  body { background: #f1f5f9; font-family: sans-serif; padding: 10px; }
+  .card { background: #fff; border-radius: 14px; padding: 16px; margin: 14px 0; }
+  .s1 { box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+  .s2 { box-shadow: 0 10px 30px rgba(15,23,42,.15); }
+  .s3 { box-shadow: 0 0 0 3px #ffb800; }               /* a &quot;ring&quot; */
+  .s4 { box-shadow: inset 0 2px 6px rgba(0,0,0,.2); }  /* pressed-in */
+&lt;/style&gt;
+&lt;div class=&quot;card s1&quot;&gt;Subtle shadow&lt;/div&gt;
+&lt;div class=&quot;card s2&quot;&gt;Soft, floating shadow&lt;/div&gt;
+&lt;div class=&quot;card s3&quot;&gt;Ring (no blur, 3px spread)&lt;/div&gt;
+&lt;div class=&quot;card s4&quot;&gt;Inset shadow&lt;/div&gt;</code></pre></figure>
+<p>Soft, low-opacity shadows look modern; dark hard shadows look dated.</p>
+<h2>Putting it together: a product card</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  body { background: #f1f5f9; font-family: system-ui, sans-serif; }
+  .product { width: 240px; background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 24px rgba(15,23,42,.12); }
+  .product img { width: 100%; display: block; }
+  .product .body { padding: 14px; }
+  .badge { background: #dcfce7; color: #166534; border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 700; }
+  .buy { display: block; text-align: center; margin-top: 10px; padding: 10px; border-radius: 10px; background: #15803d; color: #fff; text-decoration: none; font-weight: 700; }
+&lt;/style&gt;
+&lt;div class=&quot;product&quot;&gt;
+  &lt;img src=&quot;https://picsum.photos/id/292/480/300&quot; alt=&quot;Fresh vegetables&quot; width=&quot;480&quot; height=&quot;300&quot;&gt;
+  &lt;div class=&quot;body&quot;&gt;
+    &lt;span class=&quot;badge&quot;&gt;In stock&lt;/span&gt;
+    &lt;h3&gt;Sukuma wiki bundle&lt;/h3&gt;
+    &lt;p&gt;KSh 50 per bunch&lt;/p&gt;
+    &lt;a class=&quot;buy&quot; href=&quot;#&quot;&gt;Order on WhatsApp&lt;/a&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which background-size value fills the whole box, cropping if needed?</p><details><summary>Show answer</summary><p>cover</p></details></li><li><p>What border-radius turns a square image into a circle?</p><details><summary>Show answer</summary><p>50%</p></details></li><li><p>Which property adds a shadow to a box?</p><details><summary>Show answer</summary><p>box-shadow</p></details></li><li><p>Which keyword makes a box-shadow appear inside the element?</p><details><summary>Show answer</summary><p>inset</p></details></li><li><p>What is the order of the border shorthand: width style colour, or colour style width?</p><details><summary>Show answer</summary><p>width style colour</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Give <code>.card</code> a <strong>border-radius of 12px</strong> and a <strong>box-shadow</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=backgrounds-borders-shadows#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 5 of 17 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/units-sizing/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> CSS units: px, %, em, rem, vw, vh and ch</a><a class="btn btn-solid btn-sm" href="/learn/css/box-model/">The box model <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

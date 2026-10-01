@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Saving data on the phone: shared_preferences, SQLite and…</title>
+    <meta name="description" content="Many users in Kenya have expensive or patchy data . An app that works offline, saves its data on the phone and syncs later feels fast and gets better…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/flutter/local-storage-offline/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Saving data on the phone: shared_preferences, SQLite and…" />
+    <meta property="og:description" content="Many users in Kenya have expensive or patchy data . An app that works offline, saves its data on the phone and syncs later feels fast and gets better…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/flutter/local-storage-offline/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Saving data on the phone: shared_preferences, SQLite and…" />
+    <meta name="twitter:description" content="Many users in Kenya have expensive or patchy data . An app that works offline, saves its data on the phone and syncs later feels fast and gets better…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/flutter/local-storage-offline/#lesson","name":"Saving data on the phone: shared_preferences, SQLite and offline apps","description":"Many users in Kenya have expensive or patchy data . An app that works offline, saves its data on the phone and syncs later feels fast and gets better…","url":"https://marzleytechsolutions.co.ke/learn/flutter/local-storage-offline/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/flutter/#course","name":"Flutter app development","url":"https://marzleytechsolutions.co.ke/learn/flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Flutter app development","item":"https://marzleytechsolutions.co.ke/learn/flutter/"},{"@type":"ListItem","position":4,"name":"Saving data on the phone: shared_preferences, SQLite and offline apps","item":"https://marzleytechsolutions.co.ke/learn/flutter/local-storage-offline/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/flutter/">Flutter app development</a> / <span>Saving data on the phone: shared_preferences, SQLite and offline apps</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=flutter&amp;lesson=local-storage-offline"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Saving data on the phone: shared_preferences, SQLite and offline apps</h1>
+<p>Many users in Kenya have <strong>expensive or patchy data</strong>. An app that works offline, saves its data on the phone and syncs later feels fast and gets better reviews. Flutter has several ways to store data locally:</p>
+<div class="static-table"><table><thead><tr><th>Option</th><th>Stores</th><th>Good for</th></tr></thead><tbody><tr><td><strong>shared_preferences</strong></td><td>Small key-value pairs</td><td>Settings, "has seen onboarding", last used phone number</td></tr><tr><td><strong>flutter_secure_storage</strong></td><td>Small <strong>encrypted</strong> values</td><td>Login tokens, PINs</td></tr><tr><td><strong>sqflite</strong> (SQLite)</td><td>Tables with SQL</td><td>Stock lists, sales records, notes: structured data you search and sort</td></tr><tr><td>Files (<code>path_provider</code>)</td><td>Any file</td><td>Downloaded PDFs, images, exports</td></tr><tr><td>Drift, Isar, Hive</td><td>Databases with Dart APIs</td><td>Larger apps (Drift is typed SQL on top of SQLite)</td></tr></tbody></table></div>
+<h2>shared_preferences: remembering small things</h2>
+<p><code>flutter pub add shared_preferences</code></p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+import &#x27;package:shared_preferences/shared_preferences.dart&#x27;;
+
+void main() =&gt; runApp(const MaterialApp(home: SettingsScreen()));
+
+class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key});
+  @override
+  State&lt;SettingsScreen&gt; createState() =&gt; _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State&lt;SettingsScreen&gt; {
+  bool darkMode = false;
+  String shopName = &#x27;&#x27;;
+  int opens = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    load();
+  }
+
+  Future&lt;void&gt; load() async {
+    final prefs = await SharedPreferences.getInstance();
+    final count = (prefs.getInt(&#x27;opens&#x27;) ?? 0) + 1;       // ?? gives a default the first time
+    await prefs.setInt(&#x27;opens&#x27;, count);
+    setState(() {
+      darkMode = prefs.getBool(&#x27;darkMode&#x27;) ?? false;
+      shopName = prefs.getString(&#x27;shopName&#x27;) ?? &#x27;&#x27;;
+      opens = count;
+    });
+  }
+
+  Future&lt;void&gt; save(String key, Object value) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (value is bool) await prefs.setBool(key, value);
+    if (value is String) await prefs.setString(key, value);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(&#x27;Settings (opened $opens times)&#x27;)),
+      body: ListView(padding: const EdgeInsets.all(16), children: [
+        SwitchListTile(
+          title: const Text(&#x27;Dark mode&#x27;),
+          value: darkMode,
+          onChanged: (v) { setState(() =&gt; darkMode = v); save(&#x27;darkMode&#x27;, v); },
+        ),
+        TextFormField(
+          key: ValueKey(shopName),                 // redraw with the loaded value
+          initialValue: shopName,
+          decoration: const InputDecoration(labelText: &#x27;Shop name&#x27;),
+          onChanged: (v) =&gt; save(&#x27;shopName&#x27;, v),
+        ),
+      ]),
+    );
+  }
+}</code></pre></figure>
+<p>Types it stores: <code>bool</code>, <code>int</code>, <code>double</code>, <code>String</code>, <code>List&lt;String&gt;</code>. To store an object, save it as a JSON string (<code>jsonEncode</code>). <strong>Don't</strong> put big lists or secrets in it.</p>
+<h2>SQLite with sqflite: real tables on the phone</h2>
+<p><code>flutter pub add sqflite path</code></p>
+<p>SQLite is the same SQL you learn in the <strong>SQL</strong> subject, running inside the app. Practise the queries there, then use them here. Put all database code in one helper class:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:path/path.dart&#x27;;
+import &#x27;package:sqflite/sqflite.dart&#x27;;
+
+class Product {
+  final int? id;           // null until saved
+  final String name;
+  final int price;
+  final int stock;
+  const Product({this.id, required this.name, required this.price, required this.stock});
+
+  Map&lt;String, Object?&gt; toMap() =&gt; {&#x27;id&#x27;: id, &#x27;name&#x27;: name, &#x27;price&#x27;: price, &#x27;stock&#x27;: stock};
+  factory Product.fromMap(Map&lt;String, Object?&gt; m) =&gt;
+      Product(id: m[&#x27;id&#x27;] as int, name: m[&#x27;name&#x27;] as String, price: m[&#x27;price&#x27;] as int, stock: m[&#x27;stock&#x27;] as int);
+}
+
+class ShopDb {
+  static Database? _db;
+
+  static Future&lt;Database&gt; get db async =&gt; _db ??= await openDatabase(
+        join(await getDatabasesPath(), &#x27;duka.db&#x27;),
+        version: 2,
+        onCreate: (db, version) async {
+          await db.execute(&#x27;&#x27;&#x27;
+            CREATE TABLE products (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              name TEXT NOT NULL,
+              price INTEGER NOT NULL,
+              stock INTEGER NOT NULL DEFAULT 0,
+              category TEXT NOT NULL DEFAULT &#x27;General&#x27;
+            )&#x27;&#x27;&#x27;);
+          await db.execute(&#x27;CREATE TABLE sales (id INTEGER PRIMARY KEY AUTOINCREMENT, product_id INTEGER, qty INTEGER, sold_at TEXT)&#x27;);
+        },
+        onUpgrade: (db, oldVersion, newVersion) async {
+          // version 1 had no category: add it without deleting anyone&#x27;s data
+          if (oldVersion &lt; 2) await db.execute(&quot;ALTER TABLE products ADD COLUMN category TEXT NOT NULL DEFAULT &#x27;General&#x27;&quot;);
+        },
+      );
+
+  static Future&lt;int&gt; insert(Product p) async =&gt;
+      (await db).insert(&#x27;products&#x27;, p.toMap()..remove(&#x27;id&#x27;));
+
+  static Future&lt;List&lt;Product&gt;&gt; all({String search = &#x27;&#x27;}) async {
+    final rows = await (await db).query(
+      &#x27;products&#x27;,
+      where: search.isEmpty ? null : &#x27;name LIKE ?&#x27;,
+      whereArgs: search.isEmpty ? null : [&#x27;%$search%&#x27;],     // ? placeholders: never paste user text into SQL
+      orderBy: &#x27;name&#x27;,
+    );
+    return rows.map(Product.fromMap).toList();
+  }
+
+  static Future&lt;void&gt; updateStock(int id, int stock) async =&gt;
+      (await db).update(&#x27;products&#x27;, {&#x27;stock&#x27;: stock}, where: &#x27;id = ?&#x27;, whereArgs: [id]);
+
+  static Future&lt;void&gt; delete(int id) async =&gt; (await db).delete(&#x27;products&#x27;, where: &#x27;id = ?&#x27;, whereArgs: [id]);
+
+  /// Record a sale and reduce stock together: both happen or neither does.
+  static Future&lt;void&gt; sell(int productId, int qty) async {
+    await (await db).transaction((txn) async {
+      await txn.insert(&#x27;sales&#x27;, {&#x27;product_id&#x27;: productId, &#x27;qty&#x27;: qty, &#x27;sold_at&#x27;: DateTime.now().toIso8601String()});
+      await txn.rawUpdate(&#x27;UPDATE products SET stock = stock - ? WHERE id = ?&#x27;, [qty, productId]);
+    });
+  }
+
+  static Future&lt;int&gt; todaysSales() async {
+    final today = DateTime.now().toIso8601String().substring(0, 10);
+    final r = await (await db).rawQuery(
+      &#x27;SELECT COALESCE(SUM(s.qty * p.price), 0) AS total FROM sales s JOIN products p ON p.id = s.product_id WHERE s.sold_at LIKE ?&#x27;,
+      [&#x27;$today%&#x27;],
+    );
+    return r.first[&#x27;total&#x27;] as int;
+  }
+}</code></pre></figure>
+<p>Important ideas in that code:</p>
+<ul><li><strong>One database, opened once</strong> (<code>_db ??=</code>).</li><li>**<code>version</code> + <code>onUpgrade</code>**: when you release version 2 of your app with a new column, existing users' data is kept. Never just delete and recreate tables in an update.</li><li>**<code>whereArgs</code> with <code>?</code>** prevents SQL injection and handles quotes in names like <em>Mama's Kitchen</em>.</li><li><strong>Transactions</strong> keep related changes together (a sale and a stock change).</li></ul>
+<p>Try the same queries on the sample shop database in the <strong>SQL</strong> subject's editor.</p>
+<h2>Using the database in a screen</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+class Product {
+  final int id;
+  final String name;
+  final int stock;
+  const Product(this.id, this.name, this.stock);
+}
+
+// Stand-in for ShopDb so this screen runs on its own
+class FakeDb {
+  static final _items = [const Product(1, &#x27;Unga 2kg&#x27;, 12), const Product(2, &#x27;Sugar 1kg&#x27;, 0)];
+  static Future&lt;List&lt;Product&gt;&gt; all() async =&gt; List.of(_items);
+}
+
+void main() =&gt; runApp(const MaterialApp(home: StockScreen()));
+
+class StockScreen extends StatefulWidget {
+  const StockScreen({super.key});
+  @override
+  State&lt;StockScreen&gt; createState() =&gt; _StockScreenState();
+}
+
+class _StockScreenState extends State&lt;StockScreen&gt; {
+  List&lt;Product&gt; items = [];
+
+  @override
+  void initState() {
+    super.initState();
+    refresh();
+  }
+
+  Future&lt;void&gt; refresh() async {
+    final data = await FakeDb.all();
+    if (mounted) setState(() =&gt; items = data);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;Stock&#x27;)),
+      body: ListView(children: [
+        for (final p in items)
+          ListTile(
+            title: Text(p.name),
+            trailing: Text(p.stock == 0 ? &#x27;OUT&#x27; : &#x27;${p.stock} left&#x27;, style: TextStyle(color: p.stock == 0 ? Colors.red : null)),
+          ),
+      ]),
+    );
+  }
+}</code></pre></figure>
+<p>After any insert, update or delete, call <code>refresh()</code> (or, better, keep the list in a Provider/Riverpod notifier that reloads itself).</p>
+<h2>Offline-first: the pattern</h2>
+<ol><li>The app <strong>always reads from the local database</strong>. The screen appears instantly, with or without internet.</li><li>When online, it <strong>fetches updates from the server</strong> and saves them locally; the screen refreshes.</li><li>Changes made offline are saved locally with a flag <code>synced = 0</code>, and sent to the server when the connection returns. Then set <code>synced = 1</code>.</li><li>Resolve conflicts with an <code>updated_at</code> timestamp (the newest change wins) or ask the user.</li></ol>
+<p>This is how good agent, SACCO and field-survey apps in Kenya keep working in areas with no signal.</p>
+<h2>Files and folders</h2>
+<p><code>flutter pub add path_provider</code>. <code>getApplicationDocumentsDirectory()</code> gives a private folder for your app's files (receipts, exported CSVs). Files there are deleted when the app is uninstalled. To let the user keep a file, share it with the <strong>share_plus</strong> package.</p>
+<h2>Where things go: a cheat sheet</h2>
+<div class="static-table"><table><thead><tr><th>Data</th><th>Store it in</th></tr></thead><tbody><tr><td>Theme, language, onboarding done</td><td>shared_preferences</td></tr><tr><td>Login token, PIN</td><td>flutter_secure_storage</td></tr><tr><td>Products, sales, customers, notes</td><td>SQLite (sqflite or Drift)</td></tr><tr><td>Photos, PDFs</td><td>Files in the app documents folder</td></tr><tr><td>Data shared between phones and users</td><td>A server or Firebase (next lesson), cached in SQLite</td></tr></tbody></table></div>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which package stores small key-value settings?</p><details><summary>Show answer</summary><p>shared_preferences</p></details></li><li><p>Which package gives you SQLite in Flutter?</p><details><summary>Show answer</summary><p>sqflite</p></details></li><li><p>What SQL placeholder symbol prevents SQL injection in whereArgs?</p><details><summary>Show answer</summary><p>?</p></details></li><li><p>Which database callback keeps users' data when you add a column in a new app version?</p><details><summary>Show answer</summary><p>onUpgrade</p></details></li><li><p>What groups several database changes so they all happen or none do?</p><details><summary>Show answer</summary><p>a transaction</p></details></li><li><p>Where should login tokens be stored?</p><details><summary>Show answer</summary><p>flutter_secure_storage</p></details></li></ol></section></div><p class="static-meta">Lesson 10 of 15 in <a href="/learn/flutter/">Flutter app development</a> · <a href="/learn/?book=flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/flutter/http-apis-json/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Loading data from the internet: http, JSON models and FutureBuilder</a><a class="btn btn-solid btn-sm" href="/learn/flutter/firebase-auth-firestore/">Firebase: sign-in, Firestore database and real-time data <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

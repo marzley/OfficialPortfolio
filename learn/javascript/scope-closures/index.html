@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Scope, hoisting and closures | JavaScript</title>
+    <meta name="description" content="Scope decides where a variable can be seen. Understanding it prevents bugs where values &quot;disappear&quot; or get overwritten, and it unlocks closures , one…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/javascript/scope-closures/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Scope, hoisting and closures | JavaScript" />
+    <meta property="og:description" content="Scope decides where a variable can be seen. Understanding it prevents bugs where values &quot;disappear&quot; or get overwritten, and it unlocks closures , one…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/javascript/scope-closures/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Scope, hoisting and closures | JavaScript" />
+    <meta name="twitter:description" content="Scope decides where a variable can be seen. Understanding it prevents bugs where values &quot;disappear&quot; or get overwritten, and it unlocks closures , one…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/javascript/scope-closures/#lesson","name":"Scope, hoisting and closures","description":"Scope decides where a variable can be seen. Understanding it prevents bugs where values \"disappear\" or get overwritten, and it unlocks closures , one…","url":"https://marzleytechsolutions.co.ke/learn/javascript/scope-closures/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/javascript/#course","name":"JavaScript","url":"https://marzleytechsolutions.co.ke/learn/javascript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/"},{"@type":"ListItem","position":4,"name":"Scope, hoisting and closures","item":"https://marzleytechsolutions.co.ke/learn/javascript/scope-closures/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/javascript/">JavaScript</a> / <span>Scope, hoisting and closures</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=scope-closures"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Scope, hoisting and closures</h1>
+<p><strong>Scope</strong> decides where a variable can be seen. Understanding it prevents bugs where values "disappear" or get overwritten, and it unlocks <strong>closures</strong>, one of JavaScript's most powerful ideas.</p>
+<h2>Three kinds of scope</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const shop = &quot;Duka Bora&quot;;            // global scope: visible everywhere
+
+function sell() {
+  const item = &quot;Unga&quot;;               // function scope: only inside sell()
+  if (true) {
+    const qty = 2;                   // block scope: only inside these { }
+    console.log(shop, item, qty);    // all visible here
+  }
+  // console.log(qty);  // would be an error: qty is not defined here
+}
+sell();
+// console.log(item);   // error: item only exists inside sell()</code></pre></figure>
+<ul><li><code>let</code> and <code>const</code> are <strong>block scoped</strong>: they live inside the nearest <code>{ }</code>.</li><li><code>var</code> ignores blocks and is function scoped. That's one reason to avoid it.</li></ul>
+<h2>Shadowing</h2>
+<p>An inner variable with the same name hides the outer one:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const rate = 16;
+function price(amount) {
+  const rate = 0;               // shadows the outer rate inside this function
+  return amount + amount * rate / 100;
+}
+console.log(price(100), rate);  // 100 16</code></pre></figure>
+<h2>Hoisting</h2>
+<p>Function <strong>declarations</strong> can be called before they appear, because JavaScript "hoists" them:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">console.log(add(2, 3));      // works: 5
+function add(a, b) { return a + b; }
+
+try {
+  console.log(total);         // let/const cannot be used before their line
+  let total = 10;
+} catch (e) {
+  console.log(&quot;Error:&quot;, e.message);
+}</code></pre></figure>
+<h2>Closures: functions that remember</h2>
+<p>A <strong>closure</strong> is a function that remembers the variables from where it was created, even after that outer function has finished.</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">function makeCounter() {
+  let count = 0;              // private: nothing outside can touch it
+  return function () {
+    count++;
+    return count;
+  };
+}
+const nextTicket = makeCounter();
+console.log(nextTicket()); // 1
+console.log(nextTicket()); // 2
+console.log(nextTicket()); // 3
+
+const other = makeCounter(); // its own separate count
+console.log(other());        // 1</code></pre></figure>
+<h2>Practical closure: a price calculator factory</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">function withVat(rate) {
+  return (amount) =&gt; Math.round(amount * (1 + rate / 100));
+}
+const kenyaVat = withVat(16);
+const noVat = withVat(0);
+console.log(kenyaVat(1000));  // 1160
+console.log(noVat(1000));     // 1000</code></pre></figure>
+<h2>Practical closure: private data (a wallet)</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">function createWallet(owner) {
+  let balance = 0;
+  return {
+    deposit(amount) { if (amount &gt; 0) balance += amount; return balance; },
+    withdraw(amount) {
+      if (amount &gt; balance) return &quot;Insufficient funds&quot;;
+      balance -= amount;
+      return balance;
+    },
+    getBalance: () =&gt; `${owner}: KSh ${balance}`,
+  };
+}
+const w = createWallet(&quot;Kevin&quot;);
+w.deposit(2000);
+console.log(w.withdraw(500));
+console.log(w.withdraw(5000));
+console.log(w.getBalance());
+console.log(w.balance);  // undefined: the balance is truly private</code></pre></figure>
+<h2>The classic loop bug (and why let fixes it)</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">for (var i = 1; i &lt;= 3; i++) setTimeout(() =&gt; console.log(&quot;var:&quot;, i), 0);   // 4 4 4
+for (let j = 1; j &lt;= 3; j++) setTimeout(() =&gt; console.log(&quot;let:&quot;, j), 0);   // 1 2 3</code></pre></figure>
+<p>With <code>let</code>, every loop round gets its own <code>j</code>, so each timer remembers the right number.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Are let and const block scoped or function scoped?</p><details><summary>Show answer</summary><p>block scoped</p></details></li><li><p>Can you call a function declaration before the line where it is written? (yes or no)</p><details><summary>Show answer</summary><p>yes</p></details></li><li><p>What is the name for a function that remembers variables from where it was created?</p><details><summary>Show answer</summary><p>closure</p></details></li><li><p>In makeCounter, can outside code change count directly? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which keyword fixes the classic setTimeout loop bug: var or let?</p><details><summary>Show answer</summary><p>let</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Write a function <code>makeCounter</code> that returns a function which counts up. Call it three times and log the last result, <strong>3</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=scope-closures#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 9 of 19 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/objects-destructuring/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Objects in depth: destructuring, spread and JSON</a><a class="btn btn-solid btn-sm" href="/learn/javascript/errors-debugging/">Errors, try/catch and debugging <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

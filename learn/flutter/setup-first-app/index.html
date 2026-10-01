@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Setting up Flutter and your first app | Marzley Learn</title>
+    <meta name="description" content="Flutter is Google&#x27;s free toolkit for building apps for Android, iPhone (iOS), the web, Windows, macOS and Linux from one codebase . You write your app…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/flutter/setup-first-app/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Setting up Flutter and your first app | Marzley Learn" />
+    <meta property="og:description" content="Flutter is Google&#x27;s free toolkit for building apps for Android, iPhone (iOS), the web, Windows, macOS and Linux from one codebase . You write your app…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/flutter/setup-first-app/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Setting up Flutter and your first app | Marzley Learn" />
+    <meta name="twitter:description" content="Flutter is Google&#x27;s free toolkit for building apps for Android, iPhone (iOS), the web, Windows, macOS and Linux from one codebase . You write your app…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/flutter/setup-first-app/#lesson","name":"Setting up Flutter and your first app","description":"Flutter is Google's free toolkit for building apps for Android, iPhone (iOS), the web, Windows, macOS and Linux from one codebase . You write your app…","url":"https://marzleytechsolutions.co.ke/learn/flutter/setup-first-app/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/flutter/#course","name":"Flutter app development","url":"https://marzleytechsolutions.co.ke/learn/flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Flutter app development","item":"https://marzleytechsolutions.co.ke/learn/flutter/"},{"@type":"ListItem","position":4,"name":"Setting up Flutter and your first app","item":"https://marzleytechsolutions.co.ke/learn/flutter/setup-first-app/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/flutter/">Flutter app development</a> / <span>Setting up Flutter and your first app</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=flutter&amp;lesson=setup-first-app"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Setting up Flutter and your first app</h1>
+<p><strong>Flutter</strong> is Google's free toolkit for building apps for <strong>Android, iPhone (iOS), the web, Windows, macOS and Linux</strong> from <strong>one codebase</strong>. You write your app once in the <strong>Dart</strong> language and Flutter draws every pixel itself, so the app looks and behaves the same on every phone.</p>
+<p>Big apps built with Flutter include Google Pay, BMW, Alibaba's Xianyu and many Kenyan fintech and SACCO apps. For a developer in Kenya, Flutter is one of the fastest ways to go from idea to an app on the Play Store.</p>
+<blockquote><p>New to Dart? Do the <strong>Dart &amp; Flutter</strong> subject's first three lessons (Dart basics, functions and classes) first, then come back here.</p></blockquote>
+<h2>What you need</h2>
+<div class="static-table"><table><thead><tr><th>Item</th><th>Minimum</th><th>Better</th></tr></thead><tbody><tr><td>Computer</td><td>8 GB RAM, 20 GB free disk, 64-bit Windows 10, macOS or Linux</td><td>16 GB RAM and an SSD</td></tr><tr><td>Phone for testing</td><td>Any Android phone (Android 7+) and a USB cable</td><td>A second, older phone to test on slow devices</td></tr><tr><td>Internet</td><td>To download about 3 GB once</td><td></td></tr><tr><td>iPhone apps</td><td>A Mac with Xcode is needed to build for iPhone</td><td></td></tr></tbody></table></div>
+<p><strong>No powerful PC?</strong> You can still learn: use <strong>DartPad</strong> (dartpad.dev) in your browser, which runs Flutter apps online for free. Every example in this course that starts with <code>import &#x27;package:flutter/material.dart&#x27;;</code> can be pasted into DartPad and run.</p>
+<h2>Installing Flutter (Windows)</h2>
+<ol><li>Download the Flutter SDK zip from <strong>docs.flutter.dev</strong> → Get started → Windows → Android.</li><li>Extract it to a simple folder like <code>C:\src\flutter</code> (not <em>Program Files</em>: it needs write access).</li><li>Add <code>C:\src\flutter\bin</code> to your <strong>Path</strong>: Start → "Edit the system environment variables" → Environment Variables → Path → Edit → New.</li><li>Install <strong>Android Studio</strong> (it brings the Android SDK and an emulator). Open it once and let it finish the setup wizard.</li><li>In Android Studio: <strong>Plugins</strong> → install <strong>Flutter</strong> (it installs Dart too).</li><li>Open a new Command Prompt and run:</li></ol>
+<figure class="static-code"><pre><code>flutter doctor
+flutter doctor --android-licenses</code></pre></figure>
+<p><code>flutter doctor</code> checks everything and shows a tick or cross for each part. Fix each cross it lists, then run it again until the Android parts are green.</p>
+<figure class="static-code"><pre><code>Doctor summary (to see all details, run flutter doctor -v):
+[✓] Flutter (Channel stable, 3.24.5, on Microsoft Windows)
+[✓] Android toolchain - develop for Android devices (Android SDK version 34.0.0)
+[✓] Chrome - develop for the web
+[✓] Android Studio (version 2024.1)
+[✓] VS Code (version 1.95)
+[✓] Connected device (2 available)</code></pre></figure>
+<p><strong>VS Code</strong> is lighter than Android Studio for writing code. Install it and add the <strong>Flutter</strong> extension. You still need Android Studio installed for the Android SDK.</p>
+<h2>Running on your own phone</h2>
+<p>Testing on a real phone is faster than the emulator on most laptops.</p>
+<ol><li>On the phone: <strong>Settings → About phone → tap "Build number" 7 times</strong>. You're now a developer.</li><li><strong>Settings → System → Developer options → turn on USB debugging</strong>.</li><li>Connect the USB cable and tap <strong>Allow</strong> on the phone.</li><li>Run <code>flutter devices</code>. Your phone should be listed.</li></ol>
+<blockquote><p>Wireless option (Android 11+): Developer options → <strong>Wireless debugging</strong>, then pair from Android Studio's device menu. No cable needed.</p></blockquote>
+<h2>Create and run your first app</h2>
+<figure class="static-code"><pre><code>flutter create duka
+cd duka
+flutter run</code></pre></figure>
+<p><code>flutter create</code> makes a complete starter app (a counter). <code>flutter run</code> builds it and installs it on your phone or emulator. The first build takes a few minutes; later ones are fast.</p>
+<p>While it runs, the terminal accepts keys:</p>
+<div class="static-table"><table><thead><tr><th>Key</th><th>Does</th></tr></thead><tbody><tr><td><code>r</code></td><td><strong>Hot reload</strong>: shows your code change in about a second and keeps the app's state</td></tr><tr><td><code>R</code></td><td><strong>Hot restart</strong>: restarts the app from the beginning (state is lost)</td></tr><tr><td><code>q</code></td><td>Quit</td></tr></tbody></table></div>
+<p>Hot reload is Flutter's superpower: change a colour or a word, save, and see it on the phone instantly.</p>
+<h2>What's in a Flutter project</h2>
+<figure class="static-code"><pre><code>duka/
+├── lib/
+│   └── main.dart          ← your Dart code starts here
+├── pubspec.yaml           ← app name, version, packages, images and fonts
+├── android/               ← the Android project (app id, permissions, icons)
+├── ios/                   ← the iPhone project (needs a Mac)
+├── web/  windows/  ...    ← other platforms
+├── test/                  ← automatic tests
+└── build/                 ← generated files (never edit or commit)</code></pre></figure>
+<p>You will spend 95% of your time in <code>lib/</code> and <code>pubspec.yaml</code>.</p>
+<h2>Your first app, line by line</h2>
+<p>Replace everything in <code>lib/main.dart</code> with this and save. Hot reload shows it at once.</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;   // Google&#x27;s Material Design widgets
+
+void main() {
+  runApp(const DukaApp());                  // start the app with the root widget
+}
+
+class DukaApp extends StatelessWidget {
+  const DukaApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: &#x27;Duka&#x27;,
+      debugShowCheckedModeBanner: false,    // hide the red &quot;DEBUG&quot; ribbon
+      theme: ThemeData(colorSchemeSeed: Colors.teal, useMaterial3: true),
+      home: const HomeScreen(),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(                         // a basic screen: app bar + body + buttons
+      appBar: AppBar(title: const Text(&#x27;Mama Mboga Duka&#x27;)),
+      body: const Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.storefront, size: 72),
+            SizedBox(height: 12),
+            Text(&#x27;Karibu! Fresh vegetables daily.&#x27;, style: TextStyle(fontSize: 20)),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {},
+        icon: const Icon(Icons.phone),
+        label: const Text(&#x27;Call to order&#x27;),
+      ),
+    );
+  }
+}</code></pre></figure>
+<p>What each part does:</p>
+<ul><li><code>main()</code> is where every Dart program starts. <code>runApp()</code> takes a widget and makes it the whole screen.</li><li>**<code>MaterialApp</code>** sets up the app: its title, theme (colours and fonts) and the first screen (<code>home</code>).</li><li>**<code>Scaffold</code>** is one screen's skeleton: <code>appBar</code> at the top, <code>body</code> in the middle, and a <code>floatingActionButton</code>.</li><li>**<code>Center</code><strong>, </strong><code>Column</code><strong>, </strong><code>Icon</code><strong>, </strong><code>SizedBox</code><strong> and </strong><code>Text</code><strong> are all widgets. A screen is a </strong>tree** of widgets inside widgets.</li><li><code>const</code> tells Flutter a widget never changes, so it can reuse it instead of rebuilding it. It makes apps faster. Your editor will suggest where to add it.</li></ul>
+<h2>The widget tree</h2>
+<figure class="static-code"><pre><code>DukaApp
+└── MaterialApp
+    └── HomeScreen
+        └── Scaffold
+            ├── AppBar → Text
+            ├── Center → Column → Icon, SizedBox, Text
+            └── FloatingActionButton → Icon, Text</code></pre></figure>
+<p>Learning Flutter is mostly learning <strong>which widgets exist</strong> and <strong>how to nest them</strong>. The next lessons cover the important ones.</p>
+<h2>Useful commands</h2>
+<div class="static-table"><table><thead><tr><th>Command</th><th>Use</th></tr></thead><tbody><tr><td><code>flutter doctor</code></td><td>Check your setup</td></tr><tr><td><code>flutter devices</code></td><td>List phones and emulators</td></tr><tr><td><code>flutter run</code></td><td>Build and run in debug mode</td></tr><tr><td><code>flutter pub add http</code></td><td>Add a package (here, <code>http</code>)</td></tr><tr><td><code>flutter pub get</code></td><td>Download the packages listed in <code>pubspec.yaml</code></td></tr><tr><td><code>flutter clean</code></td><td>Delete build files (fixes many strange build errors)</td></tr><tr><td><code>flutter build apk --release</code></td><td>Make an installable APK</td></tr><tr><td><code>flutter build appbundle</code></td><td>Make an AAB for the Play Store</td></tr><tr><td><code>flutter upgrade</code></td><td>Update Flutter</td></tr></tbody></table></div>
+<h2>Common first-day problems</h2>
+<div class="static-table"><table><thead><tr><th>Problem</th><th>Fix</th></tr></thead><tbody><tr><td><code>&#x27;flutter&#x27; is not recognized</code></td><td>The <code>bin</code> folder isn't on your Path. Add it and open a <strong>new</strong> terminal.</td></tr><tr><td><code>Android license status unknown</code></td><td>Run <code>flutter doctor --android-licenses</code> and type <code>y</code> to each.</td></tr><tr><td>Phone not listed</td><td>Change the USB mode to <em>File transfer</em>, accept the "Allow USB debugging" pop-up, try another cable.</td></tr><tr><td>Gradle build takes forever / fails</td><td>It downloads a lot the first time: use good internet and wait. Then try <code>flutter clean</code> and run again.</td></tr><tr><td>Emulator very slow</td><td>Turn on virtualization (VT-x/SVM) in the BIOS, or use your real phone.</td></tr></tbody></table></div>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command checks that Flutter and the Android tools are installed correctly?</p><details><summary>Show answer</summary><p>flutter doctor</p></details></li><li><p>Which key do you press in the terminal for hot reload?</p><details><summary>Show answer</summary><p>r</p></details></li><li><p>Which file lists your app's packages, images and fonts?</p><details><summary>Show answer</summary><p>pubspec.yaml</p></details></li><li><p>Which folder holds your Dart code?</p><details><summary>Show answer</summary><p>lib</p></details></li><li><p>Which widget gives a screen an app bar, a body and a floating button?</p><details><summary>Show answer</summary><p>Scaffold</p></details></li><li><p>Which function takes your root widget and starts the app?</p><details><summary>Show answer</summary><p>runApp</p></details></li></ol></section></div><p class="static-meta">Lesson 1 of 15 in <a href="/learn/flutter/">Flutter app development</a> · <a href="/learn/?book=flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><span></span><a class="btn btn-solid btn-sm" href="/learn/flutter/widgets-stateless-stateful/">Widgets in depth: stateless, stateful and the build method <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

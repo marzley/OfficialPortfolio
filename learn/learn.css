@@ -556,3 +556,34 @@ html.js .learn-static { display: none; }
 .star-row label:hover, .star-row label:hover ~ label, .star-row input:checked ~ label { color: #e0a100; }
 .star-pick input:focus-visible + label { outline: 3px solid var(--amber); border-radius: 4px; }
 @media print { .lesson-social { display: none !important; } }
+
+/* Static (pre-rendered) course and lesson pages: /learn/<subject>/ and /learn/<subject>/<lesson>/ */
+.static-main { max-width: 900px; margin: 0 auto; padding: 24px clamp(16px, 4vw, 32px) 64px; display: block; }
+.static-learn .learn-top-in .learn-nav { margin-left: 8px; }
+.static-course h1, .static-lesson h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.15; color: var(--heading); margin: 8px 0 12px; }
+.static-meta { color: var(--fg-muted); font-size: 14px; margin: 18px 0; }
+.static-ctas { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 26px; }
+.static-lessons { padding-left: 0; list-style: none; display: grid; gap: 6px; }
+.static-lessons a { display: flex; gap: 12px; align-items: center; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); color: var(--fg); text-decoration: none; font-weight: 600; }
+.static-lessons a:hover { border-color: var(--amber); }
+.static-n { display: inline-grid; place-items: center; min-width: 30px; height: 30px; border-radius: 50%; background: var(--current-bg); color: var(--amber-text); font-size: 13px; font-weight: 800; }
+.static-live { margin: 0 0 22px; padding: 14px 16px; border-radius: 14px; background: var(--current-bg); border: 1px solid var(--amber); }
+.static-live p { margin: 0 0 10px; }
+.static-live p:last-child { margin: 0; }
+.static-code { margin: 16px 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--card); }
+.static-code figcaption { padding: 8px 12px; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--fg-muted); border-bottom: 1px solid var(--line); }
+.static-code pre { margin: 0; padding: 14px; overflow-x: auto; font-size: 14px; line-height: 1.55; }
+.static-table { overflow-x: auto; margin: 16px 0; }
+.static-table table { border-collapse: collapse; width: 100%; font-size: 15px; }
+.static-table th, .static-table td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+.static-table th { background: var(--current-bg); }
+.static-quiz { margin: 26px 0; padding: 16px 18px; border-radius: 14px; border: 1px solid var(--line); background: var(--card); }
+.static-quiz ol { padding-left: 20px; }
+.static-quiz li { margin-bottom: 10px; }
+.static-quiz li p { margin: 0 0 4px; }
+.static-quiz summary { cursor: pointer; color: var(--blue); font-size: 14px; }
+.static-note, .static-videos { margin: 16px 0; padding: 12px 14px; border-left: 3px solid var(--amber); background: var(--card); border-radius: 8px; }
+.static-exercise { margin: 26px 0; padding: 16px 18px; border-radius: 14px; border: 1px dashed var(--amber); }
+.static-lesson .lesson-body blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--amber); background: var(--card); border-radius: 8px; }
+@media print { .static-live, .static-ctas, .pager { display: none !important; } }
+.static-code pre code { background: none; padding: 0; border: 0; font-size: inherit; color: inherit; white-space: pre; }

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Variables, data types and operators in Java | Java</title>
+    <meta name="description" content="Java is statically typed : every variable has a type that&#x27;s fixed when you write the code. The compiler checks types before the program runs, which…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/java/variables-types/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Variables, data types and operators in Java | Java" />
+    <meta property="og:description" content="Java is statically typed : every variable has a type that&#x27;s fixed when you write the code. The compiler checks types before the program runs, which…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/java/variables-types/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Variables, data types and operators in Java | Java" />
+    <meta name="twitter:description" content="Java is statically typed : every variable has a type that&#x27;s fixed when you write the code. The compiler checks types before the program runs, which…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/java/variables-types/#lesson","name":"Variables, data types and operators in Java","description":"Java is statically typed : every variable has a type that's fixed when you write the code. The compiler checks types before the program runs, which…","url":"https://marzleytechsolutions.co.ke/learn/java/variables-types/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/java/#course","name":"Java","url":"https://marzleytechsolutions.co.ke/learn/java/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Java","item":"https://marzleytechsolutions.co.ke/learn/java/"},{"@type":"ListItem","position":4,"name":"Variables, data types and operators in Java","item":"https://marzleytechsolutions.co.ke/learn/java/variables-types/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/java/">Java</a> / <span>Variables, data types and operators in Java</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=java&amp;lesson=variables-types"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Variables, data types and operators in Java</h1>
+<p>Java is <strong>statically typed</strong>: every variable has a type that's fixed when you write the code. The compiler checks types before the program runs, which catches many mistakes early. That's one reason banks and big companies like Java.</p>
+<blockquote><p>Examples here run on Compiler Explorer (an online service), so they need internet and take a few seconds. Keep the class name <code>Main</code>.</p></blockquote>
+<h2>Declaring variables</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    public static void main(String[] args) {
+        int students = 45;
+        double feePerTerm = 12500.50;
+        char grade = &#x27;A&#x27;;
+        boolean isBoarding = true;
+        String school = &quot;Kenya High&quot;;
+
+        System.out.println(school + &quot; has &quot; + students + &quot; students in this class.&quot;);
+        System.out.println(&quot;Fee: KSh &quot; + feePerTerm + &quot;, grade &quot; + grade + &quot;, boarding: &quot; + isBoarding);
+
+        final double VAT = 0.16;     // final = a constant, can&#x27;t be changed
+        var town = &quot;Kisumu&quot;;          // var: Java infers the type (String)
+        System.out.println(town + &quot; VAT &quot; + VAT);
+    }
+}</code></pre></figure>
+<h2>Primitive types</h2>
+<div class="static-table"><table><thead><tr><th>Type</th><th>Size</th><th>Holds</th><th>Example</th></tr></thead><tbody><tr><td><code>byte</code></td><td>8 bits</td><td>−128 to 127</td><td><code>byte age = 20;</code></td></tr><tr><td><code>short</code></td><td>16 bits</td><td>±32,767</td><td></td></tr><tr><td><code>int</code></td><td>32 bits</td><td>about ±2.1 billion</td><td><code>int stock = 500;</code></td></tr><tr><td><code>long</code></td><td>64 bits</td><td>very big whole numbers</td><td><code>long population = 52_000_000L;</code></td></tr><tr><td><code>float</code></td><td>32 bits</td><td>decimals (~7 digits)</td><td><code>float rate = 3.5f;</code></td></tr><tr><td><code>double</code></td><td>64 bits</td><td>decimals (~15 digits): the default</td><td><code>double price = 199.99;</code></td></tr><tr><td><code>char</code></td><td>16 bits</td><td>one character, single quotes</td><td><code>char c = &#x27;K&#x27;;</code></td></tr><tr><td><code>boolean</code></td><td></td><td><code>true</code> / <code>false</code></td><td></td></tr></tbody></table></div>
+<p><code>String</code> isn't primitive: it's an <strong>object</strong> (note the capital S), written in double quotes.</p>
+<h2>Arithmetic and the integer division trap</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    public static void main(String[] args) {
+        int a = 17, b = 5;
+        System.out.println(a + b);        // 22
+        System.out.println(a / b);        // 3   (int / int = whole number!)
+        System.out.println(a % b);        // 2   remainder
+        System.out.println((double) a / b); // 3.4 (cast one to double first)
+
+        int count = 10;
+        count++;          // 11
+        count += 5;       // 16
+        System.out.println(count);
+
+        System.out.println(Math.round(12.567 * 100) / 100.0);  // 12.57
+        System.out.println(Math.max(3, 9) + &quot; &quot; + Math.pow(2, 10) + &quot; &quot; + Math.sqrt(144));
+    }
+}</code></pre></figure>
+<h2>Casting between types</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    public static void main(String[] args) {
+        int whole = 7;
+        double d = whole;             // widening: automatic (int -&gt; double)
+        double price = 99.99;
+        int rounded = (int) price;    // narrowing: must cast, cuts off decimals -&gt; 99
+
+        String text = &quot;250&quot;;
+        int qty = Integer.parseInt(text);          // String -&gt; int
+        double amount = Double.parseDouble(&quot;1500.75&quot;);
+        String back = String.valueOf(qty * 2);    // int -&gt; String
+
+        System.out.println(d + &quot; &quot; + rounded + &quot; &quot; + (qty + 50) + &quot; &quot; + amount + &quot; &quot; + back);
+    }
+}</code></pre></figure>
+<h2>Comparison and logical operators</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    public static void main(String[] args) {
+        int age = 19;
+        boolean hasId = true;
+        System.out.println(age &gt;= 18 &amp;&amp; hasId);   // AND
+        System.out.println(age &lt; 13 || age &gt; 65); // OR
+        System.out.println(!hasId);               // NOT
+
+        String a = &quot;Nairobi&quot;;
+        String b = new String(&quot;Nairobi&quot;);
+        System.out.println(a == b);          // false: compares memory locations
+        System.out.println(a.equals(b));     // true: compares the text (always use this)
+
+        String status = age &gt;= 18 ? &quot;adult&quot; : &quot;minor&quot;;   // ternary
+        System.out.println(status);
+    }
+}</code></pre></figure>
+<blockquote><p>Always compare strings with <code>.equals()</code> (or <code>.equalsIgnoreCase()</code>), never <code>==</code>.</p></blockquote>
+<h2>Formatting output</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    public static void main(String[] args) {
+        String name = &quot;Amina&quot;;
+        double balance = 12345.6;
+        System.out.printf(&quot;%-10s KSh %,.2f%n&quot;, name, balance);   // Amina      KSh 12,345.60
+        String msg = String.format(&quot;%s has %d items&quot;, name, 3);
+        System.out.println(msg);
+    }
+}</code></pre></figure>
+<h2>Naming conventions</h2>
+<ul><li>Variables and methods: <strong>camelCase</strong> (<code>totalPrice</code>, <code>calculateFee()</code>)</li><li>Classes: <strong>PascalCase</strong> (<code>BankAccount</code>)</li><li>Constants: <strong>UPPER_SNAKE_CASE</strong> (<code>MAX_LOGIN_TRIES</code>)</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which type is the default for decimal numbers in Java?</p><details><summary>Show answer</summary><p>double</p></details></li><li><p>What is 17 / 5 in Java when both are int?</p><details><summary>Show answer</summary><p>3</p></details></li><li><p>Which method should you use to compare two strings' text?</p><details><summary>Show answer</summary><p>equals</p></details></li><li><p>Which keyword makes a variable a constant?</p><details><summary>Show answer</summary><p>final</p></details></li><li><p>Which method converts the String "250" to an int?</p><details><summary>Show answer</summary><p>Integer.parseInt</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 9 in <a href="/learn/java/">Java</a> · <a href="/learn/?book=java">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/java/introduction/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Java introduction</a><a class="btn btn-solid btn-sm" href="/learn/java/control-flow/">Conditions, loops and arrays <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

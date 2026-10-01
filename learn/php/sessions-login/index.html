@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sessions and a login system | PHP &amp; MySQL</title>
+    <meta name="description" content="HTTP forgets you between pages. Sessions remember a visitor using a cookie with a random ID." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/php/sessions-login/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Sessions and a login system | PHP &amp; MySQL" />
+    <meta property="og:description" content="HTTP forgets you between pages. Sessions remember a visitor using a cookie with a random ID." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/php/sessions-login/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Sessions and a login system | PHP &amp; MySQL" />
+    <meta name="twitter:description" content="HTTP forgets you between pages. Sessions remember a visitor using a cookie with a random ID." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/php/sessions-login/#lesson","name":"Sessions and a login system","description":"HTTP forgets you between pages. Sessions remember a visitor using a cookie with a random ID.","url":"https://marzleytechsolutions.co.ke/learn/php/sessions-login/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/php/#course","name":"PHP & MySQL","url":"https://marzleytechsolutions.co.ke/learn/php/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"PHP & MySQL","item":"https://marzleytechsolutions.co.ke/learn/php/"},{"@type":"ListItem","position":4,"name":"Sessions and a login system","item":"https://marzleytechsolutions.co.ke/learn/php/sessions-login/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/php/">PHP &amp; MySQL</a> / <span>Sessions and a login system</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=php&amp;lesson=sessions-login"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Sessions and logins</h1>
+<p>HTTP forgets you between pages. <strong>Sessions</strong> remember a visitor using a cookie with a random ID.</p>
+<h2>Register</h2>
+<figure class="static-code"><pre><code>&lt;?php
+$hash = password_hash($_POST[&#x27;password&#x27;], PASSWORD_DEFAULT);
+$pdo-&gt;prepare(&#x27;INSERT INTO users (email, password_hash) VALUES (?, ?)&#x27;)
+    -&gt;execute([strtolower(trim($_POST[&#x27;email&#x27;])), $hash]);</code></pre></figure>
+<h2>Log in</h2>
+<figure class="static-code"><pre><code>&lt;?php
+session_start();
+$stmt = $pdo-&gt;prepare(&#x27;SELECT id, password_hash FROM users WHERE email = ?&#x27;);
+$stmt-&gt;execute([strtolower(trim($_POST[&#x27;email&#x27;]))]);
+$user = $stmt-&gt;fetch();
+
+if ($user &amp;&amp; password_verify($_POST[&#x27;password&#x27;], $user[&#x27;password_hash&#x27;])) {
+    session_regenerate_id(true);          // prevents session fixation
+    $_SESSION[&#x27;user_id&#x27;] = $user[&#x27;id&#x27;];
+    header(&#x27;Location: dashboard.php&#x27;);
+    exit;
+}
+echo &#x27;Wrong email or password.&#x27;;          // same message for both: don&#x27;t reveal which</code></pre></figure>
+<h2>Protect pages</h2>
+<figure class="static-code"><pre><code>&lt;?php
+session_start();
+if (empty($_SESSION[&#x27;user_id&#x27;])) {
+    header(&#x27;Location: login.php&#x27;);
+    exit;
+}</code></pre></figure>
+<h2>Log out</h2>
+<figure class="static-code"><pre><code>session_start();
+$_SESSION = [];
+session_destroy();</code></pre></figure>
+<h2>Make it stronger</h2>
+<ul><li>Limit login attempts (lock for a few minutes after 5 failures).</li><li>Offer sign-in with Google or one-time codes by email/SMS.</li><li>Set cookie options: <code>httponly</code>, <code>secure</code>, <code>samesite=Lax</code>.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which function checks a password against a stored hash?</p><details><summary>Show answer</summary><p>password_verify</p></details></li><li><p>Which function must be called before using $_SESSION?</p><details><summary>Show answer</summary><p>session_start</p></details></li><li><p>Which function should you call right after a successful login to prevent session fixation?</p><details><summary>Show answer</summary><p>session_regenerate_id</p></details></li></ol></section></div><p class="static-meta">Lesson 9 of 13 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/crud-app/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Build a CRUD app with PHP and MySQL (create, read, update, delete)</a><a class="btn btn-solid btn-sm" href="/learn/php/file-uploads/">Secure file uploads (images and documents) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

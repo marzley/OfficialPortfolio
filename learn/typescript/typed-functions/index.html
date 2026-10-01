@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Typed functions, optional and default parameters</title>
+    <meta name="description" content="Functions are where most bugs hide: wrong argument types, missing arguments, unexpected return values. TypeScript lets you describe exactly what goes…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/typescript/typed-functions/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Typed functions, optional and default parameters" />
+    <meta property="og:description" content="Functions are where most bugs hide: wrong argument types, missing arguments, unexpected return values. TypeScript lets you describe exactly what goes…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/typescript/typed-functions/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Typed functions, optional and default parameters" />
+    <meta name="twitter:description" content="Functions are where most bugs hide: wrong argument types, missing arguments, unexpected return values. TypeScript lets you describe exactly what goes…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/typescript/typed-functions/#lesson","name":"Typed functions, optional and default parameters","description":"Functions are where most bugs hide: wrong argument types, missing arguments, unexpected return values. TypeScript lets you describe exactly what goes…","url":"https://marzleytechsolutions.co.ke/learn/typescript/typed-functions/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/typescript/#course","name":"TypeScript","url":"https://marzleytechsolutions.co.ke/learn/typescript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"TypeScript","item":"https://marzleytechsolutions.co.ke/learn/typescript/"},{"@type":"ListItem","position":4,"name":"Typed functions, optional and default parameters","item":"https://marzleytechsolutions.co.ke/learn/typescript/typed-functions/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/typescript/">TypeScript</a> / <span>Typed functions, optional and default parameters</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=typescript&amp;lesson=typed-functions"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Typed functions, optional and default parameters</h1>
+<p>Functions are where most bugs hide: wrong argument types, missing arguments, unexpected return values. TypeScript lets you describe exactly what goes in and what comes out.</p>
+<blockquote><p>Our editor runs TypeScript by removing the types and running the JavaScript, so it won't show type errors. To see type checking, use the TypeScript Playground (typescriptlang.org/play) or VS Code, which underline mistakes as you type.</p></blockquote>
+<h2>Parameter and return types</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">function withVat(amount: number, rate: number): number {
+  return Math.round(amount * (1 + rate / 100));
+}
+
+const formatKsh = (n: number): string =&gt; &quot;KSh &quot; + n.toLocaleString(&quot;en-KE&quot;);
+
+console.log(formatKsh(withVat(1500, 16)));
+// withVat(&quot;1500&quot;, 16);   // Error in the editor: string is not assignable to number</code></pre></figure>
+<p>TypeScript can often <strong>infer</strong> the return type, but writing it for important functions documents your intent and catches mistakes inside the function.</p>
+<h2>Optional and default parameters</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">function greet(name: string, title?: string): string {    // ? = optional
+  return title ? `Habari ${title} ${name}` : `Habari ${name}`;
+}
+
+function deliveryFee(km: number, perKm: number = 30, minimum = 150): number {
+  return Math.max(minimum, km * perKm);
+}
+
+console.log(greet(&quot;Wanjiru&quot;), &quot;|&quot;, greet(&quot;Otieno&quot;, &quot;Dr.&quot;));
+console.log(deliveryFee(3), deliveryFee(12), deliveryFee(12, 25));</code></pre></figure>
+<ul><li><code>title?: string</code> means the type is <code>string | undefined</code>.</li><li>Optional parameters must come <strong>after</strong> required ones.</li><li>Defaults (<code>perKm = 30</code>) make a parameter optional and TypeScript infers its type.</li></ul>
+<h2>Rest parameters</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">function total(...amounts: number[]): number {
+  return amounts.reduce((sum, a) =&gt; sum + a, 0);
+}
+console.log(total(100, 250, 75));</code></pre></figure>
+<h2>Object parameters with types</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type Order = {
+  item: string;
+  qty: number;
+  price: number;
+  delivery?: boolean;
+};
+
+function orderTotal({ qty, price, delivery = false }: Order): number {
+  return qty * price + (delivery ? 200 : 0);
+}
+
+console.log(orderTotal({ item: &quot;Cake&quot;, qty: 2, price: 1800, delivery: true }));
+// orderTotal({ item: &quot;Cake&quot;, qty: 2 });   // Error: property &#x27;price&#x27; is missing</code></pre></figure>
+<h2>Function types</h2>
+<p>You can describe the <strong>shape</strong> of a function, useful for callbacks:</p>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type PriceRule = (amount: number) =&gt; number;
+
+const blackFriday: PriceRule = (a) =&gt; a * 0.7;
+const loyalty: PriceRule = (a) =&gt; a - 100;
+
+function applyRules(amount: number, rules: PriceRule[]): number {
+  return rules.reduce((a, rule) =&gt; rule(a), amount);
+}
+console.log(applyRules(2000, [blackFriday, loyalty]));</code></pre></figure>
+<h2>void and never</h2>
+<ul><li><code>void</code>: the function returns nothing useful.</li><li><code>never</code>: the function never returns (it always throws or loops forever).</li></ul>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">function log(message: string): void {
+  console.log(`[${new Date().toISOString().slice(0, 10)}] ${message}`);
+}
+
+function fail(message: string): never {
+  throw new Error(message);
+}
+
+log(&quot;Server started&quot;);
+try { fail(&quot;Payment gateway down&quot;); } catch (e) { console.log((e as Error).message); }</code></pre></figure>
+<h2>Overloads (briefly)</h2>
+<p>When a function accepts different argument shapes, you can declare several signatures. Most of the time, a <strong>union type</strong> (next lesson) is simpler.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which symbol after a parameter name makes it optional?</p><details><summary>Show answer</summary><p>?</p></details></li><li><p>Must optional parameters come before or after required ones?</p><details><summary>Show answer</summary><p>after</p></details></li><li><p>What return type means a function returns nothing useful?</p><details><summary>Show answer</summary><p>void</p></details></li><li><p>What return type means a function never finishes normally?</p><details><summary>Show answer</summary><p>never</p></details></li><li><p>What do you call it when TypeScript works out a type without you writing it?</p><details><summary>Show answer</summary><p>inference</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 7 in <a href="/learn/typescript/">TypeScript</a> · <a href="/learn/?book=typescript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/typescript/types-interfaces/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Types, interfaces and functions</a><a class="btn btn-solid btn-sm" href="/learn/typescript/unions-narrowing/">Union types, literal types and narrowing <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

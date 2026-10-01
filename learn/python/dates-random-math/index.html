@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dates, times, random numbers and maths | Python</title>
+    <meta name="description" content="Loan due dates, receipts, countdowns, games and reports all need dates and numbers. Python&#x27;s standard library covers them." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/python/dates-random-math/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Dates, times, random numbers and maths | Python" />
+    <meta property="og:description" content="Loan due dates, receipts, countdowns, games and reports all need dates and numbers. Python&#x27;s standard library covers them." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/python/dates-random-math/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Dates, times, random numbers and maths | Python" />
+    <meta name="twitter:description" content="Loan due dates, receipts, countdowns, games and reports all need dates and numbers. Python&#x27;s standard library covers them." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/python/dates-random-math/#lesson","name":"Dates, times, random numbers and maths","description":"Loan due dates, receipts, countdowns, games and reports all need dates and numbers. Python's standard library covers them.","url":"https://marzleytechsolutions.co.ke/learn/python/dates-random-math/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/python/#course","name":"Python","url":"https://marzleytechsolutions.co.ke/learn/python/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Python","item":"https://marzleytechsolutions.co.ke/learn/python/"},{"@type":"ListItem","position":4,"name":"Dates, times, random numbers and maths","item":"https://marzleytechsolutions.co.ke/learn/python/dates-random-math/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/python/">Python</a> / <span>Dates, times, random numbers and maths</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=dates-random-math"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Dates, times, random numbers and maths</h1>
+<p>Loan due dates, receipts, countdowns, games and reports all need dates and numbers. Python's standard library covers them.</p>
+<h2>datetime basics</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">from datetime import datetime, date, timedelta
+
+now = datetime.now()
+today = date.today()
+print(&quot;Now:&quot;, now)
+print(&quot;Today:&quot;, today)
+print(today.year, today.month, today.day)
+print(&quot;Weekday (Monday=0):&quot;, today.weekday())</code></pre></figure>
+<h2>Formatting dates (strftime)</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">from datetime import datetime
+
+d = datetime(2026, 12, 12, 14, 30)          # Jamhuri Day, 2:30 pm
+print(d.strftime(&quot;%d/%m/%Y&quot;))                # 12/12/2026
+print(d.strftime(&quot;%A, %d %B %Y&quot;))            # Saturday, 12 December 2026
+print(d.strftime(&quot;%I:%M %p&quot;))                # 02:30 PM
+print(d.strftime(&quot;%Y-%m-%d %H:%M&quot;))          # 2026-12-12 14:30</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Code</th><th>Meaning</th><th>Example</th></tr></thead><tbody><tr><td><code>%d</code></td><td>Day</td><td>12</td></tr><tr><td><code>%m</code></td><td>Month number</td><td>12</td></tr><tr><td><code>%B</code> / <code>%b</code></td><td>Month name / short</td><td>December / Dec</td></tr><tr><td><code>%Y</code></td><td>Year</td><td>2026</td></tr><tr><td><code>%A</code> / <code>%a</code></td><td>Weekday / short</td><td>Saturday / Sat</td></tr><tr><td><code>%H:%M</code></td><td>24-hour time</td><td>14:30</td></tr><tr><td><code>%I %p</code></td><td>12-hour + AM/PM</td><td>02 PM</td></tr></tbody></table></div>
+<h2>Reading dates from text (strptime)</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">from datetime import datetime
+
+text = &quot;05/03/2026&quot;
+d = datetime.strptime(text, &quot;%d/%m/%Y&quot;)
+print(d.date(), d.strftime(&quot;%A&quot;))</code></pre></figure>
+<h2>Date arithmetic with timedelta</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">from datetime import date, timedelta
+
+borrowed = date(2026, 9, 1)
+due = borrowed + timedelta(days=30)
+print(&quot;Loan due:&quot;, due)
+
+today = date(2026, 9, 28)
+left = (due - today).days
+print(&quot;Days left:&quot;, left)
+
+birthday = date(2000, 6, 15)
+age_days = (today - birthday).days
+print(&quot;Age in years (approx):&quot;, age_days // 365)
+
+# every Monday for the next 4 weeks
+start = today + timedelta(days=(7 - today.weekday()) % 7)
+for i in range(4):
+    print((start + timedelta(weeks=i)).strftime(&quot;%a %d %b&quot;))</code></pre></figure>
+<h2>The math module</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import math
+
+print(math.sqrt(144), math.pi)
+print(math.ceil(4.1), math.floor(4.9))
+print(math.pow(2, 10), 2 ** 10)
+print(round(math.pi, 3))
+
+# area of a round water tank base with radius 1.5 m
+r = 1.5
+print(f&quot;Area: {math.pi * r ** 2:.2f} m²&quot;)
+
+# how many 50-seat buses for 173 students?
+print(&quot;Buses:&quot;, math.ceil(173 / 50))</code></pre></figure>
+<h2>random: games, samples and simulations</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import random
+
+print(random.randint(1, 6))                     # dice: 1 to 6
+print(random.random())                          # 0.0 to 1.0
+print(random.choice([&quot;Heads&quot;, &quot;Tails&quot;]))
+names = [&quot;Amina&quot;, &quot;Brian&quot;, &quot;Chebet&quot;, &quot;Dennis&quot;, &quot;Esther&quot;]
+print(random.sample(names, 2))                  # 2 different winners
+random.shuffle(names)
+print(names)
+
+random.seed(42)                                 # same &quot;random&quot; results every run (for testing)
+print(random.randint(1, 100), random.randint(1, 100))</code></pre></figure>
+<blockquote><p><code>random</code> is fine for games. For passwords, PINs and security codes use the <code>secrets</code> module, which is designed to be unpredictable:</p></blockquote>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import secrets, string
+otp = &quot;&quot;.join(secrets.choice(string.digits) for _ in range(6))
+print(&quot;Your code:&quot;, otp)
+print(secrets.token_urlsafe(16))</code></pre></figure>
+<h2>statistics</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import statistics as st
+
+marks = [45, 78, 92, 60, 78, 55]
+print(&quot;Mean:&quot;, round(st.mean(marks), 1))
+print(&quot;Median:&quot;, st.median(marks))
+print(&quot;Mode:&quot;, st.mode(marks))
+print(&quot;Std dev:&quot;, round(st.stdev(marks), 1))</code></pre></figure>
+<h2>Mini project: a loan schedule</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">from datetime import date, timedelta
+
+principal = 30000
+monthly_rate = 0.015            # 1.5% a month
+months = 4
+payment = round(principal * (1 + monthly_rate * months) / months, 2)
+
+due = date(2026, 10, 5)
+print(f&quot;{&#x27;#&#x27;:&lt;3}{&#x27;Due date&#x27;:&lt;14}{&#x27;Payment&#x27;:&gt;10}&quot;)
+for n in range(1, months + 1):
+    print(f&quot;{n:&lt;3}{due.strftime(&#x27;%d %b %Y&#x27;):&lt;14}{payment:&gt;10,.2f}&quot;)
+    due += timedelta(days=30)
+print(f&quot;Total repaid: KSh {payment * months:,.2f}&quot;)</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which datetime method formats a date as text?</p><details><summary>Show answer</summary><p>strftime</p></details></li><li><p>Which class adds or subtracts days from a date?</p><details><summary>Show answer</summary><p>timedelta</p></details></li><li><p>What does math.ceil(4.1) give?</p><details><summary>Show answer</summary><p>5</p></details></li><li><p>Which random function picks a whole number between two values?</p><details><summary>Show answer</summary><p>randint</p></details></li><li><p>Which module should you use for security codes and passwords?</p><details><summary>Show answer</summary><p>secrets</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Use <code>timedelta</code> to print the date 30 days after <code>date(2026, 9, 1)</code>. The output should be <strong>2026-10-01</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=dates-random-math#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 16 of 19 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/modules-stdlib/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Modules: random, math, datetime</a><a class="btn btn-solid btn-sm" href="/learn/python/classes-oop/">Classes and objects <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

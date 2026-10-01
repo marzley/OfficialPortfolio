@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sorting algorithms | Algorithms &amp; problem solving</title>
+    <meta name="description" content="Sorting puts items in order: prices from cheapest, names A–Z, scores highest first." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/algorithms/sorting/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Sorting algorithms | Algorithms &amp; problem solving" />
+    <meta property="og:description" content="Sorting puts items in order: prices from cheapest, names A–Z, scores highest first." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/algorithms/sorting/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Sorting algorithms | Algorithms &amp; problem solving" />
+    <meta name="twitter:description" content="Sorting puts items in order: prices from cheapest, names A–Z, scores highest first." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/sorting/#lesson","name":"Sorting algorithms","description":"Sorting puts items in order: prices from cheapest, names A–Z, scores highest first.","url":"https://marzleytechsolutions.co.ke/learn/algorithms/sorting/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/#course","name":"Algorithms & problem solving","url":"https://marzleytechsolutions.co.ke/learn/algorithms/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Algorithms & problem solving","item":"https://marzleytechsolutions.co.ke/learn/algorithms/"},{"@type":"ListItem","position":4,"name":"Sorting algorithms","item":"https://marzleytechsolutions.co.ke/learn/algorithms/sorting/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> / <span>Sorting algorithms</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=sorting"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Sorting algorithms</h1>
+<p>Sorting puts items in order: prices from cheapest, names A–Z, scores highest first.</p>
+<h2>Bubble sort (easy to understand, slow)</h2>
+<p>Compare neighbours and swap them if they're in the wrong order. Repeat until nothing swaps. The biggest values "bubble" to the end.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def bubble_sort(items):
+    items = items[:]            # work on a copy
+    n = len(items)
+    for i in range(n):
+        swapped = False
+        for j in range(n - 1 - i):
+            if items[j] &gt; items[j + 1]:
+                items[j], items[j + 1] = items[j + 1], items[j]
+                swapped = True
+        if not swapped:
+            break
+    return items
+
+print(bubble_sort([29, 3, 72, 15, 8, 41]))</code></pre></figure>
+<h2>Selection and insertion sort</h2>
+<ul><li><strong>Selection sort</strong>: find the smallest item, put it first; find the next smallest, put it second; and so on.</li><li><strong>Insertion sort</strong>: like sorting playing cards in your hand: take each item and insert it into the right place among the ones already sorted. Fast on nearly-sorted data.</li></ul>
+<h2>Merge sort (fast)</h2>
+<p>Split the list in half, sort each half (by splitting again), then <strong>merge</strong> the two sorted halves. This "divide and conquer" approach is much faster on big lists.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def merge_sort(items):
+    if len(items) &lt;= 1:
+        return items
+    mid = len(items) // 2
+    left, right = merge_sort(items[:mid]), merge_sort(items[mid:])
+    merged, i, j = [], 0, 0
+    while i &lt; len(left) and j &lt; len(right):
+        if left[i] &lt;= right[j]:
+            merged.append(left[i]); i += 1
+        else:
+            merged.append(right[j]); j += 1
+    return merged + left[i:] + right[j:]
+
+print(merge_sort([29, 3, 72, 15, 8, 41, 0, 56]))</code></pre></figure>
+<p>In real Python code, just use <code>sorted(items)</code> or <code>items.sort()</code>: they use <strong>Timsort</strong>, a very fast hybrid of merge and insertion sort.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which sort repeatedly swaps neighbouring items that are in the wrong order?</p><details><summary>Show answer</summary><p>bubble sort</p></details></li><li><p>Merge sort uses which strategy? (three words)</p><details><summary>Show answer</summary><p>divide and conquer</p></details></li><li><p>What is the name of the algorithm Python's sorted() uses?</p><details><summary>Show answer</summary><p>Timsort</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Use <code>sorted()</code> with <code>reverse=True</code> to print the list <code>[40, 85, 12, 67]</code> from highest to lowest.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=sorting#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 4 of 11 in <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> · <a href="/learn/?book=algorithms">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/algorithms/searching/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Searching: linear and binary search</a><a class="btn btn-solid btn-sm" href="/learn/algorithms/big-o/">Big O: how fast is your code? <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

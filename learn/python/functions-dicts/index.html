@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Functions and dictionaries | Python</title>
+    <meta name="description" content="Free Python lesson: Functions and dictionaries." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/python/functions-dicts/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Functions and dictionaries | Python" />
+    <meta property="og:description" content="Free Python lesson: Functions and dictionaries." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/python/functions-dicts/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Functions and dictionaries | Python" />
+    <meta name="twitter:description" content="Free Python lesson: Functions and dictionaries." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/python/functions-dicts/#lesson","name":"Functions and dictionaries","description":"Free Python lesson: Functions and dictionaries.","url":"https://marzleytechsolutions.co.ke/learn/python/functions-dicts/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/python/#course","name":"Python","url":"https://marzleytechsolutions.co.ke/learn/python/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Python","item":"https://marzleytechsolutions.co.ke/learn/python/"},{"@type":"ListItem","position":4,"name":"Functions and dictionaries","item":"https://marzleytechsolutions.co.ke/learn/python/functions-dicts/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/python/">Python</a> / <span>Functions and dictionaries</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=functions-dicts"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Functions and dictionaries</h1>
+<h2>Functions</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def vat(amount):
+    return amount * 0.16
+
+def with_vat(amount):
+    return amount + vat(amount)
+
+print(vat(1000))
+print(with_vat(1000))
+
+def greet(name, greeting=&quot;Habari&quot;):
+    return f&quot;{greeting}, {name}!&quot;
+
+print(greet(&quot;Njeri&quot;))
+print(greet(&quot;Otieno&quot;, &quot;Hello&quot;))</code></pre></figure>
+<h2>Dictionaries</h2>
+<p>A dictionary stores <code>key: value</code> pairs.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">product = {&quot;name&quot;: &quot;Mouse&quot;, &quot;price&quot;: 1200, &quot;stock&quot;: 15}
+print(product[&quot;name&quot;])
+product[&quot;price&quot;] = 1000
+print(product)
+
+cart = [
+    {&quot;name&quot;: &quot;Mouse&quot;, &quot;price&quot;: 1200, &quot;qty&quot;: 2},
+    {&quot;name&quot;: &quot;Charger&quot;, &quot;price&quot;: 800, &quot;qty&quot;: 1},
+]
+total = sum(item[&quot;price&quot;] * item[&quot;qty&quot;] for item in cart)
+print(&quot;Cart total:&quot;, total)
+
+for key, value in product.items():
+    print(key, &quot;=&quot;, value)</code></pre></figure></div><section class="static-exercise"><h2>Exercise</h2><p>Write a function <code>square(n)</code> that returns <code>n * n</code>, then print <code>square(9)</code>. The output should be <strong>81</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=functions-dicts#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 10 of 19 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/tuples-sets-comprehensions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Tuples, sets and comprehensions</a><a class="btn btn-solid btn-sm" href="/learn/python/functions-in-depth/">Functions in depth: defaults, *args, **kwargs and lambda <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

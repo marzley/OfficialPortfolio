@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CASE, NULL values and HAVING | SQL</title>
+    <meta name="description" content="Three tools that make reports smarter: CASE labels data, NULL handling avoids silent mistakes, and HAVING filters groups." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/sql/case-null-having/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="CASE, NULL values and HAVING | SQL" />
+    <meta property="og:description" content="Three tools that make reports smarter: CASE labels data, NULL handling avoids silent mistakes, and HAVING filters groups." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/sql/case-null-having/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="CASE, NULL values and HAVING | SQL" />
+    <meta name="twitter:description" content="Three tools that make reports smarter: CASE labels data, NULL handling avoids silent mistakes, and HAVING filters groups." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/sql/case-null-having/#lesson","name":"CASE, NULL values and HAVING","description":"Three tools that make reports smarter: CASE labels data, NULL handling avoids silent mistakes, and HAVING filters groups.","url":"https://marzleytechsolutions.co.ke/learn/sql/case-null-having/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/sql/#course","name":"SQL","url":"https://marzleytechsolutions.co.ke/learn/sql/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"SQL","item":"https://marzleytechsolutions.co.ke/learn/sql/"},{"@type":"ListItem","position":4,"name":"CASE, NULL values and HAVING","item":"https://marzleytechsolutions.co.ke/learn/sql/case-null-having/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/sql/">SQL</a> / <span>CASE, NULL values and HAVING</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=case-null-having"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>CASE, NULL values and HAVING</h1>
+<p>Three tools that make reports smarter: <strong>CASE</strong> labels data, <strong>NULL handling</strong> avoids silent mistakes, and <strong>HAVING</strong> filters groups.</p>
+<h2>CASE: if/else inside a query</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Name, Price,
+  CASE
+    WHEN Price &gt;= 5000 THEN &#x27;Premium&#x27;
+    WHEN Price &gt;= 1500 THEN &#x27;Mid-range&#x27;
+    ELSE &#x27;Budget&#x27;
+  END AS PriceBand
+FROM Products
+ORDER BY Price DESC;</code></pre></figure>
+<p><code>CASE</code> checks each <code>WHEN</code> in order and uses the first that matches. <code>AS</code> gives the new column a name.</p>
+<p>CASE also works inside totals, for example counting by condition:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT
+  COUNT(*) AS AllProducts,
+  SUM(CASE WHEN Price &lt; 1500 THEN 1 ELSE 0 END) AS Budget,
+  SUM(CASE WHEN Category = &#x27;Storage&#x27; THEN 1 ELSE 0 END) AS StorageItems
+FROM Products;</code></pre></figure>
+<h2>NULL: "unknown" or "missing"</h2>
+<p><code>NULL</code> is not zero and not an empty string. It means <strong>no value</strong>. Let's add a customer with no phone and a product with no price:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">INSERT INTO Customers (CustomerID, Name, City, Phone) VALUES (8, &#x27;Baraka Mutua&#x27;, &#x27;Machakos&#x27;, NULL);
+INSERT INTO Products VALUES (7, &#x27;Keyboard&#x27;, &#x27;Accessories&#x27;, NULL);
+
+SELECT Name, Phone FROM Customers WHERE Phone IS NULL;
+SELECT Name, COALESCE(Phone, &#x27;no phone&#x27;) AS Contact FROM Customers;
+SELECT COUNT(*) AS AllRows, COUNT(Price) AS WithPrice, AVG(Price) AS AvgPrice FROM Products;</code></pre></figure>
+<p>Rules to remember:</p>
+<div class="static-table"><table><thead><tr><th>Rule</th><th>Example</th></tr></thead><tbody><tr><td>Test with <code>IS NULL</code> / <code>IS NOT NULL</code>, never <code>= NULL</code></td><td><code>WHERE Phone IS NULL</code></td></tr><tr><td>Any maths with NULL gives NULL</td><td><code>NULL + 5</code> → <code>NULL</code></td></tr><tr><td><code>COUNT(*)</code> counts rows; <code>COUNT(col)</code> skips NULLs</td><td>see above</td></tr><tr><td><code>SUM</code>, <code>AVG</code>, <code>MIN</code>, <code>MAX</code> ignore NULLs</td><td></td></tr><tr><td><code>COALESCE(a, b, ...)</code> returns the first non-NULL</td><td><code>COALESCE(Phone, &#x27;none&#x27;)</code></td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT NULL = NULL AS EqualsTest, NULL IS NULL AS IsTest, 5 + NULL AS MathsTest;</code></pre></figure>
+<h2>GROUP BY recap and HAVING</h2>
+<p><code>WHERE</code> filters <strong>rows before</strong> grouping. <code>HAVING</code> filters <strong>groups after</strong> grouping.</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">-- Total quantity ordered per customer, only customers who ordered 2 or more items
+SELECT c.Name, SUM(o.Quantity) AS Items
+FROM Orders o
+JOIN Customers c ON c.CustomerID = o.CustomerID
+GROUP BY c.Name
+HAVING SUM(o.Quantity) &gt;= 2
+ORDER BY Items DESC;</code></pre></figure>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">-- Categories with more than one product, and their average price
+SELECT Category, COUNT(*) AS Products, ROUND(AVG(Price)) AS AvgPrice
+FROM Products
+WHERE Price IS NOT NULL
+GROUP BY Category
+HAVING COUNT(*) &gt; 1;</code></pre></figure>
+<h2>The order SQL runs a query</h2>
+<p>You write clauses in this order, but the database logically runs them in a different one. Knowing it explains why you can't use a column alias in <code>WHERE</code>:</p>
+<div class="static-table"><table><thead><tr><th>Written</th><th>Runs</th></tr></thead><tbody><tr><td>1. SELECT</td><td>5</td></tr><tr><td>2. FROM / JOIN</td><td>1</td></tr><tr><td>3. WHERE</td><td>2</td></tr><tr><td>4. GROUP BY</td><td>3</td></tr><tr><td>5. HAVING</td><td>4</td></tr><tr><td>6. ORDER BY</td><td>6</td></tr><tr><td>7. LIMIT</td><td>7</td></tr></tbody></table></div>
+<h2>Revenue report with everything</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT p.Category,
+       SUM(o.Quantity * p.Price) AS Revenue,
+       CASE WHEN SUM(o.Quantity * p.Price) &gt;= 5000 THEN &#x27;Top seller&#x27; ELSE &#x27;Grow this&#x27; END AS Note
+FROM Orders o
+JOIN Products p ON p.ProductID = o.ProductID
+GROUP BY p.Category
+HAVING Revenue &gt; 0
+ORDER BY Revenue DESC;</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>How do you test for a missing value: = NULL or IS NULL?</p><details><summary>Show answer</summary><p>IS NULL</p></details></li><li><p>Which function returns the first value that is not NULL?</p><details><summary>Show answer</summary><p>COALESCE</p></details></li><li><p>Which clause filters groups after GROUP BY?</p><details><summary>Show answer</summary><p>HAVING</p></details></li><li><p>Which clause filters rows before grouping?</p><details><summary>Show answer</summary><p>WHERE</p></details></li><li><p>What is 5 + NULL?</p><details><summary>Show answer</summary><p>NULL</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>List each <strong>Category</strong> with the number of products in it, using <code>GROUP BY</code> and <code>COUNT(*)</code>.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=case-null-having#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 5 of 14 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/functions-group/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Functions and GROUP BY</a><a class="btn btn-solid btn-sm" href="/learn/sql/text-date-functions/">Text, number and date functions <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

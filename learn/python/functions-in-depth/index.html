@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Functions in depth: defaults, *args, **kwargs and lambda</title>
+    <meta name="description" content="Functions let you write something once and reuse it everywhere. This lesson covers the features that make functions flexible and easy to use." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/python/functions-in-depth/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Functions in depth: defaults, *args, **kwargs and lambda" />
+    <meta property="og:description" content="Functions let you write something once and reuse it everywhere. This lesson covers the features that make functions flexible and easy to use." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/python/functions-in-depth/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Functions in depth: defaults, *args, **kwargs and lambda" />
+    <meta name="twitter:description" content="Functions let you write something once and reuse it everywhere. This lesson covers the features that make functions flexible and easy to use." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/python/functions-in-depth/#lesson","name":"Functions in depth: defaults, *args, **kwargs and lambda","description":"Functions let you write something once and reuse it everywhere. This lesson covers the features that make functions flexible and easy to use.","url":"https://marzleytechsolutions.co.ke/learn/python/functions-in-depth/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/python/#course","name":"Python","url":"https://marzleytechsolutions.co.ke/learn/python/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Python","item":"https://marzleytechsolutions.co.ke/learn/python/"},{"@type":"ListItem","position":4,"name":"Functions in depth: defaults, *args, **kwargs and lambda","item":"https://marzleytechsolutions.co.ke/learn/python/functions-in-depth/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/python/">Python</a> / <span>Functions in depth: defaults, *args, **kwargs and lambda</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=functions-in-depth"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Functions in depth: defaults, <em>args, </em>*kwargs and lambda</h1>
+<p>Functions let you write something once and reuse it everywhere. This lesson covers the features that make functions flexible and easy to use.</p>
+<h2>Parameters vs arguments, and return</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def vat(amount, rate):          # amount and rate are parameters
+    &quot;&quot;&quot;Return the VAT on an amount. rate is a percentage.&quot;&quot;&quot;
+    return amount * rate / 100
+
+tax = vat(1000, 16)              # 1000 and 16 are arguments
+print(tax)
+print(vat.__doc__)               # the docstring documents the function</code></pre></figure>
+<p>A function without <code>return</code> gives back <code>None</code>. <code>return</code> also ends the function immediately.</p>
+<h2>Default values</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def greet(name, greeting=&quot;Habari&quot;):
+    return f&quot;{greeting}, {name}!&quot;
+
+print(greet(&quot;Amina&quot;))
+print(greet(&quot;John&quot;, &quot;Hello&quot;))</code></pre></figure>
+<blockquote><p>Never use a list or dict as a default (<code>def f(items=[])</code>): it's shared between calls. Use <code>items=None</code> and create the list inside.</p></blockquote>
+<h2>Keyword arguments</h2>
+<p>Name the arguments when calling, in any order. It makes calls much clearer:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def make_order(item, qty=1, delivery=False, town=&quot;Nairobi&quot;):
+    fee = 200 if delivery else 0
+    return f&quot;{qty} x {item} to {town}, delivery fee KSh {fee}&quot;
+
+print(make_order(&quot;Cake&quot;, 2))
+print(make_order(&quot;Cake&quot;, delivery=True, town=&quot;Thika&quot;))
+print(make_order(item=&quot;Bread&quot;, town=&quot;Kiambu&quot;, qty=5))</code></pre></figure>
+<h2>*args: any number of positional arguments</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def total(*amounts):
+    print(&quot;Received:&quot;, amounts)          # a tuple
+    return sum(amounts)
+
+print(total(100, 250, 75))
+print(total())
+
+prices = [10, 20, 30]
+print(total(*prices))                    # * unpacks a list into arguments</code></pre></figure>
+<h2>**kwargs: any number of keyword arguments</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def profile(name, **details):
+    print(&quot;Name:&quot;, name)
+    for key, value in details.items():
+        print(f&quot;  {key}: {value}&quot;)
+
+profile(&quot;Wanjiku&quot;, town=&quot;Nyeri&quot;, age=23, course=&quot;ICT&quot;)
+
+info = {&quot;town&quot;: &quot;Kitui&quot;, &quot;age&quot;: 30}
+profile(&quot;Mutua&quot;, **info)                 # ** unpacks a dict</code></pre></figure>
+<p>Order in a definition: normal parameters, <code>*args</code>, keyword parameters with defaults, <code>**kwargs</code>.</p>
+<h2>Returning several values</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def stats(numbers):
+    return min(numbers), max(numbers), sum(numbers) / len(numbers)
+
+lo, hi, avg = stats([45, 78, 92, 60])
+print(lo, hi, round(avg, 1))</code></pre></figure>
+<h2>lambda: small nameless functions</h2>
+<p>A <code>lambda</code> is a one-line function, mostly used where a function is needed as an argument:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">square = lambda n: n * n
+print(square(9))
+
+students = [(&quot;Amina&quot;, 78), (&quot;Brian&quot;, 92), (&quot;Chebet&quot;, 60)]
+print(sorted(students, key=lambda s: s[1]))                 # sort by mark
+print(list(map(lambda s: s[0].upper(), students)))
+print(list(filter(lambda s: s[1] &gt;= 70, students)))</code></pre></figure>
+<h2>Scope: local and global</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">counter = 0            # global
+
+def add_one():
+    global counter     # needed only to CHANGE a global
+    counter += 1
+
+def show():
+    message = &quot;inside&quot; # local: only exists in this function
+    print(message, counter)
+
+add_one(); add_one()
+show()</code></pre></figure>
+<p>Prefer passing values in and returning results out, instead of changing globals. Such functions are easier to test and reuse.</p>
+<h2>Type hints (optional but helpful)</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def loan_repayment(principal: float, rate: float, months: int) -&gt; float:
+    &quot;&quot;&quot;Monthly repayment for a simple-interest loan.&quot;&quot;&quot;
+    total = principal * (1 + rate / 100 * months / 12)
+    return round(total / months, 2)
+
+print(loan_repayment(50000, 12, 6))</code></pre></figure>
+<p>Hints don't change how the code runs, but editors use them to catch mistakes and suggest code.</p>
+<h2>Recursion (a function calling itself)</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def countdown(n):
+    if n == 0:                 # base case: stop
+        print(&quot;Liftoff!&quot;)
+        return
+    print(n)
+    countdown(n - 1)           # recursive case
+
+countdown(3)</code></pre></figure>
+<p>See the Algorithms tutorial for more on recursion.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does a function return if it has no return statement?</p><details><summary>Show answer</summary><p>None</p></details></li><li><p>Which parameter form collects any number of positional arguments?</p><details><summary>Show answer</summary><p>*args</p></details></li><li><p>Which parameter form collects any number of keyword arguments?</p><details><summary>Show answer</summary><p>**kwargs</p></details></li><li><p>Which keyword makes a small one-line nameless function?</p><details><summary>Show answer</summary><p>lambda</p></details></li><li><p>What is the triple-quoted text right under def called?</p><details><summary>Show answer</summary><p>docstring</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Write a function <code>total(*amounts)</code> that returns the sum of all its arguments, and print <code>total(100, 250, 75)</code>: <strong>425</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=functions-in-depth#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 11 of 19 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/functions-dicts/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Functions and dictionaries</a><a class="btn btn-solid btn-sm" href="/learn/python/dictionaries-in-depth/">Dictionaries in depth: nested data and counting <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

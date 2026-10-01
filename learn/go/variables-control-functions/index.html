@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Variables, control flow and functions in Go | Go (Golang)</title>
+    <meta name="description" content="Go (Golang) was created at Google for building fast, reliable servers and tools. Docker, Kubernetes and many payment and fintech back-ends are written…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/go/variables-control-functions/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Variables, control flow and functions in Go | Go (Golang)" />
+    <meta property="og:description" content="Go (Golang) was created at Google for building fast, reliable servers and tools. Docker, Kubernetes and many payment and fintech back-ends are written…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/go/variables-control-functions/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Variables, control flow and functions in Go | Go (Golang)" />
+    <meta name="twitter:description" content="Go (Golang) was created at Google for building fast, reliable servers and tools. Docker, Kubernetes and many payment and fintech back-ends are written…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/go/variables-control-functions/#lesson","name":"Variables, control flow and functions in Go","description":"Go (Golang) was created at Google for building fast, reliable servers and tools. Docker, Kubernetes and many payment and fintech back-ends are written…","url":"https://marzleytechsolutions.co.ke/learn/go/variables-control-functions/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/go/#course","name":"Go (Golang)","url":"https://marzleytechsolutions.co.ke/learn/go/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Go (Golang)","item":"https://marzleytechsolutions.co.ke/learn/go/"},{"@type":"ListItem","position":4,"name":"Variables, control flow and functions in Go","item":"https://marzleytechsolutions.co.ke/learn/go/variables-control-functions/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/go/">Go (Golang)</a> / <span>Variables, control flow and functions in Go</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=go&amp;lesson=variables-control-functions"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Variables, control flow and functions in Go</h1>
+<p>Go (Golang) was created at Google for building fast, reliable servers and tools. Docker, Kubernetes and many payment and fintech back-ends are written in Go. It's deliberately small: few keywords, one way to loop, and a compiler that catches lots of mistakes.</p>
+<blockquote><p>Examples run on Compiler Explorer (online), so they need internet. Every program starts with <code>package main</code> and a <code>func main()</code>.</p></blockquote>
+<h2>Variables</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func main() {
+	var school string = &quot;Moi Forces Academy&quot;
+	var students int = 45
+	fee := 12500.50            // := declares and infers the type (inside functions)
+	paid := true
+	const vat = 0.16
+
+	fmt.Println(school, &quot;has&quot;, students, &quot;students&quot;)
+	fmt.Printf(&quot;Fee: KSh %.2f, paid: %t, VAT: %.0f%%\n&quot;, fee, paid, vat*100)
+
+	var count int              // zero value: 0
+	var name string            // zero value: &quot;&quot;
+	fmt.Printf(&quot;count=%d name=%q\n&quot;, count, name)
+}</code></pre></figure>
+<ul><li><code>:=</code> is the short form you'll use most.</li><li>Every type has a <strong>zero value</strong> (<code>0</code>, <code>&quot;&quot;</code>, <code>false</code>, <code>nil</code>): no uninitialised garbage.</li><li>Go <strong>refuses to compile</strong> if you declare a variable or import a package and don't use it. Annoying at first, great for clean code.</li></ul>
+<div class="static-table"><table><thead><tr><th>Type</th><th>Example</th></tr></thead><tbody><tr><td><code>int</code>, <code>int64</code></td><td><code>qty := 3</code></td></tr><tr><td><code>float64</code></td><td><code>price := 180.5</code></td></tr><tr><td><code>string</code></td><td><code>town := &quot;Eldoret&quot;</code></td></tr><tr><td><code>bool</code></td><td><code>ok := true</code></td></tr><tr><td><code>rune</code></td><td><code>&#x27;K&#x27;</code> (a character)</td></tr></tbody></table></div>
+<h2>Conversions are always explicit</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;strconv&quot;
+)
+
+func main() {
+	qty := 3
+	price := 180.5
+	total := float64(qty) * price          // must convert int to float64 yourself
+	fmt.Println(total)
+
+	n, err := strconv.Atoi(&quot;250&quot;)          // string -&gt; int, with an error value
+	if err != nil {
+		fmt.Println(&quot;not a number&quot;)
+	} else {
+		fmt.Println(n * 2)
+	}
+	s := strconv.Itoa(2026)                // int -&gt; string
+	fmt.Println(&quot;Year &quot; + s)
+}</code></pre></figure>
+<h2>if and switch</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func grade(mark int) string {
+	switch {
+	case mark &gt;= 80:
+		return &quot;A&quot;
+	case mark &gt;= 65:
+		return &quot;B&quot;
+	case mark &gt;= 50:
+		return &quot;C&quot;
+	default:
+		return &quot;Fail&quot;
+	}
+}
+
+func main() {
+	for _, m := range []int{92, 67, 55, 30} {
+		fmt.Println(m, grade(m))
+	}
+
+	if balance := 1200; balance &gt;= 1000 {  // a short statement before the condition
+		fmt.Println(&quot;Enough for the order&quot;)
+	}
+
+	day := &quot;SAT&quot;
+	switch day {
+	case &quot;SAT&quot;, &quot;SUN&quot;:
+		fmt.Println(&quot;Weekend&quot;)
+	default:
+		fmt.Println(&quot;Weekday&quot;)
+	}
+}</code></pre></figure>
+<p>No brackets around conditions, braces always required, and <code>switch</code> cases don't fall through (no <code>break</code> needed).</p>
+<h2>for: Go's only loop</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func main() {
+	for i := 1; i &lt;= 3; i++ {           // classic
+		fmt.Println(&quot;Round&quot;, i)
+	}
+
+	savings, week := 0, 0
+	for savings &lt; 10000 {               // like while
+		savings += 1500
+		week++
+	}
+	fmt.Println(&quot;Week&quot;, week)
+
+	towns := []string{&quot;Nyeri&quot;, &quot;Meru&quot;, &quot;Embu&quot;}
+	for i, t := range towns {           // range over a slice
+		fmt.Println(i, t)
+	}
+}</code></pre></figure>
+<h2>Functions, multiple returns and errors</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;errors&quot;
+	&quot;fmt&quot;
+)
+
+func withVat(amount, rate float64) float64 {
+	return amount * (1 + rate/100)
+}
+
+func divide(total float64, people int) (float64, error) {   // returns a value AND an error
+	if people == 0 {
+		return 0, errors.New(&quot;cannot split between zero people&quot;)
+	}
+	return total / float64(people), nil
+}
+
+func main() {
+	fmt.Printf(&quot;%.2f\n&quot;, withVat(1000, 16))
+
+	share, err := divide(3000, 4)
+	if err != nil {
+		fmt.Println(&quot;Error:&quot;, err)
+		return
+	}
+	fmt.Printf(&quot;Each pays KSh %.2f\n&quot;, share)
+
+	if _, err := divide(3000, 0); err != nil {
+		fmt.Println(&quot;Error:&quot;, err)
+	}
+}</code></pre></figure>
+<p>Go has no exceptions for normal errors: functions <strong>return an error</strong> as the last value, and you check <code>if err != nil</code>. It's verbose, but you always see where things can fail.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which operator declares a variable and infers its type inside a function?</p><details><summary>Show answer</summary><p>:=</p></details></li><li><p>How many loop keywords does Go have?</p><details><summary>Show answer</summary><p>1</p></details></li><li><p>What is the zero value of an int in Go?</p><details><summary>Show answer</summary><p>0</p></details></li><li><p>What value means "no error" in Go?</p><details><summary>Show answer</summary><p>nil</p></details></li><li><p>Will Go compile a program with an unused variable? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 6 in <a href="/learn/go/">Go (Golang)</a> · <a href="/learn/?book=go">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/go/introduction/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Go introduction</a><a class="btn btn-solid btn-sm" href="/learn/go/slices-maps/">Slices, maps and strings in Go <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

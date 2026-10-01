@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Level 5: Chat with your documents (RAG), tools and AI agents</title>
+    <meta name="description" content="Two ideas turn a general chatbot into a genuinely useful business system: retrieval-augmented generation (RAG) , which lets AI answer from your…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/artificial-intelligence/rag-and-agents/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Level 5: Chat with your documents (RAG), tools and AI agents" />
+    <meta property="og:description" content="Two ideas turn a general chatbot into a genuinely useful business system: retrieval-augmented generation (RAG) , which lets AI answer from your…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/artificial-intelligence/rag-and-agents/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Level 5: Chat with your documents (RAG), tools and AI agents" />
+    <meta name="twitter:description" content="Two ideas turn a general chatbot into a genuinely useful business system: retrieval-augmented generation (RAG) , which lets AI answer from your…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/rag-and-agents/#lesson","name":"Level 5: Chat with your documents (RAG), tools and AI agents","description":"Two ideas turn a general chatbot into a genuinely useful business system: retrieval-augmented generation (RAG) , which lets AI answer from your…","url":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/rag-and-agents/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/#course","name":"Artificial intelligence (AI): from zero to pro","url":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Artificial intelligence (AI): from zero to pro","item":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/"},{"@type":"ListItem","position":4,"name":"Level 5: Chat with your documents (RAG), tools and AI agents","item":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/rag-and-agents/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/artificial-intelligence/">Artificial intelligence (AI): from zero to pro</a> / <span>Level 5: Chat with your documents (RAG), tools and AI agents</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=artificial-intelligence&amp;lesson=rag-and-agents"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Level 5: Chat with your documents (RAG), tools and AI agents</h1>
+<p>Two ideas turn a general chatbot into a genuinely useful business system: <strong>retrieval-augmented generation (RAG)</strong>, which lets AI answer from <strong>your</strong> documents, and <strong>tools/agents</strong>, which let AI <strong>take actions</strong> like checking an order or booking an appointment.</p>
+<h2>RAG: answers grounded in your documents</h2>
+<p>A general model doesn't know your school's fee structure, your SACCO's loan policy or your clinic's opening hours, and it may hallucinate if asked. RAG fixes that:</p>
+<ol><li><strong>Split</strong> your documents into small chunks (paragraphs).</li><li><strong>Index</strong> them: usually by turning each chunk into an <strong>embedding</strong> (numbers that represent meaning).</li><li>When a question comes in, <strong>retrieve</strong> the most relevant chunks.</li><li><strong>Send</strong> the question <strong>plus those chunks</strong> to the AI with the instruction "answer using only this information".</li><li>The AI answers, ideally <strong>citing</strong> which document it used.</li></ol>
+<h3>A mini RAG system you can run</h3>
+<p>This version uses simple word overlap instead of real embeddings, so it runs anywhere, but the steps are exactly the ones real systems use.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import math
+import re
+from collections import Counter
+
+documents = {
+    &quot;fees&quot;: &quot;School fees are KSh 18,000 per term, payable by M-Pesa Paybill 400200, account: student number.&quot;,
+    &quot;intake&quot;: &quot;We admit new students in January, May and September. Applications close two weeks before each intake.&quot;,
+    &quot;transport&quot;: &quot;School buses serve Thika town, Ruiru and Juja. Transport costs KSh 6,000 per term.&quot;,
+    &quot;uniform&quot;: &quot;Uniforms are sold at the school shop. A full set costs KSh 4,500.&quot;,
+}
+
+STOP = {&quot;the&quot;, &quot;a&quot;, &quot;is&quot;, &quot;are&quot;, &quot;and&quot;, &quot;of&quot;, &quot;per&quot;, &quot;do&quot;, &quot;you&quot;, &quot;what&quot;, &quot;how&quot;, &quot;much&quot;, &quot;in&quot;, &quot;to&quot;, &quot;we&quot;, &quot;by&quot;}
+
+def tokens(text):
+    return [w for w in re.findall(r&quot;[a-z0-9]+&quot;, text.lower()) if w not in STOP]
+
+def similarity(q, d):
+    qa, da = Counter(tokens(q)), Counter(tokens(d))
+    dot = sum(qa[w] * da[w] for w in qa)
+    norm = math.sqrt(sum(v * v for v in qa.values())) * math.sqrt(sum(v * v for v in da.values()))
+    return dot / norm if norm else 0.0
+
+def retrieve(question, k=2):
+    ranked = sorted(documents.items(), key=lambda kv: similarity(question, kv[1]), reverse=True)
+    return [(name, text) for name, text in ranked[:k] if similarity(question, text) &gt; 0]
+
+def build_prompt(question):
+    chunks = retrieve(question)
+    context = &quot;\n&quot;.join(f&quot;[{name}] {text}&quot; for name, text in chunks) or &quot;(no relevant documents found)&quot;
+    return (&quot;Answer the parent&#x27;s question using ONLY the information below. &quot;
+            &quot;If the answer is not there, say you are not sure.\n\n&quot;
+            f&quot;Information:\n{context}\n\nQuestion: {question}&quot;)
+
+print(build_prompt(&quot;How much is transport per term?&quot;))
+print(&quot;=&quot; * 50)
+print(build_prompt(&quot;When is the next intake?&quot;))</code></pre></figure>
+<p>In production, the final prompt is sent to an AI API (previous lesson), and the retrieval step uses real embeddings stored in a <strong>vector database</strong> (for example pgvector in PostgreSQL, or a hosted vector store).</p>
+<h3>Why RAG beats "just ask the AI"</h3>
+<div class="static-table"><table><thead><tr><th>Without RAG</th><th>With RAG</th></tr></thead><tbody><tr><td>May invent fees and dates</td><td>Answers from your real documents</td></tr><tr><td>Doesn't know your latest updates</td><td>Update the documents and answers change instantly</td></tr><tr><td>Can't show where an answer came from</td><td>Can cite the source document</td></tr></tbody></table></div>
+<h2>Tools: letting AI take actions</h2>
+<p>Modern AI APIs support <strong>tool use</strong> (also called function calling): you describe functions your system has (for example <code>check_order_status(order_id)</code> or <code>book_appointment(date, time)</code>), and the model can <strong>ask</strong> your code to run them. Your code runs the function and sends the result back; the model then writes the reply.</p>
+<figure class="static-code"><pre><code>User: &quot;Has order 1042 been delivered?&quot;
+AI → asks to call: check_order_status(order_id=&quot;1042&quot;)
+Your code → looks it up in your database → &quot;Out for delivery, rider: Otieno, ETA 3pm&quot;
+AI → &quot;Your order 1042 is on its way with Otieno and should arrive around 3 pm.&quot;</code></pre></figure>
+<p>The model never touches your database directly: <strong>your code decides what each tool is allowed to do.</strong></p>
+<p>This simulation shows the loop, with a pretend "AI" choosing the tool from keywords:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import re
+
+orders = {&quot;1042&quot;: &quot;Out for delivery, rider Otieno, arriving about 3pm&quot;, &quot;1043&quot;: &quot;Delivered yesterday&quot;}
+
+def check_order_status(order_id):
+    return orders.get(order_id, &quot;No order with that number&quot;)
+
+TOOLS = {&quot;check_order_status&quot;: check_order_status}
+
+def pretend_model(user_message):
+    # A real model decides this itself from the tool descriptions you give it
+    m = re.search(r&quot;\border (\d+)&quot;, user_message.lower())
+    if m:
+        return {&quot;tool&quot;: &quot;check_order_status&quot;, &quot;args&quot;: {&quot;order_id&quot;: m.group(1)}}
+    return {&quot;reply&quot;: &quot;Please share your order number.&quot;}
+
+def handle(user_message):
+    decision = pretend_model(user_message)
+    if &quot;tool&quot; in decision:
+        result = TOOLS[decision[&quot;tool&quot;]](**decision[&quot;args&quot;])       # your code runs the tool
+        return f&quot;(tool said: {result}) -&gt; AI writes a friendly reply from this&quot;
+    return decision[&quot;reply&quot;]
+
+for msg in [&quot;Has order 1042 been delivered?&quot;, &quot;Where is my parcel?&quot;, &quot;Status of order 9999&quot;]:
+    print(msg, &quot;\n  &quot;, handle(msg))</code></pre></figure>
+<h2>Agents: AI that works in steps</h2>
+<p>An <strong>agent</strong> is an AI given a goal, some tools and the ability to <strong>loop</strong>: think, use a tool, look at the result, decide the next step, until the job is done. Examples: a coding agent that reads files, edits code and runs tests; a research agent that searches, reads and writes a report.</p>
+<p>Agents are powerful but need care:</p>
+<div class="static-table"><table><thead><tr><th>Good practice</th><th>Why</th></tr></thead><tbody><tr><td>Give only the tools the task needs</td><td>Limits the damage of mistakes</td></tr><tr><td>Require human approval for risky actions (payments, deleting, sending emails)</td><td>Keeps people in control</td></tr><tr><td>Set limits on steps, time and cost</td><td>Stops runaway loops</td></tr><tr><td>Log every step</td><td>So you can review what happened</td></tr><tr><td>Start with a simple workflow; use an agent only when the task is open-ended</td><td>Simpler systems are cheaper and more reliable</td></tr></tbody></table></div>
+<h2>Evaluating AI systems</h2>
+<p>Professionals don't guess whether an AI feature works: they build an <strong>evaluation set</strong> of real questions with expected answers, run the system on it after every change, and track the score. For a school assistant: 50 real parent questions, checked for correct facts, polite tone and saying "not sure" when appropriate.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does RAG stand for?</p><details><summary>Show answer</summary><p>retrieval-augmented generation</p></details></li><li><p>In RAG, what step finds the most relevant document chunks?</p><details><summary>Show answer</summary><p>retrieval</p></details></li><li><p>What kind of database stores embeddings for fast similarity search?</p><details><summary>Show answer</summary><p>a vector database</p></details></li><li><p>When AI asks your code to run a function, it's called tool use or function ...?</p><details><summary>Show answer</summary><p>calling</p></details></li><li><p>Should an agent send payments without human approval? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>A set of real questions with expected answers used to test an AI system is called an ...?</p><details><summary>Show answer</summary><p>evaluation set</p></details></li></ol></section></div><p class="static-meta">Lesson 16 of 17 in <a href="/learn/artificial-intelligence/">Artificial intelligence (AI): from zero to pro</a> · <a href="/learn/?book=artificial-intelligence">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/artificial-intelligence/build-with-ai-apis/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Level 5: Building apps with AI APIs</a><a class="btn btn-solid btn-sm" href="/learn/artificial-intelligence/ai-career-roadmap/">Level 5: Your AI career roadmap: from user to AI pro <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

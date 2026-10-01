@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The cascade, specificity and inheritance | CSS</title>
+    <meta name="description" content="&quot;Why isn&#x27;t my CSS working?&quot; Nine times out of ten, another rule is winning. The browser decides the winner with three ideas: specificity , order and…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/css/cascade-specificity/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="The cascade, specificity and inheritance | CSS" />
+    <meta property="og:description" content="&quot;Why isn&#x27;t my CSS working?&quot; Nine times out of ten, another rule is winning. The browser decides the winner with three ideas: specificity , order and…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/css/cascade-specificity/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="The cascade, specificity and inheritance | CSS" />
+    <meta name="twitter:description" content="&quot;Why isn&#x27;t my CSS working?&quot; Nine times out of ten, another rule is winning. The browser decides the winner with three ideas: specificity , order and…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/css/cascade-specificity/#lesson","name":"The cascade, specificity and inheritance","description":"\"Why isn't my CSS working?\" Nine times out of ten, another rule is winning. The browser decides the winner with three ideas: specificity , order and…","url":"https://marzleytechsolutions.co.ke/learn/css/cascade-specificity/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/css/#course","name":"CSS","url":"https://marzleytechsolutions.co.ke/learn/css/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"CSS","item":"https://marzleytechsolutions.co.ke/learn/css/"},{"@type":"ListItem","position":4,"name":"The cascade, specificity and inheritance","item":"https://marzleytechsolutions.co.ke/learn/css/cascade-specificity/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/css/">CSS</a> / <span>The cascade, specificity and inheritance</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=cascade-specificity"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>The cascade, specificity and inheritance</h1>
+<p>"Why isn't my CSS working?" Nine times out of ten, another rule is winning. The browser decides the winner with three ideas: <strong>specificity</strong>, <strong>order</strong> and <strong>inheritance</strong>. Learn these and you'll debug CSS in seconds.</p>
+<h2>1. Specificity: the more specific selector wins</h2>
+<p>Think of specificity as a score with three columns: <strong>(IDs, classes, elements)</strong>.</p>
+<div class="static-table"><table><thead><tr><th>Selector</th><th>IDs</th><th>Classes / attributes / pseudo-classes</th><th>Elements</th><th>Score</th></tr></thead><tbody><tr><td><code>p</code></td><td>0</td><td>0</td><td>1</td><td>0-0-1</td></tr><tr><td><code>.price</code></td><td>0</td><td>1</td><td>0</td><td>0-1-0</td></tr><tr><td><code>p.price</code></td><td>0</td><td>1</td><td>1</td><td>0-1-1</td></tr><tr><td><code>.card .price</code></td><td>0</td><td>2</td><td>0</td><td>0-2-0</td></tr><tr><td><code>#total</code></td><td>1</td><td>0</td><td>0</td><td>1-0-0</td></tr><tr><td><code>a:hover</code></td><td>0</td><td>1</td><td>1</td><td>0-1-1</td></tr></tbody></table></div>
+<p>Compare from the left: one ID beats any number of classes; one class beats any number of elements.</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  #total { color: green; }     /* 1-0-0 wins */
+  .price { color: blue; }      /* 0-1-0 */
+  p { color: red; }            /* 0-0-1 */
+&lt;/style&gt;
+&lt;p class=&quot;price&quot; id=&quot;total&quot;&gt;KSh 1,200: which colour am I?&lt;/p&gt;</code></pre></figure>
+<p>Inline styles (<code>style=&quot;...&quot;</code>) beat all selectors. <code>!important</code> beats even that, but it makes CSS very hard to maintain: avoid it except as a last resort.</p>
+<h2>2. Order: when specificity ties, the last rule wins</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .note { color: blue; }
+  .note { color: purple; }  /* same specificity, comes later: wins */
+&lt;/style&gt;
+&lt;p class=&quot;note&quot;&gt;I am purple.&lt;/p&gt;</code></pre></figure>
+<p>This is also why your own stylesheet should load <strong>after</strong> any framework CSS.</p>
+<h2>3. Inheritance: some properties pass down to children</h2>
+<p>Text-related properties inherit: <code>color</code>, <code>font-family</code>, <code>font-size</code>, <code>line-height</code>, <code>text-align</code>. Box properties do not: <code>margin</code>, <code>padding</code>, <code>border</code>, <code>background</code>, <code>width</code>.</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .card { color: #0b1b35; font-family: Georgia, serif; border: 2px solid #ffb800; padding: 10px; }
+&lt;/style&gt;
+&lt;div class=&quot;card&quot;&gt;
+  &lt;p&gt;This paragraph inherits the colour and font from .card...&lt;/p&gt;
+  &lt;p&gt;...but not the border or padding.&lt;/p&gt;
+&lt;/div&gt;</code></pre></figure>
+<p>You can force inheritance with <code>inherit</code>, e.g. <code>a { color: inherit; }</code> makes links match the surrounding text.</p>
+<h2>Debugging: use DevTools</h2>
+<ol><li>Right-click the element → <strong>Inspect</strong>.</li><li>In the <strong>Styles</strong> panel, rules are listed from most to least specific.</li><li>Crossed-out properties are losing. Hover to see which rule wins.</li></ol>
+<h2>Habits that prevent specificity wars</h2>
+<ul><li>Style mostly with <strong>single classes</strong> (<code>.card-title</code>), not long chains or IDs.</li><li>Keep specificity low and flat, so later rules can override easily.</li><li>Avoid <code>!important</code>.</li><li>Load your CSS in a sensible order: reset → base → components → utilities.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which wins: #total or .price .amount .value?</p><details><summary>Show answer</summary><p>#total</p></details></li><li><p>If two rules have the same specificity, which wins: the first or the last?</p><details><summary>Show answer</summary><p>last</p></details></li><li><p>Does padding inherit from a parent? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Does color inherit from a parent? (yes or no)</p><details><summary>Show answer</summary><p>yes</p></details></li><li><p>What is the specificity score of .card .price? Write it like 0-2-0.</p><details><summary>Show answer</summary><p>0-2-0</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>The paragraph is red because <code>p.intro</code> is more specific. Add a rule using the <strong>id</strong> <code>#lead</code> to make it <strong>green</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=cascade-specificity#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 9 of 17 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/pseudo-classes-elements/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Pseudo-classes and pseudo-elements (:hover, ::before)</a><a class="btn btn-solid btn-sm" href="/learn/css/flexbox/">Flexbox layout <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hash tables: fast look-ups with dictionaries | Marzley Learn</title>
+    <meta name="description" content="How does M-Pesa find your account among 30+ million instantly? How does a school system find a student by admission number? With hash tables , called…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/algorithms/hash-tables/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Hash tables: fast look-ups with dictionaries | Marzley Learn" />
+    <meta property="og:description" content="How does M-Pesa find your account among 30+ million instantly? How does a school system find a student by admission number? With hash tables , called…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/algorithms/hash-tables/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Hash tables: fast look-ups with dictionaries | Marzley Learn" />
+    <meta name="twitter:description" content="How does M-Pesa find your account among 30+ million instantly? How does a school system find a student by admission number? With hash tables , called…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/hash-tables/#lesson","name":"Hash tables: fast look-ups with dictionaries","description":"How does M-Pesa find your account among 30+ million instantly? How does a school system find a student by admission number? With hash tables , called…","url":"https://marzleytechsolutions.co.ke/learn/algorithms/hash-tables/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/#course","name":"Algorithms & problem solving","url":"https://marzleytechsolutions.co.ke/learn/algorithms/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Algorithms & problem solving","item":"https://marzleytechsolutions.co.ke/learn/algorithms/"},{"@type":"ListItem","position":4,"name":"Hash tables: fast look-ups with dictionaries","item":"https://marzleytechsolutions.co.ke/learn/algorithms/hash-tables/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> / <span>Hash tables: fast look-ups with dictionaries</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=hash-tables"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Hash tables: fast look-ups with dictionaries</h1>
+<p>How does M-Pesa find your account among 30+ million instantly? How does a school system find a student by admission number? With <strong>hash tables</strong>, called <code>dict</code> in Python, objects/<code>Map</code> in JavaScript and associative arrays in PHP.</p>
+<h2>The problem with lists</h2>
+<p>To find a phone number in a list of 1,000,000 customers, you may check every item: <strong>O(n)</strong>. A hash table finds it in (on average) <strong>one step: O(1)</strong>, no matter how big it gets.</p>
+<h2>How a hash table works (simplified)</h2>
+<ol><li>A <strong>hash function</strong> turns the key (e.g. <code>&quot;0712345678&quot;</code>) into a number.</li><li>That number picks a <strong>bucket</strong> (slot) in an array.</li><li>The value is stored in that bucket. To look it up, hash the key again and go straight there.</li></ol>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def simple_hash(key, buckets=10):
+    return sum(ord(ch) for ch in key) % buckets    # a toy hash function
+
+for phone in [&quot;0712345678&quot;, &quot;0722000111&quot;, &quot;0733999888&quot;]:
+    print(phone, &quot;-&gt; bucket&quot;, simple_hash(phone))</code></pre></figure>
+<p>When two keys land in the same bucket it's a <strong>collision</strong>; real hash tables handle them (e.g. keeping a small list in each bucket) and grow when they get full. Python's <code>dict</code> does all this for you.</p>
+<h2>Speed comparison</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import time
+
+n = 200_000
+phones_list = [f&quot;07{i:08d}&quot; for i in range(n)]
+phones_dict = {p: i for i, p in enumerate(phones_list)}
+target = phones_list[-1]
+
+t = time.perf_counter()
+for _ in range(100): target in phones_list
+list_time = time.perf_counter() - t
+
+t = time.perf_counter()
+for _ in range(100): target in phones_dict
+dict_time = time.perf_counter() - t
+
+print(f&quot;list: {list_time:.4f}s  dict: {dict_time:.6f}s  (~{list_time / dict_time:,.0f}x faster)&quot;)</code></pre></figure>
+<h2>Classic problems solved with hash tables</h2>
+<h3>Counting (frequency)</h3>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">text = &quot;haraka haraka haina baraka&quot;
+counts = {}
+for word in text.split():
+    counts[word] = counts.get(word, 0) + 1
+print(counts)</code></pre></figure>
+<h3>Two-sum: find two numbers that add up to a target</h3>
+<p>A famous interview question. Nested loops are O(n²); a dictionary makes it O(n):</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def two_sum(nums, target):
+    seen = {}                        # value -&gt; index
+    for i, n in enumerate(nums):
+        need = target - n
+        if need in seen:
+            return seen[need], i
+        seen[n] = i
+    return None
+
+print(two_sum([500, 1200, 300, 800], 1100))   # indexes of 300 and 800</code></pre></figure>
+<h3>Detect duplicates</h3>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def first_duplicate(codes):
+    seen = set()                     # a set is a hash table of keys only
+    for c in codes:
+        if c in seen:
+            return c
+        seen.add(c)
+    return None
+
+print(first_duplicate([&quot;SJK1&quot;, &quot;SJK2&quot;, &quot;SJK3&quot;, &quot;SJK2&quot;, &quot;SJK5&quot;]))   # a repeated M-Pesa code</code></pre></figure>
+<h3>Grouping</h3>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">students = [(&quot;Amina&quot;, &quot;2A&quot;), (&quot;Brian&quot;, &quot;3B&quot;), (&quot;Chebet&quot;, &quot;2A&quot;), (&quot;Dennis&quot;, &quot;3B&quot;), (&quot;Esther&quot;, &quot;4C&quot;)]
+by_class = {}
+for name, cls in students:
+    by_class.setdefault(cls, []).append(name)
+print(by_class)</code></pre></figure>
+<h2>Rules for keys</h2>
+<ul><li>Keys must be <strong>hashable</strong> (unchangeable): strings, numbers, tuples. Not lists.</li><li>Keys are unique: assigning the same key again <strong>replaces</strong> the value.</li><li>Dictionaries use more memory than lists: the price of speed.</li></ul>
+<h2>Where you'll meet hashing</h2>
+<ul><li>Database <strong>indexes</strong> (hash and B-tree indexes)</li><li>Caches (storing results so you don't recompute them)</li><li>Password hashing (a different, deliberately slow kind of hash: see the cybersecurity lessons)</li><li>Git uses hashes to name every commit</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the average time to look up a key in a hash table, in Big O?</p><details><summary>Show answer</summary><p>O(1)</p></details></li><li><p>What is it called when two keys land in the same bucket?</p><details><summary>Show answer</summary><p>collision</p></details></li><li><p>What is Python's built-in hash table type?</p><details><summary>Show answer</summary><p>dict</p></details></li><li><p>Can a list be a dictionary key? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Two-sum with a dictionary runs in O(n). What is it with nested loops?</p><details><summary>Show answer</summary><p>O(n^2)</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Count the letters in <code>&quot;banana&quot;</code> with a dictionary and print the count for <code>&quot;a&quot;</code>: <strong>3</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=hash-tables#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 8 of 11 in <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> · <a href="/learn/?book=algorithms">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/algorithms/stacks-queues/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Stacks and queues</a><a class="btn btn-solid btn-sm" href="/learn/algorithms/recursion/">Recursion <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

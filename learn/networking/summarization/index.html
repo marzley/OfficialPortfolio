@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Route summarisation (supernetting) | Networking</title>
+    <meta name="description" content="Summarisation is the opposite of subnetting: combining several networks into one bigger route. Routers then need fewer entries, and a problem in one…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/networking/summarization/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Route summarisation (supernetting) | Networking" />
+    <meta property="og:description" content="Summarisation is the opposite of subnetting: combining several networks into one bigger route. Routers then need fewer entries, and a problem in one…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/networking/summarization/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Route summarisation (supernetting) | Networking" />
+    <meta name="twitter:description" content="Summarisation is the opposite of subnetting: combining several networks into one bigger route. Routers then need fewer entries, and a problem in one…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/networking/summarization/#lesson","name":"Route summarisation (supernetting)","description":"Summarisation is the opposite of subnetting: combining several networks into one bigger route. Routers then need fewer entries, and a problem in one…","url":"https://marzleytechsolutions.co.ke/learn/networking/summarization/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/networking/#course","name":"Networking","url":"https://marzleytechsolutions.co.ke/learn/networking/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Networking","item":"https://marzleytechsolutions.co.ke/learn/networking/"},{"@type":"ListItem","position":4,"name":"Route summarisation (supernetting)","item":"https://marzleytechsolutions.co.ke/learn/networking/summarization/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/networking/">Networking</a> / <span>Route summarisation (supernetting)</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=networking&amp;lesson=summarization"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Route summarisation (supernetting)</h1>
+<p><strong>Summarisation</strong> is the opposite of subnetting: combining several networks into one bigger route. Routers then need fewer entries, and a problem in one small subnet doesn't disturb routers far away.</p>
+<p>Example: a branch office uses</p>
+<figure class="static-code"><pre><code>192.168.8.0/24
+192.168.9.0/24
+192.168.10.0/24
+192.168.11.0/24</code></pre></figure>
+<p>Instead of four routes, the head office can use <strong>one</strong>: <code>192.168.8.0/22</code>.</p>
+<h2>How to find the summary</h2>
+<ol><li>Write the <strong>changing octet</strong> of each network in binary.</li></ol>
+<figure class="static-code"><pre><code> 8 = 000010 00
+ 9 = 000010 01
+10 = 000010 10
+11 = 000010 11</code></pre></figure>
+<ol><li>Count the <strong>bits that are the same</strong> from the left: the first 6 bits (<code>000010</code>) match.</li><li>Summary prefix = bits in earlier octets + matching bits = 16 + 6 = <strong>/22</strong>.</li><li>Summary address = the matching bits followed by zeros = 00001000 = <strong>8</strong> → <code>192.168.8.0/22</code>.</li></ol>
+<h2>Check it</h2>
+<p>192.168.8.0/22 covers 2^10 = 1,024 addresses = 4 × 256 → exactly .8.0 to .11.255. ✓</p>
+<h2>Careful: don't over-summarise</h2>
+<p><code>172.16.4.0/24</code> and <code>172.16.7.0/24</code> share <code>000001</code> → 172.16.4.0/22, but that summary <strong>also includes</strong> 172.16.5.0 and .6.0. If those networks are somewhere else, traffic will go to the wrong place. Only summarise address space that really lives behind that router.</p>
+<h2>Why providers love CIDR</h2>
+<p>Internet providers receive big blocks (for example a /16) and advertise <strong>one</strong> route to the rest of the internet, while splitting it into thousands of customer subnets inside. This is why the global routing table has around one million routes instead of billions.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the summary of 10.1.4.0/24, 10.1.5.0/24, 10.1.6.0/24 and 10.1.7.0/24?</p><details><summary>Show answer</summary><p>10.1.4.0/22</p></details></li><li><p>What is the summary of 172.16.32.0/24 through 172.16.47.0/24 (16 networks)?</p><details><summary>Show answer</summary><p>172.16.32.0/20 · 16 networks = 2^4, so 4 fewer bits than /24.</p></details></li><li><p>How many /24 networks does one /21 summary cover?</p><details><summary>Show answer</summary><p>8</p></details></li><li><p>What is the summary of 192.168.0.0/24 and 192.168.1.0/24?</p><details><summary>Show answer</summary><p>192.168.0.0/23</p></details></li></ol></section></div><p class="static-meta">Lesson 11 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/vlsm/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> VLSM: different sizes in one network</a><a class="btn btn-solid btn-sm" href="/learn/networking/ipv6/">IPv6 addressing <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

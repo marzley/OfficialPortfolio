@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Project: a to-do list app | JavaScript</title>
+    <meta name="description" content="Combine the DOM, events and arrays into a working app." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/javascript/project-todo/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Project: a to-do list app | JavaScript" />
+    <meta property="og:description" content="Combine the DOM, events and arrays into a working app." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/javascript/project-todo/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Project: a to-do list app | JavaScript" />
+    <meta name="twitter:description" content="Combine the DOM, events and arrays into a working app." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/javascript/project-todo/#lesson","name":"Project: a to-do list app","description":"Combine the DOM, events and arrays into a working app.","url":"https://marzleytechsolutions.co.ke/learn/javascript/project-todo/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/javascript/#course","name":"JavaScript","url":"https://marzleytechsolutions.co.ke/learn/javascript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/"},{"@type":"ListItem","position":4,"name":"Project: a to-do list app","item":"https://marzleytechsolutions.co.ke/learn/javascript/project-todo/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/javascript/">JavaScript</a> / <span>Project: a to-do list app</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=project-todo"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Project: to-do list</h1>
+<p>Combine the DOM, events and arrays into a working app.</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  body { font-family: sans-serif; max-width: 420px; }
+  li { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #e2e8f0; }
+  li.done span { text-decoration: line-through; color: #94a3b8; }
+  button { cursor: pointer; }
+&lt;/style&gt;
+&lt;h2&gt;My tasks&lt;/h2&gt;
+&lt;form id=&quot;f&quot;&gt;&lt;input id=&quot;task&quot; placeholder=&quot;New task&quot; required&gt; &lt;button&gt;Add&lt;/button&gt;&lt;/form&gt;
+&lt;ul id=&quot;list&quot;&gt;&lt;/ul&gt;
+&lt;p id=&quot;count&quot;&gt;&lt;/p&gt;
+&lt;script&gt;
+  const tasks = [];
+  const list = document.getElementById(&quot;list&quot;);
+  function render() {
+    list.innerHTML = &quot;&quot;;
+    tasks.forEach((t, i) =&gt; {
+      const li = document.createElement(&quot;li&quot;);
+      if (t.done) li.className = &quot;done&quot;;
+      const span = document.createElement(&quot;span&quot;);
+      span.textContent = t.text;
+      span.onclick = () =&gt; { t.done = !t.done; render(); };
+      const del = document.createElement(&quot;button&quot;);
+      del.textContent = &quot;✕&quot;;
+      del.onclick = () =&gt; { tasks.splice(i, 1); render(); };
+      li.append(span, del);
+      list.append(li);
+    });
+    document.getElementById(&quot;count&quot;).textContent = tasks.filter(t =&gt; !t.done).length + &quot; left&quot;;
+  }
+  document.getElementById(&quot;f&quot;).onsubmit = e =&gt; {
+    e.preventDefault();
+    const input = document.getElementById(&quot;task&quot;);
+    tasks.push({ text: input.value, done: false });
+    input.value = &quot;&quot;;
+    render();
+  };
+&lt;/script&gt;</code></pre></figure>
+<h2>Challenges</h2>
+<ol><li>Add a "Clear completed" button.</li><li>Show the date each task was added.</li><li>Save tasks with localStorage in your own copy.</li><li>Add priority colours (high, medium, low).</li></ol></div><p class="static-meta">Lesson 18 of 19 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/modules-npm-tooling/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Modules, npm and the modern JavaScript toolbox</a><a class="btn btn-solid btn-sm" href="/learn/javascript/project-quiz-app/">Project: a quiz app with score and timer <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

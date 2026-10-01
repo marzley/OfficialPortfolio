@@ -558,7 +558,10 @@
   function setCanonical() {
     var p = new URLSearchParams(location.search), keep = new URLSearchParams();
     ["track", "lesson", "video", "note", "book", "page"].forEach(function (k) { if (p.get(k) && !(k === "page" && (p.get("track") || p.get("video") || p.get("note") || p.get("book")))) keep.set(k, p.get(k)); });
-    var url = (/marzleytechsolutions\.co\.ke$/.test(location.hostname) ? "https://marzleytechsolutions.co.ke" : location.origin) + location.pathname + (keep.toString() ? "?" + keep.toString() : "");
+    var base = (/marzleytechsolutions\.co\.ke$/.test(location.hostname) ? "https://marzleytechsolutions.co.ke" : location.origin) + location.pathname;
+    // Subjects and lessons have static, pre-rendered pages (tools/learn_static.py): those are the canonical addresses
+    var url = p.get("track") ? base + encodeURIComponent(p.get("track")) + "/" + (p.get("lesson") ? encodeURIComponent(p.get("lesson")) + "/" : "")
+      : base + (keep.toString() ? "?" + keep.toString() : "");
     var link = document.querySelector('link[rel="canonical"]');
     if (!link) { link = document.createElement("link"); link.rel = "canonical"; document.head.appendChild(link); }
     link.href = url;

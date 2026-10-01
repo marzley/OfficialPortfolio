@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Navigating and managing files | Linux command line</title>
+    <meta name="description" content="Free Linux command line lesson: Navigating and managing files." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/linux/navigating-files/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Navigating and managing files | Linux command line" />
+    <meta property="og:description" content="Free Linux command line lesson: Navigating and managing files." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/linux/navigating-files/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Navigating and managing files | Linux command line" />
+    <meta name="twitter:description" content="Free Linux command line lesson: Navigating and managing files." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/linux/navigating-files/#lesson","name":"Navigating and managing files","description":"Free Linux command line lesson: Navigating and managing files.","url":"https://marzleytechsolutions.co.ke/learn/linux/navigating-files/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/linux/#course","name":"Linux command line","url":"https://marzleytechsolutions.co.ke/learn/linux/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Linux command line","item":"https://marzleytechsolutions.co.ke/learn/linux/"},{"@type":"ListItem","position":4,"name":"Navigating and managing files","item":"https://marzleytechsolutions.co.ke/learn/linux/navigating-files/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/linux/">Linux command line</a> / <span>Navigating and managing files</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=linux&amp;lesson=navigating-files"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Files and folders</h1>
+<h2>Moving around</h2>
+<div class="static-table"><table><thead><tr><th>Command</th><th>Meaning</th></tr></thead><tbody><tr><td><code>cd /var/www</code></td><td>Go to an absolute path (starts with <code>/</code>)</td></tr><tr><td><code>cd projects</code></td><td>Go into a folder inside the current one</td></tr><tr><td><code>cd ..</code></td><td>Up one level</td></tr><tr><td><code>cd ~</code> or <code>cd</code></td><td>Your home folder</td></tr><tr><td><code>cd -</code></td><td>Back to the previous folder</td></tr><tr><td><code>ls -la</code></td><td>List all files (including hidden <code>.files</code>) with details</td></tr></tbody></table></div>
+<h2>Creating, copying, moving, deleting</h2>
+<figure class="static-code"><pre><code>mkdir -p site/css site/js      # make folders (-p: parents too)
+touch index.html               # create an empty file
+cp index.html about.html       # copy
+cp -r site site-backup         # copy a folder (-r recursive)
+mv about.html pages/           # move
+mv old.txt new.txt             # rename
+rm file.txt                    # delete a file (no recycle bin!)
+rm -r old-folder               # delete a folder</code></pre></figure>
+<blockquote><p><code>rm -rf</code> deletes without asking. Double-check the path. There is no undo.</p></blockquote>
+<h2>Looking inside files</h2>
+<figure class="static-code"><pre><code>cat notes.txt          # print a whole file
+less big.log           # scroll a big file (q to quit)
+head -n 20 file        # first 20 lines
+tail -n 50 error.log   # last 50 lines
+tail -f access.log     # watch a log live
+nano index.html        # simple editor (Ctrl+O save, Ctrl+X exit)</code></pre></figure>
+<h2>Finding things</h2>
+<figure class="static-code"><pre><code>find /var/www -name &quot;*.php&quot;        # find files by name
+grep -r &quot;DB_PASSWORD&quot; /var/www     # search inside files
+grep -i &quot;error&quot; error.log | tail   # combine with a pipe
+du -sh *                           # size of each item here
+df -h                              # free disk space</code></pre></figure>
+<p>The <strong>pipe</strong> <code>|</code> sends one command's output into the next. <code>&gt;</code> writes output to a file (overwrite), <code>&gt;&gt;</code> appends.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command goes up one folder?</p><details><summary>Show answer</summary><p>cd ..</p></details></li><li><p>Which command creates a folder?</p><details><summary>Show answer</summary><p>mkdir</p></details></li><li><p>Which command shows the last lines of a file?</p><details><summary>Show answer</summary><p>tail</p></details></li><li><p>Which command searches for text inside files?</p><details><summary>Show answer</summary><p>grep</p></details></li><li><p>What is the symbol that sends one command's output into another command called?</p><details><summary>Show answer</summary><p>pipe</p></details></li><li><p>Which command shows free disk space in human-readable form?</p><details><summary>Show answer</summary><p>df -h</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 10 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/why-linux/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Why Linux and the terminal</a><a class="btn btn-solid btn-sm" href="/learn/linux/viewing-editing-files/">Viewing, searching and editing text files (cat, less, grep, nano) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

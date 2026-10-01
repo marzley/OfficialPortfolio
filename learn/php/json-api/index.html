@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Build a JSON API with PHP | PHP &amp; MySQL</title>
+    <meta name="description" content="A modern site&#x27;s pages often talk to the server with fetch() instead of reloading. Mobile apps (Flutter, Android) do the same. They all need an API : a…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/php/json-api/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Build a JSON API with PHP | PHP &amp; MySQL" />
+    <meta property="og:description" content="A modern site&#x27;s pages often talk to the server with fetch() instead of reloading. Mobile apps (Flutter, Android) do the same. They all need an API : a…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/php/json-api/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Build a JSON API with PHP | PHP &amp; MySQL" />
+    <meta name="twitter:description" content="A modern site&#x27;s pages often talk to the server with fetch() instead of reloading. Mobile apps (Flutter, Android) do the same. They all need an API : a…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/php/json-api/#lesson","name":"Build a JSON API with PHP","description":"A modern site's pages often talk to the server with fetch() instead of reloading. Mobile apps (Flutter, Android) do the same. They all need an API : a…","url":"https://marzleytechsolutions.co.ke/learn/php/json-api/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/php/#course","name":"PHP & MySQL","url":"https://marzleytechsolutions.co.ke/learn/php/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"PHP & MySQL","item":"https://marzleytechsolutions.co.ke/learn/php/"},{"@type":"ListItem","position":4,"name":"Build a JSON API with PHP","item":"https://marzleytechsolutions.co.ke/learn/php/json-api/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/php/">PHP &amp; MySQL</a> / <span>Build a JSON API with PHP</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=php&amp;lesson=json-api"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Build a JSON API with PHP</h1>
+<p>A modern site's pages often talk to the server with <code>fetch()</code> instead of reloading. Mobile apps (Flutter, Android) do the same. They all need an <strong>API</strong>: a PHP script that receives requests and answers with <strong>JSON</strong>. You've also seen one side of this already: M-Pesa's Daraja is an API.</p>
+<h2>JSON in PHP</h2>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$order = [&#x27;id&#x27; =&gt; 1042, &#x27;items&#x27; =&gt; [&#x27;Unga&#x27;, &#x27;Oil&#x27;], &#x27;total&#x27; =&gt; 530.0, &#x27;paid&#x27; =&gt; false, &#x27;note&#x27; =&gt; null];
+echo json_encode($order), &quot;\n&quot;;
+echo json_encode($order, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), &quot;\n&quot;;
+
+$text = &#x27;{&quot;phone&quot;:&quot;254712345678&quot;,&quot;amount&quot;:1500}&#x27;;
+$data = json_decode($text, true);          // true = give me arrays, not objects
+echo $data[&#x27;phone&#x27;], &quot; pays &quot;, $data[&#x27;amount&#x27;], &quot;\n&quot;;
+
+$bad = json_decode(&#x27;{&quot;amount&quot;: }&#x27;, true);
+var_dump($bad, json_last_error_msg());</code></pre></figure>
+<h2>A small products API (api.php)</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+declare(strict_types=1);
+require __DIR__ . &#x27;/db.php&#x27;;
+header(&#x27;Content-Type: application/json; charset=utf-8&#x27;);
+
+function respond(int $status, array $body): never {
+    http_response_code($status);
+    echo json_encode($body, JSON_UNESCAPED_SLASHES);
+    exit;
+}
+
+$method = $_SERVER[&#x27;REQUEST_METHOD&#x27;];
+$id = isset($_GET[&#x27;id&#x27;]) ? (int)$_GET[&#x27;id&#x27;] : null;
+
+try {
+    if ($method === &#x27;GET&#x27; &amp;&amp; $id === null) {                 // list
+        $rows = $pdo-&gt;query(&#x27;SELECT id, name, price, stock FROM products ORDER BY name&#x27;)-&gt;fetchAll();
+        respond(200, [&#x27;data&#x27; =&gt; $rows]);
+    }
+    if ($method === &#x27;GET&#x27;) {                                  // one item
+        $stmt = $pdo-&gt;prepare(&#x27;SELECT id, name, price, stock FROM products WHERE id = ?&#x27;);
+        $stmt-&gt;execute([$id]);
+        $row = $stmt-&gt;fetch() ?: respond(404, [&#x27;error&#x27; =&gt; &#x27;Product not found&#x27;]);
+        respond(200, [&#x27;data&#x27; =&gt; $row]);
+    }
+    if ($method === &#x27;POST&#x27;) {                                 // create
+        $in = json_decode(file_get_contents(&#x27;php://input&#x27;), true) ?? [];
+        $name = trim((string)($in[&#x27;name&#x27;] ?? &#x27;&#x27;));
+        $price = $in[&#x27;price&#x27;] ?? null;
+        if ($name === &#x27;&#x27; || !is_numeric($price) || $price &lt; 0) {
+            respond(422, [&#x27;error&#x27; =&gt; &#x27;name and a positive price are required&#x27;]);
+        }
+        $stmt = $pdo-&gt;prepare(&#x27;INSERT INTO products (name, price) VALUES (?, ?)&#x27;);
+        $stmt-&gt;execute([$name, $price]);
+        respond(201, [&#x27;data&#x27; =&gt; [&#x27;id&#x27; =&gt; (int)$pdo-&gt;lastInsertId(), &#x27;name&#x27; =&gt; $name, &#x27;price&#x27; =&gt; (float)$price]]);
+    }
+    respond(405, [&#x27;error&#x27; =&gt; &#x27;Method not allowed&#x27;]);
+} catch (Throwable $e) {
+    error_log($e-&gt;getMessage());                             // log details privately
+    respond(500, [&#x27;error&#x27; =&gt; &#x27;Server error&#x27;]);               // never show the real error to users
+}</code></pre></figure>
+<h2>HTTP status codes to use</h2>
+<div class="static-table"><table><thead><tr><th>Code</th><th>Meaning</th><th>When</th></tr></thead><tbody><tr><td>200</td><td>OK</td><td>Successful read/update</td></tr><tr><td>201</td><td>Created</td><td>A new record was made</td></tr><tr><td>400</td><td>Bad request</td><td>Malformed JSON</td></tr><tr><td>401</td><td>Unauthorised</td><td>Not logged in / no token</td></tr><tr><td>403</td><td>Forbidden</td><td>Logged in but not allowed</td></tr><tr><td>404</td><td>Not found</td><td>No such record</td></tr><tr><td>422</td><td>Unprocessable</td><td>Validation failed</td></tr><tr><td>429</td><td>Too many requests</td><td>Rate limited</td></tr><tr><td>500</td><td>Server error</td><td>Something broke on our side</td></tr></tbody></table></div>
+<h2>Calling the API from JavaScript</h2>
+<figure class="static-code"><figcaption>JavaScript</figcaption><pre><code class="language-javascript">// list
+const res = await fetch(&quot;/api.php&quot;);
+const { data } = await res.json();
+
+// create
+const r = await fetch(&quot;/api.php&quot;, {
+  method: &quot;POST&quot;,
+  headers: { &quot;Content-Type&quot;: &quot;application/json&quot; },
+  body: JSON.stringify({ name: &quot;Sugar 1kg&quot;, price: 160 }),
+});
+if (!r.ok) {
+  const err = await r.json();
+  alert(err.error);
+}</code></pre></figure>
+<h2>Calling other APIs from PHP (cURL)</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">$ch = curl_init(&#x27;https://api.example.com/rates&#x27;);
+curl_setopt_array($ch, [
+    CURLOPT_RETURNTRANSFER =&gt; true,
+    CURLOPT_TIMEOUT =&gt; 15,
+    CURLOPT_HTTPHEADER =&gt; [&#x27;Accept: application/json&#x27;, &#x27;Authorization: Bearer &#x27; . $token],
+]);
+$body = curl_exec($ch);
+$status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+curl_close($ch);
+$data = $status === 200 ? json_decode($body, true) : null;</code></pre></figure>
+<p>This is exactly the pattern for M-Pesa Daraja: get an access token, then <code>POST</code> JSON to the STK Push endpoint.</p>
+<h2>Securing an API</h2>
+<ul><li><strong>Authentication</strong>: sessions for your own website; API keys or tokens (<code>Authorization: Bearer ...</code>) for apps.</li><li><strong>Validate every input</strong> and return clear <code>422</code> errors.</li><li><strong>Rate limit</strong> login and payment endpoints.</li><li>Allow other websites (CORS) only if you really need to, and only specific origins.</li><li>Always use <strong>HTTPS</strong>.</li><li>Never return passwords, full card data or internal error messages.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which PHP function turns an array into JSON?</p><details><summary>Show answer</summary><p>json_encode</p></details></li><li><p>What second argument makes json_decode return arrays?</p><details><summary>Show answer</summary><p>true</p></details></li><li><p>Which status code means a new record was created?</p><details><summary>Show answer</summary><p>201</p></details></li><li><p>Which status code is best for failed validation?</p><details><summary>Show answer</summary><p>422</p></details></li><li><p>Which PHP stream reads the raw JSON body of a POST request?</p><details><summary>Show answer</summary><p>php://input</p></details></li></ol></section></div><p class="static-meta">Lesson 11 of 13 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/file-uploads/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Secure file uploads (images and documents)</a><a class="btn btn-solid btn-sm" href="/learn/php/mpesa-integration/">M-Pesa STK push with PHP (overview) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

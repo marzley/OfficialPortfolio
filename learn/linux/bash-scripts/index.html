@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bash scripting basics | Linux command line</title>
+    <meta name="description" content="A script is a file of commands you can run again and again: backups, deployments, reports. Run it:" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/linux/bash-scripts/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Bash scripting basics | Linux command line" />
+    <meta property="og:description" content="A script is a file of commands you can run again and again: backups, deployments, reports. Run it:" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/linux/bash-scripts/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Bash scripting basics | Linux command line" />
+    <meta name="twitter:description" content="A script is a file of commands you can run again and again: backups, deployments, reports. Run it:" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/linux/bash-scripts/#lesson","name":"Bash scripting basics","description":"A script is a file of commands you can run again and again: backups, deployments, reports. Run it:","url":"https://marzleytechsolutions.co.ke/learn/linux/bash-scripts/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/linux/#course","name":"Linux command line","url":"https://marzleytechsolutions.co.ke/learn/linux/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Linux command line","item":"https://marzleytechsolutions.co.ke/learn/linux/"},{"@type":"ListItem","position":4,"name":"Bash scripting basics","item":"https://marzleytechsolutions.co.ke/learn/linux/bash-scripts/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/linux/">Linux command line</a> / <span>Bash scripting basics</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=linux&amp;lesson=bash-scripts"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Bash scripts</h1>
+<p>A <strong>script</strong> is a file of commands you can run again and again: backups, deployments, reports.</p>
+<figure class="static-code"><pre><code>#!/bin/bash
+# backup.sh: back up a website and its database
+DATE=$(date +%F)
+SITE=/var/www/site
+DEST=/home/kelvin/backups
+
+mkdir -p &quot;$DEST&quot;
+tar -czf &quot;$DEST/site-$DATE.tar.gz&quot; &quot;$SITE&quot;
+mysqldump -u backup -p&quot;$DB_PASS&quot; shopdb &gt; &quot;$DEST/db-$DATE.sql&quot;
+
+# keep only the last 14 days
+find &quot;$DEST&quot; -type f -mtime +14 -delete
+echo &quot;Backup done: $DATE&quot;</code></pre></figure>
+<p>Run it:</p>
+<figure class="static-code"><pre><code>chmod +x backup.sh
+./backup.sh</code></pre></figure>
+<h2>Building blocks</h2>
+<figure class="static-code"><pre><code>NAME=&quot;Kenya&quot;                 # variable (no spaces around =)
+echo &quot;Hello $NAME&quot;
+
+if [ -f /etc/nginx/nginx.conf ]; then
+  echo &quot;nginx is installed&quot;
+else
+  echo &quot;nginx missing&quot;
+fi
+
+for f in *.jpg; do
+  echo &quot;Found $f&quot;
+done
+
+read -p &quot;Your name: &quot; USER_NAME     # ask for input</code></pre></figure>
+<ul><li><code>$1</code>, <code>$2</code>: arguments given to the script.</li><li><code>$?</code>: exit code of the last command (0 = success).</li><li><code>&amp;&amp;</code> runs the next command only if the first succeeded; <code>||</code> only if it failed.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What must the first line of a bash script be?</p><details><summary>Show answer</summary><p>#!/bin/bash</p></details></li><li><p>Which command makes a script executable?</p><details><summary>Show answer</summary><p>chmod +x</p></details></li><li><p>What exit code means success?</p><details><summary>Show answer</summary><p>0</p></details></li><li><p>Which variable holds the first argument to a script?</p><details><summary>Show answer</summary><p>$1</p></details></li></ol></section>
+<p><strong>Learn more:</strong> <a href="https://linuxjourney.com/" target="_blank" rel="noopener noreferrer">Linux Journey (free, beginner friendly)</a> · <a href="https://linuxcommand.org/tlcl.php" target="_blank" rel="noopener noreferrer">The Linux Command Line (free book)</a> · <a href="https://overthewire.org/wargames/bandit/" target="_blank" rel="noopener noreferrer">OverTheWire Bandit (practice game)</a></p></div><p class="static-meta">Lesson 10 of 10 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/ssh-servers/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> SSH and managing a server</a><span></span></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

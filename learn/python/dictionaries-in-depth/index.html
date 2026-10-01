@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dictionaries in depth: nested data and counting | Python</title>
+    <meta name="description" content="A dictionary stores key → value pairs. It&#x27;s how Python represents records (a customer, a product) and it&#x27;s the shape of most data from APIs (JSON)." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/python/dictionaries-in-depth/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Dictionaries in depth: nested data and counting | Python" />
+    <meta property="og:description" content="A dictionary stores key → value pairs. It&#x27;s how Python represents records (a customer, a product) and it&#x27;s the shape of most data from APIs (JSON)." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/python/dictionaries-in-depth/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Dictionaries in depth: nested data and counting | Python" />
+    <meta name="twitter:description" content="A dictionary stores key → value pairs. It&#x27;s how Python represents records (a customer, a product) and it&#x27;s the shape of most data from APIs (JSON)." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/python/dictionaries-in-depth/#lesson","name":"Dictionaries in depth: nested data and counting","description":"A dictionary stores key → value pairs. It's how Python represents records (a customer, a product) and it's the shape of most data from APIs (JSON).","url":"https://marzleytechsolutions.co.ke/learn/python/dictionaries-in-depth/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/python/#course","name":"Python","url":"https://marzleytechsolutions.co.ke/learn/python/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Python","item":"https://marzleytechsolutions.co.ke/learn/python/"},{"@type":"ListItem","position":4,"name":"Dictionaries in depth: nested data and counting","item":"https://marzleytechsolutions.co.ke/learn/python/dictionaries-in-depth/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/python/">Python</a> / <span>Dictionaries in depth: nested data and counting</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=dictionaries-in-depth"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Dictionaries in depth: nested data and counting</h1>
+<p>A <strong>dictionary</strong> stores <strong>key → value</strong> pairs. It's how Python represents records (a customer, a product) and it's the shape of most data from APIs (JSON).</p>
+<h2>Create, read, update, delete</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">product = {&quot;name&quot;: &quot;Unga 2kg&quot;, &quot;price&quot;: 180, &quot;stock&quot;: 12}
+
+print(product[&quot;name&quot;])                 # read (error if key missing)
+print(product.get(&quot;discount&quot;))         # None instead of an error
+print(product.get(&quot;discount&quot;, 0))      # with a default
+
+product[&quot;price&quot;] = 175                 # update
+product[&quot;category&quot;] = &quot;food&quot;           # add
+del product[&quot;stock&quot;]                   # delete
+removed = product.pop(&quot;category&quot;)      # delete and return the value
+print(product, removed)
+print(&quot;price&quot; in product, len(product))</code></pre></figure>
+<h2>Looping</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">prices = {&quot;sugar&quot;: 160, &quot;oil&quot;: 350, &quot;salt&quot;: 30}
+for item in prices:                    # keys
+    print(item)
+for price in prices.values():
+    print(price)
+for item, price in prices.items():     # both: the most common
+    print(f&quot;{item:&lt;6} KSh {price}&quot;)</code></pre></figure>
+<h2>Nested data: lists of dicts and dicts of lists</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">customers = [
+    {&quot;name&quot;: &quot;Amina&quot;, &quot;town&quot;: &quot;Mombasa&quot;, &quot;orders&quot;: [1200, 800]},
+    {&quot;name&quot;: &quot;Brian&quot;, &quot;town&quot;: &quot;Nakuru&quot;, &quot;orders&quot;: [300]},
+    {&quot;name&quot;: &quot;Chebet&quot;, &quot;town&quot;: &quot;Eldoret&quot;, &quot;orders&quot;: []},
+]
+
+for c in customers:
+    spent = sum(c[&quot;orders&quot;])
+    print(f&quot;{c[&#x27;name&#x27;]} from {c[&#x27;town&#x27;]} spent KSh {spent:,}&quot;)
+
+print(customers[0][&quot;orders&quot;][1])        # 800
+customers[2][&quot;orders&quot;].append(2500)     # change nested data
+print(customers[2])</code></pre></figure>
+<h2>Counting and grouping (very common!)</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">sales = [&quot;unga&quot;, &quot;oil&quot;, &quot;unga&quot;, &quot;sugar&quot;, &quot;unga&quot;, &quot;oil&quot;]
+
+counts = {}
+for item in sales:
+    counts[item] = counts.get(item, 0) + 1
+print(counts)
+
+from collections import Counter          # the built-in shortcut
+c = Counter(sales)
+print(c.most_common(2))
+
+students = [(&quot;Amina&quot;, &quot;Form 2&quot;), (&quot;Brian&quot;, &quot;Form 3&quot;), (&quot;Chebet&quot;, &quot;Form 2&quot;)]
+by_class = {}
+for name, form in students:
+    by_class.setdefault(form, []).append(name)
+print(by_class)</code></pre></figure>
+<h2>Merging and sorting</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">defaults = {&quot;theme&quot;: &quot;light&quot;, &quot;language&quot;: &quot;en&quot;, &quot;sms&quot;: True}
+user = {&quot;language&quot;: &quot;sw&quot;}
+settings = defaults | user          # later values win (Python 3.9+)
+print(settings)
+
+stock = {&quot;sugar&quot;: 4, &quot;oil&quot;: 20, &quot;salt&quot;: 9}
+low_first = dict(sorted(stock.items(), key=lambda kv: kv[1]))
+print(low_first)
+print(max(stock, key=stock.get))    # item with most stock</code></pre></figure>
+<h2>Keys must be unchangeable</h2>
+<p>Keys can be strings, numbers or tuples, not lists. Values can be anything.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">distances = {(&quot;Nairobi&quot;, &quot;Nakuru&quot;): 160, (&quot;Nairobi&quot;, &quot;Mombasa&quot;): 485}
+print(distances[(&quot;Nairobi&quot;, &quot;Mombasa&quot;)], &quot;km&quot;)</code></pre></figure>
+<h2>Mini project: a simple phone book</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">book = {}
+
+def add(name, phone):
+    book[name.title()] = phone
+
+def find(name):
+    return book.get(name.title(), &quot;Not found&quot;)
+
+add(&quot;amina hassan&quot;, &quot;0712345678&quot;)
+add(&quot;BRIAN OTIENO&quot;, &quot;0722000111&quot;)
+print(find(&quot;Amina Hassan&quot;))
+print(find(&quot;Zawadi&quot;))
+for name in sorted(book):
+    print(f&quot;{name:&lt;15} {book[name]}&quot;)</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which method reads a key without an error if it is missing?</p><details><summary>Show answer</summary><p>get</p></details></li><li><p>Which method loops over keys and values together?</p><details><summary>Show answer</summary><p>items</p></details></li><li><p>Can a list be a dictionary key? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>What does {"a": 1} | {"a": 2} give for "a"?</p><details><summary>Show answer</summary><p>2</p></details></li><li><p>Which class from collections counts items quickly?</p><details><summary>Show answer</summary><p>Counter</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Count the items in <code>sales = [&quot;unga&quot;, &quot;oil&quot;, &quot;unga&quot;]</code> into a dictionary and print it: <strong>{'unga': 2, 'oil': 1}</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=dictionaries-in-depth#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 12 of 19 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/functions-in-depth/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Functions in depth: defaults, *args, **kwargs and lambda</a><a class="btn btn-solid btn-sm" href="/learn/python/files-errors/">Errors and exceptions <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

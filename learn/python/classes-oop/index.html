@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Classes and objects | Python</title>
+    <meta name="description" content="A class is a blueprint; objects are things made from it. Use classes when data and the actions on it belong together. - init runs when an object is…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/python/classes-oop/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Classes and objects | Python" />
+    <meta property="og:description" content="A class is a blueprint; objects are things made from it. Use classes when data and the actions on it belong together. - init runs when an object is…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/python/classes-oop/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Classes and objects | Python" />
+    <meta name="twitter:description" content="A class is a blueprint; objects are things made from it. Use classes when data and the actions on it belong together. - init runs when an object is…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/python/classes-oop/#lesson","name":"Classes and objects","description":"A class is a blueprint; objects are things made from it. Use classes when data and the actions on it belong together. - init runs when an object is…","url":"https://marzleytechsolutions.co.ke/learn/python/classes-oop/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/python/#course","name":"Python","url":"https://marzleytechsolutions.co.ke/learn/python/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Python","item":"https://marzleytechsolutions.co.ke/learn/python/"},{"@type":"ListItem","position":4,"name":"Classes and objects","item":"https://marzleytechsolutions.co.ke/learn/python/classes-oop/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/python/">Python</a> / <span>Classes and objects</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=classes-oop"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Classes and objects</h1>
+<p>A <strong>class</strong> is a blueprint; <strong>objects</strong> are things made from it. Use classes when data and the actions on it belong together.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">class Account:
+    def __init__(self, owner, balance=0):
+        self.owner = owner
+        self.balance = balance
+
+    def deposit(self, amount):
+        self.balance += amount
+        print(f&quot;{self.owner} deposited {amount}. Balance: {self.balance}&quot;)
+
+    def withdraw(self, amount):
+        if amount &gt; self.balance:
+            print(&quot;Insufficient funds&quot;)
+            return
+        self.balance -= amount
+        print(f&quot;{self.owner} withdrew {amount}. Balance: {self.balance}&quot;)
+
+a = Account(&quot;Wanjiku&quot;, 500)
+a.deposit(1500)
+a.withdraw(3000)
+a.withdraw(700)</code></pre></figure>
+<ul><li><code>__init__</code> runs when an object is created; <code>self</code> is the object itself.</li><li><strong>Attributes</strong> (data): <code>self.balance</code>. <strong>Methods</strong> (actions): <code>deposit()</code>.</li></ul>
+<h2>Inheritance</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">class Product:
+    def __init__(self, name, price):
+        self.name, self.price = name, price
+    def total(self, qty):
+        return self.price * qty
+
+class DiscountedProduct(Product):
+    def __init__(self, name, price, percent):
+        super().__init__(name, price)
+        self.percent = percent
+    def total(self, qty):
+        return super().total(qty) * (100 - self.percent) / 100
+
+items = [Product(&quot;Mouse&quot;, 1200), DiscountedProduct(&quot;Speaker&quot;, 3500, 20)]
+for it in items:
+    print(it.name, it.total(2))</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which method runs automatically when an object is created?</p><details><summary>Show answer</summary><p>__init__</p></details></li><li><p>What is the first parameter of a method, referring to the object itself?</p><details><summary>Show answer</summary><p>self</p></details></li><li><p>Which function calls the parent class's method?</p><details><summary>Show answer</summary><p>super</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Create a class <code>Car</code> with an <code>__init__</code> storing <code>name</code>, then make <code>Car(&quot;Probox&quot;)</code> and print its name. Output: <strong>Probox</strong></p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=classes-oop#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 17 of 19 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/dates-random-math/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Dates, times, random numbers and maths</a><a class="btn btn-solid btn-sm" href="/learn/python/project-mpesa-calculator/">Project: M-Pesa charges calculator <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

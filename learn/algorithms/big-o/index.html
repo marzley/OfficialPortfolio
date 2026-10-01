@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Big O: how fast is your code? | Algorithms &amp; problem solving</title>
+    <meta name="description" content="Big O notation describes how the work grows as the input grows. It helps you choose code that stays fast when your shop has 10 customers or 10 million…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/algorithms/big-o/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Big O: how fast is your code? | Algorithms &amp; problem solving" />
+    <meta property="og:description" content="Big O notation describes how the work grows as the input grows. It helps you choose code that stays fast when your shop has 10 customers or 10 million…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/algorithms/big-o/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Big O: how fast is your code? | Algorithms &amp; problem solving" />
+    <meta name="twitter:description" content="Big O notation describes how the work grows as the input grows. It helps you choose code that stays fast when your shop has 10 customers or 10 million…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/big-o/#lesson","name":"Big O: how fast is your code?","description":"Big O notation describes how the work grows as the input grows. It helps you choose code that stays fast when your shop has 10 customers or 10 million…","url":"https://marzleytechsolutions.co.ke/learn/algorithms/big-o/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/#course","name":"Algorithms & problem solving","url":"https://marzleytechsolutions.co.ke/learn/algorithms/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Algorithms & problem solving","item":"https://marzleytechsolutions.co.ke/learn/algorithms/"},{"@type":"ListItem","position":4,"name":"Big O: how fast is your code?","item":"https://marzleytechsolutions.co.ke/learn/algorithms/big-o/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> / <span>Big O: how fast is your code?</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=big-o"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Big O: how fast is your code?</h1>
+<p><strong>Big O notation</strong> describes how the work grows as the input grows. It helps you choose code that stays fast when your shop has 10 customers or 10 million.</p>
+<div class="static-table"><table><thead><tr><th>Big O</th><th>Name</th><th>Example</th><th>1,000 items → steps</th></tr></thead><tbody><tr><td>O(1)</td><td>Constant</td><td>Get <code>items[5]</code>, look up a dictionary key</td><td>1</td></tr><tr><td>O(log n)</td><td>Logarithmic</td><td>Binary search</td><td>~10</td></tr><tr><td>O(n)</td><td>Linear</td><td>Loop through a list once</td><td>1,000</td></tr><tr><td>O(n log n)</td><td>Linearithmic</td><td>Merge sort, Python's <code>sorted()</code></td><td>~10,000</td></tr><tr><td>O(n²)</td><td>Quadratic</td><td>Loop inside a loop (bubble sort, comparing every pair)</td><td>1,000,000</td></tr></tbody></table></div>
+<h2>See the difference</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import time
+
+n = 3000
+data = list(range(n))
+
+start = time.time()
+total = 0
+for x in data:            # O(n)
+    total += x
+print(&quot;O(n) loop:&quot;, round(time.time() - start, 4), &quot;s&quot;)
+
+start = time.time()
+pairs = 0
+for x in data:            # O(n²): a loop inside a loop
+    for y in data:
+        pairs += 1
+print(&quot;O(n²) loops:&quot;, round(time.time() - start, 4), &quot;s,&quot;, pairs, &quot;steps&quot;)</code></pre></figure>
+<h2>A practical tip: use sets and dictionaries for lookups</h2>
+<p>Checking <code>if x in some_list</code> is O(n). Checking <code>if x in some_set</code> is O(1) on average.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import time
+phones = [f&quot;07{n:08d}&quot; for n in range(200_000)]
+phone_set = set(phones)
+
+start = time.time(); print(&quot;0700199999&quot; in phones); print(&quot;list:&quot;, round(time.time() - start, 5), &quot;s&quot;)
+start = time.time(); print(&quot;0700199999&quot; in phone_set); print(&quot;set: &quot;, round(time.time() - start, 5), &quot;s&quot;)</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the Big O of looking up a key in a dictionary (on average)?</p><details><summary>Show answer</summary><p>O(1)</p></details></li><li><p>What is the Big O of a loop inside a loop over the same list?</p><details><summary>Show answer</summary><p>O(n²)</p></details></li><li><p>What is the Big O of binary search?</p><details><summary>Show answer</summary><p>O(log n)</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 11 in <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> · <a href="/learn/?book=algorithms">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/algorithms/sorting/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Sorting algorithms</a><a class="btn btn-solid btn-sm" href="/learn/algorithms/data-structures/">Data structures: stacks, queues and more <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

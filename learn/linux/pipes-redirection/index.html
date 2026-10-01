@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pipes and redirection: combining commands | Marzley Learn</title>
+    <meta name="description" content="The real power of the Linux command line is joining small commands together. Each does one job well; pipes connect them into a tool that answers real…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/linux/pipes-redirection/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Pipes and redirection: combining commands | Marzley Learn" />
+    <meta property="og:description" content="The real power of the Linux command line is joining small commands together. Each does one job well; pipes connect them into a tool that answers real…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/linux/pipes-redirection/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Pipes and redirection: combining commands | Marzley Learn" />
+    <meta name="twitter:description" content="The real power of the Linux command line is joining small commands together. Each does one job well; pipes connect them into a tool that answers real…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/linux/pipes-redirection/#lesson","name":"Pipes and redirection: combining commands","description":"The real power of the Linux command line is joining small commands together. Each does one job well; pipes connect them into a tool that answers real…","url":"https://marzleytechsolutions.co.ke/learn/linux/pipes-redirection/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/linux/#course","name":"Linux command line","url":"https://marzleytechsolutions.co.ke/learn/linux/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Linux command line","item":"https://marzleytechsolutions.co.ke/learn/linux/"},{"@type":"ListItem","position":4,"name":"Pipes and redirection: combining commands","item":"https://marzleytechsolutions.co.ke/learn/linux/pipes-redirection/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/linux/">Linux command line</a> / <span>Pipes and redirection: combining commands</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=linux&amp;lesson=pipes-redirection"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Pipes and redirection: combining commands</h1>
+<p>The real power of the Linux command line is joining small commands together. Each does one job well; <strong>pipes</strong> connect them into a tool that answers real questions in one line.</p>
+<h2>Redirection: send output to a file</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">ls -l &gt; files.txt          # write output to a file (replaces it)
+date &gt;&gt; log.txt            # append to the end of a file
+sort &lt; names.txt           # read input from a file
+command 2&gt; errors.txt      # save only error messages
+command &gt; all.txt 2&gt;&amp;1     # save output and errors together
+command &gt; /dev/null 2&gt;&amp;1   # throw everything away (silence)</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Symbol</th><th>Meaning</th></tr></thead><tbody><tr><td><code>&gt;</code></td><td>Output to a file (overwrite)</td></tr><tr><td><code>&gt;&gt;</code></td><td>Output to a file (append)</td></tr><tr><td><code>&lt;</code></td><td>Input from a file</td></tr><tr><td><code>2&gt;</code></td><td>Errors to a file</td></tr><tr><td><code>2&gt;&amp;1</code></td><td>Errors go wherever output goes</td></tr></tbody></table></div>
+<blockquote><p>Careful: <code>&gt;</code> erases the file first. <code>sort data.txt &gt; data.txt</code> leaves you with an <strong>empty</strong> file.</p></blockquote>
+<h2>Pipes: output of one command → input of the next</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">ls -l | less                      # page through a long listing
+cat access.log | grep &quot;404&quot; | wc -l     # how many 404 errors?
+ps aux | grep php                 # is PHP running?
+history | grep ssh                # commands I&#x27;ve run with ssh</code></pre></figure>
+<h2>Real questions answered with pipes</h2>
+<p><strong>Which pages are visited most?</strong> (web server access log)</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">cut -d&#x27; &#x27; -f7 access.log | sort | uniq -c | sort -rn | head -10</code></pre></figure>
+<p>Read it step by step:</p>
+<ol><li><code>cut -d&#x27; &#x27; -f7</code> takes the 7th space-separated field (the page path),</li><li><code>sort</code> groups identical paths together,</li><li><code>uniq -c</code> counts each group,</li><li><code>sort -rn</code> sorts by count, highest first,</li><li><code>head -10</code> keeps the top 10.</li></ol>
+<p><strong>Which IP addresses hit the login page most?</strong> (spotting a password attack)</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">grep &quot;POST /login&quot; access.log | awk &#x27;{print $1}&#x27; | sort | uniq -c | sort -rn | head</code></pre></figure>
+<p><strong>Total M-Pesa amounts in a CSV</strong> (amount in column 3):</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">cut -d, -f3 payments.csv | tail -n +2 | paste -sd+ | bc</code></pre></figure>
+<p><strong>Biggest folders using disk space:</strong></p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">du -sh /var/www/* | sort -h | tail -5</code></pre></figure>
+<h2>tee: save and show at the same time</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">./backup.sh | tee backup.log      # see the output AND keep a copy</code></pre></figure>
+<h2>xargs: turn lines into arguments</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">find . -name &quot;*.log&quot; | xargs rm           # delete all .log files found
+cat servers.txt | xargs -I{} ping -c 1 {} # ping each server listed</code></pre></figure>
+<h2>awk and sed in one minute</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">awk -F, &#x27;{ total += $3 } END { print total }&#x27; payments.csv   # sum column 3
+awk &#x27;$9 == 500&#x27; access.log                                    # lines where field 9 is 500
+sed &#x27;s/http:/https:/g&#x27; links.txt                              # replace text in the output
+sed -i &#x27;s/DEBUG=true/DEBUG=false/&#x27; .env                       # edit a file in place</code></pre></figure>
+<h2>Chaining commands</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">mkdir site &amp;&amp; cd site          # run the second only if the first succeeds
+make build || echo &quot;Build failed&quot;   # run the second only if the first fails
+cd /tmp; ls                    # run both regardless</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which symbol appends output to a file instead of replacing it?</p><details><summary>Show answer</summary><p>&gt;&gt;</p></details></li><li><p>What is the name of the symbol that sends one command's output into the next command?</p><details><summary>Show answer</summary><p>pipe</p></details></li><li><p>Which command counts identical neighbouring lines? (with -c)</p><details><summary>Show answer</summary><p>uniq</p></details></li><li><p>Which command shows output on screen and also saves it to a file?</p><details><summary>Show answer</summary><p>tee</p></details></li><li><p>With &amp;&amp;, does the second command run if the first fails? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 10 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/viewing-editing-files/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Viewing, searching and editing text files (cat, less, grep, nano)</a><a class="btn btn-solid btn-sm" href="/learn/linux/permissions/">Users and permissions (chmod, chown) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Subnetting to meet requirements | Networking</title>
+    <meta name="description" content="In real jobs you don&#x27;t start with an answer; you start with a requirement : &quot;We have 192.168.50.0/24. We need 6 departments with up to 25 computers…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/networking/subnetting-requirements/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Subnetting to meet requirements | Networking" />
+    <meta property="og:description" content="In real jobs you don&#x27;t start with an answer; you start with a requirement : &quot;We have 192.168.50.0/24. We need 6 departments with up to 25 computers…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/networking/subnetting-requirements/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Subnetting to meet requirements | Networking" />
+    <meta name="twitter:description" content="In real jobs you don&#x27;t start with an answer; you start with a requirement : &quot;We have 192.168.50.0/24. We need 6 departments with up to 25 computers…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/networking/subnetting-requirements/#lesson","name":"Subnetting to meet requirements","description":"In real jobs you don't start with an answer; you start with a requirement : \"We have 192.168.50.0/24. We need 6 departments with up to 25 computers…","url":"https://marzleytechsolutions.co.ke/learn/networking/subnetting-requirements/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/networking/#course","name":"Networking","url":"https://marzleytechsolutions.co.ke/learn/networking/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Networking","item":"https://marzleytechsolutions.co.ke/learn/networking/"},{"@type":"ListItem","position":4,"name":"Subnetting to meet requirements","item":"https://marzleytechsolutions.co.ke/learn/networking/subnetting-requirements/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/networking/">Networking</a> / <span>Subnetting to meet requirements</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=networking&amp;lesson=subnetting-requirements"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Subnetting to meet requirements</h1>
+<p>In real jobs you don't start with an answer; you start with a <strong>requirement</strong>: "We have 192.168.50.0/24. We need 6 departments with up to 25 computers each." You must pick a prefix and list the subnets.</p>
+<h2>Two questions you ask</h2>
+<ol><li><strong>How many subnets?</strong> Borrow <em>s</em> host bits so that <strong>2^s ≥ subnets needed</strong>.</li><li><strong>How many hosts per subnet?</strong> Keep <em>h</em> host bits so that <strong>2^h − 2 ≥ hosts needed</strong>.</li></ol>
+<p>Both must fit inside the original network: original prefix + s + h ≤ 32.</p>
+<h2>Example: 6 departments, 25 hosts each, from 192.168.50.0/24</h2>
+<ul><li>Subnets: 2^3 = 8 ≥ 6 → borrow <strong>3 bits</strong> → /24 + 3 = <strong>/27</strong>.</li><li>Hosts in a /27: 2^5 − 2 = <strong>30</strong> ≥ 25 ✓.</li><li>Mask 255.255.255.224, block size 32.</li></ul>
+<div class="static-table"><table><thead><tr><th>Subnet</th><th>Network</th><th>First host</th><th>Last host</th><th>Broadcast</th></tr></thead><tbody><tr><td>1</td><td>192.168.50.0/27</td><td>.1</td><td>.30</td><td>.31</td></tr><tr><td>2</td><td>192.168.50.32/27</td><td>.33</td><td>.62</td><td>.63</td></tr><tr><td>3</td><td>192.168.50.64/27</td><td>.65</td><td>.94</td><td>.95</td></tr><tr><td>4</td><td>192.168.50.96/27</td><td>.97</td><td>.126</td><td>.127</td></tr><tr><td>5</td><td>192.168.50.128/27</td><td>.129</td><td>.158</td><td>.159</td></tr><tr><td>6</td><td>192.168.50.160/27</td><td>.161</td><td>.190</td><td>.191</td></tr><tr><td>spare</td><td>.192/27 and .224/27</td><td></td><td></td><td></td></tr></tbody></table></div>
+<h2>Example: hosts first</h2>
+<p>"Each branch needs 500 devices; we have 10.10.0.0/16." Hosts: 2^9 − 2 = 510 ≥ 500 → keep 9 host bits → <strong>/23</strong> (32 − 9). Number of /23s in a /16 = 2^(23 − 16) = <strong>128</strong> branches possible. Networks go up by <strong>2</strong> in the third octet: 10.10.0.0/23, 10.10.2.0/23, 10.10.4.0/23…</p>
+<h2>Always plan for growth</h2>
+<p>Choose sizes with room to grow (a department with 25 people today may have 40 next year). Changing IP plans later is painful.</p>
+<blockquote><p>Rule of thumb: in offices, a /24 (254 hosts) per floor or department is common and easy to read. Save small prefixes (/30, /31) for router-to-router links.</p></blockquote>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>You need 12 subnets. How many bits must you borrow?</p><details><summary>Show answer</summary><p>4 · 2^3 = 8 is too few.</p></details></li><li><p>From a /24, you need subnets of at least 50 hosts each. Which prefix do you use?</p><details><summary>Show answer</summary><p>/26</p></details></li><li><p>How many /26 subnets fit in a /24?</p><details><summary>Show answer</summary><p>4</p></details></li><li><p>You need 1,000 hosts in one subnet. What is the largest prefix (smallest network) that fits?</p><details><summary>Show answer</summary><p>/22</p></details></li><li><p>What is the network address of the 5th /27 subnet of 192.168.50.0/24?</p><details><summary>Show answer</summary><p>192.168.50.128</p></details></li><li><p>What is the broadcast address of the 3rd /23 subnet of 10.10.0.0/16?</p><details><summary>Show answer</summary><p>10.10.5.255 · The /23s are 10.10.0.0, 10.10.2.0, 10.10.4.0 …</p></details></li></ol></section></div><p class="static-meta">Lesson 9 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/subnetting-step-by-step/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Subnetting step by step (the magic number method)</a><a class="btn btn-solid btn-sm" href="/learn/networking/vlsm/">VLSM: different sizes in one network <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

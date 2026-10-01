@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Testing, debugging and releasing your Flutter app</title>
+    <meta name="description" content="An app isn&#x27;t finished when it works on your phone. It&#x27;s finished when it works on other people&#x27;s phones , doesn&#x27;t crash , and is on the Play Store …" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/flutter/testing-release/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Testing, debugging and releasing your Flutter app" />
+    <meta property="og:description" content="An app isn&#x27;t finished when it works on your phone. It&#x27;s finished when it works on other people&#x27;s phones , doesn&#x27;t crash , and is on the Play Store …" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/flutter/testing-release/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Testing, debugging and releasing your Flutter app" />
+    <meta name="twitter:description" content="An app isn&#x27;t finished when it works on your phone. It&#x27;s finished when it works on other people&#x27;s phones , doesn&#x27;t crash , and is on the Play Store …" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/flutter/testing-release/#lesson","name":"Testing, debugging and releasing your Flutter app","description":"An app isn't finished when it works on your phone. It's finished when it works on other people's phones , doesn't crash , and is on the Play Store …","url":"https://marzleytechsolutions.co.ke/learn/flutter/testing-release/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/flutter/#course","name":"Flutter app development","url":"https://marzleytechsolutions.co.ke/learn/flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Flutter app development","item":"https://marzleytechsolutions.co.ke/learn/flutter/"},{"@type":"ListItem","position":4,"name":"Testing, debugging and releasing your Flutter app","item":"https://marzleytechsolutions.co.ke/learn/flutter/testing-release/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/flutter/">Flutter app development</a> / <span>Testing, debugging and releasing your Flutter app</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=flutter&amp;lesson=testing-release"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Testing, debugging and releasing your Flutter app</h1>
+<p>An app isn't finished when it works on your phone. It's finished when it <strong>works on other people's phones</strong>, <strong>doesn't crash</strong>, and is <strong>on the Play Store</strong>. This lesson covers debugging, automatic tests, performance, and the release build.</p>
+<h2>Debugging tools</h2>
+<div class="static-table"><table><thead><tr><th>Tool</th><th>Use</th></tr></thead><tbody><tr><td><code>print()</code> / <code>debugPrint()</code></td><td>Quick values in the terminal (<code>debugPrint</code> doesn't cut long text)</td></tr><tr><td><strong>Breakpoints</strong> (click beside a line in VS Code, then run with F5)</td><td>Pause the app, look at every variable, step line by line</td></tr><tr><td><strong>Flutter DevTools</strong> → Widget inspector</td><td>Tap a widget on the phone to see its size, constraints and position</td></tr><tr><td>DevTools → Performance</td><td>Find slow frames (red bars = jank)</td></tr><tr><td>DevTools → Network</td><td>See every HTTP request, response and time</td></tr><tr><td>DevTools → Memory</td><td>Find leaks (screens that never get freed)</td></tr></tbody></table></div>
+<p>Read red error screens from the <strong>top</strong>: the first line says what went wrong, and the stack trace shows <strong>your file and line</strong> (look for <code>lib/...</code>).</p>
+<h2>Three kinds of tests</h2>
+<div class="static-table"><table><thead><tr><th>Test</th><th>Checks</th><th>Speed</th><th>Folder</th></tr></thead><tbody><tr><td><strong>Unit test</strong></td><td>One function or class (the <code>Cart</code>, a price calculator)</td><td>Milliseconds</td><td><code>test/</code></td></tr><tr><td><strong>Widget test</strong></td><td>One widget or screen: taps, text, layout</td><td>Fast (no phone needed)</td><td><code>test/</code></td></tr><tr><td><strong>Integration test</strong></td><td>The whole app on a real phone or emulator</td><td>Slow</td><td><code>integration_test/</code></td></tr></tbody></table></div>
+<p>Write many unit tests, some widget tests and a few integration tests.</p>
+<h3>A unit test</h3>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter_test/flutter_test.dart&#x27;;
+
+// The code under test (normally imported from lib/)
+int withVat(int amount) =&gt; (amount * 1.16).round();
+
+String? normalisePhone(String input) {
+  final d = input.replaceAll(RegExp(r&#x27;\D&#x27;), &#x27;&#x27;);
+  if (RegExp(r&#x27;^0[17]\d{8}$&#x27;).hasMatch(d)) return &#x27;254${d.substring(1)}&#x27;;
+  if (RegExp(r&#x27;^254[17]\d{8}$&#x27;).hasMatch(d)) return d;
+  return null;
+}
+
+void main() {
+  test(&#x27;VAT is 16%&#x27;, () {
+    expect(withVat(1000), 1160);
+    expect(withVat(0), 0);
+  });
+
+  group(&#x27;normalisePhone&#x27;, () {
+    test(&#x27;accepts local and international formats&#x27;, () {
+      expect(normalisePhone(&#x27;0712 345 678&#x27;), &#x27;254712345678&#x27;);
+      expect(normalisePhone(&#x27;+254 112 345 678&#x27;), &#x27;254112345678&#x27;);
+    });
+    test(&#x27;rejects bad numbers&#x27;, () {
+      expect(normalisePhone(&#x27;12345&#x27;), isNull);
+      expect(normalisePhone(&#x27;0812345678&#x27;), isNull);
+    });
+  });
+}</code></pre></figure>
+<p>Run all tests with **<code>flutter test</code>**. Each <code>expect(actual, expected)</code> must be true or the test fails and tells you both values.</p>
+<h3>A widget test</h3>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+import &#x27;package:flutter_test/flutter_test.dart&#x27;;
+
+class Counter extends StatefulWidget {
+  const Counter({super.key});
+  @override
+  State&lt;Counter&gt; createState() =&gt; _CounterState();
+}
+
+class _CounterState extends State&lt;Counter&gt; {
+  int n = 0;
+  @override
+  Widget build(BuildContext context) =&gt; Scaffold(
+        body: Center(child: Text(&#x27;Items: $n&#x27;)),
+        floatingActionButton: FloatingActionButton(onPressed: () =&gt; setState(() =&gt; n++), child: const Icon(Icons.add)),
+      );
+}
+
+void main() {
+  testWidgets(&#x27;tapping + adds an item&#x27;, (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: Counter()));   // draw the widget
+    expect(find.text(&#x27;Items: 0&#x27;), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.add));                      // tap the button
+    await tester.pump();                                           // redraw after setState
+
+    expect(find.text(&#x27;Items: 1&#x27;), findsOneWidget);
+    expect(find.text(&#x27;Items: 0&#x27;), findsNothing);
+  });
+}</code></pre></figure>
+<p>Useful finders: <code>find.text</code>, <code>find.byIcon</code>, <code>find.byType(ElevatedButton)</code>, <code>find.byKey(const Key(&#x27;pay&#x27;))</code>. Use <code>tester.enterText(find.byType(TextField), &#x27;0712...&#x27;)</code> to type, and <code>pumpAndSettle()</code> to wait for animations.</p>
+<h2>Test on real devices</h2>
+<p>Before every release, test on:</p>
+<ul><li>A <strong>cheap, older Android</strong> phone (2 GB RAM, Android 8 or 9): the phones many of your users have.</li><li>A <strong>small screen</strong> (5 inch) and a big one.</li><li><strong>Dark mode</strong> and <strong>large font</strong> settings.</li><li><strong>No internet</strong> and <strong>slow internet</strong> (turn on airplane mode mid-request).</li><li>Rotating the phone, and leaving the app and coming back.</li></ul>
+<h2>Performance checklist</h2>
+<ul><li>Run in <strong>profile mode</strong> to measure: <code>flutter run --profile</code> (debug mode is much slower and misleading).</li><li>Use <code>const</code> widgets and <code>ListView.builder</code>.</li><li>Don't rebuild the whole screen for small changes (<code>select</code>, <code>Consumer</code>, small widgets).</li><li>Resize images; use <code>cacheWidth</code> on network images.</li><li>Keep heavy work (parsing big JSON) off the UI thread with <code>compute()</code>.</li></ul>
+<h2>Preparing a release</h2>
+<ol><li><strong>App id</strong> (can never change after publishing): in <code>android/app/build.gradle</code>, <code>applicationId &quot;ke.co.yourname.duka&quot;</code>.</li><li><strong>Version</strong> in <code>pubspec.yaml</code>: <code>version: 1.0.0+1</code>. The part after <code>+</code> (the build number) must go up with <strong>every</strong> upload.</li><li><strong>Name and icon</strong>: <code>android:label</code> in the manifest; icons via <code>flutter_launcher_icons</code>.</li><li><strong>Permissions</strong>: remove any you don't use.</li></ol>
+<h3>Signing key (keep it forever!)</h3>
+<p>Android apps must be signed. Create an <strong>upload key</strong> once:</p>
+<figure class="static-code"><pre><code>keytool -genkey -v -keystore upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload</code></pre></figure>
+<p>Create <code>android/key.properties</code> (and add it to <code>.gitignore</code>: it contains passwords):</p>
+<figure class="static-code"><pre><code>storePassword=your-store-password
+keyPassword=your-key-password
+keyAlias=upload
+storeFile=/home/you/keys/upload-keystore.jks</code></pre></figure>
+<p>Then follow the "Sign the app" steps on <strong>docs.flutter.dev/deployment/android</strong> to load it in <code>android/app/build.gradle</code>.</p>
+<blockquote><p><strong>Back up the .jks file and passwords</strong> (for example in an encrypted drive and a password manager). With Play App Signing, Google holds the real app key, so a lost upload key can be reset through support, but it takes time. Never commit keys to GitHub.</p></blockquote>
+<h3>Build</h3>
+<figure class="static-code"><pre><code>flutter build appbundle --release       # .aab for the Play Store  → build/app/outputs/bundle/release/app-release.aab
+flutter build apk --release --split-per-abi   # smaller .apk files to share directly (WhatsApp, website)</code></pre></figure>
+<p><code>--split-per-abi</code> makes one APK per phone type (<code>arm64-v8a</code> fits almost all modern phones), each much smaller than one "fat" APK.</p>
+<p><strong>Obfuscate</strong> to make your code harder to read: add <code>--obfuscate --split-debug-info=build/symbols</code> (keep the symbols folder to read crash reports).</p>
+<h2>Publishing on Google Play</h2>
+<ol><li>Create a <strong>Google Play Console</strong> developer account (one-time fee of US$25; you can pay with a Visa/Mastercard debit card).</li><li><strong>Create app</strong> → name, language, free or paid.</li><li>Complete <strong>App content</strong>: privacy policy URL (required; host it on your website), data safety form, content rating questionnaire, target audience, ads declaration.</li><li><strong>Store listing</strong>: short description (80 characters), full description, at least 2 phone screenshots, a 512×512 icon and a 1024×500 feature graphic.</li><li><strong>Testing</strong>: new personal developer accounts must run a <strong>closed test with at least 12 testers for 14 days</strong> before they can publish to everyone (check the current rule in Play Console). Ask friends, classmates or a WhatsApp group to join.</li><li><strong>Production</strong> → create a release → upload the <code>.aab</code> → write release notes → roll out.</li></ol>
+<p>Reviews usually take from a few hours to a few days. Updates: raise the build number, build, upload a new release.</p>
+<h2>After launch</h2>
+<ul><li>Add <strong>Firebase Crashlytics</strong> to see crashes from users' phones with the exact line.</li><li>Read and reply to <strong>Play Store reviews</strong>: it improves your rating.</li><li>Ship small updates often.</li><li>Use <strong>staged rollouts</strong> (release to 10% first) for big changes.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command runs all your Flutter tests?</p><details><summary>Show answer</summary><p>flutter test</p></details></li><li><p>Which test type checks one function or class?</p><details><summary>Show answer</summary><p>unit test</p></details></li><li><p>In a widget test, which call redraws after a tap?</p><details><summary>Show answer</summary><p>pump</p></details></li><li><p>Which file type do you upload to the Google Play Store?</p><details><summary>Show answer</summary><p>aab</p></details></li><li><p>In version: 1.0.0+7, which number must go up with every upload?</p><details><summary>Show answer</summary><p>7</p></details></li><li><p>Which command builds the Play Store file?</p><details><summary>Show answer</summary><p>flutter build appbundle</p></details></li><li><p>Which mode should you use to measure performance?</p><details><summary>Show answer</summary><p>profile</p></details></li></ol></section></div><p class="static-meta">Lesson 15 of 15 in <a href="/learn/flutter/">Flutter app development</a> · <a href="/learn/?book=flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/flutter/project-duka-app/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Project: build a complete shop stock and sales app</a><span></span></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Loading data from the internet: http, JSON models and…</title>
+    <meta name="description" content="Most apps show data from a server: products, orders, news, exam results. The app sends an HTTP request to an API , gets back JSON , turns it into Dart…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/flutter/http-apis-json/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Loading data from the internet: http, JSON models and…" />
+    <meta property="og:description" content="Most apps show data from a server: products, orders, news, exam results. The app sends an HTTP request to an API , gets back JSON , turns it into Dart…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/flutter/http-apis-json/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Loading data from the internet: http, JSON models and…" />
+    <meta name="twitter:description" content="Most apps show data from a server: products, orders, news, exam results. The app sends an HTTP request to an API , gets back JSON , turns it into Dart…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/flutter/http-apis-json/#lesson","name":"Loading data from the internet: http, JSON models and FutureBuilder","description":"Most apps show data from a server: products, orders, news, exam results. The app sends an HTTP request to an API , gets back JSON , turns it into Dart…","url":"https://marzleytechsolutions.co.ke/learn/flutter/http-apis-json/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/flutter/#course","name":"Flutter app development","url":"https://marzleytechsolutions.co.ke/learn/flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Flutter app development","item":"https://marzleytechsolutions.co.ke/learn/flutter/"},{"@type":"ListItem","position":4,"name":"Loading data from the internet: http, JSON models and FutureBuilder","item":"https://marzleytechsolutions.co.ke/learn/flutter/http-apis-json/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/flutter/">Flutter app development</a> / <span>Loading data from the internet: http, JSON models and FutureBuilder</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=flutter&amp;lesson=http-apis-json"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Loading data from the internet: http, JSON models and FutureBuilder</h1>
+<p>Most apps show data from a server: products, orders, news, exam results. The app sends an <strong>HTTP request</strong> to an <strong>API</strong>, gets back <strong>JSON</strong>, turns it into Dart objects and shows them. This lesson does the whole journey properly: models, errors, loading states, POST requests and timeouts.</p>
+<blockquote><p>New to APIs? Read <strong>APIs &amp; backends for apps → How backends work</strong> first.</p></blockquote>
+<h2>Setup</h2>
+<figure class="static-code"><pre><code>flutter pub add http</code></pre></figure>
+<p>Android needs internet permission for <strong>release</strong> builds (debug builds have it already). In <code>android/app/src/main/AndroidManifest.xml</code>, above <code>&lt;application</code>:</p>
+<figure class="static-code"><figcaption>XML</figcaption><pre><code class="language-xml">&lt;uses-permission android:name=&quot;android.permission.INTERNET&quot; /&gt;</code></pre></figure>
+<p>Forgetting this is the #1 reason "it works on my phone but not in the APK I sent the client".</p>
+<h2>The JSON we'll load</h2>
+<p>A public test API, <code>https://jsonplaceholder.typicode.com/users</code>, returns a list like:</p>
+<figure class="static-code"><figcaption>JSON</figcaption><pre><code class="language-json">[
+  {
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;Leanne Graham&quot;,
+    &quot;email&quot;: &quot;Sincere@april.biz&quot;,
+    &quot;phone&quot;: &quot;1-770-736-8031 x56442&quot;,
+    &quot;address&quot;: { &quot;city&quot;: &quot;Gwenborough&quot; },
+    &quot;company&quot;: { &quot;name&quot;: &quot;Romaguera-Crona&quot; }
+  }
+]</code></pre></figure>
+<h2>Step 1: a model class with fromJson</h2>
+<p>Never pass raw <code>Map&lt;String, dynamic&gt;</code> around your app. Turn JSON into a <strong>typed class</strong> once, at the edge. Then the editor autocompletes fields and typos become compile errors.</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">class User {
+  final int id;
+  final String name;
+  final String email;
+  final String city;
+  final String company;
+
+  const User({required this.id, required this.name, required this.email, required this.city, required this.company});
+
+  factory User.fromJson(Map&lt;String, dynamic&gt; json) {
+    return User(
+      id: json[&#x27;id&#x27;] as int,
+      name: json[&#x27;name&#x27;] as String,
+      email: json[&#x27;email&#x27;] as String,
+      city: (json[&#x27;address&#x27;] as Map&lt;String, dynamic&gt;?)?[&#x27;city&#x27;] as String? ?? &#x27;Unknown&#x27;,   // nested and possibly missing
+      company: (json[&#x27;company&#x27;] as Map&lt;String, dynamic&gt;?)?[&#x27;name&#x27;] as String? ?? &#x27;&#x27;,
+    );
+  }
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {&#x27;id&#x27;: id, &#x27;name&#x27;: name, &#x27;email&#x27;: email};
+}
+
+void main() {
+  final u = User.fromJson({&#x27;id&#x27;: 7, &#x27;name&#x27;: &#x27;Amina&#x27;, &#x27;email&#x27;: &#x27;amina@example.com&#x27;, &#x27;address&#x27;: {&#x27;city&#x27;: &#x27;Mombasa&#x27;}});
+  print(&#x27;${u.name} from ${u.city}&#x27;);   // Amina from Mombasa
+  print(u.toJson());
+}</code></pre></figure>
+<p><code>factory</code> constructors can do work before creating the object. <code>?? &#x27;Unknown&#x27;</code> gives a default when a field is missing: servers change, so be defensive.</p>
+<blockquote><p>For big models, packages like <strong>json_serializable</strong> or <strong>freezed</strong> generate <code>fromJson</code>/<code>toJson</code> for you. Learn to write them by hand first.</p></blockquote>
+<h2>Step 2: a service that talks to the API</h2>
+<p>Keep network code out of widgets, in its own class:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;dart:async&#x27;;
+import &#x27;dart:convert&#x27;;
+import &#x27;dart:io&#x27;;
+import &#x27;package:http/http.dart&#x27; as http;
+
+class User {
+  final int id;
+  final String name, email, city;
+  const User(this.id, this.name, this.email, this.city);
+  factory User.fromJson(Map&lt;String, dynamic&gt; j) =&gt;
+      User(j[&#x27;id&#x27;] as int, j[&#x27;name&#x27;] as String, j[&#x27;email&#x27;] as String, (j[&#x27;address&#x27;] as Map&lt;String, dynamic&gt;?)?[&#x27;city&#x27;] as String? ?? &#x27;&#x27;);
+}
+
+/// A friendly error the UI can show as it is.
+class ApiException implements Exception {
+  final String message;
+  ApiException(this.message);
+  @override
+  String toString() =&gt; message;
+}
+
+class UserApi {
+  static const base = &#x27;https://jsonplaceholder.typicode.com&#x27;;
+  final http.Client client;
+  UserApi({http.Client? client}) : client = client ?? http.Client();
+
+  Future&lt;List&lt;User&gt;&gt; fetchUsers() async {
+    try {
+      final res = await client
+          .get(Uri.parse(&#x27;$base/users&#x27;), headers: {&#x27;Accept&#x27;: &#x27;application/json&#x27;})
+          .timeout(const Duration(seconds: 15));             // don&#x27;t wait forever on a bad network
+      if (res.statusCode != 200) {
+        throw ApiException(&#x27;The server replied ${res.statusCode}. Please try again later.&#x27;);
+      }
+      final list = jsonDecode(res.body) as List&lt;dynamic&gt;;
+      return list.map((e) =&gt; User.fromJson(e as Map&lt;String, dynamic&gt;)).toList();
+    } on SocketException {
+      throw ApiException(&#x27;No internet connection. Check your data or Wi-Fi.&#x27;);
+    } on TimeoutException {
+      throw ApiException(&#x27;The network is slow. Please try again.&#x27;);
+    } on FormatException {
+      throw ApiException(&#x27;We got an unexpected reply from the server.&#x27;);
+    }
+  }
+
+  Future&lt;int&gt; createPost(String title, String body) async {
+    final res = await client.post(
+      Uri.parse(&#x27;$base/posts&#x27;),
+      headers: {&#x27;Content-Type&#x27;: &#x27;application/json; charset=UTF-8&#x27;},
+      body: jsonEncode({&#x27;title&#x27;: title, &#x27;body&#x27;: body, &#x27;userId&#x27;: 1}),
+    );
+    if (res.statusCode != 201) throw ApiException(&#x27;Could not save (${res.statusCode}).&#x27;);
+    return (jsonDecode(res.body) as Map&lt;String, dynamic&gt;)[&#x27;id&#x27;] as int;
+  }
+}
+
+Future&lt;void&gt; main() async {
+  final api = UserApi();
+  try {
+    final users = await api.fetchUsers();
+    print(&#x27;Loaded ${users.length} users, first: ${users.first.name}&#x27;);
+  } on ApiException catch (e) {
+    print(e);
+  }
+}</code></pre></figure>
+<p>What each part protects you from:</p>
+<div class="static-table"><table><thead><tr><th>Code</th><th>Protects against</th></tr></thead><tbody><tr><td><code>.timeout(...)</code></td><td>Hanging forever on a weak signal</td></tr><tr><td>Checking <code>statusCode</code></td><td>Showing an error page's HTML as if it were data</td></tr><tr><td><code>on SocketException</code></td><td>No internet (very common on phones)</td></tr><tr><td><code>on FormatException</code></td><td>The server returned something that isn't JSON</td></tr><tr><td><code>ApiException</code> with a friendly message</td><td>Scary technical errors on screen</td></tr></tbody></table></div>
+<h2>Step 3: showing it with FutureBuilder</h2>
+<p><code>FutureBuilder</code> rebuilds when a <code>Future</code> finishes, and gives you a <strong>snapshot</strong> with the state:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;dart:convert&#x27;;
+import &#x27;package:flutter/material.dart&#x27;;
+import &#x27;package:http/http.dart&#x27; as http;
+
+void main() =&gt; runApp(const MaterialApp(home: UsersScreen()));
+
+Future&lt;List&lt;Map&lt;String, dynamic&gt;&gt;&gt; fetchUsers() async {
+  final res = await http.get(Uri.parse(&#x27;https://jsonplaceholder.typicode.com/users&#x27;)).timeout(const Duration(seconds: 15));
+  if (res.statusCode != 200) throw Exception(&#x27;Server error ${res.statusCode}&#x27;);
+  return (jsonDecode(res.body) as List).cast&lt;Map&lt;String, dynamic&gt;&gt;();
+}
+
+class UsersScreen extends StatefulWidget {
+  const UsersScreen({super.key});
+  @override
+  State&lt;UsersScreen&gt; createState() =&gt; _UsersScreenState();
+}
+
+class _UsersScreenState extends State&lt;UsersScreen&gt; {
+  late Future&lt;List&lt;Map&lt;String, dynamic&gt;&gt;&gt; future;
+
+  @override
+  void initState() {
+    super.initState();
+    future = fetchUsers();          // start loading ONCE, here, not in build()
+  }
+
+  void retry() =&gt; setState(() =&gt; future = fetchUsers());
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;Customers&#x27;)),
+      body: FutureBuilder&lt;List&lt;Map&lt;String, dynamic&gt;&gt;&gt;(
+        future: future,
+        builder: (context, snap) {
+          if (snap.connectionState != ConnectionState.done) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snap.hasError) {
+            return Center(
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                const Icon(Icons.wifi_off, size: 48),
+                const SizedBox(height: 8),
+                Text(&#x27;${snap.error}&#x27;),
+                TextButton(onPressed: retry, child: const Text(&#x27;Try again&#x27;)),
+              ]),
+            );
+          }
+          final users = snap.data!;
+          if (users.isEmpty) return const Center(child: Text(&#x27;No customers yet&#x27;));
+          return RefreshIndicator(
+            onRefresh: () async { retry(); await future; },
+            child: ListView.builder(
+              itemCount: users.length,
+              itemBuilder: (context, i) =&gt; ListTile(
+                leading: CircleAvatar(child: Text((users[i][&#x27;name&#x27;] as String)[0])),
+                title: Text(users[i][&#x27;name&#x27;] as String),
+                subtitle: Text(users[i][&#x27;email&#x27;] as String),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}</code></pre></figure>
+<p><strong>The most common FutureBuilder bug:</strong> calling <code>fetchUsers()</code> directly in <code>future:</code> inside <code>build()</code>. Every rebuild (even a keyboard opening) starts a new request. Create the future in <code>initState</code> and store it.</p>
+<h2>Sending data (POST, PUT, DELETE)</h2>
+<div class="static-table"><table><thead><tr><th>Method</th><th>Use</th><th>Typical success code</th></tr></thead><tbody><tr><td><code>http.get</code></td><td>Read</td><td>200</td></tr><tr><td><code>http.post</code></td><td>Create</td><td>201 (or 200)</td></tr><tr><td><code>http.put</code> / <code>http.patch</code></td><td>Update all / some fields</td><td>200</td></tr><tr><td><code>http.delete</code></td><td>Delete</td><td>200 or 204</td></tr></tbody></table></div>
+<p>Always send <code>Content-Type: application/json</code> and <code>jsonEncode</code> the body, as in <code>createPost</code> above.</p>
+<h2>Login tokens</h2>
+<p>Most real APIs need you to prove who you are. After login, the server gives a <strong>token</strong>; send it with every request:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">final res = await http.get(
+  Uri.parse(&#x27;https://api.example.co.ke/orders&#x27;),
+  headers: {&#x27;Authorization&#x27;: &#x27;Bearer $token&#x27;, &#x27;Accept&#x27;: &#x27;application/json&#x27;},
+);
+if (res.statusCode == 401) {
+  // token expired: send the user back to the login screen
+}</code></pre></figure>
+<p>Store tokens with <strong>flutter_secure_storage</strong> (encrypted), not in plain SharedPreferences.</p>
+<h2>Security rules for API calls</h2>
+<ul><li><strong>Never put secret keys in the app</strong> (M-Pesa consumer secret, payment keys, database passwords). Anyone can unpack an APK and read them. Your app talks to <strong>your</strong> server; your server holds the secrets and talks to M-Pesa.</li><li>Use <strong>HTTPS</strong> only. Android blocks plain <code>http://</code> by default in release builds.</li><li>Validate everything on the server too.</li></ul>
+<h2>Testing on the emulator with a local server</h2>
+<p>If your PHP/Node API runs on your laptop, the Android emulator reaches it at **<code>http://10.0.2.2:8000</code>** (not <code>localhost</code>, which means the emulator itself). A real phone on the same Wi-Fi uses your laptop's IP, like <code>http://192.168.1.20:8000</code>.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which function turns a JSON string into Dart maps and lists?</p><details><summary>Show answer</summary><p>jsonDecode</p></details></li><li><p>Which function turns a Dart map into a JSON string?</p><details><summary>Show answer</summary><p>jsonEncode</p></details></li><li><p>What status code usually means a GET request succeeded?</p><details><summary>Show answer</summary><p>200</p></details></li><li><p>Where should you create the Future used by a FutureBuilder?</p><details><summary>Show answer</summary><p>initState</p></details></li><li><p>Which Android permission must release builds have to use the network?</p><details><summary>Show answer</summary><p>INTERNET</p></details></li><li><p>What address does the Android emulator use to reach a server on your laptop?</p><details><summary>Show answer</summary><p>10.0.2.2</p></details></li><li><p>Which HTTP header carries a login token? Write the header name.</p><details><summary>Show answer</summary><p>Authorization</p></details></li></ol></section></div><p class="static-meta">Lesson 9 of 15 in <a href="/learn/flutter/">Flutter app development</a> · <a href="/learn/?book=flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/flutter/state-management/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> State management: setState, lifting state, Provider and Riverpod</a><a class="btn btn-solid btn-sm" href="/learn/flutter/local-storage-offline/">Saving data on the phone: shared_preferences, SQLite and offline apps <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Viewing, searching and editing text files (cat, less,…</title>
+    <meta name="description" content="On Linux servers almost everything is a text file: website code, configuration, logs. You&#x27;ll spend a lot of time reading and editing them from the…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/linux/viewing-editing-files/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Viewing, searching and editing text files (cat, less,…" />
+    <meta property="og:description" content="On Linux servers almost everything is a text file: website code, configuration, logs. You&#x27;ll spend a lot of time reading and editing them from the…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/linux/viewing-editing-files/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Viewing, searching and editing text files (cat, less,…" />
+    <meta name="twitter:description" content="On Linux servers almost everything is a text file: website code, configuration, logs. You&#x27;ll spend a lot of time reading and editing them from the…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/linux/viewing-editing-files/#lesson","name":"Viewing, searching and editing text files (cat, less, grep, nano)","description":"On Linux servers almost everything is a text file: website code, configuration, logs. You'll spend a lot of time reading and editing them from the…","url":"https://marzleytechsolutions.co.ke/learn/linux/viewing-editing-files/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/linux/#course","name":"Linux command line","url":"https://marzleytechsolutions.co.ke/learn/linux/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Linux command line","item":"https://marzleytechsolutions.co.ke/learn/linux/"},{"@type":"ListItem","position":4,"name":"Viewing, searching and editing text files (cat, less, grep, nano)","item":"https://marzleytechsolutions.co.ke/learn/linux/viewing-editing-files/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/linux/">Linux command line</a> / <span>Viewing, searching and editing text files (cat, less, grep, nano)</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=linux&amp;lesson=viewing-editing-files"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Viewing, searching and editing text files</h1>
+<p>On Linux servers almost everything is a text file: website code, configuration, logs. You'll spend a lot of time reading and editing them from the terminal.</p>
+<h2>Viewing files</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">cat notes.txt            # print the whole file
+less /var/log/syslog     # scroll through a big file (q to quit)
+head -n 20 access.log    # first 20 lines
+tail -n 50 error.log     # last 50 lines
+tail -f error.log        # follow: new lines appear live (Ctrl+C to stop)
+wc -l users.csv          # count lines</code></pre></figure>
+<p>Inside <code>less</code>: <strong>Space</strong> next page, <strong>b</strong> back, <strong>/word</strong> search, <strong>n</strong> next match, <strong>q</strong> quit.</p>
+<blockquote><p><code>tail -f</code> on a web server's error log while you reload the page is one of the fastest ways to find a bug.</p></blockquote>
+<h2>Searching inside files: grep</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">grep &quot;error&quot; app.log                 # lines containing &quot;error&quot;
+grep -i &quot;mpesa&quot; app.log              # ignore case
+grep -n &quot;TODO&quot; *.php                 # show line numbers
+grep -r &quot;DB_PASSWORD&quot; /var/www       # search a whole folder
+grep -v &quot;DEBUG&quot; app.log              # lines NOT containing DEBUG
+grep -c &quot;404&quot; access.log             # count matching lines
+grep -E &quot;0[17][0-9]{8}&quot; contacts.txt # regular expression: Kenyan phone numbers</code></pre></figure>
+<h2>Finding files: find</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">find . -name &quot;*.php&quot;                      # all PHP files below here
+find /var/www -name &quot;config*&quot;             # by name pattern
+find . -type d -name &quot;uploads&quot;            # only folders
+find . -size +50M                         # files bigger than 50 MB
+find /tmp -mtime +7 -delete               # delete files older than 7 days (careful!)</code></pre></figure>
+<h2>Editing with nano (beginner friendly)</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">nano /etc/hosts</code></pre></figure>
+<p>The shortcuts are shown at the bottom (<code>^</code> means Ctrl):</p>
+<div class="static-table"><table><thead><tr><th>Keys</th><th>Action</th></tr></thead><tbody><tr><td>Ctrl+O, Enter</td><td>Save</td></tr><tr><td>Ctrl+X</td><td>Exit</td></tr><tr><td>Ctrl+W</td><td>Search</td></tr><tr><td>Ctrl+K / Ctrl+U</td><td>Cut line / paste</td></tr><tr><td>Alt+U</td><td>Undo</td></tr></tbody></table></div>
+<h2>vim: the editor on every server</h2>
+<p><code>vim</code> is powerful and always installed, but it has <strong>modes</strong>, which confuses beginners. Just enough to survive:</p>
+<ol><li><code>vim file.txt</code> opens it in <strong>normal</strong> mode.</li><li>Press <code>i</code> to <strong>insert</strong> (type text).</li><li>Press <code>Esc</code> to go back to normal mode.</li><li>Type <code>:wq</code> and Enter to <strong>save and quit</strong>, or <code>:q!</code> to <strong>quit without saving</strong>.</li></ol>
+<h2>Comparing and sorting text</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">diff old.conf new.conf        # show differences
+sort names.txt                # alphabetical
+sort -n amounts.txt           # numerical
+uniq                          # remove repeated neighbouring lines (use after sort)
+cut -d, -f2 sales.csv         # 2nd column of a CSV</code></pre></figure>
+<h2>Practice on your own computer</h2>
+<ul><li><strong>Windows</strong>: install <strong>WSL</strong> (Windows Subsystem for Linux) from the Microsoft Store and choose Ubuntu, or use Git Bash.</li><li><strong>Android</strong>: the Termux app.</li><li><strong>Online</strong>: any free cloud shell, or a cheap VPS.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command shows the last lines of a file and keeps showing new ones?</p><details><summary>Show answer</summary><p>tail -f</p></details></li><li><p>Which command searches for text inside files?</p><details><summary>Show answer</summary><p>grep</p></details></li><li><p>Which grep option ignores upper and lower case?</p><details><summary>Show answer</summary><p>-i</p></details></li><li><p>In nano, which keys exit the editor?</p><details><summary>Show answer</summary><p>Ctrl+X</p></details></li><li><p>In vim, what do you type to save and quit?</p><details><summary>Show answer</summary><p>:wq</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 10 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/navigating-files/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Navigating and managing files</a><a class="btn btn-solid btn-sm" href="/learn/linux/pipes-redirection/">Pipes and redirection: combining commands <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

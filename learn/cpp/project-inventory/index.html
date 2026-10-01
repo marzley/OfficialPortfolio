@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Project: a shop inventory manager in C++ | C++</title>
+    <meta name="description" content="Let&#x27;s build a small inventory system for a shop, using classes, vector , map , algorithms and exceptions: the same structure real point-of-sale…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/cpp/project-inventory/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Project: a shop inventory manager in C++ | C++" />
+    <meta property="og:description" content="Let&#x27;s build a small inventory system for a shop, using classes, vector , map , algorithms and exceptions: the same structure real point-of-sale…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/cpp/project-inventory/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Project: a shop inventory manager in C++ | C++" />
+    <meta name="twitter:description" content="Let&#x27;s build a small inventory system for a shop, using classes, vector , map , algorithms and exceptions: the same structure real point-of-sale…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/cpp/project-inventory/#lesson","name":"Project: a shop inventory manager in C++","description":"Let's build a small inventory system for a shop, using classes, vector , map , algorithms and exceptions: the same structure real point-of-sale…","url":"https://marzleytechsolutions.co.ke/learn/cpp/project-inventory/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/cpp/#course","name":"C++","url":"https://marzleytechsolutions.co.ke/learn/cpp/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"C++","item":"https://marzleytechsolutions.co.ke/learn/cpp/"},{"@type":"ListItem","position":4,"name":"Project: a shop inventory manager in C++","item":"https://marzleytechsolutions.co.ke/learn/cpp/project-inventory/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/cpp/">C++</a> / <span>Project: a shop inventory manager in C++</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=cpp&amp;lesson=project-inventory"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Project: a shop inventory manager in C++</h1>
+<p>Let's build a small inventory system for a shop, using classes, <code>vector</code>, <code>map</code>, algorithms and exceptions: the same structure real point-of-sale software uses, just smaller.</p>
+<h2>Requirements</h2>
+<ul><li>Products have a code, name, price and stock.</li><li>Add products, receive stock, and sell (with checks).</li><li>Keep a sales record and a running revenue total.</li><li>Report low-stock items and the best sellers.</li></ul>
+<h2>The program</h2>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+#include &lt;map&gt;
+#include &lt;stdexcept&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+struct Product {
+    string code, name;
+    double price;
+    int stock;
+};
+
+class Inventory {
+    map&lt;string, Product&gt; products;          // code -&gt; product
+    map&lt;string, int&gt; unitsSold;             // code -&gt; units
+    double revenue = 0;
+
+    Product &amp;get(const string &amp;code) {
+        auto it = products.find(code);
+        if (it == products.end()) throw invalid_argument(&quot;No product with code &quot; + code);
+        return it-&gt;second;
+    }
+
+public:
+    void add(const string &amp;code, const string &amp;name, double price, int stock) {
+        if (price &lt;= 0) throw invalid_argument(&quot;Price must be positive&quot;);
+        products[code] = {code, name, price, stock};
+    }
+
+    void receive(const string &amp;code, int qty) {
+        if (qty &lt;= 0) throw invalid_argument(&quot;Quantity must be positive&quot;);
+        get(code).stock += qty;
+    }
+
+    double sell(const string &amp;code, int qty) {
+        Product &amp;p = get(code);
+        if (qty &gt; p.stock) throw runtime_error(&quot;Only &quot; + to_string(p.stock) + &quot; &quot; + p.name + &quot; left&quot;);
+        p.stock -= qty;
+        unitsSold[code] += qty;
+        double amount = qty * p.price;
+        revenue += amount;
+        return amount;
+    }
+
+    void report(int lowStockLevel = 5) const {
+        cout &lt;&lt; left &lt;&lt; setw(6) &lt;&lt; &quot;Code&quot; &lt;&lt; setw(16) &lt;&lt; &quot;Product&quot; &lt;&lt; right &lt;&lt; setw(9) &lt;&lt; &quot;Price&quot; &lt;&lt; setw(7) &lt;&lt; &quot;Stock&quot; &lt;&lt; endl;
+        for (const auto &amp;[code, p] : products) {
+            cout &lt;&lt; left &lt;&lt; setw(6) &lt;&lt; code &lt;&lt; setw(16) &lt;&lt; p.name &lt;&lt; right &lt;&lt; fixed &lt;&lt; setprecision(2)
+                 &lt;&lt; setw(9) &lt;&lt; p.price &lt;&lt; setw(7) &lt;&lt; p.stock &lt;&lt; (p.stock &lt;= lowStockLevel ? &quot;  &lt;- reorder&quot; : &quot;&quot;) &lt;&lt; endl;
+        }
+        cout &lt;&lt; &quot;Revenue: KSh &quot; &lt;&lt; revenue &lt;&lt; endl;
+
+        vector&lt;pair&lt;int, string&gt;&gt; best;
+        for (const auto &amp;[code, units] : unitsSold) best.push_back({units, products.at(code).name});
+        sort(best.rbegin(), best.rend());
+        cout &lt;&lt; &quot;Best sellers:&quot;;
+        for (const auto &amp;[units, name] : best) cout &lt;&lt; &quot; &quot; &lt;&lt; name &lt;&lt; &quot; (&quot; &lt;&lt; units &lt;&lt; &quot;)&quot;;
+        cout &lt;&lt; endl;
+    }
+};
+
+int main() {
+    Inventory shop;
+    shop.add(&quot;U2&quot;, &quot;Unga 2kg&quot;, 180, 20);
+    shop.add(&quot;S1&quot;, &quot;Sugar 1kg&quot;, 160, 8);
+    shop.add(&quot;O1&quot;, &quot;Cooking oil 1L&quot;, 350, 4);
+
+    try {
+        cout &lt;&lt; &quot;Sold for KSh &quot; &lt;&lt; shop.sell(&quot;U2&quot;, 6) &lt;&lt; endl;
+        cout &lt;&lt; &quot;Sold for KSh &quot; &lt;&lt; shop.sell(&quot;S1&quot;, 5) &lt;&lt; endl;
+        shop.receive(&quot;O1&quot;, 10);
+        cout &lt;&lt; &quot;Sold for KSh &quot; &lt;&lt; shop.sell(&quot;O1&quot;, 3) &lt;&lt; endl;
+        shop.sell(&quot;S1&quot;, 10);                     // not enough stock: throws
+    } catch (const exception &amp;e) {
+        cout &lt;&lt; &quot;Problem: &quot; &lt;&lt; e.what() &lt;&lt; endl;
+    }
+
+    try {
+        shop.sell(&quot;XX&quot;, 1);                      // unknown code: throws
+    } catch (const invalid_argument &amp;e) {
+        cout &lt;&lt; &quot;Problem: &quot; &lt;&lt; e.what() &lt;&lt; endl;
+    }
+
+    cout &lt;&lt; endl;
+    shop.report();
+    return 0;
+}</code></pre></figure>
+<h2>What each part teaches</h2>
+<div class="static-table"><table><thead><tr><th>Concept</th><th>Where</th></tr></thead><tbody><tr><td><code>struct</code> for plain data</td><td><code>Product</code></td></tr><tr><td>A class guarding its data (private members)</td><td><code>Inventory</code></td></tr><tr><td><code>map</code> for look-ups by code</td><td><code>products</code>, <code>unitsSold</code></td></tr><tr><td>References to avoid copies and to modify in place</td><td><code>Product &amp;get(...)</code></td></tr><tr><td>Exceptions for invalid operations</td><td><code>throw invalid_argument</code>, <code>runtime_error</code></td></tr><tr><td><code>const</code> member function (doesn't change the object)</td><td><code>report() const</code></td></tr><tr><td>Structured bindings and range-for</td><td><code>for (const auto &amp;[code, p] : products)</code></td></tr><tr><td><code>iomanip</code> for tables</td><td><code>setw</code>, <code>left</code>, <code>right</code>, <code>setprecision</code></td></tr><tr><td>Sorting pairs</td><td>best sellers</td></tr></tbody></table></div>
+<h2>Challenges</h2>
+<ol><li>Add a <code>Category</code> to products and report revenue per category.</li><li>Apply 16% VAT and print a receipt for each sale.</li><li>Save the inventory to a file with <code>ofstream</code> and load it with <code>ifstream</code> at start.</li><li>Add a menu loop with <code>cin</code> so a cashier can use it.</li><li>Replace <code>map</code> with <code>unordered_map</code> and compare: what changes in the report order?</li></ol>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which container stores products by their code here?</p><details><summary>Show answer</summary><p>map</p></details></li><li><p>Which exception type is thrown for an unknown product code?</p><details><summary>Show answer</summary><p>invalid_argument</p></details></li><li><p>What does const after report() promise?</p><details><summary>Show answer</summary><p>it doesn't change the object</p></details></li><li><p>Which header provides setw and setprecision?</p><details><summary>Show answer</summary><p>iomanip</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 7 in <a href="/learn/cpp/">C++</a> · <a href="/learn/?book=cpp">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/cpp/inheritance-polymorphism/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Inheritance, virtual functions and polymorphism</a><a class="btn btn-solid btn-sm" href="/learn/cpp/competitive-programming/">C++ for competitive programming <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

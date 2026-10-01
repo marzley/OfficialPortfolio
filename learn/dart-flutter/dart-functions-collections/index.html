@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dart functions, lists, maps and null safety | Marzley Learn</title>
+    <meta name="description" content="Flutter apps are written in Dart . Before building screens, get comfortable with Dart&#x27;s functions, collections and its null safety , which prevents the…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-functions-collections/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Dart functions, lists, maps and null safety | Marzley Learn" />
+    <meta property="og:description" content="Flutter apps are written in Dart . Before building screens, get comfortable with Dart&#x27;s functions, collections and its null safety , which prevents the…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-functions-collections/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Dart functions, lists, maps and null safety | Marzley Learn" />
+    <meta name="twitter:description" content="Flutter apps are written in Dart . Before building screens, get comfortable with Dart&#x27;s functions, collections and its null safety , which prevents the…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-functions-collections/#lesson","name":"Dart functions, lists, maps and null safety","description":"Flutter apps are written in Dart . Before building screens, get comfortable with Dart's functions, collections and its null safety , which prevents the…","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-functions-collections/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/#course","name":"Dart & Flutter (mobile apps)","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Dart & Flutter (mobile apps)","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},{"@type":"ListItem","position":4,"name":"Dart functions, lists, maps and null safety","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-functions-collections/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> / <span>Dart functions, lists, maps and null safety</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=dart-flutter&amp;lesson=dart-functions-collections"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Dart functions, lists, maps and null safety</h1>
+<p>Flutter apps are written in <strong>Dart</strong>. Before building screens, get comfortable with Dart's functions, collections and its <strong>null safety</strong>, which prevents the most common app crash ("null is not a subtype of...").</p>
+<blockquote><p>Dart doesn't run in our editor. Copy any example into <strong>DartPad</strong> (dartpad.dev), which runs Dart and Flutter in your browser for free, then press Run.</p></blockquote>
+<h2>Functions</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">double withVat(double amount, {double rate = 16}) {   // named parameter with a default
+  return amount * (1 + rate / 100);
+}
+
+String greet(String name, [String? title]) {          // [ ] = optional positional
+  return title == null ? &#x27;Habari $name&#x27; : &#x27;Habari $title $name&#x27;;
+}
+
+int square(int n) =&gt; n * n;                           // arrow function for one expression
+
+void main() {
+  print(withVat(1000));              // 1160.0
+  print(withVat(1000, rate: 0));     // named argument
+  print(greet(&#x27;Wanjiru&#x27;));
+  print(greet(&#x27;Otieno&#x27;, &#x27;Dr.&#x27;));
+  print(square(9));
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Parameter style</th><th>Declared as</th><th>Called as</th></tr></thead><tbody><tr><td>Required positional</td><td><code>f(int a)</code></td><td><code>f(3)</code></td></tr><tr><td>Optional positional</td><td><code>f([int? a])</code></td><td><code>f()</code> or <code>f(3)</code></td></tr><tr><td>Named (optional)</td><td><code>f({int a = 0})</code></td><td><code>f(a: 3)</code></td></tr><tr><td>Named required</td><td><code>f({required int a})</code></td><td><code>f(a: 3)</code></td></tr></tbody></table></div>
+<p>Flutter widgets use <strong>named parameters</strong> everywhere: <code>Text(&#x27;Hi&#x27;, style: ...)</code>, <code>Padding(padding: ..., child: ...)</code>.</p>
+<h2>Lists</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">void main() {
+  final towns = &lt;String&gt;[&#x27;Nyeri&#x27;, &#x27;Meru&#x27;];
+  towns.add(&#x27;Embu&#x27;);
+  towns.insert(0, &#x27;Nanyuki&#x27;);
+  print(&#x27;${towns.length} towns, first: ${towns.first}&#x27;);
+
+  final prices = [180, 350, 60, 1200];
+  final withVat = prices.map((p) =&gt; (p * 1.16).round()).toList();
+  final cheap = prices.where((p) =&gt; p &lt; 300).toList();
+  final total = prices.reduce((a, b) =&gt; a + b);
+  print(&#x27;$withVat $cheap $total&#x27;);
+
+  prices.sort();
+  print(prices);
+  for (final p in prices) {
+    print(&#x27;KSh $p&#x27;);
+  }
+
+  final menu = [&#x27;Home&#x27;, &#x27;Shop&#x27;, if (true) &#x27;Offers&#x27;, for (var i = 1; i &lt;= 2; i++) &#x27;Page $i&#x27;];
+  print(menu);   // collection if/for: used a lot for building widget lists
+}</code></pre></figure>
+<h2>Maps and sets</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">void main() {
+  final stock = &lt;String, int&gt;{&#x27;Unga&#x27;: 12, &#x27;Sugar&#x27;: 0, &#x27;Oil&#x27;: 7};
+  stock[&#x27;Rice&#x27;] = 20;
+  stock.update(&#x27;Unga&#x27;, (v) =&gt; v - 2);
+  print(stock[&#x27;Oil&#x27;]);            // 7
+  print(stock[&#x27;Beans&#x27;]);          // null: missing key
+  print(stock.containsKey(&#x27;Sugar&#x27;));
+  stock.forEach((item, qty) =&gt; print(&#x27;$item: $qty&#x27;));
+
+  final unique = {&#x27;Otieno&#x27;, &#x27;Wanjiru&#x27;, &#x27;Otieno&#x27;};   // a Set
+  print(unique.length);           // 2
+}</code></pre></figure>
+<h2>Null safety</h2>
+<p>In Dart, a variable **cannot be null unless its type ends with <code>?</code>**. The compiler forces you to handle the null case.</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">void main() {
+  String name = &#x27;Amina&#x27;;        // can never be null
+  String? nickname;             // may be null (starts as null)
+
+  // print(nickname.length);    // compile error: nickname might be null
+  print(nickname?.length);      // ?. : null if nickname is null
+  print(nickname ?? &#x27;No nickname&#x27;);   // ?? : a default value
+
+  nickname = &#x27;Mina&#x27;;
+  if (nickname != null) {
+    print(nickname.length);     // safe: Dart knows it&#x27;s not null here
+  }
+
+  int? maybeQty = int.tryParse(&#x27;abc&#x27;);   // null if not a number
+  final qty = maybeQty ?? 1;
+  print(qty);
+
+  late String token;            // late: &quot;I promise to set it before use&quot;
+  token = &#x27;abc123&#x27;;
+  print(token);
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Syntax</th><th>Meaning</th></tr></thead><tbody><tr><td><code>String?</code></td><td>May be null</td></tr><tr><td><code>x?.y</code></td><td>Access only if x isn't null</td></tr><tr><td><code>x ?? y</code></td><td>Use y if x is null</td></tr><tr><td><code>x ??= y</code></td><td>Assign y only if x is null</td></tr><tr><td><code>x!</code></td><td>"I'm sure it's not null" (crashes if you're wrong: avoid)</td></tr><tr><td><code>late</code></td><td>Initialised later, before first use</td></tr></tbody></table></div>
+<h2>String interpolation</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">final item = &#x27;Cake&#x27;;
+final qty = 2;
+final price = 1800.0;
+print(&#x27;$qty x $item = KSh ${(qty * price).toStringAsFixed(2)}&#x27;);</code></pre></figure>
+<p><code>$name</code> inserts a variable; <code>${expression}</code> inserts any expression.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which free website runs Dart and Flutter code in the browser?</p><details><summary>Show answer</summary><p>DartPad</p></details></li><li><p>Which symbol after a type means the variable may be null?</p><details><summary>Show answer</summary><p>?</p></details></li><li><p>Which operator gives a default value when something is null?</p><details><summary>Show answer</summary><p>??</p></details></li><li><p>Which keyword makes a named parameter compulsory?</p><details><summary>Show answer</summary><p>required</p></details></li><li><p>Which list method keeps only matching items?</p><details><summary>Show answer</summary><p>where</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 7 in <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> · <a href="/learn/?book=dart-flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/dart-flutter/dart-basics/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Dart basics</a><a class="btn btn-solid btn-sm" href="/learn/dart-flutter/dart-classes-async/">Dart classes, JSON models and async/await <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

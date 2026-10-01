@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cleaning data: text and date functions | Marzley Learn</title>
+    <meta name="description" content="Data from forms, M-Pesa statements, school systems and copied web pages is often messy: extra spaces, names in capitals, phone numbers in different…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/excel/text-date-functions/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Cleaning data: text and date functions | Marzley Learn" />
+    <meta property="og:description" content="Data from forms, M-Pesa statements, school systems and copied web pages is often messy: extra spaces, names in capitals, phone numbers in different…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/excel/text-date-functions/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Cleaning data: text and date functions | Marzley Learn" />
+    <meta name="twitter:description" content="Data from forms, M-Pesa statements, school systems and copied web pages is often messy: extra spaces, names in capitals, phone numbers in different…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/excel/text-date-functions/#lesson","name":"Cleaning data: text and date functions","description":"Data from forms, M-Pesa statements, school systems and copied web pages is often messy: extra spaces, names in capitals, phone numbers in different…","url":"https://marzleytechsolutions.co.ke/learn/excel/text-date-functions/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/excel/#course","name":"Excel & Google Sheets","url":"https://marzleytechsolutions.co.ke/learn/excel/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Excel & Google Sheets","item":"https://marzleytechsolutions.co.ke/learn/excel/"},{"@type":"ListItem","position":4,"name":"Cleaning data: text and date functions","item":"https://marzleytechsolutions.co.ke/learn/excel/text-date-functions/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/excel/">Excel &amp; Google Sheets</a> / <span>Cleaning data: text and date functions</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=excel&amp;lesson=text-date-functions"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Cleaning data: text and date functions</h1>
+<p>Data from forms, M-Pesa statements, school systems and copied web pages is often messy: extra spaces, names in capitals, phone numbers in different formats, dates as text. Text and date functions clean it quickly, and cleaning skills are exactly what data-entry and data-analyst jobs ask for.</p>
+<h2>Text functions</h2>
+<div class="static-table"><table><thead><tr><th>Function</th><th>Example</th><th>Result</th></tr></thead><tbody><tr><td><code>TRIM</code></td><td><code>=TRIM(&quot;  Amina   Hassan &quot;)</code></td><td><code>Amina Hassan</code> (extra spaces removed)</td></tr><tr><td><code>PROPER</code></td><td><code>=PROPER(&quot;AMINA HASSAN&quot;)</code></td><td><code>Amina Hassan</code></td></tr><tr><td><code>UPPER</code> / <code>LOWER</code></td><td><code>=UPPER(&quot;kisumu&quot;)</code></td><td><code>KISUMU</code></td></tr><tr><td><code>LEN</code></td><td><code>=LEN(&quot;0712345678&quot;)</code></td><td><code>10</code></td></tr><tr><td><code>LEFT</code> / <code>RIGHT</code></td><td><code>=LEFT(&quot;0712345678&quot;, 4)</code></td><td><code>0712</code></td></tr><tr><td><code>MID</code></td><td><code>=MID(&quot;KCA/2026/0451&quot;, 5, 4)</code></td><td><code>2026</code></td></tr><tr><td><code>FIND</code></td><td><code>=FIND(&quot; &quot;, &quot;Amina Hassan&quot;)</code></td><td><code>6</code> (position of the space)</td></tr><tr><td><code>SUBSTITUTE</code></td><td><code>=SUBSTITUTE(&quot;0712 345 678&quot;,&quot; &quot;,&quot;&quot;)</code></td><td><code>0712345678</code></td></tr><tr><td><code>&amp;</code> or <code>CONCAT</code></td><td><code>=A2&amp;&quot; &quot;&amp;B2</code></td><td>Joins text</td></tr><tr><td><code>TEXTJOIN</code></td><td><code>=TEXTJOIN(&quot;, &quot;,TRUE,A2:A5)</code></td><td>Joins a range with commas</td></tr><tr><td><code>TEXT</code></td><td><code>=TEXT(1500,&quot;#,##0&quot;)</code></td><td><code>1,500</code> as text</td></tr><tr><td><code>VALUE</code></td><td><code>=VALUE(&quot;250&quot;)</code></td><td>The number 250</td></tr></tbody></table></div>
+<h2>Real cleaning recipes</h2>
+<p><strong>First and last name from a full name in A2:</strong></p>
+<figure class="static-code"><pre><code>First name:  =LEFT(A2, FIND(&quot; &quot;, A2) - 1)
+Last name:   =MID(A2, FIND(&quot; &quot;, A2) + 1, 100)</code></pre></figure>
+<p><strong>Tidy a name:</strong> <code>=PROPER(TRIM(A2))</code></p>
+<p><strong>Standardise phone numbers</strong> to <code>2547XXXXXXXX</code> (the format SMS and M-Pesa systems need):</p>
+<figure class="static-code"><pre><code>=IF(LEFT(SUBSTITUTE(A2,&quot; &quot;,&quot;&quot;),1)=&quot;0&quot;, &quot;254&quot;&amp;MID(SUBSTITUTE(A2,&quot; &quot;,&quot;&quot;),2,9), SUBSTITUTE(SUBSTITUTE(A2,&quot; &quot;,&quot;&quot;),&quot;+&quot;,&quot;&quot;))</code></pre></figure>
+<p><strong>Check a phone number is 10 digits:</strong> <code>=AND(LEN(A2)=10, ISNUMBER(--A2))</code></p>
+<p><strong>Build an email:</strong> <code>=LOWER(LEFT(A2,1)&amp;B2&amp;&quot;@school.ac.ke&quot;)</code></p>
+<p><strong>Split text into columns</strong> without formulas: select the column → <strong>Data → Text to Columns</strong> → choose the delimiter (comma, space).</p>
+<blockquote><p><strong>Flash Fill</strong> (Ctrl + E): type the result you want for the first one or two rows (e.g. just the first names), press Ctrl + E and Excel fills the rest by following your pattern.</p></blockquote>
+<h2>Dates are numbers</h2>
+<p>Excel stores a date as a <strong>number</strong> (days since 1 January 1900), formatted to look like a date. That's why you can subtract dates.</p>
+<div class="static-table"><table><thead><tr><th>Function</th><th>Example</th><th>Result</th></tr></thead><tbody><tr><td><code>TODAY()</code></td><td><code>=TODAY()</code></td><td>Today's date (updates daily)</td></tr><tr><td><code>NOW()</code></td><td><code>=NOW()</code></td><td>Date and time</td></tr><tr><td><code>DATE(y,m,d)</code></td><td><code>=DATE(2026,12,12)</code></td><td>12/12/2026</td></tr><tr><td><code>YEAR</code>, <code>MONTH</code>, <code>DAY</code></td><td><code>=YEAR(A2)</code></td><td>2026</td></tr><tr><td><code>WEEKDAY</code></td><td><code>=WEEKDAY(A2,2)</code></td><td>1 = Monday ... 7 = Sunday</td></tr><tr><td><code>TEXT</code> for names</td><td><code>=TEXT(A2,&quot;dddd&quot;)</code></td><td>Saturday</td></tr><tr><td>Days between</td><td><code>=B2-A2</code></td><td>Number of days</td></tr><tr><td><code>DATEDIF</code></td><td><code>=DATEDIF(A2,TODAY(),&quot;y&quot;)</code></td><td>Age in full years</td></tr><tr><td><code>EDATE</code></td><td><code>=EDATE(A2, 3)</code></td><td>Same day 3 months later</td></tr><tr><td><code>EOMONTH</code></td><td><code>=EOMONTH(A2, 0)</code></td><td>Last day of that month</td></tr><tr><td><code>NETWORKDAYS</code></td><td><code>=NETWORKDAYS(A2,B2,Holidays)</code></td><td>Working days, minus holidays</td></tr><tr><td><code>WORKDAY</code></td><td><code>=WORKDAY(A2, 10)</code></td><td>10 working days later</td></tr></tbody></table></div>
+<h2>Date recipes</h2>
+<figure class="static-code"><pre><code>Loan due in 30 days:        =A2+30
+Days overdue:               =MAX(0, TODAY()-B2)
+Overdue flag:               =IF(TODAY()&gt;B2, &quot;Overdue&quot;, &quot;OK&quot;)
+Age from date of birth:     =DATEDIF(C2, TODAY(), &quot;y&quot;)
+Month name for reports:     =TEXT(A2, &quot;mmm yyyy&quot;)          e.g. Sep 2026</code></pre></figure>
+<h2>When dates won't behave</h2>
+<p>If <code>=B2-A2</code> gives <code>#VALUE!</code> or dates are left-aligned, they're stored as <strong>text</strong> (common with data copied from websites or CSV files). Fixes:</p>
+<ul><li><strong>Data → Text to Columns → Finish</strong> converts many text dates.</li><li><code>=DATEVALUE(A2)</code> converts text to a date.</li><li>Check your system's date format (day/month vs month/day): Kenya uses <strong>dd/mm/yyyy</strong>.</li></ul>
+<h2>Removing duplicates</h2>
+<p><strong>Data → Remove Duplicates</strong> (keep a backup copy first), or in Excel 365: <code>=UNIQUE(A2:A500)</code>.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which function removes extra spaces from text?</p><details><summary>Show answer</summary><p>TRIM</p></details></li><li><p>Which function capitalises the first letter of each word?</p><details><summary>Show answer</summary><p>PROPER</p></details></li><li><p>Which shortcut starts Flash Fill?</p><details><summary>Show answer</summary><p>Ctrl + E</p></details></li><li><p>How does Excel really store dates: as text or as numbers?</p><details><summary>Show answer</summary><p>numbers</p></details></li><li><p>Which function returns today's date?</p><details><summary>Show answer</summary><p>TODAY</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 10 in <a href="/learn/excel/">Excel &amp; Google Sheets</a> · <a href="/learn/?book=excel">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/excel/if-logic-functions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> IF, AND, OR, IFS and counting with conditions</a><a class="btn btn-solid btn-sm" href="/learn/excel/sort-filter-tables/">Sorting, filtering and Excel Tables <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

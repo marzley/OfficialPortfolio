@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Errors, try/catch and debugging | JavaScript</title>
+    <meta name="description" content="Every programmer writes bugs. Good programmers find them fast. This lesson shows how to read error messages, handle errors gracefully and use the…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/javascript/errors-debugging/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Errors, try/catch and debugging | JavaScript" />
+    <meta property="og:description" content="Every programmer writes bugs. Good programmers find them fast. This lesson shows how to read error messages, handle errors gracefully and use the…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/javascript/errors-debugging/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Errors, try/catch and debugging | JavaScript" />
+    <meta name="twitter:description" content="Every programmer writes bugs. Good programmers find them fast. This lesson shows how to read error messages, handle errors gracefully and use the…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/javascript/errors-debugging/#lesson","name":"Errors, try/catch and debugging","description":"Every programmer writes bugs. Good programmers find them fast. This lesson shows how to read error messages, handle errors gracefully and use the…","url":"https://marzleytechsolutions.co.ke/learn/javascript/errors-debugging/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/javascript/#course","name":"JavaScript","url":"https://marzleytechsolutions.co.ke/learn/javascript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/"},{"@type":"ListItem","position":4,"name":"Errors, try/catch and debugging","item":"https://marzleytechsolutions.co.ke/learn/javascript/errors-debugging/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/javascript/">JavaScript</a> / <span>Errors, try/catch and debugging</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=errors-debugging"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Errors, try/catch and debugging</h1>
+<p>Every programmer writes bugs. Good programmers find them fast. This lesson shows how to read error messages, handle errors gracefully and use the browser's tools to debug.</p>
+<h2>Reading an error message</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">// This example fails on purpose, so you can read the error message
+const user = null;
+console.log(user.name);</code></pre></figure>
+<p>You'll see something like <strong>TypeError: Cannot read properties of null (reading 'name')</strong>. It tells you:</p>
+<ol><li>The <strong>type</strong> of error (<code>TypeError</code>),</li><li><strong>What</strong> went wrong (reading <code>name</code> from <code>null</code>),</li><li>And in the browser console, <strong>where</strong> (file and line number).</li></ol>
+<h2>The common error types</h2>
+<div class="static-table"><table><thead><tr><th>Error</th><th>Usually means</th><th>Example</th></tr></thead><tbody><tr><td><code>SyntaxError</code></td><td>Code is written wrongly (missing bracket, quote)</td><td><code>if (x &gt; 1 {</code></td></tr><tr><td><code>ReferenceError</code></td><td>Using a name that doesn't exist (often a typo)</td><td><code>consol.log()</code></td></tr><tr><td><code>TypeError</code></td><td>Using a value the wrong way</td><td><code>null.name</code>, <code>5()</code></td></tr><tr><td><code>RangeError</code></td><td>A number is out of the allowed range</td><td><code>new Array(-1)</code></td></tr></tbody></table></div>
+<h2>try / catch / finally</h2>
+<p>Wrap risky code so one failure doesn't stop the whole program:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const text = &#x27;{&quot;amount&quot;: 500, &quot;phone&quot;: &quot;0712345678&quot;&#x27;;   // broken JSON: missing }
+
+try {
+  const data = JSON.parse(text);
+  console.log(&quot;Amount:&quot;, data.amount);
+} catch (error) {
+  console.log(&quot;Could not read the payment data.&quot;);
+  console.log(&quot;Details:&quot;, error.name, &quot;-&quot;, error.message);
+} finally {
+  console.log(&quot;This always runs (e.g. hide the loading spinner).&quot;);
+}</code></pre></figure>
+<h2>Throwing your own errors</h2>
+<p>Use <code>throw</code> when your function receives something it can't work with:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">function withdraw(balance, amount) {
+  if (typeof amount !== &quot;number&quot; || amount &lt;= 0) {
+    throw new Error(&quot;Amount must be a positive number&quot;);
+  }
+  if (amount &gt; balance) {
+    throw new RangeError(`Insufficient funds: balance is KSh ${balance}`);
+  }
+  return balance - amount;
+}
+
+for (const amt of [300, -5, 9000]) {
+  try {
+    console.log(&quot;New balance:&quot;, withdraw(1000, amt));
+  } catch (e) {
+    console.log(`${e.name}: ${e.message}`);
+  }
+}</code></pre></figure>
+<h2>Debugging with console</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const cart = [{ item: &quot;Oil&quot;, price: 350 }, { item: &quot;Soap&quot;, price: 60 }];
+console.log(&quot;cart is&quot;, cart);
+console.table(cart);                 // a neat table in the browser console
+console.warn(&quot;Stock is low&quot;);
+console.error(&quot;Payment failed&quot;);
+console.log(typeof cart[0].price);   // check types when maths looks wrong</code></pre></figure>
+<h2>Browser DevTools</h2>
+<p>Press <strong>F12</strong> (or right-click → Inspect) in Chrome or Edge:</p>
+<ul><li><strong>Console</strong>: errors in red, with a clickable file and line number.</li><li><strong>Sources</strong>: click a line number to set a <strong>breakpoint</strong>. The code pauses there so you can see every variable's value, then step line by line.</li><li>Add the word <code>debugger;</code> in your code to pause at that point when DevTools is open.</li><li><strong>Network</strong>: see requests to servers (useful for <code>fetch</code> problems).</li></ul>
+<h2>A debugging routine that works</h2>
+<ol><li><strong>Read</strong> the whole error message. Note the line number.</li><li><strong>Reproduce</strong> it: what exact steps cause it?</li><li><strong>Check your assumptions</strong> with <code>console.log</code>: is the variable what you think? Is it a string instead of a number?</li><li><strong>Shrink</strong> the problem: comment out code until the bug disappears, then add back.</li><li><strong>Explain</strong> the code line by line to someone (or a rubber duck). You'll often spot the mistake while talking.</li><li><strong>Search</strong> the exact error text online; someone has had it before.</li></ol>
+<blockquote><p>Tip: our practice editor explains many errors in plain language and suggests a fix. Try making a mistake on purpose to see it.</p></blockquote>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which error type do you usually get from a typo in a variable name?</p><details><summary>Show answer</summary><p>ReferenceError</p></details></li><li><p>Which block runs whether or not an error happened?</p><details><summary>Show answer</summary><p>finally</p></details></li><li><p>Which keyword creates your own error?</p><details><summary>Show answer</summary><p>throw</p></details></li><li><p>Which console method shows an array of objects as a table?</p><details><summary>Show answer</summary><p>console.table</p></details></li><li><p>Which word in your code pauses it when DevTools is open?</p><details><summary>Show answer</summary><p>debugger</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Wrap <code>JSON.parse(&quot;{bad json&quot;)</code> in <code>try/catch</code> and log <strong>Invalid data</strong> in the catch block.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=errors-debugging#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 10 of 19 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/scope-closures/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Scope, hoisting and closures</a><a class="btn btn-solid btn-sm" href="/learn/javascript/dom-events/">The DOM and events <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

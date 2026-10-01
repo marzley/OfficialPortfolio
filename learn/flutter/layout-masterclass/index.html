@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Layout masterclass: Row, Column, Expanded, Stack and…</title>
+    <meta name="description" content="Layout is where most beginners get stuck in Flutter: yellow-and-black overflow stripes, &quot;unbounded height&quot; errors, things that won&#x27;t centre. This…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/flutter/layout-masterclass/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Layout masterclass: Row, Column, Expanded, Stack and…" />
+    <meta property="og:description" content="Layout is where most beginners get stuck in Flutter: yellow-and-black overflow stripes, &quot;unbounded height&quot; errors, things that won&#x27;t centre. This…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/flutter/layout-masterclass/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Layout masterclass: Row, Column, Expanded, Stack and…" />
+    <meta name="twitter:description" content="Layout is where most beginners get stuck in Flutter: yellow-and-black overflow stripes, &quot;unbounded height&quot; errors, things that won&#x27;t centre. This…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/flutter/layout-masterclass/#lesson","name":"Layout masterclass: Row, Column, Expanded, Stack and constraints","description":"Layout is where most beginners get stuck in Flutter: yellow-and-black overflow stripes, \"unbounded height\" errors, things that won't centre. This…","url":"https://marzleytechsolutions.co.ke/learn/flutter/layout-masterclass/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/flutter/#course","name":"Flutter app development","url":"https://marzleytechsolutions.co.ke/learn/flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Flutter app development","item":"https://marzleytechsolutions.co.ke/learn/flutter/"},{"@type":"ListItem","position":4,"name":"Layout masterclass: Row, Column, Expanded, Stack and constraints","item":"https://marzleytechsolutions.co.ke/learn/flutter/layout-masterclass/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/flutter/">Flutter app development</a> / <span>Layout masterclass: Row, Column, Expanded, Stack and constraints</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=flutter&amp;lesson=layout-masterclass"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Layout masterclass: Row, Column, Expanded, Stack and constraints</h1>
+<p>Layout is where most beginners get stuck in Flutter: yellow-and-black overflow stripes, "unbounded height" errors, things that won't centre. This lesson explains <strong>how Flutter decides sizes</strong> so you can build any screen with confidence.</p>
+<h2>The one rule: constraints go down, sizes go up, parent sets position</h2>
+<ol><li>A parent tells each child its <strong>constraints</strong>: a minimum and maximum width and height.</li><li>The child picks a <strong>size</strong> within those limits and reports it back up.</li><li>The parent decides <strong>where</strong> to put the child.</li></ol>
+<p>So a widget can't just "be 300 wide": it can only ask, and its parent's constraints win. Most layout puzzles are solved by asking <em>"what constraints is this widget getting?"</em></p>
+<div class="static-table"><table><thead><tr><th>Constraint type</th><th>Meaning</th><th>Given by</th></tr></thead><tbody><tr><td>Tight</td><td>Exactly this size</td><td><code>SizedBox(width: 100, height: 50)</code>, a full screen</td></tr><tr><td>Loose</td><td>Anything from 0 up to a maximum</td><td><code>Center</code>, <code>Align</code></td></tr><tr><td>Unbounded</td><td>No maximum (infinite)</td><td>A <code>Column</code> gives its children unbounded <strong>height</strong>; a <code>ListView</code> scrolls, so it's unbounded in its scroll direction</td></tr></tbody></table></div>
+<h2>Spacing and boxes</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+void main() =&gt; runApp(const MaterialApp(home: Scaffold(body: SafeArea(child: BoxesDemo()))));
+
+class BoxesDemo extends StatelessWidget {
+  const BoxesDemo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),                          // space inside, around the child
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            margin: const EdgeInsets.only(bottom: 12),             // space outside
+            decoration: BoxDecoration(
+              color: Colors.amber.shade100,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: Colors.amber, width: 2),
+              boxShadow: const [BoxShadow(blurRadius: 8, color: Colors.black12, offset: Offset(0, 4))],
+            ),
+            child: const Text(&#x27;Container: padding, margin, colour, border, shadow&#x27;),
+          ),
+          const SizedBox(height: 12),                              // a fixed gap
+          const SizedBox(width: double.infinity, height: 56,       // full width button
+              child: ElevatedButton(onPressed: null, child: Text(&#x27;Full-width button&#x27;))),
+          const Divider(height: 32),
+          const Align(alignment: Alignment.centerRight, child: Text(&#x27;Aligned right&#x27;)),
+        ],
+      ),
+    );
+  }
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Widget</th><th>Use</th></tr></thead><tbody><tr><td><code>Padding</code></td><td>Space inside around one child</td></tr><tr><td><code>SizedBox</code></td><td>A fixed size, or an empty gap between widgets</td></tr><tr><td><code>Container</code></td><td>Padding + margin + colour + border + rounded corners + shadow in one</td></tr><tr><td><code>Center</code> / <code>Align</code></td><td>Put a child in the middle / at a corner or edge</td></tr><tr><td><code>SafeArea</code></td><td>Keep content away from the notch, status bar and gesture bar</td></tr><tr><td><code>Divider</code></td><td>A thin line between sections</td></tr></tbody></table></div>
+<p><code>EdgeInsets</code> options: <code>.all(16)</code>, <code>.symmetric(horizontal: 16, vertical: 8)</code>, <code>.only(left: 8, top: 4)</code>, <code>.fromLTRB(8, 4, 8, 4)</code>.</p>
+<h2>Row and Column</h2>
+<p>A <strong>Row</strong> lays children out horizontally; a <strong>Column</strong> vertically.</p>
+<ul><li>The <strong>main axis</strong> is the direction they lay out (horizontal for Row, vertical for Column).</li><li>The <strong>cross axis</strong> is the other direction.</li></ul>
+<div class="static-table"><table><thead><tr><th>Property</th><th>Values</th><th>Controls</th></tr></thead><tbody><tr><td><code>mainAxisAlignment</code></td><td><code>start</code>, <code>center</code>, <code>end</code>, <code>spaceBetween</code>, <code>spaceAround</code>, <code>spaceEvenly</code></td><td>Spacing along the main axis</td></tr><tr><td><code>crossAxisAlignment</code></td><td><code>start</code>, <code>center</code>, <code>end</code>, <code>stretch</code>, <code>baseline</code></td><td>Alignment across</td></tr><tr><td><code>mainAxisSize</code></td><td><code>max</code> (default), <code>min</code></td><td>Take all space, or only what children need</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+void main() =&gt; runApp(const MaterialApp(home: Scaffold(body: SafeArea(child: OrderCard()))));
+
+class OrderCard extends StatelessWidget {
+  const OrderCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(16),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(&#x27;Order #1042&#x27;, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                Chip(label: const Text(&#x27;Paid&#x27;), backgroundColor: Colors.green.shade100),
+              ],
+            ),
+            const SizedBox(height: 8),
+            const Row(children: [Icon(Icons.person, size: 18), SizedBox(width: 6), Text(&#x27;Wanjiku M.&#x27;)]),
+            const Row(children: [Icon(Icons.location_on, size: 18), SizedBox(width: 6), Text(&#x27;Thika Road, Nairobi&#x27;)]),
+            const Divider(),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [Text(&#x27;3 items&#x27;), Text(&#x27;KSh 1,240&#x27;, style: TextStyle(fontWeight: FontWeight.bold))],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}</code></pre></figure>
+<h2>Expanded and Flexible: sharing space</h2>
+<p>By default, Row children are only as wide as they need. **<code>Expanded</code>** makes a child take the remaining space. Give several children <code>flex</code> values to share space in proportion.</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+void main() =&gt; runApp(const MaterialApp(home: Scaffold(body: SafeArea(child: FlexDemo()))));
+
+class FlexDemo extends StatelessWidget {
+  const FlexDemo({super.key});
+
+  Widget box(Color c, String t) =&gt; Container(height: 60, color: c, alignment: Alignment.center, child: Text(t));
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(children: [box(Colors.red.shade200, &#x27;fixed&#x27;), Expanded(child: box(Colors.green.shade200, &#x27;Expanded: the rest&#x27;))]),
+        Row(children: [
+          Expanded(flex: 2, child: box(Colors.blue.shade200, &#x27;flex 2&#x27;)),
+          Expanded(flex: 1, child: box(Colors.orange.shade200, &#x27;flex 1&#x27;)),
+        ]),
+        // A search bar: the text field takes all the space the button doesn&#x27;t need
+        Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(children: [
+            const Expanded(child: TextField(decoration: InputDecoration(hintText: &#x27;Search products&#x27;, border: OutlineInputBorder()))),
+            const SizedBox(width: 8),
+            FilledButton(onPressed: () {}, child: const Text(&#x27;Go&#x27;)),
+          ]),
+        ),
+        // Long text in a Row must be wrapped in Expanded or it overflows
+        const Padding(
+          padding: EdgeInsets.all(12),
+          child: Row(children: [
+            Icon(Icons.info_outline),
+            SizedBox(width: 8),
+            Expanded(child: Text(&#x27;Deliveries within Nairobi take 1 to 2 days. Upcountry orders go by Easy Coach and take 2 to 3 days.&#x27;)),
+          ]),
+        ),
+      ],
+    );
+  }
+}</code></pre></figure>
+<p><code>Flexible</code> is like <code>Expanded</code> but lets the child be <strong>smaller</strong> than its share. <code>Spacer()</code> is an empty <code>Expanded</code>: handy to push things apart.</p>
+<h2>Stack: widgets on top of each other</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+void main() =&gt; runApp(const MaterialApp(home: Scaffold(body: Center(child: ProductImage()))));
+
+class ProductImage extends StatelessWidget {
+  const ProductImage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 260,
+      height: 200,
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Container(color: Colors.teal.shade300, child: const Icon(Icons.image, size: 80, color: Colors.white)),
+            ),
+          ),
+          Positioned(
+            top: 10,
+            left: 10,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(8)),
+              child: const Text(&#x27;-20%&#x27;, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            ),
+          ),
+          const Positioned(right: 8, bottom: 8, child: CircleAvatar(child: Icon(Icons.favorite_border))),
+        ],
+      ),
+    );
+  }
+}</code></pre></figure>
+<p>Children are drawn in order, so the <strong>last child is on top</strong>. Use <code>Positioned</code> (top, left, right, bottom) to pin children to edges.</p>
+<h2>Wrap: chips that flow onto the next line</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">Wrap(
+  spacing: 8,          // gap between chips in a line
+  runSpacing: 8,       // gap between lines
+  children: [for (final c in [&#x27;Vegetables&#x27;, &#x27;Fruits&#x27;, &#x27;Cereals&#x27;, &#x27;Dairy&#x27;, &#x27;Meat&#x27;, &#x27;Snacks&#x27;]) Chip(label: Text(c))],
+)</code></pre></figure>
+<p>A <code>Row</code> with too many chips overflows; a <code>Wrap</code> moves them to the next line.</p>
+<h2>Scrolling</h2>
+<p>A <code>Column</code> doesn't scroll. If content might be taller than the screen (always assume small phones!), wrap it:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">SingleChildScrollView(
+  padding: const EdgeInsets.all(16),
+  child: Column(children: [/* a long form or article */]),
+)</code></pre></figure>
+<p>For long or endless lists use <code>ListView.builder</code> (next lesson): it only builds the rows that are visible.</p>
+<h2>Responsive layouts</h2>
+<p>Phones are 320 to 430 points wide; tablets and the web are much wider. Two tools:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+void main() =&gt; runApp(const MaterialApp(home: Scaffold(body: ResponsiveGrid())));
+
+class ResponsiveGrid extends StatelessWidget {
+  const ResponsiveGrid({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(                           // gives you the space available to THIS widget
+      builder: (context, constraints) {
+        final columns = constraints.maxWidth &lt; 500 ? 2 : constraints.maxWidth &lt; 900 ? 3 : 5;
+        return GridView.count(
+          crossAxisCount: columns,
+          padding: const EdgeInsets.all(12),
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
+          children: [for (var i = 1; i &lt;= 12; i++) Card(child: Center(child: Text(&#x27;Product $i&#x27;)))],
+        );
+      },
+    );
+  }
+}</code></pre></figure>
+<ul><li><code>MediaQuery.sizeOf(context)</code> gives the <strong>whole screen's</strong> size.</li><li><code>LayoutBuilder</code> gives the space <strong>your widget</strong> has (better inside panels and split screens).</li></ul>
+<h2>Fixing the famous layout errors</h2>
+<div class="static-table"><table><thead><tr><th>Error</th><th>Why</th><th>Fix</th></tr></thead><tbody><tr><td>Yellow/black stripes: <em>"A RenderFlex overflowed by 42 pixels on the right"</em></td><td>Children of a Row are wider than the screen</td><td>Wrap the long child in <code>Expanded</code>/<code>Flexible</code>, use <code>Wrap</code>, or shorten text with <code>overflow: TextOverflow.ellipsis</code></td></tr><tr><td>Same, <em>"on the bottom"</em></td><td>Column taller than the screen (often when the keyboard opens)</td><td>Wrap in <code>SingleChildScrollView</code> or use a <code>ListView</code></td></tr><tr><td><em>"Vertical viewport was given unbounded height"</em></td><td>A <code>ListView</code> inside a <code>Column</code> (the Column gives infinite height)</td><td>Wrap the ListView in <code>Expanded</code>, or give it <code>shrinkWrap: true</code> for short lists</td></tr><tr><td><em>"BoxConstraints forces an infinite width"</em></td><td>A <code>TextField</code> directly in a Row</td><td>Wrap the TextField in <code>Expanded</code></td></tr><tr><td>Widget ignores its width/height</td><td>Its parent gives tight constraints</td><td>Wrap it in <code>Center</code> or <code>Align</code> so it gets loose constraints</td></tr></tbody></table></div>
+<p>Use <strong>Flutter DevTools → Widget inspector</strong> (in VS Code: <em>Flutter: Open DevTools</em>) and tap a widget on your phone: it shows each widget's constraints and size. It's the fastest way to understand a layout.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Complete the rule: constraints go down, sizes go ...</p><details><summary>Show answer</summary><p>up</p></details></li><li><p>Which widget makes a Row child take all the remaining space?</p><details><summary>Show answer</summary><p>Expanded</p></details></li><li><p>What is the main axis of a Column?</p><details><summary>Show answer</summary><p>vertical</p></details></li><li><p>Which widget puts children on top of each other?</p><details><summary>Show answer</summary><p>Stack</p></details></li><li><p>Which widget moves chips onto the next line instead of overflowing?</p><details><summary>Show answer</summary><p>Wrap</p></details></li><li><p>A ListView inside a Column gives "unbounded height". Which widget do you wrap the ListView in?</p><details><summary>Show answer</summary><p>Expanded</p></details></li><li><p>Which widget keeps content away from the notch and status bar?</p><details><summary>Show answer</summary><p>SafeArea</p></details></li><li><p>Which widget tells you the space available to your own widget?</p><details><summary>Show answer</summary><p>LayoutBuilder</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 15 in <a href="/learn/flutter/">Flutter app development</a> · <a href="/learn/?book=flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/flutter/widgets-stateless-stateful/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Widgets in depth: stateless, stateful and the build method</a><a class="btn btn-solid btn-sm" href="/learn/flutter/lists-grids/">Lists and grids: ListView, GridView, cards and pull to refresh <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

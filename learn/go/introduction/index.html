@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Go introduction | Go (Golang)</title>
+    <meta name="description" content="Go (Golang) was made at Google for simple, fast, reliable software. Docker, Kubernetes and many cloud and fintech back ends are written in Go. Run with…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/go/introduction/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Go introduction | Go (Golang)" />
+    <meta property="og:description" content="Go (Golang) was made at Google for simple, fast, reliable software. Docker, Kubernetes and many cloud and fintech back ends are written in Go. Run with…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/go/introduction/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Go introduction | Go (Golang)" />
+    <meta name="twitter:description" content="Go (Golang) was made at Google for simple, fast, reliable software. Docker, Kubernetes and many cloud and fintech back ends are written in Go. Run with…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/go/introduction/#lesson","name":"Go introduction","description":"Go (Golang) was made at Google for simple, fast, reliable software. Docker, Kubernetes and many cloud and fintech back ends are written in Go. Run with…","url":"https://marzleytechsolutions.co.ke/learn/go/introduction/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/go/#course","name":"Go (Golang)","url":"https://marzleytechsolutions.co.ke/learn/go/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Go (Golang)","item":"https://marzleytechsolutions.co.ke/learn/go/"},{"@type":"ListItem","position":4,"name":"Go introduction","item":"https://marzleytechsolutions.co.ke/learn/go/introduction/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/go/">Go (Golang)</a> / <span>Go introduction</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=go&amp;lesson=introduction"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Go introduction</h1>
+<p><strong>Go</strong> (Golang) was made at Google for simple, fast, reliable software. Docker, Kubernetes and many cloud and fintech back ends are written in Go.</p>
+<figure class="static-code"><figcaption>Go</figcaption><pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func main() {
+    name := &quot;Achieng&quot;          // := declares and infers the type
+    var age int = 25
+    balance := 1200.50
+
+    fmt.Println(&quot;Habari,&quot;, name)
+    fmt.Printf(&quot;%s is %d and has KSh %.2f\n&quot;, name, age, balance)
+}</code></pre></figure>
+<p>Run with <code>go run main.go</code>, or build a single program file with <code>go build</code>.</p>
+<h2>Only one loop: for</h2>
+<figure class="static-code"><figcaption>Go</figcaption><pre><code class="language-go">for i := 1; i &lt;= 3; i++ {
+    fmt.Println(i)
+}
+
+towns := []string{&quot;Nairobi&quot;, &quot;Kisumu&quot;, &quot;Mombasa&quot;}
+for index, town := range towns {
+    fmt.Println(index, town)
+}</code></pre></figure>
+<h2>Functions can return several values</h2>
+<p>Go handles errors by returning them, not with exceptions:</p>
+<figure class="static-code"><figcaption>Go</figcaption><pre><code class="language-go">func divide(a, b float64) (float64, error) {
+    if b == 0 {
+        return 0, fmt.Errorf(&quot;cannot divide by zero&quot;)
+    }
+    return a / b, nil
+}
+
+result, err := divide(10, 0)
+if err != nil {
+    fmt.Println(&quot;Error:&quot;, err)
+}</code></pre></figure>
+<blockquote><p>The code boxes here are for reading and copying. Run them free online at <strong>go.dev/play</strong>, or install the tools on your computer.</p></blockquote>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which operator declares a variable and infers its type in Go?</p><details><summary>Show answer</summary><p>:=</p></details></li><li><p>How many kinds of loop keyword does Go have?</p><details><summary>Show answer</summary><p>one</p></details></li><li><p>What does a Go function return when there's no error?</p><details><summary>Show answer</summary><p>nil</p></details></li><li><p>Name one famous tool written in Go.</p><details><summary>Show answer</summary><p>Docker</p></details></li></ol></section></div><p class="static-meta">Lesson 1 of 6 in <a href="/learn/go/">Go (Golang)</a> · <a href="/learn/?book=go">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><span></span><a class="btn btn-solid btn-sm" href="/learn/go/variables-control-functions/">Variables, control flow and functions in Go <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

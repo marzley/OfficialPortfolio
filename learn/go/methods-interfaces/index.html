@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Methods, interfaces and error handling in Go | Go (Golang)</title>
+    <meta name="description" content="Go has no classes and no inheritance. Instead it uses structs with methods , and interfaces that types satisfy automatically. This small set of ideas…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/go/methods-interfaces/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Methods, interfaces and error handling in Go | Go (Golang)" />
+    <meta property="og:description" content="Go has no classes and no inheritance. Instead it uses structs with methods , and interfaces that types satisfy automatically. This small set of ideas…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/go/methods-interfaces/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Methods, interfaces and error handling in Go | Go (Golang)" />
+    <meta name="twitter:description" content="Go has no classes and no inheritance. Instead it uses structs with methods , and interfaces that types satisfy automatically. This small set of ideas…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/go/methods-interfaces/#lesson","name":"Methods, interfaces and error handling in Go","description":"Go has no classes and no inheritance. Instead it uses structs with methods , and interfaces that types satisfy automatically. This small set of ideas…","url":"https://marzleytechsolutions.co.ke/learn/go/methods-interfaces/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/go/#course","name":"Go (Golang)","url":"https://marzleytechsolutions.co.ke/learn/go/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Go (Golang)","item":"https://marzleytechsolutions.co.ke/learn/go/"},{"@type":"ListItem","position":4,"name":"Methods, interfaces and error handling in Go","item":"https://marzleytechsolutions.co.ke/learn/go/methods-interfaces/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/go/">Go (Golang)</a> / <span>Methods, interfaces and error handling in Go</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=go&amp;lesson=methods-interfaces"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Methods, interfaces and error handling in Go</h1>
+<p>Go has no classes and no inheritance. Instead it uses <strong>structs</strong> with <strong>methods</strong>, and <strong>interfaces</strong> that types satisfy automatically. This small set of ideas scales to huge systems.</p>
+<h2>Methods on structs</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;errors&quot;
+	&quot;fmt&quot;
+)
+
+type Account struct {
+	Owner   string
+	balance float64 // lowercase = private to the package
+}
+
+// Value receiver: reads a copy
+func (a Account) Balance() float64 { return a.balance }
+
+// Pointer receiver: can change the account
+func (a *Account) Deposit(amount float64) error {
+	if amount &lt;= 0 {
+		return errors.New(&quot;deposit must be positive&quot;)
+	}
+	a.balance += amount
+	return nil
+}
+
+func (a *Account) Withdraw(amount float64) error {
+	if amount &gt; a.balance {
+		return fmt.Errorf(&quot;insufficient funds: balance is %.2f&quot;, a.balance)
+	}
+	a.balance -= amount
+	return nil
+}
+
+func main() {
+	acc := &amp;Account{Owner: &quot;Faith&quot;}
+	_ = acc.Deposit(5000)
+	if err := acc.Withdraw(8000); err != nil {
+		fmt.Println(&quot;Refused:&quot;, err)
+	}
+	_ = acc.Withdraw(1200)
+	fmt.Printf(&quot;%s: KSh %.2f\n&quot;, acc.Owner, acc.Balance())
+}</code></pre></figure>
+<ul><li><code>func (a *Account) Deposit(...)</code> attaches a method to <code>*Account</code>.</li><li>Use a <strong>pointer receiver</strong> (<code>*Account</code>) when the method changes the struct or the struct is large.</li><li>Capitalised names (<code>Owner</code>, <code>Deposit</code>) are <strong>exported</strong> (public); lowercase (<code>balance</code>) are private to the package.</li></ul>
+<h2>Interfaces: satisfied automatically</h2>
+<p>An interface lists methods. <strong>Any</strong> type with those methods satisfies it, with no <code>implements</code> keyword.</p>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;math&quot;
+)
+
+type Shape interface {
+	Area() float64
+	Name() string
+}
+
+type Rectangle struct{ W, H float64 }
+type Circle struct{ R float64 }
+
+func (r Rectangle) Area() float64 { return r.W * r.H }
+func (r Rectangle) Name() string  { return &quot;rectangle&quot; }
+func (c Circle) Area() float64    { return math.Pi * c.R * c.R }
+func (c Circle) Name() string     { return &quot;circle&quot; }
+
+func totalArea(shapes []Shape) float64 {
+	sum := 0.0
+	for _, s := range shapes {
+		fmt.Printf(&quot;%-9s %8.2f m2\n&quot;, s.Name(), s.Area())
+		sum += s.Area()
+	}
+	return sum
+}
+
+func main() {
+	plot := []Shape{Rectangle{20, 15}, Circle{4}, Rectangle{3, 3}}
+	fmt.Printf(&quot;Total: %.2f m2\n&quot;, totalArea(plot))
+}</code></pre></figure>
+<p>Small interfaces are the Go way. The standard library's most famous ones have <strong>one</strong> method:</p>
+<div class="static-table"><table><thead><tr><th>Interface</th><th>Method</th><th>Used by</th></tr></thead><tbody><tr><td><code>fmt.Stringer</code></td><td><code>String() string</code></td><td>How a value prints</td></tr><tr><td><code>io.Reader</code></td><td><code>Read([]byte) (int, error)</code></td><td>Files, network, HTTP bodies</td></tr><tr><td><code>io.Writer</code></td><td><code>Write([]byte) (int, error)</code></td><td>Files, network, responses</td></tr><tr><td><code>error</code></td><td><code>Error() string</code></td><td>Every error value</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+type Money float64
+
+func (m Money) String() string { return fmt.Sprintf(&quot;KSh %.2f&quot;, float64(m)) }
+
+func main() {
+	var price Money = 1999.5
+	fmt.Println(&quot;Price:&quot;, price)      // uses String() automatically
+}</code></pre></figure>
+<h2>Errors in depth</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;errors&quot;
+	&quot;fmt&quot;
+)
+
+var ErrNotFound = errors.New(&quot;not found&quot;)        // a sentinel error to compare against
+
+type ValidationError struct {                    // a custom error type with details
+	Field, Problem string
+}
+
+func (e ValidationError) Error() string { return e.Field + &quot;: &quot; + e.Problem }
+
+func findPhone(name string) (string, error) {
+	book := map[string]string{&quot;Amina&quot;: &quot;0712345678&quot;}
+	p, ok := book[name]
+	if !ok {
+		return &quot;&quot;, fmt.Errorf(&quot;finding %q: %w&quot;, name, ErrNotFound)   // %w wraps the error
+	}
+	return p, nil
+}
+
+func validate(phone string) error {
+	if len(phone) != 10 {
+		return ValidationError{&quot;phone&quot;, &quot;must be 10 digits&quot;}
+	}
+	return nil
+}
+
+func main() {
+	if _, err := findPhone(&quot;Zawadi&quot;); errors.Is(err, ErrNotFound) {
+		fmt.Println(&quot;Error:&quot;, err)
+	}
+
+	err := validate(&quot;12345&quot;)
+	var ve ValidationError
+	if errors.As(err, &amp;ve) {
+		fmt.Println(&quot;Invalid field:&quot;, ve.Field, &quot;-&quot;, ve.Problem)
+	}
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Tool</th><th>Use</th></tr></thead><tbody><tr><td><code>errors.New(&quot;...&quot;)</code></td><td>A simple error</td></tr><tr><td><code>fmt.Errorf(&quot;context: %w&quot;, err)</code></td><td>Add context while keeping the original</td></tr><tr><td><code>errors.Is(err, ErrX)</code></td><td>Is it (or does it wrap) a specific error?</td></tr><tr><td><code>errors.As(err, &amp;target)</code></td><td>Is it a specific error <strong>type</strong>? Get its details</td></tr></tbody></table></div>
+<h2>panic and recover</h2>
+<p><code>panic</code> is for truly unexpected situations (a bug), not normal errors. Normal code returns errors; you'll rarely use panic yourself.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which receiver type lets a method change the struct: value or pointer?</p><details><summary>Show answer</summary><p>pointer</p></details></li><li><p>Does Go need an implements keyword for interfaces? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Is a struct field named balance (lowercase) visible outside its package? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which method must a type have to satisfy the error interface?</p><details><summary>Show answer</summary><p>Error</p></details></li><li><p>Which function checks whether an error wraps a specific error value?</p><details><summary>Show answer</summary><p>errors.Is</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 6 in <a href="/learn/go/">Go (Golang)</a> · <a href="/learn/?book=go">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/go/structs-web/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Structs and a web server</a><a class="btn btn-solid btn-sm" href="/learn/go/goroutines-channels/">Concurrency: goroutines, channels and sync <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

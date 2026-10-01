@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pull requests, forks and working in a team | Git &amp; GitHub</title>
+    <meta name="description" content="On real projects nobody pushes straight to main . Changes go through a pull request (PR) : a proposal that teammates review before it&#x27;s merged. It…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/git/pull-requests-teamwork/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Pull requests, forks and working in a team | Git &amp; GitHub" />
+    <meta property="og:description" content="On real projects nobody pushes straight to main . Changes go through a pull request (PR) : a proposal that teammates review before it&#x27;s merged. It…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/git/pull-requests-teamwork/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Pull requests, forks and working in a team | Git &amp; GitHub" />
+    <meta name="twitter:description" content="On real projects nobody pushes straight to main . Changes go through a pull request (PR) : a proposal that teammates review before it&#x27;s merged. It…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/git/pull-requests-teamwork/#lesson","name":"Pull requests, forks and working in a team","description":"On real projects nobody pushes straight to main . Changes go through a pull request (PR) : a proposal that teammates review before it's merged. It…","url":"https://marzleytechsolutions.co.ke/learn/git/pull-requests-teamwork/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/git/#course","name":"Git & GitHub","url":"https://marzleytechsolutions.co.ke/learn/git/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Git & GitHub","item":"https://marzleytechsolutions.co.ke/learn/git/"},{"@type":"ListItem","position":4,"name":"Pull requests, forks and working in a team","item":"https://marzleytechsolutions.co.ke/learn/git/pull-requests-teamwork/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/git/">Git &amp; GitHub</a> / <span>Pull requests, forks and working in a team</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=git&amp;lesson=pull-requests-teamwork"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Pull requests, forks and working in a team</h1>
+<p>On real projects nobody pushes straight to <code>main</code>. Changes go through a <strong>pull request (PR)</strong>: a proposal that teammates review before it's merged. It catches bugs, spreads knowledge and keeps the main branch working.</p>
+<h2>The team workflow (GitHub Flow)</h2>
+<ol><li><strong>Pull</strong> the latest main: <code>git switch main &amp;&amp; git pull</code></li><li><strong>Branch</strong> for your task: <code>git switch -c feature/receipt-pdf</code></li><li><strong>Commit</strong> small, clear changes.</li><li><strong>Push</strong> the branch: <code>git push -u origin feature/receipt-pdf</code></li><li><strong>Open a pull request</strong> on GitHub (a yellow banner offers "Compare &amp; pull request").</li><li><strong>Review</strong>: teammates comment, you push fixes to the same branch (the PR updates itself).</li><li><strong>Checks pass</strong> (tests, linting) and someone <strong>approves</strong>.</li><li><strong>Merge</strong> the PR, then delete the branch.</li><li>Everyone pulls the new <code>main</code>.</li></ol>
+<h2>Writing a good pull request</h2>
+<p><strong>Title:</strong> <code>Add PDF download for receipts</code></p>
+<p><strong>Description:</strong></p>
+<figure class="static-code"><pre><code>## What
+Adds a &quot;Download PDF&quot; button on each receipt in the client portal.
+
+## Why
+Clients asked for receipts they can forward to their accountant.
+
+## How to test
+1. Log in as a client with a paid invoice.
+2. Open Payments → click &quot;Download PDF&quot;.
+3. The PDF shows the M-Pesa code, date and amount.
+
+## Screenshots
+(before / after)</code></pre></figure>
+<p>Keep PRs <strong>small</strong> (under ~300 lines changed if possible). Big PRs get slow, shallow reviews.</p>
+<h2>Reviewing someone else's PR</h2>
+<ul><li>Read the description first: what problem is it solving?</li><li>Look at the <strong>Files changed</strong> tab; click a line to comment.</li><li>Check: does it work? Is it readable? Any security problem (passwords in code, unchecked input)? Tests?</li><li>Be kind and specific: "Could we name this <code>formatKsh</code> so it's clear it's for money?" beats "bad name".</li><li>Finish with <strong>Approve</strong>, <strong>Comment</strong> or <strong>Request changes</strong>.</li></ul>
+<h2>Merge options on GitHub</h2>
+<div class="static-table"><table><thead><tr><th>Option</th><th>Result</th></tr></thead><tbody><tr><td><strong>Merge commit</strong></td><td>Keeps every commit plus a merge commit</td></tr><tr><td><strong>Squash and merge</strong></td><td>Combines the PR into <strong>one</strong> tidy commit on main (popular)</td></tr><tr><td><strong>Rebase and merge</strong></td><td>Replays the commits on top of main, no merge commit</td></tr></tbody></table></div>
+<h2>Forks: contributing to other people's projects</h2>
+<p>You can't push to a repository you don't own. Instead:</p>
+<ol><li>Click <strong>Fork</strong> on GitHub: you get your own copy.</li><li>Clone <strong>your fork</strong>, branch, commit, push.</li><li>Open a PR from your fork to the original ("upstream") repository.</li></ol>
+<p>Keep your fork updated:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git remote add upstream https://github.com/original-owner/project.git
+git fetch upstream
+git switch main
+git merge upstream/main
+git push</code></pre></figure>
+<p>This is how open-source works, and contributing (even documentation fixes) is a great way to build a portfolio employers trust.</p>
+<h2>Issues and project boards</h2>
+<ul><li><strong>Issues</strong> track bugs and tasks. Mention one in a commit or PR with <code>Fixes #12</code> and GitHub closes it automatically when merged.</li><li><strong>Projects</strong> boards (To do → In progress → Done) organise the team's work.</li><li><strong>Protected branches</strong> (Settings → Branches) can require reviews and passing checks before merging to main.</li></ul>
+<h2>GitHub Actions in one sentence</h2>
+<p>A file in <code>.github/workflows/</code> can run your tests automatically on every push and PR, so broken code is caught before merging.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What do you open on GitHub to ask for your branch to be reviewed and merged? (two words)</p><details><summary>Show answer</summary><p>pull request</p></details></li><li><p>What is your own copy of someone else's repository on GitHub called?</p><details><summary>Show answer</summary><p>fork</p></details></li><li><p>Which merge option combines a whole PR into one commit? (three words)</p><details><summary>Show answer</summary><p>squash and merge</p></details></li><li><p>What words in a PR description close issue 12 automatically? (two words)</p><details><summary>Show answer</summary><p>Fixes #12</p></details></li><li><p>What is the original repository you forked usually called as a remote?</p><details><summary>Show answer</summary><p>upstream</p></details></li></ol></section></div><p class="static-meta">Lesson 8 of 10 in <a href="/learn/git/">Git &amp; GitHub</a> · <a href="/learn/?book=git">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/git/github/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> GitHub: push, pull, clone</a><a class="btn btn-solid btn-sm" href="/learn/git/github-pages/">Publish a website free with GitHub Pages <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

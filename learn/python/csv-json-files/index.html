@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Working with CSV and JSON data | Python</title>
+    <meta name="description" content="Most business data lives in spreadsheets (saved as CSV) or comes from APIs (as JSON). Python&#x27;s built-in csv and json modules read and write both in a…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/python/csv-json-files/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Working with CSV and JSON data | Python" />
+    <meta property="og:description" content="Most business data lives in spreadsheets (saved as CSV) or comes from APIs (as JSON). Python&#x27;s built-in csv and json modules read and write both in a…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/python/csv-json-files/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Working with CSV and JSON data | Python" />
+    <meta name="twitter:description" content="Most business data lives in spreadsheets (saved as CSV) or comes from APIs (as JSON). Python&#x27;s built-in csv and json modules read and write both in a…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/python/csv-json-files/#lesson","name":"Working with CSV and JSON data","description":"Most business data lives in spreadsheets (saved as CSV) or comes from APIs (as JSON). Python's built-in csv and json modules read and write both in a…","url":"https://marzleytechsolutions.co.ke/learn/python/csv-json-files/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/python/#course","name":"Python","url":"https://marzleytechsolutions.co.ke/learn/python/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Python","item":"https://marzleytechsolutions.co.ke/learn/python/"},{"@type":"ListItem","position":4,"name":"Working with CSV and JSON data","item":"https://marzleytechsolutions.co.ke/learn/python/csv-json-files/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/python/">Python</a> / <span>Working with CSV and JSON data</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=csv-json-files"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Working with CSV and JSON data</h1>
+<p>Most business data lives in <strong>spreadsheets</strong> (saved as CSV) or comes from <strong>APIs</strong> (as JSON). Python's built-in <code>csv</code> and <code>json</code> modules read and write both in a few lines.</p>
+<h2>CSV: comma-separated values</h2>
+<p>A CSV file is a plain-text table. Excel and Google Sheets can open and save it.</p>
+<figure class="static-code"><pre><code>name,town,amount
+Amina,Mombasa,1200
+Brian,Nakuru,850
+Chebet,Eldoret,2300</code></pre></figure>
+<h2>Writing a CSV file</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import csv
+
+rows = [
+    [&quot;name&quot;, &quot;town&quot;, &quot;amount&quot;],
+    [&quot;Amina&quot;, &quot;Mombasa&quot;, 1200],
+    [&quot;Brian&quot;, &quot;Nakuru&quot;, 850],
+    [&quot;Chebet&quot;, &quot;Eldoret&quot;, 2300],
+]
+with open(&quot;sales.csv&quot;, &quot;w&quot;, newline=&quot;&quot;) as f:
+    writer = csv.writer(f)
+    writer.writerows(rows)
+
+print(open(&quot;sales.csv&quot;).read())</code></pre></figure>
+<p><code>with open(...)</code> closes the file automatically, even if something goes wrong. <code>newline=&quot;&quot;</code> stops blank lines appearing on Windows.</p>
+<h2>Reading a CSV as dictionaries</h2>
+<p><code>DictReader</code> uses the first row as keys, so you can refer to columns by name:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import csv
+
+with open(&quot;sales.csv&quot;, &quot;w&quot;, newline=&quot;&quot;) as f:
+    f.write(&quot;name,town,amount\nAmina,Mombasa,1200\nBrian,Nakuru,850\nChebet,Eldoret,2300\n&quot;)
+
+total = 0
+with open(&quot;sales.csv&quot;, newline=&quot;&quot;) as f:
+    for row in csv.DictReader(f):
+        amount = int(row[&quot;amount&quot;])      # CSV values are always text
+        total += amount
+        print(f&quot;{row[&#x27;name&#x27;]:&lt;8} {row[&#x27;town&#x27;]:&lt;10} KSh {amount:&gt;6,}&quot;)
+print(f&quot;{&#x27;TOTAL&#x27;:&lt;19} KSh {total:&gt;6,}&quot;)</code></pre></figure>
+<h2>Writing dictionaries to CSV</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import csv
+
+students = [
+    {&quot;name&quot;: &quot;Wanjiru&quot;, &quot;maths&quot;: 78, &quot;english&quot;: 84},
+    {&quot;name&quot;: &quot;Otieno&quot;, &quot;maths&quot;: 92, &quot;english&quot;: 71},
+]
+for s in students:
+    s[&quot;average&quot;] = round((s[&quot;maths&quot;] + s[&quot;english&quot;]) / 2, 1)
+
+with open(&quot;report.csv&quot;, &quot;w&quot;, newline=&quot;&quot;) as f:
+    w = csv.DictWriter(f, fieldnames=[&quot;name&quot;, &quot;maths&quot;, &quot;english&quot;, &quot;average&quot;])
+    w.writeheader()
+    w.writerows(students)
+
+print(open(&quot;report.csv&quot;).read())</code></pre></figure>
+<h2>JSON: data from APIs and apps</h2>
+<p>JSON looks almost like Python dicts and lists:</p>
+<div class="static-table"><table><thead><tr><th>JSON</th><th>Python</th></tr></thead><tbody><tr><td><code>{&quot;a&quot;: 1}</code> object</td><td><code>dict</code></td></tr><tr><td><code>[1, 2]</code> array</td><td><code>list</code></td></tr><tr><td><code>&quot;text&quot;</code></td><td><code>str</code></td></tr><tr><td><code>12</code>, <code>3.5</code></td><td><code>int</code>, <code>float</code></td></tr><tr><td><code>true</code> / <code>false</code></td><td><code>True</code> / <code>False</code></td></tr><tr><td><code>null</code></td><td><code>None</code></td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import json
+
+text = &#x27;{&quot;TransID&quot;: &quot;SJK4H2L9XA&quot;, &quot;TransAmount&quot;: &quot;1500.00&quot;, &quot;MSISDN&quot;: &quot;254712345678&quot;, &quot;FirstName&quot;: &quot;JOHN&quot;, &quot;paid&quot;: true, &quot;note&quot;: null}&#x27;
+payment = json.loads(text)          # JSON text -&gt; Python dict
+print(payment[&quot;TransAmount&quot;], payment[&quot;paid&quot;], payment[&quot;note&quot;])
+amount = float(payment[&quot;TransAmount&quot;])
+print(f&quot;Received KSh {amount:,.2f} from {payment[&#x27;FirstName&#x27;].title()}&quot;)
+
+record = {&quot;id&quot;: 1, &quot;items&quot;: [&quot;unga&quot;, &quot;oil&quot;], &quot;total&quot;: 530, &quot;delivered&quot;: False}
+print(json.dumps(record))           # Python -&gt; JSON text
+print(json.dumps(record, indent=2)) # pretty</code></pre></figure>
+<h2>Saving and loading JSON files</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import json
+
+settings = {&quot;shop&quot;: &quot;Duka Bora&quot;, &quot;vat&quot;: 16, &quot;towns&quot;: [&quot;Thika&quot;, &quot;Juja&quot;]}
+with open(&quot;settings.json&quot;, &quot;w&quot;) as f:
+    json.dump(settings, f, indent=2)
+
+with open(&quot;settings.json&quot;) as f:
+    loaded = json.load(f)
+print(loaded[&quot;towns&quot;])</code></pre></figure>
+<p>Remember: <code>loads</code>/<code>dumps</code> work with <strong>strings</strong>, <code>load</code>/<code>dump</code> work with <strong>files</strong> (the "s" is for string).</p>
+<h2>Handling bad data safely</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import json
+
+samples = [&#x27;{&quot;amount&quot;: 500}&#x27;, &#x27;{&quot;amount&quot;: }&#x27;, &#x27;{&quot;amount&quot;: &quot;abc&quot;}&#x27;]
+for s in samples:
+    try:
+        data = json.loads(s)
+        amount = float(data[&quot;amount&quot;])
+        print(&quot;OK:&quot;, amount)
+    except json.JSONDecodeError:
+        print(&quot;Not valid JSON:&quot;, s)
+    except (ValueError, KeyError) as e:
+        print(&quot;Bad value:&quot;, s, &quot;-&gt;&quot;, type(e).__name__)</code></pre></figure>
+<blockquote><p>Going further: the <code>pandas</code> library reads CSV and Excel files into tables and can summarise thousands of rows in one line. It's the most popular tool for data analysis in Python.</p></blockquote>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which csv class lets you read columns by their header names?</p><details><summary>Show answer</summary><p>DictReader</p></details></li><li><p>What type are values read from a CSV file?</p><details><summary>Show answer</summary><p>str</p></details></li><li><p>Which json function turns a JSON string into a Python dict?</p><details><summary>Show answer</summary><p>loads</p></details></li><li><p>Which json function writes Python data into a file?</p><details><summary>Show answer</summary><p>dump</p></details></li><li><p>What does JSON null become in Python?</p><details><summary>Show answer</summary><p>None</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Parse the JSON text <code>&#x27;{&quot;amount&quot;: 1500}&#x27;</code> with <code>json.loads</code> and print the amount: <strong>1500</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=csv-json-files#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 14 of 19 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/files-errors/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Errors and exceptions</a><a class="btn btn-solid btn-sm" href="/learn/python/modules-stdlib/">Modules: random, math, datetime <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

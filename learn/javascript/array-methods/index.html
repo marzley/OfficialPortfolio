@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Array methods: map, filter, reduce, find and sort</title>
+    <meta name="description" content="Loops work, but modern JavaScript uses array methods that say what you want instead of how to loop. They make code shorter and easier to read. Each…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/javascript/array-methods/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Array methods: map, filter, reduce, find and sort" />
+    <meta property="og:description" content="Loops work, but modern JavaScript uses array methods that say what you want instead of how to loop. They make code shorter and easier to read. Each…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/javascript/array-methods/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Array methods: map, filter, reduce, find and sort" />
+    <meta name="twitter:description" content="Loops work, but modern JavaScript uses array methods that say what you want instead of how to loop. They make code shorter and easier to read. Each…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/javascript/array-methods/#lesson","name":"Array methods: map, filter, reduce, find and sort","description":"Loops work, but modern JavaScript uses array methods that say what you want instead of how to loop. They make code shorter and easier to read. Each…","url":"https://marzleytechsolutions.co.ke/learn/javascript/array-methods/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/javascript/#course","name":"JavaScript","url":"https://marzleytechsolutions.co.ke/learn/javascript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/"},{"@type":"ListItem","position":4,"name":"Array methods: map, filter, reduce, find and sort","item":"https://marzleytechsolutions.co.ke/learn/javascript/array-methods/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/javascript/">JavaScript</a> / <span>Array methods: map, filter, reduce, find and sort</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=array-methods"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Array methods: map, filter, reduce, find and sort</h1>
+<p>Loops work, but modern JavaScript uses <strong>array methods</strong> that say <em>what</em> you want instead of <em>how</em> to loop. They make code shorter and easier to read. Each takes a small function (often an arrow function) that runs for every item.</p>
+<h2>Arrow functions in one minute</h2>
+<figure class="static-code"><figcaption>JavaScript</figcaption><pre><code class="language-javascript">function double(n) { return n * 2; }   // normal function
+const double2 = (n) =&gt; n * 2;           // arrow function, same thing
+const add = (a, b) =&gt; a + b;</code></pre></figure>
+<h2>Our sample data</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const products = [
+  { name: &quot;Unga 2kg&quot;, price: 180, category: &quot;food&quot;, stock: 12 },
+  { name: &quot;Sugar 1kg&quot;, price: 160, category: &quot;food&quot;, stock: 0 },
+  { name: &quot;Soap bar&quot;, price: 60, category: &quot;home&quot;, stock: 30 },
+  { name: &quot;Cooking oil 1L&quot;, price: 350, category: &quot;food&quot;, stock: 7 },
+  { name: &quot;Matchbox&quot;, price: 10, category: &quot;home&quot;, stock: 100 },
+];
+
+// forEach: do something with each item (returns nothing)
+products.forEach((p) =&gt; console.log(p.name, &quot;- KSh&quot;, p.price));</code></pre></figure>
+<h2>map: transform every item into a new array</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const prices = [180, 160, 60, 350];
+const withVat = prices.map((p) =&gt; Math.round(p * 1.16));
+console.log(withVat); // [209, 186, 70, 406]
+
+const names = [&quot;amina&quot;, &quot;otieno&quot;, &quot;kiprop&quot;];
+console.log(names.map((n) =&gt; n[0].toUpperCase() + n.slice(1)));</code></pre></figure>
+<p><code>map</code> always returns an array of the <strong>same length</strong>.</p>
+<h2>filter: keep only matching items</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const products = [
+  { name: &quot;Unga 2kg&quot;, price: 180, stock: 12 },
+  { name: &quot;Sugar 1kg&quot;, price: 160, stock: 0 },
+  { name: &quot;Cooking oil 1L&quot;, price: 350, stock: 7 },
+];
+const inStock = products.filter((p) =&gt; p.stock &gt; 0);
+console.log(inStock.map((p) =&gt; p.name));        // [&quot;Unga 2kg&quot;, &quot;Cooking oil 1L&quot;]
+const cheap = products.filter((p) =&gt; p.price &lt; 200);
+console.log(cheap.length);                       // 2</code></pre></figure>
+<h2>reduce: boil an array down to one value</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const cart = [
+  { item: &quot;Unga&quot;, price: 180, qty: 2 },
+  { item: &quot;Oil&quot;, price: 350, qty: 1 },
+  { item: &quot;Soap&quot;, price: 60, qty: 3 },
+];
+const total = cart.reduce((sum, line) =&gt; sum + line.price * line.qty, 0);
+console.log(&quot;Total: KSh&quot;, total);  // 890</code></pre></figure>
+<p><code>reduce((accumulator, item) =&gt; ..., startValue)</code>: the accumulator carries the running result. Always give a start value (here <code>0</code>).</p>
+<h2>find, findIndex, some, every, includes</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const users = [
+  { id: 1, name: &quot;Wanjiku&quot;, paid: true },
+  { id: 2, name: &quot;Omondi&quot;, paid: false },
+  { id: 3, name: &quot;Chebet&quot;, paid: true },
+];
+console.log(users.find((u) =&gt; u.id === 2));          // the Omondi object
+console.log(users.findIndex((u) =&gt; u.name === &quot;Chebet&quot;)); // 2
+console.log(users.some((u) =&gt; !u.paid));             // true: someone hasn&#x27;t paid
+console.log(users.every((u) =&gt; u.paid));             // false
+console.log([&quot;M-Pesa&quot;, &quot;Card&quot;].includes(&quot;Card&quot;));    // true</code></pre></figure>
+<h2>sort (careful!)</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const nums = [100, 25, 3, 1000];
+console.log([...nums].sort());               // [100, 1000, 25, 3]  sorted as TEXT!
+console.log([...nums].sort((a, b) =&gt; a - b)); // [3, 25, 100, 1000]  lowest first
+console.log([...nums].sort((a, b) =&gt; b - a)); // highest first
+
+const people = [{ n: &quot;Zawadi&quot;, age: 31 }, { n: &quot;Baraka&quot;, age: 22 }];
+people.sort((a, b) =&gt; a.n.localeCompare(b.n));  // alphabetical
+console.log(people.map((p) =&gt; p.n));</code></pre></figure>
+<blockquote><p><code>sort</code> changes the original array. Copy it first with <code>[...array]</code> if you need to keep the original order.</p></blockquote>
+<h2>Chaining: combine methods</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const sales = [
+  { agent: &quot;Achieng&quot;, amount: 1200, month: &quot;Jan&quot; },
+  { agent: &quot;Kamau&quot;, amount: 800, month: &quot;Jan&quot; },
+  { agent: &quot;Achieng&quot;, amount: 2300, month: &quot;Feb&quot; },
+  { agent: &quot;Kamau&quot;, amount: 400, month: &quot;Feb&quot; },
+];
+const achiengTotal = sales
+  .filter((s) =&gt; s.agent === &quot;Achieng&quot;)
+  .map((s) =&gt; s.amount)
+  .reduce((a, b) =&gt; a + b, 0);
+console.log(&quot;Achieng sold KSh&quot;, achiengTotal); // 3500</code></pre></figure>
+<h2>Cheat sheet</h2>
+<div class="static-table"><table><thead><tr><th>Method</th><th>Returns</th><th>Use it to</th></tr></thead><tbody><tr><td><code>map</code></td><td>New array, same length</td><td>Transform each item</td></tr><tr><td><code>filter</code></td><td>New array, maybe shorter</td><td>Keep matching items</td></tr><tr><td><code>reduce</code></td><td>One value</td><td>Totals, counts, grouping</td></tr><tr><td><code>find</code></td><td>First match or <code>undefined</code></td><td>Look up one item</td></tr><tr><td><code>some</code> / <code>every</code></td><td><code>true</code> / <code>false</code></td><td>Check a condition</td></tr><tr><td><code>sort</code></td><td>The same array, sorted</td><td>Order items</td></tr><tr><td><code>slice</code></td><td>A copy of part</td><td>Pagination, top 3</td></tr><tr><td><code>includes</code></td><td><code>true</code> / <code>false</code></td><td>Is a value in the list?</td></tr></tbody></table></div>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which method creates a new array by transforming every item?</p><details><summary>Show answer</summary><p>map</p></details></li><li><p>Which method keeps only the items that pass a test?</p><details><summary>Show answer</summary><p>filter</p></details></li><li><p>Which method turns an array into a single value like a total?</p><details><summary>Show answer</summary><p>reduce</p></details></li><li><p>What does [10, 9, 100].sort() give first: 10 or 9 or 100?</p><details><summary>Show answer</summary><p>10 · Without a compare function, sort compares as text.</p></details></li><li><p>Which method returns the first item that matches?</p><details><summary>Show answer</summary><p>find</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Use <code>reduce</code> to add up the array <code>[180, 350, 60]</code> and log the total. The output should be <strong>590</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=array-methods#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 6 of 19 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/loops-arrays/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Arrays and loops</a><a class="btn btn-solid btn-sm" href="/learn/javascript/functions-objects/">Functions and objects <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

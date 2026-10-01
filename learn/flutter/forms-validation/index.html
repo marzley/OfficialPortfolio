@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Forms and input: text fields, validation, pickers and…</title>
+    <meta name="description" content="Sign up, log in, checkout, &quot;add a product&quot;: forms are everywhere. A good form is quick to fill on a phone , catches mistakes before sending , and…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/flutter/forms-validation/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Forms and input: text fields, validation, pickers and…" />
+    <meta property="og:description" content="Sign up, log in, checkout, &quot;add a product&quot;: forms are everywhere. A good form is quick to fill on a phone , catches mistakes before sending , and…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/flutter/forms-validation/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Forms and input: text fields, validation, pickers and…" />
+    <meta name="twitter:description" content="Sign up, log in, checkout, &quot;add a product&quot;: forms are everywhere. A good form is quick to fill on a phone , catches mistakes before sending , and…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/flutter/forms-validation/#lesson","name":"Forms and input: text fields, validation, pickers and the keyboard","description":"Sign up, log in, checkout, \"add a product\": forms are everywhere. A good form is quick to fill on a phone , catches mistakes before sending , and…","url":"https://marzleytechsolutions.co.ke/learn/flutter/forms-validation/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/flutter/#course","name":"Flutter app development","url":"https://marzleytechsolutions.co.ke/learn/flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Flutter app development","item":"https://marzleytechsolutions.co.ke/learn/flutter/"},{"@type":"ListItem","position":4,"name":"Forms and input: text fields, validation, pickers and the keyboard","item":"https://marzleytechsolutions.co.ke/learn/flutter/forms-validation/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/flutter/">Flutter app development</a> / <span>Forms and input: text fields, validation, pickers and the keyboard</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=flutter&amp;lesson=forms-validation"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Forms and input: text fields, validation, pickers and the keyboard</h1>
+<p>Sign up, log in, checkout, "add a product": forms are everywhere. A good form is <strong>quick to fill on a phone</strong>, <strong>catches mistakes before sending</strong>, and <strong>explains errors clearly</strong>.</p>
+<h2>TextField and TextEditingController</h2>
+<p>A <code>TextEditingController</code> holds what's typed, so you can read it, change it and listen to it.</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+void main() =&gt; runApp(const MaterialApp(home: GreetScreen()));
+
+class GreetScreen extends StatefulWidget {
+  const GreetScreen({super.key});
+  @override
+  State&lt;GreetScreen&gt; createState() =&gt; _GreetScreenState();
+}
+
+class _GreetScreenState extends State&lt;GreetScreen&gt; {
+  final nameCtrl = TextEditingController();
+  String greeting = &#x27;&#x27;;
+
+  @override
+  void dispose() {
+    nameCtrl.dispose();                     // controllers must be disposed
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;Greeting&#x27;)),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(children: [
+          TextField(
+            controller: nameCtrl,
+            textCapitalization: TextCapitalization.words,
+            decoration: const InputDecoration(labelText: &#x27;Your name&#x27;, border: OutlineInputBorder()),
+            onChanged: (v) =&gt; setState(() =&gt; greeting = v.isEmpty ? &#x27;&#x27; : &#x27;Habari, $v!&#x27;),   // runs on every key
+            onSubmitted: (_) =&gt; FocusScope.of(context).unfocus(),                          // Enter/Done: hide keyboard
+          ),
+          const SizedBox(height: 16),
+          Text(greeting, style: Theme.of(context).textTheme.headlineSmall),
+          TextButton(onPressed: () { nameCtrl.clear(); setState(() =&gt; greeting = &#x27;&#x27;); }, child: const Text(&#x27;Clear&#x27;)),
+        ]),
+      ),
+    );
+  }
+}</code></pre></figure>
+<h2>The right keyboard for each field</h2>
+<div class="static-table"><table><thead><tr><th>Field</th><th>Setting</th><th>Why</th></tr></thead><tbody><tr><td>Phone</td><td><code>keyboardType: TextInputType.phone</code></td><td>Number pad with +</td></tr><tr><td>Amount</td><td><code>TextInputType.numberWithOptions(decimal: true)</code></td><td>Digits and a dot</td></tr><tr><td>Email</td><td><code>TextInputType.emailAddress</code></td><td>Shows @ and .com</td></tr><tr><td>Password</td><td><code>obscureText: true</code>, <code>autocorrect: false</code></td><td>Hides text, no suggestions</td></tr><tr><td>Names</td><td><code>textCapitalization: TextCapitalization.words</code></td><td>Capital letter for each word</td></tr><tr><td>Long notes</td><td><code>maxLines: 4</code> or <code>minLines: 2, maxLines: null</code></td><td>Grows as you type</td></tr></tbody></table></div>
+<p>Also set <code>textInputAction: TextInputAction.next</code> so the keyboard's button jumps to the next field, and <code>autofillHints: [AutofillHints.email]</code> so the phone can fill saved details.</p>
+<h2>Form + TextFormField + validators</h2>
+<p>Wrap fields in a **<code>Form</code>** with a <code>GlobalKey&lt;FormState&gt;</code>. Each <code>TextFormField</code> gets a <code>validator</code> that returns an <strong>error message</strong>, or <code>null</code> if the value is fine. <code>formKey.currentState!.validate()</code> runs them all.</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+import &#x27;package:flutter/services.dart&#x27;;
+
+void main() =&gt; runApp(MaterialApp(theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.green), home: const SignUpScreen()));
+
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
+  @override
+  State&lt;SignUpScreen&gt; createState() =&gt; _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State&lt;SignUpScreen&gt; {
+  final formKey = GlobalKey&lt;FormState&gt;();
+  final name = TextEditingController();
+  final phone = TextEditingController();
+  final email = TextEditingController();
+  final password = TextEditingController();
+  bool hidePassword = true;
+  bool agreed = false;
+  bool sending = false;
+
+  @override
+  void dispose() {
+    for (final c in [name, phone, email, password]) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  /// Accepts 0712345678, 0112345678, 254712345678 or +254 712 345 678; returns 2547XXXXXXXX or null.
+  static String? normalisePhone(String input) {
+    final digits = input.replaceAll(RegExp(r&#x27;\D&#x27;), &#x27;&#x27;);
+    if (RegExp(r&#x27;^0[17]\d{8}$&#x27;).hasMatch(digits)) return &#x27;254${digits.substring(1)}&#x27;;
+    if (RegExp(r&#x27;^254[17]\d{8}$&#x27;).hasMatch(digits)) return digits;
+    return null;
+  }
+
+  Future&lt;void&gt; submit() async {
+    FocusScope.of(context).unfocus();
+    if (!formKey.currentState!.validate()) return;           // shows every error message at once
+    if (!agreed) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(&#x27;Please accept the terms first.&#x27;)));
+      return;
+    }
+    setState(() =&gt; sending = true);
+    await Future.delayed(const Duration(seconds: 2));         // pretend to call the server
+    if (!mounted) return;
+    setState(() =&gt; sending = false);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(&#x27;Account created for ${normalisePhone(phone.text)}&#x27;)),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;Create account&#x27;)),
+      body: Form(
+        key: formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,   // re-check a field once the user has typed in it
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            TextFormField(
+              controller: name,
+              textCapitalization: TextCapitalization.words,
+              textInputAction: TextInputAction.next,
+              decoration: const InputDecoration(labelText: &#x27;Full name&#x27;, prefixIcon: Icon(Icons.person)),
+              validator: (v) =&gt; (v == null || v.trim().split(&#x27; &#x27;).length &lt; 2) ? &#x27;Enter your first and last name&#x27; : null,
+            ),
+            const SizedBox(height: 12),
+            TextFormField(
+              controller: phone,
+              keyboardType: TextInputType.phone,
+              textInputAction: TextInputAction.next,
+              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r&#x27;[0-9+ ]&#x27;)), LengthLimitingTextInputFormatter(16)],
+              decoration: const InputDecoration(labelText: &#x27;M-Pesa number&#x27;, hintText: &#x27;0712 345 678&#x27;, prefixIcon: Icon(Icons.phone)),
+              validator: (v) =&gt; normalisePhone(v ?? &#x27;&#x27;) == null ? &#x27;Enter a Safaricom or Airtel number like 0712 345 678&#x27; : null,
+            ),
+            const SizedBox(height: 12),
+            TextFormField(
+              controller: email,
+              keyboardType: TextInputType.emailAddress,
+              autofillHints: const [AutofillHints.email],
+              textInputAction: TextInputAction.next,
+              decoration: const InputDecoration(labelText: &#x27;Email (optional)&#x27;, prefixIcon: Icon(Icons.email)),
+              validator: (v) {
+                if (v == null || v.isEmpty) return null;                        // optional field
+                return RegExp(r&#x27;^[^@\s]+@[^@\s]+\.[^@\s]+$&#x27;).hasMatch(v) ? null : &#x27;That email doesn\&#x27;t look right&#x27;;
+              },
+            ),
+            const SizedBox(height: 12),
+            TextFormField(
+              controller: password,
+              obscureText: hidePassword,
+              autocorrect: false,
+              enableSuggestions: false,
+              decoration: InputDecoration(
+                labelText: &#x27;Password&#x27;,
+                prefixIcon: const Icon(Icons.lock),
+                helperText: &#x27;At least 8 characters, with a number&#x27;,
+                suffixIcon: IconButton(
+                  icon: Icon(hidePassword ? Icons.visibility : Icons.visibility_off),
+                  tooltip: hidePassword ? &#x27;Show password&#x27; : &#x27;Hide password&#x27;,
+                  onPressed: () =&gt; setState(() =&gt; hidePassword = !hidePassword),
+                ),
+              ),
+              validator: (v) {
+                if (v == null || v.length &lt; 8) return &#x27;Use at least 8 characters&#x27;;
+                if (!RegExp(r&#x27;\d&#x27;).hasMatch(v)) return &#x27;Add at least one number&#x27;;
+                return null;
+              },
+            ),
+            CheckboxListTile(
+              value: agreed,
+              onChanged: (v) =&gt; setState(() =&gt; agreed = v ?? false),
+              title: const Text(&#x27;I agree to the terms and privacy policy&#x27;),
+              controlAffinity: ListTileControlAffinity.leading,
+              contentPadding: EdgeInsets.zero,
+            ),
+            const SizedBox(height: 8),
+            FilledButton(
+              onPressed: sending ? null : submit,                              // disabled while sending: no double taps
+              child: sending
+                  ? const SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2.5))
+                  : const Text(&#x27;Create account&#x27;),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}</code></pre></figure>
+<p>What makes this a good form:</p>
+<ul><li><strong>Clear, specific error messages</strong> ("Enter a Safaricom or Airtel number like 0712 345 678"), not "Invalid input".</li><li><strong>Input formatters</strong> stop bad characters being typed at all.</li><li><strong>Normalising</strong> the phone number means users can type it any way they like.</li><li>The button is <strong>disabled while sending</strong>, so a second tap can't create two accounts (or charge twice!).</li><li>A **<code>ListView</code>** (not a Column) means the form scrolls when the keyboard opens.</li></ul>
+<blockquote><p>Validation in the app is for convenience. <strong>Always validate again on the server</strong>: anyone can send requests to your API without using your app.</p></blockquote>
+<h2>Choices: switches, radios, dropdowns, chips</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+void main() =&gt; runApp(const MaterialApp(home: Scaffold(body: SafeArea(child: OrderOptions()))));
+
+class OrderOptions extends StatefulWidget {
+  const OrderOptions({super.key});
+  @override
+  State&lt;OrderOptions&gt; createState() =&gt; _OrderOptionsState();
+}
+
+enum Delivery { pickup, rider, courier }
+
+class _OrderOptionsState extends State&lt;OrderOptions&gt; {
+  bool giftWrap = false;
+  Delivery delivery = Delivery.rider;
+  String county = &#x27;Nairobi&#x27;;
+  final extras = &lt;String&gt;{};
+  double tip = 50;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(padding: const EdgeInsets.all(16), children: [
+      SwitchListTile(title: const Text(&#x27;Gift wrap (+KSh 100)&#x27;), value: giftWrap, onChanged: (v) =&gt; setState(() =&gt; giftWrap = v)),
+      const Text(&#x27;Delivery&#x27;),
+      SegmentedButton&lt;Delivery&gt;(
+        segments: const [
+          ButtonSegment(value: Delivery.pickup, label: Text(&#x27;Pick up&#x27;)),
+          ButtonSegment(value: Delivery.rider, label: Text(&#x27;Boda rider&#x27;)),
+          ButtonSegment(value: Delivery.courier, label: Text(&#x27;Courier&#x27;)),
+        ],
+        selected: {delivery},
+        onSelectionChanged: (s) =&gt; setState(() =&gt; delivery = s.first),
+      ),
+      const SizedBox(height: 16),
+      DropdownButtonFormField&lt;String&gt;(
+        value: county,
+        decoration: const InputDecoration(labelText: &#x27;County&#x27;, border: OutlineInputBorder()),
+        items: [for (final c in [&#x27;Nairobi&#x27;, &#x27;Kiambu&#x27;, &#x27;Machakos&#x27;, &#x27;Nakuru&#x27;, &#x27;Mombasa&#x27;, &#x27;Kisumu&#x27;]) DropdownMenuItem(value: c, child: Text(c))],
+        onChanged: (v) =&gt; setState(() =&gt; county = v!),
+      ),
+      const SizedBox(height: 16),
+      Wrap(spacing: 8, children: [
+        for (final e in [&#x27;Extra napkins&#x27;, &#x27;Call on arrival&#x27;, &#x27;Leave at gate&#x27;])
+          FilterChip(
+            label: Text(e),
+            selected: extras.contains(e),
+            onSelected: (on) =&gt; setState(() =&gt; on ? extras.add(e) : extras.remove(e)),
+          ),
+      ]),
+      const SizedBox(height: 16),
+      Text(&#x27;Tip for the rider: KSh ${tip.round()}&#x27;),
+      Slider(value: tip, min: 0, max: 200, divisions: 8, label: &#x27;KSh ${tip.round()}&#x27;, onChanged: (v) =&gt; setState(() =&gt; tip = v)),
+    ]);
+  }
+}</code></pre></figure>
+<h2>Date and time pickers</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">Future&lt;void&gt; pickDeliveryDate(BuildContext context) async {
+  final now = DateTime.now();
+  final date = await showDatePicker(
+    context: context,
+    initialDate: now.add(const Duration(days: 1)),
+    firstDate: now,                                    // no past dates
+    lastDate: now.add(const Duration(days: 30)),
+    helpText: &#x27;Choose delivery day&#x27;,
+  );
+  if (date == null || !context.mounted) return;        // the user cancelled
+  final time = await showTimePicker(context: context, initialTime: const TimeOfDay(hour: 10, minute: 0));
+  if (time == null) return;
+  final when = DateTime(date.year, date.month, date.day, time.hour, time.minute);
+  debugPrint(&#x27;Deliver at $when&#x27;);
+}</code></pre></figure>
+<h2>Moving between fields and hiding the keyboard</h2>
+<ul><li><code>textInputAction: TextInputAction.next</code> moves to the next field automatically inside a Form.</li><li>On the last field use <code>TextInputAction.done</code> and <code>onFieldSubmitted: (_) =&gt; submit()</code>.</li><li>Hide the keyboard: <code>FocusScope.of(context).unfocus()</code>. Many apps wrap the screen in <code>GestureDetector(onTap: () =&gt; FocusScope.of(context).unfocus(), child: ...)</code> so tapping empty space closes the keyboard.</li></ul>
+<h2>Accessibility for forms</h2>
+<ul><li>Always use <code>labelText</code> (screen readers read it), not only a hint.</li><li>Show errors <strong>as text</strong>, not only by turning the border red.</li><li>Keep tap targets 48 dp or bigger (the Material widgets already do).</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which class holds and controls the text in a TextField?</p><details><summary>Show answer</summary><p>TextEditingController</p></details></li><li><p>What should a validator return when the value is fine?</p><details><summary>Show answer</summary><p>null</p></details></li><li><p>Which call runs every validator in a Form? Write the method name.</p><details><summary>Show answer</summary><p>validate</p></details></li><li><p>Which TextField property hides a password?</p><details><summary>Show answer</summary><p>obscureText</p></details></li><li><p>Which keyboardType shows a number pad for phone numbers?</p><details><summary>Show answer</summary><p>TextInputType.phone</p></details></li><li><p>Which widget groups fields so they can all be validated together?</p><details><summary>Show answer</summary><p>Form</p></details></li><li><p>Which function shows a calendar to choose a date?</p><details><summary>Show answer</summary><p>showDatePicker</p></details></li></ol></section></div><p class="static-meta">Lesson 7 of 15 in <a href="/learn/flutter/">Flutter app development</a> · <a href="/learn/?book=flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/flutter/navigation-routing/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Navigation: screens, passing data, tabs, drawers and go_router</a><a class="btn btn-solid btn-sm" href="/learn/flutter/state-management/">State management: setState, lifting state, Provider and Riverpod <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

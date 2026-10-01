@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NAT, gateways and routing | Networking</title>
+    <meta name="description" content="Free Networking lesson: NAT, gateways and routing." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/networking/nat-routing/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="NAT, gateways and routing | Networking" />
+    <meta property="og:description" content="Free Networking lesson: NAT, gateways and routing." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/networking/nat-routing/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="NAT, gateways and routing | Networking" />
+    <meta name="twitter:description" content="Free Networking lesson: NAT, gateways and routing." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/networking/nat-routing/#lesson","name":"NAT, gateways and routing","description":"Free Networking lesson: NAT, gateways and routing.","url":"https://marzleytechsolutions.co.ke/learn/networking/nat-routing/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/networking/#course","name":"Networking","url":"https://marzleytechsolutions.co.ke/learn/networking/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Networking","item":"https://marzleytechsolutions.co.ke/learn/networking/"},{"@type":"ListItem","position":4,"name":"NAT, gateways and routing","item":"https://marzleytechsolutions.co.ke/learn/networking/nat-routing/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/networking/">Networking</a> / <span>NAT, gateways and routing</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=networking&amp;lesson=nat-routing"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>NAT, gateways and routing</h1>
+<h2>The default gateway</h2>
+<p>When a device sends to an address <strong>outside its own subnet</strong>, it sends the packet to its <strong>default gateway</strong>, the router. That's why a wrong gateway means "local things work but no internet".</p>
+<p>A device decides: <em>is the destination in my subnet?</em> (compare network addresses using the mask). If yes → send directly; if no → send to the gateway.</p>
+<h2>How routers decide: the routing table</h2>
+<p>A router keeps a table of networks and where to send packets for each. Example:</p>
+<figure class="static-code"><pre><code>C   192.168.1.0/24 is directly connected, GigabitEthernet0/1
+S   10.50.0.0/16 [1/0] via 172.16.0.2
+O   10.50.8.0/22 [110/20] via 172.16.0.6
+S*  0.0.0.0/0 [1/0] via 41.90.1.1        (default route: &quot;everything else&quot;)</code></pre></figure>
+<p><strong>Longest prefix match</strong>: if several routes match, the router uses the <strong>most specific</strong> (longest prefix). A packet to 10.50.9.4 matches both 10.50.0.0/16 and 10.50.8.0/22 → it follows the <strong>/22</strong>.</p>
+<h2>Kinds of routes</h2>
+<ul><li><strong>Connected</strong>: networks on the router's own interfaces.</li><li><strong>Static</strong>: typed in by an admin. Simple, good for small networks and default routes.</li><li><strong>Dynamic</strong>: learned from other routers with a routing protocol:</li><li><strong>RIP</strong>: counts hops, old and slow.</li><li><strong>OSPF</strong>: link-state, fast, uses cost based on bandwidth; common in companies.</li><li><strong>EIGRP</strong>: Cisco's advanced distance-vector.</li><li><strong>BGP</strong>: the protocol of the internet; ISPs use it to exchange routes between each other (e.g. at the Kenya Internet Exchange Point, KIXP).</li></ul>
+<p><strong>Administrative distance</strong> decides which <em>source</em> is trusted when two protocols know the same network (connected 0, static 1, OSPF 110, RIP 120).</p>
+<h2>NAT and PAT</h2>
+<p>Private addresses (192.168.x.x) can't be used on the internet. <strong>NAT</strong> (Network Address Translation) on your router swaps the private source address for its <strong>public</strong> one.</p>
+<p><strong>PAT / NAT overload</strong> lets hundreds of devices share <strong>one</strong> public IP by also changing the <strong>source port</strong> and remembering who used which port. This is what every home and office router does.</p>
+<ul><li><strong>Port forwarding (static NAT)</strong>: sends incoming traffic on a public port to an inside device, e.g. public port 8080 → 192.168.1.20:80 to reach a CCTV DVR from outside.</li><li><strong>CGNAT</strong>: mobile networks put customers behind another layer of NAT (100.64.0.0/10), so port forwarding from outside usually doesn't work on mobile data.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the default route in CIDR notation?</p><details><summary>Show answer</summary><p>0.0.0.0/0</p></details></li><li><p>A router has routes 10.0.0.0/8 and 10.1.2.0/24. Which one does it use for 10.1.2.50?</p><details><summary>Show answer</summary><p>10.1.2.0/24 · Longest prefix match.</p></details></li><li><p>Which routing protocol runs the internet between ISPs?</p><details><summary>Show answer</summary><p>BGP</p></details></li><li><p>Which is more trusted by default, a static route or OSPF?</p><details><summary>Show answer</summary><p>static</p></details></li><li><p>What lets many devices share one public IP by also changing port numbers?</p><details><summary>Show answer</summary><p>PAT</p></details></li><li><p>A PC can reach other PCs on its LAN but not the internet. Which setting is most likely wrong?</p><details><summary>Show answer</summary><p>default gateway</p></details></li></ol></section></div><p class="static-meta">Lesson 15 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/dns-dhcp/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> DNS and DHCP</a><a class="btn btn-solid btn-sm" href="/learn/networking/switching-vlans/">Switching, MAC addresses, ARP and VLANs <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Project: a mini bank / SACCO account system in C</title>
+    <meta name="description" content="Let&#x27;s combine everything from the C tutorial (variables, functions, arrays, strings, structs and pointers) into a small but complete program: a SACCO…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/c-programming/project-bank-system/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Project: a mini bank / SACCO account system in C" />
+    <meta property="og:description" content="Let&#x27;s combine everything from the C tutorial (variables, functions, arrays, strings, structs and pointers) into a small but complete program: a SACCO…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/c-programming/project-bank-system/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Project: a mini bank / SACCO account system in C" />
+    <meta name="twitter:description" content="Let&#x27;s combine everything from the C tutorial (variables, functions, arrays, strings, structs and pointers) into a small but complete program: a SACCO…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/c-programming/project-bank-system/#lesson","name":"Project: a mini bank / SACCO account system in C","description":"Let's combine everything from the C tutorial (variables, functions, arrays, strings, structs and pointers) into a small but complete program: a SACCO…","url":"https://marzleytechsolutions.co.ke/learn/c-programming/project-bank-system/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/c-programming/#course","name":"C programming","url":"https://marzleytechsolutions.co.ke/learn/c-programming/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"C programming","item":"https://marzleytechsolutions.co.ke/learn/c-programming/"},{"@type":"ListItem","position":4,"name":"Project: a mini bank / SACCO account system in C","item":"https://marzleytechsolutions.co.ke/learn/c-programming/project-bank-system/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/c-programming/">C programming</a> / <span>Project: a mini bank / SACCO account system in C</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=c-programming&amp;lesson=project-bank-system"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Project: a mini bank / SACCO account system in C</h1>
+<p>Let's combine everything from the C tutorial (variables, functions, arrays, strings, structs and pointers) into a small but complete program: a SACCO account system that opens accounts, handles deposits and withdrawals with rules, and prints statements.</p>
+<h2>Design first</h2>
+<p><strong>Data:</strong> each account has a number, a member name, a balance and a count of transactions.</p>
+<p><strong>Operations:</strong></p>
+<div class="static-table"><table><thead><tr><th>Function</th><th>Rule</th></tr></thead><tbody><tr><td><code>openAccount</code></td><td>Minimum opening deposit KSh 500</td></tr><tr><td><code>deposit</code></td><td>Amount must be positive</td></tr><tr><td><code>withdraw</code></td><td>Must leave at least KSh 100; withdrawals cost a KSh 30 fee</td></tr><tr><td><code>transfer</code></td><td>Withdraw from one, deposit to another (no fee inside the SACCO)</td></tr><tr><td><code>printAll</code></td><td>A neat table of all accounts</td></tr></tbody></table></div>
+<h2>The program</h2>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+#define MAX_ACCOUNTS 10
+#define MIN_OPENING 500.0
+#define MIN_BALANCE 100.0
+#define WITHDRAW_FEE 30.0
+
+struct Account {
+    int number;
+    char name[40];
+    double balance;
+    int transactions;
+};
+
+struct Account accounts[MAX_ACCOUNTS];
+int accountCount = 0;
+
+struct Account *findAccount(int number) {
+    for (int i = 0; i &lt; accountCount; i++) {
+        if (accounts[i].number == number) return &amp;accounts[i];
+    }
+    return NULL;
+}
+
+int openAccount(char *name, double deposit) {
+    if (accountCount &gt;= MAX_ACCOUNTS) { printf(&quot;Error: bank is full\n&quot;); return -1; }
+    if (deposit &lt; MIN_OPENING) { printf(&quot;Error: minimum opening deposit is %.0f\n&quot;, MIN_OPENING); return -1; }
+    struct Account *a = &amp;accounts[accountCount];
+    a-&gt;number = 1001 + accountCount;
+    strncpy(a-&gt;name, name, sizeof(a-&gt;name) - 1);
+    a-&gt;name[sizeof(a-&gt;name) - 1] = &#x27;\0&#x27;;
+    a-&gt;balance = deposit;
+    a-&gt;transactions = 1;
+    accountCount++;
+    printf(&quot;Opened %d for %s with KSh %.2f\n&quot;, a-&gt;number, a-&gt;name, deposit);
+    return a-&gt;number;
+}
+
+int deposit(int number, double amount) {
+    struct Account *a = findAccount(number);
+    if (a == NULL) { printf(&quot;Error: account %d not found\n&quot;, number); return 0; }
+    if (amount &lt;= 0) { printf(&quot;Error: deposit must be positive\n&quot;); return 0; }
+    a-&gt;balance += amount;
+    a-&gt;transactions++;
+    printf(&quot;Deposited KSh %.2f to %d. New balance %.2f\n&quot;, amount, number, a-&gt;balance);
+    return 1;
+}
+
+int withdraw(int number, double amount, double fee) {
+    struct Account *a = findAccount(number);
+    if (a == NULL) { printf(&quot;Error: account %d not found\n&quot;, number); return 0; }
+    if (amount &lt;= 0) { printf(&quot;Error: amount must be positive\n&quot;); return 0; }
+    if (a-&gt;balance - amount - fee &lt; MIN_BALANCE) {
+        printf(&quot;Refused: %d must keep at least KSh %.0f (balance %.2f)\n&quot;, number, MIN_BALANCE, a-&gt;balance);
+        return 0;
+    }
+    a-&gt;balance -= amount + fee;
+    a-&gt;transactions++;
+    printf(&quot;Withdrew KSh %.2f from %d (fee %.0f). New balance %.2f\n&quot;, amount, number, fee, a-&gt;balance);
+    return 1;
+}
+
+int transfer(int from, int to, double amount) {
+    if (findAccount(to) == NULL) { printf(&quot;Error: account %d not found\n&quot;, to); return 0; }
+    if (!withdraw(from, amount, 0)) return 0;
+    return deposit(to, amount);
+}
+
+void printAll(void) {
+    double total = 0;
+    printf(&quot;\n%-6s %-15s %12s %6s\n&quot;, &quot;No.&quot;, &quot;Member&quot;, &quot;Balance&quot;, &quot;Trans&quot;);
+    printf(&quot;------------------------------------------\n&quot;);
+    for (int i = 0; i &lt; accountCount; i++) {
+        printf(&quot;%-6d %-15s %12.2f %6d\n&quot;, accounts[i].number, accounts[i].name, accounts[i].balance, accounts[i].transactions);
+        total += accounts[i].balance;
+    }
+    printf(&quot;------------------------------------------\n&quot;);
+    printf(&quot;%-22s %12.2f\n&quot;, &quot;Total savings&quot;, total);
+}
+
+int main(void) {
+    int amina = openAccount(&quot;Amina Hassan&quot;, 2000);
+    int brian = openAccount(&quot;Brian Otieno&quot;, 800);
+    openAccount(&quot;Chebet&quot;, 200);                 /* refused: too small */
+
+    deposit(amina, 3500);
+    withdraw(brian, 650, WITHDRAW_FEE);         /* refused: would go below the minimum */
+    withdraw(brian, 500, WITHDRAW_FEE);
+    transfer(amina, brian, 1000);
+    deposit(9999, 100);                         /* no such account */
+
+    printAll();
+    return 0;
+}</code></pre></figure>
+<h2>How it's built</h2>
+<div class="static-table"><table><thead><tr><th>C concept</th><th>Where</th></tr></thead><tbody><tr><td><code>#define</code> constants for the rules</td><td>top of the file</td></tr><tr><td><code>struct</code></td><td><code>struct Account</code></td></tr><tr><td>Array of structs</td><td><code>accounts[MAX_ACCOUNTS]</code></td></tr><tr><td>Pointers to structs and <code>-&gt;</code></td><td><code>findAccount</code>, every operation</td></tr><tr><td>Returning <code>NULL</code> for "not found"</td><td><code>findAccount</code></td></tr><tr><td>Functions returning success (1) / failure (0)</td><td><code>deposit</code>, <code>withdraw</code></td></tr><tr><td>Reusing functions</td><td><code>transfer</code> uses <code>withdraw</code> and <code>deposit</code></td></tr><tr><td>Formatted tables</td><td><code>printAll</code> with <code>%-15s</code>, <code>%12.2f</code></td></tr></tbody></table></div>
+<h2>Challenges</h2>
+<ol><li>Add a menu loop with <code>scanf</code> so a user can choose operations.</li><li>Add monthly interest (e.g. 0.5%) to every account.</li><li>Keep a history of each account's transactions and print a mini statement.</li><li>Save accounts to a file with <code>fopen</code>/<code>fprintf</code> and load them on start.</li><li>Allow up to any number of accounts using <code>malloc</code>/<code>realloc</code> instead of a fixed array.</li></ol>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does findAccount return when the account doesn't exist?</p><details><summary>Show answer</summary><p>NULL</p></details></li><li><p>Which operator accesses a struct field through a pointer?</p><details><summary>Show answer</summary><p>-&gt;</p></details></li><li><p>What is the minimum opening deposit in this program, in KSh?</p><details><summary>Show answer</summary><p>500</p></details></li><li><p>Which printf specifier left-aligns a string in 15 characters?</p><details><summary>Show answer</summary><p>%-15s</p></details></li></ol></section></div><p class="static-meta">Lesson 8 of 8 in <a href="/learn/c-programming/">C programming</a> · <a href="/learn/?book=c-programming">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/c-programming/structs-files/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Structs and files</a><span></span></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

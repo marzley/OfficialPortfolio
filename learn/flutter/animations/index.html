@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Animations that feel good: implicit, Hero, page…</title>
+    <meta name="description" content="Good animation isn&#x27;t decoration: it explains what changed (the item flew into the cart), gives feedback (the button pressed), and makes waiting feel…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/flutter/animations/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Animations that feel good: implicit, Hero, page…" />
+    <meta property="og:description" content="Good animation isn&#x27;t decoration: it explains what changed (the item flew into the cart), gives feedback (the button pressed), and makes waiting feel…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/flutter/animations/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Animations that feel good: implicit, Hero, page…" />
+    <meta name="twitter:description" content="Good animation isn&#x27;t decoration: it explains what changed (the item flew into the cart), gives feedback (the button pressed), and makes waiting feel…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/flutter/animations/#lesson","name":"Animations that feel good: implicit, Hero, page transitions and loaders","description":"Good animation isn't decoration: it explains what changed (the item flew into the cart), gives feedback (the button pressed), and makes waiting feel…","url":"https://marzleytechsolutions.co.ke/learn/flutter/animations/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/flutter/#course","name":"Flutter app development","url":"https://marzleytechsolutions.co.ke/learn/flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Flutter app development","item":"https://marzleytechsolutions.co.ke/learn/flutter/"},{"@type":"ListItem","position":4,"name":"Animations that feel good: implicit, Hero, page transitions and loaders","item":"https://marzleytechsolutions.co.ke/learn/flutter/animations/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/flutter/">Flutter app development</a> / <span>Animations that feel good: implicit, Hero, page transitions and loaders</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=flutter&amp;lesson=animations"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Animations that feel good: implicit, Hero, page transitions and loaders</h1>
+<p>Good animation isn't decoration: it <strong>explains what changed</strong> (the item flew into the cart), <strong>gives feedback</strong> (the button pressed), and makes waiting feel shorter. Flutter makes smooth 60/120 fps animation easy.</p>
+<h2>Level 1: implicit animations (the easy 80%)</h2>
+<p>"Implicit" widgets animate by themselves whenever a value you give them changes. Just change the value in <code>setState</code>.</p>
+<div class="static-table"><table><thead><tr><th>Widget</th><th>Animates</th></tr></thead><tbody><tr><td><code>AnimatedContainer</code></td><td>Size, colour, padding, border radius, alignment</td></tr><tr><td><code>AnimatedOpacity</code></td><td>Fade in/out</td></tr><tr><td><code>AnimatedScale</code>, <code>AnimatedRotation</code>, <code>AnimatedSlide</code></td><td>Scale, rotate, move</td></tr><tr><td><code>AnimatedAlign</code>, <code>AnimatedPadding</code>, <code>AnimatedPositioned</code></td><td>Position</td></tr><tr><td><code>AnimatedSwitcher</code></td><td>Swap one child for another with a fade (or any transition)</td></tr><tr><td><code>AnimatedCrossFade</code></td><td>Fade between exactly two children</td></tr><tr><td><code>TweenAnimationBuilder</code></td><td>Any value you like (a number counting up)</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+void main() =&gt; runApp(const MaterialApp(home: Scaffold(body: Center(child: LikeCard()))));
+
+class LikeCard extends StatefulWidget {
+  const LikeCard({super.key});
+  @override
+  State&lt;LikeCard&gt; createState() =&gt; _LikeCardState();
+}
+
+class _LikeCardState extends State&lt;LikeCard&gt; {
+  bool expanded = false;
+  bool liked = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () =&gt; setState(() =&gt; expanded = !expanded),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeOutCubic,                     // how the speed changes over time
+        width: expanded ? 320 : 220,
+        height: expanded ? 220 : 120,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: expanded ? Colors.teal.shade100 : Colors.amber.shade100,
+          borderRadius: BorderRadius.circular(expanded ? 28 : 12),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            const Expanded(child: Text(&#x27;Mandazi ×10&#x27;, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
+            IconButton(
+              onPressed: () =&gt; setState(() =&gt; liked = !liked),
+              icon: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 250),
+                transitionBuilder: (child, anim) =&gt; ScaleTransition(scale: anim, child: child),
+                child: Icon(liked ? Icons.favorite : Icons.favorite_border,
+                    key: ValueKey(liked),                // a new key tells AnimatedSwitcher the child changed
+                    color: liked ? Colors.red : null),
+              ),
+            ),
+          ]),
+          AnimatedOpacity(
+            opacity: expanded ? 1 : 0,
+            duration: const Duration(milliseconds: 300),
+            child: const Text(&#x27;Freshly made every morning in Kisumu. Tap the card again to close.&#x27;),
+          ),
+        ]),
+      ),
+    );
+  }
+}</code></pre></figure>
+<h3>Curves</h3>
+<p><code>Curves.easeOut</code> (fast then slow: best for things appearing), <code>easeIn</code> (slow then fast: things leaving), <code>easeInOut</code>, <code>easeOutBack</code> (overshoots a little: playful), <code>linear</code> (mechanical: use for spinners only).</p>
+<h3>Durations</h3>
+<div class="static-table"><table><thead><tr><th>Movement</th><th>Duration</th></tr></thead><tbody><tr><td>Small (a button, an icon)</td><td>100 to 200 ms</td></tr><tr><td>Medium (a card expanding)</td><td>250 to 400 ms</td></tr><tr><td>Large (a full-screen transition)</td><td>300 to 500 ms</td></tr></tbody></table></div>
+<p>Longer than ~500 ms feels slow. Respect users who turn off animations: <code>MediaQuery.disableAnimationsOf(context)</code>.</p>
+<h2>Counting numbers up</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+void main() =&gt; runApp(const MaterialApp(home: Scaffold(body: Center(child: BalanceCounter(balance: 48250)))));
+
+class BalanceCounter extends StatelessWidget {
+  final int balance;
+  const BalanceCounter({super.key, required this.balance});
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder&lt;double&gt;(
+      tween: Tween(begin: 0, end: balance.toDouble()),
+      duration: const Duration(milliseconds: 1200),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, _) =&gt; Text(
+        &#x27;KSh ${value.round()}&#x27;,
+        style: Theme.of(context).textTheme.displaySmall,
+      ),
+    );
+  }
+}</code></pre></figure>
+<h2>Level 2: Hero (shared element) transitions</h2>
+<p>A <strong>Hero</strong> flies a widget from one screen to the next: tap a product photo and it grows into the details page. Give both widgets the **same <code>tag</code>**:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+void main() =&gt; runApp(const MaterialApp(home: Gallery()));
+
+const colours = [Colors.red, Colors.green, Colors.blue, Colors.orange, Colors.purple, Colors.teal];
+
+class Gallery extends StatelessWidget {
+  const Gallery({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;Kitenge prints&#x27;)),
+      body: GridView.count(
+        crossAxisCount: 3,
+        padding: const EdgeInsets.all(8),
+        mainAxisSpacing: 8,
+        crossAxisSpacing: 8,
+        children: [
+          for (var i = 0; i &lt; colours.length; i++)
+            GestureDetector(
+              onTap: () =&gt; Navigator.push(context, MaterialPageRoute(builder: (_) =&gt; Detail(index: i))),
+              child: Hero(tag: &#x27;print-$i&#x27;, child: Container(decoration: BoxDecoration(color: colours[i], borderRadius: BorderRadius.circular(12)))),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class Detail extends StatelessWidget {
+  final int index;
+  const Detail({super.key, required this.index});
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(&#x27;Print ${index + 1}&#x27;)),
+      body: Column(children: [
+        Hero(tag: &#x27;print-$index&#x27;, child: Container(height: 300, color: colours[index])),
+        const Padding(padding: EdgeInsets.all(16), child: Text(&#x27;100% cotton, 6 yards. KSh 1,800&#x27;)),
+      ]),
+    );
+  }
+}</code></pre></figure>
+<h2>Level 3: custom page transitions</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">Route&lt;T&gt; fadeRoute&lt;T&gt;(Widget page) =&gt; PageRouteBuilder&lt;T&gt;(
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (context, animation, secondary) =&gt; page,
+      transitionsBuilder: (context, animation, secondary, child) =&gt; FadeTransition(
+        opacity: animation,
+        child: SlideTransition(
+          position: Tween(begin: const Offset(0, 0.05), end: Offset.zero).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut)),
+          child: child,
+        ),
+      ),
+    );
+
+// Navigator.push(context, fadeRoute(const CartPage()));</code></pre></figure>
+<h2>Level 4: explicit animations with AnimationController</h2>
+<p>When you need full control (repeat forever, play backwards, chain steps), use an <code>AnimationController</code>. The State needs <code>SingleTickerProviderStateMixin</code> (it syncs with the screen's refresh rate):</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+void main() =&gt; runApp(const MaterialApp(home: Scaffold(body: Center(child: PulsingDot()))));
+
+class PulsingDot extends StatefulWidget {
+  const PulsingDot({super.key});
+  @override
+  State&lt;PulsingDot&gt; createState() =&gt; _PulsingDotState();
+}
+
+class _PulsingDotState extends State&lt;PulsingDot&gt; with SingleTickerProviderStateMixin {
+  late final AnimationController controller =
+      AnimationController(vsync: this, duration: const Duration(milliseconds: 900))..repeat(reverse: true);
+  late final Animation&lt;double&gt; scale = Tween(begin: 0.8, end: 1.2).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
+
+  @override
+  void dispose() {
+    controller.dispose();          // always dispose controllers
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaleTransition(
+      scale: scale,
+      child: Container(
+        width: 60,
+        height: 60,
+        decoration: const BoxDecoration(color: Colors.green, shape: BoxShape.circle),
+        child: const Icon(Icons.wifi_tethering, color: Colors.white),
+      ),
+    );
+  }
+}</code></pre></figure>
+<p>Controller methods: <code>forward()</code>, <code>reverse()</code>, <code>repeat()</code>, <code>stop()</code>, <code>reset()</code>, and <code>value</code> (0.0 to 1.0).</p>
+<h2>Loading placeholders (skeletons)</h2>
+<p>Instead of a spinner in the middle of an empty screen, show grey boxes shaped like the content, gently pulsing. It feels faster. The <strong>shimmer</strong> package makes this easy, or build one with the pulsing technique above.</p>
+<h2>Lottie and Rive</h2>
+<p>Designers make animations in <strong>After Effects (Lottie)</strong> or <strong>Rive</strong> and export small files. <code>lottie</code> and <code>rive</code> packages play them: great for onboarding screens, success ticks after payment and empty states. Free animations: lottiefiles.com.</p>
+<h2>Don't overdo it</h2>
+<ul><li>Animate <strong>meaningful</strong> changes only.</li><li>Keep it short and consistent (same curve and duration family everywhere).</li><li>Test on a cheap phone: if it stutters, simplify (avoid animating big blurs and shadows).</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which widget animates size, colour and border radius when the values change?</p><details><summary>Show answer</summary><p>AnimatedContainer</p></details></li><li><p>Which widget swaps one child for another with a transition?</p><details><summary>Show answer</summary><p>AnimatedSwitcher</p></details></li><li><p>For a Hero animation, what must the two widgets share?</p><details><summary>Show answer</summary><p>tag</p></details></li><li><p>Which mixin does a State need to create an AnimationController?</p><details><summary>Show answer</summary><p>SingleTickerProviderStateMixin</p></details></li><li><p>About how long should a small button animation take, in milliseconds? Give a number from 100 to 200.</p><details><summary>Show answer</summary><p>100</p></details></li><li><p>Which curve starts fast and ends slow?</p><details><summary>Show answer</summary><p>easeOut</p></details></li></ol></section></div><p class="static-meta">Lesson 13 of 15 in <a href="/learn/flutter/">Flutter app development</a> · <a href="/learn/?book=flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/flutter/device-features/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Phone features: camera, location, calls, WhatsApp, sharing and permissions</a><a class="btn btn-solid btn-sm" href="/learn/flutter/project-duka-app/">Project: build a complete shop stock and sales app <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

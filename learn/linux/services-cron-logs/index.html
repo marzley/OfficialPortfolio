@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Services, scheduled jobs (cron) and logs | Marzley Learn</title>
+    <meta name="description" content="A server runs programs in the background (web server, database), runs jobs on a schedule (backups, reminders), and writes logs of everything. These…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/linux/services-cron-logs/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Services, scheduled jobs (cron) and logs | Marzley Learn" />
+    <meta property="og:description" content="A server runs programs in the background (web server, database), runs jobs on a schedule (backups, reminders), and writes logs of everything. These…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/linux/services-cron-logs/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Services, scheduled jobs (cron) and logs | Marzley Learn" />
+    <meta name="twitter:description" content="A server runs programs in the background (web server, database), runs jobs on a schedule (backups, reminders), and writes logs of everything. These…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/linux/services-cron-logs/#lesson","name":"Services, scheduled jobs (cron) and logs","description":"A server runs programs in the background (web server, database), runs jobs on a schedule (backups, reminders), and writes logs of everything. These…","url":"https://marzleytechsolutions.co.ke/learn/linux/services-cron-logs/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/linux/#course","name":"Linux command line","url":"https://marzleytechsolutions.co.ke/learn/linux/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Linux command line","item":"https://marzleytechsolutions.co.ke/learn/linux/"},{"@type":"ListItem","position":4,"name":"Services, scheduled jobs (cron) and logs","item":"https://marzleytechsolutions.co.ke/learn/linux/services-cron-logs/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/linux/">Linux command line</a> / <span>Services, scheduled jobs (cron) and logs</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=linux&amp;lesson=services-cron-logs"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Services, scheduled jobs (cron) and logs</h1>
+<p>A server runs programs in the background (web server, database), runs jobs on a schedule (backups, reminders), and writes logs of everything. These three skills are what a junior sysadmin uses daily.</p>
+<h2>Services with systemctl</h2>
+<p>Most Linux systems use <strong>systemd</strong> to manage services.</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo systemctl status nginx       # running? recent log lines
+sudo systemctl start nginx
+sudo systemctl stop nginx
+sudo systemctl restart nginx      # stop + start
+sudo systemctl reload nginx       # re-read config without dropping connections
+sudo systemctl enable nginx       # start automatically at boot
+sudo systemctl disable nginx
+systemctl list-units --type=service --state=running</code></pre></figure>
+<blockquote><p>After editing a config file, <strong>test it before restarting</strong>: <code>sudo nginx -t</code> or <code>sudo apachectl configtest</code>. A broken config + restart = website down.</p></blockquote>
+<h2>Scheduled jobs with cron</h2>
+<p><strong>cron</strong> runs commands at set times. Edit your list with:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">crontab -e          # your jobs
+sudo crontab -e     # root&#x27;s jobs
+crontab -l          # list them</code></pre></figure>
+<p>Each line has <strong>five time fields</strong> then the command:</p>
+<figure class="static-code"><pre><code>┌──────── minute (0-59)
+│ ┌────── hour (0-23)
+│ │ ┌──── day of month (1-31)
+│ │ │ ┌── month (1-12)
+│ │ │ │ ┌ day of week (0-6, Sunday = 0)
+│ │ │ │ │
+* * * * *  command</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Schedule</th><th>Meaning</th></tr></thead><tbody><tr><td><code>0 2 * * *</code></td><td>Every day at 2:00 am</td></tr><tr><td><code>*/15 * * * *</code></td><td>Every 15 minutes</td></tr><tr><td><code>0 8 * * 1-5</code></td><td>8:00 am Monday to Friday</td></tr><tr><td><code>30 18 1 * *</code></td><td>6:30 pm on the 1st of every month</td></tr><tr><td><code>@reboot</code></td><td>Once when the server starts</td></tr></tbody></table></div>
+<p>Real examples:</p>
+<figure class="static-code"><pre><code># Back up the database every night at 2am
+0 2 * * * /usr/bin/mysqldump -u backup shopdb | gzip &gt; /backups/shop-$(date +\%F).sql.gz
+
+# Send payment reminders every morning at 8
+0 8 * * * /usr/bin/php /var/www/portal/cron.php reminders &gt;&gt; /var/log/reminders.log 2&gt;&amp;1
+
+# Delete backups older than 30 days, every Sunday at 3am
+0 3 * * 0 find /backups -name &quot;*.gz&quot; -mtime +30 -delete</code></pre></figure>
+<p>Tips:</p>
+<ul><li>Use <strong>full paths</strong> (<code>/usr/bin/php</code>, not <code>php</code>): cron has a very small PATH.</li><li>In crontab, <code>%</code> must be written <code>\%</code>.</li><li>Send output to a log file so you can see if the job worked.</li><li>On cPanel hosting, use <strong>Cron Jobs</strong> in the dashboard: same five fields.</li></ul>
+<h2>Logs: where to look when something breaks</h2>
+<div class="static-table"><table><thead><tr><th>Log</th><th>Holds</th></tr></thead><tbody><tr><td><code>/var/log/syslog</code> (Ubuntu) or <code>/var/log/messages</code></td><td>General system messages</td></tr><tr><td><code>/var/log/auth.log</code></td><td>Logins, sudo, SSH attempts</td></tr><tr><td><code>/var/log/nginx/access.log</code>, <code>error.log</code></td><td>Web requests and web errors</td></tr><tr><td><code>/var/log/apache2/error.log</code></td><td>Apache errors (incl. PHP errors)</td></tr><tr><td><code>/var/log/mysql/error.log</code></td><td>Database problems</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo tail -f /var/log/nginx/error.log
+sudo journalctl -u nginx --since &quot;1 hour ago&quot;     # systemd&#x27;s log for one service
+sudo journalctl -p err -b                         # errors since boot
+sudo grep &quot;Failed password&quot; /var/log/auth.log | wc -l   # how many failed SSH logins?</code></pre></figure>
+<p>Logs grow forever unless rotated. <strong>logrotate</strong> (installed by default) compresses and deletes old logs automatically.</p>
+<h2>Checking resources</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">df -h              # disk space per drive
+du -sh /var/www/*  # size of each site
+free -h            # memory
+uptime             # load average
+htop               # live processes (install with sudo apt install htop)</code></pre></figure>
+<p>A full disk is one of the most common reasons sites and databases suddenly fail.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command restarts a service like nginx?</p><details><summary>Show answer</summary><p>sudo systemctl restart nginx</p></details></li><li><p>Which command makes a service start automatically at boot?</p><details><summary>Show answer</summary><p>systemctl enable</p></details></li><li><p>What cron schedule means every day at 2:00 am?</p><details><summary>Show answer</summary><p>0 2 * * *</p></details></li><li><p>Which command edits your cron jobs?</p><details><summary>Show answer</summary><p>crontab -e</p></details></li><li><p>Which command shows free disk space in human-readable sizes?</p><details><summary>Show answer</summary><p>df -h</p></details></li></ol></section></div><p class="static-meta">Lesson 8 of 10 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/processes-packages/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Processes, services and installing software</a><a class="btn btn-solid btn-sm" href="/learn/linux/ssh-servers/">SSH and managing a server <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

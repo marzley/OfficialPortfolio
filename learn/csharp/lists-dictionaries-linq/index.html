@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lists, dictionaries and LINQ queries | C#</title>
+    <meta name="description" content="Real programs juggle collections: customers, orders, marks. C has excellent collection types and LINQ , which lets you query data in code much like SQL." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/csharp/lists-dictionaries-linq/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Lists, dictionaries and LINQ queries | C#" />
+    <meta property="og:description" content="Real programs juggle collections: customers, orders, marks. C has excellent collection types and LINQ , which lets you query data in code much like SQL." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/csharp/lists-dictionaries-linq/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Lists, dictionaries and LINQ queries | C#" />
+    <meta name="twitter:description" content="Real programs juggle collections: customers, orders, marks. C has excellent collection types and LINQ , which lets you query data in code much like SQL." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/csharp/lists-dictionaries-linq/#lesson","name":"Lists, dictionaries and LINQ queries","description":"Real programs juggle collections: customers, orders, marks. C has excellent collection types and LINQ , which lets you query data in code much like SQL.","url":"https://marzleytechsolutions.co.ke/learn/csharp/lists-dictionaries-linq/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/csharp/#course","name":"C#","url":"https://marzleytechsolutions.co.ke/learn/csharp/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"C#","item":"https://marzleytechsolutions.co.ke/learn/csharp/"},{"@type":"ListItem","position":4,"name":"Lists, dictionaries and LINQ queries","item":"https://marzleytechsolutions.co.ke/learn/csharp/lists-dictionaries-linq/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/csharp/">C#</a> / <span>Lists, dictionaries and LINQ queries</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=csharp&amp;lesson=lists-dictionaries-linq"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Lists, dictionaries and LINQ queries</h1>
+<p>Real programs juggle collections: customers, orders, marks. C# has excellent collection types and <strong>LINQ</strong>, which lets you query data in code much like SQL.</p>
+<h2>List&amp;lt;T&amp;gt;: a growable list</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        List&lt;string&gt; cart = new List&lt;string&gt; { &quot;Unga&quot;, &quot;Sugar&quot; };
+        cart.Add(&quot;Oil&quot;);
+        cart.Insert(0, &quot;Salt&quot;);
+        cart.Remove(&quot;Sugar&quot;);
+        Console.WriteLine($&quot;{cart.Count} items, first: {cart[0]}&quot;);
+        Console.WriteLine(&quot;Has oil? &quot; + cart.Contains(&quot;Oil&quot;));
+        cart.Sort();
+        Console.WriteLine(string.Join(&quot;, &quot;, cart));
+    }
+}</code></pre></figure>
+<h2>Dictionary&amp;lt;TKey, TValue&amp;gt;: look-ups by key</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        var stock = new Dictionary&lt;string, int&gt;
+        {
+            [&quot;Unga&quot;] = 12,
+            [&quot;Sugar&quot;] = 0,
+            [&quot;Oil&quot;] = 7
+        };
+        stock[&quot;Rice&quot;] = 20;                 // add or replace
+        stock[&quot;Unga&quot;] -= 2;
+
+        if (stock.TryGetValue(&quot;Beans&quot;, out int beans))
+            Console.WriteLine(&quot;Beans: &quot; + beans);
+        else
+            Console.WriteLine(&quot;No beans in stock list&quot;);
+
+        foreach (KeyValuePair&lt;string, int&gt; item in stock)
+            Console.WriteLine($&quot;{item.Key,-6} {item.Value,4}&quot;);
+
+        var counts = new Dictionary&lt;string, int&gt;();
+        foreach (string w in &quot;haraka haraka haina baraka&quot;.Split(&#x27; &#x27;))
+            counts[w] = counts.ContainsKey(w) ? counts[w] + 1 : 1;
+        Console.WriteLine(&quot;haraka: &quot; + counts[&quot;haraka&quot;]);
+    }
+}</code></pre></figure>
+<p><code>{item.Key,-6}</code> left-aligns in 6 characters; <code>{item.Value,4}</code> right-aligns in 4.</p>
+<h2>Classes to hold records</h2>
+<figure class="static-code"><figcaption>C#</figcaption><pre><code class="language-csharp">class Student
+{
+    public string Name { get; set; } = &quot;&quot;;
+    public string Form { get; set; } = &quot;&quot;;
+    public int Mark { get; set; }
+}</code></pre></figure>
+<p><code>{ get; set; }</code> makes an auto-implemented <strong>property</strong>.</p>
+<h2>LINQ: query collections</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Student
+{
+    public string Name { get; set; } = &quot;&quot;;
+    public string Form { get; set; } = &quot;&quot;;
+    public int Mark { get; set; }
+}
+
+class Program
+{
+    static void Main()
+    {
+        var students = new List&lt;Student&gt;
+        {
+            new Student { Name = &quot;Amina&quot;, Form = &quot;2A&quot;, Mark = 78 },
+            new Student { Name = &quot;Brian&quot;, Form = &quot;3B&quot;, Mark = 92 },
+            new Student { Name = &quot;Chebet&quot;, Form = &quot;2A&quot;, Mark = 60 },
+            new Student { Name = &quot;Dennis&quot;, Form = &quot;3B&quot;, Mark = 45 },
+        };
+
+        var passed = students.Where(s =&gt; s.Mark &gt;= 50).OrderByDescending(s =&gt; s.Mark);
+        foreach (var s in passed)
+            Console.WriteLine($&quot;{s.Name}: {s.Mark}&quot;);
+
+        Console.WriteLine(&quot;Average: &quot; + students.Average(s =&gt; s.Mark));
+        Console.WriteLine(&quot;Top: &quot; + students.OrderByDescending(s =&gt; s.Mark).First().Name);
+        Console.WriteLine(&quot;Any fails? &quot; + students.Any(s =&gt; s.Mark &lt; 50));
+
+        var byForm = students.GroupBy(s =&gt; s.Form);
+        foreach (var group in byForm)
+            Console.WriteLine($&quot;{group.Key}: {group.Count()} students, mean {group.Average(s =&gt; s.Mark):F1}&quot;);
+
+        List&lt;string&gt; names = students.Select(s =&gt; s.Name.ToUpper()).ToList();
+        Console.WriteLine(string.Join(&quot; &quot;, names));
+    }
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>LINQ method</th><th>Like SQL</th><th>Does</th></tr></thead><tbody><tr><td><code>Where</code></td><td><code>WHERE</code></td><td>Filter</td></tr><tr><td><code>Select</code></td><td><code>SELECT</code></td><td>Transform each item</td></tr><tr><td><code>OrderBy</code> / <code>OrderByDescending</code></td><td><code>ORDER BY</code></td><td>Sort</td></tr><tr><td><code>GroupBy</code></td><td><code>GROUP BY</code></td><td>Group</td></tr><tr><td><code>Count</code>, <code>Sum</code>, <code>Average</code>, <code>Max</code>, <code>Min</code></td><td>aggregates</td><td>Totals</td></tr><tr><td><code>First</code>, <code>FirstOrDefault</code></td><td><code>LIMIT 1</code></td><td>One item</td></tr><tr><td><code>Any</code>, <code>All</code></td><td><code>EXISTS</code></td><td>Checks</td></tr><tr><td><code>ToList</code></td><td></td><td>Make a real list</td></tr></tbody></table></div>
+<p><code>s =&gt; s.Mark &gt;= 50</code> is a <strong>lambda expression</strong>: a small function passed to the method.</p>
+<h2>Arrays vs List</h2>
+<div class="static-table"><table><thead><tr><th></th><th>Array <code>int[]</code></th><th><code>List&lt;int&gt;</code></th></tr></thead><tbody><tr><td>Size</td><td>Fixed</td><td>Grows</td></tr><tr><td>Length</td><td><code>arr.Length</code></td><td><code>list.Count</code></td></tr><tr><td>Use when</td><td>Size is known and fixed</td><td>Most of the time</td></tr></tbody></table></div>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which collection stores key-value pairs in C#?</p><details><summary>Show answer</summary><p>Dictionary</p></details></li><li><p>Which List property gives the number of items?</p><details><summary>Show answer</summary><p>Count</p></details></li><li><p>Which LINQ method filters items?</p><details><summary>Show answer</summary><p>Where</p></details></li><li><p>Which LINQ method transforms each item?</p><details><summary>Show answer</summary><p>Select</p></details></li><li><p>What is s =&gt; s.Mark &gt;= 50 called? (two words)</p><details><summary>Show answer</summary><p>lambda expression</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 7 in <a href="/learn/csharp/">C#</a> · <a href="/learn/?book=csharp">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/csharp/variables-control-flow/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Variables, types, conditions and loops in C#</a><a class="btn btn-solid btn-sm" href="/learn/csharp/classes-linq/">Classes and LINQ <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

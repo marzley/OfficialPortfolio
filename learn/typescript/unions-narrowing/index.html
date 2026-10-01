@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Union types, literal types and narrowing | TypeScript</title>
+    <meta name="description" content="Real data isn&#x27;t always one type. A phone number might arrive as a string or a number; a payment might be M-Pesa or card; an API call might succeed or…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/typescript/unions-narrowing/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Union types, literal types and narrowing | TypeScript" />
+    <meta property="og:description" content="Real data isn&#x27;t always one type. A phone number might arrive as a string or a number; a payment might be M-Pesa or card; an API call might succeed or…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/typescript/unions-narrowing/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Union types, literal types and narrowing | TypeScript" />
+    <meta name="twitter:description" content="Real data isn&#x27;t always one type. A phone number might arrive as a string or a number; a payment might be M-Pesa or card; an API call might succeed or…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/typescript/unions-narrowing/#lesson","name":"Union types, literal types and narrowing","description":"Real data isn't always one type. A phone number might arrive as a string or a number; a payment might be M-Pesa or card; an API call might succeed or…","url":"https://marzleytechsolutions.co.ke/learn/typescript/unions-narrowing/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/typescript/#course","name":"TypeScript","url":"https://marzleytechsolutions.co.ke/learn/typescript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"TypeScript","item":"https://marzleytechsolutions.co.ke/learn/typescript/"},{"@type":"ListItem","position":4,"name":"Union types, literal types and narrowing","item":"https://marzleytechsolutions.co.ke/learn/typescript/unions-narrowing/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/typescript/">TypeScript</a> / <span>Union types, literal types and narrowing</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=typescript&amp;lesson=unions-narrowing"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Union types, literal types and narrowing</h1>
+<p>Real data isn't always one type. A phone number might arrive as a string or a number; a payment might be M-Pesa or card; an API call might succeed or fail. <strong>Union types</strong> describe "this or that", and <strong>narrowing</strong> lets TypeScript know which one you have.</p>
+<h2>Union types</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">function normalisePhone(phone: string | number): string {
+  const s = String(phone).replace(/\D/g, &quot;&quot;);
+  return s.startsWith(&quot;254&quot;) ? &quot;0&quot; + s.slice(3) : s.padStart(10, &quot;0&quot;);
+}
+console.log(normalisePhone(&quot;+254 712 345 678&quot;), normalisePhone(712345678));</code></pre></figure>
+<h2>Literal types: only these exact values</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type PaymentMethod = &quot;mpesa&quot; | &quot;card&quot; | &quot;cash&quot;;
+type OrderStatus = &quot;pending&quot; | &quot;paid&quot; | &quot;delivered&quot; | &quot;cancelled&quot;;
+
+function label(status: OrderStatus): string {
+  switch (status) {
+    case &quot;pending&quot;: return &quot;⏳ Waiting for payment&quot;;
+    case &quot;paid&quot;: return &quot;✅ Paid&quot;;
+    case &quot;delivered&quot;: return &quot;📦 Delivered&quot;;
+    case &quot;cancelled&quot;: return &quot;❌ Cancelled&quot;;
+  }
+}
+
+const method: PaymentMethod = &quot;mpesa&quot;;
+// const bad: PaymentMethod = &quot;bitcoin&quot;;   // Error: not one of the allowed values
+console.log(method, label(&quot;paid&quot;));</code></pre></figure>
+<p>Literal types stop typos like <code>&quot;payed&quot;</code> from ever reaching production.</p>
+<h2>Narrowing: telling TypeScript which type you have</h2>
+<p>TypeScript follows your <code>if</code> checks and <strong>narrows</strong> the type inside each branch.</p>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">function describe(value: string | number | boolean | null): string {
+  if (value === null) return &quot;nothing&quot;;
+  if (typeof value === &quot;string&quot;) return `text of length ${value.length}`;   // value: string here
+  if (typeof value === &quot;number&quot;) return `number ${value.toFixed(2)}`;      // value: number here
+  return value ? &quot;yes&quot; : &quot;no&quot;;                                            // value: boolean here
+}
+console.log(describe(&quot;Karibu&quot;), &quot;|&quot;, describe(3.14159), &quot;|&quot;, describe(true), &quot;|&quot;, describe(null));</code></pre></figure>
+<p>Ways to narrow:</p>
+<div class="static-table"><table><thead><tr><th>Check</th><th>Example</th></tr></thead><tbody><tr><td><code>typeof</code></td><td><code>typeof x === &quot;string&quot;</code></td></tr><tr><td>Equality</td><td><code>x === null</code>, <code>status === &quot;paid&quot;</code></td></tr><tr><td>Truthiness</td><td><code>if (user) { ... }</code></td></tr><tr><td><code>in</code></td><td><code>&quot;amount&quot; in payment</code></td></tr><tr><td><code>instanceof</code></td><td><code>err instanceof Error</code></td></tr><tr><td>Array check</td><td><code>Array.isArray(x)</code></td></tr></tbody></table></div>
+<h2>Discriminated unions: the most useful pattern</h2>
+<p>Give each shape a common <strong>tag</strong> property, then <code>switch</code> on it:</p>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type Mpesa = { kind: &quot;mpesa&quot;; phone: string; receipt: string };
+type Card = { kind: &quot;card&quot;; last4: string; brand: &quot;Visa&quot; | &quot;Mastercard&quot; };
+type Cash = { kind: &quot;cash&quot; };
+type Payment = { amount: number } &amp; (Mpesa | Card | Cash);
+
+function receiptLine(p: Payment): string {
+  switch (p.kind) {
+    case &quot;mpesa&quot;: return `KSh ${p.amount} via M-Pesa (${p.receipt}) from ${p.phone}`;
+    case &quot;card&quot;:  return `KSh ${p.amount} via ${p.brand} ending ${p.last4}`;
+    case &quot;cash&quot;:  return `KSh ${p.amount} cash`;
+  }
+}
+
+const payments: Payment[] = [
+  { kind: &quot;mpesa&quot;, amount: 1500, phone: &quot;0712345678&quot;, receipt: &quot;SJK4H2L9XA&quot; },
+  { kind: &quot;card&quot;, amount: 2500, last4: &quot;4242&quot;, brand: &quot;Visa&quot; },
+  { kind: &quot;cash&quot;, amount: 300 },
+];
+payments.forEach((p) =&gt; console.log(receiptLine(p)));</code></pre></figure>
+<p>Inside <code>case &quot;mpesa&quot;</code>, TypeScript knows <code>p.receipt</code> exists. If you later add a new payment kind and forget to handle it, TypeScript warns you.</p>
+<h2>Handling API results safely</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type Result&lt;T&gt; = { ok: true; data: T } | { ok: false; error: string };
+
+function parseAmount(input: string): Result&lt;number&gt; {
+  const n = Number(input);
+  return Number.isFinite(n) &amp;&amp; n &gt; 0 ? { ok: true, data: n } : { ok: false, error: `&quot;${input}&quot; is not a valid amount` };
+}
+
+for (const x of [&quot;1500&quot;, &quot;abc&quot;, &quot;-5&quot;]) {
+  const r = parseAmount(x);
+  console.log(r.ok ? `OK: ${r.data}` : `Error: ${r.error}`);
+}</code></pre></figure>
+<h2>Optional chaining and nullish coalescing</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type Customer = { name: string; address?: { town?: string } };
+const c: Customer = { name: &quot;Brian&quot; };
+console.log(c.address?.town ?? &quot;Town not given&quot;);</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>A union type like string | number uses which symbol? Name it in words.</p><details><summary>Show answer</summary><p>pipe</p></details></li><li><p>What kind of type allows only exact values like "mpesa" | "card"? (two words)</p><details><summary>Show answer</summary><p>literal type</p></details></li><li><p>Which operator checks a primitive type, like "string"?</p><details><summary>Show answer</summary><p>typeof</p></details></li><li><p>What is a union of object types with a shared tag property called? (two words)</p><details><summary>Show answer</summary><p>discriminated union</p></details></li><li><p>Which operator gives a default when a value is null or undefined?</p><details><summary>Show answer</summary><p>??</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 7 in <a href="/learn/typescript/">TypeScript</a> · <a href="/learn/?book=typescript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/typescript/typed-functions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Typed functions, optional and default parameters</a><a class="btn btn-solid btn-sm" href="/learn/typescript/generics-utility-types/">Generics and utility types <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

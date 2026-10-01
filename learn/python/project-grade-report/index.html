@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Project: a school grade report system | Python</title>
+    <meta name="description" content="In this project you&#x27;ll build a small but real program: it takes students&#x27; marks, calculates totals, averages, grades and positions, prints report cards…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/python/project-grade-report/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Project: a school grade report system | Python" />
+    <meta property="og:description" content="In this project you&#x27;ll build a small but real program: it takes students&#x27; marks, calculates totals, averages, grades and positions, prints report cards…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/python/project-grade-report/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Project: a school grade report system | Python" />
+    <meta name="twitter:description" content="In this project you&#x27;ll build a small but real program: it takes students&#x27; marks, calculates totals, averages, grades and positions, prints report cards…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/python/project-grade-report/#lesson","name":"Project: a school grade report system","description":"In this project you'll build a small but real program: it takes students' marks, calculates totals, averages, grades and positions, prints report cards…","url":"https://marzleytechsolutions.co.ke/learn/python/project-grade-report/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/python/#course","name":"Python","url":"https://marzleytechsolutions.co.ke/learn/python/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Python","item":"https://marzleytechsolutions.co.ke/learn/python/"},{"@type":"ListItem","position":4,"name":"Project: a school grade report system","item":"https://marzleytechsolutions.co.ke/learn/python/project-grade-report/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/python/">Python</a> / <span>Project: a school grade report system</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=project-grade-report"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Project: a school grade report system</h1>
+<p>In this project you'll build a small but real program: it takes students' marks, calculates totals, averages, grades and positions, prints report cards and saves a CSV that opens in Excel. It uses functions, lists, dictionaries, loops, sorting, f-strings and files.</p>
+<h2>Step 1: the data</h2>
+<figure class="static-code"><figcaption>Python</figcaption><pre><code class="language-python">subjects = [&quot;Maths&quot;, &quot;English&quot;, &quot;Kiswahili&quot;, &quot;Science&quot;]
+students = [
+    {&quot;name&quot;: &quot;Amina Hassan&quot;, &quot;marks&quot;: [78, 84, 90, 71]},
+    ...
+]</code></pre></figure>
+<h2>Step 2: the complete program</h2>
+<p>Run it, then read it section by section.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import csv
+
+SUBJECTS = [&quot;Maths&quot;, &quot;English&quot;, &quot;Kiswahili&quot;, &quot;Science&quot;]
+students = [
+    {&quot;name&quot;: &quot;Amina Hassan&quot;,  &quot;marks&quot;: [78, 84, 90, 71]},
+    {&quot;name&quot;: &quot;Brian Otieno&quot;,  &quot;marks&quot;: [92, 71, 65, 88]},
+    {&quot;name&quot;: &quot;Chebet Kiprop&quot;, &quot;marks&quot;: [55, 62, 70, 49]},
+    {&quot;name&quot;: &quot;Dennis Mwangi&quot;, &quot;marks&quot;: [38, 45, 52, 41]},
+    {&quot;name&quot;: &quot;Esther Wanjiku&quot;,&quot;marks&quot;: [88, 90, 85, 93]},
+]
+
+def grade(mark):
+    &quot;&quot;&quot;Kenyan-style letter grade for a mark out of 100.&quot;&quot;&quot;
+    bands = [(80, &quot;A&quot;), (75, &quot;A-&quot;), (70, &quot;B+&quot;), (65, &quot;B&quot;), (60, &quot;B-&quot;),
+             (55, &quot;C+&quot;), (50, &quot;C&quot;), (45, &quot;C-&quot;), (40, &quot;D+&quot;), (35, &quot;D&quot;), (30, &quot;D-&quot;)]
+    for cutoff, letter in bands:
+        if mark &gt;= cutoff:
+            return letter
+    return &quot;E&quot;
+
+def comment(avg):
+    if avg &gt;= 80: return &quot;Excellent work. Keep it up!&quot;
+    if avg &gt;= 65: return &quot;Very good. Aim higher.&quot;
+    if avg &gt;= 50: return &quot;Fair. More effort needed.&quot;
+    return &quot;Needs serious improvement. See your teacher.&quot;
+
+# calculate totals and averages
+for s in students:
+    s[&quot;total&quot;] = sum(s[&quot;marks&quot;])
+    s[&quot;average&quot;] = round(s[&quot;total&quot;] / len(SUBJECTS), 1)
+    s[&quot;grade&quot;] = grade(s[&quot;average&quot;])
+
+# rank by total (highest first) and assign positions
+ranked = sorted(students, key=lambda s: s[&quot;total&quot;], reverse=True)
+for position, s in enumerate(ranked, start=1):
+    s[&quot;position&quot;] = position
+
+# print a report card for each student
+for s in ranked:
+    print(&quot;=&quot; * 38)
+    print(f&quot;REPORT CARD: {s[&#x27;name&#x27;].upper()}&quot;)
+    print(&quot;-&quot; * 38)
+    for subject, mark in zip(SUBJECTS, s[&quot;marks&quot;]):
+        print(f&quot;{subject:&lt;12}{mark:&gt;5}{grade(mark):&gt;6}&quot;)
+    print(&quot;-&quot; * 38)
+    print(f&quot;{&#x27;Total&#x27;:&lt;12}{s[&#x27;total&#x27;]:&gt;5}&quot;)
+    print(f&quot;{&#x27;Average&#x27;:&lt;12}{s[&#x27;average&#x27;]:&gt;5}{s[&#x27;grade&#x27;]:&gt;6}&quot;)
+    print(f&quot;Position: {s[&#x27;position&#x27;]} of {len(students)}&quot;)
+    print(&quot;Comment:&quot;, comment(s[&quot;average&quot;]))
+
+# class summary
+print(&quot;=&quot; * 38)
+print(&quot;CLASS SUMMARY&quot;)
+for i, subject in enumerate(SUBJECTS):
+    marks = [s[&quot;marks&quot;][i] for s in students]
+    best = max(students, key=lambda s: s[&quot;marks&quot;][i])
+    print(f&quot;{subject:&lt;12} mean {sum(marks)/len(marks):5.1f}   top: {best[&#x27;name&#x27;]}&quot;)
+mean = sum(s[&quot;average&quot;] for s in students) / len(students)
+print(f&quot;Class mean: {mean:.1f} ({grade(mean)})&quot;)
+
+# save a CSV for Excel
+with open(&quot;results.csv&quot;, &quot;w&quot;, newline=&quot;&quot;) as f:
+    w = csv.writer(f)
+    w.writerow([&quot;Position&quot;, &quot;Name&quot;, *SUBJECTS, &quot;Total&quot;, &quot;Average&quot;, &quot;Grade&quot;])
+    for s in ranked:
+        w.writerow([s[&quot;position&quot;], s[&quot;name&quot;], *s[&quot;marks&quot;], s[&quot;total&quot;], s[&quot;average&quot;], s[&quot;grade&quot;]])
+print(&quot;\nSaved results.csv:&quot;)
+print(open(&quot;results.csv&quot;).read())</code></pre></figure>
+<h2>What you practised</h2>
+<div class="static-table"><table><thead><tr><th>Skill</th><th>Where</th></tr></thead><tbody><tr><td>Functions with docstrings</td><td><code>grade()</code>, <code>comment()</code></td></tr><tr><td>Lists of dictionaries</td><td><code>students</code></td></tr><tr><td>Loops, <code>zip</code>, <code>enumerate</code></td><td>report cards and ranking</td></tr><tr><td>Sorting with <code>key=lambda</code></td><td><code>ranked</code></td></tr><tr><td>f-string alignment</td><td>the neat columns</td></tr><tr><td>List comprehensions</td><td>subject means</td></tr><tr><td>Writing CSV files</td><td><code>results.csv</code></td></tr></tbody></table></div>
+<h2>Challenges</h2>
+<ol><li>Add a fifth subject. What do you need to change? (If you wrote it well, only the lists.)</li><li>Handle <strong>ties</strong>: students with the same total should share a position.</li><li>Read the marks from a CSV file instead of the list.</li><li>Add input validation: marks must be 0–100.</li><li>Print the top 3 students with 🥇🥈🥉.</li></ol>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which built-in function pairs each subject with its mark?</p><details><summary>Show answer</summary><p>zip</p></details></li><li><p>Which function gives positions starting from 1 while looping?</p><details><summary>Show answer</summary><p>enumerate</p></details></li><li><p>Which argument makes sorted() put the highest first?</p><details><summary>Show answer</summary><p>reverse=True</p></details></li><li><p>What grade does a mark of 72 get in this program?</p><details><summary>Show answer</summary><p>B+</p></details></li></ol></section></div><p class="static-meta">Lesson 19 of 19 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/project-mpesa-calculator/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Project: M-Pesa charges calculator</a><span></span></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Classes and objects (OOP) | Java</title>
+    <meta name="description" content="Java is object-oriented . A class is a blueprint; an object is a thing made from it." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/java/oop/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Classes and objects (OOP) | Java" />
+    <meta property="og:description" content="Java is object-oriented . A class is a blueprint; an object is a thing made from it." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/java/oop/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Classes and objects (OOP) | Java" />
+    <meta name="twitter:description" content="Java is object-oriented . A class is a blueprint; an object is a thing made from it." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/java/oop/#lesson","name":"Classes and objects (OOP)","description":"Java is object-oriented . A class is a blueprint; an object is a thing made from it.","url":"https://marzleytechsolutions.co.ke/learn/java/oop/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/java/#course","name":"Java","url":"https://marzleytechsolutions.co.ke/learn/java/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Java","item":"https://marzleytechsolutions.co.ke/learn/java/"},{"@type":"ListItem","position":4,"name":"Classes and objects (OOP)","item":"https://marzleytechsolutions.co.ke/learn/java/oop/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/java/">Java</a> / <span>Classes and objects (OOP)</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=java&amp;lesson=oop"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Classes and objects (OOP)</h1>
+<p>Java is <strong>object-oriented</strong>. A <strong>class</strong> is a blueprint; an <strong>object</strong> is a thing made from it.</p>
+<figure class="static-code"><figcaption>Java</figcaption><pre><code class="language-java">public class Account {
+    private String owner;          // fields (data)
+    private double balance;
+
+    public Account(String owner) { // constructor
+        this.owner = owner;
+        this.balance = 0;
+    }
+
+    public void deposit(double amount) {   // methods (behaviour)
+        if (amount &lt;= 0) throw new IllegalArgumentException(&quot;Amount must be positive&quot;);
+        balance += amount;
+    }
+
+    public double getBalance() { return balance; }
+}
+
+// Using it
+Account a = new Account(&quot;Amina&quot;);
+a.deposit(2500);
+System.out.println(a.getBalance());   // 2500.0</code></pre></figure>
+<h2>The four pillars of OOP</h2>
+<div class="static-table"><table><thead><tr><th>Pillar</th><th>Meaning</th><th>Example</th></tr></thead><tbody><tr><td><strong>Encapsulation</strong></td><td>Hide data, expose safe methods</td><td><code>balance</code> is <code>private</code>; change it only through <code>deposit</code></td></tr><tr><td><strong>Inheritance</strong></td><td>A class extends another</td><td><code>SavingsAccount extends Account</code></td></tr><tr><td><strong>Polymorphism</strong></td><td>Same method, different behaviour</td><td>Each shape's <code>area()</code> is calculated differently</td></tr><tr><td><strong>Abstraction</strong></td><td>Show what, hide how</td><td>An <code>interface Payment { void pay(double amount); }</code> with MpesaPayment and CardPayment</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Java</figcaption><pre><code class="language-java">interface Payment { void pay(double amount); }
+
+class MpesaPayment implements Payment {
+    public void pay(double amount) { System.out.println(&quot;STK push for KSh &quot; + amount); }
+}
+class CardPayment implements Payment {
+    public void pay(double amount) { System.out.println(&quot;Charging card KSh &quot; + amount); }
+}</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the blueprint for objects called?</p><details><summary>Show answer</summary><p>class</p></details></li><li><p>Which keyword creates a new object?</p><details><summary>Show answer</summary><p>new</p></details></li><li><p>Hiding data behind methods is which OOP pillar?</p><details><summary>Show answer</summary><p>encapsulation</p></details></li><li><p>Which keyword makes a class inherit from another?</p><details><summary>Show answer</summary><p>extends</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 9 in <a href="/learn/java/">Java</a> · <a href="/learn/?book=java">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/java/strings-arrays-lists/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Strings, arrays and ArrayLists</a><a class="btn btn-solid btn-sm" href="/learn/java/inheritance-interfaces/">Inheritance, interfaces and polymorphism <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

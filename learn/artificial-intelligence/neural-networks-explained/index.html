@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Level 4: Neural networks explained (and one you can train)</title>
+    <meta name="description" content="Neural networks power modern AI: speech recognition, image recognition, translation and chatbots. They&#x27;re loosely inspired by brain cells, but at heart…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/artificial-intelligence/neural-networks-explained/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Level 4: Neural networks explained (and one you can train)" />
+    <meta property="og:description" content="Neural networks power modern AI: speech recognition, image recognition, translation and chatbots. They&#x27;re loosely inspired by brain cells, but at heart…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/artificial-intelligence/neural-networks-explained/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Level 4: Neural networks explained (and one you can train)" />
+    <meta name="twitter:description" content="Neural networks power modern AI: speech recognition, image recognition, translation and chatbots. They&#x27;re loosely inspired by brain cells, but at heart…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/neural-networks-explained/#lesson","name":"Level 4: Neural networks explained (and one you can train)","description":"Neural networks power modern AI: speech recognition, image recognition, translation and chatbots. They're loosely inspired by brain cells, but at heart…","url":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/neural-networks-explained/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/#course","name":"Artificial intelligence (AI): from zero to pro","url":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Artificial intelligence (AI): from zero to pro","item":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/"},{"@type":"ListItem","position":4,"name":"Level 4: Neural networks explained (and one you can train)","item":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/neural-networks-explained/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/artificial-intelligence/">Artificial intelligence (AI): from zero to pro</a> / <span>Level 4: Neural networks explained (and one you can train)</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=artificial-intelligence&amp;lesson=neural-networks-explained"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Level 4: Neural networks explained (and one you can train)</h1>
+<p><strong>Neural networks</strong> power modern AI: speech recognition, image recognition, translation and chatbots. They're loosely inspired by brain cells, but at heart they're just <strong>lots of simple maths units connected together</strong>, trained with the gradient descent you saw earlier.</p>
+<h2>One artificial neuron</h2>
+<p>A neuron takes inputs, multiplies each by a <strong>weight</strong> (how important it is), adds a <strong>bias</strong>, and passes the total through an <strong>activation function</strong> that decides how strongly it "fires".</p>
+<figure class="static-code"><pre><code>inputs      weights
+ x1 ──── w1 ──┐
+ x2 ──── w2 ──┼──► sum = w1·x1 + w2·x2 + bias ──► activation ──► output
+ x3 ──── w3 ──┘</code></pre></figure>
+<p>A common activation is the <strong>sigmoid</strong>, which squashes any number into 0 to 1 (like a probability).</p>
+<h2>Train a neuron to learn a rule</h2>
+<p>Let's teach one neuron the rule <strong>"approve a delivery request only if the customer has paid AND the address is confirmed"</strong> (logical AND), purely from examples.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import math
+import random
+
+random.seed(1)
+
+def sigmoid(z):
+    return 1 / (1 + math.exp(-z))
+
+# (paid, address_confirmed) -&gt; approve?
+examples = [((0, 0), 0), ((0, 1), 0), ((1, 0), 0), ((1, 1), 1)]
+
+w1, w2, bias = random.uniform(-1, 1), random.uniform(-1, 1), 0.0
+lr = 1.0
+
+for epoch in range(3001):
+    total_error = 0
+    for (x1, x2), target in examples:
+        out = sigmoid(w1 * x1 + w2 * x2 + bias)          # forward: make a prediction
+        error = out - target
+        total_error += error ** 2
+        grad = error * out * (1 - out)                   # backward: how to change the weights
+        w1 -= lr * grad * x1
+        w2 -= lr * grad * x2
+        bias -= lr * grad
+    if epoch % 1000 == 0:
+        print(f&quot;epoch {epoch}: error {total_error:.4f}&quot;)
+
+print(f&quot;weights {w1:.2f}, {w2:.2f}, bias {bias:.2f}&quot;)
+for (x1, x2), target in examples:
+    print((x1, x2), &quot;-&gt;&quot;, round(sigmoid(w1 * x1 + w2 * x2 + bias), 3), &quot;expected&quot;, target)</code></pre></figure>
+<p>The neuron starts with random weights and <strong>learns</strong> the AND rule: outputs near 1 only when both inputs are 1.</p>
+<h2>Why we need layers: the XOR problem</h2>
+<p>One neuron can only draw a <strong>straight line</strong> between categories. Some patterns need more. <strong>XOR</strong> ("exactly one of the two") can't be separated by one straight line. Add a <strong>hidden layer</strong> of neurons, and the network can learn it:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import math
+import random
+
+random.seed(3)
+sig = lambda z: 1 / (1 + math.exp(-z))
+
+data = [((0, 0), 0), ((0, 1), 1), ((1, 0), 1), ((1, 1), 0)]   # XOR
+H = 3                                                          # hidden neurons
+
+w_in = [[random.uniform(-1, 1) for _ in range(2)] for _ in range(H)]
+b_in = [0.0] * H
+w_out = [random.uniform(-1, 1) for _ in range(H)]
+b_out = 0.0
+lr = 0.8
+
+for epoch in range(10001):
+    for (x1, x2), target in data:
+        # forward pass
+        hidden = [sig(w_in[j][0] * x1 + w_in[j][1] * x2 + b_in[j]) for j in range(H)]
+        out = sig(sum(w_out[j] * hidden[j] for j in range(H)) + b_out)
+        # backward pass (backpropagation)
+        d_out = (out - target) * out * (1 - out)
+        for j in range(H):
+            d_hidden = d_out * w_out[j] * hidden[j] * (1 - hidden[j])
+            w_out[j] -= lr * d_out * hidden[j]
+            w_in[j][0] -= lr * d_hidden * x1
+            w_in[j][1] -= lr * d_hidden * x2
+            b_in[j] -= lr * d_hidden
+        b_out -= lr * d_out
+
+for (x1, x2), target in data:
+    hidden = [sig(w_in[j][0] * x1 + w_in[j][1] * x2 + b_in[j]) for j in range(H)]
+    out = sig(sum(w_out[j] * hidden[j] for j in range(H)) + b_out)
+    print((x1, x2), &quot;-&gt;&quot;, round(out, 3), &quot;expected&quot;, target)</code></pre></figure>
+<p>This is a real (tiny) <strong>multi-layer neural network</strong>, trained with <strong>backpropagation</strong>: errors flow backwards from the output, telling every weight how to change.</p>
+<h2>From tiny to huge</h2>
+<div class="static-table"><table><thead><tr><th></th><th>Our XOR network</th><th>A large language model</th></tr></thead><tbody><tr><td>Parameters (weights)</td><td>13</td><td>Billions to trillions</td></tr><tr><td>Training examples</td><td>4</td><td>Trillions of words</td></tr><tr><td>Training time</td><td>Under a second</td><td>Months on thousands of specialised chips (GPUs)</td></tr><tr><td>Same core idea?</td><td>Forward pass, measure error, backpropagation, gradient descent</td><td>Yes</td></tr></tbody></table></div>
+<h2>Types of neural networks</h2>
+<div class="static-table"><table><thead><tr><th>Network</th><th>Good for</th><th>Example</th></tr></thead><tbody><tr><td><strong>Feed-forward (MLP)</strong></td><td>Tables of numbers</td><td>Credit scoring</td></tr><tr><td><strong>Convolutional (CNN)</strong></td><td>Images</td><td>Detecting crop diseases from leaf photos, reading number plates</td></tr><tr><td><strong>Recurrent (RNN, LSTM)</strong></td><td>Sequences (older approach)</td><td>Early speech recognition</td></tr><tr><td><strong>Transformer</strong></td><td>Language, and now images, audio and video</td><td>ChatGPT, Claude, Gemini, translation</td></tr></tbody></table></div>
+<p>The <strong>transformer</strong> (introduced in 2017) is the architecture behind today's language models. Its key idea, <strong>attention</strong>, lets the model look at every word in the text and decide which words matter most for understanding each other word. That's the subject of the next lesson.</p>
+<h2>Tools professionals use</h2>
+<p><strong>PyTorch</strong> and <strong>TensorFlow/Keras</strong> build and train neural networks, usually on GPUs (free GPU time is available in Google Colab and Kaggle notebooks). <strong>Hugging Face</strong> hosts thousands of ready-made models you can download and fine-tune.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does each input of a neuron get multiplied by?</p><details><summary>Show answer</summary><p>a weight</p></details></li><li><p>Which activation function squashes numbers into the range 0 to 1?</p><details><summary>Show answer</summary><p>sigmoid</p></details></li><li><p>Which simple pattern can't be learned by a single neuron, needing a hidden layer?</p><details><summary>Show answer</summary><p>XOR</p></details></li><li><p>What is the algorithm called that sends errors backwards to update every weight?</p><details><summary>Show answer</summary><p>backpropagation</p></details></li><li><p>Which neural network type is best known for images?</p><details><summary>Show answer</summary><p>CNN</p></details></li><li><p>Which architecture is behind ChatGPT and Claude?</p><details><summary>Show answer</summary><p>transformer</p></details></li></ol></section></div><p class="static-meta">Lesson 13 of 17 in <a href="/learn/artificial-intelligence/">Artificial intelligence (AI): from zero to pro</a> · <a href="/learn/?book=artificial-intelligence">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/artificial-intelligence/build-a-classifier/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Level 4: Build a classifier: nearest neighbours and a spam filter</a><a class="btn btn-solid btn-sm" href="/learn/artificial-intelligence/how-llms-work/">Level 4: How ChatGPT-style models work: tokens, training and embeddings <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

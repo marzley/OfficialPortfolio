@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Troubleshooting commands and method | Networking</title>
+    <meta name="description" content="Free Networking lesson: Troubleshooting commands and method." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/networking/troubleshooting/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Troubleshooting commands and method | Networking" />
+    <meta property="og:description" content="Free Networking lesson: Troubleshooting commands and method." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/networking/troubleshooting/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Troubleshooting commands and method | Networking" />
+    <meta name="twitter:description" content="Free Networking lesson: Troubleshooting commands and method." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/networking/troubleshooting/#lesson","name":"Troubleshooting commands and method","description":"Free Networking lesson: Troubleshooting commands and method.","url":"https://marzleytechsolutions.co.ke/learn/networking/troubleshooting/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/networking/#course","name":"Networking","url":"https://marzleytechsolutions.co.ke/learn/networking/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Networking","item":"https://marzleytechsolutions.co.ke/learn/networking/"},{"@type":"ListItem","position":4,"name":"Troubleshooting commands and method","item":"https://marzleytechsolutions.co.ke/learn/networking/troubleshooting/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/networking/">Networking</a> / <span>Troubleshooting commands and method</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=networking&amp;lesson=troubleshooting"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Troubleshooting networks</h1>
+<h2>A method that always works</h2>
+<ol><li><strong>Identify</strong> the problem: who is affected, since when, what changed?</li><li><strong>Theory</strong>: guess the most likely cause (start at layer 1).</li><li><strong>Test</strong> the theory with commands.</li><li><strong>Plan and fix</strong>.</li><li><strong>Verify</strong> everything works, and prevent it happening again.</li><li><strong>Document</strong> what you found.</li></ol>
+<h2>The commands</h2>
+<div class="static-table"><table><thead><tr><th>Task</th><th>Windows</th><th>Linux / macOS</th></tr></thead><tbody><tr><td>Show IP, mask, gateway</td><td><code>ipconfig</code> / <code>ipconfig /all</code></td><td><code>ip a</code>, <code>ip route</code> (Linux), <code>ifconfig</code></td></tr><tr><td>Renew DHCP</td><td><code>ipconfig /release</code> then <code>/renew</code></td><td><code>sudo dhclient -r &amp;&amp; sudo dhclient</code></td></tr><tr><td>Test reachability</td><td><code>ping 8.8.8.8</code></td><td><code>ping -c 4 8.8.8.8</code></td></tr><tr><td>See the path</td><td><code>tracert google.com</code></td><td><code>traceroute google.com</code></td></tr><tr><td>Test DNS</td><td><code>nslookup google.com</code></td><td><code>dig google.com</code> / <code>nslookup</code></td></tr><tr><td>Clear DNS cache</td><td><code>ipconfig /flushdns</code></td><td><code>resolvectl flush-caches</code></td></tr><tr><td>Open connections/ports</td><td><code>netstat -ano</code></td><td><code>ss -tulpn</code></td></tr><tr><td>ARP table</td><td><code>arp -a</code></td><td><code>ip neigh</code></td></tr><tr><td>Test a TCP port</td><td><code>Test-NetConnection host -Port 443</code> (PowerShell)</td><td><code>nc -zv host 443</code></td></tr></tbody></table></div>
+<h2>The ping ladder</h2>
+<p>When "the internet is down", ping in this order:</p>
+<ol><li><code>ping 127.0.0.1</code>: does the network software work?</li><li><code>ping</code> <strong>your own IP</strong>: is the network card OK?</li><li><code>ping</code> <strong>the gateway</strong> (e.g. 192.168.1.1): is the LAN OK?</li><li><code>ping 8.8.8.8</code>: is the internet reachable by IP?</li><li><code>ping google.com</code>: does DNS work?</li></ol>
+<p>If step 4 works but 5 fails → <strong>DNS problem</strong>. If step 3 fails → local cable, Wi-Fi or switch problem. If 3 works and 4 fails → router or ISP problem.</p>
+<h2>Reading tracert</h2>
+<p>Each line is a router (hop) on the way. <code>* * *</code> means that hop didn't answer (often normal). A sudden big jump in milliseconds shows where delay starts; if it stops at your ISP, call them with the output.</p>
+<h2>Common real-life fixes</h2>
+<ul><li><strong>169.254.x.x address</strong> → DHCP not reached: check cable/Wi-Fi, router, DHCP pool full.</li><li><strong>IP conflict</strong> warning → two devices with the same static IP; use DHCP reservations.</li><li><strong>Works by IP, not by name</strong> → set DNS to 1.1.1.1 / 8.8.8.8 or fix the router's DNS.</li><li><strong>One website fails</strong> → try another network, <code>nslookup</code> it, clear DNS cache and browser cache.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which Windows command shows your IP address, gateway and DNS servers in full?</p><details><summary>Show answer</summary><p>ipconfig /all</p></details></li><li><p>Ping to 8.8.8.8 works but ping to google.com fails. What is the likely problem?</p><details><summary>Show answer</summary><p>DNS</p></details></li><li><p>Which command shows the route (hops) to a destination on Windows?</p><details><summary>Show answer</summary><p>tracert</p></details></li><li><p>Which Windows command clears the DNS cache?</p><details><summary>Show answer</summary><p>ipconfig /flushdns</p></details></li><li><p>Which address do you ping to test the network software on your own computer?</p><details><summary>Show answer</summary><p>127.0.0.1</p></details></li><li><p>Which Linux command shows listening ports and the programs using them?</p><details><summary>Show answer</summary><p>ss -tulpn</p></details></li></ol></section></div><p class="static-meta">Lesson 19 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/wifi/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Wi-Fi: standards, planning and security</a><a class="btn btn-solid btn-sm" href="/learn/networking/network-commands/">Essential network commands: ipconfig, ping, tracert, nslookup <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

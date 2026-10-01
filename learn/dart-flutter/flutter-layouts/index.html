@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Flutter layouts: Row, Column, Stack, ListView and…</title>
+    <meta name="description" content="In Flutter, everything is a widget , including layout. You build screens by nesting a small set of layout widgets. Master these and you can build…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/dart-flutter/flutter-layouts/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Flutter layouts: Row, Column, Stack, ListView and…" />
+    <meta property="og:description" content="In Flutter, everything is a widget , including layout. You build screens by nesting a small set of layout widgets. Master these and you can build…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/dart-flutter/flutter-layouts/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Flutter layouts: Row, Column, Stack, ListView and…" />
+    <meta name="twitter:description" content="In Flutter, everything is a widget , including layout. You build screens by nesting a small set of layout widgets. Master these and you can build…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/flutter-layouts/#lesson","name":"Flutter layouts: Row, Column, Stack, ListView and responsive screens","description":"In Flutter, everything is a widget , including layout. You build screens by nesting a small set of layout widgets. Master these and you can build…","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/flutter-layouts/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/#course","name":"Dart & Flutter (mobile apps)","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Dart & Flutter (mobile apps)","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},{"@type":"ListItem","position":4,"name":"Flutter layouts: Row, Column, Stack, ListView and responsive screens","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/flutter-layouts/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> / <span>Flutter layouts: Row, Column, Stack, ListView and responsive screens</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=dart-flutter&amp;lesson=flutter-layouts"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Flutter layouts</h1>
+<p>In Flutter, <strong>everything is a widget</strong>, including layout. You build screens by nesting a small set of layout widgets. Master these and you can build almost any design.</p>
+<blockquote><p>Paste the examples into DartPad (choose a Flutter sample first) or run them in your Flutter project with <code>flutter run</code>.</p></blockquote>
+<h2>The core layout widgets</h2>
+<div class="static-table"><table><thead><tr><th>Widget</th><th>Does</th></tr></thead><tbody><tr><td><code>Column</code></td><td>Children top to bottom</td></tr><tr><td><code>Row</code></td><td>Children left to right</td></tr><tr><td><code>Stack</code></td><td>Children on top of each other</td></tr><tr><td><code>Container</code></td><td>Box with padding, margin, colour, border, size</td></tr><tr><td><code>Padding</code></td><td>Space inside around a child</td></tr><tr><td><code>SizedBox</code></td><td>Fixed size, or a gap between widgets</td></tr><tr><td><code>Expanded</code> / <code>Flexible</code></td><td>Share remaining space in a Row/Column</td></tr><tr><td><code>Center</code>, <code>Align</code></td><td>Position a child</td></tr><tr><td><code>ListView</code></td><td>Scrollable list</td></tr><tr><td><code>GridView</code></td><td>Scrollable grid</td></tr><tr><td><code>Card</code>, <code>ListTile</code></td><td>Ready-made Material pieces</td></tr></tbody></table></div>
+<h2>Row and Column alignment</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">Column(
+  mainAxisAlignment: MainAxisAlignment.center,     // along the column (vertical)
+  crossAxisAlignment: CrossAxisAlignment.start,    // across it (horizontal)
+  children: [
+    const Text(&#x27;Mama Njeri Bakery&#x27;, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+    const SizedBox(height: 8),                     // a gap
+    Row(
+      children: [
+        const Icon(Icons.location_on, color: Colors.red),
+        const SizedBox(width: 4),
+        const Text(&#x27;Thika Road, Juja&#x27;),
+        const Spacer(),                            // pushes the next child to the end
+        TextButton(onPressed: () {}, child: const Text(&#x27;Map&#x27;)),
+      ],
+    ),
+  ],
+)</code></pre></figure>
+<ul><li><strong>Main axis</strong> = the direction of the Row/Column; <strong>cross axis</strong> = the other direction.</li><li><code>Expanded</code> makes a child take the remaining space; give several children <code>flex: 2</code>, <code>flex: 1</code> to share it.</li></ul>
+<h2>A product card</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">class ProductCard extends StatelessWidget {
+  const ProductCard({super.key, required this.name, required this.price, required this.imageUrl});
+  final String name;
+  final int price;
+  final String imageUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AspectRatio(aspectRatio: 4 / 3, child: Image.network(imageUrl, fit: BoxFit.cover)),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(name, style: Theme.of(context).textTheme.titleMedium),
+                const SizedBox(height: 4),
+                Text(&#x27;KSh $price&#x27;, style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}</code></pre></figure>
+<h2>Stack: layering (badges, image overlays)</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">Stack(
+  children: [
+    Image.network(&#x27;https://picsum.photos/400/200&#x27;, fit: BoxFit.cover),
+    Positioned(
+      top: 8,
+      left: 8,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(8)),
+        child: const Text(&#x27;-20%&#x27;, style: TextStyle(color: Colors.white)),
+      ),
+    ),
+  ],
+)</code></pre></figure>
+<h2>Scrolling lists</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">final products = List.generate(50, (i) =&gt; &#x27;Product ${i + 1}&#x27;);
+
+ListView.builder(                        // builds only visible rows: fast for long lists
+  itemCount: products.length,
+  itemBuilder: (context, i) =&gt; ListTile(
+    leading: CircleAvatar(child: Text(&#x27;${i + 1}&#x27;)),
+    title: Text(products[i]),
+    subtitle: const Text(&#x27;In stock&#x27;),
+    trailing: const Icon(Icons.chevron_right),
+    onTap: () {},
+  ),
+)</code></pre></figure>
+<p>Grids:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">GridView.builder(
+  padding: const EdgeInsets.all(12),
+  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+    maxCrossAxisExtent: 220,             // columns adapt to screen width
+    mainAxisSpacing: 12,
+    crossAxisSpacing: 12,
+    childAspectRatio: 0.75,
+  ),
+  itemCount: 20,
+  itemBuilder: (context, i) =&gt; ProductCard(name: &#x27;Item $i&#x27;, price: 100 * i, imageUrl: &#x27;https://picsum.photos/seed/$i/400/300&#x27;),
+)</code></pre></figure>
+<h2>Responsive layouts</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">LayoutBuilder(
+  builder: (context, constraints) {
+    if (constraints.maxWidth &gt; 700) {
+      return Row(children: const [Expanded(child: Menu()), Expanded(flex: 3, child: Content())]);
+    }
+    return const Content();   // phones: one column, menu in a Drawer
+  },
+)</code></pre></figure>
+<p><code>MediaQuery.of(context).size.width</code> also gives the screen width.</p>
+<h2>Fixing the famous overflow error</h2>
+<p>The yellow-and-black striped bar ("A RenderFlex overflowed by 42 pixels") means content is bigger than its space. Fixes:</p>
+<ul><li>Wrap long text in <code>Expanded</code> or <code>Flexible</code> inside a Row.</li><li>Make the screen scrollable with <code>SingleChildScrollView</code> or a <code>ListView</code>.</li><li>Don't give fixed heights that are too small; let widgets size themselves.</li></ul>
+<h2>Use the Flutter Inspector</h2>
+<p>In VS Code or Android Studio, the <strong>Flutter Inspector</strong> shows the widget tree and draws layout boundaries so you can see why something sits where it does.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which widget lays out children from top to bottom?</p><details><summary>Show answer</summary><p>Column</p></details></li><li><p>Which widget layers children on top of each other?</p><details><summary>Show answer</summary><p>Stack</p></details></li><li><p>Which widget makes a child fill the remaining space in a Row?</p><details><summary>Show answer</summary><p>Expanded</p></details></li><li><p>Which ListView constructor builds only the visible rows?</p><details><summary>Show answer</summary><p>ListView.builder</p></details></li><li><p>Which widget makes a screen scroll when content is too tall? (write the class name)</p><details><summary>Show answer</summary><p>SingleChildScrollView</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 7 in <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> · <a href="/learn/?book=dart-flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/dart-flutter/flutter-widgets/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Flutter widgets and layouts</a><a class="btn btn-solid btn-sm" href="/learn/dart-flutter/flutter-state-navigation-forms/">Flutter state, navigation, forms and loading data <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

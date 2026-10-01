@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dart classes, JSON models and async/await | Marzley Learn</title>
+    <meta name="description" content="Every Flutter app has models (a Product, an Order, a User) and fetches data from the internet asynchronously . This lesson covers exactly the Dart…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-classes-async/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Dart classes, JSON models and async/await | Marzley Learn" />
+    <meta property="og:description" content="Every Flutter app has models (a Product, an Order, a User) and fetches data from the internet asynchronously . This lesson covers exactly the Dart…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-classes-async/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Dart classes, JSON models and async/await | Marzley Learn" />
+    <meta name="twitter:description" content="Every Flutter app has models (a Product, an Order, a User) and fetches data from the internet asynchronously . This lesson covers exactly the Dart…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-classes-async/#lesson","name":"Dart classes, JSON models and async/await","description":"Every Flutter app has models (a Product, an Order, a User) and fetches data from the internet asynchronously . This lesson covers exactly the Dart…","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-classes-async/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/#course","name":"Dart & Flutter (mobile apps)","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Dart & Flutter (mobile apps)","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},{"@type":"ListItem","position":4,"name":"Dart classes, JSON models and async/await","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-classes-async/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> / <span>Dart classes, JSON models and async/await</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=dart-flutter&amp;lesson=dart-classes-async"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Dart classes, JSON models and async/await</h1>
+<p>Every Flutter app has <strong>models</strong> (a Product, an Order, a User) and fetches data from the internet <strong>asynchronously</strong>. This lesson covers exactly the Dart you'll use for that.</p>
+<blockquote><p>Try the examples in <strong>DartPad</strong> (dartpad.dev).</p></blockquote>
+<h2>Classes and constructors</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">class Product {
+  final int id;
+  final String name;
+  final double price;
+  int stock;
+
+  Product({required this.id, required this.name, required this.price, this.stock = 0});
+
+  bool get inStock =&gt; stock &gt; 0;                      // a getter
+  String get label =&gt; &#x27;$name - KSh ${price.toStringAsFixed(0)}&#x27;;
+
+  void sell(int qty) {
+    if (qty &gt; stock) throw Exception(&#x27;Only $stock $name left&#x27;);
+    stock -= qty;
+  }
+
+  @override
+  String toString() =&gt; &#x27;Product($name, stock: $stock)&#x27;;
+}
+
+void main() {
+  final unga = Product(id: 1, name: &#x27;Unga 2kg&#x27;, price: 180, stock: 10);
+  unga.sell(3);
+  print(unga.label);
+  print(&#x27;${unga.inStock} $unga&#x27;);
+  try {
+    unga.sell(50);
+  } catch (e) {
+    print(&#x27;Error: $e&#x27;);
+  }
+}</code></pre></figure>
+<ul><li><code>this.id</code> in the constructor assigns the field directly.</li><li><code>final</code> fields can't change after creation: models are usually <strong>immutable</strong> in Flutter.</li><li><code>get</code> defines a computed property.</li></ul>
+<h2>Inheritance, abstract classes and mixins</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">abstract class Payment {
+  final double amount;
+  Payment(this.amount);
+  double get fee;                                 // abstract getter
+  double get total =&gt; amount + fee;
+}
+
+class MpesaPayment extends Payment {
+  final String phone;
+  MpesaPayment(double amount, this.phone) : super(amount);
+  @override
+  double get fee =&gt; 0;
+}
+
+class CardPayment extends Payment {
+  CardPayment(double amount) : super(amount);
+  @override
+  double get fee =&gt; amount * 0.029;
+}
+
+void main() {
+  final List&lt;Payment&gt; payments = [MpesaPayment(2500, &#x27;0712345678&#x27;), CardPayment(2500)];
+  for (final p in payments) {
+    print(&#x27;${p.runtimeType}: ${p.total.toStringAsFixed(2)}&#x27;);
+  }
+}</code></pre></figure>
+<h2>JSON models (the pattern you'll use in every app)</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;dart:convert&#x27;;
+
+class Order {
+  final int id;
+  final String customer;
+  final double total;
+  final bool paid;
+
+  Order({required this.id, required this.customer, required this.total, required this.paid});
+
+  factory Order.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Order(
+        id: json[&#x27;id&#x27;] as int,
+        customer: json[&#x27;customer&#x27;] as String,
+        total: (json[&#x27;total&#x27;] as num).toDouble(),
+        paid: json[&#x27;paid&#x27;] as bool? ?? false,
+      );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {&#x27;id&#x27;: id, &#x27;customer&#x27;: customer, &#x27;total&#x27;: total, &#x27;paid&#x27;: paid};
+}
+
+void main() {
+  const body = &#x27;[{&quot;id&quot;:1,&quot;customer&quot;:&quot;Faith&quot;,&quot;total&quot;:1950,&quot;paid&quot;:true},{&quot;id&quot;:2,&quot;customer&quot;:&quot;Otieno&quot;,&quot;total&quot;:60}]&#x27;;
+  final list = (jsonDecode(body) as List).map((e) =&gt; Order.fromJson(e)).toList();
+  for (final o in list) {
+    print(&#x27;${o.customer}: ${o.total} paid=${o.paid}&#x27;);
+  }
+  print(jsonEncode(list.first.toJson()));
+}</code></pre></figure>
+<p>A <strong>factory constructor</strong> (<code>Order.fromJson</code>) builds an object from a map. Tools like <code>json_serializable</code> can generate this code for big models.</p>
+<h2>async, await and Future</h2>
+<p>A <strong>Future</strong> is a value that will arrive later (like a JavaScript Promise).</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">Future&lt;double&gt; fetchRate(String currency) async {
+  await Future.delayed(const Duration(milliseconds: 500));   // pretend network call
+  if (currency == &#x27;XXX&#x27;) throw Exception(&#x27;Unknown currency&#x27;);
+  return currency == &#x27;USD&#x27; ? 129.5 : 140.2;
+}
+
+Future&lt;void&gt; main() async {
+  print(&#x27;Loading...&#x27;);
+  final usd = await fetchRate(&#x27;USD&#x27;);
+  print(&#x27;USD: $usd&#x27;);
+
+  try {
+    await fetchRate(&#x27;XXX&#x27;);
+  } catch (e) {
+    print(&#x27;Failed: $e&#x27;);
+  }
+
+  final both = await Future.wait([fetchRate(&#x27;USD&#x27;), fetchRate(&#x27;EUR&#x27;)]);   // in parallel
+  print(both);
+}</code></pre></figure>
+<h2>Calling a real API (in your Flutter project)</h2>
+<p>Add the <code>http</code> package (<code>flutter pub add http</code>), then:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;dart:convert&#x27;;
+import &#x27;package:http/http.dart&#x27; as http;
+
+Future&lt;List&lt;Order&gt;&gt; loadOrders() async {
+  final res = await http.get(Uri.parse(&#x27;https://example.com/api/orders&#x27;));
+  if (res.statusCode != 200) {
+    throw Exception(&#x27;Server error ${res.statusCode}&#x27;);
+  }
+  final data = jsonDecode(res.body) as List;
+  return data.map((e) =&gt; Order.fromJson(e)).toList();
+}</code></pre></figure>
+<h2>Streams (values over time)</h2>
+<p>A <strong>Stream</strong> delivers many values over time: live chat messages, location updates, a countdown. <code>await for</code> reads them one by one, and Flutter's <code>StreamBuilder</code> widget redraws the screen on each value.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword makes a field unchangeable after the object is created?</p><details><summary>Show answer</summary><p>final</p></details></li><li><p>What kind of constructor usually builds a model from JSON? (one word)</p><details><summary>Show answer</summary><p>factory</p></details></li><li><p>Which Dart function turns a JSON string into maps and lists?</p><details><summary>Show answer</summary><p>jsonDecode</p></details></li><li><p>What type represents a value that will arrive later in Dart?</p><details><summary>Show answer</summary><p>Future</p></details></li><li><p>Which function waits for several Futures at the same time?</p><details><summary>Show answer</summary><p>Future.wait</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 7 in <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> · <a href="/learn/?book=dart-flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/dart-flutter/dart-functions-collections/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Dart functions, lists, maps and null safety</a><a class="btn btn-solid btn-sm" href="/learn/dart-flutter/flutter-widgets/">Flutter widgets and layouts <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

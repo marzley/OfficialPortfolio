@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Subnetting step by step (the magic number method)</title>
+    <meta name="description" content="Given any host like 192.168.37.150/28 , you should be able to find, in under a minute and without a calculator: - the network address , broadcast…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/networking/subnetting-step-by-step/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Subnetting step by step (the magic number method)" />
+    <meta property="og:description" content="Given any host like 192.168.37.150/28 , you should be able to find, in under a minute and without a calculator: - the network address , broadcast…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/networking/subnetting-step-by-step/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Subnetting step by step (the magic number method)" />
+    <meta name="twitter:description" content="Given any host like 192.168.37.150/28 , you should be able to find, in under a minute and without a calculator: - the network address , broadcast…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/networking/subnetting-step-by-step/#lesson","name":"Subnetting step by step (the magic number method)","description":"Given any host like 192.168.37.150/28 , you should be able to find, in under a minute and without a calculator: - the network address , broadcast…","url":"https://marzleytechsolutions.co.ke/learn/networking/subnetting-step-by-step/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/networking/#course","name":"Networking","url":"https://marzleytechsolutions.co.ke/learn/networking/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Networking","item":"https://marzleytechsolutions.co.ke/learn/networking/"},{"@type":"ListItem","position":4,"name":"Subnetting step by step (the magic number method)","item":"https://marzleytechsolutions.co.ke/learn/networking/subnetting-step-by-step/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/networking/">Networking</a> / <span>Subnetting step by step (the magic number method)</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=networking&amp;lesson=subnetting-step-by-step"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Subnetting step by step</h1>
+<p>Given any host like <code>192.168.37.150/28</code>, you should be able to find, in under a minute and without a calculator:</p>
+<ul><li>the <strong>network address</strong>, <strong>broadcast address</strong>, <strong>first and last usable host</strong>, and <strong>number of usable hosts</strong>.</li></ul>
+<h2>The magic number method</h2>
+<ol><li><strong>Find the interesting octet</strong>: the octet where the prefix ends.</li><li>/1–/8 → 1st octet, /9–/16 → 2nd, /17–/24 → 3rd, /25–/32 → 4th.</li><li><strong>Find the mask value</strong> in that octet (from the table: 128, 192, 224, 240, 248, 252, 254, 255).</li><li><strong>Magic number (block size)</strong> = 256 − mask value.</li><li><strong>List multiples</strong> of the magic number in the interesting octet: 0, M, 2M, 3M, …</li><li>The <strong>network</strong> starts at the multiple just at or below the host's value in that octet. Octets <strong>after</strong> it become 0.</li><li>The <strong>broadcast</strong> is one less than the next multiple. Octets after it become 255.</li><li><strong>First host</strong> = network + 1, <strong>last host</strong> = broadcast − 1.</li></ol>
+<h2>Example A: 192.168.37.150/28</h2>
+<ol><li>/28 → 4th octet is interesting.</li><li>Mask value: 240 (28 − 24 = 4 bits → 240).</li><li>Magic number: 256 − 240 = <strong>16</strong>.</li><li>Multiples: 0, 16, 32, … 128, <strong>144</strong>, 160…</li><li>150 is between 144 and 160 → network <strong>192.168.37.144</strong>.</li><li>Broadcast = 160 − 1 → <strong>192.168.37.159</strong>.</li><li>Hosts <strong>.145 – .158</strong>, usable = 16 − 2 = <strong>14</strong>.</li></ol>
+<h2>Example B: 10.14.200.9/19</h2>
+<ol><li>/19 → 3rd octet (19 − 16 = 3 bits).</li><li>Mask value: 224. Magic number: <strong>32</strong>.</li><li>Multiples in the 3rd octet: 0, 32, 64, 96, 128, 160, <strong>192</strong>, 224.</li><li>200 is between 192 and 224 → network <strong>10.14.192.0</strong>.</li><li>Broadcast: 223 in the 3rd octet, 255 after → <strong>10.14.223.255</strong>.</li><li>First host <strong>10.14.192.1</strong>, last <strong>10.14.223.254</strong>. Usable = 2^13 − 2 = <strong>8,190</strong>.</li></ol>
+<h2>Example C: 172.29.4.1/14</h2>
+<ol><li>/14 → 2nd octet (14 − 8 = 6 bits). Mask value 252, magic number <strong>4</strong>.</li><li>Multiples: …24, <strong>28</strong>, 32. 29 is in the block at 28.</li><li>Network <strong>172.28.0.0</strong>, broadcast <strong>172.31.255.255</strong>. Usable 2^18 − 2 = <strong>262,142</strong>.</li></ol>
+<h2>Endless practice</h2>
+<p>Every question below is new. Work it out on paper, type the answers, then check. Your score is saved on this device.</p>
+<p class="static-note">This part of the lesson has an interactive tool. Open the live lesson to use it.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the magic number (block size) for /27?</p><details><summary>Show answer</summary><p>32</p></details></li><li><p>Network address of 192.168.37.150/28?</p><details><summary>Show answer</summary><p>192.168.37.144</p></details></li><li><p>Broadcast address of 10.14.200.9/19?</p><details><summary>Show answer</summary><p>10.14.223.255</p></details></li><li><p>First usable host of 172.16.99.66/29?</p><details><summary>Show answer</summary><p>172.16.99.65</p></details></li><li><p>Last usable host of 192.168.1.200/26?</p><details><summary>Show answer</summary><p>192.168.1.254</p></details></li><li><p>Network address of 10.1.130.5/17?</p><details><summary>Show answer</summary><p>10.1.128.0</p></details></li></ol></section>
+<p><strong>Learn more:</strong> <a href="https://www.practicalnetworking.net/series/subnetting/subnetting/" target="_blank" rel="noopener noreferrer">Practical Networking: subnetting cheat sheet</a> · <a href="https://www.youtube.com/@JeremysITLab" target="_blank" rel="noopener noreferrer">Jeremy's IT Lab (free CCNA course on YouTube)</a></p></div><p class="static-meta">Lesson 8 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/cidr/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> CIDR notation and calculations</a><a class="btn btn-solid btn-sm" href="/learn/networking/subnetting-requirements/">Subnetting to meet requirements <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

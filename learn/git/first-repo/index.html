@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Your first repository | Git &amp; GitHub</title>
+    <meta name="description" content="Free Git &amp; GitHub lesson: Your first repository." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/git/first-repo/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Your first repository | Git &amp; GitHub" />
+    <meta property="og:description" content="Free Git &amp; GitHub lesson: Your first repository." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/git/first-repo/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Your first repository | Git &amp; GitHub" />
+    <meta name="twitter:description" content="Free Git &amp; GitHub lesson: Your first repository." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/git/first-repo/#lesson","name":"Your first repository","description":"Free Git & GitHub lesson: Your first repository.","url":"https://marzleytechsolutions.co.ke/learn/git/first-repo/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/git/#course","name":"Git & GitHub","url":"https://marzleytechsolutions.co.ke/learn/git/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Git & GitHub","item":"https://marzleytechsolutions.co.ke/learn/git/"},{"@type":"ListItem","position":4,"name":"Your first repository","item":"https://marzleytechsolutions.co.ke/learn/git/first-repo/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/git/">Git &amp; GitHub</a> / <span>Your first repository</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=git&amp;lesson=first-repo"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Your first repository</h1>
+<h2>The three areas</h2>
+<ol><li><strong>Working directory</strong>: your files as you edit them.</li><li><strong>Staging area</strong>: changes you've chosen for the next commit (<code>git add</code>).</li><li><strong>Repository</strong>: saved commits (<code>git commit</code>).</li></ol>
+<h2>Step by step</h2>
+<figure class="static-code"><pre><code>mkdir my-site
+cd my-site
+git init                      # start tracking this folder
+echo &quot;&lt;h1&gt;Hello&lt;/h1&gt;&quot; &gt; index.html
+git status                    # see what changed
+git add index.html            # stage the file   (git add . = everything)
+git commit -m &quot;Add home page&quot; # save a snapshot
+git log --oneline             # history</code></pre></figure>
+<h2>Everyday commands</h2>
+<div class="static-table"><table><thead><tr><th>Command</th><th>What it does</th></tr></thead><tbody><tr><td><code>git status</code></td><td>What's changed, what's staged</td></tr><tr><td><code>git add file</code> / <code>git add .</code></td><td>Stage one file / all changes</td></tr><tr><td><code>git commit -m &quot;message&quot;</code></td><td>Save staged changes</td></tr><tr><td><code>git log --oneline</code></td><td>Short history</td></tr><tr><td><code>git diff</code></td><td>Show unstaged changes line by line</td></tr><tr><td><code>git restore file</code></td><td>Throw away unsaved changes to a file</td></tr><tr><td><code>git restore --staged file</code></td><td>Unstage a file</td></tr><tr><td><code>git revert &lt;commit&gt;</code></td><td>Safely undo a commit with a new commit</td></tr></tbody></table></div>
+<h2>Good commit messages</h2>
+<p>Short, in the imperative, saying <em>what and why</em>: "Fix M-Pesa callback URL", "Add pricing page". Not "changes" or "stuff".</p>
+<h2>.gitignore</h2>
+<p>A file listing things Git must <strong>not</strong> track: passwords, config with secrets, <code>node_modules/</code>, <code>vendor/</code>, <code>.env</code>, uploads, big files.</p>
+<figure class="static-code"><pre><code>.env
+config.php
+node_modules/
+*.log</code></pre></figure>
+<blockquote><p>Never commit passwords or API keys. If you do, change them immediately. Deleting the file later doesn't remove it from history.</p></blockquote>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command starts tracking a folder with Git?</p><details><summary>Show answer</summary><p>git init</p></details></li><li><p>Which command stages all changes?</p><details><summary>Show answer</summary><p>git add .</p></details></li><li><p>Which command shows what has changed and what is staged?</p><details><summary>Show answer</summary><p>git status</p></details></li><li><p>What file tells Git which files to ignore?</p><details><summary>Show answer</summary><p>.gitignore</p></details></li><li><p>Should you commit your M-Pesa API passwords to GitHub? (yes/no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 10 in <a href="/learn/git/">Git &amp; GitHub</a> · <a href="/learn/?book=git">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/git/install-configure/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Installing and setting up Git (Windows, Mac, Linux)</a><a class="btn btn-solid btn-sm" href="/learn/git/gitignore-good-commits/">.gitignore, good commit messages and viewing history <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

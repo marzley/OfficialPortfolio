@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Users and permissions (chmod, chown) | Linux command line</title>
+    <meta name="description" content="Every file has an owner , a group , and permissions for three kinds of people: owner (u) , group (g) , others (o) . Each can have read (r) , write (w)…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/linux/permissions/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Users and permissions (chmod, chown) | Linux command line" />
+    <meta property="og:description" content="Every file has an owner , a group , and permissions for three kinds of people: owner (u) , group (g) , others (o) . Each can have read (r) , write (w)…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/linux/permissions/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Users and permissions (chmod, chown) | Linux command line" />
+    <meta name="twitter:description" content="Every file has an owner , a group , and permissions for three kinds of people: owner (u) , group (g) , others (o) . Each can have read (r) , write (w)…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/linux/permissions/#lesson","name":"Users and permissions (chmod, chown)","description":"Every file has an owner , a group , and permissions for three kinds of people: owner (u) , group (g) , others (o) . Each can have read (r) , write (w)…","url":"https://marzleytechsolutions.co.ke/learn/linux/permissions/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/linux/#course","name":"Linux command line","url":"https://marzleytechsolutions.co.ke/learn/linux/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Linux command line","item":"https://marzleytechsolutions.co.ke/learn/linux/"},{"@type":"ListItem","position":4,"name":"Users and permissions (chmod, chown)","item":"https://marzleytechsolutions.co.ke/learn/linux/permissions/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/linux/">Linux command line</a> / <span>Users and permissions (chmod, chown)</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=linux&amp;lesson=permissions"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Permissions</h1>
+<p>Every file has an <strong>owner</strong>, a <strong>group</strong>, and permissions for three kinds of people: <strong>owner (u)</strong>, <strong>group (g)</strong>, <strong>others (o)</strong>. Each can have <strong>read (r)</strong>, <strong>write (w)</strong> and <strong>execute (x)</strong>.</p>
+<p><code>ls -l</code> shows them:</p>
+<figure class="static-code"><pre><code>-rwxr-xr-- 1 kelvin www-data 1204 Sep 28 10:00 deploy.sh
+│└┬┘└┬┘└┬┘   owner  group
+│ │  │  └── others: r--  (read only)
+│ │  └───── group:  r-x  (read, execute)
+│ └──────── owner:  rwx  (everything)
+└── - file, d directory, l link</code></pre></figure>
+<h2>Numbers (octal)</h2>
+<p>r = <strong>4</strong>, w = <strong>2</strong>, x = <strong>1</strong>; add them for each group:</p>
+<div class="static-table"><table><thead><tr><th>Number</th><th>Permissions</th><th>Common use</th></tr></thead><tbody><tr><td><strong>755</strong></td><td>rwx r-x r-x</td><td>Folders and scripts on web servers</td></tr><tr><td><strong>644</strong></td><td>rw- r-- r--</td><td>Normal web files (HTML, PHP, images)</td></tr><tr><td><strong>600</strong></td><td>rw- --- ---</td><td>Private files: config with passwords, SSH keys</td></tr><tr><td><strong>700</strong></td><td>rwx --- ---</td><td>Private folders</td></tr><tr><td><strong>777</strong></td><td>rwx rwx rwx</td><td><strong>Never on a server</strong>: anyone can change the file</td></tr></tbody></table></div>
+<figure class="static-code"><pre><code>chmod 644 index.php
+chmod 755 uploads/
+chmod -R 755 public_html/     # -R: everything inside
+chmod u+x deploy.sh           # add execute for the owner
+chown kelvin:www-data file    # change owner and group</code></pre></figure>
+<h2>Try the calculator</h2>
+<p>Tick boxes or type a number:</p>
+<p class="static-note">This part of the lesson has an interactive tool. Open the live lesson to use it.</p>
+<h2>sudo and root</h2>
+<p><strong>root</strong> is the all-powerful admin user. Normal users run admin commands with <strong>sudo</strong>: <code>sudo apt update</code>. Use it only when needed.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What number means rw-r--r--?</p><details><summary>Show answer</summary><p>644</p></details></li><li><p>What number means rwxr-xr-x?</p><details><summary>Show answer</summary><p>755</p></details></li><li><p>What number should a private config file with passwords have (owner read/write only)?</p><details><summary>Show answer</summary><p>600</p></details></li><li><p>Which permission number should never be used on a web server?</p><details><summary>Show answer</summary><p>777</p></details></li><li><p>Which command changes a file's owner?</p><details><summary>Show answer</summary><p>chown</p></details></li><li><p>What is the value of "write" in permission numbers?</p><details><summary>Show answer</summary><p>2</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 10 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/pipes-redirection/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Pipes and redirection: combining commands</a><a class="btn btn-solid btn-sm" href="/learn/linux/users-groups-sudo/">Users, groups and sudo <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

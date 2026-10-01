@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CSS Grid layout | CSS</title>
+    <meta name="description" content="Grid lays out rows and columns: perfect for galleries, cards and whole page layouts." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/css/grid/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="CSS Grid layout | CSS" />
+    <meta property="og:description" content="Grid lays out rows and columns: perfect for galleries, cards and whole page layouts." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/css/grid/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="CSS Grid layout | CSS" />
+    <meta name="twitter:description" content="Grid lays out rows and columns: perfect for galleries, cards and whole page layouts." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/css/grid/#lesson","name":"CSS Grid layout","description":"Grid lays out rows and columns: perfect for galleries, cards and whole page layouts.","url":"https://marzleytechsolutions.co.ke/learn/css/grid/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/css/#course","name":"CSS","url":"https://marzleytechsolutions.co.ke/learn/css/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"CSS","item":"https://marzleytechsolutions.co.ke/learn/css/"},{"@type":"ListItem","position":4,"name":"CSS Grid layout","item":"https://marzleytechsolutions.co.ke/learn/css/grid/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/css/">CSS</a> / <span>CSS Grid layout</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=grid"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>CSS Grid</h1>
+<p><strong>Grid</strong> lays out rows <em>and</em> columns: perfect for galleries, cards and whole page layouts.</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; font-family: sans-serif; }
+  .grid div { background: #e0f2fe; padding: 24px; border-radius: 10px; text-align: center; }
+  .wide { grid-column: span 2; background: #fde68a !important; }
+&lt;/style&gt;
+&lt;div class=&quot;grid&quot;&gt;
+  &lt;div class=&quot;wide&quot;&gt;Spans 2 columns&lt;/div&gt;&lt;div&gt;2&lt;/div&gt;
+  &lt;div&gt;3&lt;/div&gt;&lt;div&gt;4&lt;/div&gt;&lt;div&gt;5&lt;/div&gt;
+&lt;/div&gt;</code></pre></figure>
+<h2>Responsive without media queries</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; font-family: sans-serif; }
+  .cards div { background: #0b1b35; color: #fff; padding: 20px; border-radius: 12px; }
+&lt;/style&gt;
+&lt;div class=&quot;cards&quot;&gt;&lt;div&gt;Web&lt;/div&gt;&lt;div&gt;Design&lt;/div&gt;&lt;div&gt;M-Pesa&lt;/div&gt;&lt;div&gt;Training&lt;/div&gt;&lt;div&gt;Hosting&lt;/div&gt;&lt;/div&gt;</code></pre></figure>
+<p><code>repeat(auto-fit, minmax(150px, 1fr))</code> means "as many columns as fit, each at least 150px". Resize the output to see it.</p>
+<h2>Page layout with named areas</h2>
+<figure class="static-code"><figcaption>CSS</figcaption><pre><code class="language-css">.page { display: grid; grid-template-areas: &quot;header header&quot; &quot;sidebar main&quot; &quot;footer footer&quot;; grid-template-columns: 240px 1fr; }
+header { grid-area: header; } aside { grid-area: sidebar; } main { grid-area: main; } footer { grid-area: footer; }</code></pre></figure>
+<p><strong>Flexbox or Grid?</strong> Flexbox for one direction (a row of buttons, a navbar). Grid for two directions (a gallery, a page layout).</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which property turns an element into a grid container? (write property: value)</p><details><summary>Show answer</summary><p>display: grid</p></details></li><li><p>What does 1fr mean? (one ... of the free space)</p><details><summary>Show answer</summary><p>fraction</p></details></li><li><p>Which is better for a 2D gallery of cards: Flexbox or Grid?</p><details><summary>Show answer</summary><p>Grid</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Make <code>.gallery</code> a grid with <strong>3 columns</strong> using <code>grid-template-columns</code>.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=grid#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 12 of 17 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/responsive/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Responsive design</a><a class="btn btn-solid btn-sm" href="/learn/css/position/">Positioning and z-index <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

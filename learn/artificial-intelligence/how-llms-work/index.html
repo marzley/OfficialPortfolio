@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Level 4: How ChatGPT-style models work: tokens, training…</title>
+    <meta name="description" content="Large language models (LLMs) like the ones behind ChatGPT, Claude and Gemini can seem magical. Underneath, they do one thing remarkably well: predict…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/artificial-intelligence/how-llms-work/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Level 4: How ChatGPT-style models work: tokens, training…" />
+    <meta property="og:description" content="Large language models (LLMs) like the ones behind ChatGPT, Claude and Gemini can seem magical. Underneath, they do one thing remarkably well: predict…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/artificial-intelligence/how-llms-work/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Level 4: How ChatGPT-style models work: tokens, training…" />
+    <meta name="twitter:description" content="Large language models (LLMs) like the ones behind ChatGPT, Claude and Gemini can seem magical. Underneath, they do one thing remarkably well: predict…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/how-llms-work/#lesson","name":"Level 4: How ChatGPT-style models work: tokens, training and embeddings","description":"Large language models (LLMs) like the ones behind ChatGPT, Claude and Gemini can seem magical. Underneath, they do one thing remarkably well: predict…","url":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/how-llms-work/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/#course","name":"Artificial intelligence (AI): from zero to pro","url":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Artificial intelligence (AI): from zero to pro","item":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/"},{"@type":"ListItem","position":4,"name":"Level 4: How ChatGPT-style models work: tokens, training and embeddings","item":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/how-llms-work/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/artificial-intelligence/">Artificial intelligence (AI): from zero to pro</a> / <span>Level 4: How ChatGPT-style models work: tokens, training and embeddings</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=artificial-intelligence&amp;lesson=how-llms-work"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Level 4: How ChatGPT-style models work: tokens, training and embeddings</h1>
+<p><strong>Large language models (LLMs)</strong> like the ones behind ChatGPT, Claude and Gemini can seem magical. Underneath, they do one thing remarkably well: <strong>predict the next piece of text</strong>. Here's how that becomes a helpful assistant.</p>
+<h2>Step 1: text becomes tokens</h2>
+<p>Models don't read letters or whole words. They read <strong>tokens</strong>: common chunks of text. "Habari" might be one or two tokens; a long rare word may be several. Roughly, <strong>1 token ≈ ¾ of an English word</strong>; other languages (including Kiswahili) often use more tokens per word because they appear less in training data.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python"># A toy tokenizer: real ones learn their chunks from huge amounts of text
+vocab = [&quot;ha&quot;, &quot;bari&quot;, &quot;ya&quot;, &quot;asub&quot;, &quot;uhi&quot;, &quot; &quot;, &quot;habari&quot;, &quot;?&quot;]
+
+def tokenize(text):
+    tokens, i = [], 0
+    while i &lt; len(text):
+        # take the longest vocabulary piece that matches here
+        match = max((v for v in vocab if text.startswith(v, i)), key=len, default=text[i])
+        tokens.append(match)
+        i += len(match)
+    return tokens
+
+print(tokenize(&quot;habari ya asubuhi?&quot;))</code></pre></figure>
+<p>Tokens matter because <strong>models have a limit of tokens they can read at once</strong> (the <strong>context window</strong>) and <strong>AI APIs charge per token</strong>.</p>
+<h2>Step 2: predict the next token</h2>
+<p>Given some text, the model outputs a probability for every possible next token. Then it picks one, adds it to the text, and repeats. That's all generation is: <strong>next-token prediction, one token at a time.</strong></p>
+<p>This toy model learns which word tends to follow which (a "bigram" model) from a few sentences, then generates text:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import random
+from collections import defaultdict
+
+random.seed(7)
+corpus = (
+    &quot;the matatu leaves town at six . the matatu is full . &quot;
+    &quot;the boda leaves town at seven . the shop opens at six . &quot;
+    &quot;the shop is full of customers . customers pay with m-pesa .&quot;
+).split()
+
+nxt = defaultdict(list)
+for a, b in zip(corpus, corpus[1:]):
+    nxt[a].append(b)
+
+def generate(start, length=10):
+    words = [start]
+    for _ in range(length):
+        options = nxt.get(words[-1])
+        if not options:
+            break
+        words.append(random.choice(options))   # choose by how often each followed
+    return &quot; &quot;.join(words)
+
+for _ in range(3):
+    print(generate(&quot;the&quot;))</code></pre></figure>
+<p>A real LLM is this idea scaled up enormously: instead of looking at <strong>one</strong> previous word, a transformer looks at <strong>thousands</strong> of previous tokens using <strong>attention</strong>, and instead of a small table it has billions of learned parameters.</p>
+<h2>Step 3: training in stages</h2>
+<div class="static-table"><table><thead><tr><th>Stage</th><th>What happens</th><th>Result</th></tr></thead><tbody><tr><td><strong>Pre-training</strong></td><td>The model reads a huge amount of text and learns to predict the next token</td><td>Knows language and many facts, but isn't yet a helpful assistant</td></tr><tr><td><strong>Fine-tuning (instruction tuning)</strong></td><td>Trained on example conversations of good questions and answers</td><td>Follows instructions and chats</td></tr><tr><td><strong>Reinforcement learning from feedback</strong></td><td>People (and AI systems guided by principles) rate answers; the model is rewarded for helpful, honest, harmless answers</td><td>Safer, more helpful behaviour</td></tr></tbody></table></div>
+<p>This is why AI training work exists: people write and rate the examples used in fine-tuning.</p>
+<h2>Temperature: creativity vs consistency</h2>
+<p>When choosing the next token, a setting called <strong>temperature</strong> controls randomness: low temperature picks the most likely tokens (consistent, factual style); high temperature picks less likely ones more often (creative, varied, more mistakes).</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import math
+
+next_word_scores = {&quot;Nairobi&quot;: 4.0, &quot;Mombasa&quot;: 2.5, &quot;Kisumu&quot;: 2.0, &quot;Mars&quot;: 0.5}
+
+def probabilities(scores, temperature):
+    exps = {w: math.exp(s / temperature) for w, s in scores.items()}
+    total = sum(exps.values())
+    return {w: round(e / total, 3) for w, e in exps.items()}
+
+for t in [0.3, 1.0, 2.0]:
+    print(f&quot;temperature {t}: {probabilities(next_word_scores, t)}&quot;)</code></pre></figure>
+<p>At low temperature "Nairobi" gets almost all the probability; at high temperature even "Mars" gets a chance.</p>
+<h2>Embeddings: meaning as numbers</h2>
+<p>Models represent words and texts as lists of numbers called <strong>embeddings</strong>, arranged so that <strong>similar meanings are close together</strong>. This powers semantic search ("find documents about school fees" even if they say "tuition"), recommendations and the retrieval systems in the next level.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import math
+
+# Tiny made-up embeddings (real ones have hundreds or thousands of numbers)
+emb = {
+    &quot;teacher&quot;:  [0.9, 0.1, 0.0],
+    &quot;tutor&quot;:    [0.85, 0.15, 0.05],
+    &quot;school&quot;:   [0.7, 0.3, 0.1],
+    &quot;maize&quot;:    [0.0, 0.2, 0.9],
+    &quot;farm&quot;:     [0.1, 0.3, 0.85],
+}
+
+def cosine(a, b):
+    dot = sum(x * y for x, y in zip(a, b))
+    return dot / (math.sqrt(sum(x * x for x in a)) * math.sqrt(sum(y * y for y in b)))
+
+query = &quot;teacher&quot;
+for word, vec in sorted(emb.items(), key=lambda kv: -cosine(emb[query], kv[1])):
+    print(f&quot;{word:&lt;8} similarity to &#x27;{query}&#x27;: {cosine(emb[query], vec):.2f}&quot;)</code></pre></figure>
+<h2>Why LLMs hallucinate (now you know)</h2>
+<p>The model generates <strong>likely</strong> tokens. When the true answer wasn't well represented in training, or the question is about something recent, the most likely-sounding continuation can be <strong>wrong</strong>. That's why grounding answers in real documents (next level) and checking facts matter.</p>
+<h2>Key terms</h2>
+<div class="static-table"><table><thead><tr><th>Term</th><th>Meaning</th></tr></thead><tbody><tr><td><strong>Token</strong></td><td>A chunk of text the model reads and writes</td></tr><tr><td><strong>Context window</strong></td><td>How many tokens the model can consider at once</td></tr><tr><td><strong>Parameters</strong></td><td>The learned numbers inside the model</td></tr><tr><td><strong>Pre-training</strong></td><td>Learning to predict text from a huge dataset</td></tr><tr><td><strong>Fine-tuning</strong></td><td>Further training for a specific behaviour or task</td></tr><tr><td><strong>Temperature</strong></td><td>Randomness when choosing tokens</td></tr><tr><td><strong>Embedding</strong></td><td>Numbers representing meaning; similar meanings are close</td></tr><tr><td><strong>Attention</strong></td><td>The transformer mechanism for weighing which tokens matter to each other</td></tr></tbody></table></div>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What chunks of text do language models read and write?</p><details><summary>Show answer</summary><p>tokens</p></details></li><li><p>What is the maximum amount of text a model can consider at once called?</p><details><summary>Show answer</summary><p>context window</p></details></li><li><p>At its core, an LLM generates text by predicting the next ...?</p><details><summary>Show answer</summary><p>token</p></details></li><li><p>Which setting controls randomness: low for consistent, high for creative?</p><details><summary>Show answer</summary><p>temperature</p></details></li><li><p>Lists of numbers that represent meaning are called?</p><details><summary>Show answer</summary><p>embeddings</p></details></li><li><p>Which mechanism lets transformers weigh which tokens matter to each other?</p><details><summary>Show answer</summary><p>attention</p></details></li></ol></section></div><p class="static-meta">Lesson 14 of 17 in <a href="/learn/artificial-intelligence/">Artificial intelligence (AI): from zero to pro</a> · <a href="/learn/?book=artificial-intelligence">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/artificial-intelligence/neural-networks-explained/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Level 4: Neural networks explained (and one you can train)</a><a class="btn btn-solid btn-sm" href="/learn/artificial-intelligence/build-with-ai-apis/">Level 5: Building apps with AI APIs <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

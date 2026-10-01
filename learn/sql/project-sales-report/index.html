@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Project: a business sales report in SQL | SQL</title>
+    <meta name="description" content="The owner of our shop asks you: &quot;How is the business doing?&quot; In this project you&#x27;ll answer with real SQL queries, the way a data analyst or back-end…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/sql/project-sales-report/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Project: a business sales report in SQL | SQL" />
+    <meta property="og:description" content="The owner of our shop asks you: &quot;How is the business doing?&quot; In this project you&#x27;ll answer with real SQL queries, the way a data analyst or back-end…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/sql/project-sales-report/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Project: a business sales report in SQL | SQL" />
+    <meta name="twitter:description" content="The owner of our shop asks you: &quot;How is the business doing?&quot; In this project you&#x27;ll answer with real SQL queries, the way a data analyst or back-end…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/sql/project-sales-report/#lesson","name":"Project: a business sales report in SQL","description":"The owner of our shop asks you: \"How is the business doing?\" In this project you'll answer with real SQL queries, the way a data analyst or back-end…","url":"https://marzleytechsolutions.co.ke/learn/sql/project-sales-report/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/sql/#course","name":"SQL","url":"https://marzleytechsolutions.co.ke/learn/sql/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"SQL","item":"https://marzleytechsolutions.co.ke/learn/sql/"},{"@type":"ListItem","position":4,"name":"Project: a business sales report in SQL","item":"https://marzleytechsolutions.co.ke/learn/sql/project-sales-report/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/sql/">SQL</a> / <span>Project: a business sales report in SQL</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=project-sales-report"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Project: a business sales report in SQL</h1>
+<p>The owner of our shop asks you: <em>"How is the business doing?"</em> In this project you'll answer with real SQL queries, the way a data analyst or back-end developer would. Each query is a section of the report.</p>
+<h2>1. The headline numbers</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT COUNT(DISTINCT o.OrderID)            AS Orders,
+       COUNT(DISTINCT o.CustomerID)         AS Customers,
+       SUM(o.Quantity)                      AS ItemsSold,
+       SUM(o.Quantity * p.Price)            AS Revenue,
+       ROUND(AVG(o.Quantity * p.Price))     AS AvgOrderValue
+FROM Orders o
+JOIN Products p ON p.ProductID = o.ProductID;</code></pre></figure>
+<h2>2. Revenue by category</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT p.Category,
+       SUM(o.Quantity) AS Items,
+       SUM(o.Quantity * p.Price) AS Revenue,
+       ROUND(100.0 * SUM(o.Quantity * p.Price) / (SELECT SUM(o2.Quantity * p2.Price) FROM Orders o2 JOIN Products p2 ON p2.ProductID = o2.ProductID), 1) AS SharePct
+FROM Orders o
+JOIN Products p ON p.ProductID = o.ProductID
+GROUP BY p.Category
+ORDER BY Revenue DESC;</code></pre></figure>
+<h2>3. Best customers</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT c.Name, c.City,
+       COUNT(*) AS Orders,
+       SUM(o.Quantity * p.Price) AS Spent,
+       RANK() OVER (ORDER BY SUM(o.Quantity * p.Price) DESC) AS Position
+FROM Orders o
+JOIN Customers c ON c.CustomerID = o.CustomerID
+JOIN Products p  ON p.ProductID = o.ProductID
+GROUP BY c.CustomerID
+ORDER BY Spent DESC;</code></pre></figure>
+<h2>4. Sales by town</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT c.City, SUM(o.Quantity * p.Price) AS Revenue, COUNT(DISTINCT c.CustomerID) AS Buyers
+FROM Customers c
+LEFT JOIN Orders o  ON o.CustomerID = c.CustomerID
+LEFT JOIN Products p ON p.ProductID = o.ProductID
+GROUP BY c.City
+ORDER BY Revenue DESC;</code></pre></figure>
+<p>The <code>LEFT JOIN</code> keeps towns whose customers haven't ordered, so they show with an empty revenue: a sales opportunity.</p>
+<h2>5. Products that never sold</h2>
+<p>Every product in the sample has sold, so first we add a new one that hasn't:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">INSERT INTO Products VALUES (7, &#x27;Laptop stand&#x27;, &#x27;Accessories&#x27;, 1800);
+
+SELECT p.Name, p.Price
+FROM Products p
+LEFT JOIN Orders o ON o.ProductID = p.ProductID
+WHERE o.OrderID IS NULL;</code></pre></figure>
+<h2>6. Month by month</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT STRFTIME(&#x27;%Y-%m&#x27;, o.OrderDate) AS Month,
+       COUNT(*) AS Orders,
+       SUM(o.Quantity * p.Price) AS Revenue
+FROM Orders o
+JOIN Products p ON p.ProductID = o.ProductID
+GROUP BY Month
+ORDER BY Month;</code></pre></figure>
+<h2>7. Save it as a view</h2>
+<p>A <strong>view</strong> is a saved query you can use like a table. The website's dashboard can now just <code>SELECT * FROM SalesLines</code>.</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE VIEW SalesLines AS
+SELECT o.OrderID, o.OrderDate, c.Name AS Customer, c.City, p.Name AS Product, p.Category,
+       o.Quantity, p.Price, o.Quantity * p.Price AS Amount
+FROM Orders o
+JOIN Customers c ON c.CustomerID = o.CustomerID
+JOIN Products p  ON p.ProductID = o.ProductID;
+
+SELECT Customer, Product, Amount FROM SalesLines WHERE City = &#x27;Nairobi&#x27;;
+SELECT Category, SUM(Amount) FROM SalesLines GROUP BY Category;</code></pre></figure>
+<h2>Writing up your findings</h2>
+<p>A report is more than numbers. Turn your results into 3–5 sentences, for example:</p>
+<blockquote><p><em>Revenue so far is KSh X from Y orders. Storage items bring in the most money (Z%). Kamau Njoroge is our top customer. The new laptop stand hasn't sold yet: consider a promotion. Eldoret customers haven't ordered yet.</em></p></blockquote>
+<h2>Challenges</h2>
+<ol><li>Which day of the week gets the most orders? (Hint: <code>STRFTIME(&#x27;%w&#x27;, OrderDate)</code>.)</li><li>Add a <code>Discount</code> column to Orders and recalculate revenue.</li><li>Find customers who ordered more than one different product.</li><li>Build a query that a dashboard could use for a "last 30 days" chart.</li></ol>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which join keeps rows from the first table even when there is no match?</p><details><summary>Show answer</summary><p>LEFT JOIN</p></details></li><li><p>What is a saved query you can use like a table called?</p><details><summary>Show answer</summary><p>view</p></details></li><li><p>How do you find products with no orders after a LEFT JOIN? Complete: WHERE o.OrderID IS ...</p><details><summary>Show answer</summary><p>NULL</p></details></li></ol></section></div><p class="static-meta">Lesson 14 of 14 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/window-functions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Window functions: rankings, running totals and more</a><span></span></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

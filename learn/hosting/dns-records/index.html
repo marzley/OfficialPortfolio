@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pointing a domain: DNS records | Web hosting &amp; deployment</title>
+    <meta name="description" content="Two ways: 1. Change the name servers (NS) at the registrar to the host&#x27;s (e.g. ns1.yourhost.com , ns2.yourhost.com ). The host then manages all DNS…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/hosting/dns-records/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Pointing a domain: DNS records | Web hosting &amp; deployment" />
+    <meta property="og:description" content="Two ways: 1. Change the name servers (NS) at the registrar to the host&#x27;s (e.g. ns1.yourhost.com , ns2.yourhost.com ). The host then manages all DNS…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/hosting/dns-records/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Pointing a domain: DNS records | Web hosting &amp; deployment" />
+    <meta name="twitter:description" content="Two ways: 1. Change the name servers (NS) at the registrar to the host&#x27;s (e.g. ns1.yourhost.com , ns2.yourhost.com ). The host then manages all DNS…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/hosting/dns-records/#lesson","name":"Pointing a domain: DNS records","description":"Two ways: 1. Change the name servers (NS) at the registrar to the host's (e.g. ns1.yourhost.com , ns2.yourhost.com ). The host then manages all DNS…","url":"https://marzleytechsolutions.co.ke/learn/hosting/dns-records/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/hosting/#course","name":"Web hosting & deployment","url":"https://marzleytechsolutions.co.ke/learn/hosting/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Web hosting & deployment","item":"https://marzleytechsolutions.co.ke/learn/hosting/"},{"@type":"ListItem","position":4,"name":"Pointing a domain: DNS records","item":"https://marzleytechsolutions.co.ke/learn/hosting/dns-records/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/hosting/">Web hosting &amp; deployment</a> / <span>Pointing a domain: DNS records</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=hosting&amp;lesson=dns-records"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Connecting a domain to hosting</h1>
+<p>Two ways:</p>
+<ol><li><strong>Change the name servers</strong> (NS) at the registrar to the host's (e.g. <code>ns1.yourhost.com</code>, <code>ns2.yourhost.com</code>). The host then manages all DNS records. Easiest.</li><li><strong>Keep DNS at the registrar or Cloudflare</strong> and add records pointing to the host.</li></ol>
+<h2>Records you'll set</h2>
+<div class="static-table"><table><thead><tr><th>Record</th><th>Name</th><th>Value</th><th>Purpose</th></tr></thead><tbody><tr><td>A</td><td><code>@</code></td><td><code>102.x.x.x</code></td><td>The main domain → server IP</td></tr><tr><td>A or CNAME</td><td><code>www</code></td><td>same IP, or <code>@</code>/domain</td><td>www version</td></tr><tr><td>MX</td><td><code>@</code></td><td><code>mail.example.co.ke</code> (priority 10)</td><td>Where email goes</td></tr><tr><td>TXT</td><td><code>@</code></td><td><code>v=spf1 +a +mx include:… ~all</code></td><td>SPF: which servers may send your email</td></tr><tr><td>TXT</td><td><code>default._domainkey</code></td><td><code>v=DKIM1; …</code></td><td>DKIM: signs your emails</td></tr><tr><td>TXT</td><td><code>_dmarc</code></td><td><code>v=DMARC1; p=quarantine; rua=mailto:…</code></td><td>DMARC: what to do with fakes</td></tr><tr><td>CNAME</td><td><code>shop</code></td><td><code>shops.myshopify.com</code></td><td>Point a subdomain to a service</td></tr></tbody></table></div>
+<h2>Propagation</h2>
+<p>DNS changes can take from minutes to 24–48 hours (depending on <strong>TTL</strong>). Check with <code>nslookup example.co.ke</code> or online DNS checkers.</p>
+<h2>Good email delivery</h2>
+<p>Without <strong>SPF, DKIM and DMARC</strong>, your invoices and contact-form emails land in spam. cPanel's "Email Deliverability" page shows the exact records to add.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which record points the main domain to the server's IPv4 address?</p><details><summary>Show answer</summary><p>A</p></details></li><li><p>Which three TXT-based records improve email delivery? (initials)</p><details><summary>Show answer</summary><p>SPF DKIM DMARC</p></details></li><li><p>What do you change at the registrar so the host manages all DNS?</p><details><summary>Show answer</summary><p>name servers</p></details></li><li><p>What setting controls how long DNS answers are cached? (initials)</p><details><summary>Show answer</summary><p>TTL</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 8 in <a href="/learn/hosting/">Web hosting &amp; deployment</a> · <a href="/learn/?book=hosting">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/hosting/free-static-hosting/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Free hosting for static sites: GitHub Pages, Netlify, Cloudflare Pages</a><a class="btn btn-solid btn-sm" href="/learn/hosting/cpanel-deploy/">Uploading a website with cPanel <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

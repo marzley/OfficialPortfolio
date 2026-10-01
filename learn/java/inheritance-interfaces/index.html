@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Inheritance, interfaces and polymorphism | Java</title>
+    <meta name="description" content="The OOP lesson introduced classes and objects. Now the three ideas that make large Java systems (and Android apps) manageable: inheritance , interfaces…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/java/inheritance-interfaces/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Inheritance, interfaces and polymorphism | Java" />
+    <meta property="og:description" content="The OOP lesson introduced classes and objects. Now the three ideas that make large Java systems (and Android apps) manageable: inheritance , interfaces…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/java/inheritance-interfaces/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Inheritance, interfaces and polymorphism | Java" />
+    <meta name="twitter:description" content="The OOP lesson introduced classes and objects. Now the three ideas that make large Java systems (and Android apps) manageable: inheritance , interfaces…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/java/inheritance-interfaces/#lesson","name":"Inheritance, interfaces and polymorphism","description":"The OOP lesson introduced classes and objects. Now the three ideas that make large Java systems (and Android apps) manageable: inheritance , interfaces…","url":"https://marzleytechsolutions.co.ke/learn/java/inheritance-interfaces/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/java/#course","name":"Java","url":"https://marzleytechsolutions.co.ke/learn/java/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Java","item":"https://marzleytechsolutions.co.ke/learn/java/"},{"@type":"ListItem","position":4,"name":"Inheritance, interfaces and polymorphism","item":"https://marzleytechsolutions.co.ke/learn/java/inheritance-interfaces/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/java/">Java</a> / <span>Inheritance, interfaces and polymorphism</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=java&amp;lesson=inheritance-interfaces"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Inheritance, interfaces and polymorphism</h1>
+<p>The <strong>OOP</strong> lesson introduced classes and objects. Now the three ideas that make large Java systems (and Android apps) manageable: <strong>inheritance</strong>, <strong>interfaces</strong> and <strong>polymorphism</strong>.</p>
+<h2>Inheritance: extends</h2>
+<p>A subclass <strong>inherits</strong> fields and methods from a parent class and can add or change behaviour.</p>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    static class Employee {
+        protected String name;
+        protected double salary;
+
+        Employee(String name, double salary) {
+            this.name = name;
+            this.salary = salary;
+        }
+        double monthlyPay() { return salary; }
+        String describe() { return String.format(&quot;%s earns KSh %,.0f&quot;, name, monthlyPay()); }
+    }
+
+    static class SalesAgent extends Employee {
+        private double sales;
+        SalesAgent(String name, double salary, double sales) {
+            super(name, salary);              // call the parent constructor first
+            this.sales = sales;
+        }
+        @Override
+        double monthlyPay() { return super.monthlyPay() + sales * 0.05; }   // add 5% commission
+    }
+
+    static class Intern extends Employee {
+        Intern(String name) { super(name, 15000); }
+        @Override
+        String describe() { return super.describe() + &quot; (intern)&quot;; }
+    }
+
+    public static void main(String[] args) {
+        Employee[] staff = { new Employee(&quot;Njoroge&quot;, 45000), new SalesAgent(&quot;Adhiambo&quot;, 30000, 400000), new Intern(&quot;Kevin&quot;) };
+        for (Employee e : staff) System.out.println(e.describe());
+    }
+}</code></pre></figure>
+<ul><li><code>extends</code> creates the parent–child relationship ("a SalesAgent <strong>is an</strong> Employee").</li><li><code>super(...)</code> calls the parent constructor; <code>super.method()</code> calls the parent's version.</li><li><code>@Override</code> asks the compiler to check you really are overriding a parent method.</li><li><code>protected</code> fields are visible to subclasses.</li></ul>
+<h2>Polymorphism: one call, many behaviours</h2>
+<p>In the loop above, <code>e.describe()</code> runs a <strong>different</strong> <code>monthlyPay()</code> depending on the real object. The code that loops doesn't need to know the exact type. Adding a new employee type doesn't change that loop at all.</p>
+<h2>Abstract classes</h2>
+<p>An <strong>abstract</strong> class is a partial template that can't be created directly:</p>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    static abstract class Payment {
+        protected double amount;
+        Payment(double amount) { this.amount = amount; }
+        abstract double fee();                                  // subclasses MUST implement
+        double total() { return amount + fee(); }
+    }
+    static class MpesaPayment extends Payment {
+        MpesaPayment(double a) { super(a); }
+        double fee() { return 0; }
+    }
+    static class CardPayment extends Payment {
+        CardPayment(double a) { super(a); }
+        double fee() { return amount * 0.029; }
+    }
+    public static void main(String[] args) {
+        Payment[] ps = { new MpesaPayment(2500), new CardPayment(2500) };
+        for (Payment p : ps) System.out.printf(&quot;%s: KSh %.2f%n&quot;, p.getClass().getSimpleName(), p.total());
+    }
+}</code></pre></figure>
+<h2>Interfaces: a contract</h2>
+<p>An <strong>interface</strong> lists methods a class promises to provide. A class can extend only <strong>one</strong> class but implement <strong>many</strong> interfaces.</p>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">import java.util.List;
+
+class Main {
+    interface Notifier {
+        void send(String to, String message);
+        default void sendAll(List&lt;String&gt; recipients, String message) {   // default method
+            for (String r : recipients) send(r, message);
+        }
+    }
+
+    static class SmsNotifier implements Notifier {
+        public void send(String to, String message) { System.out.println(&quot;SMS to &quot; + to + &quot;: &quot; + message); }
+    }
+    static class EmailNotifier implements Notifier {
+        public void send(String to, String message) { System.out.println(&quot;Email to &quot; + to + &quot;: &quot; + message); }
+    }
+
+    static void remind(Notifier n) {       // works with ANY Notifier
+        n.sendAll(List.of(&quot;0712345678&quot;, &quot;0722000111&quot;), &quot;Fees are due on Friday.&quot;);
+    }
+
+    public static void main(String[] args) {
+        remind(new SmsNotifier());
+        remind(new EmailNotifier());
+        Notifier whatsapp = (to, msg) -&gt; System.out.println(&quot;WhatsApp &quot; + to + &quot;: &quot; + msg);  // a lambda!
+        whatsapp.send(&quot;0733111222&quot;, &quot;Your order is ready&quot;);
+    }
+}</code></pre></figure>
+<p>Interfaces with a single method (like <code>Notifier.send</code>) can be implemented with a <strong>lambda</strong>, which is how Android click listeners work.</p>
+<h2>Abstract class or interface?</h2>
+<div class="static-table"><table><thead><tr><th>Use an abstract class when...</th><th>Use an interface when...</th></tr></thead><tbody><tr><td>Subclasses share code and fields</td><td>Unrelated classes share a capability ("can send", "can be printed")</td></tr><tr><td>There's a clear "is a" relationship</td><td>You want many implementations to be swappable</td></tr><tr><td></td><td>A class needs several capabilities</td></tr></tbody></table></div>
+<h2>Object methods everyone inherits</h2>
+<p>Every class secretly extends <code>Object</code>, which provides <code>toString()</code>, <code>equals()</code> and <code>hashCode()</code>. Override <code>toString()</code> to print objects nicely:</p>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    static class Product {
+        String name; double price;
+        Product(String n, double p) { name = n; price = p; }
+        @Override public String toString() { return name + &quot; (KSh &quot; + price + &quot;)&quot;; }
+    }
+    public static void main(String[] args) {
+        System.out.println(new Product(&quot;Unga 2kg&quot;, 180));
+    }
+}</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword makes one class inherit from another?</p><details><summary>Show answer</summary><p>extends</p></details></li><li><p>Which keyword calls the parent class constructor?</p><details><summary>Show answer</summary><p>super</p></details></li><li><p>Which annotation checks that you are really overriding a method?</p><details><summary>Show answer</summary><p>@Override</p></details></li><li><p>How many classes can a Java class extend?</p><details><summary>Show answer</summary><p>1</p></details></li><li><p>Which keyword makes a class follow an interface?</p><details><summary>Show answer</summary><p>implements</p></details></li></ol></section></div><p class="static-meta">Lesson 7 of 9 in <a href="/learn/java/">Java</a> · <a href="/learn/?book=java">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/java/oop/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Classes and objects (OOP)</a><a class="btn btn-solid btn-sm" href="/learn/java/collections-exceptions/">HashMap, collections and exception handling <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

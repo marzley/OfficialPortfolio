@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>.gitignore, good commit messages and viewing history</title>
+    <meta name="description" content="A clean repository is easy to understand, safe to share and simple to fix. Three habits get you there." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/git/gitignore-good-commits/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content=".gitignore, good commit messages and viewing history" />
+    <meta property="og:description" content="A clean repository is easy to understand, safe to share and simple to fix. Three habits get you there." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/git/gitignore-good-commits/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content=".gitignore, good commit messages and viewing history" />
+    <meta name="twitter:description" content="A clean repository is easy to understand, safe to share and simple to fix. Three habits get you there." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/git/gitignore-good-commits/#lesson","name":".gitignore, good commit messages and viewing history","description":"A clean repository is easy to understand, safe to share and simple to fix. Three habits get you there.","url":"https://marzleytechsolutions.co.ke/learn/git/gitignore-good-commits/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/git/#course","name":"Git & GitHub","url":"https://marzleytechsolutions.co.ke/learn/git/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Git & GitHub","item":"https://marzleytechsolutions.co.ke/learn/git/"},{"@type":"ListItem","position":4,"name":".gitignore, good commit messages and viewing history","item":"https://marzleytechsolutions.co.ke/learn/git/gitignore-good-commits/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/git/">Git &amp; GitHub</a> / <span>.gitignore, good commit messages and viewing history</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=git&amp;lesson=gitignore-good-commits"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>.gitignore, good commit messages and viewing history</h1>
+<p>A clean repository is easy to understand, safe to share and simple to fix. Three habits get you there.</p>
+<h2>1. Keep things out with .gitignore</h2>
+<p>Some files should <strong>never</strong> be committed:</p>
+<ul><li><strong>Secrets</strong>: passwords, API keys, M-Pesa credentials, <code>.env</code> files, config files with database passwords.</li><li><strong>Generated files</strong>: <code>node_modules/</code>, build folders, <code>__pycache__/</code>.</li><li><strong>Personal/system files</strong>: <code>.DS_Store</code>, <code>Thumbs.db</code>, editor settings.</li><li><strong>Big files</strong>: videos, database dumps, logs.</li></ul>
+<p>Create a file called <code>.gitignore</code> in the project's root folder:</p>
+<figure class="static-code"><pre><code># Secrets: never commit these
+.env
+config.php
+mpesa-config.php
+*.key
+
+# Dependencies and builds
+node_modules/
+vendor/
+dist/
+__pycache__/
+
+# Logs and system files
+*.log
+.DS_Store
+Thumbs.db
+.vscode/</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Pattern</th><th>Matches</th></tr></thead><tbody><tr><td><code>config.php</code></td><td>That file anywhere</td></tr><tr><td><code>/config.php</code></td><td>Only in the root folder</td></tr><tr><td><code>logs/</code></td><td>Any folder called logs</td></tr><tr><td><code>*.log</code></td><td>Every file ending in .log</td></tr><tr><td><code>!keep.log</code></td><td>Exception: do include this one</td></tr></tbody></table></div>
+<blockquote><p>Tip: commit a safe example instead, like <code>config.example.php</code> with empty values, so others know what to fill in.</p></blockquote>
+<h3>Oops, I already committed a secret</h3>
+<p><code>.gitignore</code> only affects <strong>untracked</strong> files. If a file is already committed:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git rm --cached config.php       # stop tracking it (keeps your local copy)
+echo &quot;config.php&quot; &gt;&gt; .gitignore
+git commit -m &quot;Stop tracking config.php&quot;</code></pre></figure>
+<p>The secret is <strong>still in the history</strong>, and if you pushed to GitHub, assume it's been seen. <strong>Change the password or key immediately.</strong> That's the only real fix.</p>
+<h2>2. Write good commit messages</h2>
+<p>A commit message explains <strong>why</strong> a change was made, for your future self and your team.</p>
+<p><strong>Bad:</strong> <code>update</code>, <code>fix</code>, <code>changes</code>, <code>asdf</code></p>
+<p><strong>Good:</strong></p>
+<figure class="static-code"><pre><code>Add M-Pesa STK push to the checkout page
+
+Customers can now pay from their phone without leaving the site.
+The callback saves the receipt code on the order.</code></pre></figure>
+<p>Rules that work:</p>
+<ol><li>A short <strong>summary line</strong> (about 50 characters), in the imperative: "Add", "Fix", "Remove" (as if giving an order: "this commit will... <em>Add</em> M-Pesa").</li><li>A blank line, then more detail if needed.</li><li><strong>One logical change per commit.</strong> Don't mix "fix login bug" with "redesign footer".</li><li>Commit often: small commits are easier to review and undo.</li></ol>
+<p>Many teams use prefixes: <code>feat: add receipts page</code>, <code>fix: phone validation</code>, <code>docs: update README</code>.</p>
+<h2>3. Explore history</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git log                           # full history
+git log --oneline --graph --all   # compact, with branches drawn
+git log -p index.html             # every change to one file
+git log --author=&quot;Amina&quot;
+git log --since=&quot;2 weeks ago&quot;
+git show a1b2c3d                  # one commit in detail
+git diff                          # unstaged changes
+git diff --staged                 # what you&#x27;re about to commit
+git blame index.html              # who last changed each line, and when</code></pre></figure>
+<h2>Tag releases</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git tag -a v1.0 -m &quot;First launch&quot;
+git push origin v1.0</code></pre></figure>
+<p>Tags mark important points (a launch, a client handover) you can return to.</p>
+<h2>A good README</h2>
+<p>Every repository should have a <code>README.md</code> explaining what the project is, how to run it and how to configure it (without real secrets). GitHub shows it on the repo's front page. See the Markdown example in our practice editor.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the name of the file that lists files Git should ignore?</p><details><summary>Show answer</summary><p>.gitignore</p></details></li><li><p>Which pattern ignores every file ending in .log?</p><details><summary>Show answer</summary><p>*.log</p></details></li><li><p>A password was committed and pushed. What is the only real fix?</p><details><summary>Show answer</summary><p>change the password</p></details></li><li><p>Which command stops tracking a file but keeps your local copy?</p><details><summary>Show answer</summary><p>git rm --cached</p></details></li><li><p>Should a commit summary say "Added feature" or "Add feature"?</p><details><summary>Show answer</summary><p>Add feature</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 10 in <a href="/learn/git/">Git &amp; GitHub</a> · <a href="/learn/?book=git">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/git/first-repo/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Your first repository</a><a class="btn btn-solid btn-sm" href="/learn/git/branches/">Branches and merging <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Make your website fast: Core Web Vitals and speed fixes</title>
+    <meta name="description" content="A slow website loses customers: many people leave if a page takes more than about 3 seconds. In Kenya, where many visitors browse on mobile data and…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/hosting/website-speed/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Make your website fast: Core Web Vitals and speed fixes" />
+    <meta property="og:description" content="A slow website loses customers: many people leave if a page takes more than about 3 seconds. In Kenya, where many visitors browse on mobile data and…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/hosting/website-speed/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Make your website fast: Core Web Vitals and speed fixes" />
+    <meta name="twitter:description" content="A slow website loses customers: many people leave if a page takes more than about 3 seconds. In Kenya, where many visitors browse on mobile data and…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/hosting/website-speed/#lesson","name":"Make your website fast: Core Web Vitals and speed fixes","description":"A slow website loses customers: many people leave if a page takes more than about 3 seconds. In Kenya, where many visitors browse on mobile data and…","url":"https://marzleytechsolutions.co.ke/learn/hosting/website-speed/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/hosting/#course","name":"Web hosting & deployment","url":"https://marzleytechsolutions.co.ke/learn/hosting/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Web hosting & deployment","item":"https://marzleytechsolutions.co.ke/learn/hosting/"},{"@type":"ListItem","position":4,"name":"Make your website fast: Core Web Vitals and speed fixes","item":"https://marzleytechsolutions.co.ke/learn/hosting/website-speed/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/hosting/">Web hosting &amp; deployment</a> / <span>Make your website fast: Core Web Vitals and speed fixes</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=hosting&amp;lesson=website-speed"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Make your website fast</h1>
+<p>A slow website loses customers: many people leave if a page takes more than about 3 seconds. In Kenya, where many visitors browse on mobile data and mid-range phones, speed matters even more. Google also uses page experience signals in rankings.</p>
+<h2>Measure first</h2>
+<ul><li><strong>PageSpeed Insights</strong> (pagespeed.web.dev): scores for mobile and desktop with specific fixes.</li><li>Our <strong>free website check</strong> on marzleytechsolutions.co.ke.</li><li>Chrome <strong>DevTools → Lighthouse</strong> and the <strong>Network</strong> tab (see which files are big).</li></ul>
+<h2>Core Web Vitals (Google's key measures)</h2>
+<div class="static-table"><table><thead><tr><th>Metric</th><th>Measures</th><th>Good</th></tr></thead><tbody><tr><td><strong>LCP</strong> (Largest Contentful Paint)</td><td>How fast the main content (hero image, heading) appears</td><td>≤ 2.5 s</td></tr><tr><td><strong>INP</strong> (Interaction to Next Paint)</td><td>How quickly the page responds to taps and clicks</td><td>≤ 200 ms</td></tr><tr><td><strong>CLS</strong> (Cumulative Layout Shift)</td><td>How much the page jumps around while loading</td><td>≤ 0.1</td></tr></tbody></table></div>
+<h2>The biggest wins, in order</h2>
+<h3>1. Images (usually 50–80% of page weight)</h3>
+<ul><li>Resize to the size shown (a 400px card doesn't need a 4000px photo).</li><li>Convert to <strong>WebP</strong>; compress (Squoosh.app, or a plugin on WordPress).</li><li><code>loading=&quot;lazy&quot;</code> for images below the first screen.</li><li>Always set <code>width</code> and <code>height</code> (prevents layout shift = better CLS).</li><li>Use <code>srcset</code> so phones get smaller files (see <em>Images done right</em> in the HTML tutorial).</li></ul>
+<h3>2. Less JavaScript</h3>
+<ul><li>Remove unused libraries and plugins (sliders, animation libraries, extra chat widgets).</li><li>Load scripts with <code>defer</code>.</li><li>Every third-party script (ads, trackers, widgets) costs time. Keep only what earns its place.</li></ul>
+<h3>3. Caching</h3>
+<ul><li><strong>Browser caching</strong>: tell browsers to keep static files (CSS, JS, images) for a long time.</li><li><strong>Page caching</strong> on the server (LiteSpeed Cache, WP Super Cache) for WordPress.</li><li>A <strong>CDN</strong> (e.g. Cloudflare's free plan) serves files from locations near your visitors.</li></ul>
+<p>Apache example (<code>.htaccess</code>):</p>
+<figure class="static-code"><pre><code>&lt;IfModule mod_expires.c&gt;
+  ExpiresActive On
+  ExpiresByType image/webp &quot;access plus 1 year&quot;
+  ExpiresByType text/css &quot;access plus 1 month&quot;
+  ExpiresByType application/javascript &quot;access plus 1 month&quot;
+&lt;/IfModule&gt;</code></pre></figure>
+<blockquote><p>When you cache files for a long time, change the file name or add a version (<code>style.css?v=2</code>) when you update them, so visitors get the new version.</p></blockquote>
+<h3>4. Compression</h3>
+<p>Enable <strong>Gzip or Brotli</strong> so text files (HTML, CSS, JS) are sent compressed, often 70% smaller. Most cPanel hosts have it under <em>Optimize Website</em>.</p>
+<h3>5. Fonts</h3>
+<ul><li>Use the system font stack, or one web font with only the weights you need.</li><li><code>font-display: swap</code> so text shows immediately.</li><li>Self-host fonts or preload the main one.</li></ul>
+<h3>6. The server</h3>
+<ul><li>A good host with fast disks (NVMe/SSD) and servers near your audience.</li><li>Current <strong>PHP 8.x</strong> (much faster than PHP 7).</li><li>Database indexes on columns you search (see SQL lessons).</li></ul>
+<h2>A quick checklist</h2>
+<div class="static-table"><table><thead><tr><th>✓</th><th>Item</th></tr></thead><tbody><tr><td></td><td>Images resized, WebP, lazy-loaded, with width/height</td></tr><tr><td></td><td>CSS and JS minified; scripts deferred</td></tr><tr><td></td><td>Unused plugins and scripts removed</td></tr><tr><td></td><td>Caching and compression on</td></tr><tr><td></td><td>HTTPS with HTTP/2 or HTTP/3</td></tr><tr><td></td><td>Mobile score above 80 in PageSpeed Insights</td></tr></tbody></table></div>
+<h2>A typical example</h2>
+<p>Imagine a shop's homepage that is 6.8 MB and takes 9 seconds on 4G. After resizing and converting 12 product photos to WebP, removing an unused slider plugin and turning on caching, it could drop to under 1 MB and load in about 2 seconds. Fewer visitors give up, so more of them become enquiries.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does LCP stand for? (three words)</p><details><summary>Show answer</summary><p>Largest Contentful Paint</p></details></li><li><p>What is a good LCP time, in seconds or less?</p><details><summary>Show answer</summary><p>2.5</p></details></li><li><p>Which image format is usually smallest for photos on the web?</p><details><summary>Show answer</summary><p>WebP</p></details></li><li><p>Which script attribute stops JavaScript from blocking the page while it loads?</p><details><summary>Show answer</summary><p>defer</p></details></li><li><p>Setting width and height on images improves which Core Web Vital? (three letters)</p><details><summary>Show answer</summary><p>CLS</p></details></li></ol></section></div><p class="static-meta">Lesson 8 of 8 in <a href="/learn/hosting/">Web hosting &amp; deployment</a> · <a href="/learn/?book=hosting">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/hosting/ssl-email-backups/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> SSL, business email and backups</a><span></span></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

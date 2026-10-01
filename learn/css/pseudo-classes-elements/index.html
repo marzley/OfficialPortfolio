@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pseudo-classes and pseudo-elements (:hover, ::before) | CSS</title>
+    <meta name="description" content="A pseudo-class styles an element in a certain state (hovered, focused, the first one...). A pseudo-element styles a part of an element, or adds…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/css/pseudo-classes-elements/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Pseudo-classes and pseudo-elements (:hover, ::before) | CSS" />
+    <meta property="og:description" content="A pseudo-class styles an element in a certain state (hovered, focused, the first one...). A pseudo-element styles a part of an element, or adds…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/css/pseudo-classes-elements/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Pseudo-classes and pseudo-elements (:hover, ::before) | CSS" />
+    <meta name="twitter:description" content="A pseudo-class styles an element in a certain state (hovered, focused, the first one...). A pseudo-element styles a part of an element, or adds…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/css/pseudo-classes-elements/#lesson","name":"Pseudo-classes and pseudo-elements (:hover, ::before)","description":"A pseudo-class styles an element in a certain state (hovered, focused, the first one...). A pseudo-element styles a part of an element, or adds…","url":"https://marzleytechsolutions.co.ke/learn/css/pseudo-classes-elements/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/css/#course","name":"CSS","url":"https://marzleytechsolutions.co.ke/learn/css/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"CSS","item":"https://marzleytechsolutions.co.ke/learn/css/"},{"@type":"ListItem","position":4,"name":"Pseudo-classes and pseudo-elements (:hover, ::before)","item":"https://marzleytechsolutions.co.ke/learn/css/pseudo-classes-elements/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/css/">CSS</a> / <span>Pseudo-classes and pseudo-elements (:hover, ::before)</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=pseudo-classes-elements"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Pseudo-classes and pseudo-elements</h1>
+<p>A <strong>pseudo-class</strong> styles an element in a certain <strong>state</strong> (hovered, focused, the first one...). A <strong>pseudo-element</strong> styles a <strong>part</strong> of an element, or adds decorative content. Pseudo-classes use one colon <code>:</code>, pseudo-elements use two <code>::</code>.</p>
+<h2>Interaction states</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  body { font-family: system-ui, sans-serif; }
+  .btn { display: inline-block; padding: 10px 18px; border-radius: 10px; background: #0b1b35; color: #fff; text-decoration: none; transition: background .2s, transform .2s; }
+  .btn:hover { background: #1e3a8a; transform: translateY(-2px); }
+  .btn:active { transform: translateY(1px); }
+  .btn:focus-visible { outline: 3px solid #ffb800; outline-offset: 3px; }
+  input { padding: 8px; border: 2px solid #cbd5e1; border-radius: 8px; }
+  input:focus { border-color: #2563eb; outline: none; }
+  a.link:visited { color: purple; }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+&lt;/style&gt;
+&lt;p&gt;&lt;a class=&quot;btn&quot; href=&quot;#&quot;&gt;Hover, click and Tab to me&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;input placeholder=&quot;Click into me&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;button disabled&gt;Disabled button&lt;/button&gt;&lt;/p&gt;</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Pseudo-class</th><th>When it applies</th></tr></thead><tbody><tr><td><code>:hover</code></td><td>Mouse is over it</td></tr><tr><td><code>:active</code></td><td>Being clicked/pressed</td></tr><tr><td><code>:focus</code></td><td>Selected (clicked into, or reached with Tab)</td></tr><tr><td><code>:focus-visible</code></td><td>Focused <strong>by keyboard</strong>: show a clear outline for accessibility</td></tr><tr><td><code>:visited</code></td><td>A link already visited</td></tr><tr><td><code>:disabled</code> / <code>:checked</code></td><td>Form states</td></tr></tbody></table></div>
+<blockquote><p>Tip: never remove focus outlines without replacing them. Keyboard users need to see where they are. <code>:focus-visible</code> lets you show them only for keyboard users.</p></blockquote>
+<h2>Position among siblings</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  li { padding: 6px; font-family: sans-serif; }
+  li:first-child { font-weight: bold; }
+  li:last-child { color: #b91c1c; }
+  li:nth-child(even) { background: #f1f5f9; }
+  li:not(:last-child) { border-bottom: 1px solid #e2e8f0; }
+&lt;/style&gt;
+&lt;ul&gt;
+  &lt;li&gt;Nairobi (first)&lt;/li&gt;&lt;li&gt;Mombasa&lt;/li&gt;&lt;li&gt;Kisumu&lt;/li&gt;&lt;li&gt;Nakuru&lt;/li&gt;&lt;li&gt;Eldoret (last)&lt;/li&gt;
+&lt;/ul&gt;</code></pre></figure>
+<ul><li><code>:nth-child(2)</code> the 2nd; <code>:nth-child(odd)</code> / <code>(even)</code>; <code>:nth-child(3n)</code> every 3rd.</li><li><code>:not(...)</code> everything except.</li></ul>
+<h2>Form validation states</h2>
+<figure class="static-code"><figcaption>CSS</figcaption><pre><code class="language-css">input:invalid { border-color: #dc2626; }
+input:valid { border-color: #16a34a; }
+input:required { background: #fffbeb; }</code></pre></figure>
+<h2>Pseudo-elements: ::before and ::after</h2>
+<p>They insert decorative content before or after an element's content. They need a <code>content</code> property (even an empty one).</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  body { font-family: system-ui, sans-serif; }
+  .req::after { content: &quot; *&quot;; color: #dc2626; }
+  .price::before { content: &quot;KSh &quot;; color: #64748b; }
+  .check li { list-style: none; }
+  .check li::before { content: &quot;✓ &quot;; color: #16a34a; font-weight: bold; }
+  h2.line::after { content: &quot;&quot;; display: block; width: 60px; height: 4px; background: #ffb800; border-radius: 4px; margin-top: 6px; }
+  p::first-letter { font-size: 2em; font-weight: 800; color: #0b1b35; }
+  ::selection { background: #ffb800; color: #0b1b35; }
+&lt;/style&gt;
+&lt;label class=&quot;req&quot;&gt;Phone number&lt;/label&gt;
+&lt;p class=&quot;price&quot;&gt;2,500&lt;/p&gt;
+&lt;ul class=&quot;check&quot;&gt;&lt;li&gt;Free delivery&lt;/li&gt;&lt;li&gt;Pay on delivery&lt;/li&gt;&lt;/ul&gt;
+&lt;h2 class=&quot;line&quot;&gt;Our services&lt;/h2&gt;
+&lt;p&gt;Once upon a time in Nyeri, a young developer built her first website. (Select this text too.)&lt;/p&gt;</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Pseudo-element</th><th>Styles</th></tr></thead><tbody><tr><td><code>::before</code> / <code>::after</code></td><td>Added content before/after</td></tr><tr><td><code>::first-letter</code></td><td>The first letter (drop caps)</td></tr><tr><td><code>::first-line</code></td><td>The first line</td></tr><tr><td><code>::placeholder</code></td><td>Placeholder text in inputs</td></tr><tr><td><code>::selection</code></td><td>Text the user highlights</td></tr></tbody></table></div>
+<blockquote><p>Content added with <code>::before</code> is decoration. Screen readers may not read it, so never put important information there.</p></blockquote>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which pseudo-class applies when the mouse is over an element?</p><details><summary>Show answer</summary><p>:hover</p></details></li><li><p>Which pseudo-class shows focus only for keyboard users?</p><details><summary>Show answer</summary><p>:focus-visible</p></details></li><li><p>Which selector targets every even list item? Write it as li:...</p><details><summary>Show answer</summary><p>li:nth-child(even)</p></details></li><li><p>Which property is required for ::before to show anything?</p><details><summary>Show answer</summary><p>content</p></details></li><li><p>How many colons do pseudo-elements like ::after use?</p><details><summary>Show answer</summary><p>2</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Make <code>.btn:hover</code> change the <strong>background</strong> to <code>#1e3a8a</code>.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=pseudo-classes-elements#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 8 of 17 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/display-overflow/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> display, visibility and overflow</a><a class="btn btn-solid btn-sm" href="/learn/css/cascade-specificity/">The cascade, specificity and inheritance <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

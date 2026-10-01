@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Creating tables: data types and constraints | SQL</title>
+    <meta name="description" content="So far you&#x27;ve used tables that already existed. Now you&#x27;ll design and create your own, with rules ( constraints ) that stop bad data getting in." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/sql/create-tables-constraints/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Creating tables: data types and constraints | SQL" />
+    <meta property="og:description" content="So far you&#x27;ve used tables that already existed. Now you&#x27;ll design and create your own, with rules ( constraints ) that stop bad data getting in." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/sql/create-tables-constraints/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Creating tables: data types and constraints | SQL" />
+    <meta name="twitter:description" content="So far you&#x27;ve used tables that already existed. Now you&#x27;ll design and create your own, with rules ( constraints ) that stop bad data getting in." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/sql/create-tables-constraints/#lesson","name":"Creating tables: data types and constraints","description":"So far you've used tables that already existed. Now you'll design and create your own, with rules ( constraints ) that stop bad data getting in.","url":"https://marzleytechsolutions.co.ke/learn/sql/create-tables-constraints/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/sql/#course","name":"SQL","url":"https://marzleytechsolutions.co.ke/learn/sql/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"SQL","item":"https://marzleytechsolutions.co.ke/learn/sql/"},{"@type":"ListItem","position":4,"name":"Creating tables: data types and constraints","item":"https://marzleytechsolutions.co.ke/learn/sql/create-tables-constraints/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/sql/">SQL</a> / <span>Creating tables: data types and constraints</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=create-tables-constraints"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Creating tables: data types and constraints</h1>
+<p>So far you've used tables that already existed. Now you'll design and create your own, with rules (<strong>constraints</strong>) that stop bad data getting in.</p>
+<h2>CREATE TABLE</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE TABLE Students (
+  StudentID   INTEGER PRIMARY KEY,
+  AdmNo       TEXT    NOT NULL UNIQUE,
+  Name        TEXT    NOT NULL,
+  Form        INTEGER CHECK (Form BETWEEN 1 AND 4),
+  Phone       TEXT,
+  FeesBalance INTEGER DEFAULT 0,
+  JoinedOn    TEXT    DEFAULT (DATE(&#x27;now&#x27;))
+);
+
+INSERT INTO Students (AdmNo, Name, Form, Phone) VALUES (&#x27;ADM001&#x27;, &#x27;Amina Hassan&#x27;, 2, &#x27;0712345678&#x27;);
+INSERT INTO Students (AdmNo, Name, Form) VALUES (&#x27;ADM002&#x27;, &#x27;Brian Otieno&#x27;, 3);
+SELECT * FROM Students;</code></pre></figure>
+<h2>Common data types</h2>
+<div class="static-table"><table><thead><tr><th>Kind</th><th>MySQL</th><th>SQLite</th><th>Example</th></tr></thead><tbody><tr><td>Whole numbers</td><td><code>INT</code>, <code>BIGINT</code></td><td><code>INTEGER</code></td><td>42</td></tr><tr><td>Money / exact decimals</td><td><code>DECIMAL(10,2)</code></td><td><code>NUMERIC</code></td><td>1500.50</td></tr><tr><td>Decimals (approximate)</td><td><code>FLOAT</code>, <code>DOUBLE</code></td><td><code>REAL</code></td><td>3.14</td></tr><tr><td>Short text</td><td><code>VARCHAR(100)</code></td><td><code>TEXT</code></td><td>'Nairobi'</td></tr><tr><td>Long text</td><td><code>TEXT</code></td><td><code>TEXT</code></td><td>a description</td></tr><tr><td>Date / time</td><td><code>DATE</code>, <code>DATETIME</code></td><td><code>TEXT</code> ('2026-09-28')</td><td></td></tr><tr><td>True/false</td><td><code>BOOLEAN</code> (TINYINT)</td><td><code>INTEGER</code> 0/1</td><td></td></tr></tbody></table></div>
+<blockquote><p>For money use <code>DECIMAL</code> (or store whole cents as integers). Never <code>FLOAT</code>: it can't store 0.10 exactly.</p></blockquote>
+<h2>Constraints: rules the database enforces</h2>
+<div class="static-table"><table><thead><tr><th>Constraint</th><th>Meaning</th></tr></thead><tbody><tr><td><code>PRIMARY KEY</code></td><td>Unique id for each row (auto-numbers in SQLite; use <code>AUTO_INCREMENT</code> in MySQL)</td></tr><tr><td><code>NOT NULL</code></td><td>Must have a value</td></tr><tr><td><code>UNIQUE</code></td><td>No duplicates (e.g. emails, admission numbers)</td></tr><tr><td><code>DEFAULT</code></td><td>Value used if none is given</td></tr><tr><td><code>CHECK</code></td><td>Must pass a condition</td></tr><tr><td><code>FOREIGN KEY</code></td><td>Must match a row in another table</td></tr></tbody></table></div>
+<p>Watch the database refuse bad data (each failing line shows an error, so run them one at a time by deleting the others):</p>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">INSERT INTO Students (AdmNo, Name, Form) VALUES (&#x27;ADM001&#x27;, &#x27;Copycat&#x27;, 1);   -- UNIQUE fails
+INSERT INTO Students (AdmNo, Form) VALUES (&#x27;ADM009&#x27;, 2);                   -- NOT NULL fails
+INSERT INTO Students (AdmNo, Name, Form) VALUES (&#x27;ADM010&#x27;, &#x27;Zed&#x27;, 7);      -- CHECK fails</code></pre></figure>
+<h2>Foreign keys: linking tables safely</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">PRAGMA foreign_keys = ON;   -- SQLite needs this. MySQL (InnoDB) checks foreign keys automatically.
+
+CREATE TABLE Students (StudentID INTEGER PRIMARY KEY, Name TEXT NOT NULL);
+CREATE TABLE Payments (
+  PaymentID  INTEGER PRIMARY KEY,
+  StudentID  INTEGER NOT NULL REFERENCES Students(StudentID) ON DELETE CASCADE,
+  Amount     INTEGER NOT NULL CHECK (Amount &gt; 0),
+  MpesaCode  TEXT UNIQUE,
+  PaidOn     TEXT NOT NULL
+);
+
+INSERT INTO Students (Name) VALUES (&#x27;Amina&#x27;), (&#x27;Brian&#x27;);
+INSERT INTO Payments (StudentID, Amount, MpesaCode, PaidOn) VALUES
+  (1, 15000, &#x27;SJK1A2B3C4&#x27;, &#x27;2026-09-01&#x27;),
+  (1, 5000,  &#x27;SJK5D6E7F8&#x27;, &#x27;2026-09-15&#x27;),
+  (2, 20000, &#x27;SJL9G8H7I6&#x27;, &#x27;2026-09-02&#x27;);
+
+SELECT s.Name, SUM(p.Amount) AS Paid, COUNT(*) AS Payments
+FROM Students s JOIN Payments p ON p.StudentID = s.StudentID
+GROUP BY s.Name;</code></pre></figure>
+<p><code>ON DELETE CASCADE</code> means: if a student is deleted, their payments are deleted too. Other options: <code>RESTRICT</code> (refuse to delete) or <code>SET NULL</code>.</p>
+<h2>Changing and removing tables</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE TABLE Suppliers (SupplierID INTEGER PRIMARY KEY, Name TEXT NOT NULL);
+ALTER TABLE Suppliers ADD COLUMN Phone TEXT;
+ALTER TABLE Suppliers RENAME TO Vendors;
+INSERT INTO Vendors (Name, Phone) VALUES (&#x27;Bidco&#x27;, &#x27;0700111222&#x27;);
+SELECT * FROM Vendors;
+DROP TABLE Vendors;              -- deletes the table and ALL its data. Careful!</code></pre></figure>
+<ul><li><code>DROP TABLE IF EXISTS x</code> avoids an error if it's already gone.</li><li>There's no undo. On real systems, <strong>back up first</strong>.</li></ul>
+<h2>The same table in MySQL</h2>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">CREATE TABLE students (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  adm_no VARCHAR(20) NOT NULL UNIQUE,
+  name VARCHAR(100) NOT NULL,
+  form TINYINT CHECK (form BETWEEN 1 AND 4),
+  fees_balance DECIMAL(10,2) DEFAULT 0,
+  joined_on DATE DEFAULT (CURRENT_DATE)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;</code></pre></figure>
+<p><code>utf8mb4</code> supports all characters including emoji. Use it for every table.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which constraint stops duplicate values in a column?</p><details><summary>Show answer</summary><p>UNIQUE</p></details></li><li><p>Which constraint means a column must always have a value?</p><details><summary>Show answer</summary><p>NOT NULL</p></details></li><li><p>Which MySQL data type should you use for money?</p><details><summary>Show answer</summary><p>DECIMAL</p></details></li><li><p>Which command deletes a whole table and its data?</p><details><summary>Show answer</summary><p>DROP TABLE</p></details></li><li><p>Which command adds a column to an existing table?</p><details><summary>Show answer</summary><p>ALTER TABLE</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Create a table <strong>Books</strong> with <code>BookID INTEGER PRIMARY KEY</code>, <code>Title TEXT NOT NULL</code> and <code>Price INTEGER</code>, then <code>SELECT * FROM Books</code>.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=create-tables-constraints#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 9 of 14 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/changing-data/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> INSERT, UPDATE and DELETE</a><a class="btn btn-solid btn-sm" href="/learn/sql/keys-design/">Keys, relationships and table design <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

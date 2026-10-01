@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CSS variables and dark mode | CSS</title>
+    <meta name="description" content="Custom properties (CSS variables) store values you reuse: brand colours, spacing, fonts. Change one place, the whole site updates." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/css/variables-dark-mode/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="CSS variables and dark mode | CSS" />
+    <meta property="og:description" content="Custom properties (CSS variables) store values you reuse: brand colours, spacing, fonts. Change one place, the whole site updates." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/css/variables-dark-mode/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="CSS variables and dark mode | CSS" />
+    <meta name="twitter:description" content="Custom properties (CSS variables) store values you reuse: brand colours, spacing, fonts. Change one place, the whole site updates." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/css/variables-dark-mode/#lesson","name":"CSS variables and dark mode","description":"Custom properties (CSS variables) store values you reuse: brand colours, spacing, fonts. Change one place, the whole site updates.","url":"https://marzleytechsolutions.co.ke/learn/css/variables-dark-mode/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/css/#course","name":"CSS","url":"https://marzleytechsolutions.co.ke/learn/css/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"CSS","item":"https://marzleytechsolutions.co.ke/learn/css/"},{"@type":"ListItem","position":4,"name":"CSS variables and dark mode","item":"https://marzleytechsolutions.co.ke/learn/css/variables-dark-mode/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/css/">CSS</a> / <span>CSS variables and dark mode</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=variables-dark-mode"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>CSS variables and dark mode</h1>
+<p><strong>Custom properties</strong> (CSS variables) store values you reuse: brand colours, spacing, fonts. Change one place, the whole site updates.</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  :root { --brand: #ffb800; --bg: #ffffff; --text: #0f172a; --radius: 12px; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b1628; --text: #e2e8f0; } }
+  body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 16px; }
+  .btn { background: var(--brand); color: #0b1b35; border: 0; padding: 12px 18px; border-radius: var(--radius); font-weight: bold; }
+&lt;/style&gt;
+&lt;h2&gt;Themed with variables&lt;/h2&gt;
+&lt;button class=&quot;btn&quot;&gt;Buy now&lt;/button&gt;
+&lt;p&gt;Switch your phone or computer to dark mode and run again.&lt;/p&gt;</code></pre></figure>
+<h2>A dark mode toggle</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  :root { --bg: #fff; --text: #111; }
+  [data-theme=&quot;dark&quot;] { --bg: #111827; --text: #f9fafb; }
+  body { background: var(--bg); color: var(--text); font-family: sans-serif; transition: background .3s; }
+&lt;/style&gt;
+&lt;button id=&quot;t&quot;&gt;Toggle dark mode&lt;/button&gt;
+&lt;p&gt;Hello!&lt;/p&gt;
+&lt;script&gt;
+  document.getElementById(&quot;t&quot;).onclick = () =&gt; {
+    const root = document.documentElement;
+    root.dataset.theme = root.dataset.theme === &quot;dark&quot; ? &quot;light&quot; : &quot;dark&quot;;
+  };
+&lt;/script&gt;</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>How do you read a CSS variable called --brand?</p><details><summary>Show answer</summary><p>var(--brand)</p></details></li><li><p>Where are global CSS variables usually declared?</p><details><summary>Show answer</summary><p>:root</p></details></li><li><p>Which media query detects the user's dark mode setting?</p><details><summary>Show answer</summary><p>prefers-color-scheme</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Create a variable <code>--brand</code> on <code>:root</code> and use it as the <code>background</code> of <code>.btn</code>.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=variables-dark-mode#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 16 of 17 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/transitions-animations/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Transitions and animations</a><a class="btn btn-solid btn-sm" href="/learn/css/project-business-page/">Project: a complete responsive business page <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

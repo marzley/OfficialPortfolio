@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Level 5: Building apps with AI APIs | Marzley Learn</title>
+    <meta name="description" content="So far you&#x27;ve used AI through chat apps. Professionals build AI into their own products : a school website that answers parents&#x27; questions, a hospital…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/artificial-intelligence/build-with-ai-apis/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Level 5: Building apps with AI APIs | Marzley Learn" />
+    <meta property="og:description" content="So far you&#x27;ve used AI through chat apps. Professionals build AI into their own products : a school website that answers parents&#x27; questions, a hospital…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/artificial-intelligence/build-with-ai-apis/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Level 5: Building apps with AI APIs | Marzley Learn" />
+    <meta name="twitter:description" content="So far you&#x27;ve used AI through chat apps. Professionals build AI into their own products : a school website that answers parents&#x27; questions, a hospital…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/build-with-ai-apis/#lesson","name":"Level 5: Building apps with AI APIs","description":"So far you've used AI through chat apps. Professionals build AI into their own products : a school website that answers parents' questions, a hospital…","url":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/build-with-ai-apis/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/#course","name":"Artificial intelligence (AI): from zero to pro","url":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Artificial intelligence (AI): from zero to pro","item":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/"},{"@type":"ListItem","position":4,"name":"Level 5: Building apps with AI APIs","item":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/build-with-ai-apis/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/artificial-intelligence/">Artificial intelligence (AI): from zero to pro</a> / <span>Level 5: Building apps with AI APIs</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=artificial-intelligence&amp;lesson=build-with-ai-apis"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Level 5: Building apps with AI APIs</h1>
+<p>So far you've used AI through chat apps. Professionals build AI <strong>into their own products</strong>: a school website that answers parents' questions, a hospital system that summarises patient notes, a shop that writes product descriptions automatically. They do it through an <strong>API</strong> (application programming interface): your program sends text to the AI provider's servers and gets the answer back.</p>
+<blockquote><p>New to APIs? Read <strong>APIs &amp; backends</strong> concepts in the JavaScript and PHP subjects first. You need basic Python, JavaScript or PHP for this lesson.</p></blockquote>
+<h2>How an AI API call works</h2>
+<figure class="static-code"><pre><code>Your app (website / mobile app)
+      │  1. user asks a question
+      ▼
+Your server (PHP, Python, Node)  ── holds the SECRET API key
+      │  2. sends: model name, instructions, the user&#x27;s message
+      ▼
+AI provider (for example Anthropic&#x27;s Claude API)
+      │  3. returns the AI&#x27;s reply (and token usage for billing)
+      ▼
+Your server → your app shows the answer</code></pre></figure>
+<p><strong>The golden security rule:</strong> the <strong>API key stays on your server</strong>, never in the website's JavaScript or inside a mobile app. Anyone can read code that runs on a phone or in a browser, and a stolen key lets strangers run up your bill. It's the same rule as M-Pesa Daraja keys.</p>
+<h2>Getting set up (Claude API example)</h2>
+<ol><li>Create an account at the Claude developer console (<strong>console.anthropic.com</strong>), add billing, and create an <strong>API key</strong>.</li><li>Store the key as an <strong>environment variable</strong> (never paste it into code you share or commit to GitHub):</li></ol>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">export ANTHROPIC_API_KEY=&quot;your-key-here&quot;     # Linux / macOS (on Windows: setx ANTHROPIC_API_KEY &quot;...&quot;)</code></pre></figure>
+<ol><li>Install the official library for your language.</li></ol>
+<h2>Your first call: Python</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">pip install anthropic</code></pre></figure>
+<figure class="static-code"><figcaption>Python</figcaption><pre><code class="language-python">import anthropic
+
+client = anthropic.Anthropic()          # reads ANTHROPIC_API_KEY from the environment
+
+message = client.messages.create(
+    model=&quot;claude-opus-5-5&quot;,
+    max_tokens=16000,
+    system=&quot;You are a friendly assistant for a Kenyan online shop. Answer briefly, in simple English.&quot;,
+    messages=[
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Write a 50-word description for a solar lantern that also charges phones.&quot;}
+    ],
+)
+
+for block in message.content:           # the reply is a list of content blocks
+    if block.type == &quot;text&quot;:
+        print(block.text)
+
+print(&quot;Tokens used:&quot;, message.usage.input_tokens, &quot;in,&quot;, message.usage.output_tokens, &quot;out&quot;)</code></pre></figure>
+<p>What each part means:</p>
+<div class="static-table"><table><thead><tr><th>Part</th><th>Meaning</th></tr></thead><tbody><tr><td><code>model</code></td><td>Which AI model to use</td></tr><tr><td><code>max_tokens</code></td><td>The longest reply allowed (in tokens)</td></tr><tr><td><code>system</code></td><td>Instructions that shape every reply: role, tone, rules</td></tr><tr><td><code>messages</code></td><td>The conversation: <code>user</code> messages, and earlier <code>assistant</code> replies for multi-turn chat</td></tr><tr><td><code>usage</code></td><td>Tokens in and out: this is what you pay for</td></tr></tbody></table></div>
+<h2>The same call with curl (any language can do this)</h2>
+<p>Under the hood, it's a normal HTTPS request with JSON:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">curl https://api.anthropic.com/v1/messages \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;x-api-key: $ANTHROPIC_API_KEY&quot; \
+  -H &quot;anthropic-version: 2023-06-01&quot; \
+  -d &#x27;{
+    &quot;model&quot;: &quot;claude-opus-5-5&quot;,
+    &quot;max_tokens&quot;: 16000,
+    &quot;messages&quot;: [
+      {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Explain M-Pesa to a tourist in 3 sentences.&quot;}
+    ]
+  }&#x27;</code></pre></figure>
+<h2>On a PHP website (common for Kenyan hosting)</h2>
+<p>Most Kenyan business sites run on PHP with cPanel hosting. Install the official SDK with Composer (<code>composer require anthropic-ai/sdk</code>), then on your server:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+require __DIR__ . &#x27;/vendor/autoload.php&#x27;;
+
+use Anthropic\Client;
+
+$client = new Client(apiKey: getenv(&#x27;ANTHROPIC_API_KEY&#x27;));   // key from the server environment, never from the browser
+
+$question = trim($_POST[&#x27;question&#x27;] ?? &#x27;&#x27;);
+if ($question === &#x27;&#x27; || mb_strlen($question) &gt; 1000) {
+    http_response_code(400);
+    exit(json_encode([&#x27;error&#x27; =&gt; &#x27;Please ask a short question.&#x27;]));
+}
+
+$message = $client-&gt;messages-&gt;create(
+    model: &#x27;claude-opus-5-5&#x27;,
+    maxTokens: 16000,
+    system: &#x27;You answer questions about Green Valley School admissions. Use only these facts: &#x27;
+          . &#x27;Fees: KSh 18,000 per term. Intake: January, May, September. Phone: 0700 000 000. &#x27;
+          . &#x27;If the answer is not in the facts, say you are not sure and give the phone number.&#x27;,
+    messages: [[&#x27;role&#x27; =&gt; &#x27;user&#x27;, &#x27;content&#x27; =&gt; $question]],
+);
+
+$answer = &#x27;&#x27;;
+foreach ($message-&gt;content as $block) {
+    if ($block-&gt;type === &#x27;text&#x27;) {
+        $answer .= $block-&gt;text;
+    }
+}
+header(&#x27;Content-Type: application/json&#x27;);
+echo json_encode([&#x27;answer&#x27; =&gt; $answer]);</code></pre></figure>
+<p>The website's JavaScript sends the question to <strong>this PHP file</strong>, not to the AI provider, so the key stays hidden.</p>
+<h2>Multi-turn conversations</h2>
+<p>The API doesn't remember previous calls. To continue a chat, send the whole conversation each time:</p>
+<figure class="static-code"><figcaption>Python</figcaption><pre><code class="language-python">messages = [
+    {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is a SACCO?&quot;},
+    {&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: &quot;A SACCO is a member-owned savings and credit cooperative...&quot;},
+    {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;How is it different from a bank?&quot;},
+]</code></pre></figure>
+<h2>Costs: thinking in tokens</h2>
+<p>You pay per <strong>million tokens</strong> of input and output (output costs more). Prices differ by model and change over time: check the provider's pricing page. To keep costs down:</p>
+<ul><li>Keep instructions and context <strong>only as long as needed</strong>.</li><li>Set sensible <strong>limits</strong> on how many questions each user can ask.</li><li><strong>Cache</strong> answers to common questions.</li><li>Measure real usage (the <code>usage</code> field) before launching widely.</li></ul>
+<h2>Building responsibly</h2>
+<ul><li><strong>Validate input</strong> (length, type) and <strong>limit requests</strong> per user to stop abuse.</li><li><strong>Ground answers in your facts</strong> ("use only these facts") to reduce hallucinations.</li><li><strong>Tell users</strong> they're talking to an AI, and offer a human contact.</li><li><strong>Protect personal data</strong> (Kenya's Data Protection Act): don't send more personal information than needed, and explain it in your privacy policy.</li><li><strong>Log errors</strong> and handle failures gracefully ("Sorry, try again in a minute").</li><li><strong>Test with real questions</strong>, including tricky and rude ones, before launch.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Where must the AI API key be kept?</p><details><summary>Show answer</summary><p>on the server</p></details></li><li><p>Which request part sets the AI's role, tone and rules for every reply?</p><details><summary>Show answer</summary><p>system</p></details></li><li><p>Does the API remember previous calls by itself? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>What unit do AI APIs charge by?</p><details><summary>Show answer</summary><p>tokens</p></details></li><li><p>Which HTTP header carries the Claude API key in the curl example?</p><details><summary>Show answer</summary><p>x-api-key</p></details></li><li><p>Name one way to reduce AI API costs.</p><details><summary>Show answer</summary><p>caching</p></details></li></ol></section></div><p class="static-meta">Lesson 15 of 17 in <a href="/learn/artificial-intelligence/">Artificial intelligence (AI): from zero to pro</a> · <a href="/learn/?book=artificial-intelligence">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/artificial-intelligence/how-llms-work/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Level 4: How ChatGPT-style models work: tokens, training and embeddings</a><a class="btn btn-solid btn-sm" href="/learn/artificial-intelligence/rag-and-agents/">Level 5: Chat with your documents (RAG), tools and AI agents <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

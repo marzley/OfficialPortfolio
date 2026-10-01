@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Variables, data types, printf and scanf | C programming</title>
+    <meta name="description" content="C is small, fast and close to the hardware. It&#x27;s used for operating systems, embedded devices (ATMs, routers, car electronics) and is a core unit in…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/c-programming/variables-types-io/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Variables, data types, printf and scanf | C programming" />
+    <meta property="og:description" content="C is small, fast and close to the hardware. It&#x27;s used for operating systems, embedded devices (ATMs, routers, car electronics) and is a core unit in…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/c-programming/variables-types-io/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Variables, data types, printf and scanf | C programming" />
+    <meta name="twitter:description" content="C is small, fast and close to the hardware. It&#x27;s used for operating systems, embedded devices (ATMs, routers, car electronics) and is a core unit in…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/c-programming/variables-types-io/#lesson","name":"Variables, data types, printf and scanf","description":"C is small, fast and close to the hardware. It's used for operating systems, embedded devices (ATMs, routers, car electronics) and is a core unit in…","url":"https://marzleytechsolutions.co.ke/learn/c-programming/variables-types-io/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/c-programming/#course","name":"C programming","url":"https://marzleytechsolutions.co.ke/learn/c-programming/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"C programming","item":"https://marzleytechsolutions.co.ke/learn/c-programming/"},{"@type":"ListItem","position":4,"name":"Variables, data types, printf and scanf","item":"https://marzleytechsolutions.co.ke/learn/c-programming/variables-types-io/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/c-programming/">C programming</a> / <span>Variables, data types, printf and scanf</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=c-programming&amp;lesson=variables-types-io"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Variables, data types, printf and scanf</h1>
+<p>C is small, fast and close to the hardware. It's used for operating systems, embedded devices (ATMs, routers, car electronics) and is a core unit in many TVET and university ICT courses. Mastering the basics carefully pays off in every other language.</p>
+<blockquote><p>C examples here run in your browser with a small C interpreter. Most beginner programs work; a few advanced features switch automatically to an online compiler.</p></blockquote>
+<h2>Declaring variables</h2>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void) {
+    int students = 45;
+    float height = 1.72f;
+    double balance = 12500.75;
+    char grade = &#x27;A&#x27;;
+
+    printf(&quot;Students: %d\n&quot;, students);
+    printf(&quot;Height: %.2f m\n&quot;, height);
+    printf(&quot;Balance: KSh %.2f\n&quot;, balance);
+    printf(&quot;Grade: %c\n&quot;, grade);
+    printf(&quot;Size of int: %d bytes, double: %d bytes\n&quot;, (int)sizeof(int), (int)sizeof(double));
+    return 0;
+}</code></pre></figure>
+<h2>Basic data types</h2>
+<div class="static-table"><table><thead><tr><th>Type</th><th>Typical size</th><th>Holds</th><th>printf</th></tr></thead><tbody><tr><td><code>char</code></td><td>1 byte</td><td>One character (<code>&#x27;A&#x27;</code>) or small number</td><td><code>%c</code></td></tr><tr><td><code>int</code></td><td>4 bytes</td><td>Whole numbers (about ±2.1 billion)</td><td><code>%d</code></td></tr><tr><td><code>long</code></td><td>4–8 bytes</td><td>Bigger whole numbers</td><td><code>%ld</code></td></tr><tr><td><code>float</code></td><td>4 bytes</td><td>Decimals, ~7 digits precision</td><td><code>%f</code></td></tr><tr><td><code>double</code></td><td>8 bytes</td><td>Decimals, ~15 digits: use for money calculations</td><td><code>%f</code> / <code>%lf</code> in scanf</td></tr><tr><td><code>unsigned int</code></td><td>4 bytes</td><td>0 and positive only</td><td><code>%u</code></td></tr></tbody></table></div>
+<p>C has no built-in <code>string</code> type: text is an **array of <code>char</code>** (next lessons).</p>
+<h2>printf format specifiers</h2>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void) {
+    printf(&quot;[%d]\n&quot;, 42);          /* integer */
+    printf(&quot;[%5d]\n&quot;, 42);         /* width 5, right-aligned */
+    printf(&quot;[%-5d]\n&quot;, 42);        /* left-aligned */
+    printf(&quot;[%05d]\n&quot;, 42);        /* padded with zeros */
+    printf(&quot;[%.2f]\n&quot;, 3.14159);   /* 2 decimal places */
+    printf(&quot;[%8.2f]\n&quot;, 160.5);    /* width 8, 2 decimals */
+    printf(&quot;[%s]\n&quot;, &quot;Kisumu&quot;);    /* string */
+    printf(&quot;[%-10s|]\n&quot;, &quot;Sugar&quot;); /* padded string: good for tables */
+    printf(&quot;[%x] [%o]\n&quot;, 255, 8); /* hexadecimal, octal */
+    printf(&quot;100%% sure\n&quot;);        /* %% prints a percent sign */
+    return 0;
+}</code></pre></figure>
+<p>Escape sequences: <code>\n</code> new line, <code>\t</code> tab, <code>\\</code> backslash, <code>\&quot;</code> quote.</p>
+<h2>Constants</h2>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+#define VAT_RATE 0.16
+#define SHOP &quot;Duka Bora&quot;
+
+int main(void) {
+    double price = 1500;
+    printf(&quot;%s: price %.2f, VAT %.2f, total %.2f\n&quot;, SHOP, price, price * VAT_RATE, price * (1 + VAT_RATE));
+    return 0;
+}</code></pre></figure>
+<p><code>#define</code> replaces the name with the value before compiling. Inside functions you can also write <code>const double VAT = 0.16;</code>.</p>
+<h2>Arithmetic and the integer division trap</h2>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void) {
+    int a = 17, b = 5;
+    printf(&quot;%d %d %d\n&quot;, a + b, a - b, a * b);
+    printf(&quot;%d\n&quot;, a / b);             /* 3: both ints, so the decimal part is dropped */
+    printf(&quot;%d\n&quot;, a % b);             /* 2: remainder */
+    printf(&quot;%.2f\n&quot;, (double)a / b);   /* 3.40: cast first */
+
+    int count = 10;
+    count++;           /* 11 */
+    count += 5;        /* 16 */
+    printf(&quot;%d\n&quot;, count);
+    return 0;
+}</code></pre></figure>
+<h2>Reading input with scanf</h2>
+<figure class="static-code"><figcaption>C</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void) {
+    int qty;
+    double price;
+    char name[50];
+
+    printf(&quot;Customer name: &quot;);
+    scanf(&quot;%49s&quot;, name);            /* no &amp; for arrays; %49s stops overflow */
+    printf(&quot;Quantity: &quot;);
+    scanf(&quot;%d&quot;, &amp;qty);              /* &amp; gives scanf the variable&#x27;s address */
+    printf(&quot;Price: &quot;);
+    scanf(&quot;%lf&quot;, &amp;price);           /* %lf for double in scanf */
+
+    printf(&quot;%s owes KSh %.2f\n&quot;, name, qty * price);
+    return 0;
+}</code></pre></figure>
+<ul><li><code>&amp;qty</code> means "the address of qty": scanf needs to know <strong>where</strong> to store the value.</li><li><code>%s</code> reads one word (stops at a space). To read a full line use <code>fgets(name, sizeof name, stdin);</code>.</li><li>Always check input: <code>if (scanf(&quot;%d&quot;, &amp;qty) != 1) { printf(&quot;Not a number\n&quot;); }</code>.</li></ul>
+<p>(To try input in our editor, type values when it asks. On your computer compile with <code>gcc main.c -o main</code> and run <code>./main</code>.)</p>
+<h2>Common beginner mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Forgetting <code>;</code></td><td>Every statement ends with <code>;</code></td></tr><tr><td><code>scanf(&quot;%d&quot;, qty)</code></td><td>Needs <code>&amp;qty</code></td></tr><tr><td>Using <code>%d</code> for a double</td><td>Use <code>%f</code> in printf, <code>%lf</code> in scanf</td></tr><tr><td><code>=</code> instead of <code>==</code> in <code>if</code></td><td><code>if (x == 5)</code></td></tr><tr><td>Uninitialised variables</td><td>Always give a starting value: <code>int total = 0;</code></td></tr></tbody></table></div>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which printf specifier prints an int?</p><details><summary>Show answer</summary><p>%d</p></details></li><li><p>Which printf specifier prints a double with 2 decimal places?</p><details><summary>Show answer</summary><p>%.2f</p></details></li><li><p>What is 17 / 5 in C when both are int?</p><details><summary>Show answer</summary><p>3</p></details></li><li><p>What symbol must go before an int variable in scanf?</p><details><summary>Show answer</summary><p>&amp;</p></details></li><li><p>Which specifier does scanf use to read a double?</p><details><summary>Show answer</summary><p>%lf</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 8 in <a href="/learn/c-programming/">C programming</a> · <a href="/learn/?book=c-programming">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/c-programming/introduction/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> C introduction</a><a class="btn btn-solid btn-sm" href="/learn/c-programming/control-functions/">Conditions, loops and functions <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

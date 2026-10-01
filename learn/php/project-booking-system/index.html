@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Project: an appointment booking system | PHP &amp; MySQL</title>
+    <meta name="description" content="Salons, clinics, garages and tutors all need the same thing: customers pick a service and a time, the business sees the bookings, and nobody gets…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/php/project-booking-system/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Project: an appointment booking system | PHP &amp; MySQL" />
+    <meta property="og:description" content="Salons, clinics, garages and tutors all need the same thing: customers pick a service and a time, the business sees the bookings, and nobody gets…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/php/project-booking-system/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Project: an appointment booking system | PHP &amp; MySQL" />
+    <meta name="twitter:description" content="Salons, clinics, garages and tutors all need the same thing: customers pick a service and a time, the business sees the bookings, and nobody gets…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/php/project-booking-system/#lesson","name":"Project: an appointment booking system","description":"Salons, clinics, garages and tutors all need the same thing: customers pick a service and a time, the business sees the bookings, and nobody gets…","url":"https://marzleytechsolutions.co.ke/learn/php/project-booking-system/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/php/#course","name":"PHP & MySQL","url":"https://marzleytechsolutions.co.ke/learn/php/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"PHP & MySQL","item":"https://marzleytechsolutions.co.ke/learn/php/"},{"@type":"ListItem","position":4,"name":"Project: an appointment booking system","item":"https://marzleytechsolutions.co.ke/learn/php/project-booking-system/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/php/">PHP &amp; MySQL</a> / <span>Project: an appointment booking system</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=php&amp;lesson=project-booking-system"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Project: an appointment booking system</h1>
+<p>Salons, clinics, garages and tutors all need the same thing: customers pick a service and a time, the business sees the bookings, and nobody gets double-booked. In this project you'll plan and build one, using everything from the PHP tutorial.</p>
+<h2>1. Plan the features</h2>
+<p><strong>Customers can:</strong></p>
+<ul><li>See services with prices and durations.</li><li>Pick a date and see only the free time slots.</li><li>Book with their name and phone number and get a confirmation code.</li></ul>
+<p><strong>The owner can:</strong></p>
+<ul><li>Log in, see today's bookings, mark them done or cancelled.</li></ul>
+<h2>2. Design the database</h2>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">CREATE TABLE services (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(80) NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  minutes INT NOT NULL
+);
+
+CREATE TABLE bookings (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  code CHAR(6) NOT NULL UNIQUE,
+  service_id INT NOT NULL,
+  customer VARCHAR(100) NOT NULL,
+  phone VARCHAR(15) NOT NULL,
+  starts_at DATETIME NOT NULL,
+  status ENUM(&#x27;booked&#x27;,&#x27;done&#x27;,&#x27;cancelled&#x27;) NOT NULL DEFAULT &#x27;booked&#x27;,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (service_id) REFERENCES services(id),
+  UNIQUE KEY one_booking_per_slot (starts_at)          -- the database itself prevents double booking
+);
+
+INSERT INTO services (name, price, minutes) VALUES
+  (&#x27;Haircut&#x27;, 300, 30), (&#x27;Braiding&#x27;, 2500, 120), (&#x27;Manicure&#x27;, 800, 60);</code></pre></figure>
+<p>The <code>UNIQUE</code> key on <code>starts_at</code> means even if two people click "Book" at the same second, only one succeeds.</p>
+<h2>3. The logic: working out free slots</h2>
+<p>This part is pure PHP, so you can run it here. The shop opens 8:00–17:00 with 30-minute slots:</p>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+function slots(string $date, string $open = &#x27;08:00&#x27;, string $close = &#x27;17:00&#x27;, int $step = 30): array {
+    $out = [];
+    $t = strtotime(&quot;$date $open&quot;);
+    $end = strtotime(&quot;$date $close&quot;);
+    while ($t &lt; $end) {
+        $out[] = date(&#x27;H:i&#x27;, $t);
+        $t += $step * 60;
+    }
+    return $out;
+}
+
+function freeSlots(string $date, array $booked): array {
+    $all = slots($date);
+    return array_values(array_diff($all, $booked));
+}
+
+// pretend these came from: SELECT TIME_FORMAT(starts_at, &#x27;%H:%i&#x27;) FROM bookings WHERE DATE(starts_at) = ? AND status = &#x27;booked&#x27;
+$booked = [&#x27;09:00&#x27;, &#x27;09:30&#x27;, &#x27;13:00&#x27;];
+$free = freeSlots(&#x27;2026-10-05&#x27;, $booked);
+echo count($free), &quot; free slots on 5 Oct\n&quot;;
+echo implode(&#x27; &#x27;, array_slice($free, 0, 6)), &quot; ...\n&quot;;
+
+function bookingCode(): string {
+    $chars = &#x27;ABCDEFGHJKLMNPQRSTUVWXYZ23456789&#x27;;     // no 0/O or 1/I to avoid confusion
+    $code = &#x27;&#x27;;
+    for ($i = 0; $i &lt; 6; $i++) $code .= $chars[random_int(0, strlen($chars) - 1)];
+    return $code;
+}
+echo &quot;Your booking code: &quot;, bookingCode(), &quot;\n&quot;;
+
+function validPhone(string $p): ?string {
+    $d = preg_replace(&#x27;/\D/&#x27;, &#x27;&#x27;, $p);
+    if (preg_match(&#x27;/^254([17]\d{8})$/&#x27;, $d, $m)) $d = &#x27;0&#x27; . $m[1];
+    return preg_match(&#x27;/^0[17]\d{8}$/&#x27;, $d) ? $d : null;
+}
+var_dump(validPhone(&#x27;+254 712 345 678&#x27;), validPhone(&#x27;12345&#x27;));</code></pre></figure>
+<h2>4. Saving a booking safely</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+require __DIR__ . &#x27;/db.php&#x27;;
+$phone = validPhone($_POST[&#x27;phone&#x27;] ?? &#x27;&#x27;);
+$name = trim($_POST[&#x27;name&#x27;] ?? &#x27;&#x27;);
+$serviceId = (int)($_POST[&#x27;service_id&#x27;] ?? 0);
+$start = ($_POST[&#x27;date&#x27;] ?? &#x27;&#x27;) . &#x27; &#x27; . ($_POST[&#x27;time&#x27;] ?? &#x27;&#x27;) . &#x27;:00&#x27;;
+
+if (!$phone || $name === &#x27;&#x27; || !strtotime($start) || strtotime($start) &lt; time()) {
+    exit(&#x27;Please check your details and choose a future time.&#x27;);
+}
+try {
+    $code = bookingCode();
+    $stmt = $pdo-&gt;prepare(&#x27;INSERT INTO bookings (code, service_id, customer, phone, starts_at) VALUES (?, ?, ?, ?, ?)&#x27;);
+    $stmt-&gt;execute([$code, $serviceId, $name, $phone, $start]);
+    echo &quot;Booked! Your code is $code. We&#x27;ll see you on &quot; . date(&#x27;D d M, g:i a&#x27;, strtotime($start));
+} catch (PDOException $e) {
+    if ($e-&gt;errorInfo[1] === 1062) {            // MySQL &quot;duplicate key&quot;: slot just taken
+        exit(&#x27;Sorry, that time was just booked. Please choose another.&#x27;);
+    }
+    throw $e;
+}</code></pre></figure>
+<h2>5. The owner's dashboard</h2>
+<ul><li>Protect it with the login from the <em>Sessions and login</em> lesson.</li><li>Show today's bookings: <code>SELECT b.*, s.name AS service FROM bookings b JOIN services s ON s.id = b.service_id WHERE DATE(starts_at) = CURDATE() ORDER BY starts_at</code>.</li><li>Buttons (POST forms with a CSRF token) to mark <strong>done</strong> or <strong>cancelled</strong>.</li></ul>
+<h2>6. Going further</h2>
+<div class="static-table"><table><thead><tr><th>Feature</th><th>How</th></tr></thead><tbody><tr><td>SMS confirmation</td><td>An SMS API (e.g. Africa's Talking) after saving</td></tr><tr><td>Deposit to secure the slot</td><td>M-Pesa STK Push (see the M-Pesa lesson), confirm on callback</td></tr><tr><td>Reminders</td><td>A cron job each morning sends SMS for tomorrow's bookings</td></tr><tr><td>Multiple staff</td><td>Add a <code>staff</code> table and make the unique key <code>(staff_id, starts_at)</code></td></tr><tr><td>Calendar view</td><td>FullCalendar (JavaScript) fed by a JSON API</td></tr></tbody></table></div>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What database feature prevents two bookings for the same time slot? (one word)</p><details><summary>Show answer</summary><p>unique</p></details></li><li><p>What MySQL error number means a duplicate key?</p><details><summary>Show answer</summary><p>1062</p></details></li><li><p>Which PHP function returns the values in one array that are not in another?</p><details><summary>Show answer</summary><p>array_diff</p></details></li><li><p>Which function gives secure random numbers for codes?</p><details><summary>Show answer</summary><p>random_int</p></details></li></ol></section></div><p class="static-meta">Lesson 13 of 13 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/mpesa-integration/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> M-Pesa STK push with PHP (overview)</a><span></span></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

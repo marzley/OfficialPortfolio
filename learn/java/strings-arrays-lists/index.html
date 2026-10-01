@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Strings, arrays and ArrayLists | Java</title>
+    <meta name="description" content="Most programs work with text and collections of data: names, marks, products. Java has rich tools for both." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/java/strings-arrays-lists/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Strings, arrays and ArrayLists | Java" />
+    <meta property="og:description" content="Most programs work with text and collections of data: names, marks, products. Java has rich tools for both." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/java/strings-arrays-lists/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Strings, arrays and ArrayLists | Java" />
+    <meta name="twitter:description" content="Most programs work with text and collections of data: names, marks, products. Java has rich tools for both." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/java/strings-arrays-lists/#lesson","name":"Strings, arrays and ArrayLists","description":"Most programs work with text and collections of data: names, marks, products. Java has rich tools for both.","url":"https://marzleytechsolutions.co.ke/learn/java/strings-arrays-lists/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/java/#course","name":"Java","url":"https://marzleytechsolutions.co.ke/learn/java/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Java","item":"https://marzleytechsolutions.co.ke/learn/java/"},{"@type":"ListItem","position":4,"name":"Strings, arrays and ArrayLists","item":"https://marzleytechsolutions.co.ke/learn/java/strings-arrays-lists/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/java/">Java</a> / <span>Strings, arrays and ArrayLists</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=java&amp;lesson=strings-arrays-lists"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Strings, arrays and ArrayLists</h1>
+<p>Most programs work with text and collections of data: names, marks, products. Java has rich tools for both.</p>
+<h2>String methods</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    public static void main(String[] args) {
+        String name = &quot;  amina hassan  &quot;;
+        String clean = name.trim();
+        System.out.println(clean.toUpperCase());
+        System.out.println(clean.length());
+        System.out.println(clean.charAt(0));
+        System.out.println(clean.substring(0, 5));        // &quot;amina&quot;
+        System.out.println(clean.indexOf(&quot;hassan&quot;));      // 6
+        System.out.println(clean.contains(&quot;sa&quot;));
+        System.out.println(clean.replace(&quot;a&quot;, &quot;@&quot;));
+        System.out.println(&quot;0712 345 678&quot;.replace(&quot; &quot;, &quot;&quot;));
+        String[] parts = &quot;Nairobi,Mombasa,Kisumu&quot;.split(&quot;,&quot;);
+        System.out.println(parts.length + &quot; towns, first: &quot; + parts[0]);
+        System.out.println(String.join(&quot; | &quot;, parts));
+        System.out.println(&quot;kenya&quot;.equalsIgnoreCase(&quot;KENYA&quot;));
+    }
+}</code></pre></figure>
+<p>Strings are <strong>immutable</strong>: methods return a new string; the original never changes.</p>
+<h3>Building strings in loops: StringBuilder</h3>
+<p>Joining with <code>+</code> inside a big loop creates many temporary strings. Use <code>StringBuilder</code>:</p>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    public static void main(String[] args) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i &lt;= 5; i++) {
+            sb.append(&quot;Row &quot;).append(i).append(&quot;\n&quot;);
+        }
+        System.out.print(sb.toString());
+        System.out.println(new StringBuilder(&quot;hassan&quot;).reverse());
+    }
+}</code></pre></figure>
+<h2>Arrays: fixed size</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">import java.util.Arrays;
+
+class Main {
+    public static void main(String[] args) {
+        int[] marks = {78, 92, 45, 60, 88};
+        String[] towns = new String[3];         // 3 empty slots (null)
+        towns[0] = &quot;Nyeri&quot;; towns[1] = &quot;Meru&quot;; towns[2] = &quot;Embu&quot;;
+
+        System.out.println(marks.length + &quot; marks, first &quot; + marks[0] + &quot;, last &quot; + marks[marks.length - 1]);
+
+        int total = 0, best = marks[0];
+        for (int m : marks) {
+            total += m;
+            if (m &gt; best) best = m;
+        }
+        System.out.printf(&quot;Average %.1f, best %d%n&quot;, (double) total / marks.length, best);
+
+        Arrays.sort(marks);
+        System.out.println(Arrays.toString(marks));
+        System.out.println(Arrays.toString(towns));
+
+        int[][] grid = {{1, 2, 3}, {4, 5, 6}};   // 2D array
+        System.out.println(grid[1][2]);          // 6
+    }
+}</code></pre></figure>
+<blockquote><p>Index out of range (<code>marks[5]</code> in a 5-item array) throws <code>ArrayIndexOutOfBoundsException</code>. Valid indexes are 0 to length − 1.</p></blockquote>
+<h2>ArrayList: a list that grows</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+class Main {
+    public static void main(String[] args) {
+        List&lt;String&gt; cart = new ArrayList&lt;&gt;();
+        cart.add(&quot;Unga&quot;);
+        cart.add(&quot;Sugar&quot;);
+        cart.add(&quot;Oil&quot;);
+        cart.add(1, &quot;Salt&quot;);                 // insert at position 1
+        System.out.println(cart + &quot; size &quot; + cart.size());
+
+        cart.remove(&quot;Sugar&quot;);
+        System.out.println(cart.get(0) + &quot;, contains Oil? &quot; + cart.contains(&quot;Oil&quot;));
+        cart.set(0, &quot;Unga 2kg&quot;);
+
+        Collections.sort(cart);
+        for (String item : cart) System.out.println(&quot;- &quot; + item);
+
+        List&lt;Integer&gt; prices = new ArrayList&lt;&gt;(List.of(180, 350, 60));  // Integer, not int
+        int sum = 0;
+        for (int p : prices) sum += p;
+        System.out.println(&quot;Total: &quot; + sum);
+    }
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th></th><th>Array</th><th>ArrayList</th></tr></thead><tbody><tr><td>Size</td><td>Fixed when created</td><td>Grows and shrinks</td></tr><tr><td>Types</td><td>Primitives or objects (<code>int[]</code>)</td><td>Objects only (<code>ArrayList&lt;Integer&gt;</code>)</td></tr><tr><td>Length</td><td><code>arr.length</code></td><td><code>list.size()</code></td></tr><tr><td>Get / set</td><td><code>arr[i]</code></td><td><code>list.get(i)</code>, <code>list.set(i, x)</code></td></tr></tbody></table></div>
+<p>Java automatically converts <code>int</code> ↔ <code>Integer</code> (<strong>autoboxing</strong>) so you rarely notice.</p>
+<h2>Streams (a modern shortcut)</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">import java.util.List;
+
+class Main {
+    public static void main(String[] args) {
+        List&lt;Integer&gt; marks = List.of(78, 92, 45, 60, 88);
+        double avg = marks.stream().mapToInt(Integer::intValue).average().orElse(0);
+        long passed = marks.stream().filter(m -&gt; m &gt;= 50).count();
+        List&lt;Integer&gt; top = marks.stream().filter(m -&gt; m &gt;= 80).sorted().toList();
+        System.out.printf(&quot;Average %.1f, passed %d, top %s%n&quot;, avg, passed, top);
+    }
+}</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the index of the first item in a Java array?</p><details><summary>Show answer</summary><p>0</p></details></li><li><p>How do you get the number of items in an array called marks?</p><details><summary>Show answer</summary><p>marks.length</p></details></li><li><p>How do you get the number of items in an ArrayList called cart?</p><details><summary>Show answer</summary><p>cart.size()</p></details></li><li><p>Which class builds strings efficiently in a loop?</p><details><summary>Show answer</summary><p>StringBuilder</p></details></li><li><p>Which exception happens when you use an index that doesn't exist? (the name before Exception is enough)</p><details><summary>Show answer</summary><p>ArrayIndexOutOfBoundsException</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 9 in <a href="/learn/java/">Java</a> · <a href="/learn/?book=java">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/java/methods/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Methods: parameters, return values and overloading</a><a class="btn btn-solid btn-sm" href="/learn/java/oop/">Classes and objects (OOP) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

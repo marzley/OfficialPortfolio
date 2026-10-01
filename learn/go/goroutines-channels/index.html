@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Concurrency: goroutines, channels and sync | Go (Golang)</title>
+    <meta name="description" content="Go&#x27;s superpower is concurrency : doing many things at once, cheaply. A payment server may handle thousands of M-Pesa callbacks, SMS sends and database…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/go/goroutines-channels/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Concurrency: goroutines, channels and sync | Go (Golang)" />
+    <meta property="og:description" content="Go&#x27;s superpower is concurrency : doing many things at once, cheaply. A payment server may handle thousands of M-Pesa callbacks, SMS sends and database…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/go/goroutines-channels/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Concurrency: goroutines, channels and sync | Go (Golang)" />
+    <meta name="twitter:description" content="Go&#x27;s superpower is concurrency : doing many things at once, cheaply. A payment server may handle thousands of M-Pesa callbacks, SMS sends and database…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/go/goroutines-channels/#lesson","name":"Concurrency: goroutines, channels and sync","description":"Go's superpower is concurrency : doing many things at once, cheaply. A payment server may handle thousands of M-Pesa callbacks, SMS sends and database…","url":"https://marzleytechsolutions.co.ke/learn/go/goroutines-channels/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/go/#course","name":"Go (Golang)","url":"https://marzleytechsolutions.co.ke/learn/go/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Go (Golang)","item":"https://marzleytechsolutions.co.ke/learn/go/"},{"@type":"ListItem","position":4,"name":"Concurrency: goroutines, channels and sync","item":"https://marzleytechsolutions.co.ke/learn/go/goroutines-channels/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/go/">Go (Golang)</a> / <span>Concurrency: goroutines, channels and sync</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=go&amp;lesson=goroutines-channels"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Concurrency: goroutines, channels and sync</h1>
+<p>Go's superpower is <strong>concurrency</strong>: doing many things at once, cheaply. A payment server may handle thousands of M-Pesa callbacks, SMS sends and database calls simultaneously. Go makes this simple and safe with <strong>goroutines</strong> and <strong>channels</strong>.</p>
+<h2>Goroutines: lightweight threads</h2>
+<p>Put <code>go</code> in front of a function call and it runs <strong>concurrently</strong>. Goroutines are tiny (a few KB), so a program can run hundreds of thousands.</p>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;sync&quot;
+	&quot;time&quot;
+)
+
+func sendSMS(to string, wg *sync.WaitGroup) {
+	defer wg.Done()                       // tell the WaitGroup we&#x27;re finished (runs at the end)
+	time.Sleep(100 * time.Millisecond)    // pretend to call an SMS API
+	fmt.Println(&quot;Sent to&quot;, to)
+}
+
+func main() {
+	start := time.Now()
+	phones := []string{&quot;0712000001&quot;, &quot;0712000002&quot;, &quot;0712000003&quot;, &quot;0712000004&quot;}
+
+	var wg sync.WaitGroup
+	for _, p := range phones {
+		wg.Add(1)
+		go sendSMS(p, &amp;wg)                // all four start at once
+	}
+	wg.Wait()                             // wait for all of them
+	fmt.Printf(&quot;All sent in about %d ms (not 400)\n&quot;, time.Since(start).Milliseconds()/100*100)
+}</code></pre></figure>
+<p>The order of "Sent to" lines changes between runs: they really run at the same time.</p>
+<h2>Channels: goroutines talking safely</h2>
+<p>A <strong>channel</strong> passes values between goroutines. Sending (<code>ch &lt;- v</code>) and receiving (<code>v := &lt;-ch</code>) wait for each other, which synchronises them.</p>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func checkBalance(account string, results chan&lt;- string) {
+	balances := map[string]int{&quot;A1&quot;: 1200, &quot;A2&quot;: 300, &quot;A3&quot;: 5400}
+	results &lt;- fmt.Sprintf(&quot;%s: KSh %d&quot;, account, balances[account])
+}
+
+func main() {
+	accounts := []string{&quot;A1&quot;, &quot;A2&quot;, &quot;A3&quot;}
+	results := make(chan string)
+
+	for _, a := range accounts {
+		go checkBalance(a, results)
+	}
+	for range accounts {                  // receive exactly one result per account
+		fmt.Println(&lt;-results)
+	}
+}</code></pre></figure>
+<h2>A worker pool (a very common real pattern)</h2>
+<p>Process many jobs with a fixed number of workers, so you don't overload an API or database:</p>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;sync&quot;
+)
+
+type Job struct {
+	ID     int
+	Amount int
+}
+
+func worker(id int, jobs &lt;-chan Job, results chan&lt;- string, wg *sync.WaitGroup) {
+	defer wg.Done()
+	for j := range jobs {                 // keeps taking jobs until the channel is closed
+		fee := j.Amount / 100
+		results &lt;- fmt.Sprintf(&quot;worker %d processed payment %d: fee %d&quot;, id, j.ID, fee)
+	}
+}
+
+func main() {
+	jobs := make(chan Job, 10)            // buffered channel: holds up to 10 jobs
+	results := make(chan string, 10)
+	var wg sync.WaitGroup
+
+	for w := 1; w &lt;= 3; w++ {             // 3 workers
+		wg.Add(1)
+		go worker(w, jobs, results, &amp;wg)
+	}
+	for i := 1; i &lt;= 6; i++ {
+		jobs &lt;- Job{ID: i, Amount: i * 1000}
+	}
+	close(jobs)                           // no more jobs: workers&#x27; loops end
+
+	wg.Wait()
+	close(results)
+	count := 0
+	for r := range results {
+		_ = r
+		count++
+	}
+	fmt.Println(&quot;Processed&quot;, count, &quot;payments with 3 workers&quot;)
+}</code></pre></figure>
+<h2>Protecting shared data: sync.Mutex</h2>
+<p>When goroutines change the <strong>same</strong> variable, use a mutex (or a channel) to avoid <strong>race conditions</strong>:</p>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;sync&quot;
+)
+
+type Counter struct {
+	mu    sync.Mutex
+	total int
+}
+
+func (c *Counter) Add(n int) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.total += n
+}
+
+func main() {
+	var c Counter
+	var wg sync.WaitGroup
+	for i := 0; i &lt; 1000; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			c.Add(1)
+		}()
+	}
+	wg.Wait()
+	fmt.Println(&quot;Total:&quot;, c.total)       // always 1000 thanks to the mutex
+}</code></pre></figure>
+<p>Run programs with <code>go run -race main.go</code> on your computer to detect race conditions automatically.</p>
+<h2>select and timeouts</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;time&quot;
+)
+
+func slowAPI(result chan&lt;- string) {
+	time.Sleep(2 * time.Second)
+	result &lt;- &quot;rates received&quot;
+}
+
+func main() {
+	result := make(chan string, 1)
+	go slowAPI(result)
+	select {
+	case r := &lt;-result:
+		fmt.Println(r)
+	case &lt;-time.After(500 * time.Millisecond):
+		fmt.Println(&quot;Timed out: showing cached rates instead&quot;)
+	}
+}</code></pre></figure>
+<p>In real servers, the <code>context</code> package carries timeouts and cancellation through every request.</p>
+<h2>The Go proverb</h2>
+<blockquote><p>"Don't communicate by sharing memory; share memory by communicating." Prefer passing data through channels over many goroutines touching the same variables.</p></blockquote>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword starts a function as a goroutine?</p><details><summary>Show answer</summary><p>go</p></details></li><li><p>What type lets goroutines send values to each other safely?</p><details><summary>Show answer</summary><p>channel</p></details></li><li><p>Which sync type waits for a group of goroutines to finish?</p><details><summary>Show answer</summary><p>WaitGroup</p></details></li><li><p>Which sync type protects shared data with Lock and Unlock?</p><details><summary>Show answer</summary><p>Mutex</p></details></li><li><p>Which statement waits on several channel operations at once?</p><details><summary>Show answer</summary><p>select</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 6 in <a href="/learn/go/">Go (Golang)</a> · <a href="/learn/?book=go">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/go/methods-interfaces/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Methods, interfaces and error handling in Go</a><span></span></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

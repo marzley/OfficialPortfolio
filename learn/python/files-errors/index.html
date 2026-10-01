@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Errors and exceptions | Python</title>
+    <meta name="description" content="Programs meet bad input: letters instead of numbers, division by zero, missing files. try/except handles problems gracefully instead of crashing." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/python/files-errors/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Errors and exceptions | Python" />
+    <meta property="og:description" content="Programs meet bad input: letters instead of numbers, division by zero, missing files. try/except handles problems gracefully instead of crashing." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/python/files-errors/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Errors and exceptions | Python" />
+    <meta name="twitter:description" content="Programs meet bad input: letters instead of numbers, division by zero, missing files. try/except handles problems gracefully instead of crashing." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/python/files-errors/#lesson","name":"Errors and exceptions","description":"Programs meet bad input: letters instead of numbers, division by zero, missing files. try/except handles problems gracefully instead of crashing.","url":"https://marzleytechsolutions.co.ke/learn/python/files-errors/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/python/#course","name":"Python","url":"https://marzleytechsolutions.co.ke/learn/python/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Python","item":"https://marzleytechsolutions.co.ke/learn/python/"},{"@type":"ListItem","position":4,"name":"Errors and exceptions","item":"https://marzleytechsolutions.co.ke/learn/python/files-errors/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/python/">Python</a> / <span>Errors and exceptions</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=files-errors"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Errors and exceptions</h1>
+<p>Programs meet bad input: letters instead of numbers, division by zero, missing files. <strong>try/except</strong> handles problems gracefully instead of crashing.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def safe_divide(a, b):
+    try:
+        return a / b
+    except ZeroDivisionError:
+        return &quot;Can&#x27;t divide by zero&quot;
+
+print(safe_divide(10, 2))
+print(safe_divide(5, 0))</code></pre></figure>
+<h2>Validating input</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">entries = [&quot;250&quot;, &quot;abc&quot;, &quot;-5&quot;, &quot;1200&quot;]
+for text in entries:
+    try:
+        amount = int(text)
+        if amount &lt;= 0:
+            raise ValueError(&quot;amount must be positive&quot;)
+        print(&quot;OK:&quot;, amount)
+    except ValueError as e:
+        print(f&quot;Bad input {text!r}: {e}&quot;)</code></pre></figure>
+<h2>Common errors</h2>
+<div class="static-table"><table><thead><tr><th>Error</th><th>Meaning</th></tr></thead><tbody><tr><td><code>SyntaxError</code></td><td>Code is written wrongly (missing colon, bracket)</td></tr><tr><td><code>IndentationError</code></td><td>Wrong spaces at the start of a line</td></tr><tr><td><code>NameError</code></td><td>Using a variable that doesn't exist (typo?)</td></tr><tr><td><code>TypeError</code></td><td>Wrong type, e.g. <code>&quot;5&quot; + 3</code></td></tr><tr><td><code>ValueError</code></td><td>Right type, bad value, e.g. <code>int(&quot;abc&quot;)</code></td></tr><tr><td><code>KeyError</code> / <code>IndexError</code></td><td>Missing dictionary key / list position</td></tr><tr><td><code>ZeroDivisionError</code></td><td>Dividing by zero</td></tr></tbody></table></div>
+<h2>Files (in your own projects)</h2>
+<figure class="static-code"><figcaption>Python</figcaption><pre><code class="language-python">with open(&quot;sales.txt&quot;, &quot;w&quot;) as f:
+    f.write(&quot;Mouse,1200\n&quot;)
+with open(&quot;sales.txt&quot;) as f:
+    for line in f:
+        name, price = line.strip().split(&quot;,&quot;)</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which error does int("abc") raise?</p><details><summary>Show answer</summary><p>ValueError</p></details></li><li><p>Which error does "5" + 3 raise?</p><details><summary>Show answer</summary><p>TypeError</p></details></li><li><p>Which keyword starts a block that handles an error?</p><details><summary>Show answer</summary><p>except</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Use try/except so that dividing 10 by 0 prints <strong>Cannot divide</strong> instead of crashing.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=files-errors#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 13 of 19 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/dictionaries-in-depth/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Dictionaries in depth: nested data and counting</a><a class="btn btn-solid btn-sm" href="/learn/python/csv-json-files/">Working with CSV and JSON data <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

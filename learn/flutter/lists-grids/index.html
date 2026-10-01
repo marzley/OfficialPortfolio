@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lists and grids: ListView, GridView, cards and pull to…</title>
+    <meta name="description" content="Almost every app is a list of something: products, messages, transactions, students. Flutter&#x27;s list widgets are fast even with thousands of rows…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/flutter/lists-grids/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Lists and grids: ListView, GridView, cards and pull to…" />
+    <meta property="og:description" content="Almost every app is a list of something: products, messages, transactions, students. Flutter&#x27;s list widgets are fast even with thousands of rows…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/flutter/lists-grids/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Lists and grids: ListView, GridView, cards and pull to…" />
+    <meta name="twitter:description" content="Almost every app is a list of something: products, messages, transactions, students. Flutter&#x27;s list widgets are fast even with thousands of rows…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/flutter/lists-grids/#lesson","name":"Lists and grids: ListView, GridView, cards and pull to refresh","description":"Almost every app is a list of something: products, messages, transactions, students. Flutter's list widgets are fast even with thousands of rows…","url":"https://marzleytechsolutions.co.ke/learn/flutter/lists-grids/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/flutter/#course","name":"Flutter app development","url":"https://marzleytechsolutions.co.ke/learn/flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Flutter app development","item":"https://marzleytechsolutions.co.ke/learn/flutter/"},{"@type":"ListItem","position":4,"name":"Lists and grids: ListView, GridView, cards and pull to refresh","item":"https://marzleytechsolutions.co.ke/learn/flutter/lists-grids/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/flutter/">Flutter app development</a> / <span>Lists and grids: ListView, GridView, cards and pull to refresh</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=flutter&amp;lesson=lists-grids"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Lists and grids: ListView, GridView, cards and pull to refresh</h1>
+<p>Almost every app is a list of something: products, messages, transactions, students. Flutter's list widgets are fast even with thousands of rows, because they only build the rows you can see.</p>
+<h2>ListView: three ways</h2>
+<div class="static-table"><table><thead><tr><th>Constructor</th><th>Use when</th></tr></thead><tbody><tr><td><code>ListView(children: [...])</code></td><td>A short, fixed list (a settings page)</td></tr><tr><td><code>ListView.builder(itemCount:, itemBuilder:)</code></td><td>Long or loaded lists: builds rows <strong>lazily</strong> as you scroll</td></tr><tr><td><code>ListView.separated(...)</code></td><td>Like builder, with a divider (or any widget) between rows</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+void main() =&gt; runApp(const MaterialApp(home: TransactionsScreen()));
+
+class Txn {
+  final String who;
+  final int amount;           // positive = received, negative = paid
+  final DateTime when;
+  const Txn(this.who, this.amount, this.when);
+}
+
+final txns = List.generate(
+  40,
+  (i) =&gt; Txn([&#x27;Wanjiru&#x27;, &#x27;Kamau Hardware&#x27;, &#x27;KPLC Tokens&#x27;, &#x27;Otieno&#x27;, &#x27;Naivas&#x27;][i % 5], i.isEven ? 500 + i * 35 : -(250 + i * 20),
+      DateTime(2026, 9, 30).subtract(Duration(hours: i * 7))),
+);
+
+class TransactionsScreen extends StatelessWidget {
+  const TransactionsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;M-Pesa statement&#x27;)),
+      body: ListView.separated(
+        itemCount: txns.length,
+        separatorBuilder: (context, i) =&gt; const Divider(height: 1),
+        itemBuilder: (context, i) {                       // called only for visible rows
+          final t = txns[i];
+          final received = t.amount &gt; 0;
+          return ListTile(
+            leading: CircleAvatar(
+              backgroundColor: received ? Colors.green.shade100 : Colors.red.shade100,
+              child: Icon(received ? Icons.call_received : Icons.call_made, color: received ? Colors.green : Colors.red),
+            ),
+            title: Text(t.who),
+            subtitle: Text(&#x27;${t.when.day}/${t.when.month} at ${t.when.hour.toString().padLeft(2, &#x27;0&#x27;)}:00&#x27;),
+            trailing: Text(
+              &#x27;${received ? &#x27;+&#x27; : &#x27;-&#x27;}KSh ${t.amount.abs()}&#x27;,
+              style: TextStyle(fontWeight: FontWeight.bold, color: received ? Colors.green.shade700 : Colors.red.shade700),
+            ),
+            onTap: () =&gt; ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(&#x27;Opened ${t.who}&#x27;))),
+          );
+        },
+      ),
+    );
+  }
+}</code></pre></figure>
+<p>**<code>ListTile</code>** is a ready-made row with <code>leading</code> (left), <code>title</code>, <code>subtitle</code>, <code>trailing</code> (right) and <code>onTap</code>. It follows Material Design sizes, so rows look right with no effort.</p>
+<h2>Cards and custom rows</h2>
+<p>When <code>ListTile</code> isn't enough, build your own row inside a <code>Card</code>:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+void main() =&gt; runApp(const MaterialApp(home: Scaffold(body: SafeArea(child: CourseList()))));
+
+class Course {
+  final String title, level;
+  final int lessons;
+  final double progress;
+  const Course(this.title, this.level, this.lessons, this.progress);
+}
+
+const courses = [
+  Course(&#x27;HTML for beginners&#x27;, &#x27;Beginner&#x27;, 16, 0.8),
+  Course(&#x27;Flutter app development&#x27;, &#x27;Intermediate&#x27;, 15, 0.35),
+  Course(&#x27;Excel for business&#x27;, &#x27;Beginner&#x27;, 10, 0.0),
+];
+
+class CourseList extends StatelessWidget {
+  const CourseList({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      padding: const EdgeInsets.all(12),
+      itemCount: courses.length,
+      itemBuilder: (context, i) =&gt; CourseCard(course: courses[i]),
+    );
+  }
+}
+
+class CourseCard extends StatelessWidget {
+  final Course course;
+  const CourseCard({super.key, required this.course});
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    return Card(
+      clipBehavior: Clip.antiAlias,               // so the InkWell ripple stays inside the rounded corners
+      margin: const EdgeInsets.only(bottom: 12),
+      child: InkWell(                              // makes the whole card tappable, with a ripple
+        onTap: () {},
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(course.title, style: text.titleMedium),
+              const SizedBox(height: 4),
+              Text(&#x27;${course.level} · ${course.lessons} lessons&#x27;, style: text.bodySmall),
+              const SizedBox(height: 12),
+              LinearProgressIndicator(value: course.progress, minHeight: 6, borderRadius: BorderRadius.circular(3)),
+              const SizedBox(height: 6),
+              Text(course.progress == 0 ? &#x27;Not started&#x27; : &#x27;${(course.progress * 100).round()}% done&#x27;, style: text.labelSmall),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}</code></pre></figure>
+<h2>GridView</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+void main() =&gt; runApp(const MaterialApp(home: Scaffold(body: ProductGrid())));
+
+class ProductGrid extends StatelessWidget {
+  const ProductGrid({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final items = [&#x27;Tomatoes&#x27;, &#x27;Onions&#x27;, &#x27;Sukuma&#x27;, &#x27;Cabbage&#x27;, &#x27;Carrots&#x27;, &#x27;Avocado&#x27;, &#x27;Mangoes&#x27;, &#x27;Bananas&#x27;];
+    return GridView.builder(
+      padding: const EdgeInsets.all(12),
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 200,        // each tile at most 200 wide: 2 columns on phones, more on tablets
+        mainAxisSpacing: 12,
+        crossAxisSpacing: 12,
+        childAspectRatio: 3 / 4,        // width : height
+      ),
+      itemCount: items.length,
+      itemBuilder: (context, i) =&gt; Card(
+        child: Column(
+          children: [
+            Expanded(child: Container(color: Colors.green.shade100, child: const Center(child: Icon(Icons.eco, size: 48)))),
+            Padding(padding: const EdgeInsets.all(8), child: Text(items[i], style: const TextStyle(fontWeight: FontWeight.bold))),
+          ],
+        ),
+      ),
+    );
+  }
+}</code></pre></figure>
+<p><code>SliverGridDelegateWithMaxCrossAxisExtent</code> is <strong>responsive by itself</strong>. Use <code>SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2)</code> when you want exactly N columns.</p>
+<h2>Pull to refresh, empty and loading states</h2>
+<p>A good list screen always handles four states: <strong>loading, error, empty, and data</strong>.</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+void main() =&gt; runApp(const MaterialApp(home: OrdersScreen()));
+
+class OrdersScreen extends StatefulWidget {
+  const OrdersScreen({super.key});
+  @override
+  State&lt;OrdersScreen&gt; createState() =&gt; _OrdersScreenState();
+}
+
+class _OrdersScreenState extends State&lt;OrdersScreen&gt; {
+  List&lt;String&gt;? orders;          // null = still loading
+  String? error;
+
+  @override
+  void initState() {
+    super.initState();
+    load();
+  }
+
+  Future&lt;void&gt; load() async {
+    try {
+      await Future.delayed(const Duration(seconds: 1));      // pretend network call
+      final result = [&#x27;Order 1042 · KSh 1,240&#x27;, &#x27;Order 1041 · KSh 560&#x27;];
+      if (!mounted) return;                                  // the screen may have closed meanwhile
+      setState(() { orders = result; error = null; });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() =&gt; error = &#x27;Could not load orders. Check your internet.&#x27;);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget body;
+    if (error != null) {
+      body = Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
+        Text(error!), const SizedBox(height: 8), OutlinedButton(onPressed: load, child: const Text(&#x27;Try again&#x27;)),
+      ]));
+    } else if (orders == null) {
+      body = const Center(child: CircularProgressIndicator());
+    } else if (orders!.isEmpty) {
+      body = const Center(child: Text(&#x27;No orders yet&#x27;));
+    } else {
+      body = RefreshIndicator(                              // pull down to reload
+        onRefresh: load,
+        child: ListView.builder(
+          physics: const AlwaysScrollableScrollPhysics(),   // lets you pull even when the list is short
+          itemCount: orders!.length,
+          itemBuilder: (context, i) =&gt; ListTile(leading: const Icon(Icons.receipt_long), title: Text(orders![i])),
+        ),
+      );
+    }
+    return Scaffold(appBar: AppBar(title: const Text(&#x27;Orders&#x27;)), body: body);
+  }
+}</code></pre></figure>
+<h2>Swipe to delete</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">Dismissible(
+  key: ValueKey(item.id),
+  direction: DismissDirection.endToStart,
+  background: Container(color: Colors.red, alignment: Alignment.centerRight,
+      padding: const EdgeInsets.only(right: 20), child: const Icon(Icons.delete, color: Colors.white)),
+  onDismissed: (_) =&gt; setState(() =&gt; items.remove(item)),
+  child: ListTile(title: Text(item.name)),
+)</code></pre></figure>
+<p>Always offer <strong>Undo</strong> in a SnackBar after deleting: <code>SnackBar(content: Text(&#x27;Deleted&#x27;), action: SnackBarAction(label: &#x27;Undo&#x27;, onPressed: ...))</code>.</p>
+<h2>Loading more as you scroll (pagination)</h2>
+<p>For long lists from a server, load 20 at a time. In <code>itemBuilder</code>, when you reach the last item, load the next page:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">itemCount: items.length + (hasMore ? 1 : 0),
+itemBuilder: (context, i) {
+  if (i == items.length) {          // the extra last row
+    loadNextPage();                 // guard with an isLoading flag so it runs once
+    return const Padding(padding: EdgeInsets.all(16), child: Center(child: CircularProgressIndicator()));
+  }
+  return ListTile(title: Text(items[i].name));
+},</code></pre></figure>
+<h2>Performance tips for lists</h2>
+<ul><li>Use **<code>.builder</code>** for anything longer than a screen.</li><li>Give rows a <strong>fixed height</strong> when you can (<code>itemExtent: 72</code>): scrolling is smoother.</li><li>Use <code>const</code> rows and small widgets.</li><li>Load images at the size you show them (<code>cacheWidth</code> on <code>Image.network</code>).</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which ListView constructor builds rows lazily as you scroll?</p><details><summary>Show answer</summary><p>ListView.builder</p></details></li><li><p>Which ready-made row widget has leading, title, subtitle and trailing?</p><details><summary>Show answer</summary><p>ListTile</p></details></li><li><p>Which widget adds pull-to-refresh to a list?</p><details><summary>Show answer</summary><p>RefreshIndicator</p></details></li><li><p>Which widget makes a row swipe-to-delete?</p><details><summary>Show answer</summary><p>Dismissible</p></details></li><li><p>Before calling setState after an await, which property should you check?</p><details><summary>Show answer</summary><p>mounted</p></details></li><li><p>Name the four states a list screen should handle: loading, error, empty and ...?</p><details><summary>Show answer</summary><p>data</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 15 in <a href="/learn/flutter/">Flutter app development</a> · <a href="/learn/?book=flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/flutter/layout-masterclass/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Layout masterclass: Row, Column, Expanded, Stack and constraints</a><a class="btn btn-solid btn-sm" href="/learn/flutter/themes-styling-assets/">Styling your app: themes, colours, fonts, images and dark mode <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

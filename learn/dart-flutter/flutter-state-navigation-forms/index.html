@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Flutter state, navigation, forms and loading data</title>
+    <meta name="description" content="A real app changes over time: a cart fills up, a form is typed into, data arrives from a server, the user moves between screens. This lesson covers the…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/dart-flutter/flutter-state-navigation-forms/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Flutter state, navigation, forms and loading data" />
+    <meta property="og:description" content="A real app changes over time: a cart fills up, a form is typed into, data arrives from a server, the user moves between screens. This lesson covers the…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/dart-flutter/flutter-state-navigation-forms/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Flutter state, navigation, forms and loading data" />
+    <meta name="twitter:description" content="A real app changes over time: a cart fills up, a form is typed into, data arrives from a server, the user moves between screens. This lesson covers the…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/flutter-state-navigation-forms/#lesson","name":"Flutter state, navigation, forms and loading data","description":"A real app changes over time: a cart fills up, a form is typed into, data arrives from a server, the user moves between screens. This lesson covers the…","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/flutter-state-navigation-forms/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/#course","name":"Dart & Flutter (mobile apps)","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Dart & Flutter (mobile apps)","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},{"@type":"ListItem","position":4,"name":"Flutter state, navigation, forms and loading data","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/flutter-state-navigation-forms/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> / <span>Flutter state, navigation, forms and loading data</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=dart-flutter&amp;lesson=flutter-state-navigation-forms"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Flutter state, navigation, forms and loading data</h1>
+<p>A real app changes over time: a cart fills up, a form is typed into, data arrives from a server, the user moves between screens. This lesson covers the four skills that turn a static layout into a working app.</p>
+<h2>1. State with StatefulWidget and setState</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+class CartButton extends StatefulWidget {
+  const CartButton({super.key});
+  @override
+  State&lt;CartButton&gt; createState() =&gt; _CartButtonState();
+}
+
+class _CartButtonState extends State&lt;CartButton&gt; {
+  int items = 0;                                   // the state
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: const Icon(Icons.remove),
+          onPressed: items == 0 ? null : () =&gt; setState(() =&gt; items--),
+        ),
+        Text(&#x27;$items in cart&#x27;, style: const TextStyle(fontSize: 18)),
+        IconButton(
+          icon: const Icon(Icons.add),
+          onPressed: () =&gt; setState(() =&gt; items++),   // setState redraws the widget
+        ),
+      ],
+    );
+  }
+}</code></pre></figure>
+<p>Change state <strong>inside</strong> <code>setState(...)</code>; Flutter then calls <code>build</code> again. For state shared across many screens (a cart, the logged-in user), use a state-management package such as <strong>Provider</strong> or <strong>Riverpod</strong>.</p>
+<h2>2. Navigation between screens</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">// Go to a details screen, passing data
+Navigator.push(
+  context,
+  MaterialPageRoute(builder: (_) =&gt; ProductDetails(productId: 42)),
+);
+
+// Go back (optionally returning a value)
+Navigator.pop(context, &#x27;added&#x27;);
+
+// Replace the screen (e.g. after login, so Back doesn&#x27;t return to the login page)
+Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) =&gt; const HomeScreen()));</code></pre></figure>
+<p>Larger apps often use named routes or the <strong>go_router</strong> package for web-style URLs and deep links.</p>
+<h2>3. Forms with validation</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">class PayForm extends StatefulWidget {
+  const PayForm({super.key});
+  @override
+  State&lt;PayForm&gt; createState() =&gt; _PayFormState();
+}
+
+class _PayFormState extends State&lt;PayForm&gt; {
+  final _formKey = GlobalKey&lt;FormState&gt;();
+  final _phone = TextEditingController();
+  final _amount = TextEditingController();
+
+  @override
+  void dispose() {                              // free controllers when the screen closes
+    _phone.dispose();
+    _amount.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          TextFormField(
+            controller: _phone,
+            keyboardType: TextInputType.phone,
+            decoration: const InputDecoration(labelText: &#x27;M-Pesa number&#x27;, hintText: &#x27;0712345678&#x27;),
+            validator: (v) =&gt; RegExp(r&#x27;^0[17]\d{8}$&#x27;).hasMatch(v ?? &#x27;&#x27;) ? null : &#x27;Enter 10 digits starting 07 or 01&#x27;,
+          ),
+          TextFormField(
+            controller: _amount,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(labelText: &#x27;Amount (KSh)&#x27;),
+            validator: (v) =&gt; (int.tryParse(v ?? &#x27;&#x27;) ?? 0) &gt; 0 ? null : &#x27;Enter an amount above 0&#x27;,
+          ),
+          const SizedBox(height: 16),
+          FilledButton(
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(&#x27;Sending prompt to ${_phone.text}...&#x27;)),
+                );
+              }
+            },
+            child: const Text(&#x27;Pay with M-Pesa&#x27;),
+          ),
+        ],
+      ),
+    );
+  }
+}</code></pre></figure>
+<ul><li>A <code>validator</code> returns <code>null</code> when the value is fine, or an error message.</li><li><code>keyboardType</code> shows the right keyboard on phones.</li><li>Never put M-Pesa or other API <strong>secrets</strong> in the app: the app calls <strong>your server</strong>, and your server talks to Daraja.</li></ul>
+<h2>4. Loading data with FutureBuilder</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">FutureBuilder&lt;List&lt;Order&gt;&gt;(
+  future: loadOrders(),                         // from the Dart async lesson
+  builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (snapshot.hasError) {
+      return Center(child: Text(&#x27;Could not load orders. Check your connection.&#x27;));
+    }
+    final orders = snapshot.data!;
+    if (orders.isEmpty) return const Center(child: Text(&#x27;No orders yet&#x27;));
+    return ListView.builder(
+      itemCount: orders.length,
+      itemBuilder: (_, i) =&gt; ListTile(
+        title: Text(orders[i].customer),
+        trailing: Text(&#x27;KSh ${orders[i].total.toStringAsFixed(0)}&#x27;),
+      ),
+    );
+  },
+)</code></pre></figure>
+<p>Always design the <strong>four states</strong>: loading, error, empty and data.</p>
+<blockquote><p>Create the Future once (e.g. in <code>initState</code>) rather than inside <code>build</code>, otherwise the request repeats every time the screen redraws.</p></blockquote>
+<h2>Saving data on the phone</h2>
+<div class="static-table"><table><thead><tr><th>Need</th><th>Package</th></tr></thead><tbody><tr><td>Small settings (theme, token)</td><td><code>shared_preferences</code></td></tr><tr><td>Secure secrets (tokens)</td><td><code>flutter_secure_storage</code></td></tr><tr><td>Offline database</td><td><code>sqflite</code> or <code>drift</code></td></tr><tr><td>Cloud database and auth</td><td>Firebase (<code>cloud_firestore</code>, <code>firebase_auth</code>) or your own API</td></tr></tbody></table></div>
+<h2>A typical small-app structure</h2>
+<figure class="static-code"><pre><code>lib/
+├── main.dart            (app, theme, routes)
+├── models/              (Product, Order: fromJson/toJson)
+├── services/            (api_service.dart: all http calls)
+├── screens/             (home_screen.dart, product_screen.dart, cart_screen.dart)
+└── widgets/             (product_card.dart, cart_button.dart)</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which method tells Flutter the state changed and the widget should redraw?</p><details><summary>Show answer</summary><p>setState</p></details></li><li><p>Which Navigator method opens a new screen?</p><details><summary>Show answer</summary><p>push</p></details></li><li><p>What should a TextFormField validator return when the input is valid?</p><details><summary>Show answer</summary><p>null</p></details></li><li><p>Which widget shows different UI while a Future is loading, failed or done?</p><details><summary>Show answer</summary><p>FutureBuilder</p></details></li><li><p>Should M-Pesa API secrets be stored inside the mobile app? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 7 in <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> · <a href="/learn/?book=dart-flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/dart-flutter/flutter-layouts/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Flutter layouts: Row, Column, Stack, ListView and responsive screens</a><a class="btn btn-solid btn-sm" href="/learn/dart-flutter/publish-app/">Building and publishing your app <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

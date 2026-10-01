@@ -1199,6 +1199,9 @@ function learn_seed(PDO $pdo): void {
     $findLesson = $pdo->prepare('SELECT id FROM learn_lessons WHERE track_id = ? AND slug = ?');
     $addLesson = $pdo->prepare('INSERT INTO learn_lessons (track_id, slug, title, position, body, exercise, starter, expected, must_contain, published, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)');
     $setPosition = $pdo->prepare('UPDATE learn_lessons SET position = ? WHERE id = ?');
+    // Earlier seed files kept the quotes around some titles ("Level 1: …"); repair those copies only
+    $unquoteLesson = $pdo->prepare('UPDATE learn_lessons SET title = ? WHERE id = ? AND title = ?');
+    $unquoteTrack = $pdo->prepare('UPDATE learn_tracks SET title = ? WHERE id = ? AND title = ?');
     foreach ($seed['tracks'] as $i => $t) {
         $findTrack->execute([$t['slug']]);
         $tid = (int)$findTrack->fetchColumn();
@@ -1206,12 +1209,14 @@ function learn_seed(PDO $pdo): void {
             $addTrack->execute([$t['slug'], $t['title'], $t['lang'], $t['summary'] ?? '', $i + 1]);
             $tid = (int)$pdo->lastInsertId();
         }
+        $unquoteTrack->execute([$t['title'], $tid, '"' . $t['title'] . '"']);
         foreach ($t['lessons'] as $j => $l) {
             $findLesson->execute([$tid, $l['slug']]);
             $lid = (int)$findLesson->fetchColumn();
             if ($lid) {
                 // Keep the lesson's content, but follow the seed's order so new lessons slot in between
                 $setPosition->execute([$j + 1, $lid]);
+                $unquoteLesson->execute([$l['title'], $lid, '"' . $l['title'] . '"']);
                 continue;
             }
             $addLesson->execute([$tid, $l['slug'], $l['title'], $j + 1, $l['body'], $l['exercise'] ?? '', $l['starter'] ?? '', $l['expected'] ?? '', $l['must_contain'] ?? '', date('Y-m-d H:i:s')]);

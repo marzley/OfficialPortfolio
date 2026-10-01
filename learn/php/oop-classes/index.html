@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Object-oriented PHP: classes, interfaces and namespaces</title>
+    <meta name="description" content="Modern PHP (Laravel, WordPress plugins, Symfony) is written with classes . Once you understand them, frameworks stop feeling like magic." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/php/oop-classes/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Object-oriented PHP: classes, interfaces and namespaces" />
+    <meta property="og:description" content="Modern PHP (Laravel, WordPress plugins, Symfony) is written with classes . Once you understand them, frameworks stop feeling like magic." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/php/oop-classes/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Object-oriented PHP: classes, interfaces and namespaces" />
+    <meta name="twitter:description" content="Modern PHP (Laravel, WordPress plugins, Symfony) is written with classes . Once you understand them, frameworks stop feeling like magic." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/php/oop-classes/#lesson","name":"Object-oriented PHP: classes, interfaces and namespaces","description":"Modern PHP (Laravel, WordPress plugins, Symfony) is written with classes . Once you understand them, frameworks stop feeling like magic.","url":"https://marzleytechsolutions.co.ke/learn/php/oop-classes/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/php/#course","name":"PHP & MySQL","url":"https://marzleytechsolutions.co.ke/learn/php/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"PHP & MySQL","item":"https://marzleytechsolutions.co.ke/learn/php/"},{"@type":"ListItem","position":4,"name":"Object-oriented PHP: classes, interfaces and namespaces","item":"https://marzleytechsolutions.co.ke/learn/php/oop-classes/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/php/">PHP &amp; MySQL</a> / <span>Object-oriented PHP: classes, interfaces and namespaces</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=php&amp;lesson=oop-classes"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Object-oriented PHP: classes, interfaces and namespaces</h1>
+<p>Modern PHP (Laravel, WordPress plugins, Symfony) is written with <strong>classes</strong>. Once you understand them, frameworks stop feeling like magic.</p>
+<h2>A class and objects</h2>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+class Product {
+    public function __construct(
+        public string $name,
+        public float $price,
+        private int $stock = 0,          // private: only this class can change it
+    ) {}
+
+    public function inStock(): bool {
+        return $this-&gt;stock &gt; 0;
+    }
+
+    public function sell(int $qty): string {
+        if ($qty &gt; $this-&gt;stock) {
+            throw new RuntimeException(&quot;Only {$this-&gt;stock} {$this-&gt;name} left&quot;);
+        }
+        $this-&gt;stock -= $qty;
+        return sprintf(&quot;Sold %d x %s for KSh %s&quot;, $qty, $this-&gt;name, number_format($qty * $this-&gt;price));
+    }
+
+    public function getStock(): int { return $this-&gt;stock; }
+}
+
+$unga = new Product(&quot;Unga 2kg&quot;, 180, 10);
+echo $unga-&gt;sell(3), &quot;\n&quot;;
+echo &quot;Left: &quot;, $unga-&gt;getStock(), &quot;\n&quot;;
+try {
+    $unga-&gt;sell(50);
+} catch (RuntimeException $e) {
+    echo &quot;Error: &quot;, $e-&gt;getMessage(), &quot;\n&quot;;
+}</code></pre></figure>
+<ul><li><code>new Product(...)</code> creates an <strong>object</strong> (instance).</li><li><code>$this</code> is the current object; <code>-&gt;</code> accesses its properties and methods.</li><li><strong>Constructor property promotion</strong> (PHP 8): <code>public string $name</code> in the constructor declares and sets the property in one go.</li></ul>
+<h2>Visibility</h2>
+<div class="static-table"><table><thead><tr><th>Keyword</th><th>Accessible from</th></tr></thead><tbody><tr><td><code>public</code></td><td>Anywhere</td></tr><tr><td><code>protected</code></td><td>This class and classes that extend it</td></tr><tr><td><code>private</code></td><td>Only this class</td></tr></tbody></table></div>
+<p>Keep data <code>private</code> and expose methods that enforce the rules (you can't sell more than you have).</p>
+<h2>Inheritance</h2>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+abstract class Payment {
+    public function __construct(protected float $amount) {}
+    abstract public function fee(): float;          // every payment type must define this
+    public function total(): float { return $this-&gt;amount + $this-&gt;fee(); }
+    public function describe(): string {
+        return static::class . &quot;: KSh &quot; . number_format($this-&gt;total(), 2);
+    }
+}
+
+class MpesaPayment extends Payment {
+    public function fee(): float { return 0; }      // customer pays M-Pesa charges separately
+}
+
+class CardPayment extends Payment {
+    public function fee(): float { return round($this-&gt;amount * 0.029, 2); }  // 2.9%
+}
+
+foreach ([new MpesaPayment(2500), new CardPayment(2500)] as $p) {
+    echo $p-&gt;describe(), &quot;\n&quot;;
+}</code></pre></figure>
+<p>An <strong>abstract</strong> class can't be created directly; it's a template for child classes.</p>
+<h2>Interfaces: a contract</h2>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+interface Notifier {
+    public function send(string $to, string $message): bool;
+}
+
+class SmsNotifier implements Notifier {
+    public function send(string $to, string $message): bool {
+        echo &quot;SMS to $to: $message\n&quot;;
+        return true;
+    }
+}
+
+class EmailNotifier implements Notifier {
+    public function send(string $to, string $message): bool {
+        echo &quot;Email to $to: $message\n&quot;;
+        return true;
+    }
+}
+
+function remindAll(Notifier $n, array $clients): void {   // works with ANY notifier
+    foreach ($clients as $c) {
+        $n-&gt;send($c, &quot;Your invoice is due tomorrow.&quot;);
+    }
+}
+
+remindAll(new SmsNotifier(), [&quot;0712345678&quot;]);
+remindAll(new EmailNotifier(), [&quot;amina@example.com&quot;]);</code></pre></figure>
+<p>Code that depends on an <strong>interface</strong> instead of a specific class is easy to extend (add WhatsApp later) and easy to test.</p>
+<h2>Static members and constants</h2>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+class Tax {
+    public const VAT = 0.16;
+    public static function add(float $amount): float {
+        return round($amount * (1 + self::VAT), 2);
+    }
+}
+echo Tax::add(1000), &quot; (VAT &quot;, Tax::VAT * 100, &quot;%)\n&quot;;</code></pre></figure>
+<h2>Namespaces and autoloading</h2>
+<p>Big projects group classes into <strong>namespaces</strong> (like folders) so names don't clash:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+namespace App\Payments;
+
+class MpesaClient { /* ... */ }</code></pre></figure>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+use App\Payments\MpesaClient;
+$mpesa = new MpesaClient();</code></pre></figure>
+<p><strong>Composer</strong> (PHP's package manager) loads classes automatically:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">composer init
+composer require guzzlehttp/guzzle     # install a package</code></pre></figure>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">require __DIR__ . &#x27;/vendor/autoload.php&#x27;;   // one line, and every class just works</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword creates a new object from a class?</p><details><summary>Show answer</summary><p>new</p></details></li><li><p>Which variable refers to the current object inside a method?</p><details><summary>Show answer</summary><p>$this</p></details></li><li><p>Which visibility lets only the class itself access a property?</p><details><summary>Show answer</summary><p>private</p></details></li><li><p>Which keyword makes a class follow a contract of methods?</p><details><summary>Show answer</summary><p>implements</p></details></li><li><p>What is PHP's package manager called?</p><details><summary>Show answer</summary><p>Composer</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 13 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/functions-includes/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Functions, includes and organising a PHP site</a><a class="btn btn-solid btn-sm" href="/learn/php/forms-security/">Forms and security <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

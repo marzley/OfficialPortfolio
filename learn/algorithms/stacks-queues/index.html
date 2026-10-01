@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Stacks and queues | Algorithms &amp; problem solving</title>
+    <meta name="description" content="Two simple data structures that appear everywhere: your browser&#x27;s Back button, &quot;undo&quot;, M-Pesa request queues, printer jobs and customer service lines." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/algorithms/stacks-queues/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Stacks and queues | Algorithms &amp; problem solving" />
+    <meta property="og:description" content="Two simple data structures that appear everywhere: your browser&#x27;s Back button, &quot;undo&quot;, M-Pesa request queues, printer jobs and customer service lines." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/algorithms/stacks-queues/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Stacks and queues | Algorithms &amp; problem solving" />
+    <meta name="twitter:description" content="Two simple data structures that appear everywhere: your browser&#x27;s Back button, &quot;undo&quot;, M-Pesa request queues, printer jobs and customer service lines." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/stacks-queues/#lesson","name":"Stacks and queues","description":"Two simple data structures that appear everywhere: your browser's Back button, \"undo\", M-Pesa request queues, printer jobs and customer service lines.","url":"https://marzleytechsolutions.co.ke/learn/algorithms/stacks-queues/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/#course","name":"Algorithms & problem solving","url":"https://marzleytechsolutions.co.ke/learn/algorithms/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Algorithms & problem solving","item":"https://marzleytechsolutions.co.ke/learn/algorithms/"},{"@type":"ListItem","position":4,"name":"Stacks and queues","item":"https://marzleytechsolutions.co.ke/learn/algorithms/stacks-queues/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> / <span>Stacks and queues</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=stacks-queues"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Stacks and queues</h1>
+<p>Two simple data structures that appear everywhere: your browser's Back button, "undo", M-Pesa request queues, printer jobs and customer service lines.</p>
+<h2>Stack: last in, first out (LIFO)</h2>
+<p>Think of a stack of plates: you add to the top and take from the top.</p>
+<div class="static-table"><table><thead><tr><th>Operation</th><th>Meaning</th></tr></thead><tbody><tr><td><strong>push</strong></td><td>Add to the top</td></tr><tr><td><strong>pop</strong></td><td>Remove from the top</td></tr><tr><td><strong>peek</strong></td><td>Look at the top without removing</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">history = []                   # a Python list works as a stack
+history.append(&quot;home&quot;)         # push
+history.append(&quot;products&quot;)
+history.append(&quot;cart&quot;)
+print(&quot;Current page:&quot;, history[-1])   # peek
+history.pop()                  # Back button
+print(&quot;After Back:&quot;, history[-1])
+print(&quot;Stack:&quot;, history)</code></pre></figure>
+<h3>Where stacks are used</h3>
+<ul><li><strong>Undo</strong> in editors: each action is pushed; Undo pops the last one.</li><li>The browser <strong>Back</strong> button.</li><li>The <strong>call stack</strong>: how functions (and recursion) keep track of where to return.</li><li>Checking <strong>balanced brackets</strong> in code:</li></ul>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def balanced(text):
+    pairs = {&quot;)&quot;: &quot;(&quot;, &quot;]&quot;: &quot;[&quot;, &quot;}&quot;: &quot;{&quot;}
+    stack = []
+    for ch in text:
+        if ch in &quot;([{&quot;:
+            stack.append(ch)
+        elif ch in &quot;)]}&quot;:
+            if not stack or stack.pop() != pairs[ch]:
+                return False
+    return not stack
+
+for s in [&quot;(a[1] + b[2])&quot;, &quot;{[}]&quot;, &quot;((x)&quot;, &quot;print(&#x27;hi&#x27;)&quot;]:
+    print(f&quot;{s:&lt;16} {balanced(s)}&quot;)</code></pre></figure>
+<h2>Queue: first in, first out (FIFO)</h2>
+<p>Like a queue at the bank: the first to arrive is served first.</p>
+<div class="static-table"><table><thead><tr><th>Operation</th><th>Meaning</th></tr></thead><tbody><tr><td><strong>enqueue</strong></td><td>Join at the back</td></tr><tr><td><strong>dequeue</strong></td><td>Leave from the front</td></tr></tbody></table></div>
+<p>Removing from the front of a Python list is slow for big lists, so use <code>collections.deque</code>:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">from collections import deque
+
+customers = deque()
+customers.append(&quot;Amina&quot;)      # enqueue
+customers.append(&quot;Brian&quot;)
+customers.append(&quot;Chebet&quot;)
+print(&quot;Serving:&quot;, customers.popleft())   # dequeue: Amina
+print(&quot;Next:&quot;, customers[0])
+customers.append(&quot;Dennis&quot;)
+print(&quot;Waiting:&quot;, list(customers))</code></pre></figure>
+<h3>Where queues are used</h3>
+<ul><li>Printer jobs, customer service tickets, SMS sending queues</li><li>Web servers handling requests, and background job queues (sending emails, processing M-Pesa callbacks)</li><li><strong>Breadth-first search</strong> in graphs (next lesson)</li></ul>
+<h2>Simulating a service queue</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">from collections import deque
+import random
+
+random.seed(3)
+queue = deque()
+served = 0
+for minute in range(1, 11):
+    arrivals = random.randint(0, 2)
+    for _ in range(arrivals):
+        queue.append(f&quot;C{minute}-{_}&quot;)
+    if queue:
+        queue.popleft()
+        served += 1
+    print(f&quot;min {minute:2}: +{arrivals} arrived, {len(queue)} waiting&quot;)
+print(&quot;Served:&quot;, served, &quot;| still waiting:&quot;, len(queue))</code></pre></figure>
+<p>With one teller serving one customer a minute, the queue grows when arrivals average more than one per minute. That's exactly how banks decide how many tellers to open.</p>
+<h2>Priority queues</h2>
+<p>Sometimes the most <strong>important</strong> item goes first (emergency patients, VIP support tickets). Python's <code>heapq</code> gives the smallest item first:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import heapq
+tickets = []
+heapq.heappush(tickets, (2, &quot;Password reset&quot;))
+heapq.heappush(tickets, (1, &quot;Payments failing!&quot;))    # 1 = most urgent
+heapq.heappush(tickets, (3, &quot;Change logo colour&quot;))
+while tickets:
+    priority, task = heapq.heappop(tickets)
+    print(priority, task)</code></pre></figure>
+<h2>Comparison</h2>
+<div class="static-table"><table><thead><tr><th></th><th>Stack</th><th>Queue</th></tr></thead><tbody><tr><td>Order</td><td>LIFO (last in, first out)</td><td>FIFO (first in, first out)</td></tr><tr><td>Python</td><td><code>list</code> (<code>append</code>, <code>pop</code>)</td><td><code>collections.deque</code> (<code>append</code>, <code>popleft</code>)</td></tr><tr><td>Everyday example</td><td>Plates, Undo</td><td>Bank line, printer</td></tr></tbody></table></div>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does LIFO stand for? (four words)</p><details><summary>Show answer</summary><p>last in first out</p></details></li><li><p>Which data structure does the browser Back button use?</p><details><summary>Show answer</summary><p>stack</p></details></li><li><p>Which Python class is best for a queue?</p><details><summary>Show answer</summary><p>deque</p></details></li><li><p>Which deque method removes from the front?</p><details><summary>Show answer</summary><p>popleft</p></details></li><li><p>What kind of queue serves the most urgent item first? (one word before "queue")</p><details><summary>Show answer</summary><p>priority</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Use a list as a stack: push <code>&quot;a&quot;</code>, <code>&quot;b&quot;</code>, <code>&quot;c&quot;</code>, then pop once and print the stack: <strong>['a', 'b']</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=stacks-queues#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 7 of 11 in <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> · <a href="/learn/?book=algorithms">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/algorithms/data-structures/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Data structures: stacks, queues and more</a><a class="btn btn-solid btn-sm" href="/learn/algorithms/hash-tables/">Hash tables: fast look-ups with dictionaries <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

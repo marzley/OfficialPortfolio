@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Styling your app: themes, colours, fonts, images and…</title>
+    <meta name="description" content="A professional app uses the same colours, fonts and shapes everywhere . In Flutter you set these once in a theme , and every widget follows it. Change…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/flutter/themes-styling-assets/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Styling your app: themes, colours, fonts, images and…" />
+    <meta property="og:description" content="A professional app uses the same colours, fonts and shapes everywhere . In Flutter you set these once in a theme , and every widget follows it. Change…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/flutter/themes-styling-assets/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Styling your app: themes, colours, fonts, images and…" />
+    <meta name="twitter:description" content="A professional app uses the same colours, fonts and shapes everywhere . In Flutter you set these once in a theme , and every widget follows it. Change…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/flutter/themes-styling-assets/#lesson","name":"Styling your app: themes, colours, fonts, images and dark mode","description":"A professional app uses the same colours, fonts and shapes everywhere . In Flutter you set these once in a theme , and every widget follows it. Change…","url":"https://marzleytechsolutions.co.ke/learn/flutter/themes-styling-assets/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/flutter/#course","name":"Flutter app development","url":"https://marzleytechsolutions.co.ke/learn/flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Flutter app development","item":"https://marzleytechsolutions.co.ke/learn/flutter/"},{"@type":"ListItem","position":4,"name":"Styling your app: themes, colours, fonts, images and dark mode","item":"https://marzleytechsolutions.co.ke/learn/flutter/themes-styling-assets/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/flutter/">Flutter app development</a> / <span>Styling your app: themes, colours, fonts, images and dark mode</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=flutter&amp;lesson=themes-styling-assets"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Styling your app: themes, colours, fonts, images and dark mode</h1>
+<p>A professional app uses <strong>the same colours, fonts and shapes everywhere</strong>. In Flutter you set these once in a <strong>theme</strong>, and every widget follows it. Change the theme and the whole app changes.</p>
+<h2>Material 3 and the colour scheme</h2>
+<p>Flutter uses Google's <strong>Material 3</strong> design. The easiest way to get a full, matching set of colours is to give Flutter <strong>one seed colour</strong>:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+void main() =&gt; runApp(const ThemedApp());
+
+class ThemedApp extends StatelessWidget {
+  const ThemedApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0B1B35)),   // your brand colour
+      ),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0B1B35), brightness: Brightness.dark),
+      ),
+      themeMode: ThemeMode.system,       // follow the phone&#x27;s light/dark setting
+      home: const PaletteScreen(),
+    );
+  }
+}
+
+class PaletteScreen extends StatelessWidget {
+  const PaletteScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).colorScheme;
+    Widget swatch(String name, Color bg, Color fg) =&gt;
+        Container(height: 56, color: bg, alignment: Alignment.center, child: Text(name, style: TextStyle(color: fg)));
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;My colour scheme&#x27;)),
+      body: ListView(children: [
+        swatch(&#x27;primary&#x27;, c.primary, c.onPrimary),
+        swatch(&#x27;primaryContainer&#x27;, c.primaryContainer, c.onPrimaryContainer),
+        swatch(&#x27;secondary&#x27;, c.secondary, c.onSecondary),
+        swatch(&#x27;tertiary&#x27;, c.tertiary, c.onTertiary),
+        swatch(&#x27;surface&#x27;, c.surface, c.onSurface),
+        swatch(&#x27;error&#x27;, c.error, c.onError),
+      ]),
+      floatingActionButton: FloatingActionButton(onPressed: () {}, child: const Icon(Icons.add)),
+    );
+  }
+}</code></pre></figure>
+<p>Each colour has an <strong>"on" partner</strong> for text and icons placed on it (<code>primary</code> + <code>onPrimary</code>). Use them in pairs and your text is always readable, in light and dark mode.</p>
+<p><strong>Rule:</strong> never hard-code colours like <code>Colors.blue</code> inside screens. Use <code>Theme.of(context).colorScheme.primary</code>. Then dark mode and rebranding just work.</p>
+<h2>Text styles</h2>
+<p>The theme has a ready scale of text styles:</p>
+<div class="static-table"><table><thead><tr><th>Style</th><th>Typical use</th></tr></thead><tbody><tr><td><code>displayLarge</code> / <code>displayMedium</code></td><td>Huge numbers (a balance)</td></tr><tr><td><code>headlineMedium</code></td><td>Screen headings</td></tr><tr><td><code>titleLarge</code> / <code>titleMedium</code></td><td>Card and section titles</td></tr><tr><td><code>bodyLarge</code> / <code>bodyMedium</code></td><td>Normal text</td></tr><tr><td><code>labelLarge</code></td><td>Buttons</td></tr><tr><td><code>bodySmall</code> / <code>labelSmall</code></td><td>Captions, hints</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">Text(&#x27;KSh 12,450&#x27;, style: Theme.of(context).textTheme.displaySmall)
+Text(&#x27;Available balance&#x27;, style: Theme.of(context).textTheme.bodySmall)
+
+// adjust one style without losing the rest
+Text(&#x27;Overdue&#x27;, style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.red, fontWeight: FontWeight.bold))</code></pre></figure>
+<h2>Styling all buttons, inputs and cards at once</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+final appTheme = ThemeData(
+  useMaterial3: true,
+  colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFFFB800)),
+  filledButtonTheme: FilledButtonThemeData(
+    style: FilledButton.styleFrom(
+      minimumSize: const Size.fromHeight(52),                 // tall, full-width buttons
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+    ),
+  ),
+  inputDecorationTheme: InputDecorationTheme(
+    filled: true,
+    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+  ),
+  cardTheme: CardTheme(elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
+  appBarTheme: const AppBarTheme(centerTitle: true),
+);
+
+void main() =&gt; runApp(MaterialApp(
+      theme: appTheme,
+      home: Scaffold(
+        appBar: AppBar(title: const Text(&#x27;Checkout&#x27;)),
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(children: [
+            const TextField(decoration: InputDecoration(labelText: &#x27;M-Pesa number&#x27;, prefixIcon: Icon(Icons.phone))),
+            const SizedBox(height: 16),
+            FilledButton(onPressed: () {}, child: const Text(&#x27;Pay KSh 1,240&#x27;)),
+          ]),
+        ),
+      ),
+    ));</code></pre></figure>
+<p>Every <code>FilledButton</code>, <code>TextField</code> and <code>Card</code> in the app now looks the same without repeating styles.</p>
+<h2>Custom fonts</h2>
+<ol><li>Download a font (for example <strong>Inter</strong> or <strong>Poppins</strong> from fonts.google.com) and copy the <code>.ttf</code> files to <code>assets/fonts/</code>.</li><li>Register them in <code>pubspec.yaml</code> (indentation matters: 2 spaces):</li></ol>
+<figure class="static-code"><figcaption>YAML</figcaption><pre><code class="language-yaml">flutter:
+  uses-material-design: true
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 700</code></pre></figure>
+<ol><li>Use it app-wide: <code>ThemeData(fontFamily: &#x27;Poppins&#x27;, ...)</code>.</li></ol>
+<p>(Or use the <strong>google_fonts</strong> package, which downloads fonts at run time. Bundling them is better for apps used offline.)</p>
+<h2>Images</h2>
+<p><strong>From the internet:</strong></p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">Image.network(
+  &#x27;https://example.com/unga.jpg&#x27;,
+  width: 120, height: 120, fit: BoxFit.cover,
+  loadingBuilder: (context, child, progress) =&gt; progress == null ? child : const CircularProgressIndicator(),
+  errorBuilder: (context, error, stack) =&gt; const Icon(Icons.broken_image),   // no internet? show an icon, not a crash
+)</code></pre></figure>
+<p><strong>Bundled with the app (assets):</strong> put files in <code>assets/images/</code>, list the folder in <code>pubspec.yaml</code>, then use <code>Image.asset</code>:</p>
+<figure class="static-code"><figcaption>YAML</figcaption><pre><code class="language-yaml">flutter:
+  assets:
+    - assets/images/</code></pre></figure>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">Image.asset(&#x27;assets/images/logo.png&#x27;, height: 64)</code></pre></figure>
+<p><code>BoxFit</code> values: <code>cover</code> (fill, crop the edges), <code>contain</code> (fit inside, maybe with gaps), <code>fill</code> (stretch), <code>fitWidth</code>, <code>fitHeight</code>.</p>
+<p><strong>Round photos:</strong> <code>CircleAvatar(backgroundImage: NetworkImage(url), radius: 28)</code> or wrap an image in <code>ClipRRect(borderRadius: BorderRadius.circular(12), child: ...)</code>.</p>
+<p><strong>Keep your APK small:</strong> use <code>.webp</code> images, resize them before adding (no 4000-pixel photos for a 100-pixel icon), and use icons (<code>Icons.x</code>) instead of image files where possible.</p>
+<h2>Icons</h2>
+<p>Flutter includes the full Material icon set: <code>Icon(Icons.shopping_cart)</code>, <code>Icons.phone</code>, <code>Icons.payments</code>, <code>Icons.delivery_dining</code>... Search them at <strong>fonts.google.com/icons</strong>. Most icons have <code>_outlined</code> and <code>_rounded</code> versions (<code>Icons.home_outlined</code>).</p>
+<h2>Let the user choose light or dark</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+void main() =&gt; runApp(const App());
+
+class App extends StatefulWidget {
+  const App({super.key});
+  @override
+  State&lt;App&gt; createState() =&gt; _AppState();
+}
+
+class _AppState extends State&lt;App&gt; {
+  ThemeMode mode = ThemeMode.system;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(colorSchemeSeed: Colors.teal, useMaterial3: true),
+      darkTheme: ThemeData(colorSchemeSeed: Colors.teal, brightness: Brightness.dark, useMaterial3: true),
+      themeMode: mode,
+      home: Scaffold(
+        appBar: AppBar(title: const Text(&#x27;Settings&#x27;)),
+        body: ListView(children: [
+          for (final m in ThemeMode.values)
+            RadioListTile&lt;ThemeMode&gt;(
+              title: Text({ThemeMode.system: &#x27;Same as phone&#x27;, ThemeMode.light: &#x27;Light&#x27;, ThemeMode.dark: &#x27;Dark&#x27;}[m]!),
+              value: m,
+              groupValue: mode,
+              onChanged: (v) =&gt; setState(() =&gt; mode = v!),
+            ),
+        ]),
+      ),
+    );
+  }
+}</code></pre></figure>
+<p>(To remember the choice after the app restarts, save it with <code>shared_preferences</code>: see the local storage lesson.)</p>
+<h2>App icon and name</h2>
+<ul><li><strong>Name</strong> shown under the icon: <code>android/app/src/main/AndroidManifest.xml</code> → <code>android:label=&quot;Duka&quot;</code>.</li><li><strong>Icon</strong>: the easiest way is the <strong>flutter_launcher_icons</strong> package: put a 1024×1024 PNG in <code>assets/icon.png</code>, configure it in <code>pubspec.yaml</code>, and run <code>dart run flutter_launcher_icons</code>. It creates every size Android and iOS need.</li></ul>
+<h2>Design checklist</h2>
+<ul><li>One seed colour (your brand), everything else from the colour scheme.</li><li>Text styles from <code>textTheme</code>, not random font sizes.</li><li>Touch targets at least <strong>48×48</strong> (Material buttons already are).</li><li>Enough contrast: light grey text on white fails outdoors in the sun.</li><li>Test <strong>dark mode</strong> and <strong>large text</strong> (phone Settings → Font size) before release.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which ColorScheme constructor builds a full palette from one colour?</p><details><summary>Show answer</summary><p>ColorScheme.fromSeed</p></details></li><li><p>Which colour should text on a primary-coloured button use?</p><details><summary>Show answer</summary><p>onPrimary</p></details></li><li><p>Which MaterialApp property makes the app follow the phone's light/dark setting? Write the value.</p><details><summary>Show answer</summary><p>ThemeMode.system</p></details></li><li><p>Which widget shows an image bundled inside the app? Write the constructor.</p><details><summary>Show answer</summary><p>Image.asset</p></details></li><li><p>Which BoxFit fills the box and crops the edges?</p><details><summary>Show answer</summary><p>cover</p></details></li><li><p>Which file do you register fonts and images in?</p><details><summary>Show answer</summary><p>pubspec.yaml</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 15 in <a href="/learn/flutter/">Flutter app development</a> · <a href="/learn/?book=flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/flutter/lists-grids/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Lists and grids: ListView, GridView, cards and pull to refresh</a><a class="btn btn-solid btn-sm" href="/learn/flutter/navigation-routing/">Navigation: screens, passing data, tabs, drawers and go_router <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

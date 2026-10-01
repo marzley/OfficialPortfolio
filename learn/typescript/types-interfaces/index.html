@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Types, interfaces and functions | TypeScript</title>
+    <meta name="description" content="Free TypeScript lesson: Types, interfaces and functions." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/typescript/types-interfaces/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Types, interfaces and functions | TypeScript" />
+    <meta property="og:description" content="Free TypeScript lesson: Types, interfaces and functions." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/typescript/types-interfaces/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Types, interfaces and functions | TypeScript" />
+    <meta name="twitter:description" content="Free TypeScript lesson: Types, interfaces and functions." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/typescript/types-interfaces/#lesson","name":"Types, interfaces and functions","description":"Free TypeScript lesson: Types, interfaces and functions.","url":"https://marzleytechsolutions.co.ke/learn/typescript/types-interfaces/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/typescript/#course","name":"TypeScript","url":"https://marzleytechsolutions.co.ke/learn/typescript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"TypeScript","item":"https://marzleytechsolutions.co.ke/learn/typescript/"},{"@type":"ListItem","position":4,"name":"Types, interfaces and functions","item":"https://marzleytechsolutions.co.ke/learn/typescript/types-interfaces/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/typescript/">TypeScript</a> / <span>Types, interfaces and functions</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=typescript&amp;lesson=types-interfaces"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Types, interfaces and functions</h1>
+<h2>Arrays and union types</h2>
+<figure class="static-code"><pre><code>let towns: string[] = [&quot;Nairobi&quot;, &quot;Kisumu&quot;];
+let phone: string | null = null;         // a string OR null
+type Status = &quot;pending&quot; | &quot;paid&quot; | &quot;failed&quot;;
+let s: Status = &quot;paid&quot;;
+s = &quot;done&quot;;   // Error: only the three listed values are allowed</code></pre></figure>
+<h2>Interfaces describe objects</h2>
+<figure class="static-code"><pre><code>interface Customer {
+  id: number;
+  name: string;
+  phone: string;
+  email?: string;          // ? means optional
+}
+
+const c: Customer = { id: 1, name: &quot;Wanjiku&quot;, phone: &quot;0712345678&quot; };</code></pre></figure>
+<h2>Typed functions</h2>
+<figure class="static-code"><pre><code>function vat(amount: number, rate: number = 0.16): number {
+  return amount * rate;
+}
+
+vat(1000);          // 160
+vat(&quot;1000&quot;);        // Error: Argument of type &#x27;string&#x27; is not assignable to parameter of type &#x27;number&#x27;.
+
+const greet = (c: Customer): string =&gt; `Habari ${c.name}!`;</code></pre></figure>
+<h2>Generics</h2>
+<p>Generics let a function work with many types while keeping them checked:</p>
+<figure class="static-code"><pre><code>function first&lt;T&gt;(items: T[]): T | undefined {
+  return items[0];
+}
+const n = first([10, 20]);        // n is number
+const t = first([&quot;a&quot;, &quot;b&quot;]);      // t is string</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which symbol makes an interface field optional?</p><details><summary>Show answer</summary><p>?</p></details></li><li><p>Which keyword describes the shape of an object in TypeScript?</p><details><summary>Show answer</summary><p>interface</p></details></li><li><p>What do we call a type like "pending" | "paid"? (a ___ type)</p><details><summary>Show answer</summary><p>union</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 7 in <a href="/learn/typescript/">TypeScript</a> · <a href="/learn/?book=typescript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/typescript/introduction/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> TypeScript introduction</a><a class="btn btn-solid btn-sm" href="/learn/typescript/typed-functions/">Typed functions, optional and default parameters <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

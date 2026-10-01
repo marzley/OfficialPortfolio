@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Handling forms and validating input | JavaScript</title>
+    <meta name="description" content="Forms are where users give you data: sign-ups, orders, payments. JavaScript can read the values, check them, show friendly errors and give instant…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/javascript/forms-validation/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Handling forms and validating input | JavaScript" />
+    <meta property="og:description" content="Forms are where users give you data: sign-ups, orders, payments. JavaScript can read the values, check them, show friendly errors and give instant…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/javascript/forms-validation/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Handling forms and validating input | JavaScript" />
+    <meta name="twitter:description" content="Forms are where users give you data: sign-ups, orders, payments. JavaScript can read the values, check them, show friendly errors and give instant…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/javascript/forms-validation/#lesson","name":"Handling forms and validating input","description":"Forms are where users give you data: sign-ups, orders, payments. JavaScript can read the values, check them, show friendly errors and give instant…","url":"https://marzleytechsolutions.co.ke/learn/javascript/forms-validation/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/javascript/#course","name":"JavaScript","url":"https://marzleytechsolutions.co.ke/learn/javascript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/"},{"@type":"ListItem","position":4,"name":"Handling forms and validating input","item":"https://marzleytechsolutions.co.ke/learn/javascript/forms-validation/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/javascript/">JavaScript</a> / <span>Handling forms and validating input</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=forms-validation"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Handling forms and validating input</h1>
+<p>Forms are where users give you data: sign-ups, orders, payments. JavaScript can read the values, check them, show friendly errors and give instant feedback, before anything is sent.</p>
+<h2>Reading a form</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;form id=&quot;order&quot;&gt;
+  &lt;label&gt;Name &lt;input name=&quot;name&quot; required&gt;&lt;/label&gt;&lt;br&gt;
+  &lt;label&gt;Quantity &lt;input name=&quot;qty&quot; type=&quot;number&quot; value=&quot;1&quot; min=&quot;1&quot;&gt;&lt;/label&gt;&lt;br&gt;
+  &lt;label&gt;Size
+    &lt;select name=&quot;size&quot;&gt;&lt;option&gt;1 kg&lt;/option&gt;&lt;option&gt;2 kg&lt;/option&gt;&lt;/select&gt;
+  &lt;/label&gt;&lt;br&gt;
+  &lt;label&gt;&lt;input type=&quot;checkbox&quot; name=&quot;gift&quot;&gt; Gift wrap&lt;/label&gt;&lt;br&gt;
+  &lt;button&gt;Order&lt;/button&gt;
+&lt;/form&gt;
+&lt;pre id=&quot;out&quot;&gt;&lt;/pre&gt;
+&lt;script&gt;
+  const form = document.getElementById(&quot;order&quot;);
+  form.addEventListener(&quot;submit&quot;, (event) =&gt; {
+    event.preventDefault();                 // stop the page from reloading
+    const data = new FormData(form);
+    const order = {
+      name: data.get(&quot;name&quot;),
+      qty: Number(data.get(&quot;qty&quot;)),
+      size: data.get(&quot;size&quot;),
+      gift: data.get(&quot;gift&quot;) === &quot;on&quot;,
+    };
+    document.getElementById(&quot;out&quot;).textContent = JSON.stringify(order, null, 2);
+  });
+&lt;/script&gt;</code></pre></figure>
+<p>Key ideas:</p>
+<ul><li>Listen for the form's **<code>submit</code>** event (it also fires when the user presses Enter).</li><li><code>event.preventDefault()</code> stops the browser's default reload so your code can handle it.</li><li><code>new FormData(form)</code> reads every field by its <code>name</code>.</li><li>Values are <strong>strings</strong>; convert numbers with <code>Number()</code>.</li></ul>
+<h2>Custom validation with friendly messages</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  body { font-family: system-ui, sans-serif; }
+  .field { margin-bottom: 12px; }
+  input { padding: 8px; border: 2px solid #cbd5e1; border-radius: 8px; width: 240px; }
+  input.bad { border-color: #dc2626; }
+  .err { color: #dc2626; font-size: 14px; margin: 4px 0 0; min-height: 1em; }
+  .ok { color: #15803d; font-weight: bold; }
+&lt;/style&gt;
+&lt;form id=&quot;signup&quot; novalidate&gt;
+  &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Phone&lt;br&gt;&lt;input id=&quot;phone&quot; placeholder=&quot;0712345678&quot;&gt;&lt;/label&gt;&lt;p class=&quot;err&quot; id=&quot;phone-err&quot;&gt;&lt;/p&gt;&lt;/div&gt;
+  &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Password&lt;br&gt;&lt;input id=&quot;pw&quot; type=&quot;password&quot;&gt;&lt;/label&gt;&lt;p class=&quot;err&quot; id=&quot;pw-err&quot;&gt;&lt;/p&gt;&lt;/div&gt;
+  &lt;button&gt;Create account&lt;/button&gt;
+  &lt;p id=&quot;result&quot;&gt;&lt;/p&gt;
+&lt;/form&gt;
+&lt;script&gt;
+  const rules = {
+    phone: (v) =&gt; /^0[17]\d{8}$/.test(v.replace(/\s/g, &quot;&quot;)) ? &quot;&quot; : &quot;Enter 10 digits starting with 07 or 01.&quot;,
+    pw: (v) =&gt; v.length &lt; 8 ? &quot;Use at least 8 characters.&quot; : !/\d/.test(v) ? &quot;Add at least one number.&quot; : &quot;&quot;,
+  };
+  function check(id) {
+    const input = document.getElementById(id);
+    const message = rules[id](input.value);
+    document.getElementById(id + &quot;-err&quot;).textContent = message;
+    input.classList.toggle(&quot;bad&quot;, message !== &quot;&quot;);
+    return message === &quot;&quot;;
+  }
+  [&quot;phone&quot;, &quot;pw&quot;].forEach((id) =&gt; document.getElementById(id).addEventListener(&quot;input&quot;, () =&gt; check(id)));
+  document.getElementById(&quot;signup&quot;).addEventListener(&quot;submit&quot;, (e) =&gt; {
+    e.preventDefault();
+    const allOk = [&quot;phone&quot;, &quot;pw&quot;].map(check).every(Boolean);
+    document.getElementById(&quot;result&quot;).innerHTML = allOk ? &#x27;&lt;span class=&quot;ok&quot;&gt;All good! (practice form)&lt;/span&gt;&#x27; : &quot;&quot;;
+  });
+&lt;/script&gt;</code></pre></figure>
+<p>What's happening:</p>
+<ul><li><code>novalidate</code> switches off the browser's own pop-ups so we can show our own messages.</li><li>A <strong>rule</strong> function per field returns an error message, or <code>&quot;&quot;</code> if the value is fine.</li><li>Checking on the **<code>input</code>** event gives instant feedback while typing.</li><li>On submit we check <strong>all</strong> fields, and only continue if every one passes.</li></ul>
+<h2>Regular expressions for common checks</h2>
+<div class="static-table"><table><thead><tr><th>Check</th><th>Pattern</th></tr></thead><tbody><tr><td>Kenyan mobile (07xx/01xx)</td><td><code>/^0[17]\d{8}$/</code></td></tr><tr><td>International format 2547...</td><td><code>/^254[17]\d{8}$/</code></td></tr><tr><td>Simple email</td><td><code>/^[^\s@]+@[^\s@]+\.[^\s@]+$/</code></td></tr><tr><td>Only digits</td><td><code>/^\d+$/</code></td></tr><tr><td>KRA PIN (A123456789Z)</td><td><code>/^[AP]\d{9}[A-Z]$/</code></td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const toIntl = (p) =&gt; p.replace(/\s/g, &quot;&quot;).replace(/^0/, &quot;254&quot;).replace(/^\+/, &quot;&quot;);
+console.log(toIntl(&quot;0712 345 678&quot;));   // 254712345678 (the format M-Pesa APIs need)
+console.log(/^0[17]\d{8}$/.test(&quot;0712345678&quot;), /^0[17]\d{8}$/.test(&quot;12345&quot;));</code></pre></figure>
+<h2>Good form UX</h2>
+<ul><li>Show errors <strong>next to the field</strong>, in plain words, saying how to fix it.</li><li>Don't clear what the user typed when there's an error.</li><li>Disable the submit button while sending, to stop double payments:</li></ul>
+<figure class="static-code"><figcaption>JavaScript</figcaption><pre><code class="language-javascript">button.disabled = true;
+button.textContent = &quot;Sending...&quot;;</code></pre></figure>
+<ul><li>Always validate again on the <strong>server</strong>. Browser checks can be bypassed.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which event fires when a form is sent (button click or Enter)?</p><details><summary>Show answer</summary><p>submit</p></details></li><li><p>Which method stops the page from reloading when the form is submitted?</p><details><summary>Show answer</summary><p>preventDefault</p></details></li><li><p>Which object reads all fields of a form by their name attribute?</p><details><summary>Show answer</summary><p>FormData</p></details></li><li><p>Which form attribute turns off the browser's own validation pop-ups?</p><details><summary>Show answer</summary><p>novalidate</p></details></li><li><p>Convert 0712345678 to the international format used by M-Pesa APIs.</p><details><summary>Show answer</summary><p>254712345678</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Write a function <code>isKenyanPhone(p)</code> that returns <code>true</code> for <code>0712345678</code> using the pattern <code>/^0[17]\d{8}$/</code>, then log <code>isKenyanPhone(&quot;0712345678&quot;)</code>.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=forms-validation#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 12 of 19 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/dom-events/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> The DOM and events</a><a class="btn btn-solid btn-sm" href="/learn/javascript/json-fetch/">JSON and fetch <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

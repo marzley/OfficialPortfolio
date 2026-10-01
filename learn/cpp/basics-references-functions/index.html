@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>C++ basics: I/O, types, references and functions | C++</title>
+    <meta name="description" content="C++ builds on C and adds classes, references, a huge standard library and much more. It powers games, browsers (Chrome), databases, trading systems and…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/cpp/basics-references-functions/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="C++ basics: I/O, types, references and functions | C++" />
+    <meta property="og:description" content="C++ builds on C and adds classes, references, a huge standard library and much more. It powers games, browsers (Chrome), databases, trading systems and…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/cpp/basics-references-functions/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="C++ basics: I/O, types, references and functions | C++" />
+    <meta name="twitter:description" content="C++ builds on C and adds classes, references, a huge standard library and much more. It powers games, browsers (Chrome), databases, trading systems and…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/cpp/basics-references-functions/#lesson","name":"C++ basics: I/O, types, references and functions","description":"C++ builds on C and adds classes, references, a huge standard library and much more. It powers games, browsers (Chrome), databases, trading systems and…","url":"https://marzleytechsolutions.co.ke/learn/cpp/basics-references-functions/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/cpp/#course","name":"C++","url":"https://marzleytechsolutions.co.ke/learn/cpp/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"C++","item":"https://marzleytechsolutions.co.ke/learn/cpp/"},{"@type":"ListItem","position":4,"name":"C++ basics: I/O, types, references and functions","item":"https://marzleytechsolutions.co.ke/learn/cpp/basics-references-functions/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/cpp/">C++</a> / <span>C++ basics: I/O, types, references and functions</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=cpp&amp;lesson=basics-references-functions"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>C++ basics: I/O, types, references and functions</h1>
+<p>C++ builds on C and adds classes, references, a huge standard library and much more. It powers games, browsers (Chrome), databases, trading systems and competitive programming. This lesson covers the everyday basics.</p>
+<blockquote><p>Simple examples run in your browser. Code that uses the standard library (<code>string</code>, <code>vector</code>, <code>map</code>...) or classes runs automatically on Compiler Explorer (online), which needs internet and a few seconds.</p></blockquote>
+<h2>Input and output with streams</h2>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+using namespace std;
+
+int main() {
+    int students = 45;
+    double fee = 12500.5;
+    cout &lt;&lt; &quot;Students: &quot; &lt;&lt; students &lt;&lt; endl;
+    cout &lt;&lt; fixed &lt;&lt; setprecision(2) &lt;&lt; &quot;Fee: KSh &quot; &lt;&lt; fee &lt;&lt; endl;
+    cout &lt;&lt; setw(10) &lt;&lt; &quot;Item&quot; &lt;&lt; setw(8) &lt;&lt; &quot;Price&quot; &lt;&lt; endl;
+    cout &lt;&lt; setw(10) &lt;&lt; &quot;Sugar&quot; &lt;&lt; setw(8) &lt;&lt; 160.0 &lt;&lt; endl;
+    return 0;
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Tool</th><th>Does</th></tr></thead><tbody><tr><td><code>cout &lt;&lt; x</code></td><td>Print</td></tr><tr><td><code>cin &gt;&gt; x</code></td><td>Read (stops at spaces)</td></tr><tr><td><code>getline(cin, s)</code></td><td>Read a whole line into a <code>string</code></td></tr><tr><td><code>endl</code> / <code>&quot;\n&quot;</code></td><td>New line (<code>&quot;\n&quot;</code> is faster)</td></tr><tr><td><code>fixed &lt;&lt; setprecision(2)</code></td><td>2 decimal places (from <code>&lt;iomanip&gt;</code>)</td></tr><tr><td><code>setw(n)</code></td><td>Column width</td></tr></tbody></table></div>
+<h2>Types, auto and const</h2>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int main() {
+    int qty = 3;
+    double price = 180.0;
+    bool paid = true;
+    char grade = &#x27;A&#x27;;
+    string name = &quot;Wanjiru&quot;;          // real strings, unlike C
+    const double VAT = 0.16;          // can&#x27;t be changed
+    auto total = qty * price * (1 + VAT);   // auto: the compiler works out the type (double)
+
+    cout &lt;&lt; name &lt;&lt; &quot; bought &quot; &lt;&lt; qty &lt;&lt; &quot; items for &quot; &lt;&lt; total &lt;&lt; endl;
+    cout &lt;&lt; &quot;Paid: &quot; &lt;&lt; boolalpha &lt;&lt; paid &lt;&lt; &quot;, grade &quot; &lt;&lt; grade &lt;&lt; endl;
+    cout &lt;&lt; &quot;Name has &quot; &lt;&lt; name.length() &lt;&lt; &quot; letters, first is &quot; &lt;&lt; name[0] &lt;&lt; endl;
+    return 0;
+}</code></pre></figure>
+<h2>Functions</h2>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+double withVat(double amount, double rate = 16) {    // default argument
+    return amount * (1 + rate / 100);
+}
+
+int main() {
+    cout &lt;&lt; withVat(1000) &lt;&lt; &quot; &quot; &lt;&lt; withVat(1000, 0) &lt;&lt; endl;
+    return 0;
+}</code></pre></figure>
+<p><strong>Overloading</strong>: several functions can share a name if their parameter types differ. The compiler picks the one that matches the call:</p>
+<figure class="static-code"><figcaption>C++</figcaption><pre><code class="language-cpp">int square(int n) { return n * n; }
+double square(double n) { return n * n; }
+
+square(5);     // calls the int version: 25
+square(1.5);   // calls the double version: 2.25</code></pre></figure>
+<h2>References: another name for a variable</h2>
+<p>A <strong>reference</strong> (<code>&amp;</code>) lets a function change the caller's variable directly, without pointer syntax:</p>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+void addBonus(int &amp;marks, int bonus) {   // &amp; = reference: works on the original
+    marks += bonus;
+}
+
+void byValue(int marks) {                // a copy: the original doesn&#x27;t change
+    marks += 100;
+}
+
+int main() {
+    int marks = 60;
+    byValue(marks);
+    cout &lt;&lt; &quot;After byValue: &quot; &lt;&lt; marks &lt;&lt; endl;   // 60
+    addBonus(marks, 5);
+    cout &lt;&lt; &quot;After addBonus: &quot; &lt;&lt; marks &lt;&lt; endl;  // 65
+
+    int &amp;alias = marks;                           // a reference variable
+    alias = 90;
+    cout &lt;&lt; &quot;marks is now &quot; &lt;&lt; marks &lt;&lt; endl;     // 90
+    return 0;
+}</code></pre></figure>
+<h3>const references: fast and safe</h3>
+<p>Passing a big object (a long string, a vector) by value copies it. Pass by <code>const</code> reference to avoid the copy and promise not to change it:</p>
+<figure class="static-code"><figcaption>C++</figcaption><pre><code class="language-cpp">void printReceipt(const string &amp;customer, const vector&lt;double&gt; &amp;items);</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Parameter style</th><th>Copies?</th><th>Can change caller's value?</th><th>Use for</th></tr></thead><tbody><tr><td><code>int x</code></td><td>Yes</td><td>No</td><td>Small values (int, double, char)</td></tr><tr><td><code>int &amp;x</code></td><td>No</td><td><strong>Yes</strong></td><td>Outputs you want to modify</td></tr><tr><td><code>const string &amp;s</code></td><td>No</td><td>No</td><td>Big inputs (strings, vectors, objects)</td></tr><tr><td><code>int *p</code></td><td>No</td><td>Yes (via <code>*p</code>)</td><td>C-style code, optional values</td></tr></tbody></table></div>
+<h2>Control flow is the same as C</h2>
+<p><code>if/else</code>, <code>switch</code>, <code>for</code>, <code>while</code>, <code>do-while</code> work exactly as in C. C++ adds the <strong>range-based for</strong> (next lesson) for looping over containers.</p>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    for (int mark = 40; mark &lt;= 90; mark += 25) {
+        if (mark &gt;= 80) cout &lt;&lt; mark &lt;&lt; &quot;: A&quot; &lt;&lt; endl;
+        else if (mark &gt;= 50) cout &lt;&lt; mark &lt;&lt; &quot;: C&quot; &lt;&lt; endl;
+        else cout &lt;&lt; mark &lt;&lt; &quot;: Fail&quot; &lt;&lt; endl;
+    }
+    return 0;
+}</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which object prints to the screen in C++?</p><details><summary>Show answer</summary><p>cout</p></details></li><li><p>Which keyword lets the compiler work out a variable's type?</p><details><summary>Show answer</summary><p>auto</p></details></li><li><p>Which symbol in a parameter makes it a reference?</p><details><summary>Show answer</summary><p>&amp;</p></details></li><li><p>Does a function receiving int x (by value) change the caller's variable? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>What is the best way to pass a large string you only read? (two words)</p><details><summary>Show answer</summary><p>const reference</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 7 in <a href="/learn/cpp/">C++</a> · <a href="/learn/?book=cpp">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/cpp/introduction/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> C++ introduction</a><a class="btn btn-solid btn-sm" href="/learn/cpp/vectors-strings-stl/">vector, string, map and the STL algorithms <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

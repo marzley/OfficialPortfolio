@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TCP, UDP and port numbers | Networking</title>
+    <meta name="description" content="The Transport layer delivers data between programs , not just computers. A port number (0–65535) says which program: one server can run a website…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/networking/tcp-udp-ports/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="TCP, UDP and port numbers | Networking" />
+    <meta property="og:description" content="The Transport layer delivers data between programs , not just computers. A port number (0–65535) says which program: one server can run a website…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/networking/tcp-udp-ports/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="TCP, UDP and port numbers | Networking" />
+    <meta name="twitter:description" content="The Transport layer delivers data between programs , not just computers. A port number (0–65535) says which program: one server can run a website…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/networking/tcp-udp-ports/#lesson","name":"TCP, UDP and port numbers","description":"The Transport layer delivers data between programs , not just computers. A port number (0–65535) says which program: one server can run a website…","url":"https://marzleytechsolutions.co.ke/learn/networking/tcp-udp-ports/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/networking/#course","name":"Networking","url":"https://marzleytechsolutions.co.ke/learn/networking/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Networking","item":"https://marzleytechsolutions.co.ke/learn/networking/"},{"@type":"ListItem","position":4,"name":"TCP, UDP and port numbers","item":"https://marzleytechsolutions.co.ke/learn/networking/tcp-udp-ports/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/networking/">Networking</a> / <span>TCP, UDP and port numbers</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=networking&amp;lesson=tcp-udp-ports"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>TCP, UDP and ports</h1>
+<p>The <strong>Transport layer</strong> delivers data between <em>programs</em>, not just computers. A <strong>port number</strong> (0–65535) says which program: one server can run a website (443), email (587) and SSH (22) at the same time.</p>
+<p>A connection is identified by the <strong>socket pair</strong>: source IP + source port + destination IP + destination port + protocol.</p>
+<h2>TCP: reliable</h2>
+<p><strong>Transmission Control Protocol</strong>:</p>
+<ul><li><strong>Connection-oriented</strong>: starts with the <strong>three-way handshake</strong>: SYN → SYN-ACK → ACK.</li><li><strong>Reliable</strong>: numbers every byte, receiver sends acknowledgements, lost data is re-sent.</li><li><strong>Ordered</strong>: data is put back in order.</li><li><strong>Flow and congestion control</strong>: slows down when the network or receiver is busy.</li><li>Closes with FIN / ACK.</li></ul>
+<p>Used for: web pages, email, file transfers, SSH, M-Pesa APIs. Anything that must arrive complete.</p>
+<h2>UDP: fast</h2>
+<p><strong>User Datagram Protocol</strong>:</p>
+<ul><li><strong>Connectionless</strong>: just sends.</li><li>No acknowledgements, no re-sending, no ordering, tiny header.</li></ul>
+<p>Used for: voice and video calls, live streaming, online games, <strong>DNS</strong> queries, DHCP. A late packet is useless in a call, so resending doesn't help.</p>
+<h2>Port ranges</h2>
+<ul><li><strong>0–1023</strong>: well-known ports (need admin rights to use on a server).</li><li><strong>1024–49151</strong>: registered ports (e.g. 3306 MySQL, 8080 web alt).</li><li><strong>49152–65535</strong>: dynamic/ephemeral: your computer picks one of these as the <em>source</em> port for each connection.</li></ul>
+<h2>Ports to memorise</h2>
+<div class="static-table"><table><thead><tr><th>Port</th><th>Protocol</th><th>Use</th></tr></thead><tbody><tr><td>20, 21</td><td>TCP</td><td>FTP (file transfer, insecure)</td></tr><tr><td>22</td><td>TCP</td><td>SSH / SFTP (secure remote login)</td></tr><tr><td>23</td><td>TCP</td><td>Telnet (insecure, avoid)</td></tr><tr><td>25</td><td>TCP</td><td>SMTP (server-to-server email)</td></tr><tr><td>53</td><td>UDP/TCP</td><td>DNS</td></tr><tr><td>67, 68</td><td>UDP</td><td>DHCP (server, client)</td></tr><tr><td>80</td><td>TCP</td><td>HTTP</td></tr><tr><td>110</td><td>TCP</td><td>POP3</td></tr><tr><td>123</td><td>UDP</td><td>NTP (time)</td></tr><tr><td>143</td><td>TCP</td><td>IMAP</td></tr><tr><td>161</td><td>UDP</td><td>SNMP</td></tr><tr><td>443</td><td>TCP (and UDP for HTTP/3)</td><td>HTTPS</td></tr><tr><td>465 / 587</td><td>TCP</td><td>SMTP with encryption (sending email)</td></tr><tr><td>993 / 995</td><td>TCP</td><td>IMAPS / POP3S</td></tr><tr><td>3306</td><td>TCP</td><td>MySQL / MariaDB</td></tr><tr><td>3389</td><td>TCP</td><td>Windows Remote Desktop (RDP)</td></tr></tbody></table></div>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What are the three steps of the TCP handshake? (write like SYN, SYN-ACK, ACK)</p><details><summary>Show answer</summary><p>SYN, SYN-ACK, ACK</p></details></li><li><p>Which port does HTTPS use?</p><details><summary>Show answer</summary><p>443</p></details></li><li><p>Which port does SSH use?</p><details><summary>Show answer</summary><p>22</p></details></li><li><p>Does DNS mainly use TCP or UDP?</p><details><summary>Show answer</summary><p>UDP</p></details></li><li><p>Which protocol is better for a live video call, TCP or UDP?</p><details><summary>Show answer</summary><p>UDP</p></details></li><li><p>Which port does MySQL use by default?</p><details><summary>Show answer</summary><p>3306</p></details></li><li><p>Which ports does DHCP use? (server, client)</p><details><summary>Show answer</summary><p>67, 68</p></details></li></ol></section></div><p class="static-meta">Lesson 13 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/ipv6/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> IPv6 addressing</a><a class="btn btn-solid btn-sm" href="/learn/networking/dns-dhcp/">DNS and DHCP <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>IF, AND, OR, IFS and counting with conditions</title>
+    <meta name="description" content="Logical functions let a spreadsheet make decisions : pass or fail, paid or owing, in stock or reorder. They&#x27;re behind most school mark sheets, fee…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/excel/if-logic-functions/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="IF, AND, OR, IFS and counting with conditions" />
+    <meta property="og:description" content="Logical functions let a spreadsheet make decisions : pass or fail, paid or owing, in stock or reorder. They&#x27;re behind most school mark sheets, fee…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/excel/if-logic-functions/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="IF, AND, OR, IFS and counting with conditions" />
+    <meta name="twitter:description" content="Logical functions let a spreadsheet make decisions : pass or fail, paid or owing, in stock or reorder. They&#x27;re behind most school mark sheets, fee…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/excel/if-logic-functions/#lesson","name":"IF, AND, OR, IFS and counting with conditions","description":"Logical functions let a spreadsheet make decisions : pass or fail, paid or owing, in stock or reorder. They're behind most school mark sheets, fee…","url":"https://marzleytechsolutions.co.ke/learn/excel/if-logic-functions/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/excel/#course","name":"Excel & Google Sheets","url":"https://marzleytechsolutions.co.ke/learn/excel/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Excel & Google Sheets","item":"https://marzleytechsolutions.co.ke/learn/excel/"},{"@type":"ListItem","position":4,"name":"IF, AND, OR, IFS and counting with conditions","item":"https://marzleytechsolutions.co.ke/learn/excel/if-logic-functions/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/excel/">Excel &amp; Google Sheets</a> / <span>IF, AND, OR, IFS and counting with conditions</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=excel&amp;lesson=if-logic-functions"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>IF, AND, OR, IFS and counting with conditions</h1>
+<p>Logical functions let a spreadsheet <strong>make decisions</strong>: pass or fail, paid or owing, in stock or reorder. They're behind most school mark sheets, fee trackers and stock sheets.</p>
+<h2>IF</h2>
+<figure class="static-code"><pre><code>=IF(condition, value_if_true, value_if_false)</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Mark (B2)</th><th>Formula</th><th>Result</th></tr></thead><tbody><tr><td>67</td><td><code>=IF(B2&gt;=50, &quot;Pass&quot;, &quot;Fail&quot;)</code></td><td>Pass</td></tr><tr><td>41</td><td><code>=IF(B2&gt;=50, &quot;Pass&quot;, &quot;Fail&quot;)</code></td><td>Fail</td></tr></tbody></table></div>
+<p>Comparison operators: <code>=</code>, <code>&lt;&gt;</code> (not equal), <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>. Text in formulas goes in double quotes.</p>
+<p>More examples:</p>
+<figure class="static-code"><pre><code>=IF(D2&gt;0, &quot;Owing&quot;, &quot;Cleared&quot;)                 fee balance status
+=IF(C2&lt;10, &quot;Reorder&quot;, &quot;&quot;)                     stock alert (blank if fine)
+=IF(B2&gt;=100000, B2*5%, 0)                     commission only above a target</code></pre></figure>
+<h2>Several conditions: AND, OR, NOT</h2>
+<figure class="static-code"><pre><code>=IF(AND(B2&gt;=50, C2&gt;=50), &quot;Promoted&quot;, &quot;Repeat&quot;)        both subjects passed
+=IF(OR(D2=&quot;Paid&quot;, E2=&quot;Scholarship&quot;), &quot;Allowed&quot;, &quot;See bursar&quot;)
+=IF(NOT(F2=&quot;Suspended&quot;), &quot;Active&quot;, &quot;Suspended&quot;)</code></pre></figure>
+<h2>Grading: nested IF vs IFS</h2>
+<p>Nested IF (works in every version):</p>
+<figure class="static-code"><pre><code>=IF(B2&gt;=80,&quot;A&quot;,IF(B2&gt;=65,&quot;B&quot;,IF(B2&gt;=50,&quot;C&quot;,IF(B2&gt;=40,&quot;D&quot;,&quot;E&quot;))))</code></pre></figure>
+<p><strong>IFS</strong> (Excel 2019/365 and Google Sheets) is easier to read:</p>
+<figure class="static-code"><pre><code>=IFS(B2&gt;=80,&quot;A&quot;, B2&gt;=65,&quot;B&quot;, B2&gt;=50,&quot;C&quot;, B2&gt;=40,&quot;D&quot;, TRUE,&quot;E&quot;)</code></pre></figure>
+<p>Checks run in order; <code>TRUE</code> at the end acts as "everything else".</p>
+<blockquote><p>Even cleaner for many bands: put the grade table in cells and use <code>XLOOKUP</code> or <code>VLOOKUP</code> with approximate match (see the Lookups lesson). Changing a cut-off then means editing one cell, not every formula.</p></blockquote>
+<h2>Counting and adding with conditions</h2>
+<div class="static-table"><table><thead><tr><th>Function</th><th>Example</th><th>Answers</th></tr></thead><tbody><tr><td><code>COUNTIF(range, criteria)</code></td><td><code>=COUNTIF(C2:C41, &quot;Pass&quot;)</code></td><td>How many passed?</td></tr><tr><td><code>COUNTIF</code> with numbers</td><td><code>=COUNTIF(B2:B41, &quot;&gt;=80&quot;)</code></td><td>How many scored 80+?</td></tr><tr><td><code>SUMIF(range, criteria, sum_range)</code></td><td><code>=SUMIF(A2:A100, &quot;Nairobi&quot;, D2:D100)</code></td><td>Total sales in Nairobi</td></tr><tr><td><code>AVERAGEIF</code></td><td><code>=AVERAGEIF(E2:E41, &quot;Form 2&quot;, B2:B41)</code></td><td>Form 2 mean</td></tr><tr><td><code>COUNTIFS</code> (many conditions)</td><td><code>=COUNTIFS(E2:E41,&quot;Form 2&quot;, B2:B41,&quot;&gt;=50&quot;)</code></td><td>Form 2 students who passed</td></tr><tr><td><code>SUMIFS</code></td><td><code>=SUMIFS(D:D, A:A,&quot;Nairobi&quot;, B:B,&quot;M-Pesa&quot;)</code></td><td>Nairobi M-Pesa sales</td></tr><tr><td><code>COUNTA</code> / <code>COUNTBLANK</code></td><td><code>=COUNTBLANK(D2:D41)</code></td><td>How many haven't paid?</td></tr></tbody></table></div>
+<p>Criteria with a cell: <code>=COUNTIF(B2:B41, &quot;&gt;=&quot;&amp;H1)</code> uses the value in H1.</p>
+<h2>Handling errors: IFERROR</h2>
+<figure class="static-code"><pre><code>=IFERROR(C2/B2, 0)                    0 instead of #DIV/0!
+=IFERROR(XLOOKUP(A2, IDs, Names), &quot;Not found&quot;)</code></pre></figure>
+<p>Use it carefully: hiding errors can also hide real mistakes.</p>
+<h2>Worked example: a fee tracker</h2>
+<div class="static-table"><table><thead><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr></thead><tbody><tr><td>1</td><td>Student</td><td>Fee</td><td>Paid</td><td>Balance</td><td>Status</td></tr><tr><td>2</td><td>Amina</td><td>15000</td><td>15000</td><td><code>=B2-C2</code></td><td><code>=IF(D2&lt;=0,&quot;Cleared&quot;,IF(C2=0,&quot;Not paid&quot;,&quot;Partial&quot;))</code></td></tr><tr><td>3</td><td>Brian</td><td>15000</td><td>8000</td><td>7000</td><td>Partial</td></tr><tr><td>4</td><td>Chebet</td><td>15000</td><td>0</td><td>15000</td><td>Not paid</td></tr></tbody></table></div>
+<p>Summary cells:</p>
+<figure class="static-code"><pre><code>Cleared students:   =COUNTIF(E2:E41,&quot;Cleared&quot;)
+Total collected:    =SUM(C2:C41)
+Total outstanding:  =SUMIF(D2:D41,&quot;&gt;0&quot;)
+Collection rate:    =SUM(C2:C41)/SUM(B2:B41)    (format as %)</code></pre></figure>
+<p>Add <strong>conditional formatting</strong> (a later lesson) to colour "Not paid" red.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does =IF(B2&gt;=50,"Pass","Fail") return when B2 is 49?</p><details><summary>Show answer</summary><p>Fail</p></details></li><li><p>Which function checks that two conditions are both true?</p><details><summary>Show answer</summary><p>AND</p></details></li><li><p>Which function counts cells that meet one condition?</p><details><summary>Show answer</summary><p>COUNTIF</p></details></li><li><p>Which function adds values that meet several conditions?</p><details><summary>Show answer</summary><p>SUMIFS</p></details></li><li><p>Which operator means "not equal" in Excel formulas?</p><details><summary>Show answer</summary><p>&lt;&gt;</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 10 in <a href="/learn/excel/">Excel &amp; Google Sheets</a> · <a href="/learn/?book=excel">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/excel/functions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Essential functions: SUM, AVERAGE, IF and COUNTIF</a><a class="btn btn-solid btn-sm" href="/learn/excel/text-date-functions/">Cleaning data: text and date functions <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

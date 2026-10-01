@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Merging, merge conflicts and rebasing | Git &amp; GitHub</title>
+    <meta name="description" content="Branches let you work on features separately. Sooner or later you bring them back together. Usually Git merges automatically; sometimes two changes…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/git/merge-conflicts/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Merging, merge conflicts and rebasing | Git &amp; GitHub" />
+    <meta property="og:description" content="Branches let you work on features separately. Sooner or later you bring them back together. Usually Git merges automatically; sometimes two changes…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/git/merge-conflicts/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Merging, merge conflicts and rebasing | Git &amp; GitHub" />
+    <meta name="twitter:description" content="Branches let you work on features separately. Sooner or later you bring them back together. Usually Git merges automatically; sometimes two changes…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/git/merge-conflicts/#lesson","name":"Merging, merge conflicts and rebasing","description":"Branches let you work on features separately. Sooner or later you bring them back together. Usually Git merges automatically; sometimes two changes…","url":"https://marzleytechsolutions.co.ke/learn/git/merge-conflicts/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/git/#course","name":"Git & GitHub","url":"https://marzleytechsolutions.co.ke/learn/git/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Git & GitHub","item":"https://marzleytechsolutions.co.ke/learn/git/"},{"@type":"ListItem","position":4,"name":"Merging, merge conflicts and rebasing","item":"https://marzleytechsolutions.co.ke/learn/git/merge-conflicts/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/git/">Git &amp; GitHub</a> / <span>Merging, merge conflicts and rebasing</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=git&amp;lesson=merge-conflicts"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Merging, merge conflicts and rebasing</h1>
+<p>Branches let you work on features separately. Sooner or later you bring them back together. Usually Git merges automatically; sometimes two changes touch the same lines and Git asks you to decide. That's a <strong>merge conflict</strong>, and it's normal, not scary.</p>
+<h2>A normal merge</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git switch main
+git merge feature/contact-form</code></pre></figure>
+<p>Two kinds of result:</p>
+<ul><li><strong>Fast-forward</strong>: <code>main</code> hadn't changed, so Git simply moves <code>main</code> forward. No new commit.</li><li><strong>Merge commit</strong>: both branches had new commits, so Git creates a commit that joins them.</li></ul>
+<figure class="static-code"><pre><code>          A---B  feature
+         /     \
+    C---D---E---M  main    (M = merge commit)</code></pre></figure>
+<h2>When a conflict happens</h2>
+<p>You and a teammate both changed the same line of <code>index.html</code>:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git merge feature/new-prices
+# Auto-merging index.html
+# CONFLICT (content): Merge conflict in index.html
+# Automatic merge failed; fix conflicts and then commit the result.</code></pre></figure>
+<p>Open the file. Git has marked the conflict:</p>
+<figure class="static-code"><pre><code>&lt;p class=&quot;price&quot;&gt;
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+  Starting from KSh 15,000
+=======
+  Starting from KSh 18,000
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/new-prices
+&lt;/p&gt;</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Marker</th><th>Means</th></tr></thead><tbody><tr><td><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code></td><td>Start of <strong>your</strong> current branch's version</td></tr><tr><td><code>=======</code></td><td>Divider</td></tr><tr><td><code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/new-prices</code></td><td>End of the <strong>incoming</strong> branch's version</td></tr></tbody></table></div>
+<h2>Resolving it</h2>
+<ol><li>Decide what the final content should be: yours, theirs, or a mix.</li><li><strong>Delete all three marker lines.</strong></li><li>Save, then stage and commit:</li></ol>
+<figure class="static-code"><pre><code>&lt;p class=&quot;price&quot;&gt;
+  Starting from KSh 18,000
+&lt;/p&gt;</code></pre></figure>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git add index.html
+git commit          # Git suggests a message like &quot;Merge branch &#x27;feature/new-prices&#x27;&quot;</code></pre></figure>
+<p>VS Code makes this easy: above each conflict it shows <strong>Accept Current</strong>, <strong>Accept Incoming</strong>, <strong>Accept Both</strong> and <strong>Compare</strong>.</p>
+<p>Changed your mind mid-merge?</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git merge --abort      # go back to before the merge</code></pre></figure>
+<h2>Avoiding painful conflicts</h2>
+<ul><li><strong>Pull often</strong>: <code>git pull</code> at the start of each day.</li><li>Keep branches <strong>short-lived</strong>: merge within days, not months.</li><li>Make <strong>small, focused commits</strong>.</li><li>Talk to your team about who's editing which file.</li><li>Don't reformat a whole file (e.g. changing indentation) in the same commit as real changes.</li></ul>
+<h2>Rebasing (an alternative to merging)</h2>
+<p><code>rebase</code> replays your branch's commits on top of the latest <code>main</code>, giving a straight history without merge commits:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git switch feature/receipts
+git rebase main
+# fix any conflicts, then:  git add &lt;file&gt;  and  git rebase --continue</code></pre></figure>
+<figure class="static-code"><pre><code>Before:    C---D---E  main          After:   C---D---E  main
+                \                                       \
+                 A---B  feature                          A&#x27;---B&#x27;  feature</code></pre></figure>
+<p><strong>The golden rule:</strong> never rebase commits you've already pushed and others are using. Rebasing rewrites history; it's for tidying your <strong>own local</strong> work. When in doubt, merge.</p>
+<h2>Useful commands</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git branch --merged            # branches already merged into this one (safe to delete)
+git branch -d feature/old      # delete a merged branch
+git log --oneline --graph      # see how branches joined
+git cherry-pick a1b2c3d        # copy one commit onto this branch
+git stash                      # park uncommitted changes to switch branches quickly
+git stash pop                  # bring them back</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which marker starts your own version in a conflict?</p><details><summary>Show answer</summary><p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p></details></li><li><p>After fixing a conflict in index.html, which command stages it?</p><details><summary>Show answer</summary><p>git add index.html</p></details></li><li><p>Which command cancels a merge in progress?</p><details><summary>Show answer</summary><p>git merge --abort</p></details></li><li><p>What kind of merge just moves the branch pointer forward with no new commit? (two words, hyphen allowed)</p><details><summary>Show answer</summary><p>fast-forward</p></details></li><li><p>Should you rebase commits that others are already using? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 10 in <a href="/learn/git/">Git &amp; GitHub</a> · <a href="/learn/?book=git">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/git/branches/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Branches and merging</a><a class="btn btn-solid btn-sm" href="/learn/git/github/">GitHub: push, pull, clone <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Branches and merging | Git &amp; GitHub</title>
+    <meta name="description" content="A branch lets you work on something new while main stays working. git branch lists branches; the current one has a ." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/git/branches/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Branches and merging | Git &amp; GitHub" />
+    <meta property="og:description" content="A branch lets you work on something new while main stays working. git branch lists branches; the current one has a ." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/git/branches/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Branches and merging | Git &amp; GitHub" />
+    <meta name="twitter:description" content="A branch lets you work on something new while main stays working. git branch lists branches; the current one has a ." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/git/branches/#lesson","name":"Branches and merging","description":"A branch lets you work on something new while main stays working. git branch lists branches; the current one has a .","url":"https://marzleytechsolutions.co.ke/learn/git/branches/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/git/#course","name":"Git & GitHub","url":"https://marzleytechsolutions.co.ke/learn/git/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Git & GitHub","item":"https://marzleytechsolutions.co.ke/learn/git/"},{"@type":"ListItem","position":4,"name":"Branches and merging","item":"https://marzleytechsolutions.co.ke/learn/git/branches/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/git/">Git &amp; GitHub</a> / <span>Branches and merging</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=git&amp;lesson=branches"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Branches and merging</h1>
+<p>A <strong>branch</strong> lets you work on something new while <code>main</code> stays working.</p>
+<figure class="static-code"><pre><code>git switch -c feature/contact-form   # create and move to a new branch
+# ... edit files, add, commit ...
+git switch main                      # back to main
+git merge feature/contact-form       # bring the work in
+git branch -d feature/contact-form   # delete the finished branch</code></pre></figure>
+<p><code>git branch</code> lists branches; the current one has a <code>*</code>.</p>
+<h2>Merge conflicts</h2>
+<p>If two branches change the <strong>same lines</strong>, Git can't decide and marks the file:</p>
+<figure class="static-code"><pre><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+&lt;h1&gt;Welcome to our shop&lt;/h1&gt;
+=======
+&lt;h1&gt;Karibu to our shop&lt;/h1&gt;
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/kiswahili</code></pre></figure>
+<p>Fix it: edit the file to the version you want, delete the markers, then <code>git add</code> and <code>git commit</code>. VS Code shows buttons: "Accept current", "Accept incoming", "Accept both".</p>
+<h2>A simple team workflow</h2>
+<ol><li><code>main</code> always works and is what's live.</li><li>Each feature or fix gets its own branch.</li><li>Push the branch, open a <strong>pull request</strong>, get it reviewed.</li><li>Merge into <code>main</code>, then deploy.</li></ol>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command creates a new branch and switches to it (modern Git)?</p><details><summary>Show answer</summary><p>git switch -c</p></details></li><li><p>Which branch should always be working and live?</p><details><summary>Show answer</summary><p>main</p></details></li><li><p>What happens when two branches change the same lines differently?</p><details><summary>Show answer</summary><p>conflict</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 10 in <a href="/learn/git/">Git &amp; GitHub</a> · <a href="/learn/?book=git">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/git/gitignore-good-commits/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> .gitignore, good commit messages and viewing history</a><a class="btn btn-solid btn-sm" href="/learn/git/merge-conflicts/">Merging, merge conflicts and rebasing <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

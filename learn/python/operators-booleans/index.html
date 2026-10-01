@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Operators, booleans and making decisions | Python</title>
+    <meta name="description" content="Programs make decisions by comparing values. The result of a comparison is a boolean : True or False . This lesson covers every operator you&#x27;ll use." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/python/operators-booleans/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Operators, booleans and making decisions | Python" />
+    <meta property="og:description" content="Programs make decisions by comparing values. The result of a comparison is a boolean : True or False . This lesson covers every operator you&#x27;ll use." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/python/operators-booleans/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Operators, booleans and making decisions | Python" />
+    <meta name="twitter:description" content="Programs make decisions by comparing values. The result of a comparison is a boolean : True or False . This lesson covers every operator you&#x27;ll use." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/python/operators-booleans/#lesson","name":"Operators, booleans and making decisions","description":"Programs make decisions by comparing values. The result of a comparison is a boolean : True or False . This lesson covers every operator you'll use.","url":"https://marzleytechsolutions.co.ke/learn/python/operators-booleans/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/python/#course","name":"Python","url":"https://marzleytechsolutions.co.ke/learn/python/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Python","item":"https://marzleytechsolutions.co.ke/learn/python/"},{"@type":"ListItem","position":4,"name":"Operators, booleans and making decisions","item":"https://marzleytechsolutions.co.ke/learn/python/operators-booleans/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/python/">Python</a> / <span>Operators, booleans and making decisions</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=operators-booleans"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Operators, booleans and making decisions</h1>
+<p>Programs make decisions by comparing values. The result of a comparison is a <strong>boolean</strong>: <code>True</code> or <code>False</code>. This lesson covers every operator you'll use.</p>
+<h2>Arithmetic operators</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">a, b = 17, 5
+print(a + b, a - b, a * b)   # 22 12 85
+print(a / b)                 # 3.4   true division (always a float)
+print(a // b)                # 3     floor division (whole part)
+print(a % b)                 # 2     remainder
+print(a ** 2)                # 289   power
+print(divmod(a, b))          # (3, 2) both at once</code></pre></figure>
+<p><code>//</code> and <code>%</code> are great for splitting things: 130 minutes = <code>130 // 60</code> hours and <code>130 % 60</code> minutes.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">minutes = 130
+print(f&quot;{minutes // 60} h {minutes % 60} min&quot;)
+
+shillings = 2750
+print(&quot;1000s:&quot;, shillings // 1000, &quot;remaining:&quot;, shillings % 1000)</code></pre></figure>
+<h2>Assignment shortcuts</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">total = 100
+total += 50    # total = total + 50
+total -= 20
+total *= 2
+total //= 3
+print(total)</code></pre></figure>
+<h2>Comparison operators</h2>
+<div class="static-table"><table><thead><tr><th>Operator</th><th>Meaning</th></tr></thead><tbody><tr><td><code>==</code></td><td>equal to</td></tr><tr><td><code>!=</code></td><td>not equal to</td></tr><tr><td><code>&gt;</code> <code>&lt;</code></td><td>greater / less than</td></tr><tr><td><code>&gt;=</code> <code>&lt;=</code></td><td>greater or equal / less or equal</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">marks = 67
+print(marks &gt;= 50)       # True
+print(marks == 100)      # False
+print(&quot;Nairobi&quot; == &quot;nairobi&quot;)  # False: case matters
+print(18 &lt;= marks &lt;= 70) # True: Python allows chained comparisons</code></pre></figure>
+<h2>Logical operators: and, or, not</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">age = 20
+has_id = True
+has_ticket = False
+
+print(age &gt;= 18 and has_id)          # both must be True
+print(has_ticket or age &lt; 12)        # at least one True
+print(not has_ticket)                # reverses
+
+can_enter = age &gt;= 18 and has_id and has_ticket
+print(&quot;Can enter:&quot;, can_enter)</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>A</th><th>B</th><th>A and B</th><th>A or B</th></tr></thead><tbody><tr><td>True</td><td>True</td><td>True</td><td>True</td></tr><tr><td>True</td><td>False</td><td>False</td><td>True</td></tr><tr><td>False</td><td>True</td><td>False</td><td>True</td></tr><tr><td>False</td><td>False</td><td>False</td><td>False</td></tr></tbody></table></div>
+<h2>Membership and identity</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">towns = [&quot;Nakuru&quot;, &quot;Naivasha&quot;, &quot;Gilgil&quot;]
+print(&quot;Naivasha&quot; in towns)       # True
+print(&quot;Thika&quot; not in towns)      # True
+print(&quot;robi&quot; in &quot;Nairobi&quot;)       # True: works on text too
+
+x = None
+print(x is None)                 # use &quot;is&quot; to check for None</code></pre></figure>
+<h2>Truthy and falsy</h2>
+<p>In an <code>if</code>, these count as False: <code>False</code>, <code>0</code>, <code>0.0</code>, <code>&quot;&quot;</code>, <code>[]</code>, <code>{}</code>, <code>None</code>. Everything else is True.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">cart = []
+if cart:
+    print(&quot;Checkout&quot;)
+else:
+    print(&quot;Your cart is empty&quot;)</code></pre></figure>
+<h2>Putting it together: a loan eligibility check</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">monthly_income = 45000
+existing_loans = 1
+credit_score = 640
+is_employed = True
+
+eligible = is_employed and monthly_income &gt;= 30000 and existing_loans &lt; 2 and credit_score &gt;= 600
+limit = monthly_income * 3 if eligible else 0     # conditional expression
+
+print(&quot;Eligible:&quot;, eligible)
+print(f&quot;Loan limit: KSh {limit:,}&quot;)</code></pre></figure>
+<h2>Operator precedence</h2>
+<p>Python follows maths order: <code>**</code> first, then <code>* / // %</code>, then <code>+ -</code>, then comparisons, then <code>not</code>, <code>and</code>, <code>or</code>. When in doubt, use brackets: they make code clearer anyway.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">print(2 + 3 * 4)       # 14
+print((2 + 3) * 4)     # 20
+print(True or False and False)   # True: &quot;and&quot; runs before &quot;or&quot;</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does 17 // 5 give?</p><details><summary>Show answer</summary><p>3</p></details></li><li><p>What does 17 % 5 give?</p><details><summary>Show answer</summary><p>2</p></details></li><li><p>What does 2 ** 3 give?</p><details><summary>Show answer</summary><p>8</p></details></li><li><p>What is the result of True and False?</p><details><summary>Show answer</summary><p>False</p></details></li><li><p>Which keyword checks whether a value is in a list?</p><details><summary>Show answer</summary><p>in</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Given <code>minutes = 135</code>, print the hours and remaining minutes as <strong>2 h 15 min</strong> using <code>//</code> and <code>%</code>.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=operators-booleans#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 4 of 19 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/numbers-strings/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Numbers and strings</a><a class="btn btn-solid btn-sm" href="/learn/python/strings-in-depth/">Strings in depth: slicing, methods and f-strings <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

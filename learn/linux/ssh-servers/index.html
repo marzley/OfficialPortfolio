@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SSH and managing a server | Linux command line</title>
+    <meta name="description" content="SSH (Secure Shell) gives you an encrypted terminal on another computer, usually a web server or VPS." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/linux/ssh-servers/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="SSH and managing a server | Linux command line" />
+    <meta property="og:description" content="SSH (Secure Shell) gives you an encrypted terminal on another computer, usually a web server or VPS." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/linux/ssh-servers/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="SSH and managing a server | Linux command line" />
+    <meta name="twitter:description" content="SSH (Secure Shell) gives you an encrypted terminal on another computer, usually a web server or VPS." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/linux/ssh-servers/#lesson","name":"SSH and managing a server","description":"SSH (Secure Shell) gives you an encrypted terminal on another computer, usually a web server or VPS.","url":"https://marzleytechsolutions.co.ke/learn/linux/ssh-servers/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/linux/#course","name":"Linux command line","url":"https://marzleytechsolutions.co.ke/learn/linux/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Linux command line","item":"https://marzleytechsolutions.co.ke/learn/linux/"},{"@type":"ListItem","position":4,"name":"SSH and managing a server","item":"https://marzleytechsolutions.co.ke/learn/linux/ssh-servers/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/linux/">Linux command line</a> / <span>SSH and managing a server</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=linux&amp;lesson=ssh-servers"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>SSH: working on remote servers</h1>
+<p><strong>SSH</strong> (Secure Shell) gives you an encrypted terminal on another computer, usually a web server or VPS.</p>
+<figure class="static-code"><pre><code>ssh kelvin@203.0.113.10          # connect (port 22)
+ssh -p 2222 kelvin@server.co.ke  # different port
+exit                             # leave</code></pre></figure>
+<h2>Use SSH keys, not passwords</h2>
+<figure class="static-code"><pre><code>ssh-keygen -t ed25519 -C &quot;kelvin@laptop&quot;   # make a key pair (once)
+ssh-copy-id kelvin@203.0.113.10             # put your public key on the server</code></pre></figure>
+<p>The <strong>private key</strong> (<code>~/.ssh/id_ed25519</code>) stays secret on your computer; the <strong>public key</strong> (<code>.pub</code>) goes on servers.</p>
+<h2>Copying files</h2>
+<figure class="static-code"><pre><code>scp site.zip kelvin@203.0.113.10:/var/www/          # upload
+scp kelvin@203.0.113.10:/var/log/nginx/error.log .  # download
+rsync -avz ./site/ kelvin@203.0.113.10:/var/www/site/   # sync a folder efficiently</code></pre></figure>
+<h2>Secure a new server (checklist)</h2>
+<ol><li><code>sudo apt update &amp;&amp; sudo apt upgrade</code></li><li>Create a normal user with sudo; log in with keys.</li><li>Disable root login and password login in <code>/etc/ssh/sshd_config</code> (<code>PermitRootLogin no</code>, <code>PasswordAuthentication no</code>), then <code>sudo systemctl restart ssh</code>.</li><li>Firewall: <code>sudo ufw allow OpenSSH</code>, <code>sudo ufw allow &#x27;Nginx Full&#x27;</code>, <code>sudo ufw enable</code>.</li><li>Install <strong>fail2ban</strong> to block password guessers.</li><li>Turn on automatic security updates (<code>unattended-upgrades</code>).</li></ol>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which port does SSH use by default?</p><details><summary>Show answer</summary><p>22</p></details></li><li><p>Which command creates an SSH key pair?</p><details><summary>Show answer</summary><p>ssh-keygen</p></details></li><li><p>Which key stays secret on your computer: public or private?</p><details><summary>Show answer</summary><p>private</p></details></li><li><p>Which tool blocks IPs that keep guessing passwords?</p><details><summary>Show answer</summary><p>fail2ban</p></details></li></ol></section></div><p class="static-meta">Lesson 9 of 10 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/services-cron-logs/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Services, scheduled jobs (cron) and logs</a><a class="btn btn-solid btn-sm" href="/learn/linux/bash-scripts/">Bash scripting basics <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

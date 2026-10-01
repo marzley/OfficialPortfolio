@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DNS and DHCP | Networking</title>
+    <meta name="description" content="Two services quietly make every network usable." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/networking/dns-dhcp/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="DNS and DHCP | Networking" />
+    <meta property="og:description" content="Two services quietly make every network usable." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/networking/dns-dhcp/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="DNS and DHCP | Networking" />
+    <meta name="twitter:description" content="Two services quietly make every network usable." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/networking/dns-dhcp/#lesson","name":"DNS and DHCP","description":"Two services quietly make every network usable.","url":"https://marzleytechsolutions.co.ke/learn/networking/dns-dhcp/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/networking/#course","name":"Networking","url":"https://marzleytechsolutions.co.ke/learn/networking/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Networking","item":"https://marzleytechsolutions.co.ke/learn/networking/"},{"@type":"ListItem","position":4,"name":"DNS and DHCP","item":"https://marzleytechsolutions.co.ke/learn/networking/dns-dhcp/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/networking/">Networking</a> / <span>DNS and DHCP</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=networking&amp;lesson=dns-dhcp"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>DNS and DHCP</h1>
+<p>Two services quietly make every network usable.</p>
+<h2>DHCP: automatic IP settings</h2>
+<p>When your phone joins Wi-Fi, a <strong>DHCP server</strong> (usually the router) gives it:</p>
+<ul><li>an <strong>IP address</strong> and <strong>subnet mask</strong>,</li><li>a <strong>default gateway</strong> (the router's address),</li><li><strong>DNS servers</strong>,</li><li>a <strong>lease time</strong> (how long it may keep the address).</li></ul>
+<p>The four steps are called <strong>DORA</strong>:</p>
+<ol><li><strong>Discover</strong>: the client broadcasts "is there a DHCP server?"</li><li><strong>Offer</strong>: the server offers an address.</li><li><strong>Request</strong>: the client asks for that address.</li><li><strong>Acknowledge</strong>: the server confirms.</li></ol>
+<p>Useful ideas:</p>
+<ul><li><strong>Reservation</strong>: always give the same IP to a device (printers, servers, the M-Pesa till PC) based on its MAC address.</li><li><strong>Scope/pool</strong>: the range the server hands out, e.g. 192.168.1.100–199.</li><li><strong>DHCP relay</strong> (<code>ip helper-address</code> on Cisco): forwards DHCP requests to a server on another subnet.</li><li>A device with <strong>169.254.x.x</strong> couldn't reach any DHCP server.</li></ul>
+<h2>DNS: names to addresses</h2>
+<p>People remember <code>marzleytechsolutions.co.ke</code>; computers need an IP. <strong>DNS</strong> (Domain Name System) translates.</p>
+<p>What happens when you type a website:</p>
+<ol><li>Your device checks its <strong>cache</strong>.</li><li>It asks its <strong>resolver</strong> (your ISP's, or a public one like 1.1.1.1 or 8.8.8.8).</li><li>The resolver asks a <strong>root server</strong> → "ask the <code>.ke</code> servers" → the <code>.ke</code> servers → "ask the <code>.co.ke</code> servers" → then the domain's <strong>authoritative name servers</strong> (e.g. your host's <code>ns1.host.com</code>).</li><li>The answer is cached for its <strong>TTL</strong> (time to live).</li></ol>
+<h2>DNS record types</h2>
+<div class="static-table"><table><thead><tr><th>Record</th><th>Purpose</th><th>Example</th></tr></thead><tbody><tr><td><strong>A</strong></td><td>Name → IPv4</td><td><code>example.co.ke → 102.68.1.10</code></td></tr><tr><td><strong>AAAA</strong></td><td>Name → IPv6</td><td><code>→ 2001:db8::10</code></td></tr><tr><td><strong>CNAME</strong></td><td>Alias to another name</td><td><code>www → example.co.ke</code></td></tr><tr><td><strong>MX</strong></td><td>Mail servers for the domain</td><td><code>10 mail.example.co.ke</code></td></tr><tr><td><strong>TXT</strong></td><td>Text: SPF, DKIM, site verification</td><td><code>v=spf1 include:… ~all</code></td></tr><tr><td><strong>NS</strong></td><td>Which servers are authoritative</td><td><code>ns1.hostingcompany.com</code></td></tr><tr><td><strong>PTR</strong></td><td>IP → name (reverse DNS)</td><td>used by mail servers</td></tr></tbody></table></div>
+<blockquote><p>When you "point a domain to hosting" you change its <strong>NS</strong> records at the registrar, or its <strong>A</strong> record.</p></blockquote>
+<h2>Commands to try</h2>
+<figure class="static-code"><pre><code>nslookup marzleytechsolutions.co.ke
+nslookup -type=mx gmail.com
+ipconfig /all          (Windows: see your DHCP server and DNS)
+ipconfig /release  then  ipconfig /renew</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What do the letters DORA stand for? (four words)</p><details><summary>Show answer</summary><p>Discover Offer Request Acknowledge</p></details></li><li><p>Which DNS record maps a name to an IPv4 address?</p><details><summary>Show answer</summary><p>A</p></details></li><li><p>Which DNS record lists a domain's mail servers?</p><details><summary>Show answer</summary><p>MX</p></details></li><li><p>Which record type is an alias from one name to another?</p><details><summary>Show answer</summary><p>CNAME</p></details></li><li><p>A printer must always get the same address from DHCP. What is this called?</p><details><summary>Show answer</summary><p>reservation</p></details></li><li><p>Which record type maps a name to an IPv6 address?</p><details><summary>Show answer</summary><p>AAAA</p></details></li></ol></section>
+<p><strong>Learn more:</strong> <a href="https://www.cloudflare.com/learning/dns/what-is-dns/" target="_blank" rel="noopener noreferrer">Cloudflare: What is DNS?</a> · <a href="https://www.cloudflare.com/learning/network-layer/what-is-dhcp/" target="_blank" rel="noopener noreferrer">Cloudflare: What is DHCP?</a></p></div><p class="static-meta">Lesson 14 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/tcp-udp-ports/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> TCP, UDP and port numbers</a><a class="btn btn-solid btn-sm" href="/learn/networking/nat-routing/">NAT, gateways and routing <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

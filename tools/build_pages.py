@@ -356,8 +356,15 @@ def build_post(html, post, posts, kind="blog"):
         hero += ('                        <figure class="post-hero"><img src="%s" alt="" width="1200" height="630" loading="eager" /></figure>\n'
                  % og_image(post["slug"]))
     if post.get("image"):
-        hero += ('                        <figure class="post-hero"><img src="%s" alt="%s" loading="eager" /></figure>\n'
-                 % (e(post["image"]), e(post.get("image_alt") or post["title"].split(":")[0] + " screenshot")))
+        size = ""
+        try:
+            from PIL import Image
+            with Image.open(ROOT / post["image"]) as im:
+                size = ' width="%d" height="%d"' % im.size      # reserves the space, so the page doesn't jump
+        except Exception:
+            pass
+        hero += ('                        <figure class="post-hero"><img src="%s" alt="%s"%s loading="eager" /></figure>\n'
+                 % (e(post["image"]), e(post.get("image_alt") or post["title"].split(":")[0] + " screenshot"), size))
     if post.get("live"):
         hero += ('                        <p class="post-live"><a class="btn btn-solid" href="%s" target="_blank" rel="noopener noreferrer">'
                  'Visit the live site <span aria-hidden="true">↗</span></a></p>\n' % e(post["live"]))
@@ -604,7 +611,8 @@ def write_sitemap(posts, cases=()):
     ] + [(p["slug"], "monthly", "0.8", [], p["date"].isoformat()) for p in cases] + [(p["slug"], "monthly", "0.7", [], p["date"].isoformat()) for p in posts]
     seed = json.loads((ROOT / "data" / "learn-seed.json").read_text(encoding="utf-8"))
     urls += [("learn/?page=" + pg, "weekly", "0.6", []) for pg in ("practice", "videos", "notes")]
-    urls += [("learn/?track=%s&lesson=%s" % (t["slug"], l["slug"]), "monthly", "0.6", []) for t in seed["tracks"] for l in t["lessons"]]
+    urls += [("learn/%s/" % t["slug"], "weekly", "0.7", []) for t in seed["tracks"]]                     # course pages
+    urls += [("learn/%s/%s/" % (t["slug"], l["slug"]), "monthly", "0.6", []) for t in seed["tracks"] for l in t["lessons"]]
     urls += [("learn/?book=" + t["slug"], "monthly", "0.6", []) for t in seed["tracks"]]   # whole-subject course notes
     out = ['<?xml version="1.0" encoding="UTF-8"?>',
            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',
@@ -646,6 +654,55 @@ def learn_search_index(posts):
     (ROOT / "data" / "learn-search.json").write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
 
+def write_feed(posts):
+    """feed.xml: an RSS feed of the blog, so readers, aggregators and search engines pick up new posts."""
+    e = htmllib.escape
+    items = []
+    for post in posts[:50]:
+        url = SITE + post["slug"]
+        when = datetime.datetime.combine(post["date"], datetime.time(8, 0)).strftime("%a, %d %b %Y %H:%M:%S +0300")
+        items.append("  <item>\n    <title>%s</title>\n    <link>%s</link>\n    <guid isPermaLink=\"true\">%s</guid>\n"
+                     "    <pubDate>%s</pubDate>\n    <category>%s</category>\n    <description>%s</description>\n  </item>"
+                     % (e(post["title"]), url, url, when, e(post["tag"]), e(post["description"])))
+    feed = ('<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n<channel>\n'
+            "  <title>Marzley Tech Solutions blog</title>\n  <link>%sblog</link>\n"
+            '  <atom:link href="%sfeed.xml" rel="self" type="application/rss+xml" />\n'
+            "  <description>Websites, apps, M-Pesa, AI, learning and earning online in Kenya, by Kelvin Wanyoike (Marzley).</description>\n"
+            "  <language>en-ke</language>\n%s\n</channel>\n</rss>\n") % (SITE, SITE, "\n".join(items))
+    (ROOT / "feed.xml").write_text(feed, encoding="utf-8", newline="")
+
+
+def write_llms_txt(posts):
+    """llms.txt: a plain summary of the site for AI assistants and AI search engines (llmstxt.org)."""
+    seed = json.loads((ROOT / "data" / "learn-seed.json").read_text(encoding="utf-8"))
+    lines = [
+        "# Marzley Tech Solutions",
+        "",
+        "> Kenyan technology company founded by Kelvin Wanyoike (Marzley): websites, apps and business systems with M-Pesa payments, "
+        "design, SEO, hosting and care plans, ICT training, Jitume facilitation, and a free learning hub with %d lessons in %d subjects."
+        % (sum(len(t["lessons"]) for t in seed["tracks"]), len(seed["tracks"])),
+        "",
+        "Contact: +254 745 789 590 (call or WhatsApp, 24/7) · info@marzleytechsolutions.co.ke · %scontact" % SITE,
+        "",
+        "## Main pages",
+        "- [Home](%s): who we are and what we build" % SITE,
+        "- [Services](%sservices): websites, e-commerce, systems, apps, M-Pesa integration, design, SEO" % SITE,
+        "- [Pricing](%spricing): website packages and care plans in KSh" % SITE,
+        "- [Work](%swork): projects and case studies" % SITE,
+        "- [About](%sabout): Kelvin Wanyoike (Marzley) and the company" % SITE,
+        "- [Training](%straining): courses with verifiable certificates" % SITE,
+        "- [FAQ](%sfaq)" % SITE,
+        "- [Free website check](%swebsite-check)" % SITE,
+        "",
+        "## Free learning hub",
+        "- [Learning hub](%slearn/): free interactive lessons with live code, quizzes, notes and videos" % SITE,
+    ]
+    lines += ["- [%s](%slearn/%s/): %s" % (t["title"], SITE, t["slug"], t["summary"]) for t in seed["tracks"]]
+    lines += ["", "## Blog"]
+    lines += ["- [%s](%s%s): %s" % (p["title"], SITE, p["slug"], p["description"]) for p in posts]
+    (ROOT / "llms.txt").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="")
+
+
 def learn_seo():
     """Give /learn/ what search engines need before JavaScript runs: structured data listing every
     subject as a free course, and a plain list of links to every lesson (replaced by the app when it loads)."""
@@ -671,8 +728,8 @@ def learn_seo():
     ld = '<!-- learn:ld --><script type="application/ld+json">' + json.dumps(graph, ensure_ascii=False, separators=(",", ":")) + "</script><!-- /learn:ld -->"
     items = []
     for t in seed["tracks"]:
-        links = "".join('<li><a href="./?track=%s&amp;lesson=%s">%s</a></li>' % (e(t["slug"]), e(l["slug"]), e(l["title"])) for l in t["lessons"])
-        items.append('<li><h3>%s</h3><p>%s</p><ul>%s</ul></li>' % (e(t["title"]), e(t["summary"]), links))
+        links = "".join('<li><a href="%s/%s/">%s</a></li>' % (e(t["slug"]), e(l["slug"]), e(l["title"])) for l in t["lessons"])
+        items.append('<li><h3><a href="%s/">%s</a></h3><p>%s</p><ul>%s</ul></li>' % (e(t["slug"]), e(t["title"]), e(t["summary"]), links))
     index = ('<!-- learn:index --><section class="learn-static"><h1>Free coding and ICT lessons</h1>'
              '<p>%d subjects and %d lessons with live practice, quizzes and notes. No account needed.</p><ul>%s</ul></section><!-- /learn:index -->'
              % (len(seed["tracks"]), sum(len(t["lessons"]) for t in seed["tracks"]), "".join(items)))
@@ -680,6 +737,22 @@ def learn_seo():
     text = f.read_text(encoding="utf-8")
     new = re.sub(r"<!-- learn:ld -->.*?<!-- /learn:ld -->", lambda m: ld, text, flags=re.S)
     new = re.sub(r"<!-- learn:index -->.*?<!-- /learn:index -->", lambda m: index, new, flags=re.S)
+    if new != text:
+        f.write_text(new, encoding="utf-8", newline="")
+
+
+def search_verification():
+    """Search Console / Bing Webmaster verification tags on the homepage, from data/site.json."""
+    cfg = json.loads((ROOT / "data" / "site.json").read_text(encoding="utf-8"))
+    tags = ""
+    for key, name in (("googleSiteVerification", "google-site-verification"), ("bingSiteVerification", "msvalidate.01")):
+        code = re.sub(r"[^A-Za-z0-9_\-]", "", str(cfg.get(key) or ""))
+        if code:
+            tags += '    <meta name="%s" content="%s" />\n' % (name, code)
+    f = ROOT / "index.html"
+    text = f.read_text(encoding="utf-8")
+    new = re.sub(r"(?m)^    <meta name=\"(google-site-verification|msvalidate\.01)\"[^\n]*\n", "", text)
+    new = new.replace("    <title>", tags + "    <title>", 1)
     if new != text:
         f.write_text(new, encoding="utf-8", newline="")
 
@@ -804,6 +877,7 @@ def subset_icons():
 
 
 def main():
+    search_verification()
     minify_assets()
     home = (ROOT / "index.html").read_text(encoding="utf-8")
     sections = sections_of(home)
@@ -823,11 +897,15 @@ def main():
     write("404.html", build_404(home))
     write("user-guide.html", build_user_guide(home))
     write_sitemap(posts, cases)
+    write_feed(posts)
+    write_llms_txt(posts)
     subset_icons()
     inline_css()
     learn_seo()
     learn_search_index(posts)
     version_assets()
+    import learn_static                              # after version_assets: the static pages reuse the stamped stylesheets
+    print("static learn pages: %d lessons, %d subjects" % learn_static.build())
     sync_csp_hash()
     print("wrote sitemap.xml")
 

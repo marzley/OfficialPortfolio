@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Uploading a website with cPanel | Web hosting &amp; deployment</title>
+    <meta name="description" content="Free Web hosting &amp; deployment lesson: Uploading a website with cPanel." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/hosting/cpanel-deploy/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Uploading a website with cPanel | Web hosting &amp; deployment" />
+    <meta property="og:description" content="Free Web hosting &amp; deployment lesson: Uploading a website with cPanel." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/hosting/cpanel-deploy/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Uploading a website with cPanel | Web hosting &amp; deployment" />
+    <meta name="twitter:description" content="Free Web hosting &amp; deployment lesson: Uploading a website with cPanel." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/hosting/cpanel-deploy/#lesson","name":"Uploading a website with cPanel","description":"Free Web hosting & deployment lesson: Uploading a website with cPanel.","url":"https://marzleytechsolutions.co.ke/learn/hosting/cpanel-deploy/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/hosting/#course","name":"Web hosting & deployment","url":"https://marzleytechsolutions.co.ke/learn/hosting/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Web hosting & deployment","item":"https://marzleytechsolutions.co.ke/learn/hosting/"},{"@type":"ListItem","position":4,"name":"Uploading a website with cPanel","item":"https://marzleytechsolutions.co.ke/learn/hosting/cpanel-deploy/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/hosting/">Web hosting &amp; deployment</a> / <span>Uploading a website with cPanel</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=hosting&amp;lesson=cpanel-deploy"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Deploying with cPanel</h1>
+<h2>Upload the files</h2>
+<ol><li>Log in to cPanel (<code>yourdomain.co.ke/cpanel</code> or via the host's client area).</li><li>Open <strong>File Manager</strong> → <code>public_html</code> (the folder your domain shows).</li><li><strong>Upload</strong> a <code>.zip</code> of your site, then right-click → <strong>Extract</strong>. (Much faster than uploading hundreds of files.)</li><li>Your home page must be <code>index.html</code> or <code>index.php</code> at the top of <code>public_html</code>.</li><li>Turn on <strong>Show Hidden Files</strong> to see <code>.htaccess</code>.</li></ol>
+<p>Alternatives: <strong>FTP/SFTP</strong> with FileZilla, or <strong>Git Version Control</strong> in cPanel.</p>
+<h2>Create a database (for PHP apps)</h2>
+<ol><li><strong>MySQL Databases</strong> (or the Database Wizard): create a database and a user with a strong password.</li><li><strong>Add the user to the database</strong> with <strong>All privileges</strong>.</li><li>Import tables with <strong>phpMyAdmin → Import</strong> (<code>.sql</code> file).</li><li>Put the database name, user and password in your app's config file (keep it <strong>outside</strong> <code>public_html</code> when possible).</li></ol>
+<p>Names get a prefix: <code>cpaneluser_shop</code>, <code>cpaneluser_shopuser</code>.</p>
+<h2>Other cPanel tools you'll use</h2>
+<ul><li><strong>SSL/TLS Status / AutoSSL</strong>: free HTTPS certificates.</li><li><strong>Email Accounts</strong>: create <code>info@yourdomain.co.ke</code>.</li><li><strong>Cron Jobs</strong>: scheduled tasks (backups, reminders).</li><li><strong>Select PHP Version</strong>: choose PHP 8.2+ and extensions.</li><li><strong>Backup / JetBackup</strong>: download or restore backups.</li><li><strong>Metrics → Errors</strong>: see PHP errors.</li></ul>
+<h2>Launch checklist</h2>
+<ul><li>[ ] HTTPS works and http redirects to https</li><li>[ ] Forms send email / save data</li><li>[ ] Mobile test, speed test (PageSpeed Insights)</li><li>[ ] 404 page, favicon, Open Graph image</li><li>[ ] Google Search Console + sitemap submitted</li><li>[ ] Backups scheduled</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which folder does your main domain show in cPanel?</p><details><summary>Show answer</summary><p>public_html</p></details></li><li><p>What must the main page file be called? (one of them)</p><details><summary>Show answer</summary><p>index.html</p></details></li><li><p>Which cPanel tool imports .sql files into a database?</p><details><summary>Show answer</summary><p>phpMyAdmin</p></details></li><li><p>What must you do after creating a MySQL user in cPanel so it can use the database?</p><details><summary>Show answer</summary><p>add the user to the database</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 8 in <a href="/learn/hosting/">Web hosting &amp; deployment</a> · <a href="/learn/?book=hosting">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/hosting/dns-records/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Pointing a domain: DNS records</a><a class="btn btn-solid btn-sm" href="/learn/hosting/wordpress-basics/">WordPress: install, themes, plugins and keeping it safe <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

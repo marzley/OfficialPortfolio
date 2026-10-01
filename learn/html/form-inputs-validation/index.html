@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Form input types and built-in validation | HTML</title>
+    <meta name="description" content="In the Forms lesson you built a basic form. Now let&#x27;s make forms that are easy on phones and catch mistakes before anything is sent, without writing…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/html/form-inputs-validation/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Form input types and built-in validation | HTML" />
+    <meta property="og:description" content="In the Forms lesson you built a basic form. Now let&#x27;s make forms that are easy on phones and catch mistakes before anything is sent, without writing…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/html/form-inputs-validation/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Form input types and built-in validation | HTML" />
+    <meta name="twitter:description" content="In the Forms lesson you built a basic form. Now let&#x27;s make forms that are easy on phones and catch mistakes before anything is sent, without writing…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/html/form-inputs-validation/#lesson","name":"Form input types and built-in validation","description":"In the Forms lesson you built a basic form. Now let's make forms that are easy on phones and catch mistakes before anything is sent, without writing…","url":"https://marzleytechsolutions.co.ke/learn/html/form-inputs-validation/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/html/#course","name":"HTML","url":"https://marzleytechsolutions.co.ke/learn/html/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"HTML","item":"https://marzleytechsolutions.co.ke/learn/html/"},{"@type":"ListItem","position":4,"name":"Form input types and built-in validation","item":"https://marzleytechsolutions.co.ke/learn/html/form-inputs-validation/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/html/">HTML</a> / <span>Form input types and built-in validation</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=html&amp;lesson=form-inputs-validation"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Form input types and built-in validation</h1>
+<p>In the <em>Forms</em> lesson you built a basic form. Now let's make forms that are <strong>easy on phones</strong> and <strong>catch mistakes</strong> before anything is sent, without writing any JavaScript.</p>
+<h2>Input types that help on phones</h2>
+<p>The <code>type</code> attribute changes both the checking and the <strong>keyboard</strong> a phone shows:</p>
+<div class="static-table"><table><thead><tr><th>type</th><th>Use for</th><th>Phone keyboard</th></tr></thead><tbody><tr><td><code>text</code></td><td>Names, general text</td><td>Letters</td></tr><tr><td><code>email</code></td><td>Email addresses</td><td>Has <code>@</code> and <code>.</code></td></tr><tr><td><code>tel</code></td><td>Phone numbers</td><td>Number pad</td></tr><tr><td><code>number</code></td><td>Quantities, ages</td><td>Numbers</td></tr><tr><td><code>url</code></td><td>Website addresses</td><td>Has <code>/</code> and <code>.com</code></td></tr><tr><td><code>password</code></td><td>Passwords</td><td>Hides what you type</td></tr><tr><td><code>date</code></td><td>Dates</td><td>Date picker</td></tr><tr><td><code>search</code></td><td>Search boxes</td><td>Has a "search" key</td></tr><tr><td><code>checkbox</code></td><td>Yes/no, many choices</td><td>Tick box</td></tr><tr><td><code>radio</code></td><td>One choice from a group</td><td>Round buttons</td></tr><tr><td><code>range</code></td><td>A slider</td><td>Slider</td></tr><tr><td><code>file</code></td><td>Uploads</td><td>File or camera picker</td></tr><tr><td><code>color</code></td><td>Colour picker</td><td>Colour picker</td></tr></tbody></table></div>
+<h2>Validation attributes</h2>
+<div class="static-table"><table><thead><tr><th>Attribute</th><th>Meaning</th><th>Example</th></tr></thead><tbody><tr><td><code>required</code></td><td>Must not be empty</td><td><code>&lt;input required&gt;</code></td></tr><tr><td><code>minlength</code> / <code>maxlength</code></td><td>Text length limits</td><td><code>minlength=&quot;8&quot;</code></td></tr><tr><td><code>min</code> / <code>max</code></td><td>Number or date limits</td><td><code>min=&quot;1&quot; max=&quot;10&quot;</code></td></tr><tr><td><code>step</code></td><td>Allowed steps for numbers</td><td><code>step=&quot;50&quot;</code></td></tr><tr><td><code>pattern</code></td><td>Must match a pattern (regular expression)</td><td><code>pattern=&quot;0[17][0-9]{8}&quot;</code></td></tr><tr><td><code>placeholder</code></td><td>A hint inside the box (not a label!)</td><td><code>placeholder=&quot;0712 345 678&quot;</code></td></tr><tr><td><code>autocomplete</code></td><td>Helps the browser fill it in</td><td><code>autocomplete=&quot;email&quot;</code></td></tr></tbody></table></div>
+<h2>Try it: an order form that checks itself</h2>
+<p>Press <strong>Send</strong> with empty or wrong values and watch the browser stop you.</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  body { font-family: sans-serif; }
+  label { display: block; margin-top: 10px; font-weight: bold; }
+  input, select { padding: 8px; width: 100%; max-width: 320px; box-sizing: border-box; }
+  input:invalid:not(:placeholder-shown) { border: 2px solid #dc2626; }
+  input:valid:not(:placeholder-shown) { border: 2px solid #16a34a; }
+&lt;/style&gt;
+&lt;form&gt;
+  &lt;label for=&quot;name&quot;&gt;Full name&lt;/label&gt;
+  &lt;input id=&quot;name&quot; name=&quot;name&quot; required minlength=&quot;3&quot; autocomplete=&quot;name&quot; placeholder=&quot;Amina Wanjiru&quot;&gt;
+
+  &lt;label for=&quot;phone&quot;&gt;Safaricom number&lt;/label&gt;
+  &lt;input id=&quot;phone&quot; name=&quot;phone&quot; type=&quot;tel&quot; required pattern=&quot;0[17][0-9]{8}&quot; placeholder=&quot;0712345678&quot;
+         title=&quot;10 digits starting with 07 or 01&quot;&gt;
+
+  &lt;label for=&quot;email&quot;&gt;Email&lt;/label&gt;
+  &lt;input id=&quot;email&quot; name=&quot;email&quot; type=&quot;email&quot; placeholder=&quot;you@example.com&quot;&gt;
+
+  &lt;label for=&quot;qty&quot;&gt;How many cakes? (1 to 10)&lt;/label&gt;
+  &lt;input id=&quot;qty&quot; name=&quot;qty&quot; type=&quot;number&quot; min=&quot;1&quot; max=&quot;10&quot; value=&quot;1&quot; required&gt;
+
+  &lt;label for=&quot;day&quot;&gt;Delivery date&lt;/label&gt;
+  &lt;input id=&quot;day&quot; name=&quot;day&quot; type=&quot;date&quot; required&gt;
+
+  &lt;label for=&quot;size&quot;&gt;Size&lt;/label&gt;
+  &lt;select id=&quot;size&quot; name=&quot;size&quot; required&gt;
+    &lt;option value=&quot;&quot;&gt;Choose a size&lt;/option&gt;
+    &lt;option&gt;1 kg&lt;/option&gt;
+    &lt;option&gt;2 kg&lt;/option&gt;
+  &lt;/select&gt;
+
+  &lt;p&gt;&lt;label&gt;&lt;input type=&quot;checkbox&quot; required&gt; I agree to the terms&lt;/label&gt;&lt;/p&gt;
+  &lt;button type=&quot;button&quot; onclick=&quot;if (this.form.reportValidity()) document.getElementById(&#x27;ok&#x27;).textContent = &#x27;Looks good! (practice form, nothing is sent)&#x27;;&quot;&gt;Send&lt;/button&gt;
+  &lt;p id=&quot;ok&quot;&gt;&lt;/p&gt;
+&lt;/form&gt;</code></pre></figure>
+<h2>How the pattern works</h2>
+<p><code>pattern=&quot;0[17][0-9]{8}&quot;</code> reads as:</p>
+<ul><li><code>0</code> : the first digit must be 0,</li><li><code>[17]</code> : then a 1 or a 7,</li><li><code>[0-9]{8}</code> : then exactly 8 more digits.</li></ul>
+<p>So <code>0712345678</code> and <code>0110123456</code> pass, but <code>712345678</code> and <code>07123</code> fail. Add a <code>title</code> to explain the format; browsers show it in the error message.</p>
+<h2>Radio buttons and checkboxes</h2>
+<p>Radio buttons in a group share the **same <code>name</code>**, so only one can be chosen. Wrap them in <code>&lt;fieldset&gt;</code> with a <code>&lt;legend&gt;</code> so everyone knows what the question is:</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;form&gt;
+  &lt;fieldset&gt;
+    &lt;legend&gt;How will you pay?&lt;/legend&gt;
+    &lt;label&gt;&lt;input type=&quot;radio&quot; name=&quot;pay&quot; value=&quot;mpesa&quot; checked&gt; M-Pesa&lt;/label&gt;
+    &lt;label&gt;&lt;input type=&quot;radio&quot; name=&quot;pay&quot; value=&quot;card&quot;&gt; Card&lt;/label&gt;
+    &lt;label&gt;&lt;input type=&quot;radio&quot; name=&quot;pay&quot; value=&quot;cash&quot;&gt; Cash on delivery&lt;/label&gt;
+  &lt;/fieldset&gt;
+  &lt;fieldset&gt;
+    &lt;legend&gt;Extras&lt;/legend&gt;
+    &lt;label&gt;&lt;input type=&quot;checkbox&quot; name=&quot;extra&quot; value=&quot;candles&quot;&gt; Candles&lt;/label&gt;
+    &lt;label&gt;&lt;input type=&quot;checkbox&quot; name=&quot;extra&quot; value=&quot;card&quot;&gt; Greeting card&lt;/label&gt;
+  &lt;/fieldset&gt;
+&lt;/form&gt;</code></pre></figure>
+<h2>Important: always check on the server too</h2>
+<p>Built-in validation helps honest users. Anyone can switch it off in their browser, so your server code (PHP, Python...) must <strong>check everything again</strong> before saving or charging money. You'll see this in the PHP lessons.</p>
+<h2>Good form habits</h2>
+<ul><li>Every input needs a visible <code>&lt;label&gt;</code>. Placeholders disappear when you type.</li><li>Ask only for what you need. Every extra field loses customers.</li><li>Use the right <code>type</code> so phones show the right keyboard.</li><li>Put helpful formats in the label or <code>title</code> ("10 digits starting with 07").</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which input type shows a number pad for phone numbers on mobile?</p><details><summary>Show answer</summary><p>tel</p></details></li><li><p>Which attribute makes a field compulsory?</p><details><summary>Show answer</summary><p>required</p></details></li><li><p>Radio buttons in the same group must share the same value for which attribute?</p><details><summary>Show answer</summary><p>name</p></details></li><li><p>Which element gives a group of inputs a caption, inside a fieldset?</p><details><summary>Show answer</summary><p>legend</p></details></li><li><p>Is browser validation enough on its own, or must the server check again too?</p><details><summary>Show answer</summary><p>server</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Make an input for a Kenyan phone number: <code>type=&quot;tel&quot;</code>, <code>required</code> and the pattern <code>0[17][0-9]{8}</code>, with a label.</p><p><a class="btn btn-solid" href="/learn/?track=html&amp;lesson=form-inputs-validation#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 11 of 16 in <a href="/learn/html/">HTML</a> · <a href="/learn/?book=html">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/html/forms/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Forms</a><a class="btn btn-solid btn-sm" href="/learn/html/semantic/">Semantic HTML <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

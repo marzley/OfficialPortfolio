@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Secure file uploads (images and documents) | PHP &amp; MySQL</title>
+    <meta name="description" content="Profile photos, ID scans, assignment PDFs, product images: many systems accept uploads. Uploads are also one of the most dangerous features: a careless…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/php/file-uploads/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Secure file uploads (images and documents) | PHP &amp; MySQL" />
+    <meta property="og:description" content="Profile photos, ID scans, assignment PDFs, product images: many systems accept uploads. Uploads are also one of the most dangerous features: a careless…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/php/file-uploads/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Secure file uploads (images and documents) | PHP &amp; MySQL" />
+    <meta name="twitter:description" content="Profile photos, ID scans, assignment PDFs, product images: many systems accept uploads. Uploads are also one of the most dangerous features: a careless…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/php/file-uploads/#lesson","name":"Secure file uploads (images and documents)","description":"Profile photos, ID scans, assignment PDFs, product images: many systems accept uploads. Uploads are also one of the most dangerous features: a careless…","url":"https://marzleytechsolutions.co.ke/learn/php/file-uploads/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/php/#course","name":"PHP & MySQL","url":"https://marzleytechsolutions.co.ke/learn/php/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"PHP & MySQL","item":"https://marzleytechsolutions.co.ke/learn/php/"},{"@type":"ListItem","position":4,"name":"Secure file uploads (images and documents)","item":"https://marzleytechsolutions.co.ke/learn/php/file-uploads/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/php/">PHP &amp; MySQL</a> / <span>Secure file uploads (images and documents)</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=php&amp;lesson=file-uploads"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Secure file uploads</h1>
+<p>Profile photos, ID scans, assignment PDFs, product images: many systems accept uploads. Uploads are also one of the <strong>most dangerous</strong> features: a careless upload form lets an attacker put a PHP file on your server and take it over. Here's how to do it safely.</p>
+<h2>The form</h2>
+<figure class="static-code"><figcaption>HTML</figcaption><pre><code class="language-html">&lt;form method=&quot;post&quot; action=&quot;upload.php&quot; enctype=&quot;multipart/form-data&quot;&gt;
+  &lt;label&gt;Product photo &lt;input type=&quot;file&quot; name=&quot;photo&quot; accept=&quot;image/jpeg,image/png,image/webp&quot; required&gt;&lt;/label&gt;
+  &lt;button&gt;Upload&lt;/button&gt;
+&lt;/form&gt;</code></pre></figure>
+<p><code>enctype=&quot;multipart/form-data&quot;</code> is <strong>required</strong> for file uploads; without it the file never arrives.</p>
+<h2>What PHP gives you: $_FILES</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">$_FILES[&#x27;photo&#x27;] = [
+  &#x27;name&#x27;     =&gt; &#x27;my photo.JPG&#x27;,       // from the user: NEVER trust it
+  &#x27;type&#x27;     =&gt; &#x27;image/jpeg&#x27;,         // from the browser: NEVER trust it
+  &#x27;tmp_name&#x27; =&gt; &#x27;/tmp/phpA1b2C3&#x27;,     // where PHP stored it temporarily
+  &#x27;error&#x27;    =&gt; 0,                    // UPLOAD_ERR_OK
+  &#x27;size&#x27;     =&gt; 482193,               // bytes
+];</code></pre></figure>
+<h2>The secure upload script</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+const MAX_BYTES = 3 * 1024 * 1024;                        // 3 MB
+const ALLOWED = [&#x27;image/jpeg&#x27; =&gt; &#x27;jpg&#x27;, &#x27;image/png&#x27; =&gt; &#x27;png&#x27;, &#x27;image/webp&#x27; =&gt; &#x27;webp&#x27;];
+$dir = dirname(__DIR__) . &#x27;/uploads&#x27;;                     // OUTSIDE public_html if possible
+
+$f = $_FILES[&#x27;photo&#x27;] ?? null;
+if (!$f || $f[&#x27;error&#x27;] !== UPLOAD_ERR_OK) {
+    exit(&#x27;Upload failed. Please try again.&#x27;);
+}
+if ($f[&#x27;size&#x27;] &gt; MAX_BYTES) {
+    exit(&#x27;File too big. Maximum is 3 MB.&#x27;);
+}
+
+// 1. Check the REAL type from the file&#x27;s contents, not the name or browser
+$mime = (new finfo(FILEINFO_MIME_TYPE))-&gt;file($f[&#x27;tmp_name&#x27;]);
+if (!isset(ALLOWED[$mime])) {
+    exit(&#x27;Only JPG, PNG or WebP images are allowed.&#x27;);
+}
+
+// 2. For images, confirm it really is an image
+if (!getimagesize($f[&#x27;tmp_name&#x27;])) {
+    exit(&#x27;That file is not a valid image.&#x27;);
+}
+
+// 3. Make our own random name with the correct extension
+$name = bin2hex(random_bytes(16)) . &#x27;.&#x27; . ALLOWED[$mime];
+
+// 4. Move it from the temp folder into place
+if (!move_uploaded_file($f[&#x27;tmp_name&#x27;], &quot;$dir/$name&quot;)) {
+    exit(&#x27;Could not save the file.&#x27;);
+}
+
+// 5. Save only the new name in the database
+$stmt = $pdo-&gt;prepare(&#x27;UPDATE products SET photo = ? WHERE id = ?&#x27;);
+$stmt-&gt;execute([$name, $productId]);
+echo &#x27;Uploaded!&#x27;;</code></pre></figure>
+<h2>Why each step matters</h2>
+<div class="static-table"><table><thead><tr><th>Step</th><th>Stops</th></tr></thead><tbody><tr><td>Size limit</td><td>Filling your disk, slow uploads</td></tr><tr><td>Check contents with <code>finfo</code></td><td><code>shell.php</code> renamed to <code>photo.jpg</code></td></tr><tr><td><code>getimagesize</code></td><td>Files pretending to be images</td></tr><tr><td>Random new name</td><td>Overwriting other files, <code>../../</code> tricks, guessing names, strange characters</td></tr><tr><td>Our own extension</td><td>Double extensions like <code>photo.php.jpg</code></td></tr><tr><td>Store outside <code>public_html</code></td><td>Uploaded files being run as code</td></tr></tbody></table></div>
+<h2>Block PHP in the uploads folder</h2>
+<p>If uploads must be inside the web folder, add an <code>.htaccess</code> there (Apache):</p>
+<figure class="static-code"><pre><code># uploads/.htaccess
+php_flag engine off
+&lt;FilesMatch &quot;\.(php|phtml|phar|pl|py|cgi)$&quot;&gt;
+    Require all denied
+&lt;/FilesMatch&gt;
+Options -Indexes</code></pre></figure>
+<h2>Serving private files (e.g. ID documents)</h2>
+<p>Store them outside <code>public_html</code> and send them through a PHP script that checks the user is allowed:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+session_start();
+if (empty($_SESSION[&#x27;user_id&#x27;])) { http_response_code(403); exit; }
+$name = basename($_GET[&#x27;f&#x27;] ?? &#x27;&#x27;);                 // basename blocks ../ paths
+$path = dirname(__DIR__) . &quot;/private-uploads/$name&quot;;
+if (!preg_match(&#x27;/^[a-f0-9]{32}\.(pdf|jpg|png)$/&#x27;, $name) || !is_file($path)) { http_response_code(404); exit; }
+// also check that this file belongs to this user in the database!
+header(&#x27;Content-Type: &#x27; . mime_content_type($path));
+header(&#x27;Content-Disposition: inline; filename=&quot;document&quot;&#x27;);
+readfile($path);</code></pre></figure>
+<h2>Server limits (php.ini)</h2>
+<div class="static-table"><table><thead><tr><th>Setting</th><th>Controls</th></tr></thead><tbody><tr><td><code>upload_max_filesize</code></td><td>Largest single file</td></tr><tr><td><code>post_max_size</code></td><td>Largest whole form (must be bigger)</td></tr><tr><td><code>max_file_uploads</code></td><td>Files per request</td></tr></tbody></table></div>
+<p>On cPanel, change them under <strong>Select PHP Version → Options</strong> or <strong>MultiPHP INI Editor</strong>.</p>
+<h2>Resize images to save space</h2>
+<p>Phone photos are 3–5 MB. Resize on upload (GD or Imagick) to around 1200 px wide and save as WebP: pages load faster and hosting lasts longer.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which form attribute is required for file uploads? Write enctype's value.</p><details><summary>Show answer</summary><p>multipart/form-data</p></details></li><li><p>Which PHP function moves the uploaded file from the temp folder?</p><details><summary>Show answer</summary><p>move_uploaded_file</p></details></li><li><p>Should you trust the file name and type sent by the browser? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which PHP class reads a file's real type from its contents?</p><details><summary>Show answer</summary><p>finfo</p></details></li><li><p>Which function strips folder paths like ../ from a file name?</p><details><summary>Show answer</summary><p>basename</p></details></li></ol></section></div><p class="static-meta">Lesson 10 of 13 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/sessions-login/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Sessions and a login system</a><a class="btn btn-solid btn-sm" href="/learn/php/json-api/">Build a JSON API with PHP <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

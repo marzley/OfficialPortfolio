@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Undo mistakes safely | Git &amp; GitHub</title>
+    <meta name="description" content="Situation Command --- --- Throw away changes to a file you haven&#x27;t staged git restore file.html Unstage a file (keep the changes) git restore --staged…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/git/undo-and-rescue/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Undo mistakes safely | Git &amp; GitHub" />
+    <meta property="og:description" content="Situation Command --- --- Throw away changes to a file you haven&#x27;t staged git restore file.html Unstage a file (keep the changes) git restore --staged…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/git/undo-and-rescue/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Undo mistakes safely | Git &amp; GitHub" />
+    <meta name="twitter:description" content="Situation Command --- --- Throw away changes to a file you haven&#x27;t staged git restore file.html Unstage a file (keep the changes) git restore --staged…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/git/undo-and-rescue/#lesson","name":"Undo mistakes safely","description":"Situation Command --- --- Throw away changes to a file you haven't staged git restore file.html Unstage a file (keep the changes) git restore --staged…","url":"https://marzleytechsolutions.co.ke/learn/git/undo-and-rescue/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/git/#course","name":"Git & GitHub","url":"https://marzleytechsolutions.co.ke/learn/git/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Git & GitHub","item":"https://marzleytechsolutions.co.ke/learn/git/"},{"@type":"ListItem","position":4,"name":"Undo mistakes safely","item":"https://marzleytechsolutions.co.ke/learn/git/undo-and-rescue/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/git/">Git &amp; GitHub</a> / <span>Undo mistakes safely</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=git&amp;lesson=undo-and-rescue"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Undo mistakes safely</h1>
+<div class="static-table"><table><thead><tr><th>Situation</th><th>Command</th></tr></thead><tbody><tr><td>Throw away changes to a file you haven't staged</td><td><code>git restore file.html</code></td></tr><tr><td>Unstage a file (keep the changes)</td><td><code>git restore --staged file.html</code></td></tr><tr><td>Fix the last commit message (not yet pushed)</td><td><code>git commit --amend -m &quot;Better message&quot;</code></td></tr><tr><td>Add a forgotten file to the last commit (not pushed)</td><td><code>git add file</code> then <code>git commit --amend --no-edit</code></td></tr><tr><td>Undo a commit that's already pushed</td><td><code>git revert &lt;commit-id&gt;</code> (makes a new "undo" commit)</td></tr><tr><td>Go back to see an old version</td><td><code>git switch --detach &lt;commit-id&gt;</code> then <code>git switch main</code> to return</td></tr><tr><td>Save unfinished work temporarily</td><td><code>git stash</code> … later <code>git stash pop</code></td></tr><tr><td>Find a lost commit</td><td><code>git reflog</code></td></tr></tbody></table></div>
+<h2>Golden rules</h2>
+<ul><li><strong>Never rewrite history that others have pulled</strong> (<code>--amend</code>, <code>rebase</code>, <code>reset --hard</code>, <code>push --force</code> on shared branches). Use <code>revert</code> instead.</li><li>Commit small and often, so undoing is easy.</li><li>Before risky changes, create a branch.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command safely undoes a commit that is already pushed?</p><details><summary>Show answer</summary><p>git revert</p></details></li><li><p>Which command temporarily saves unfinished work?</p><details><summary>Show answer</summary><p>git stash</p></details></li><li><p>Which command can find "lost" commits?</p><details><summary>Show answer</summary><p>git reflog</p></details></li></ol></section></div><p class="static-meta">Lesson 10 of 10 in <a href="/learn/git/">Git &amp; GitHub</a> · <a href="/learn/?book=git">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/git/github-pages/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Publish a website free with GitHub Pages</a><span></span></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

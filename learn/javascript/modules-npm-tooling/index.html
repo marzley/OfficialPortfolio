@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Modules, npm and the modern JavaScript toolbox | JavaScript</title>
+    <meta name="description" content="Small scripts fit in one file. Real apps have dozens. Modules split code into files that share only what they choose to, and npm gives you access to…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/javascript/modules-npm-tooling/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Modules, npm and the modern JavaScript toolbox | JavaScript" />
+    <meta property="og:description" content="Small scripts fit in one file. Real apps have dozens. Modules split code into files that share only what they choose to, and npm gives you access to…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/javascript/modules-npm-tooling/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Modules, npm and the modern JavaScript toolbox | JavaScript" />
+    <meta name="twitter:description" content="Small scripts fit in one file. Real apps have dozens. Modules split code into files that share only what they choose to, and npm gives you access to…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/javascript/modules-npm-tooling/#lesson","name":"Modules, npm and the modern JavaScript toolbox","description":"Small scripts fit in one file. Real apps have dozens. Modules split code into files that share only what they choose to, and npm gives you access to…","url":"https://marzleytechsolutions.co.ke/learn/javascript/modules-npm-tooling/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/javascript/#course","name":"JavaScript","url":"https://marzleytechsolutions.co.ke/learn/javascript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/"},{"@type":"ListItem","position":4,"name":"Modules, npm and the modern JavaScript toolbox","item":"https://marzleytechsolutions.co.ke/learn/javascript/modules-npm-tooling/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/javascript/">JavaScript</a> / <span>Modules, npm and the modern JavaScript toolbox</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=modules-npm-tooling"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Modules, npm and the modern JavaScript toolbox</h1>
+<p>Small scripts fit in one file. Real apps have dozens. <strong>Modules</strong> split code into files that share only what they choose to, and <strong>npm</strong> gives you access to millions of free packages. This lesson explains the tools you'll meet in every modern JavaScript job.</p>
+<h2>ES modules: export and import</h2>
+<p><strong>money.js</strong></p>
+<figure class="static-code"><figcaption>JavaScript</figcaption><pre><code class="language-javascript">export const VAT = 0.16;
+
+export function withVat(amount) {
+  return Math.round(amount * (1 + VAT));
+}
+
+export default function formatKsh(n) {
+  return &quot;KSh &quot; + n.toLocaleString(&quot;en-KE&quot;);
+}</code></pre></figure>
+<p><strong>app.js</strong></p>
+<figure class="static-code"><figcaption>JavaScript</figcaption><pre><code class="language-javascript">import formatKsh, { withVat, VAT } from &quot;./money.js&quot;;
+
+console.log(formatKsh(withVat(1000)));   // KSh 1,160
+console.log(`VAT is ${VAT * 100}%`);</code></pre></figure>
+<p><strong>index.html</strong></p>
+<figure class="static-code"><figcaption>HTML</figcaption><pre><code class="language-html">&lt;script type=&quot;module&quot; src=&quot;app.js&quot;&gt;&lt;/script&gt;</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Syntax</th><th>Meaning</th></tr></thead><tbody><tr><td><code>export const x</code> / <code>export function f</code></td><td>Named export (a file can have many)</td></tr><tr><td><code>export default ...</code></td><td>The main export (one per file)</td></tr><tr><td><code>import { x, f } from &quot;./file.js&quot;</code></td><td>Import named exports (names must match)</td></tr><tr><td><code>import anything from &quot;./file.js&quot;</code></td><td>Import the default (any name you like)</td></tr><tr><td><code>import * as money from &quot;./money.js&quot;</code></td><td>Everything as one object</td></tr></tbody></table></div>
+<p>Benefits: each file has its own scope (no accidental global variables), dependencies are clear, and tools can remove unused code.</p>
+<blockquote><p>Module scripts only work when the page is served over <code>http://</code> or <code>https://</code>, not by double-clicking the file. Use VS Code's Live Server extension or <code>npx serve</code>.</p></blockquote>
+<h2>Node.js: JavaScript outside the browser</h2>
+<p><strong>Node.js</strong> runs JavaScript on your computer or a server. With it you can build APIs, command-line tools and run build tools. After installing Node from nodejs.org:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">node --version
+node hello.js</code></pre></figure>
+<h2>npm: the package manager</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">npm init -y                 # create package.json for your project
+npm install dayjs           # add a package (saved in node_modules/)
+npm install -D vite         # a development tool
+npm run dev                 # run a script from package.json</code></pre></figure>
+<p><strong>package.json</strong> lists your project's packages and scripts:</p>
+<figure class="static-code"><figcaption>JSON</figcaption><pre><code class="language-json">{
+  &quot;name&quot;: &quot;duka-app&quot;,
+  &quot;scripts&quot;: { &quot;dev&quot;: &quot;vite&quot;, &quot;build&quot;: &quot;vite build&quot; },
+  &quot;dependencies&quot;: { &quot;dayjs&quot;: &quot;^1.11.10&quot; },
+  &quot;devDependencies&quot;: { &quot;vite&quot;: &quot;^5.0.0&quot; }
+}</code></pre></figure>
+<ul><li><code>node_modules/</code> holds the downloaded packages. Never edit it, and never commit it to Git (add it to <code>.gitignore</code>).</li><li>Anyone can recreate it with <code>npm install</code>.</li><li><code>package-lock.json</code> records exact versions so everyone gets the same code: commit it.</li></ul>
+<h2>The tools you'll hear about</h2>
+<div class="static-table"><table><thead><tr><th>Tool</th><th>What it does</th></tr></thead><tbody><tr><td><strong>Vite</strong></td><td>Dev server with instant reload, and builds optimised files for production</td></tr><tr><td><strong>ESLint</strong></td><td>Finds mistakes and bad patterns as you type</td></tr><tr><td><strong>Prettier</strong></td><td>Formats your code automatically</td></tr><tr><td><strong>TypeScript</strong></td><td>Adds types to JavaScript (see our TypeScript tutorial)</td></tr><tr><td><strong>React / Vue / Svelte</strong></td><td>Libraries for building interactive user interfaces from components</td></tr><tr><td><strong>Express</strong></td><td>A small framework for building web servers and APIs in Node</td></tr></tbody></table></div>
+<h2>A tiny Node API with Express</h2>
+<figure class="static-code"><figcaption>JavaScript</figcaption><pre><code class="language-javascript">// server.js  (npm install express, then: node server.js)
+import express from &quot;express&quot;;
+const app = express();
+app.use(express.json());
+
+const products = [{ id: 1, name: &quot;Unga&quot;, price: 180 }];
+
+app.get(&quot;/api/products&quot;, (req, res) =&gt; res.json(products));
+app.post(&quot;/api/products&quot;, (req, res) =&gt; {
+  const p = { id: products.length + 1, ...req.body };
+  products.push(p);
+  res.status(201).json(p);
+});
+
+app.listen(3000, () =&gt; console.log(&quot;API on http://localhost:3000&quot;));</code></pre></figure>
+<p>Your front-end can now <code>fetch(&quot;/api/products&quot;)</code>. This is the core of full-stack JavaScript.</p>
+<h2>Choosing packages wisely</h2>
+<ul><li>Check weekly downloads, last update date and open issues on npmjs.com.</li><li>Fewer packages means fewer security risks and a smaller app. Don't install a package for something a few lines of code can do.</li><li>Run <code>npm audit</code> to check for known security problems.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword shares a function from a module file?</p><details><summary>Show answer</summary><p>export</p></details></li><li><p>What must the script tag's type be to use import in the browser?</p><details><summary>Show answer</summary><p>module</p></details></li><li><p>Which command creates a package.json file quickly?</p><details><summary>Show answer</summary><p>npm init -y</p></details></li><li><p>Which folder should never be committed to Git?</p><details><summary>Show answer</summary><p>node_modules</p></details></li><li><p>What runs JavaScript outside the browser, on servers?</p><details><summary>Show answer</summary><p>node</p></details></li></ol></section></div><p class="static-meta">Lesson 17 of 19 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/classes-oop/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Classes and object-oriented JavaScript</a><a class="btn btn-solid btn-sm" href="/learn/javascript/project-todo/">Project: a to-do list app <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

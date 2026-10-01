@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HashMap, collections and exception handling | Java</title>
+    <meta name="description" content="Two things every real Java program needs: the right collection for the data, and exception handling so one bad input doesn&#x27;t crash everything." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/java/collections-exceptions/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="HashMap, collections and exception handling | Java" />
+    <meta property="og:description" content="Two things every real Java program needs: the right collection for the data, and exception handling so one bad input doesn&#x27;t crash everything." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/java/collections-exceptions/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="HashMap, collections and exception handling | Java" />
+    <meta name="twitter:description" content="Two things every real Java program needs: the right collection for the data, and exception handling so one bad input doesn&#x27;t crash everything." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/java/collections-exceptions/#lesson","name":"HashMap, collections and exception handling","description":"Two things every real Java program needs: the right collection for the data, and exception handling so one bad input doesn't crash everything.","url":"https://marzleytechsolutions.co.ke/learn/java/collections-exceptions/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/java/#course","name":"Java","url":"https://marzleytechsolutions.co.ke/learn/java/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Java","item":"https://marzleytechsolutions.co.ke/learn/java/"},{"@type":"ListItem","position":4,"name":"HashMap, collections and exception handling","item":"https://marzleytechsolutions.co.ke/learn/java/collections-exceptions/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/java/">Java</a> / <span>HashMap, collections and exception handling</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=java&amp;lesson=collections-exceptions"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>HashMap, collections and exception handling</h1>
+<p>Two things every real Java program needs: the right <strong>collection</strong> for the data, and <strong>exception handling</strong> so one bad input doesn't crash everything.</p>
+<h2>The main collections</h2>
+<div class="static-table"><table><thead><tr><th>Interface</th><th>Class</th><th>Use when</th></tr></thead><tbody><tr><td><code>List</code></td><td><code>ArrayList</code></td><td>Ordered items, duplicates allowed, access by index</td></tr><tr><td><code>Set</code></td><td><code>HashSet</code></td><td>Unique items, fast "contains"</td></tr><tr><td><code>Set</code></td><td><code>TreeSet</code></td><td>Unique items kept sorted</td></tr><tr><td><code>Map</code></td><td><code>HashMap</code></td><td>Key → value look-ups</td></tr><tr><td><code>Map</code></td><td><code>TreeMap</code></td><td>Key → value, keys sorted</td></tr><tr><td><code>Queue</code>/<code>Deque</code></td><td><code>ArrayDeque</code></td><td>Queues and stacks</td></tr></tbody></table></div>
+<h2>HashMap: key → value</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">import java.util.HashMap;
+import java.util.Map;
+
+class Main {
+    public static void main(String[] args) {
+        Map&lt;String, Integer&gt; stock = new HashMap&lt;&gt;();
+        stock.put(&quot;Unga&quot;, 12);
+        stock.put(&quot;Sugar&quot;, 0);
+        stock.put(&quot;Oil&quot;, 7);
+        stock.put(&quot;Unga&quot;, 15);                        // same key: replaces 12
+
+        System.out.println(stock.get(&quot;Oil&quot;));         // 7
+        System.out.println(stock.get(&quot;Rice&quot;));        // null (missing)
+        System.out.println(stock.getOrDefault(&quot;Rice&quot;, 0));
+        System.out.println(stock.containsKey(&quot;Sugar&quot;) + &quot; &quot; + stock.size());
+
+        for (Map.Entry&lt;String, Integer&gt; e : stock.entrySet()) {
+            System.out.println(e.getKey() + &quot;: &quot; + e.getValue());
+        }
+
+        // Counting words
+        Map&lt;String, Integer&gt; counts = new HashMap&lt;&gt;();
+        for (String w : &quot;haraka haraka haina baraka&quot;.split(&quot; &quot;)) {
+            counts.merge(w, 1, Integer::sum);
+        }
+        System.out.println(counts);
+    }
+}</code></pre></figure>
+<h2>Sets for uniqueness</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">import java.util.*;
+
+class Main {
+    public static void main(String[] args) {
+        List&lt;String&gt; visitors = List.of(&quot;Otieno&quot;, &quot;Wanjiru&quot;, &quot;Otieno&quot;, &quot;Kiprop&quot;);
+        Set&lt;String&gt; unique = new HashSet&lt;&gt;(visitors);
+        Set&lt;String&gt; sorted = new TreeSet&lt;&gt;(visitors);
+        System.out.println(unique.size() + &quot; unique, sorted: &quot; + sorted);
+    }
+}</code></pre></figure>
+<h2>Exceptions: handling errors</h2>
+<p>When something goes wrong at runtime (bad input, missing file, network down), Java <strong>throws an exception</strong>. If nothing catches it, the program crashes with a stack trace.</p>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    public static void main(String[] args) {
+        String[] inputs = {&quot;250&quot;, &quot;abc&quot;, &quot;0&quot;};
+        for (String input : inputs) {
+            try {
+                int qty = Integer.parseInt(input);
+                int perItem = 1000 / qty;
+                System.out.println(input + &quot; -&gt; &quot; + perItem);
+            } catch (NumberFormatException e) {
+                System.out.println(input + &quot; -&gt; not a number&quot;);
+            } catch (ArithmeticException e) {
+                System.out.println(input + &quot; -&gt; can&#x27;t divide by zero&quot;);
+            } finally {
+                System.out.println(&quot;  (checked &quot; + input + &quot;)&quot;);
+            }
+        }
+    }
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Exception</th><th>Common cause</th></tr></thead><tbody><tr><td><code>NullPointerException</code></td><td>Using a variable that is <code>null</code></td></tr><tr><td><code>NumberFormatException</code></td><td><code>Integer.parseInt(&quot;abc&quot;)</code></td></tr><tr><td><code>ArithmeticException</code></td><td>Dividing an int by zero</td></tr><tr><td><code>ArrayIndexOutOfBoundsException</code></td><td>Index outside the array</td></tr><tr><td><code>IOException</code></td><td>File or network problems (a <strong>checked</strong> exception: you must handle or declare it)</td></tr></tbody></table></div>
+<h2>Throwing your own exceptions</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    static class InsufficientFundsException extends Exception {
+        InsufficientFundsException(String msg) { super(msg); }
+    }
+
+    static double withdraw(double balance, double amount) throws InsufficientFundsException {
+        if (amount &lt;= 0) throw new IllegalArgumentException(&quot;Amount must be positive&quot;);
+        if (amount &gt; balance) throw new InsufficientFundsException(&quot;Balance is only KSh &quot; + balance);
+        return balance - amount;
+    }
+
+    public static void main(String[] args) {
+        double[] tries = {300, 5000, -1};
+        for (double amt : tries) {
+            try {
+                System.out.println(&quot;New balance: &quot; + withdraw(1000, amt));
+            } catch (InsufficientFundsException | IllegalArgumentException e) {
+                System.out.println(&quot;Refused: &quot; + e.getMessage());
+            }
+        }
+    }
+}</code></pre></figure>
+<ul><li><strong>Checked</strong> exceptions (extend <code>Exception</code>) must be caught or declared with <code>throws</code>.</li><li><strong>Unchecked</strong> exceptions (extend <code>RuntimeException</code>, like <code>IllegalArgumentException</code>) don't have to be declared: they usually mean a programming mistake.</li></ul>
+<h2>try-with-resources</h2>
+<p>Files, database connections and network streams must be closed. This form closes them automatically:</p>
+<figure class="static-code"><figcaption>Java</figcaption><pre><code class="language-java">try (BufferedReader reader = new BufferedReader(new FileReader(&quot;marks.csv&quot;))) {
+    String line;
+    while ((line = reader.readLine()) != null) {
+        System.out.println(line);
+    }
+} catch (IOException e) {
+    System.out.println(&quot;Could not read the file: &quot; + e.getMessage());
+}</code></pre></figure>
+<h2>Good habits</h2>
+<ul><li>Catch <strong>specific</strong> exceptions, not just <code>Exception</code>.</li><li>Never leave a catch block empty: at least log the problem.</li><li>Validate input early and give users a clear message.</li><li>Use exceptions for unexpected situations, not for normal control flow.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which collection stores key-value pairs?</p><details><summary>Show answer</summary><p>HashMap</p></details></li><li><p>What does map.get() return for a missing key?</p><details><summary>Show answer</summary><p>null</p></details></li><li><p>Which collection keeps only unique items?</p><details><summary>Show answer</summary><p>Set</p></details></li><li><p>Which exception does Integer.parseInt("abc") throw?</p><details><summary>Show answer</summary><p>NumberFormatException</p></details></li><li><p>Which block always runs after try/catch?</p><details><summary>Show answer</summary><p>finally</p></details></li></ol></section></div><p class="static-meta">Lesson 8 of 9 in <a href="/learn/java/">Java</a> · <a href="/learn/?book=java">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/java/inheritance-interfaces/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Inheritance, interfaces and polymorphism</a><a class="btn btn-solid btn-sm" href="/learn/java/android-next-steps/">Java for Android and next steps <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

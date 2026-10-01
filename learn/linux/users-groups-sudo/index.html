@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Users, groups and sudo | Linux command line</title>
+    <meta name="description" content="Linux is a multi-user system: every file and process belongs to a user , and users belong to groups . Getting this right is what keeps a server secure…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/linux/users-groups-sudo/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Users, groups and sudo | Linux command line" />
+    <meta property="og:description" content="Linux is a multi-user system: every file and process belongs to a user , and users belong to groups . Getting this right is what keeps a server secure…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/linux/users-groups-sudo/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Users, groups and sudo | Linux command line" />
+    <meta name="twitter:description" content="Linux is a multi-user system: every file and process belongs to a user , and users belong to groups . Getting this right is what keeps a server secure…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/linux/users-groups-sudo/#lesson","name":"Users, groups and sudo","description":"Linux is a multi-user system: every file and process belongs to a user , and users belong to groups . Getting this right is what keeps a server secure…","url":"https://marzleytechsolutions.co.ke/learn/linux/users-groups-sudo/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/linux/#course","name":"Linux command line","url":"https://marzleytechsolutions.co.ke/learn/linux/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Linux command line","item":"https://marzleytechsolutions.co.ke/learn/linux/"},{"@type":"ListItem","position":4,"name":"Users, groups and sudo","item":"https://marzleytechsolutions.co.ke/learn/linux/users-groups-sudo/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/linux/">Linux command line</a> / <span>Users, groups and sudo</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=linux&amp;lesson=users-groups-sudo"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Users, groups and sudo</h1>
+<p>Linux is a multi-user system: every file and process belongs to a <strong>user</strong>, and users belong to <strong>groups</strong>. Getting this right is what keeps a server secure: the web server shouldn't be able to read your private files, and a hacked website shouldn't be able to take over the whole machine.</p>
+<h2>Who am I?</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">whoami            # your username
+id                # your user id, group id and groups
+groups            # the groups you&#x27;re in
+who               # who is logged in now</code></pre></figure>
+<h2>The root user and sudo</h2>
+<p><strong>root</strong> is the all-powerful administrator (user id 0). Working as root all the time is dangerous: one typo can delete the system. Instead, normal users run single commands as root with <strong>sudo</strong>:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo apt update
+sudo systemctl restart nginx
+sudo nano /etc/hosts
+sudo -i            # a root shell (use sparingly, exit when done)</code></pre></figure>
+<p><code>sudo</code> asks for <strong>your</strong> password and logs every command, so admins can see who did what.</p>
+<h2>Managing users</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo adduser brian                 # create a user (asks for a password and details)
+sudo passwd brian                  # set or change a password
+sudo usermod -aG sudo brian        # let brian use sudo (Ubuntu/Debian; &quot;wheel&quot; on Red Hat)
+sudo deluser brian                 # remove a user
+sudo deluser --remove-home brian   # ...and their home folder</code></pre></figure>
+<blockquote><p>In <code>usermod -aG</code>, the <code>-a</code> (append) matters. Without it, the user is <strong>removed from all other groups</strong>.</p></blockquote>
+<h2>Groups: sharing access</h2>
+<p>Groups let several users share files without making them public.</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo groupadd webdev
+sudo usermod -aG webdev amina
+sudo usermod -aG webdev brian
+sudo chown -R :webdev /var/www/shop       # the folder&#x27;s group becomes webdev
+sudo chmod -R 775 /var/www/shop           # group members can read and write</code></pre></figure>
+<p>(Log out and back in for new group membership to take effect.)</p>
+<h2>Ownership: chown</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">ls -l index.php
+# -rw-r--r-- 1 amina webdev 2048 Sep 28 10:00 index.php
+#               owner group
+
+sudo chown brian index.php           # change owner
+sudo chown brian:webdev index.php    # owner and group
+sudo chown -R www-data:www-data /var/www/uploads   # the web server&#x27;s user owns uploads</code></pre></figure>
+<p>On Ubuntu the web server (Apache/Nginx with PHP) runs as the user <strong>www-data</strong>. It needs to <strong>write</strong> only to folders like <code>uploads/</code>, and just <strong>read</strong> everything else.</p>
+<h2>Important files</h2>
+<div class="static-table"><table><thead><tr><th>File</th><th>Holds</th></tr></thead><tbody><tr><td><code>/etc/passwd</code></td><td>List of users (no passwords, despite the name)</td></tr><tr><td><code>/etc/shadow</code></td><td>Encrypted passwords (root only)</td></tr><tr><td><code>/etc/group</code></td><td>Groups and their members</td></tr><tr><td><code>/etc/sudoers</code></td><td>Who may use sudo (edit only with <code>sudo visudo</code>)</td></tr><tr><td><code>/home/&lt;user&gt;</code></td><td>Each user's personal folder</td></tr></tbody></table></div>
+<h2>Security habits for servers</h2>
+<ol><li>Create a normal user with sudo; <strong>don't log in as root</strong>.</li><li>Use <strong>SSH keys</strong> and disable password login and root login in <code>/etc/ssh/sshd_config</code>:</li></ol>
+<p><code></code><code> PermitRootLogin no PasswordAuthentication no </code><code></code></p>
+<ol><li>Give each app its own user with only the access it needs (<strong>least privilege</strong>).</li><li>Remove accounts for people who leave.</li><li>Check <code>sudo last</code> and <code>/var/log/auth.log</code> for strange logins.</li></ol>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command runs a single command as the administrator?</p><details><summary>Show answer</summary><p>sudo</p></details></li><li><p>What is the Linux administrator account called?</p><details><summary>Show answer</summary><p>root</p></details></li><li><p>Which command adds a user to a group without removing other groups? (write the options)</p><details><summary>Show answer</summary><p>usermod -aG</p></details></li><li><p>Which user does the web server run as on Ubuntu?</p><details><summary>Show answer</summary><p>www-data</p></details></li><li><p>Which command changes a file's owner?</p><details><summary>Show answer</summary><p>chown</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 10 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/permissions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Users and permissions (chmod, chown)</a><a class="btn btn-solid btn-sm" href="/learn/linux/processes-packages/">Processes, services and installing software <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Design systems and reusable components | Web design &amp; UI/UX</title>
+    <meta name="description" content="When a site grows past a few pages, or several people work on it, designs drift: five shades of blue, three button styles, random spacing. A design…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/web-design/design-systems-components/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Design systems and reusable components | Web design &amp; UI/UX" />
+    <meta property="og:description" content="When a site grows past a few pages, or several people work on it, designs drift: five shades of blue, three button styles, random spacing. A design…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/web-design/design-systems-components/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Design systems and reusable components | Web design &amp; UI/UX" />
+    <meta name="twitter:description" content="When a site grows past a few pages, or several people work on it, designs drift: five shades of blue, three button styles, random spacing. A design…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/web-design/design-systems-components/#lesson","name":"Design systems and reusable components","description":"When a site grows past a few pages, or several people work on it, designs drift: five shades of blue, three button styles, random spacing. A design…","url":"https://marzleytechsolutions.co.ke/learn/web-design/design-systems-components/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/web-design/#course","name":"Web design & UI/UX","url":"https://marzleytechsolutions.co.ke/learn/web-design/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Web design & UI/UX","item":"https://marzleytechsolutions.co.ke/learn/web-design/"},{"@type":"ListItem","position":4,"name":"Design systems and reusable components","item":"https://marzleytechsolutions.co.ke/learn/web-design/design-systems-components/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/web-design/">Web design &amp; UI/UX</a> / <span>Design systems and reusable components</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=web-design&amp;lesson=design-systems-components"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Design systems and reusable components</h1>
+<p>When a site grows past a few pages, or several people work on it, designs drift: five shades of blue, three button styles, random spacing. A <strong>design system</strong> fixes this with shared rules and reusable pieces. Big companies (Google's Material, Apple's Human Interface Guidelines, Shopify's Polaris) all have one, and even a small business site benefits from a mini version.</p>
+<h2>What's in a design system</h2>
+<div class="static-table"><table><thead><tr><th>Part</th><th>Contains</th><th>Example</th></tr></thead><tbody><tr><td><strong>Design tokens</strong></td><td>Named values for colours, fonts, spacing, radius, shadows</td><td><code>--brand: #0b1b35; --space-2: 8px</code></td></tr><tr><td><strong>Components</strong></td><td>Reusable UI pieces with rules</td><td>Button, card, input, alert, navbar</td></tr><tr><td><strong>Patterns</strong></td><td>Combinations for common tasks</td><td>Login form, pricing table, empty state</td></tr><tr><td><strong>Guidelines</strong></td><td>When and how to use things</td><td>"One primary button per screen"</td></tr><tr><td><strong>Voice &amp; tone</strong></td><td>How the brand writes</td><td>Friendly, simple, "we"</td></tr></tbody></table></div>
+<h2>Design tokens in CSS</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  :root {
+    /* colour */
+    --brand: #0b1b35; --accent: #ffb800; --success: #15803d; --danger: #dc2626;
+    --text: #1e293b; --muted: #64748b; --line: #e2e8f0; --surface: #ffffff;
+    /* spacing scale (4px base) */
+    --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s6: 24px;
+    /* shape */
+    --radius: 10px; --shadow: 0 6px 18px rgba(15,23,42,.10);
+    --font: system-ui, sans-serif;
+  }
+  body { font-family: var(--font); color: var(--text); padding: var(--s4); }
+
+  /* Button component with variants and sizes */
+  .btn { display: inline-flex; align-items: center; gap: var(--s2); padding: var(--s2) var(--s4); border-radius: var(--radius); border: 2px solid transparent; font: 600 15px var(--font); cursor: pointer; }
+  .btn-primary { background: var(--brand); color: #fff; }
+  .btn-secondary { background: transparent; border-color: var(--brand); color: var(--brand); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-sm { padding: var(--s1) var(--s3); font-size: 13px; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+  /* Alert component */
+  .alert { padding: var(--s3) var(--s4); border-radius: var(--radius); border-left: 4px solid; margin: var(--s3) 0; }
+  .alert-success { background: #dcfce7; border-color: var(--success); }
+  .alert-danger { background: #fee2e2; border-color: var(--danger); }
+
+  /* Card component */
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s4); box-shadow: var(--shadow); max-width: 280px; }
+  .card h3 { margin: 0 0 var(--s2); }
+&lt;/style&gt;
+
+&lt;p&gt;
+  &lt;button class=&quot;btn btn-primary&quot;&gt;Pay with M-Pesa&lt;/button&gt;
+  &lt;button class=&quot;btn btn-secondary&quot;&gt;View details&lt;/button&gt;
+  &lt;button class=&quot;btn btn-danger btn-sm&quot;&gt;Delete&lt;/button&gt;
+  &lt;button class=&quot;btn btn-primary&quot; disabled&gt;Processing…&lt;/button&gt;
+&lt;/p&gt;
+&lt;div class=&quot;alert alert-success&quot;&gt;Payment received. Receipt SJK4H2L9XA.&lt;/div&gt;
+&lt;div class=&quot;alert alert-danger&quot;&gt;That phone number doesn&#x27;t look right.&lt;/div&gt;
+&lt;div class=&quot;card&quot;&gt;&lt;h3&gt;Small business website&lt;/h3&gt;&lt;p&gt;From KSh 25,000&lt;/p&gt;&lt;button class=&quot;btn btn-primary btn-sm&quot;&gt;Get a quote&lt;/button&gt;&lt;/div&gt;</code></pre></figure>
+<p>Change <code>--brand</code> or <code>--radius</code> once and every component updates. That's the power of tokens.</p>
+<h2>Component states</h2>
+<p>Every interactive component needs designs for its <strong>states</strong>:</p>
+<div class="static-table"><table><thead><tr><th>State</th><th>Button example</th></tr></thead><tbody><tr><td>Default</td><td>Normal</td></tr><tr><td>Hover</td><td>Slightly darker</td></tr><tr><td>Focus</td><td>Clear outline for keyboard users</td></tr><tr><td>Active/pressed</td><td>Pressed in</td></tr><tr><td>Disabled</td><td>Faded, not clickable</td></tr><tr><td>Loading</td><td>Spinner, "Processing…"</td></tr><tr><td>Error / success</td><td>For inputs and forms</td></tr></tbody></table></div>
+<p>Forgetting states (especially loading and error) is a common reason apps feel broken.</p>
+<h2>Components in Figma</h2>
+<p>In Figma, make a <strong>component</strong> (Ctrl/Cmd + Alt + K) for each reusable piece. Use <strong>variants</strong> for types and states (Primary/Secondary × Default/Hover/Disabled). Save colours and text as <strong>styles/variables</strong>. Then designers use instances, and changing the main component updates them all, mirroring how code works.</p>
+<h2>A mini style guide page</h2>
+<p>For client projects, deliver a single page showing: logo usage, colour palette with hex codes, typography scale, buttons, form fields, cards and icons. It keeps future work consistent, even if someone else maintains the site.</p>
+<h2>Existing systems and frameworks</h2>
+<p>You don't always need to start from zero:</p>
+<ul><li><strong>CSS frameworks</strong>: Bootstrap, Tailwind CSS (utility classes built on a token scale).</li><li><strong>Component libraries</strong>: Material UI, shadcn/ui (React), Flutter's Material widgets.</li></ul>
+<p>Customise them with your brand tokens so your site doesn't look like everyone else's.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What are named values like --brand and --space-2 called? (two words)</p><details><summary>Show answer</summary><p>design tokens</p></details></li><li><p>Name one state besides default that a button needs.</p><details><summary>Show answer</summary><p>hover</p></details></li><li><p>In Figma, what do you call a reusable element whose copies update together?</p><details><summary>Show answer</summary><p>component</p></details></li><li><p>What Figma feature groups types and states of one component?</p><details><summary>Show answer</summary><p>variants</p></details></li><li><p>Name a popular utility-first CSS framework.</p><details><summary>Show answer</summary><p>Tailwind</p></details></li></ol></section></div><p class="static-meta">Lesson 12 of 13 in <a href="/learn/web-design/">Web design &amp; UI/UX</a> · <a href="/learn/?book=web-design">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/web-design/design-tools-figma/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Design tools: Figma, wireframes and prototypes</a><a class="btn btn-solid btn-sm" href="/learn/web-design/portfolio-project/">Project: design your portfolio page <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

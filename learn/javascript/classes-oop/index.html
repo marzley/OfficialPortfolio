@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Classes and object-oriented JavaScript | JavaScript</title>
+    <meta name="description" content="When your program has many similar things (products, customers, bank accounts), a class is a blueprint for making them. Each object made from a class…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/javascript/classes-oop/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Classes and object-oriented JavaScript | JavaScript" />
+    <meta property="og:description" content="When your program has many similar things (products, customers, bank accounts), a class is a blueprint for making them. Each object made from a class…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/javascript/classes-oop/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Classes and object-oriented JavaScript | JavaScript" />
+    <meta name="twitter:description" content="When your program has many similar things (products, customers, bank accounts), a class is a blueprint for making them. Each object made from a class…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/javascript/classes-oop/#lesson","name":"Classes and object-oriented JavaScript","description":"When your program has many similar things (products, customers, bank accounts), a class is a blueprint for making them. Each object made from a class…","url":"https://marzleytechsolutions.co.ke/learn/javascript/classes-oop/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/javascript/#course","name":"JavaScript","url":"https://marzleytechsolutions.co.ke/learn/javascript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/"},{"@type":"ListItem","position":4,"name":"Classes and object-oriented JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/classes-oop/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/javascript/">JavaScript</a> / <span>Classes and object-oriented JavaScript</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=classes-oop"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Classes and object-oriented JavaScript</h1>
+<p>When your program has many similar things (products, customers, bank accounts), a <strong>class</strong> is a blueprint for making them. Each object made from a class is called an <strong>instance</strong>, and it bundles data (properties) with behaviour (methods).</p>
+<h2>Your first class</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">class Product {
+  constructor(name, price, stock = 0) {
+    this.name = name;
+    this.price = price;
+    this.stock = stock;
+  }
+  inStock() {
+    return this.stock &gt; 0;
+  }
+  sell(qty) {
+    if (qty &gt; this.stock) return `Only ${this.stock} ${this.name} left`;
+    this.stock -= qty;
+    return `Sold ${qty} ${this.name} for KSh ${qty * this.price}`;
+  }
+}
+
+const unga = new Product(&quot;Unga 2kg&quot;, 180, 10);
+const sugar = new Product(&quot;Sugar 1kg&quot;, 160);
+console.log(unga.sell(3));
+console.log(unga.stock, unga.inStock(), sugar.inStock());
+console.log(sugar.sell(1));</code></pre></figure>
+<ul><li><code>constructor</code> runs when you write <code>new Product(...)</code>. It sets up the object.</li><li><code>this</code> means "the object this method belongs to".</li><li>Methods are functions written inside the class.</li></ul>
+<h2>Getters, setters and private fields</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">class Account {
+  #balance = 0;                 // # makes it private: only the class can see it
+  constructor(owner) { this.owner = owner; }
+
+  deposit(amount) {
+    if (amount &lt;= 0) throw new Error(&quot;Deposit must be positive&quot;);
+    this.#balance += amount;
+    return this;                // returning this allows chaining
+  }
+  withdraw(amount) {
+    if (amount &gt; this.#balance) throw new Error(&quot;Insufficient funds&quot;);
+    this.#balance -= amount;
+    return this;
+  }
+  get balance() { return `KSh ${this.#balance.toLocaleString()}`; }  // read like a property
+}
+
+const acc = new Account(&quot;Mercy&quot;);
+acc.deposit(5000).withdraw(1200);
+console.log(acc.owner, acc.balance);
+try { acc.withdraw(99999); } catch (e) { console.log(e.message); }</code></pre></figure>
+<p>Private fields (<code>#balance</code>) protect data from being changed by accident: <code>acc.#balance = 1000000</code> outside the class is a syntax error.</p>
+<h2>Static members</h2>
+<p><code>static</code> methods belong to the class itself, not to each object. Useful for helpers and counters.</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">class Receipt {
+  static count = 0;
+  constructor(amount) {
+    Receipt.count++;
+    this.code = Receipt.makeCode();
+    this.amount = amount;
+  }
+  static makeCode() {
+    return &quot;RC&quot; + String(Receipt.count).padStart(5, &quot;0&quot;);
+  }
+}
+new Receipt(100); new Receipt(250);
+const r = new Receipt(900);
+console.log(r.code, &quot;total receipts:&quot;, Receipt.count);</code></pre></figure>
+<h2>Inheritance: extends and super</h2>
+<p>A class can <strong>extend</strong> another, reusing everything and adding or changing behaviour.</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">class Employee {
+  constructor(name, salary) { this.name = name; this.salary = salary; }
+  monthlyPay() { return this.salary; }
+  describe() { return `${this.name} earns KSh ${this.monthlyPay().toLocaleString()} a month`; }
+}
+
+class SalesAgent extends Employee {
+  constructor(name, salary, sales) {
+    super(name, salary);          // run the parent constructor first
+    this.sales = sales;
+  }
+  monthlyPay() {                  // override: add 5% commission
+    return super.monthlyPay() + this.sales * 0.05;
+  }
+}
+
+const staff = [new Employee(&quot;Njoroge&quot;, 40000), new SalesAgent(&quot;Adhiambo&quot;, 25000, 400000)];
+staff.forEach((s) =&gt; console.log(s.describe()));
+console.log(staff[1] instanceof Employee);  // true</code></pre></figure>
+<p>Both objects answer <code>describe()</code>, but each calculates pay its own way. This is called <strong>polymorphism</strong>.</p>
+<h2>When to use classes</h2>
+<div class="static-table"><table><thead><tr><th>Use a class when...</th><th>A plain object is fine when...</th></tr></thead><tbody><tr><td>You make many objects of the same kind</td><td>You have one settings object</td></tr><tr><td>Data and the functions that change it belong together</td><td>It's just data (e.g. from JSON)</td></tr><tr><td>You want private data and clear rules</td><td>You don't need methods</td></tr></tbody></table></div>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which method runs automatically when you create an object with new?</p><details><summary>Show answer</summary><p>constructor</p></details></li><li><p>Which keyword makes one class inherit from another?</p><details><summary>Show answer</summary><p>extends</p></details></li><li><p>Which keyword calls the parent class constructor?</p><details><summary>Show answer</summary><p>super</p></details></li><li><p>Which symbol makes a class field private?</p><details><summary>Show answer</summary><p>#</p></details></li><li><p>What is it called when different classes answer the same method in their own way?</p><details><summary>Show answer</summary><p>polymorphism</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Create a class <code>Book</code> with a constructor taking <code>title</code>, and a method <code>label()</code> that returns <code>&quot;Book: &quot; + this.title</code>. Log <code>new Book(&quot;Kidagaa&quot;).label()</code>.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=classes-oop#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 16 of 19 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/local-storage/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Saving data in the browser (localStorage)</a><a class="btn btn-solid btn-sm" href="/learn/javascript/modules-npm-tooling/">Modules, npm and the modern JavaScript toolbox <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

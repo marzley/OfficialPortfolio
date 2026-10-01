@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Project: build a complete shop stock and sales app</title>
+    <meta name="description" content="Time to put everything together. You&#x27;ll build Duka Stock , a real app a small shop could use tomorrow: - A list of products with stock levels and a…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/flutter/project-duka-app/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Project: build a complete shop stock and sales app" />
+    <meta property="og:description" content="Time to put everything together. You&#x27;ll build Duka Stock , a real app a small shop could use tomorrow: - A list of products with stock levels and a…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/flutter/project-duka-app/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Project: build a complete shop stock and sales app" />
+    <meta name="twitter:description" content="Time to put everything together. You&#x27;ll build Duka Stock , a real app a small shop could use tomorrow: - A list of products with stock levels and a…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/flutter/project-duka-app/#lesson","name":"Project: build a complete shop stock and sales app","description":"Time to put everything together. You'll build Duka Stock , a real app a small shop could use tomorrow: - A list of products with stock levels and a…","url":"https://marzleytechsolutions.co.ke/learn/flutter/project-duka-app/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/flutter/#course","name":"Flutter app development","url":"https://marzleytechsolutions.co.ke/learn/flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Flutter app development","item":"https://marzleytechsolutions.co.ke/learn/flutter/"},{"@type":"ListItem","position":4,"name":"Project: build a complete shop stock and sales app","item":"https://marzleytechsolutions.co.ke/learn/flutter/project-duka-app/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/flutter/">Flutter app development</a> / <span>Project: build a complete shop stock and sales app</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=flutter&amp;lesson=project-duka-app"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Project: build a complete shop stock and sales app</h1>
+<p>Time to put everything together. You'll build <strong>Duka Stock</strong>, a real app a small shop could use tomorrow:</p>
+<ul><li>A list of products with stock levels and a search box</li><li>Add, edit and delete products (with a validated form)</li><li>Record sales: stock goes down, and today's total goes up</li><li>Low-stock warnings</li><li>A cart-style sale screen</li><li>Clean structure: <strong>models</strong>, a <strong>store</strong> (Provider), and <strong>screens</strong></li></ul>
+<p>The complete app is below in one file so you can paste it into DartPad or <code>lib/main.dart</code> and run it. After it works, the lesson shows how to split it into files and save the data with SQLite.</p>
+<h2>The plan</h2>
+<figure class="static-code"><pre><code>Models:     Product(id, name, price, stock, lowAt)   Sale(productId, qty, price, time)
+Store:      Shop extends ChangeNotifier
+            products, sales, todayTotal, lowStock, add/update/delete, sell()
+Screens:    HomeShell (bottom bar)
+            ├── StockScreen  → ProductForm (add / edit)
+            ├── SellScreen
+            └── ReportScreen</code></pre></figure>
+<h2>The code</h2>
+<p><code>flutter pub add provider</code>, then:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+import &#x27;package:provider/provider.dart&#x27;;
+
+// ---------------- models ----------------
+class Product {
+  final int id;
+  String name;
+  int price;
+  int stock;
+  int lowAt;               // warn when stock is at or below this
+  Product({required this.id, required this.name, required this.price, required this.stock, this.lowAt = 5});
+  bool get isLow =&gt; stock &lt;= lowAt;
+}
+
+class Sale {
+  final int productId, qty, price;
+  final DateTime time;
+  Sale(this.productId, this.qty, this.price, this.time);
+  int get total =&gt; qty * price;
+}
+
+// ---------------- store ----------------
+class Shop extends ChangeNotifier {
+  int _nextId = 4;
+  final List&lt;Product&gt; _products = [
+    Product(id: 1, name: &#x27;Unga 2kg&#x27;, price: 180, stock: 24),
+    Product(id: 2, name: &#x27;Sugar 1kg&#x27;, price: 150, stock: 3),
+    Product(id: 3, name: &#x27;Cooking oil 1L&#x27;, price: 350, stock: 10, lowAt: 3),
+  ];
+  final List&lt;Sale&gt; _sales = [];
+
+  List&lt;Product&gt; products({String search = &#x27;&#x27;}) {
+    final q = search.trim().toLowerCase();
+    final list = _products.where((p) =&gt; p.name.toLowerCase().contains(q)).toList()..sort((a, b) =&gt; a.name.compareTo(b.name));
+    return List.unmodifiable(list);
+  }
+
+  List&lt;Product&gt; get lowStock =&gt; _products.where((p) =&gt; p.isLow).toList();
+  List&lt;Sale&gt; get todaysSales {
+    final now = DateTime.now();
+    return _sales.where((s) =&gt; s.time.year == now.year &amp;&amp; s.time.month == now.month &amp;&amp; s.time.day == now.day).toList();
+  }
+
+  int get todayTotal =&gt; todaysSales.fold(0, (sum, s) =&gt; sum + s.total);
+  Product byId(int id) =&gt; _products.firstWhere((p) =&gt; p.id == id);
+
+  void add(String name, int price, int stock, int lowAt) {
+    _products.add(Product(id: _nextId++, name: name, price: price, stock: stock, lowAt: lowAt));
+    notifyListeners();
+  }
+
+  void update(Product p, {required String name, required int price, required int stock, required int lowAt}) {
+    p
+      ..name = name
+      ..price = price
+      ..stock = stock
+      ..lowAt = lowAt;
+    notifyListeners();
+  }
+
+  void delete(Product p) {
+    _products.remove(p);
+    notifyListeners();
+  }
+
+  /// Sells everything in [basket] (productId → qty). Returns an error message, or null if it worked.
+  String? sell(Map&lt;int, int&gt; basket) {
+    for (final e in basket.entries) {
+      final p = byId(e.key);
+      if (e.value &gt; p.stock) return &#x27;Only ${p.stock} ${p.name} left.&#x27;;
+    }
+    final now = DateTime.now();
+    for (final e in basket.entries) {
+      final p = byId(e.key);
+      p.stock -= e.value;
+      _sales.add(Sale(p.id, e.value, p.price, now));
+    }
+    notifyListeners();
+    return null;
+  }
+}
+
+String ksh(int n) =&gt; &#x27;KSh ${n.toString().replaceAllMapped(RegExp(r&#x27;\B(?=(\d{3})+(?!\d))&#x27;), (m) =&gt; &#x27;,&#x27;)}&#x27;;
+
+// ---------------- app ----------------
+void main() =&gt; runApp(ChangeNotifierProvider(create: (_) =&gt; Shop(), child: const DukaApp()));
+
+class DukaApp extends StatelessWidget {
+  const DukaApp({super.key});
+  @override
+  Widget build(BuildContext context) =&gt; MaterialApp(
+        title: &#x27;Duka Stock&#x27;,
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(useMaterial3: true, colorSchemeSeed: const Color(0xFF0B7A5A)),
+        darkTheme: ThemeData(useMaterial3: true, colorSchemeSeed: const Color(0xFF0B7A5A), brightness: Brightness.dark),
+        home: const HomeShell(),
+      );
+}
+
+class HomeShell extends StatefulWidget {
+  const HomeShell({super.key});
+  @override
+  State&lt;HomeShell&gt; createState() =&gt; _HomeShellState();
+}
+
+class _HomeShellState extends State&lt;HomeShell&gt; {
+  int tab = 0;
+  @override
+  Widget build(BuildContext context) {
+    final low = context.select&lt;Shop, int&gt;((s) =&gt; s.lowStock.length);
+    return Scaffold(
+      body: IndexedStack(index: tab, children: const [StockScreen(), SellScreen(), ReportScreen()]),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: tab,
+        onDestinationSelected: (i) =&gt; setState(() =&gt; tab = i),
+        destinations: [
+          NavigationDestination(icon: Badge(isLabelVisible: low &gt; 0, label: Text(&#x27;$low&#x27;), child: const Icon(Icons.inventory_2_outlined)), label: &#x27;Stock&#x27;),
+          const NavigationDestination(icon: Icon(Icons.point_of_sale), label: &#x27;Sell&#x27;),
+          const NavigationDestination(icon: Icon(Icons.bar_chart), label: &#x27;Today&#x27;),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------- stock ----------------
+class StockScreen extends StatefulWidget {
+  const StockScreen({super.key});
+  @override
+  State&lt;StockScreen&gt; createState() =&gt; _StockScreenState();
+}
+
+class _StockScreenState extends State&lt;StockScreen&gt; {
+  String search = &#x27;&#x27;;
+
+  @override
+  Widget build(BuildContext context) {
+    final shop = context.watch&lt;Shop&gt;();
+    final items = shop.products(search: search);
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;Stock&#x27;)),
+      body: Column(children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          child: TextField(
+            decoration: const InputDecoration(prefixIcon: Icon(Icons.search), hintText: &#x27;Search products&#x27;, border: OutlineInputBorder()),
+            onChanged: (v) =&gt; setState(() =&gt; search = v),
+          ),
+        ),
+        Expanded(
+          child: items.isEmpty
+              ? const Center(child: Text(&#x27;No products found&#x27;))
+              : ListView.separated(
+                  itemCount: items.length,
+                  separatorBuilder: (_, __) =&gt; const Divider(height: 1),
+                  itemBuilder: (context, i) {
+                    final p = items[i];
+                    return ListTile(
+                      title: Text(p.name),
+                      subtitle: Text(ksh(p.price)),
+                      trailing: Chip(
+                        label: Text(p.stock == 0 ? &#x27;Out&#x27; : &#x27;${p.stock} left&#x27;),
+                        backgroundColor: p.isLow ? Theme.of(context).colorScheme.errorContainer : null,
+                      ),
+                      onTap: () =&gt; Navigator.push(context, MaterialPageRoute(builder: (_) =&gt; ProductForm(product: p))),
+                    );
+                  },
+                ),
+        ),
+      ]),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () =&gt; Navigator.push(context, MaterialPageRoute(builder: (_) =&gt; const ProductForm())),
+        icon: const Icon(Icons.add),
+        label: const Text(&#x27;Product&#x27;),
+      ),
+    );
+  }
+}
+
+class ProductForm extends StatefulWidget {
+  final Product? product;               // null = adding a new one
+  const ProductForm({super.key, this.product});
+  @override
+  State&lt;ProductForm&gt; createState() =&gt; _ProductFormState();
+}
+
+class _ProductFormState extends State&lt;ProductForm&gt; {
+  final formKey = GlobalKey&lt;FormState&gt;();
+  late final name = TextEditingController(text: widget.product?.name);
+  late final price = TextEditingController(text: widget.product?.price.toString());
+  late final stock = TextEditingController(text: widget.product?.stock.toString());
+  late final lowAt = TextEditingController(text: (widget.product?.lowAt ?? 5).toString());
+
+  @override
+  void dispose() {
+    for (final c in [name, price, stock, lowAt]) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  String? wholeNumber(String? v, {int min = 0}) {
+    final n = int.tryParse(v ?? &#x27;&#x27;);
+    if (n == null) return &#x27;Enter a whole number&#x27;;
+    if (n &lt; min) return &#x27;Must be at least $min&#x27;;
+    return null;
+  }
+
+  void save() {
+    if (!formKey.currentState!.validate()) return;
+    final shop = context.read&lt;Shop&gt;();
+    final p = widget.product;
+    if (p == null) {
+      shop.add(name.text.trim(), int.parse(price.text), int.parse(stock.text), int.parse(lowAt.text));
+    } else {
+      shop.update(p, name: name.text.trim(), price: int.parse(price.text), stock: int.parse(stock.text), lowAt: int.parse(lowAt.text));
+    }
+    Navigator.pop(context);
+  }
+
+  Future&lt;void&gt; delete() async {
+    final yes = await showDialog&lt;bool&gt;(
+      context: context,
+      builder: (c) =&gt; AlertDialog(
+        title: Text(&#x27;Delete ${widget.product!.name}?&#x27;),
+        actions: [
+          TextButton(onPressed: () =&gt; Navigator.pop(c, false), child: const Text(&#x27;Cancel&#x27;)),
+          FilledButton(onPressed: () =&gt; Navigator.pop(c, true), child: const Text(&#x27;Delete&#x27;)),
+        ],
+      ),
+    );
+    if (yes == true &amp;&amp; mounted) {
+      context.read&lt;Shop&gt;().delete(widget.product!);
+      Navigator.pop(context);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final editing = widget.product != null;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(editing ? &#x27;Edit product&#x27; : &#x27;New product&#x27;),
+        actions: [if (editing) IconButton(onPressed: delete, icon: const Icon(Icons.delete_outline), tooltip: &#x27;Delete&#x27;)],
+      ),
+      body: Form(
+        key: formKey,
+        child: ListView(padding: const EdgeInsets.all(16), children: [
+          TextFormField(
+            controller: name,
+            textCapitalization: TextCapitalization.sentences,
+            decoration: const InputDecoration(labelText: &#x27;Name&#x27;),
+            validator: (v) =&gt; (v == null || v.trim().length &lt; 2) ? &#x27;Enter the product name&#x27; : null,
+          ),
+          TextFormField(controller: price, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: &#x27;Price (KSh)&#x27;),
+              validator: (v) =&gt; wholeNumber(v, min: 1)),
+          TextFormField(controller: stock, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: &#x27;Stock&#x27;),
+              validator: wholeNumber),
+          TextFormField(controller: lowAt, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: &#x27;Warn when stock is at or below&#x27;),
+              validator: wholeNumber),
+          const SizedBox(height: 24),
+          FilledButton(onPressed: save, child: const Text(&#x27;Save&#x27;)),
+        ]),
+      ),
+    );
+  }
+}
+
+// ---------------- sell ----------------
+class SellScreen extends StatefulWidget {
+  const SellScreen({super.key});
+  @override
+  State&lt;SellScreen&gt; createState() =&gt; _SellScreenState();
+}
+
+class _SellScreenState extends State&lt;SellScreen&gt; {
+  final basket = &lt;int, int&gt;{};          // productId → qty
+
+  @override
+  Widget build(BuildContext context) {
+    final shop = context.watch&lt;Shop&gt;();
+    final total = basket.entries.fold(0, (sum, e) =&gt; sum + shop.byId(e.key).price * e.value);
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;New sale&#x27;)),
+      body: ListView(children: [
+        for (final p in shop.products())
+          ListTile(
+            enabled: p.stock &gt; 0,
+            title: Text(p.name),
+            subtitle: Text(&#x27;${ksh(p.price)} · ${p.stock} in stock&#x27;),
+            trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+              IconButton(
+                onPressed: (basket[p.id] ?? 0) &gt; 0 ? () =&gt; setState(() =&gt; basket.update(p.id, (q) =&gt; q - 1)) : null,
+                icon: const Icon(Icons.remove_circle_outline),
+              ),
+              SizedBox(width: 24, child: Text(&#x27;${basket[p.id] ?? 0}&#x27;, textAlign: TextAlign.center)),
+              IconButton(
+                onPressed: (basket[p.id] ?? 0) &lt; p.stock ? () =&gt; setState(() =&gt; basket.update(p.id, (q) =&gt; q + 1, ifAbsent: () =&gt; 1)) : null,
+                icon: const Icon(Icons.add_circle_outline),
+              ),
+            ]),
+          ),
+      ]),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: FilledButton.icon(
+            onPressed: total == 0
+                ? null
+                : () {
+                    final error = shop.sell(Map.of(basket)..removeWhere((_, q) =&gt; q == 0));
+                    final messenger = ScaffoldMessenger.of(context);
+                    if (error != null) {
+                      messenger.showSnackBar(SnackBar(content: Text(error)));
+                      return;
+                    }
+                    setState(basket.clear);
+                    messenger.showSnackBar(SnackBar(content: Text(&#x27;Sale saved: ${ksh(total)}&#x27;)));
+                  },
+            icon: const Icon(Icons.check),
+            label: Text(&#x27;Complete sale · ${ksh(total)}&#x27;),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------- report ----------------
+class ReportScreen extends StatelessWidget {
+  const ReportScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final shop = context.watch&lt;Shop&gt;();
+    final text = Theme.of(context).textTheme;
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;Today&#x27;)),
+      body: ListView(padding: const EdgeInsets.all(16), children: [
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(&#x27;Sales today&#x27;, style: text.titleMedium),
+              Text(ksh(shop.todayTotal), style: text.displaySmall),
+              Text(&#x27;${shop.todaysSales.length} items sold&#x27;, style: text.bodySmall),
+            ]),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(&#x27;Low stock&#x27;, style: text.titleMedium),
+        if (shop.lowStock.isEmpty) const ListTile(leading: Icon(Icons.check_circle, color: Colors.green), title: Text(&#x27;All stock levels are fine&#x27;)),
+        for (final p in shop.lowStock)
+          ListTile(leading: const Icon(Icons.warning_amber, color: Colors.orange), title: Text(p.name), trailing: Text(&#x27;${p.stock} left&#x27;)),
+      ]),
+    );
+  }
+}</code></pre></figure>
+<h2>How it fits together</h2>
+<ol><li>**<code>Shop</code>** holds all the data and rules (no widgets). Every change ends with <code>notifyListeners()</code>.</li><li>Screens call <code>context.watch&lt;Shop&gt;()</code> to show data and <code>context.read&lt;Shop&gt;()</code> in button callbacks to change it.</li><li>The <strong>bottom bar badge</strong> uses <code>context.select</code> so it only rebuilds when the number of low-stock items changes.</li><li>**<code>sell()</code> checks all items first**, then changes stock. A sale never half-happens.</li><li>The form is reused for <strong>add and edit</strong>: <code>product == null</code> means add.</li></ol>
+<h2>Challenges (do them in order)</h2>
+<ol><li><strong>Split into files</strong>: <code>lib/models/product.dart</code>, <code>lib/state/shop.dart</code>, <code>lib/screens/stock_screen.dart</code>... Use <code>import &#x27;package:duka/models/product.dart&#x27;;</code>.</li><li><strong>Save with SQLite</strong>: move the lists into the <code>ShopDb</code> class from the local storage lesson. Load products in the <code>Shop</code> constructor, and write through to the database in <code>add</code>, <code>update</code>, <code>delete</code> and <code>sell</code>.</li><li><strong>Payment method</strong>: ask "Cash or M-Pesa?" when completing a sale and show totals per method in the report.</li><li><strong>Receipts</strong>: share a text receipt with <code>share_plus</code> after each sale.</li><li><strong>Sales history</strong>: a screen listing past days with totals (group sales by date).</li><li><strong>Barcodes</strong>: add a barcode field and use <code>mobile_scanner</code> to find a product by scanning it.</li><li><strong>Sync</strong>: send sales to a PHP API or Firestore when online.</li></ol>
+<p>Finishing even the first four gives you a strong <strong>portfolio project</strong>. Record a 1-minute screen video of it for your CV and LinkedIn.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>In this app, which class holds the data and rules?</p><details><summary>Show answer</summary><p>Shop</p></details></li><li><p>Which Provider call does the badge use so it rebuilds only when its number changes?</p><details><summary>Show answer</summary><p>select</p></details></li><li><p>Which method must Shop call after every change so screens update?</p><details><summary>Show answer</summary><p>notifyListeners</p></details></li><li><p>Which Provider call should a button's onPressed use to reach the Shop?</p><details><summary>Show answer</summary><p>read</p></details></li><li><p>Which widget keeps each tab's screen alive in the bottom bar?</p><details><summary>Show answer</summary><p>IndexedStack</p></details></li></ol></section></div><p class="static-meta">Lesson 14 of 15 in <a href="/learn/flutter/">Flutter app development</a> · <a href="/learn/?book=flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/flutter/animations/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Animations that feel good: implicit, Hero, page transitions and loaders</a><a class="btn btn-solid btn-sm" href="/learn/flutter/testing-release/">Testing, debugging and releasing your Flutter app <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

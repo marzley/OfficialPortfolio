@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VLOOKUP, XLOOKUP and IFERROR | Excel &amp; Google Sheets</title>
+    <meta name="description" content="Lookups find information in a table, like the price of a product from its code. Price list in A2:C50 : Code Product Price" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/excel/lookups/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="VLOOKUP, XLOOKUP and IFERROR | Excel &amp; Google Sheets" />
+    <meta property="og:description" content="Lookups find information in a table, like the price of a product from its code. Price list in A2:C50 : Code Product Price" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/excel/lookups/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="VLOOKUP, XLOOKUP and IFERROR | Excel &amp; Google Sheets" />
+    <meta name="twitter:description" content="Lookups find information in a table, like the price of a product from its code. Price list in A2:C50 : Code Product Price" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/excel/lookups/#lesson","name":"VLOOKUP, XLOOKUP and IFERROR","description":"Lookups find information in a table, like the price of a product from its code. Price list in A2:C50 : Code Product Price","url":"https://marzleytechsolutions.co.ke/learn/excel/lookups/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/excel/#course","name":"Excel & Google Sheets","url":"https://marzleytechsolutions.co.ke/learn/excel/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Excel & Google Sheets","item":"https://marzleytechsolutions.co.ke/learn/excel/"},{"@type":"ListItem","position":4,"name":"VLOOKUP, XLOOKUP and IFERROR","item":"https://marzleytechsolutions.co.ke/learn/excel/lookups/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/excel/">Excel &amp; Google Sheets</a> / <span>VLOOKUP, XLOOKUP and IFERROR</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=excel&amp;lesson=lookups"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>VLOOKUP, XLOOKUP and IFERROR</h1>
+<p>Lookups find information in a table, like the price of a product from its code.</p>
+<p>Price list in <strong>A2:C50</strong>: <code>Code | Product | Price</code></p>
+<h2>VLOOKUP</h2>
+<figure class="static-code"><pre><code>=VLOOKUP(F2, $A$2:$C$50, 3, FALSE)</code></pre></figure>
+<ul><li><code>F2</code>: what to look for (the product code)</li><li><code>$A$2:$C$50</code>: the table (the code must be in the <strong>first</strong> column)</li><li><code>3</code>: return the 3rd column (Price)</li><li><code>FALSE</code>: exact match only (almost always what you want)</li></ul>
+<h2>XLOOKUP (Excel 365/2021 and Google Sheets)</h2>
+<p>Easier and more powerful: it can look left, and it has a built-in "not found" message.</p>
+<figure class="static-code"><pre><code>=XLOOKUP(F2, A2:A50, C2:C50, &quot;Not found&quot;)</code></pre></figure>
+<h2>INDEX + MATCH (works in every version)</h2>
+<figure class="static-code"><pre><code>=INDEX(C2:C50, MATCH(F2, A2:A50, 0))</code></pre></figure>
+<h2>IFERROR: hide ugly errors</h2>
+<figure class="static-code"><pre><code>=IFERROR(VLOOKUP(F2, $A$2:$C$50, 3, FALSE), &quot;Check code&quot;)</code></pre></figure>
+<h2>Common errors</h2>
+<div class="static-table"><table><thead><tr><th>Error</th><th>Meaning</th></tr></thead><tbody><tr><td><code>#N/A</code></td><td>Lookup value not found</td></tr><tr><td><code>#DIV/0!</code></td><td>Divided by zero (or an empty cell)</td></tr><tr><td><code>#VALUE!</code></td><td>Wrong type, e.g. text in a sum</td></tr><tr><td><code>#REF!</code></td><td>A referenced cell was deleted</td></tr><tr><td><code>#NAME?</code></td><td>Misspelt function name</td></tr><tr><td><code>#####</code></td><td>Column too narrow: make it wider</td></tr></tbody></table></div>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>In VLOOKUP, what should the last argument be for an exact match?</p><details><summary>Show answer</summary><p>FALSE</p></details></li><li><p>Which newer function can look to the left and has a built-in 'not found' value?</p><details><summary>Show answer</summary><p>XLOOKUP</p></details></li><li><p>Which error means a lookup value was not found?</p><details><summary>Show answer</summary><p>#N/A</p></details></li><li><p>What does ##### in a cell usually mean? (the column is too …)</p><details><summary>Show answer</summary><p>narrow</p></details></li></ol></section></div><p class="static-meta">Lesson 7 of 10 in <a href="/learn/excel/">Excel &amp; Google Sheets</a> · <a href="/learn/?book=excel">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/excel/sort-filter-tables/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Sorting, filtering and Excel Tables</a><a class="btn btn-solid btn-sm" href="/learn/excel/charts-pivots/">Charts, sorting, filters and pivot tables <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

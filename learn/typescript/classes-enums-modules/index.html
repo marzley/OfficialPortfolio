@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Classes, enums and organising a TypeScript project</title>
+    <meta name="description" content="TypeScript adds safety features to JavaScript classes, gives you enums for fixed sets of values, and has a compiler you configure per project. This…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/typescript/classes-enums-modules/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Classes, enums and organising a TypeScript project" />
+    <meta property="og:description" content="TypeScript adds safety features to JavaScript classes, gives you enums for fixed sets of values, and has a compiler you configure per project. This…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/typescript/classes-enums-modules/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Classes, enums and organising a TypeScript project" />
+    <meta name="twitter:description" content="TypeScript adds safety features to JavaScript classes, gives you enums for fixed sets of values, and has a compiler you configure per project. This…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/typescript/classes-enums-modules/#lesson","name":"Classes, enums and organising a TypeScript project","description":"TypeScript adds safety features to JavaScript classes, gives you enums for fixed sets of values, and has a compiler you configure per project. This…","url":"https://marzleytechsolutions.co.ke/learn/typescript/classes-enums-modules/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/typescript/#course","name":"TypeScript","url":"https://marzleytechsolutions.co.ke/learn/typescript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"TypeScript","item":"https://marzleytechsolutions.co.ke/learn/typescript/"},{"@type":"ListItem","position":4,"name":"Classes, enums and organising a TypeScript project","item":"https://marzleytechsolutions.co.ke/learn/typescript/classes-enums-modules/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/typescript/">TypeScript</a> / <span>Classes, enums and organising a TypeScript project</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=typescript&amp;lesson=classes-enums-modules"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Classes, enums and organising a TypeScript project</h1>
+<p>TypeScript adds safety features to JavaScript classes, gives you enums for fixed sets of values, and has a compiler you configure per project. This lesson takes you from snippets to a real project setup.</p>
+<h2>Classes with access modifiers</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">class BankAccount {
+  private balance = 0;                       // only inside this class
+  readonly accountNo: string;                // set once, never changed
+
+  constructor(public owner: string, accountNo: string) {   // &quot;public owner&quot; declares + assigns
+    this.accountNo = accountNo;
+  }
+
+  deposit(amount: number): this {
+    if (amount &lt;= 0) throw new Error(&quot;Deposit must be positive&quot;);
+    this.balance += amount;
+    return this;
+  }
+
+  withdraw(amount: number): this {
+    if (amount &gt; this.balance) throw new Error(&quot;Insufficient funds&quot;);
+    this.balance -= amount;
+    return this;
+  }
+
+  get statement(): string {
+    return `${this.owner} (${this.accountNo}): KSh ${this.balance.toLocaleString()}`;
+  }
+}
+
+const acc = new BankAccount(&quot;Faith&quot;, &quot;001-2233&quot;);
+acc.deposit(10000).withdraw(2500);
+console.log(acc.statement);
+// acc.balance = 1_000_000;   // Error: &#x27;balance&#x27; is private
+// acc.accountNo = &quot;x&quot;;       // Error: cannot assign to &#x27;accountNo&#x27; because it is read-only</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Modifier</th><th>Accessible from</th></tr></thead><tbody><tr><td><code>public</code> (default)</td><td>Anywhere</td></tr><tr><td><code>protected</code></td><td>The class and subclasses</td></tr><tr><td><code>private</code></td><td>Only the class (JavaScript's <code>#field</code> is private at runtime too)</td></tr><tr><td><code>readonly</code></td><td>Can be read anywhere, assigned only once</td></tr></tbody></table></div>
+<h2>Implementing interfaces and abstract classes</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">interface Notifier {
+  send(to: string, message: string): Promise&lt;boolean&gt;;
+}
+
+class SmsNotifier implements Notifier {
+  async send(to: string, message: string) {
+    console.log(`SMS to ${to}: ${message}`);
+    return true;
+  }
+}
+
+abstract class Shape {
+  abstract area(): number;
+  describe() { return `${this.constructor.name} with area ${this.area().toFixed(1)} m²`; }
+}
+class Rectangle extends Shape {
+  constructor(private w: number, private h: number) { super(); }
+  area() { return this.w * this.h; }
+}
+class Circle extends Shape {
+  constructor(private r: number) { super(); }
+  area() { return Math.PI * this.r ** 2; }
+}
+
+new SmsNotifier().send(&quot;0712345678&quot;, &quot;Your order is ready&quot;).then(() =&gt; {
+  [new Rectangle(4, 3), new Circle(1.5)].forEach((s) =&gt; console.log(s.describe()));
+});</code></pre></figure>
+<h2>Enums vs union types</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">enum Role {
+  Admin = &quot;admin&quot;,
+  Staff = &quot;staff&quot;,
+  Client = &quot;client&quot;,
+}
+
+function canEditPrices(role: Role): boolean {
+  return role === Role.Admin || role === Role.Staff;
+}
+console.log(canEditPrices(Role.Client), canEditPrices(Role.Admin), Role.Staff);
+
+// The same idea with a union of literals (often preferred: no extra code is generated)
+type Status = &quot;pending&quot; | &quot;paid&quot; | &quot;delivered&quot;;
+const s: Status = &quot;paid&quot;;
+console.log(s);</code></pre></figure>
+<p>Use <strong>string enums</strong> or <strong>literal unions</strong>; avoid numeric enums without values (they're easy to misuse). Many teams prefer literal unions or <code>as const</code> objects because they're plain JavaScript.</p>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">const PAYMENT = { MPESA: &quot;mpesa&quot;, CARD: &quot;card&quot; } as const;
+type Payment = (typeof PAYMENT)[keyof typeof PAYMENT];   // &quot;mpesa&quot; | &quot;card&quot;
+const p: Payment = PAYMENT.MPESA;
+console.log(p);</code></pre></figure>
+<h2>Modules</h2>
+<p>Split code into files with <code>export</code> / <code>import</code>, exactly as in JavaScript. You can also export <strong>types</strong>:</p>
+<figure class="static-code"><figcaption>TypeScript</figcaption><pre><code class="language-typescript">// types.ts
+export type Product = { id: number; name: string; price: number };
+
+// cart.ts
+import type { Product } from &quot;./types&quot;;
+export function total(items: Product[]): number {
+  return items.reduce((s, p) =&gt; s + p.price, 0);
+}</code></pre></figure>
+<h2>Setting up a real project</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">npm init -y
+npm install -D typescript
+npx tsc --init          # creates tsconfig.json
+npx tsc                 # compile .ts files to .js
+npx tsc --watch         # recompile on every save</code></pre></figure>
+<p>Important <code>tsconfig.json</code> options:</p>
+<figure class="static-code"><figcaption>JSON</figcaption><pre><code class="language-json">{
+  &quot;compilerOptions&quot;: {
+    &quot;target&quot;: &quot;ES2022&quot;,
+    &quot;module&quot;: &quot;ESNext&quot;,
+    &quot;strict&quot;: true,
+    &quot;outDir&quot;: &quot;dist&quot;,
+    &quot;rootDir&quot;: &quot;src&quot;,
+    &quot;noUncheckedIndexedAccess&quot;: true
+  }
+}</code></pre></figure>
+<ul><li>**Always turn on <code>&quot;strict&quot;: true</code>**: it enables the checks that catch the most bugs (like forgetting that a value might be <code>undefined</code>).</li><li>For apps, tools like <strong>Vite</strong> (front-end) or <strong>tsx</strong>/<strong>Node's type stripping</strong> (back-end) run TypeScript directly during development.</li></ul>
+<h2>Typing data from outside (APIs, forms)</h2>
+<p>TypeScript types disappear at runtime, so data from an API or form isn't <em>guaranteed</em> to match. Validate it (for example with the <strong>Zod</strong> library) at the boundary, then enjoy full type safety inside your app.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which modifier makes a property visible only inside its class?</p><details><summary>Show answer</summary><p>private</p></details></li><li><p>Which modifier allows a property to be assigned only once?</p><details><summary>Show answer</summary><p>readonly</p></details></li><li><p>Which keyword makes a class follow an interface?</p><details><summary>Show answer</summary><p>implements</p></details></li><li><p>Which tsconfig option turns on all the important safety checks?</p><details><summary>Show answer</summary><p>strict</p></details></li><li><p>Which command creates a tsconfig.json file?</p><details><summary>Show answer</summary><p>npx tsc --init</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 7 in <a href="/learn/typescript/">TypeScript</a> · <a href="/learn/?book=typescript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/typescript/generics-utility-types/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Generics and utility types</a><a class="btn btn-solid btn-sm" href="/learn/typescript/typescript-in-practice/">TypeScript in real projects <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

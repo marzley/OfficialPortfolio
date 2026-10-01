@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The OSI and TCP/IP models | Networking</title>
+    <meta name="description" content="When you open a website, many things happen: your browser makes a request, it is split into packets, addressed, sent as electrical, light or radio…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/networking/osi-tcpip/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="The OSI and TCP/IP models | Networking" />
+    <meta property="og:description" content="When you open a website, many things happen: your browser makes a request, it is split into packets, addressed, sent as electrical, light or radio…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/networking/osi-tcpip/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="The OSI and TCP/IP models | Networking" />
+    <meta name="twitter:description" content="When you open a website, many things happen: your browser makes a request, it is split into packets, addressed, sent as electrical, light or radio…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/networking/osi-tcpip/#lesson","name":"The OSI and TCP/IP models","description":"When you open a website, many things happen: your browser makes a request, it is split into packets, addressed, sent as electrical, light or radio…","url":"https://marzleytechsolutions.co.ke/learn/networking/osi-tcpip/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/networking/#course","name":"Networking","url":"https://marzleytechsolutions.co.ke/learn/networking/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Networking","item":"https://marzleytechsolutions.co.ke/learn/networking/"},{"@type":"ListItem","position":4,"name":"The OSI and TCP/IP models","item":"https://marzleytechsolutions.co.ke/learn/networking/osi-tcpip/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/networking/">Networking</a> / <span>The OSI and TCP/IP models</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=networking&amp;lesson=osi-tcpip"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>The OSI and TCP/IP models</h1>
+<p>When you open a website, many things happen: your browser makes a request, it is split into packets, addressed, sent as electrical, light or radio signals, and put back together at the other end. <strong>Models</strong> divide this work into <strong>layers</strong>, so each layer has one job. Engineers use them to design networks and to troubleshoot ("is it a layer 1 cable problem or a layer 3 IP problem?").</p>
+<h2>The OSI model (7 layers)</h2>
+<div class="static-table"><table><thead><tr><th>#</th><th>Layer</th><th>Job</th><th>Examples</th><th>Data unit</th></tr></thead><tbody><tr><td>7</td><td><strong>Application</strong></td><td>What the user's program talks</td><td>HTTP, HTTPS, DNS, SMTP, FTP</td><td>Data</td></tr><tr><td>6</td><td><strong>Presentation</strong></td><td>Format, encryption, compression</td><td>TLS encryption, JPEG, UTF-8</td><td>Data</td></tr><tr><td>5</td><td><strong>Session</strong></td><td>Opens, manages and closes conversations</td><td>Login sessions, RPC</td><td>Data</td></tr><tr><td>4</td><td><strong>Transport</strong></td><td>End-to-end delivery, ports, reliability</td><td>TCP, UDP</td><td><strong>Segment</strong> (TCP) / datagram (UDP)</td></tr><tr><td>3</td><td><strong>Network</strong></td><td>Logical addressing and routing between networks</td><td>IP, ICMP, routers</td><td><strong>Packet</strong></td></tr><tr><td>2</td><td><strong>Data link</strong></td><td>Delivery on the local network using MAC addresses</td><td>Ethernet, Wi-Fi (802.11), switches</td><td><strong>Frame</strong></td></tr><tr><td>1</td><td><strong>Physical</strong></td><td>Bits as signals on the medium</td><td>Cables, fibre, radio, hubs</td><td><strong>Bits</strong></td></tr></tbody></table></div>
+<p><strong>Memory trick (top to bottom):</strong> <em>All People Seem To Need Data Processing</em>. <strong>Bottom to top:</strong> <em>Please Do Not Throw Sausage Pizza Away</em>.</p>
+<h2>The TCP/IP model (what the internet actually uses)</h2>
+<div class="static-table"><table><thead><tr><th>TCP/IP layer</th><th>Matches OSI layers</th><th>Protocols</th></tr></thead><tbody><tr><td><strong>Application</strong></td><td>5, 6, 7</td><td>HTTP, DNS, DHCP, SMTP, SSH</td></tr><tr><td><strong>Transport</strong></td><td>4</td><td>TCP, UDP</td></tr><tr><td><strong>Internet</strong></td><td>3</td><td>IPv4, IPv6, ICMP</td></tr><tr><td><strong>Network access (Link)</strong></td><td>1, 2</td><td>Ethernet, Wi-Fi</td></tr></tbody></table></div>
+<h2>Encapsulation</h2>
+<p>As data goes <strong>down</strong> the layers on the sender, each layer adds its own <strong>header</strong>:</p>
+<ol><li>Your browser creates an HTTP request (data).</li><li>TCP adds a header with <strong>ports</strong> → segment.</li><li>IP adds a header with <strong>IP addresses</strong> → packet.</li><li>Ethernet/Wi-Fi adds a header with <strong>MAC addresses</strong> (and a trailer) → frame.</li><li>The frame is sent as <strong>bits</strong>.</li></ol>
+<p>The receiver does the opposite, <strong>de-encapsulation</strong>, going up the layers.</p>
+<h2>Troubleshooting with layers</h2>
+<p>Work from layer 1 up:</p>
+<ol><li><strong>Physical</strong>: is the cable plugged in? Is Wi-Fi on? Lights on the switch?</li><li><strong>Data link</strong>: is the device connected to the right Wi-Fi/VLAN?</li><li><strong>Network</strong>: does it have an IP address? Can you <code>ping</code> the gateway?</li><li><strong>Transport/Application</strong>: is the service running? Is a firewall blocking the port? Does DNS work?</li></ol>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which OSI layer number is the Network layer?</p><details><summary>Show answer</summary><p>3</p></details></li><li><p>Which OSI layer do switches mainly work at? (number)</p><details><summary>Show answer</summary><p>2</p></details></li><li><p>What is the data unit called at the Network layer?</p><details><summary>Show answer</summary><p>packet</p></details></li><li><p>Which layer adds port numbers: Transport or Network?</p><details><summary>Show answer</summary><p>transport</p></details></li><li><p>In the TCP/IP model, which layer does IP belong to?</p><details><summary>Show answer</summary><p>internet</p></details></li><li><p>Which OSI layer handles encryption and formatting (name)?</p><details><summary>Show answer</summary><p>presentation</p></details></li></ol></section>
+<p><strong>Learn more:</strong> <a href="https://www.cloudflare.com/learning/ddos/glossary/open-systems-interconnection-model-osi/" target="_blank" rel="noopener noreferrer">Cloudflare: What is the OSI model?</a> · <a href="https://www.professormesser.com/" target="_blank" rel="noopener noreferrer">Professor Messer's free Network+ videos</a></p></div><p class="static-meta">Lesson 3 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/devices-cables/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Network devices, cables and connectors</a><a class="btn btn-solid btn-sm" href="/learn/networking/binary-hex/">Binary and hexadecimal for networking <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

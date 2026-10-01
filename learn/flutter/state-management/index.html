@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>State management: setState, lifting state, Provider and…</title>
+    <meta name="description" content="State is any data that can change while the app runs: what&#x27;s in the cart, whether the user is logged in, the list of orders, the chosen theme. State…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/flutter/state-management/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="State management: setState, lifting state, Provider and…" />
+    <meta property="og:description" content="State is any data that can change while the app runs: what&#x27;s in the cart, whether the user is logged in, the list of orders, the chosen theme. State…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/flutter/state-management/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="State management: setState, lifting state, Provider and…" />
+    <meta name="twitter:description" content="State is any data that can change while the app runs: what&#x27;s in the cart, whether the user is logged in, the list of orders, the chosen theme. State…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/flutter/state-management/#lesson","name":"State management: setState, lifting state, Provider and Riverpod","description":"State is any data that can change while the app runs: what's in the cart, whether the user is logged in, the list of orders, the chosen theme. State…","url":"https://marzleytechsolutions.co.ke/learn/flutter/state-management/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/flutter/#course","name":"Flutter app development","url":"https://marzleytechsolutions.co.ke/learn/flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Flutter app development","item":"https://marzleytechsolutions.co.ke/learn/flutter/"},{"@type":"ListItem","position":4,"name":"State management: setState, lifting state, Provider and Riverpod","item":"https://marzleytechsolutions.co.ke/learn/flutter/state-management/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/flutter/">Flutter app development</a> / <span>State management: setState, lifting state, Provider and Riverpod</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=flutter&amp;lesson=state-management"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>State management: setState, lifting state, Provider and Riverpod</h1>
+<p><strong>State</strong> is any data that can change while the app runs: what's in the cart, whether the user is logged in, the list of orders, the chosen theme. <strong>State management</strong> is deciding <em>where that data lives</em> and <em>how screens find out when it changes</em>.</p>
+<h2>Two kinds of state</h2>
+<div class="static-table"><table><thead><tr><th>Ephemeral (local) state</th><th>App state (shared)</th></tr></thead><tbody><tr><td>Used by <strong>one</strong> widget</td><td>Used by <strong>many</strong> screens</td></tr><tr><td>The selected tab, a password's show/hide, an animation</td><td>The cart, the logged-in user, settings, downloaded data</td></tr><tr><td>Use <code>setState</code></td><td>Use Provider, Riverpod, Bloc...</td></tr></tbody></table></div>
+<p>Don't over-engineer: a show/hide toggle doesn't need a package.</p>
+<h2>Lifting state up</h2>
+<p>When two widgets need the same data, move the data to their <strong>closest common parent</strong> and pass it down, with callbacks to change it.</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+void main() =&gt; runApp(const MaterialApp(home: ShopPage()));
+
+class ShopPage extends StatefulWidget {
+  const ShopPage({super.key});
+  @override
+  State&lt;ShopPage&gt; createState() =&gt; _ShopPageState();
+}
+
+class _ShopPageState extends State&lt;ShopPage&gt; {
+  final cart = &lt;String&gt;[];                        // state lives in the common parent
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;Shop&#x27;), actions: [CartIcon(count: cart.length)]),   // passed down
+      body: ProductList(onAdd: (item) =&gt; setState(() =&gt; cart.add(item))),                   // callback up
+    );
+  }
+}
+
+class CartIcon extends StatelessWidget {
+  final int count;
+  const CartIcon({super.key, required this.count});
+  @override
+  Widget build(BuildContext context) =&gt;
+      Padding(padding: const EdgeInsets.all(12), child: Badge(label: Text(&#x27;$count&#x27;), isLabelVisible: count &gt; 0, child: const Icon(Icons.shopping_cart)));
+}
+
+class ProductList extends StatelessWidget {
+  final void Function(String item) onAdd;
+  const ProductList({super.key, required this.onAdd});
+  @override
+  Widget build(BuildContext context) =&gt; ListView(children: [
+        for (final p in [&#x27;Unga&#x27;, &#x27;Sugar&#x27;, &#x27;Milk&#x27;])
+          ListTile(title: Text(p), trailing: IconButton(icon: const Icon(Icons.add_shopping_cart), onPressed: () =&gt; onAdd(p))),
+      ]);
+}</code></pre></figure>
+<p>This works for a few widgets. But when the cart is needed on the product page, the cart page, the checkout page and the app bar, passing it through every constructor ("prop drilling") gets painful. That's when you use a state management package.</p>
+<h2>Provider + ChangeNotifier (recommended for beginners)</h2>
+<p><strong>Provider</strong> is simple and officially recommended in Flutter's docs. The idea:</p>
+<ol><li>Put your state and the functions that change it in a class that **extends <code>ChangeNotifier</code>**.</li><li>Call **<code>notifyListeners()</code>** after every change.</li><li><strong>Provide</strong> it above the widgets that need it.</li><li>Widgets <strong>watch</strong> it and rebuild when it changes.</li></ol>
+<p><code>flutter pub add provider</code>, then:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+import &#x27;package:provider/provider.dart&#x27;;
+
+// 1. The state and its logic, with no widgets in it (easy to test)
+class CartItem {
+  final String name;
+  final int price;
+  int qty;
+  CartItem(this.name, this.price, {this.qty = 1});
+}
+
+class Cart extends ChangeNotifier {
+  final Map&lt;String, CartItem&gt; _items = {};
+
+  List&lt;CartItem&gt; get items =&gt; _items.values.toList();
+  int get count =&gt; _items.values.fold(0, (n, i) =&gt; n + i.qty);
+  int get total =&gt; _items.values.fold(0, (sum, i) =&gt; sum + i.price * i.qty);
+
+  void add(String name, int price) {
+    final existing = _items[name];
+    if (existing != null) {
+      existing.qty++;
+    } else {
+      _items[name] = CartItem(name, price);
+    }
+    notifyListeners();                                    // 2. tell everyone watching
+  }
+
+  void remove(String name) {
+    final item = _items[name];
+    if (item == null) return;
+    if (item.qty &gt; 1) {
+      item.qty--;
+    } else {
+      _items.remove(name);
+    }
+    notifyListeners();
+  }
+
+  void clear() {
+    _items.clear();
+    notifyListeners();
+  }
+}
+
+// 3. Provide it at the top of the app
+void main() =&gt; runApp(ChangeNotifierProvider(create: (_) =&gt; Cart(), child: const MaterialApp(home: ProductsPage())));
+
+const catalogue = {&#x27;Unga 2kg&#x27;: 180, &#x27;Sugar 1kg&#x27;: 150, &#x27;Milk 500ml&#x27;: 60, &#x27;Bread&#x27;: 65};
+
+class ProductsPage extends StatelessWidget {
+  const ProductsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final count = context.watch&lt;Cart&gt;().count;           // 4. rebuilds when the cart changes
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;Duka&#x27;), actions: [
+        IconButton(
+          icon: Badge(label: Text(&#x27;$count&#x27;), isLabelVisible: count &gt; 0, child: const Icon(Icons.shopping_cart)),
+          onPressed: () =&gt; Navigator.push(context, MaterialPageRoute(builder: (_) =&gt; const CartPage())),
+        ),
+      ]),
+      body: ListView(children: [
+        for (final e in catalogue.entries)
+          ListTile(
+            title: Text(e.key),
+            subtitle: Text(&#x27;KSh ${e.value}&#x27;),
+            trailing: FilledButton.tonal(
+              onPressed: () =&gt; context.read&lt;Cart&gt;().add(e.key, e.value),   // read: call a method, don&#x27;t rebuild
+              child: const Text(&#x27;Add&#x27;),
+            ),
+          ),
+      ]),
+    );
+  }
+}
+
+class CartPage extends StatelessWidget {
+  const CartPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final cart = context.watch&lt;Cart&gt;();
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;Your cart&#x27;)),
+      body: cart.items.isEmpty
+          ? const Center(child: Text(&#x27;Your cart is empty&#x27;))
+          : ListView(children: [
+              for (final i in cart.items)
+                ListTile(
+                  title: Text(i.name),
+                  subtitle: Text(&#x27;KSh ${i.price} × ${i.qty}&#x27;),
+                  trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                    IconButton(icon: const Icon(Icons.remove_circle_outline), onPressed: () =&gt; cart.remove(i.name)),
+                    Text(&#x27;${i.qty}&#x27;),
+                    IconButton(icon: const Icon(Icons.add_circle_outline), onPressed: () =&gt; cart.add(i.name, i.price)),
+                  ]),
+                ),
+            ]),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: FilledButton(onPressed: cart.items.isEmpty ? null : () {}, child: Text(&#x27;Pay KSh ${cart.total} with M-Pesa&#x27;)),
+        ),
+      ),
+    );
+  }
+}</code></pre></figure>
+<h3>watch, read and select</h3>
+<div class="static-table"><table><thead><tr><th>Call</th><th>Use in</th><th>Rebuilds?</th></tr></thead><tbody><tr><td><code>context.watch&lt;Cart&gt;()</code></td><td><code>build()</code></td><td>Yes, whenever the cart changes</td></tr><tr><td><code>context.read&lt;Cart&gt;()</code></td><td>Button callbacks (<code>onPressed</code>)</td><td>No. Never use <code>watch</code> inside a callback.</td></tr><tr><td><code>context.select&lt;Cart, int&gt;((c) =&gt; c.count)</code></td><td><code>build()</code></td><td>Only when <strong>that value</strong> changes (fewer rebuilds)</td></tr><tr><td><code>Consumer&lt;Cart&gt;(builder: ...)</code></td><td>Part of a build</td><td>Rebuilds just the part inside it</td></tr></tbody></table></div>
+<p>Several providers? Use <code>MultiProvider(providers: [ChangeNotifierProvider(create: (_) =&gt; Cart()), ChangeNotifierProvider(create: (_) =&gt; Auth())], child: ...)</code>.</p>
+<h2>Riverpod (the next step)</h2>
+<p><strong>Riverpod</strong> is by the same author as Provider. It fixes Provider's weak points: no <code>BuildContext</code> needed to read state, compile-time safety (no "ProviderNotFoundException"), and easy async loading. <code>flutter pub add flutter_riverpod</code>:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+import &#x27;package:flutter_riverpod/flutter_riverpod.dart&#x27;;
+
+// A simple value that can change
+final counterProvider = StateProvider&lt;int&gt;((ref) =&gt; 0);
+
+// Data loaded asynchronously: Riverpod handles loading and error states for you
+final pricesProvider = FutureProvider&lt;Map&lt;String, int&gt;&gt;((ref) async {
+  await Future.delayed(const Duration(seconds: 1));     // pretend network call
+  return {&#x27;Unga&#x27;: 180, &#x27;Sugar&#x27;: 150};
+});
+
+void main() =&gt; runApp(const ProviderScope(child: MaterialApp(home: Home())));   // ProviderScope at the top
+
+class Home extends ConsumerWidget {                      // ConsumerWidget gets a WidgetRef
+  const Home({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final count = ref.watch(counterProvider);
+    final prices = ref.watch(pricesProvider);
+    return Scaffold(
+      appBar: AppBar(title: Text(&#x27;Tapped $count times&#x27;)),
+      body: prices.when(
+        loading: () =&gt; const Center(child: CircularProgressIndicator()),
+        error: (e, _) =&gt; Center(child: Text(&#x27;Error: $e&#x27;)),
+        data: (p) =&gt; ListView(children: [for (final e in p.entries) ListTile(title: Text(e.key), trailing: Text(&#x27;KSh ${e.value}&#x27;))]),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () =&gt; ref.read(counterProvider.notifier).state++,
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}</code></pre></figure>
+<h2>Other popular choices</h2>
+<div class="static-table"><table><thead><tr><th>Approach</th><th>Style</th><th>Good for</th></tr></thead><tbody><tr><td><code>setState</code></td><td>Built in</td><td>Local UI state, small apps</td></tr><tr><td><strong>Provider</strong></td><td>ChangeNotifier + watch/read</td><td>Beginners, small and medium apps</td></tr><tr><td><strong>Riverpod</strong></td><td>Providers declared globally, <code>ref.watch</code></td><td>Medium and large apps, async data</td></tr><tr><td><strong>Bloc / Cubit</strong></td><td>Events in, states out (streams)</td><td>Big teams, strict structure, banking-style apps</td></tr><tr><td>GetX</td><td>All-in-one</td><td>Popular in tutorials, but mixes many concerns; many teams avoid it</td></tr></tbody></table></div>
+<p>Pick <strong>one</strong> for a project and use it consistently. Employers in Kenya often ask for Provider, Riverpod or Bloc experience.</p>
+<h2>Good habits</h2>
+<ul><li>Keep <strong>logic out of widgets</strong>: the <code>Cart</code> class above has no Flutter UI code, so you can unit-test it.</li><li>Make state <strong>private</strong> (<code>_items</code>) and expose read-only getters and methods. Nobody should change the list without calling <code>notifyListeners</code>.</li><li>Keep state <strong>as low as possible</strong> in the tree, and use <code>select</code>/<code>Consumer</code> so only what's needed rebuilds.</li><li>Never store widgets or <code>BuildContext</code> in state.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which is right for a password show/hide toggle: setState or Provider?</p><details><summary>Show answer</summary><p>setState</p></details></li><li><p>A ChangeNotifier must call which method after changing its data?</p><details><summary>Show answer</summary><p>notifyListeners</p></details></li><li><p>Which Provider call rebuilds the widget when the state changes?</p><details><summary>Show answer</summary><p>watch</p></details></li><li><p>Which call should you use inside an onPressed callback?</p><details><summary>Show answer</summary><p>read</p></details></li><li><p>What do you wrap the whole app in to use Riverpod?</p><details><summary>Show answer</summary><p>ProviderScope</p></details></li><li><p>Moving shared data to the closest common parent widget is called lifting state ...?</p><details><summary>Show answer</summary><p>up</p></details></li></ol></section></div><p class="static-meta">Lesson 8 of 15 in <a href="/learn/flutter/">Flutter app development</a> · <a href="/learn/?book=flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/flutter/forms-validation/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Forms and input: text fields, validation, pickers and the keyboard</a><a class="btn btn-solid btn-sm" href="/learn/flutter/http-apis-json/">Loading data from the internet: http, JSON models and FutureBuilder <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

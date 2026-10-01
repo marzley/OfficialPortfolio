@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Network security basics | Networking</title>
+    <meta name="description" content="Free Networking lesson: Network security basics." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/networking/network-security/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Network security basics | Networking" />
+    <meta property="og:description" content="Free Networking lesson: Network security basics." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/networking/network-security/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Network security basics | Networking" />
+    <meta name="twitter:description" content="Free Networking lesson: Network security basics." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/networking/network-security/#lesson","name":"Network security basics","description":"Free Networking lesson: Network security basics.","url":"https://marzleytechsolutions.co.ke/learn/networking/network-security/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/networking/#course","name":"Networking","url":"https://marzleytechsolutions.co.ke/learn/networking/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Networking","item":"https://marzleytechsolutions.co.ke/learn/networking/"},{"@type":"ListItem","position":4,"name":"Network security basics","item":"https://marzleytechsolutions.co.ke/learn/networking/network-security/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/networking/">Networking</a> / <span>Network security basics</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=networking&amp;lesson=network-security"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Network security basics</h1>
+<h2>Firewalls</h2>
+<p>A <strong>firewall</strong> allows or blocks traffic using rules (source, destination, port, protocol).</p>
+<ul><li><strong>Stateful</strong> firewalls remember connections, so replies to traffic you started are allowed automatically.</li><li>Best practice: <strong>deny everything by default</strong>, then allow only what's needed ("allow 443 to the web server").</li><li>Your router has one; servers have their own (Windows Defender Firewall, <code>ufw</code> on Ubuntu); companies use dedicated ones (pfSense/OPNsense, Fortinet, Sophos, MikroTik).</li></ul>
+<p>Simple <code>ufw</code> example on Ubuntu:</p>
+<figure class="static-code"><pre><code>sudo ufw default deny incoming
+sudo ufw allow 22/tcp
+sudo ufw allow 80,443/tcp
+sudo ufw enable</code></pre></figure>
+<h2>VPNs</h2>
+<p>A <strong>VPN</strong> creates an encrypted tunnel over the internet.</p>
+<ul><li><strong>Site-to-site</strong>: joins branch networks to head office (e.g. IPsec between two MikroTik routers).</li><li><strong>Remote access</strong>: staff at home connect to the office (WireGuard, OpenVPN, IPsec).</li></ul>
+<h2>Common attacks</h2>
+<div class="static-table"><table><thead><tr><th>Attack</th><th>What happens</th><th>Defence</th></tr></thead><tbody><tr><td><strong>DoS / DDoS</strong></td><td>Floods a site so real users can't reach it</td><td>Cloudflare/CDN, ISP filtering</td></tr><tr><td><strong>Man-in-the-middle</strong></td><td>Attacker reads or changes traffic (e.g. fake café Wi-Fi)</td><td>HTTPS everywhere, VPN, WPA3</td></tr><tr><td><strong>ARP spoofing</strong></td><td>Attacker claims the gateway's IP on the LAN</td><td>Dynamic ARP inspection, VLANs</td></tr><tr><td><strong>Rogue DHCP</strong></td><td>Fake DHCP hands out a malicious gateway</td><td>DHCP snooping</td></tr><tr><td><strong>Brute force</strong></td><td>Guessing passwords on SSH, RDP, routers</td><td>Strong passwords, keys, 2FA, fail2ban, don't expose RDP</td></tr><tr><td><strong>Port scanning</strong></td><td>Looking for open services</td><td>Close unused ports, firewall</td></tr></tbody></table></div>
+<h2>Hardening checklist for a small office</h2>
+<ul><li>Change all default passwords (router, switches, CCTV DVR, printers).</li><li>Update router and device firmware.</li><li>Separate VLANs for staff, guests and CCTV.</li><li>No port forwarding of RDP (3389) or SMB (445) to the internet.</li><li>Use a VPN for remote access.</li><li>Back up configurations and important data.</li><li>Log and monitor: know when something odd happens.</li></ul>
+<h2>Defence in depth</h2>
+<p>No single tool is enough: combine firewall + updates + strong authentication + backups + training people. Most real break-ins start with a <strong>phishing email or a weak password</strong>, not a clever network hack.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What should a firewall's default policy for incoming traffic be?</p><details><summary>Show answer</summary><p>deny</p></details></li><li><p>Which type of VPN joins two office networks together?</p><details><summary>Show answer</summary><p>site-to-site</p></details></li><li><p>Which switch feature stops fake DHCP servers?</p><details><summary>Show answer</summary><p>DHCP snooping</p></details></li><li><p>Which Windows remote desktop port should never be open directly to the internet?</p><details><summary>Show answer</summary><p>3389</p></details></li><li><p>What does DDoS stand for? (four words)</p><details><summary>Show answer</summary><p>distributed denial of service</p></details></li></ol></section>
+<p><strong>Learn more:</strong> <a href="https://www.cloudflare.com/learning/security/what-is-a-firewall/" target="_blank" rel="noopener noreferrer">Cloudflare: What is a firewall?</a> · <a href="https://www.netacad.com/" target="_blank" rel="noopener noreferrer">Cisco NetAcad: Network Security</a></p></div><p class="static-meta">Lesson 21 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/network-commands/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Essential network commands: ipconfig, ping, tracert, nslookup</a><a class="btn btn-solid btn-sm" href="/learn/networking/firewalls-vpns/">Firewalls, VPNs and remote access <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

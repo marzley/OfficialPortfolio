@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Phone features: camera, location, calls, WhatsApp,…</title>
+    <meta name="description" content="Apps become really useful when they use the phone itself: take a photo of a receipt, find the nearest branch, call the shop, open a WhatsApp chat…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/flutter/device-features/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Phone features: camera, location, calls, WhatsApp,…" />
+    <meta property="og:description" content="Apps become really useful when they use the phone itself: take a photo of a receipt, find the nearest branch, call the shop, open a WhatsApp chat…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/flutter/device-features/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Phone features: camera, location, calls, WhatsApp,…" />
+    <meta name="twitter:description" content="Apps become really useful when they use the phone itself: take a photo of a receipt, find the nearest branch, call the shop, open a WhatsApp chat…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/flutter/device-features/#lesson","name":"Phone features: camera, location, calls, WhatsApp, sharing and permissions","description":"Apps become really useful when they use the phone itself: take a photo of a receipt, find the nearest branch, call the shop, open a WhatsApp chat…","url":"https://marzleytechsolutions.co.ke/learn/flutter/device-features/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/flutter/#course","name":"Flutter app development","url":"https://marzleytechsolutions.co.ke/learn/flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Flutter app development","item":"https://marzleytechsolutions.co.ke/learn/flutter/"},{"@type":"ListItem","position":4,"name":"Phone features: camera, location, calls, WhatsApp, sharing and permissions","item":"https://marzleytechsolutions.co.ke/learn/flutter/device-features/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/flutter/">Flutter app development</a> / <span>Phone features: camera, location, calls, WhatsApp, sharing and permissions</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=flutter&amp;lesson=device-features"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Phone features: camera, location, calls, WhatsApp, sharing and permissions</h1>
+<p>Apps become really useful when they use the phone itself: take a photo of a receipt, find the nearest branch, call the shop, open a WhatsApp chat, share an invoice. Flutter reaches these features through <strong>plugins</strong> (packages with Android and iOS code inside).</p>
+<div class="static-table"><table><thead><tr><th>Feature</th><th>Package</th></tr></thead><tbody><tr><td>Open links, call, SMS, email, WhatsApp, maps</td><td><code>url_launcher</code></td></tr><tr><td>Camera and gallery photos</td><td><code>image_picker</code></td></tr><tr><td>GPS location</td><td><code>geolocator</code></td></tr><tr><td>Share text or files to other apps</td><td><code>share_plus</code></td></tr><tr><td>Scan QR/barcodes</td><td><code>mobile_scanner</code></td></tr><tr><td>Local notifications (reminders)</td><td><code>flutter_local_notifications</code></td></tr><tr><td>Check internet type</td><td><code>connectivity_plus</code></td></tr><tr><td>Fingerprint/face unlock</td><td><code>local_auth</code></td></tr></tbody></table></div>
+<p>After adding a plugin, <strong>stop the app and run it again</strong> (hot reload doesn't load new native code).</p>
+<h2>Calls, SMS, email, WhatsApp and maps with url_launcher</h2>
+<p><code>flutter pub add url_launcher</code></p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+import &#x27;package:url_launcher/url_launcher.dart&#x27;;
+
+void main() =&gt; runApp(const MaterialApp(home: ContactScreen()));
+
+class ContactScreen extends StatelessWidget {
+  const ContactScreen({super.key});
+
+  static const phone = &#x27;+254745789590&#x27;;
+
+  Future&lt;void&gt; open(BuildContext context, Uri uri) async {
+    final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!ok &amp;&amp; context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(&#x27;No app on this phone can open that.&#x27;)));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final message = Uri.encodeComponent(&#x27;Hello, I\&#x27;d like to order 2 packets of unga.&#x27;);
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;Contact the shop&#x27;)),
+      body: ListView(children: [
+        ListTile(leading: const Icon(Icons.call), title: const Text(&#x27;Call&#x27;), onTap: () =&gt; open(context, Uri.parse(&#x27;tel:$phone&#x27;))),
+        ListTile(leading: const Icon(Icons.sms), title: const Text(&#x27;SMS&#x27;), onTap: () =&gt; open(context, Uri.parse(&#x27;sms:$phone?body=$message&#x27;))),
+        ListTile(
+          leading: const Icon(Icons.chat),
+          title: const Text(&#x27;WhatsApp&#x27;),
+          onTap: () =&gt; open(context, Uri.parse(&#x27;https://wa.me/${phone.substring(1)}?text=$message&#x27;)),   // wa.me needs 2547..., no +
+        ),
+        ListTile(leading: const Icon(Icons.email), title: const Text(&#x27;Email&#x27;),
+            onTap: () =&gt; open(context, Uri.parse(&#x27;mailto:hello@example.co.ke?subject=Order&amp;body=$message&#x27;))),
+        ListTile(leading: const Icon(Icons.map), title: const Text(&#x27;Directions&#x27;),
+            onTap: () =&gt; open(context, Uri.parse(&#x27;https://www.google.com/maps/search/?api=1&amp;query=Kenyatta+Avenue+Nairobi&#x27;))),
+        ListTile(leading: const Icon(Icons.public), title: const Text(&#x27;Website&#x27;),
+            onTap: () =&gt; open(context, Uri.parse(&#x27;https://marzleytechsolutions.co.ke&#x27;))),
+      ]),
+    );
+  }
+}</code></pre></figure>
+<p><strong>Android 11+ package visibility:</strong> to check which apps can open a link, add a <code>&lt;queries&gt;</code> block to <code>AndroidManifest.xml</code> (the url_launcher README has the exact lines for <code>tel</code>, <code>sms</code>, <code>mailto</code> and <code>https</code>). Without it, <code>canLaunchUrl</code> may wrongly say "no".</p>
+<p><code>Uri.encodeComponent</code> turns spaces and symbols in the message into URL-safe text. Always use it for text you put in a link.</p>
+<h2>Taking photos and choosing from the gallery</h2>
+<p><code>flutter pub add image_picker</code></p>
+<p>On iPhone, add usage descriptions to <code>ios/Runner/Info.plist</code> (<code>NSCameraUsageDescription</code>, <code>NSPhotoLibraryUsageDescription</code>), or the app crashes when it asks. Android needs no extra setup for image_picker.</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;dart:io&#x27;;
+import &#x27;package:flutter/material.dart&#x27;;
+import &#x27;package:image_picker/image_picker.dart&#x27;;
+
+void main() =&gt; runApp(const MaterialApp(home: ReceiptScreen()));
+
+class ReceiptScreen extends StatefulWidget {
+  const ReceiptScreen({super.key});
+  @override
+  State&lt;ReceiptScreen&gt; createState() =&gt; _ReceiptScreenState();
+}
+
+class _ReceiptScreenState extends State&lt;ReceiptScreen&gt; {
+  final picker = ImagePicker();
+  File? photo;
+
+  Future&lt;void&gt; pick(ImageSource source) async {
+    final x = await picker.pickImage(
+      source: source,
+      maxWidth: 1600,          // shrink big photos: faster uploads, less data
+      imageQuality: 80,        // JPEG quality 0-100
+    );
+    if (x == null) return;     // the user cancelled
+    setState(() =&gt; photo = File(x.path));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;Receipt photo&#x27;)),
+      body: Center(
+        child: photo == null
+            ? const Text(&#x27;No photo yet&#x27;)
+            : ClipRRect(borderRadius: BorderRadius.circular(12), child: Image.file(photo!, height: 320)),
+      ),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(children: [
+            Expanded(child: OutlinedButton.icon(onPressed: () =&gt; pick(ImageSource.gallery), icon: const Icon(Icons.photo), label: const Text(&#x27;Gallery&#x27;))),
+            const SizedBox(width: 12),
+            Expanded(child: FilledButton.icon(onPressed: () =&gt; pick(ImageSource.camera), icon: const Icon(Icons.camera_alt), label: const Text(&#x27;Camera&#x27;))),
+          ]),
+        ),
+      ),
+    );
+  }
+}</code></pre></figure>
+<p>To upload the photo to your server, use <code>http.MultipartRequest</code> (or Firebase Storage's <code>putFile</code>).</p>
+<h2>Location (GPS)</h2>
+<p><code>flutter pub add geolocator</code>, then in <code>AndroidManifest.xml</code>:</p>
+<figure class="static-code"><figcaption>XML</figcaption><pre><code class="language-xml">&lt;uses-permission android:name=&quot;android.permission.ACCESS_FINE_LOCATION&quot; /&gt;
+&lt;uses-permission android:name=&quot;android.permission.ACCESS_COARSE_LOCATION&quot; /&gt;</code></pre></figure>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:geolocator/geolocator.dart&#x27;;
+
+/// Returns the phone&#x27;s position, or throws a message you can show the user.
+Future&lt;Position&gt; currentPosition() async {
+  if (!await Geolocator.isLocationServiceEnabled()) {
+    throw &#x27;Location is off. Turn it on in your phone settings.&#x27;;
+  }
+  var permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();          // shows the system pop-up
+    if (permission == LocationPermission.denied) throw &#x27;We need your location to find the nearest branch.&#x27;;
+  }
+  if (permission == LocationPermission.deniedForever) {
+    throw &#x27;Location permission is blocked. Allow it in Settings &gt; Apps.&#x27;;
+  }
+  return Geolocator.getCurrentPosition(locationSettings: const LocationSettings(accuracy: LocationAccuracy.high));
+}
+
+/// Nearest branch, using straight-line distance in metres.
+String nearestBranch(Position me) {
+  const branches = {&#x27;Nairobi CBD&#x27;: (-1.2841, 36.8155), &#x27;Thika&#x27;: (-1.0333, 37.0693), &#x27;Nakuru&#x27;: (-0.3031, 36.0800)};
+  final sorted = branches.entries.toList()
+    ..sort((a, b) =&gt; Geolocator.distanceBetween(me.latitude, me.longitude, a.value.$1, a.value.$2)
+        .compareTo(Geolocator.distanceBetween(me.latitude, me.longitude, b.value.$1, b.value.$2)));
+  final d = Geolocator.distanceBetween(me.latitude, me.longitude, sorted.first.value.$1, sorted.first.value.$2);
+  return &#x27;${sorted.first.key} (${(d / 1000).toStringAsFixed(1)} km away)&#x27;;
+}</code></pre></figure>
+<p>(<code>(-1.2841, 36.8155)</code> is a Dart <strong>record</strong>: a quick pair of values, read with <code>.$1</code> and <code>.$2</code>.)</p>
+<h2>Permissions: the golden rules</h2>
+<ol><li><strong>Ask only when needed</strong>, at the moment the user taps the feature ("Find nearest branch"), not all at once on first launch.</li><li><strong>Explain why first</strong> with a short screen or dialog. People say yes more when they understand.</li><li><strong>Handle "no" gracefully</strong>: the rest of the app must still work.</li><li>If blocked forever, offer a button to open settings (<code>Geolocator.openAppSettings()</code> or the <strong>permission_handler</strong> package's <code>openAppSettings()</code>).</li><li>Only request what you use: the Play Store rejects apps asking for SMS, call log or background location without a strong reason.</li></ol>
+<h2>Sharing</h2>
+<p><code>flutter pub add share_plus</code></p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:share_plus/share_plus.dart&#x27;;
+
+Future&lt;void&gt; shareInvoice() async {
+  await Share.share(&#x27;Invoice #1042 from Duka Thika: KSh 1,240. Pay via M-Pesa Till 123456.&#x27;, subject: &#x27;Your invoice&#x27;);
+  // Files: Share.shareXFiles([XFile(&#x27;/path/to/invoice.pdf&#x27;)]);
+}</code></pre></figure>
+<h2>Other handy plugins</h2>
+<ul><li><strong>mobile_scanner</strong>: scan QR codes and barcodes (stock taking, event tickets).</li><li><strong>flutter_local_notifications</strong>: reminders that work offline ("Pay rent tomorrow").</li><li><strong>firebase_messaging</strong>: push notifications sent from your server.</li><li><strong>local_auth</strong>: unlock with fingerprint before showing balances.</li><li><strong>connectivity_plus</strong>: show an "offline" banner.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which package opens phone calls, SMS, WhatsApp and web links?</p><details><summary>Show answer</summary><p>url_launcher</p></details></li><li><p>Which URI scheme starts a phone call?</p><details><summary>Show answer</summary><p>tel</p></details></li><li><p>Which package takes photos with the camera or picks from the gallery?</p><details><summary>Show answer</summary><p>image_picker</p></details></li><li><p>Which ImageSource opens the camera?</p><details><summary>Show answer</summary><p>ImageSource.camera</p></details></li><li><p>Which package gets the GPS position?</p><details><summary>Show answer</summary><p>geolocator</p></details></li><li><p>Which package shares text or files to WhatsApp, email and other apps?</p><details><summary>Show answer</summary><p>share_plus</p></details></li><li><p>Which function makes message text safe to put in a link?</p><details><summary>Show answer</summary><p>Uri.encodeComponent</p></details></li></ol></section></div><p class="static-meta">Lesson 12 of 15 in <a href="/learn/flutter/">Flutter app development</a> · <a href="/learn/?book=flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/flutter/firebase-auth-firestore/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Firebase: sign-in, Firestore database and real-time data</a><a class="btn btn-solid btn-sm" href="/learn/flutter/animations/">Animations that feel good: implicit, Hero, page transitions and loaders <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

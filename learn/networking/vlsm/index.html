@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VLSM: different sizes in one network | Networking</title>
+    <meta name="description" content="Giving every subnet the same size wastes addresses: a router link with 2 devices doesn&#x27;t need 30 addresses. VLSM lets you use different prefixes for…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/networking/vlsm/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="VLSM: different sizes in one network | Networking" />
+    <meta property="og:description" content="Giving every subnet the same size wastes addresses: a router link with 2 devices doesn&#x27;t need 30 addresses. VLSM lets you use different prefixes for…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/networking/vlsm/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="VLSM: different sizes in one network | Networking" />
+    <meta name="twitter:description" content="Giving every subnet the same size wastes addresses: a router link with 2 devices doesn&#x27;t need 30 addresses. VLSM lets you use different prefixes for…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/networking/vlsm/#lesson","name":"VLSM: different sizes in one network","description":"Giving every subnet the same size wastes addresses: a router link with 2 devices doesn't need 30 addresses. VLSM lets you use different prefixes for…","url":"https://marzleytechsolutions.co.ke/learn/networking/vlsm/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/networking/#course","name":"Networking","url":"https://marzleytechsolutions.co.ke/learn/networking/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Networking","item":"https://marzleytechsolutions.co.ke/learn/networking/"},{"@type":"ListItem","position":4,"name":"VLSM: different sizes in one network","item":"https://marzleytechsolutions.co.ke/learn/networking/vlsm/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/networking/">Networking</a> / <span>VLSM: different sizes in one network</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=networking&amp;lesson=vlsm"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>VLSM: Variable Length Subnet Masking</h1>
+<p>Giving every subnet the same size wastes addresses: a router link with 2 devices doesn't need 30 addresses. <strong>VLSM</strong> lets you use <strong>different prefixes</strong> for different subnets inside one block.</p>
+<h2>The method</h2>
+<ol><li>List every requirement and <strong>sort from largest to smallest</strong>.</li><li>For each, pick the <strong>smallest subnet that fits</strong> (hosts + 2 ≤ block).</li><li>Allocate them <strong>one after another</strong>, starting at the beginning of the block. Because you go largest first, every subnet starts on a correct boundary.</li></ol>
+<h2>Example</h2>
+<p>You have <strong>192.168.10.0/24</strong> and need:</p>
+<ul><li>Sales: 100 hosts</li><li>Admin: 50 hosts</li><li>IT: 20 hosts</li><li>Guests: 10 hosts</li><li>Two router links: 2 hosts each</li></ul>
+<div class="static-table"><table><thead><tr><th>Need</th><th>Hosts</th><th>Block that fits</th><th>Prefix</th><th>Subnet</th><th>Usable range</th><th>Broadcast</th></tr></thead><tbody><tr><td>Sales</td><td>100</td><td>128</td><td>/25</td><td>192.168.10.0/25</td><td>.1 – .126</td><td>.127</td></tr><tr><td>Admin</td><td>50</td><td>64</td><td>/26</td><td>192.168.10.128/26</td><td>.129 – .190</td><td>.191</td></tr><tr><td>IT</td><td>20</td><td>32</td><td>/27</td><td>192.168.10.192/27</td><td>.193 – .222</td><td>.223</td></tr><tr><td>Guests</td><td>10</td><td>16</td><td>/28</td><td>192.168.10.224/28</td><td>.225 – .238</td><td>.239</td></tr><tr><td>Link 1</td><td>2</td><td>4</td><td>/30</td><td>192.168.10.240/30</td><td>.241 – .242</td><td>.243</td></tr><tr><td>Link 2</td><td>2</td><td>4</td><td>/30</td><td>192.168.10.244/30</td><td>.245 – .246</td><td>.247</td></tr><tr><td>Free</td><td></td><td></td><td></td><td>192.168.10.248/29</td><td></td><td></td></tr></tbody></table></div>
+<p>Everything fits in one /24 with room to spare. Without VLSM, using /25 for everything, it would need <strong>3</strong> whole /24s.</p>
+<h2>Common mistakes</h2>
+<ul><li><strong>Not sorting largest first</strong>: small subnets placed first push bigger ones onto the wrong boundaries.</li><li><strong>Forgetting the 2 reserved addresses</strong>: 62 hosts need a /26 (62 usable), but 63 hosts need a /25.</li><li><strong>Overlapping subnets</strong>: check that each new subnet starts after the previous broadcast.</li></ul>
+<p>Use the calculator from the CIDR lesson to verify each line.</p>
+<p class="static-note">This part of the lesson has an interactive tool. Open the live lesson to use it.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>A subnet needs 60 hosts. Which prefix is the smallest that fits?</p><details><summary>Show answer</summary><p>/26</p></details></li><li><p>A subnet needs 64 hosts. Which prefix?</p><details><summary>Show answer</summary><p>/25 · A /26 has only 62 usable addresses.</p></details></li><li><p>For a point-to-point router link (2 hosts, not using /31), which prefix?</p><details><summary>Show answer</summary><p>/30</p></details></li><li><p>In the table, what is the network address of the Guests subnet?</p><details><summary>Show answer</summary><p>192.168.10.224</p></details></li><li><p>In VLSM, do you allocate largest or smallest subnets first?</p><details><summary>Show answer</summary><p>largest</p></details></li></ol></section></div><p class="static-meta">Lesson 10 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/subnetting-requirements/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Subnetting to meet requirements</a><a class="btn btn-solid btn-sm" href="/learn/networking/summarization/">Route summarisation (supernetting) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

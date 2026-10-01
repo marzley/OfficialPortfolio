@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Generics and utility types | TypeScript</title>
+    <meta name="description" content="Some code works the same way for many types: a list, a cache, an API response wrapper. Generics let you write it once while keeping full type safety…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/typescript/generics-utility-types/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Generics and utility types | TypeScript" />
+    <meta property="og:description" content="Some code works the same way for many types: a list, a cache, an API response wrapper. Generics let you write it once while keeping full type safety…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/typescript/generics-utility-types/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Generics and utility types | TypeScript" />
+    <meta name="twitter:description" content="Some code works the same way for many types: a list, a cache, an API response wrapper. Generics let you write it once while keeping full type safety…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/typescript/generics-utility-types/#lesson","name":"Generics and utility types","description":"Some code works the same way for many types: a list, a cache, an API response wrapper. Generics let you write it once while keeping full type safety…","url":"https://marzleytechsolutions.co.ke/learn/typescript/generics-utility-types/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/typescript/#course","name":"TypeScript","url":"https://marzleytechsolutions.co.ke/learn/typescript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"TypeScript","item":"https://marzleytechsolutions.co.ke/learn/typescript/"},{"@type":"ListItem","position":4,"name":"Generics and utility types","item":"https://marzleytechsolutions.co.ke/learn/typescript/generics-utility-types/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/typescript/">TypeScript</a> / <span>Generics and utility types</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=typescript&amp;lesson=generics-utility-types"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Generics and utility types</h1>
+<p>Some code works the same way for many types: a list, a cache, an API response wrapper. <strong>Generics</strong> let you write it once while keeping full type safety. <strong>Utility types</strong> transform existing types so you don't repeat yourself.</p>
+<h2>The problem generics solve</h2>
+<figure class="static-code"><figcaption>TypeScript</figcaption><pre><code class="language-typescript">function firstNumber(items: number[]): number | undefined { return items[0]; }
+function firstString(items: string[]): string | undefined { return items[0]; }
+// ...and again for every type? No.</code></pre></figure>
+<h2>A generic function</h2>
+<p><code>&lt;T&gt;</code> is a <strong>type parameter</strong>: a placeholder filled in when the function is used.</p>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">function first&lt;T&gt;(items: T[]): T | undefined {
+  return items[0];
+}
+
+const town = first([&quot;Nakuru&quot;, &quot;Nyeri&quot;]);   // T is string
+const price = first([180, 350]);           // T is number
+console.log(town?.toUpperCase(), price?.toFixed(2));</code></pre></figure>
+<p>TypeScript infers <code>T</code> from the argument, so <code>town</code> is known to be a string.</p>
+<h2>Generic types and interfaces</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type ApiResponse&lt;T&gt; = {
+  ok: boolean;
+  data: T;
+  message?: string;
+};
+
+type Product = { id: number; name: string; price: number };
+
+const productsRes: ApiResponse&lt;Product[]&gt; = {
+  ok: true,
+  data: [{ id: 1, name: &quot;Unga 2kg&quot;, price: 180 }, { id: 2, name: &quot;Oil 1L&quot;, price: 350 }],
+};
+const countRes: ApiResponse&lt;number&gt; = { ok: true, data: 42 };
+
+console.log(productsRes.data.map((p) =&gt; p.name).join(&quot;, &quot;), &quot;|&quot;, countRes.data);</code></pre></figure>
+<h2>Constraints: T must have certain properties</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">function byId&lt;T extends { id: number }&gt;(items: T[], id: number): T | undefined {
+  return items.find((item) =&gt; item.id === id);
+}
+
+const students = [{ id: 1, name: &quot;Amina&quot;, form: 2 }, { id: 2, name: &quot;Brian&quot;, form: 3 }];
+console.log(byId(students, 2)?.name);
+// byId([1, 2, 3], 1);   // Error: number doesn&#x27;t have an id</code></pre></figure>
+<p><code>keyof</code> lets you accept only real property names:</p>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">function pluck&lt;T, K extends keyof T&gt;(items: T[], key: K): T[K][] {
+  return items.map((i) =&gt; i[key]);
+}
+const products = [{ name: &quot;Sugar&quot;, price: 160 }, { name: &quot;Salt&quot;, price: 30 }];
+console.log(pluck(products, &quot;price&quot;));        // number[]
+// pluck(products, &quot;colour&quot;);                 // Error: &quot;colour&quot; is not a key</code></pre></figure>
+<h2>A generic class: a simple cache</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">class Cache&lt;T&gt; {
+  private store = new Map&lt;string, { value: T; expires: number }&gt;();
+  constructor(private ttlMs: number) {}
+
+  set(key: string, value: T): void {
+    this.store.set(key, { value, expires: Date.now() + this.ttlMs });
+  }
+  get(key: string): T | undefined {
+    const hit = this.store.get(key);
+    if (!hit || hit.expires &lt; Date.now()) return undefined;
+    return hit.value;
+  }
+}
+
+const rates = new Cache&lt;number&gt;(60_000);   // cache exchange rates for a minute
+rates.set(&quot;USD-KES&quot;, 129.5);
+console.log(rates.get(&quot;USD-KES&quot;), rates.get(&quot;EUR-KES&quot;));</code></pre></figure>
+<h2>Utility types: build new types from old ones</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type User = { id: number; name: string; email: string; phone: string; isAdmin: boolean };
+
+type UserUpdate = Partial&lt;User&gt;;                     // every field optional
+type PublicUser = Omit&lt;User, &quot;email&quot; | &quot;phone&quot;&gt;;     // remove fields
+type LoginForm = Pick&lt;User, &quot;email&quot;&gt;;                // keep only some fields
+type ReadonlyUser = Readonly&lt;User&gt;;                  // can&#x27;t be changed
+type RoleCounts = Record&lt;&quot;admin&quot; | &quot;staff&quot; | &quot;client&quot;, number&gt;;
+
+const patch: UserUpdate = { phone: &quot;0712345678&quot; };
+const shown: PublicUser = { id: 1, name: &quot;Amina&quot;, isAdmin: false };
+const counts: RoleCounts = { admin: 1, staff: 4, client: 120 };
+console.log(patch, shown, counts);</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Utility</th><th>Result</th></tr></thead><tbody><tr><td><code>Partial&lt;T&gt;</code></td><td>All properties optional</td></tr><tr><td><code>Required&lt;T&gt;</code></td><td>All properties required</td></tr><tr><td><code>Readonly&lt;T&gt;</code></td><td>No property can be reassigned</td></tr><tr><td><code>Pick&lt;T, K&gt;</code></td><td>Only the listed keys</td></tr><tr><td><code>Omit&lt;T, K&gt;</code></td><td>Everything except the listed keys</td></tr><tr><td><code>Record&lt;K, V&gt;</code></td><td>An object with keys K and values V</td></tr><tr><td><code>ReturnType&lt;F&gt;</code></td><td>The type a function returns</td></tr><tr><td><code>NonNullable&lt;T&gt;</code></td><td>Removes <code>null</code> and <code>undefined</code></td></tr></tbody></table></div>
+<h2>When to use generics</h2>
+<p>Use them when the <strong>same logic</strong> works for many types and you want to keep the type information (collections, API wrappers, caches, form helpers). Don't add them "just because": a simple function with concrete types is easier to read.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is &lt;T&gt; in function first&lt;T&gt;() called? (two words)</p><details><summary>Show answer</summary><p>type parameter</p></details></li><li><p>Which keyword limits T to types with certain properties?</p><details><summary>Show answer</summary><p>extends</p></details></li><li><p>Which utility type makes every property optional?</p><details><summary>Show answer</summary><p>Partial</p></details></li><li><p>Which utility type removes some properties?</p><details><summary>Show answer</summary><p>Omit</p></details></li><li><p>Which operator gives the union of an object type's property names?</p><details><summary>Show answer</summary><p>keyof</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 7 in <a href="/learn/typescript/">TypeScript</a> · <a href="/learn/?book=typescript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/typescript/unions-narrowing/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Union types, literal types and narrowing</a><a class="btn btn-solid btn-sm" href="/learn/typescript/classes-enums-modules/">Classes, enums and organising a TypeScript project <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

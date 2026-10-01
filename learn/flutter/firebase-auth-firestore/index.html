@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Firebase: sign-in, Firestore database and real-time data</title>
+    <meta name="description" content="Firebase is Google&#x27;s &quot;backend as a service&quot;: ready-made login, a cloud database, file storage, push notifications and crash reports, without writing…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/flutter/firebase-auth-firestore/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Firebase: sign-in, Firestore database and real-time data" />
+    <meta property="og:description" content="Firebase is Google&#x27;s &quot;backend as a service&quot;: ready-made login, a cloud database, file storage, push notifications and crash reports, without writing…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/flutter/firebase-auth-firestore/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Firebase: sign-in, Firestore database and real-time data" />
+    <meta name="twitter:description" content="Firebase is Google&#x27;s &quot;backend as a service&quot;: ready-made login, a cloud database, file storage, push notifications and crash reports, without writing…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/flutter/firebase-auth-firestore/#lesson","name":"Firebase: sign-in, Firestore database and real-time data","description":"Firebase is Google's \"backend as a service\": ready-made login, a cloud database, file storage, push notifications and crash reports, without writing…","url":"https://marzleytechsolutions.co.ke/learn/flutter/firebase-auth-firestore/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/flutter/#course","name":"Flutter app development","url":"https://marzleytechsolutions.co.ke/learn/flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Flutter app development","item":"https://marzleytechsolutions.co.ke/learn/flutter/"},{"@type":"ListItem","position":4,"name":"Firebase: sign-in, Firestore database and real-time data","item":"https://marzleytechsolutions.co.ke/learn/flutter/firebase-auth-firestore/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/flutter/">Flutter app development</a> / <span>Firebase: sign-in, Firestore database and real-time data</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=flutter&amp;lesson=firebase-auth-firestore"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Firebase: sign-in, Firestore database and real-time data</h1>
+<p><strong>Firebase</strong> is Google's "backend as a service": ready-made login, a cloud database, file storage, push notifications and crash reports, without writing your own server. It's popular for Flutter apps because the official <strong>FlutterFire</strong> packages are excellent, and the free <strong>Spark plan</strong> is enough for learning and small apps.</p>
+<div class="static-table"><table><thead><tr><th>Firebase product</th><th>What it gives you</th></tr></thead><tbody><tr><td><strong>Authentication</strong></td><td>Sign in with email/password, phone (SMS code), Google, Apple</td></tr><tr><td><strong>Cloud Firestore</strong></td><td>A NoSQL cloud database with real-time updates and offline support</td></tr><tr><td><strong>Storage</strong></td><td>Upload and download files (profile photos, receipts)</td></tr><tr><td><strong>Cloud Messaging (FCM)</strong></td><td>Push notifications</td></tr><tr><td><strong>Crashlytics</strong></td><td>Crash reports from users' phones</td></tr><tr><td><strong>Cloud Functions</strong></td><td>Your own server code (for M-Pesa callbacks, for example), needs the paid Blaze plan</td></tr></tbody></table></div>
+<h2>Setting up (once per project)</h2>
+<ol><li>Go to <strong>console.firebase.google.com</strong> → Add project.</li><li>Install the tools: <code>npm install -g firebase-tools</code>, then <code>firebase login</code>.</li><li>In your Flutter project: <code>dart pub global activate flutterfire_cli</code> then <code>flutterfire configure</code>. Pick your project and platforms. It creates **<code>lib/firebase_options.dart</code>**.</li><li>Add packages: <code>flutter pub add firebase_core firebase_auth cloud_firestore</code>.</li><li>Start Firebase before the app runs:</li></ol>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:firebase_core/firebase_core.dart&#x27;;
+import &#x27;package:flutter/material.dart&#x27;;
+// import &#x27;firebase_options.dart&#x27;;   // created by flutterfire configure
+
+Future&lt;void&gt; main() async {
+  WidgetsFlutterBinding.ensureInitialized();            // needed before any await in main
+  await Firebase.initializeApp(/* options: DefaultFirebaseOptions.currentPlatform */);
+  runApp(const MaterialApp(home: Scaffold(body: Center(child: Text(&#x27;Firebase ready&#x27;)))));
+}</code></pre></figure>
+<blockquote><p><code>firebase_options.dart</code> and <code>google-services.json</code> identify your project; they aren't secret keys. What protects your data is <strong>Security Rules</strong> (below), so always write them.</p></blockquote>
+<h2>Authentication: email and password</h2>
+<p>In the console: <strong>Authentication → Sign-in method → Email/Password → Enable</strong>.</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:firebase_auth/firebase_auth.dart&#x27;;
+import &#x27;package:flutter/material.dart&#x27;;
+
+class AuthService {
+  final _auth = FirebaseAuth.instance;
+
+  Stream&lt;User?&gt; get changes =&gt; _auth.authStateChanges();      // fires on login and logout
+  User? get current =&gt; _auth.currentUser;
+
+  Future&lt;String?&gt; signUp(String email, String password, String name) async {
+    try {
+      final cred = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      await cred.user!.updateDisplayName(name);
+      await cred.user!.sendEmailVerification();
+      return null;                                            // null = success
+    } on FirebaseAuthException catch (e) {
+      return _message(e.code);
+    }
+  }
+
+  Future&lt;String?&gt; signIn(String email, String password) async {
+    try {
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      return null;
+    } on FirebaseAuthException catch (e) {
+      return _message(e.code);
+    }
+  }
+
+  Future&lt;void&gt; resetPassword(String email) =&gt; _auth.sendPasswordResetEmail(email: email);
+  Future&lt;void&gt; signOut() =&gt; _auth.signOut();
+
+  // Turn Firebase&#x27;s codes into messages people understand
+  String _message(String code) =&gt; switch (code) {
+        &#x27;email-already-in-use&#x27; =&gt; &#x27;An account already uses that email. Try signing in.&#x27;,
+        &#x27;invalid-email&#x27; =&gt; &#x27;That email address doesn\&#x27;t look right.&#x27;,
+        &#x27;weak-password&#x27; =&gt; &#x27;Choose a stronger password (at least 8 characters).&#x27;,
+        &#x27;user-not-found&#x27; || &#x27;wrong-password&#x27; || &#x27;invalid-credential&#x27; =&gt; &#x27;Wrong email or password.&#x27;,
+        &#x27;too-many-requests&#x27; =&gt; &#x27;Too many tries. Wait a few minutes and try again.&#x27;,
+        &#x27;network-request-failed&#x27; =&gt; &#x27;No internet connection.&#x27;,
+        _ =&gt; &#x27;Something went wrong ($code).&#x27;,
+      };
+}
+
+/// Shows the login screen or the app, and switches automatically when the user signs in or out.
+class AuthGate extends StatelessWidget {
+  const AuthGate({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder&lt;User?&gt;(
+      stream: AuthService().changes,
+      builder: (context, snap) {
+        if (snap.connectionState == ConnectionState.waiting) {
+          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+        }
+        return snap.hasData ? const Scaffold(body: Center(child: Text(&#x27;Home&#x27;))) : const Scaffold(body: Center(child: Text(&#x27;Login screen&#x27;)));
+      },
+    );
+  }
+}</code></pre></figure>
+<p><strong>Phone number sign-in</strong> (SMS code) is very popular in Kenya: <code>FirebaseAuth.instance.verifyPhoneNumber(phoneNumber: &#x27;+254712345678&#x27;, ...)</code>. It has a free monthly SMS quota; check current pricing before relying on it at scale.</p>
+<h2>Cloud Firestore: how data is organised</h2>
+<p>Firestore stores <strong>documents</strong> (like JSON objects) inside <strong>collections</strong>:</p>
+<figure class="static-code"><pre><code>shops (collection)
+└── duka_thika (document)          { name: &quot;Duka Thika&quot;, owner: &quot;uid123&quot;, county: &quot;Kiambu&quot; }
+    └── products (sub-collection)
+        ├── p1                     { name: &quot;Unga 2kg&quot;, price: 180, stock: 12 }
+        └── p2                     { name: &quot;Sugar 1kg&quot;, price: 150, stock: 0 }</code></pre></figure>
+<p>It is <strong>not</strong> SQL: there are no joins. You design data around the screens that read it, and it's normal to copy a little data (for example the shop name) into several documents.</p>
+<h2>Reading, writing and live updates</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:cloud_firestore/cloud_firestore.dart&#x27;;
+import &#x27;package:flutter/material.dart&#x27;;
+
+class Product {
+  final String id, name;
+  final int price, stock;
+  Product({required this.id, required this.name, required this.price, required this.stock});
+
+  factory Product.fromDoc(DocumentSnapshot&lt;Map&lt;String, dynamic&gt;&gt; d) {
+    final m = d.data() ?? {};
+    return Product(id: d.id, name: m[&#x27;name&#x27;] as String? ?? &#x27;&#x27;, price: (m[&#x27;price&#x27;] as num? ?? 0).toInt(), stock: (m[&#x27;stock&#x27;] as num? ?? 0).toInt());
+  }
+}
+
+class ProductRepo {
+  final CollectionReference&lt;Map&lt;String, dynamic&gt;&gt; col;
+  ProductRepo(String shopId) : col = FirebaseFirestore.instance.collection(&#x27;shops&#x27;).doc(shopId).collection(&#x27;products&#x27;);
+
+  // Create (Firestore makes the id)
+  Future&lt;void&gt; add(String name, int price, int stock) =&gt;
+      col.add({&#x27;name&#x27;: name, &#x27;price&#x27;: price, &#x27;stock&#x27;: stock, &#x27;createdAt&#x27;: FieldValue.serverTimestamp()});
+
+  // Update some fields
+  Future&lt;void&gt; setPrice(String id, int price) =&gt; col.doc(id).update({&#x27;price&#x27;: price});
+
+  // Change a number safely even if two phones do it at once
+  Future&lt;void&gt; sellOne(String id) =&gt; col.doc(id).update({&#x27;stock&#x27;: FieldValue.increment(-1)});
+
+  Future&lt;void&gt; delete(String id) =&gt; col.doc(id).delete();
+
+  // Read once
+  Future&lt;List&lt;Product&gt;&gt; inStockOnce() async {
+    final snap = await col.where(&#x27;stock&#x27;, isGreaterThan: 0).orderBy(&#x27;stock&#x27;).limit(50).get();
+    return snap.docs.map(Product.fromDoc).toList();
+  }
+
+  // Live: the stream sends a new list every time any product changes, on any phone
+  Stream&lt;List&lt;Product&gt;&gt; watchAll() =&gt;
+      col.orderBy(&#x27;name&#x27;).snapshots().map((s) =&gt; s.docs.map(Product.fromDoc).toList());
+}
+
+class LiveStockList extends StatelessWidget {
+  final ProductRepo repo;
+  const LiveStockList({super.key, required this.repo});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder&lt;List&lt;Product&gt;&gt;(
+      stream: repo.watchAll(),
+      builder: (context, snap) {
+        if (snap.hasError) return Center(child: Text(&#x27;Error: ${snap.error}&#x27;));
+        if (!snap.hasData) return const Center(child: CircularProgressIndicator());
+        final items = snap.data!;
+        return ListView(children: [
+          for (final p in items)
+            ListTile(
+              title: Text(p.name),
+              subtitle: Text(&#x27;KSh ${p.price}&#x27;),
+              trailing: FilledButton.tonal(onPressed: p.stock &gt; 0 ? () =&gt; repo.sellOne(p.id) : null, child: Text(&#x27;Sell (${p.stock})&#x27;)),
+            ),
+        ]);
+      },
+    );
+  }
+}</code></pre></figure>
+<p>Open the app on two phones: sell an item on one, and the stock changes on the other within a second. That's the <strong>real-time</strong> power of Firestore. It also works <strong>offline</strong>: changes are saved on the phone and sent when the connection returns.</p>
+<h2>Security Rules: the part people forget</h2>
+<p>When you create the database, Firestore asks for "test mode" (anyone can read and write for 30 days). <strong>Never launch like that.</strong> Anyone with your project id could read or wipe everything. Write rules in <strong>Firestore → Rules</strong>:</p>
+<figure class="static-code"><pre><code>rules_version = &#x27;2&#x27;;
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /shops/{shopId} {
+      // only the shop&#x27;s owner can read or change the shop
+      allow read, write: if request.auth != null &amp;&amp; request.auth.uid == resource.data.owner;
+      allow create: if request.auth != null &amp;&amp; request.resource.data.owner == request.auth.uid;
+
+      match /products/{productId} {
+        allow read, write: if request.auth != null
+          &amp;&amp; get(/databases/$(database)/documents/shops/$(shopId)).data.owner == request.auth.uid;
+      }
+    }
+  }
+}</code></pre></figure>
+<p>Test rules in the console's <strong>Rules Playground</strong> before publishing.</p>
+<h2>Costs (and how to stay on the free plan)</h2>
+<p>Firestore charges by <strong>reads, writes and deletes</strong>, with a daily free quota. Each document returned counts as a read. To stay cheap:</p>
+<ul><li>Use <code>.limit()</code> and paging; don't load a whole collection to show 10 items.</li><li>Listen with <code>snapshots()</code> only on screens that need live data, and cancel when leaving (StreamBuilder does this for you).</li><li>Keep counts in a document (<code>FieldValue.increment</code>) instead of counting all documents.</li></ul>
+<h2>Firebase or your own backend?</h2>
+<div class="static-table"><table><thead><tr><th>Firebase</th><th>Own backend (PHP/Node + MySQL on cPanel)</th></tr></thead><tbody><tr><td>Fast to start, no server to manage</td><td>Full control, SQL reports and joins</td></tr><tr><td>Real-time and offline built in</td><td>Predictable monthly hosting cost in KSh</td></tr><tr><td>Costs grow with reads</td><td>Works with M-Pesa callbacks easily</td></tr><tr><td>Vendor lock-in</td><td>You can move hosts any time</td></tr></tbody></table></div>
+<p>Many Kenyan apps mix them: Firebase Auth and push notifications, plus a PHP/MySQL API for business data and M-Pesa. See <strong>APIs &amp; backends for apps</strong>.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What must you call before Firebase.initializeApp when main is async?</p><details><summary>Show answer</summary><p>WidgetsFlutterBinding.ensureInitialized</p></details></li><li><p>Which command creates firebase_options.dart for your app?</p><details><summary>Show answer</summary><p>flutterfire configure</p></details></li><li><p>In Firestore, documents are stored inside ...?</p><details><summary>Show answer</summary><p>collections</p></details></li><li><p>Which Firestore method gives live updates as a stream?</p><details><summary>Show answer</summary><p>snapshots</p></details></li><li><p>Which FieldValue changes a number safely when two phones update it at once?</p><details><summary>Show answer</summary><p>FieldValue.increment</p></details></li><li><p>What protects your Firestore data from strangers?</p><details><summary>Show answer</summary><p>Security Rules</p></details></li><li><p>Which widget rebuilds each time a Stream sends new data?</p><details><summary>Show answer</summary><p>StreamBuilder</p></details></li></ol></section></div><p class="static-meta">Lesson 11 of 15 in <a href="/learn/flutter/">Flutter app development</a> · <a href="/learn/?book=flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/flutter/local-storage-offline/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Saving data on the phone: shared_preferences, SQLite and offline apps</a><a class="btn btn-solid btn-sm" href="/learn/flutter/device-features/">Phone features: camera, location, calls, WhatsApp, sharing and permissions <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Navigation: screens, passing data, tabs, drawers and…</title>
+    <meta name="description" content="Real apps have many screens: a product list, a product page, a cart, a checkout. Flutter keeps screens in a stack : opening a screen pushes it on top…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/flutter/navigation-routing/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Navigation: screens, passing data, tabs, drawers and…" />
+    <meta property="og:description" content="Real apps have many screens: a product list, a product page, a cart, a checkout. Flutter keeps screens in a stack : opening a screen pushes it on top…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/flutter/navigation-routing/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Navigation: screens, passing data, tabs, drawers and…" />
+    <meta name="twitter:description" content="Real apps have many screens: a product list, a product page, a cart, a checkout. Flutter keeps screens in a stack : opening a screen pushes it on top…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/flutter/navigation-routing/#lesson","name":"Navigation: screens, passing data, tabs, drawers and go_router","description":"Real apps have many screens: a product list, a product page, a cart, a checkout. Flutter keeps screens in a stack : opening a screen pushes it on top…","url":"https://marzleytechsolutions.co.ke/learn/flutter/navigation-routing/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/flutter/#course","name":"Flutter app development","url":"https://marzleytechsolutions.co.ke/learn/flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Flutter app development","item":"https://marzleytechsolutions.co.ke/learn/flutter/"},{"@type":"ListItem","position":4,"name":"Navigation: screens, passing data, tabs, drawers and go_router","item":"https://marzleytechsolutions.co.ke/learn/flutter/navigation-routing/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/flutter/">Flutter app development</a> / <span>Navigation: screens, passing data, tabs, drawers and go_router</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=flutter&amp;lesson=navigation-routing"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Navigation: screens, passing data, tabs, drawers and go_router</h1>
+<p>Real apps have many screens: a product list, a product page, a cart, a checkout. Flutter keeps screens in a <strong>stack</strong>: opening a screen <strong>pushes</strong> it on top; going back <strong>pops</strong> it off.</p>
+<h2>Push and pop</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+void main() =&gt; runApp(const MaterialApp(home: ProductsScreen()));
+
+class Product {
+  final String name;
+  final int price;
+  const Product(this.name, this.price);
+}
+
+const products = [Product(&#x27;Unga 2kg&#x27;, 180), Product(&#x27;Sugar 1kg&#x27;, 150), Product(&#x27;Cooking oil 1L&#x27;, 350)];
+
+class ProductsScreen extends StatelessWidget {
+  const ProductsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;Products&#x27;)),
+      body: ListView(
+        children: [
+          for (final p in products)
+            ListTile(
+              title: Text(p.name),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.push(                                      // open the details screen
+                  context,
+                  MaterialPageRoute(builder: (context) =&gt; ProductDetails(product: p)),   // pass data via the constructor
+                );
+              },
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class ProductDetails extends StatelessWidget {
+  final Product product;
+  const ProductDetails({super.key, required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(product.name)),       // the back arrow is added for you
+      body: Center(child: Text(&#x27;KSh ${product.price}&#x27;, style: Theme.of(context).textTheme.displaySmall)),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16),
+        child: FilledButton(onPressed: () =&gt; Navigator.pop(context), child: const Text(&#x27;Back to products&#x27;)),
+      ),
+    );
+  }
+}</code></pre></figure>
+<ul><li><strong>Passing data forward:</strong> give the new screen's constructor the values it needs.</li><li><strong>Going back:</strong> <code>Navigator.pop(context)</code>, the app bar's back arrow, or the phone's back button/gesture all pop.</li></ul>
+<h2>Getting a result back</h2>
+<p><code>push</code> returns a <code>Future</code> that completes with whatever the next screen passes to <code>pop</code>:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+void main() =&gt; runApp(const MaterialApp(home: CheckoutScreen()));
+
+class CheckoutScreen extends StatefulWidget {
+  const CheckoutScreen({super.key});
+  @override
+  State&lt;CheckoutScreen&gt; createState() =&gt; _CheckoutScreenState();
+}
+
+class _CheckoutScreenState extends State&lt;CheckoutScreen&gt; {
+  String area = &#x27;Not chosen&#x27;;
+
+  Future&lt;void&gt; chooseArea() async {
+    final picked = await Navigator.push&lt;String&gt;(
+      context,
+      MaterialPageRoute(builder: (context) =&gt; const AreaPicker()),
+    );
+    if (picked != null) setState(() =&gt; area = picked);     // null if the user just pressed back
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;Checkout&#x27;)),
+      body: ListTile(title: const Text(&#x27;Delivery area&#x27;), subtitle: Text(area), trailing: const Icon(Icons.edit), onTap: chooseArea),
+    );
+  }
+}
+
+class AreaPicker extends StatelessWidget {
+  const AreaPicker({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    const areas = [&#x27;CBD&#x27;, &#x27;Westlands&#x27;, &#x27;Kasarani&#x27;, &#x27;Rongai&#x27;, &#x27;Kitengela&#x27;];
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;Choose area&#x27;)),
+      body: ListView(children: [
+        for (final a in areas) ListTile(title: Text(a), onTap: () =&gt; Navigator.pop(context, a)),   // send the answer back
+      ]),
+    );
+  }
+}</code></pre></figure>
+<h2>Other Navigator moves</h2>
+<div class="static-table"><table><thead><tr><th>Code</th><th>Does</th></tr></thead><tbody><tr><td><code>Navigator.pushReplacement(context, route)</code></td><td>Replace this screen (after login, the login screen shouldn't be "back")</td></tr><tr><td><code>Navigator.pushAndRemoveUntil(context, route, (r) =&gt; false)</code></td><td>Clear the whole stack (after logout, or after checkout success)</td></tr><tr><td><code>Navigator.popUntil(context, (r) =&gt; r.isFirst)</code></td><td>Go back to the first screen</td></tr><tr><td><code>Navigator.canPop(context)</code></td><td>Is there a screen to go back to?</td></tr></tbody></table></div>
+<p>To ask <em>"Leave without saving?"</em> when the user presses back, wrap the screen in <code>PopScope(canPop: false, onPopInvokedWithResult: ...)</code> and show a dialog.</p>
+<h2>Dialogs and bottom sheets</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">Future&lt;void&gt; confirmDelete(BuildContext context) async {
+  final yes = await showDialog&lt;bool&gt;(
+    context: context,
+    builder: (context) =&gt; AlertDialog(
+      title: const Text(&#x27;Delete product?&#x27;),
+      content: const Text(&#x27;This can\&#x27;t be undone.&#x27;),
+      actions: [
+        TextButton(onPressed: () =&gt; Navigator.pop(context, false), child: const Text(&#x27;Cancel&#x27;)),
+        FilledButton(onPressed: () =&gt; Navigator.pop(context, true), child: const Text(&#x27;Delete&#x27;)),
+      ],
+    ),
+  );
+  if (yes == true) {
+    // delete it
+  }
+}
+
+void showFilters(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    showDragHandle: true,
+    builder: (context) =&gt; const Padding(padding: EdgeInsets.all(24), child: Text(&#x27;Filters go here&#x27;)),
+  );
+}</code></pre></figure>
+<p>Dialogs are routes too, so <code>Navigator.pop(context, value)</code> closes them and returns a value.</p>
+<h2>Bottom navigation bar (the most common app layout)</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+void main() =&gt; runApp(MaterialApp(theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.indigo), home: const HomeShell()));
+
+class HomeShell extends StatefulWidget {
+  const HomeShell({super.key});
+  @override
+  State&lt;HomeShell&gt; createState() =&gt; _HomeShellState();
+}
+
+class _HomeShellState extends State&lt;HomeShell&gt; {
+  int index = 0;
+  static const pages = [
+    Center(child: Text(&#x27;Home&#x27;)),
+    Center(child: Text(&#x27;Search&#x27;)),
+    Center(child: Text(&#x27;Cart&#x27;)),
+    Center(child: Text(&#x27;Account&#x27;)),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;Duka&#x27;)),
+      body: IndexedStack(index: index, children: pages),     // keeps each tab&#x27;s scroll position and state
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: index,
+        onDestinationSelected: (i) =&gt; setState(() =&gt; index = i),
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: &#x27;Home&#x27;),
+          NavigationDestination(icon: Icon(Icons.search), label: &#x27;Search&#x27;),
+          NavigationDestination(icon: Badge(label: Text(&#x27;3&#x27;), child: Icon(Icons.shopping_cart_outlined)), label: &#x27;Cart&#x27;),
+          NavigationDestination(icon: Icon(Icons.person_outline), label: &#x27;Account&#x27;),
+        ],
+      ),
+    );
+  }
+}</code></pre></figure>
+<p><code>NavigationBar</code> is the Material 3 bottom bar (3 to 5 items). <code>IndexedStack</code> keeps all tabs alive so switching back doesn't reload them.</p>
+<h2>Tabs and drawers</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+void main() =&gt; runApp(const MaterialApp(home: OrdersTabs()));
+
+class OrdersTabs extends StatelessWidget {
+  const OrdersTabs({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(&#x27;Orders&#x27;),
+          bottom: const TabBar(tabs: [Tab(text: &#x27;New&#x27;), Tab(text: &#x27;Delivering&#x27;), Tab(text: &#x27;Done&#x27;)]),
+        ),
+        drawer: Drawer(                                   // the side menu (swipe from the left or tap ☰)
+          child: ListView(children: const [
+            DrawerHeader(child: Text(&#x27;Mama Mboga Duka&#x27;)),
+            ListTile(leading: Icon(Icons.inventory), title: Text(&#x27;Stock&#x27;)),
+            ListTile(leading: Icon(Icons.bar_chart), title: Text(&#x27;Reports&#x27;)),
+            ListTile(leading: Icon(Icons.settings), title: Text(&#x27;Settings&#x27;)),
+          ]),
+        ),
+        body: const TabBarView(children: [
+          Center(child: Text(&#x27;New orders&#x27;)),
+          Center(child: Text(&#x27;Out for delivery&#x27;)),
+          Center(child: Text(&#x27;Delivered&#x27;)),
+        ]),
+      ),
+    );
+  }
+}</code></pre></figure>
+<h2>go_router: named routes and web-style URLs</h2>
+<p>For bigger apps (and Flutter web, where each screen needs a URL), use the <strong>go_router</strong> package (<code>flutter pub add go_router</code>):</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+import &#x27;package:go_router/go_router.dart&#x27;;
+
+final router = GoRouter(
+  initialLocation: &#x27;/&#x27;,
+  routes: [
+    GoRoute(path: &#x27;/&#x27;, builder: (context, state) =&gt; const HomePage()),
+    GoRoute(
+      path: &#x27;/product/:id&#x27;,                          // :id is a parameter in the URL
+      builder: (context, state) =&gt; ProductPage(id: state.pathParameters[&#x27;id&#x27;]!),
+    ),
+    GoRoute(path: &#x27;/cart&#x27;, builder: (context, state) =&gt; const Scaffold(body: Center(child: Text(&#x27;Cart&#x27;)))),
+  ],
+);
+
+void main() =&gt; runApp(MaterialApp.router(routerConfig: router));
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+  @override
+  Widget build(BuildContext context) =&gt; Scaffold(
+        appBar: AppBar(title: const Text(&#x27;Home&#x27;)),
+        body: Column(children: [
+          ListTile(title: const Text(&#x27;Unga 2kg&#x27;), onTap: () =&gt; context.push(&#x27;/product/17&#x27;)),   // push: can go back
+          ListTile(title: const Text(&#x27;Cart&#x27;), onTap: () =&gt; context.go(&#x27;/cart&#x27;)),              // go: jump to the page
+        ]),
+      );
+}
+
+class ProductPage extends StatelessWidget {
+  final String id;
+  const ProductPage({super.key, required this.id});
+  @override
+  Widget build(BuildContext context) =&gt; Scaffold(appBar: AppBar(title: Text(&#x27;Product $id&#x27;)));
+}</code></pre></figure>
+<p>go_router also handles <strong>redirects</strong> (send logged-out users to <code>/login</code>), deep links (open the app from a link in an SMS) and nested tab navigation (<code>StatefulShellRoute</code>).</p>
+<h2>Which to use?</h2>
+<div class="static-table"><table><thead><tr><th>App size</th><th>Use</th></tr></thead><tbody><tr><td>A few screens, learning</td><td><code>Navigator.push</code> / <code>pop</code></td></tr><tr><td>Many screens, login redirects, deep links, web</td><td><code>go_router</code></td></tr></tbody></table></div>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which Navigator method opens a new screen on top?</p><details><summary>Show answer</summary><p>push</p></details></li><li><p>Which method closes the current screen?</p><details><summary>Show answer</summary><p>pop</p></details></li><li><p>How does a screen send a value back? Write the call.</p><details><summary>Show answer</summary><p>Navigator.pop(context, value)</p></details></li><li><p>After logging in, which method replaces the login screen so Back doesn't return to it?</p><details><summary>Show answer</summary><p>pushReplacement</p></details></li><li><p>Which widget keeps every bottom-bar tab alive when you switch?</p><details><summary>Show answer</summary><p>IndexedStack</p></details></li><li><p>Which function shows a pop-up that slides up from the bottom?</p><details><summary>Show answer</summary><p>showModalBottomSheet</p></details></li><li><p>In go_router, what does :id mean in the path /product/:id?</p><details><summary>Show answer</summary><p>a parameter</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 15 in <a href="/learn/flutter/">Flutter app development</a> · <a href="/learn/?book=flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/flutter/themes-styling-assets/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Styling your app: themes, colours, fonts, images and dark mode</a><a class="btn btn-solid btn-sm" href="/learn/flutter/forms-validation/">Forms and input: text fields, validation, pickers and the keyboard <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

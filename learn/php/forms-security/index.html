@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Forms and security | PHP &amp; MySQL</title>
+    <meta name="description" content="Free PHP &amp; MySQL lesson: Forms and security." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/php/forms-security/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Forms and security | PHP &amp; MySQL" />
+    <meta property="og:description" content="Free PHP &amp; MySQL lesson: Forms and security." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/php/forms-security/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Forms and security | PHP &amp; MySQL" />
+    <meta name="twitter:description" content="Free PHP &amp; MySQL lesson: Forms and security." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/php/forms-security/#lesson","name":"Forms and security","description":"Free PHP & MySQL lesson: Forms and security.","url":"https://marzleytechsolutions.co.ke/learn/php/forms-security/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/php/#course","name":"PHP & MySQL","url":"https://marzleytechsolutions.co.ke/learn/php/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"PHP & MySQL","item":"https://marzleytechsolutions.co.ke/learn/php/"},{"@type":"ListItem","position":4,"name":"Forms and security","item":"https://marzleytechsolutions.co.ke/learn/php/forms-security/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/php/">PHP &amp; MySQL</a> / <span>Forms and security</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=php&amp;lesson=forms-security"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Handling forms safely</h1>
+<figure class="static-code"><pre><code>&lt;form method=&quot;post&quot; action=&quot;contact.php&quot;&gt;
+  &lt;input name=&quot;name&quot; required&gt;
+  &lt;input name=&quot;phone&quot; type=&quot;tel&quot;&gt;
+  &lt;textarea name=&quot;message&quot;&gt;&lt;/textarea&gt;
+  &lt;button&gt;Send&lt;/button&gt;
+&lt;/form&gt;</code></pre></figure>
+<figure class="static-code"><pre><code>&lt;?php
+// contact.php
+if ($_SERVER[&#x27;REQUEST_METHOD&#x27;] !== &#x27;POST&#x27;) { exit(&#x27;Use the form.&#x27;); }
+
+$name = trim($_POST[&#x27;name&#x27;] ?? &#x27;&#x27;);
+$phone = trim($_POST[&#x27;phone&#x27;] ?? &#x27;&#x27;);
+$message = trim($_POST[&#x27;message&#x27;] ?? &#x27;&#x27;);
+
+if ($name === &#x27;&#x27; || $message === &#x27;&#x27;) {
+    exit(&#x27;Please fill in your name and message.&#x27;);
+}
+// ... save to the database or email it ...
+echo &#x27;Thank you, &#x27; . htmlspecialchars($name) . &#x27;!&#x27;;</code></pre></figure>
+<h2>The security rules every PHP developer must follow</h2>
+<ol><li><strong>Never trust input.</strong> Everything in <code>$_GET</code>, <code>$_POST</code>, <code>$_COOKIE</code> and uploaded files can be anything.</li><li><strong>Escape output</strong> with <code>htmlspecialchars()</code> whenever you show user input in HTML. This stops <strong>XSS</strong> (attackers injecting JavaScript).</li><li><strong>Use prepared statements</strong> for databases (next lesson). Never put <code>$_POST</code> directly into SQL; that's <strong>SQL injection</strong>.</li><li><strong>Hash passwords</strong> with <code>password_hash()</code> and check them with <code>password_verify()</code>. Never store plain passwords.</li><li><strong>CSRF tokens</strong> on forms that change data, so other sites can't submit them for your logged-in users.</li><li><strong>File uploads</strong>: check size and type, rename files, store them outside the public folder or block PHP execution in the upload folder.</li><li><strong>Keep secrets out of code</strong>: database passwords and API keys in a config file outside <code>public_html</code>, never on GitHub.</li><li><strong>HTTPS everywhere</strong> and keep PHP updated (8.2+).</li></ol>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which function should you use when printing user input into HTML?</p><details><summary>Show answer</summary><p>htmlspecialchars</p></details></li><li><p>What attack happens when user input goes straight into SQL?</p><details><summary>Show answer</summary><p>SQL injection</p></details></li><li><p>Which function hashes a password in PHP?</p><details><summary>Show answer</summary><p>password_hash</p></details></li><li><p>Which array holds data from a form sent with method="post"?</p><details><summary>Show answer</summary><p>$_POST</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 13 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/oop-classes/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Object-oriented PHP: classes, interfaces and namespaces</a><a class="btn btn-solid btn-sm" href="/learn/php/mysql-pdo/">MySQL with PDO <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

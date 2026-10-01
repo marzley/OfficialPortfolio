@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CIDR notation and calculations | Networking</title>
+    <meta name="description" content="CIDR replaced the rigid class system in 1993. Instead of writing a mask, we write the number of network bits after a slash: 192.168.1.0/24 means the…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/networking/cidr/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="CIDR notation and calculations | Networking" />
+    <meta property="og:description" content="CIDR replaced the rigid class system in 1993. Instead of writing a mask, we write the number of network bits after a slash: 192.168.1.0/24 means the…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/networking/cidr/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="CIDR notation and calculations | Networking" />
+    <meta name="twitter:description" content="CIDR replaced the rigid class system in 1993. Instead of writing a mask, we write the number of network bits after a slash: 192.168.1.0/24 means the…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/networking/cidr/#lesson","name":"CIDR notation and calculations","description":"CIDR replaced the rigid class system in 1993. Instead of writing a mask, we write the number of network bits after a slash: 192.168.1.0/24 means the…","url":"https://marzleytechsolutions.co.ke/learn/networking/cidr/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/networking/#course","name":"Networking","url":"https://marzleytechsolutions.co.ke/learn/networking/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Networking","item":"https://marzleytechsolutions.co.ke/learn/networking/"},{"@type":"ListItem","position":4,"name":"CIDR notation and calculations","item":"https://marzleytechsolutions.co.ke/learn/networking/cidr/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/networking/">Networking</a> / <span>CIDR notation and calculations</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=networking&amp;lesson=cidr"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>CIDR: Classless Inter-Domain Routing</h1>
+<p><strong>CIDR</strong> replaced the rigid class system in 1993. Instead of writing a mask, we write the <strong>number of network bits</strong> after a slash: <code>192.168.1.0/24</code> means the first 24 bits are the network.</p>
+<p>CIDR lets networks be <em>any</em> size (a /22 for 1,000 hosts, a /30 for a link between two routers), which saved the internet from running out of addresses much sooner.</p>
+<h2>The formulas you need</h2>
+<p>With prefix <strong>/n</strong>:</p>
+<ul><li><strong>Host bits</strong> = 32 − n</li><li><strong>Total addresses</strong> = 2^(32 − n)</li><li><strong>Usable hosts</strong> = 2^(32 − n) − 2 (except /31 and /32)</li><li><strong>Number of subnets</strong> when you split a /a into /b pieces = 2^(b − a)</li><li><strong>Block size</strong> (how far apart subnets are, in the octet where the prefix ends) = 256 − the mask value in that octet</li></ul>
+<h2>Worked example 1: 10.20.30.40/22</h2>
+<ol><li>Host bits = 32 − 22 = <strong>10</strong> → total = 2^10 = <strong>1,024</strong>, usable <strong>1,022</strong>.</li><li>/22 ends in the <strong>third octet</strong> (16 + 6 bits). Mask = 255.255.<strong>252</strong>.0.</li><li>Block size in the third octet = 256 − 252 = <strong>4</strong>. Networks go 0, 4, 8, … 28, <strong>28</strong>, 32…</li><li>30 falls in the block starting at <strong>28</strong>: network <strong>10.20.28.0</strong>.</li><li>Next network is 10.20.32.0, so broadcast = <strong>10.20.31.255</strong>.</li><li>Usable range: <strong>10.20.28.1 – 10.20.31.254</strong>.</li></ol>
+<h2>Worked example 2: 172.16.5.200/26</h2>
+<ol><li>/26 ends in the fourth octet; mask 255.255.255.<strong>192</strong>; block size = 256 − 192 = <strong>64</strong>.</li><li>Blocks: 0, 64, 128, <strong>192</strong>. 200 falls in the block starting at 192.</li><li>Network <strong>172.16.5.192</strong>, broadcast <strong>172.16.5.255</strong>, hosts <strong>.193 – .254</strong>, <strong>62</strong> usable.</li></ol>
+<h2>Quick table: prefix → size</h2>
+<div class="static-table"><table><thead><tr><th>Prefix</th><th>Addresses</th><th>Prefix</th><th>Addresses</th></tr></thead><tbody><tr><td>/8</td><td>16,777,216</td><td>/20</td><td>4,096</td></tr><tr><td>/12</td><td>1,048,576</td><td>/21</td><td>2,048</td></tr><tr><td>/16</td><td>65,536</td><td>/22</td><td>1,024</td></tr><tr><td>/17</td><td>32,768</td><td>/23</td><td>512</td></tr><tr><td>/18</td><td>16,384</td><td>/24</td><td>256</td></tr><tr><td>/19</td><td>8,192</td><td>/30</td><td>4</td></tr></tbody></table></div>
+<h2>Try the calculator</h2>
+<p>Type any address with a prefix (or with a mask, e.g. <code>10.0.0.5 255.255.252.0</code>). Check your hand calculations against it.</p>
+<p class="static-note">This part of the lesson has an interactive tool. Open the live lesson to use it.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>How many total addresses are in a /23?</p><details><summary>Show answer</summary><p>512</p></details></li><li><p>How many usable hosts are in a /21?</p><details><summary>Show answer</summary><p>2046</p></details></li><li><p>What is the network address of 10.20.30.40/22?</p><details><summary>Show answer</summary><p>10.20.28.0</p></details></li><li><p>What is the broadcast address of 172.16.5.200/26?</p><details><summary>Show answer</summary><p>172.16.5.255</p></details></li><li><p>How many /27 subnets fit in one /24?</p><details><summary>Show answer</summary><p>8 · 2 to the power of (27 − 24)</p></details></li><li><p>What is the subnet mask for /22?</p><details><summary>Show answer</summary><p>255.255.252.0</p></details></li><li><p>What is the last usable host of 192.168.100.130/25?</p><details><summary>Show answer</summary><p>192.168.100.254</p></details></li></ol></section>
+<p><strong>Learn more:</strong> <a href="https://www.cloudflare.com/learning/network-layer/what-is-a-subnet/" target="_blank" rel="noopener noreferrer">Cloudflare: What is CIDR?</a> · <a href="https://subnettingpractice.com/" target="_blank" rel="noopener noreferrer">subnettingpractice.com</a></p></div><p class="static-meta">Lesson 7 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/subnet-masks/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Subnet masks</a><a class="btn btn-solid btn-sm" href="/learn/networking/subnetting-step-by-step/">Subnetting step by step (the magic number method) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

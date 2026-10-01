@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>vector, string, map and the STL algorithms | C++</title>
+    <meta name="description" content="The Standard Template Library (STL) is C++&#x27;s toolbox of ready-made containers and algorithms. Using it well is the difference between 200 lines of…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/cpp/vectors-strings-stl/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="vector, string, map and the STL algorithms | C++" />
+    <meta property="og:description" content="The Standard Template Library (STL) is C++&#x27;s toolbox of ready-made containers and algorithms. Using it well is the difference between 200 lines of…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/cpp/vectors-strings-stl/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="vector, string, map and the STL algorithms | C++" />
+    <meta name="twitter:description" content="The Standard Template Library (STL) is C++&#x27;s toolbox of ready-made containers and algorithms. Using it well is the difference between 200 lines of…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/cpp/vectors-strings-stl/#lesson","name":"vector, string, map and the STL algorithms","description":"The Standard Template Library (STL) is C++'s toolbox of ready-made containers and algorithms. Using it well is the difference between 200 lines of…","url":"https://marzleytechsolutions.co.ke/learn/cpp/vectors-strings-stl/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/cpp/#course","name":"C++","url":"https://marzleytechsolutions.co.ke/learn/cpp/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"C++","item":"https://marzleytechsolutions.co.ke/learn/cpp/"},{"@type":"ListItem","position":4,"name":"vector, string, map and the STL algorithms","item":"https://marzleytechsolutions.co.ke/learn/cpp/vectors-strings-stl/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/cpp/">C++</a> / <span>vector, string, map and the STL algorithms</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=cpp&amp;lesson=vectors-strings-stl"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>vector, string, map and the STL algorithms</h1>
+<p>The <strong>Standard Template Library (STL)</strong> is C++'s toolbox of ready-made containers and algorithms. Using it well is the difference between 200 lines of tricky C and 20 lines of clear C++. It's also the secret weapon of competitive programmers.</p>
+<blockquote><p>These examples use the STL, so they run on Compiler Explorer (internet needed).</p></blockquote>
+<h2>vector: a growable array</h2>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; marks = {78, 92, 45, 60};
+    marks.push_back(88);                     // add to the end
+    cout &lt;&lt; &quot;Count: &quot; &lt;&lt; marks.size() &lt;&lt; &quot;, first: &quot; &lt;&lt; marks[0] &lt;&lt; &quot;, last: &quot; &lt;&lt; marks.back() &lt;&lt; endl;
+
+    int total = 0;
+    for (int m : marks) total += m;          // range-based for
+    cout &lt;&lt; &quot;Average: &quot; &lt;&lt; (double) total / marks.size() &lt;&lt; endl;
+
+    marks.pop_back();                        // remove the last
+    marks.insert(marks.begin() + 1, 70);     // insert at position 1
+    marks.erase(marks.begin());              // remove the first
+    for (int m : marks) cout &lt;&lt; m &lt;&lt; &quot; &quot;;
+    cout &lt;&lt; endl;
+    return 0;
+}</code></pre></figure>
+<p>Use <code>vector</code> instead of raw arrays in C++: it knows its size, grows automatically and frees its memory for you.</p>
+<h2>string</h2>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int main() {
+    string name = &quot;amina hassan&quot;;
+    name[0] = toupper(name[0]);
+    cout &lt;&lt; name &lt;&lt; &quot; (&quot; &lt;&lt; name.size() &lt;&lt; &quot; chars)&quot; &lt;&lt; endl;
+    cout &lt;&lt; name.substr(0, 5) &lt;&lt; endl;                  // &quot;Amina&quot;
+    size_t pos = name.find(&quot;hassan&quot;);
+    if (pos != string::npos) cout &lt;&lt; &quot;found at &quot; &lt;&lt; pos &lt;&lt; endl;
+    name += &quot; - Mombasa&quot;;                                // append
+    cout &lt;&lt; name &lt;&lt; endl;
+
+    string phone = &quot;0712 345 678&quot;;
+    string digits;
+    for (char c : phone) if (isdigit(c)) digits += c;
+    cout &lt;&lt; digits &lt;&lt; &quot;, valid length: &quot; &lt;&lt; (digits.size() == 10) &lt;&lt; endl;
+
+    int n = stoi(&quot;250&quot;);                                 // string -&gt; int
+    string s = to_string(n * 2);                         // int -&gt; string
+    cout &lt;&lt; s &lt;&lt; endl;
+    return 0;
+}</code></pre></figure>
+<h2>map and unordered_map: key → value</h2>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;unordered_map&gt;
+#include &lt;sstream&gt;
+using namespace std;
+
+int main() {
+    map&lt;string, int&gt; stock;                  // kept sorted by key
+    stock[&quot;Unga&quot;] = 12;
+    stock[&quot;Oil&quot;] = 7;
+    stock[&quot;Sugar&quot;] = 0;
+    for (auto &amp;[item, qty] : stock) cout &lt;&lt; item &lt;&lt; &quot;: &quot; &lt;&lt; qty &lt;&lt; endl;   // structured bindings (C++17)
+
+    if (stock.count(&quot;Rice&quot;) == 0) cout &lt;&lt; &quot;No rice&quot; &lt;&lt; endl;
+
+    unordered_map&lt;string, int&gt; counts;       // faster, not sorted
+    stringstream words(&quot;haraka haraka haina baraka&quot;);
+    string w;
+    while (words &gt;&gt; w) counts[w]++;          // missing keys start at 0
+    cout &lt;&lt; &quot;haraka appears &quot; &lt;&lt; counts[&quot;haraka&quot;] &lt;&lt; &quot; times&quot; &lt;&lt; endl;
+    return 0;
+}</code></pre></figure>
+<h2>set</h2>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;set&gt;
+using namespace std;
+
+int main() {
+    set&lt;string&gt; visitors = {&quot;Otieno&quot;, &quot;Wanjiru&quot;, &quot;Otieno&quot;, &quot;Kiprop&quot;};
+    cout &lt;&lt; visitors.size() &lt;&lt; &quot; unique visitors:&quot;;
+    for (const string &amp;v : visitors) cout &lt;&lt; &quot; &quot; &lt;&lt; v;     // sorted
+    cout &lt;&lt; endl;
+    return 0;
+}</code></pre></figure>
+<h2>The algorithms library</h2>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;numeric&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; v = {45, 78, 92, 60, 33, 88};
+
+    sort(v.begin(), v.end());                                  // ascending
+    cout &lt;&lt; &quot;Sorted: &quot;; for (int x : v) cout &lt;&lt; x &lt;&lt; &quot; &quot;; cout &lt;&lt; endl;
+
+    sort(v.begin(), v.end(), greater&lt;int&gt;());                  // descending
+    cout &lt;&lt; &quot;Top: &quot; &lt;&lt; v[0] &lt;&lt; endl;
+
+    cout &lt;&lt; &quot;Sum: &quot; &lt;&lt; accumulate(v.begin(), v.end(), 0) &lt;&lt; endl;
+    cout &lt;&lt; &quot;Max: &quot; &lt;&lt; *max_element(v.begin(), v.end()) &lt;&lt; endl;
+    cout &lt;&lt; &quot;Passed: &quot; &lt;&lt; count_if(v.begin(), v.end(), [](int m) { return m &gt;= 50; }) &lt;&lt; endl;
+
+    auto it = find(v.begin(), v.end(), 60);
+    cout &lt;&lt; &quot;60 is at index &quot; &lt;&lt; (it - v.begin()) &lt;&lt; endl;
+
+    sort(v.begin(), v.end());
+    cout &lt;&lt; &quot;Has 78? &quot; &lt;&lt; binary_search(v.begin(), v.end(), 78) &lt;&lt; endl;   // needs sorted data
+    reverse(v.begin(), v.end());
+    return 0;
+}</code></pre></figure>
+<p><code>[](int m) { return m &gt;= 50; }</code> is a <strong>lambda</strong>: a small unnamed function passed to the algorithm.</p>
+<h2>Sorting objects</h2>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;string&gt;
+using namespace std;
+
+struct Student { string name; int mark; };
+
+int main() {
+    vector&lt;Student&gt; cls = {{&quot;Amina&quot;, 78}, {&quot;Brian&quot;, 92}, {&quot;Chebet&quot;, 60}};
+    sort(cls.begin(), cls.end(), [](const Student &amp;a, const Student &amp;b) { return a.mark &gt; b.mark; });
+    for (const auto &amp;s : cls) cout &lt;&lt; s.name &lt;&lt; &quot; &quot; &lt;&lt; s.mark &lt;&lt; endl;
+    return 0;
+}</code></pre></figure>
+<h2>Choosing a container</h2>
+<div class="static-table"><table><thead><tr><th>Need</th><th>Container</th></tr></thead><tbody><tr><td>A list you mostly add to and loop over</td><td><code>vector</code></td></tr><tr><td>Look up by key, sorted</td><td><code>map</code></td></tr><tr><td>Look up by key, fastest</td><td><code>unordered_map</code></td></tr><tr><td>Unique values</td><td><code>set</code> / <code>unordered_set</code></td></tr><tr><td>Queue / stack</td><td><code>queue</code>, <code>stack</code>, <code>deque</code></td></tr><tr><td>Always get the smallest/largest</td><td><code>priority_queue</code></td></tr></tbody></table></div>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which STL container is a growable array?</p><details><summary>Show answer</summary><p>vector</p></details></li><li><p>Which vector method adds an item to the end?</p><details><summary>Show answer</summary><p>push_back</p></details></li><li><p>Which container keeps key-value pairs sorted by key?</p><details><summary>Show answer</summary><p>map</p></details></li><li><p>Which algorithm function sorts a vector v? Write it as sort(...)</p><details><summary>Show answer</summary><p>sort(v.begin(), v.end())</p></details></li><li><p>What is a small unnamed function like [](int m){ return m &gt; 5; } called?</p><details><summary>Show answer</summary><p>lambda</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 7 in <a href="/learn/cpp/">C++</a> · <a href="/learn/?book=cpp">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/cpp/basics-references-functions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> C++ basics: I/O, types, references and functions</a><a class="btn btn-solid btn-sm" href="/learn/cpp/classes/">Classes and objects in C++ <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Slices, maps and strings in Go | Go (Golang)</title>
+    <meta name="description" content="Go&#x27;s two workhorse collections are slices (growable lists) and maps (key → value). Together with strings, they cover most data you&#x27;ll handle." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/go/slices-maps/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Slices, maps and strings in Go | Go (Golang)" />
+    <meta property="og:description" content="Go&#x27;s two workhorse collections are slices (growable lists) and maps (key → value). Together with strings, they cover most data you&#x27;ll handle." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/go/slices-maps/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Slices, maps and strings in Go | Go (Golang)" />
+    <meta name="twitter:description" content="Go&#x27;s two workhorse collections are slices (growable lists) and maps (key → value). Together with strings, they cover most data you&#x27;ll handle." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/go/slices-maps/#lesson","name":"Slices, maps and strings in Go","description":"Go's two workhorse collections are slices (growable lists) and maps (key → value). Together with strings, they cover most data you'll handle.","url":"https://marzleytechsolutions.co.ke/learn/go/slices-maps/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/go/#course","name":"Go (Golang)","url":"https://marzleytechsolutions.co.ke/learn/go/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Go (Golang)","item":"https://marzleytechsolutions.co.ke/learn/go/"},{"@type":"ListItem","position":4,"name":"Slices, maps and strings in Go","item":"https://marzleytechsolutions.co.ke/learn/go/slices-maps/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/go/">Go (Golang)</a> / <span>Slices, maps and strings in Go</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=go&amp;lesson=slices-maps"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Slices, maps and strings in Go</h1>
+<p>Go's two workhorse collections are <strong>slices</strong> (growable lists) and <strong>maps</strong> (key → value). Together with strings, they cover most data you'll handle.</p>
+<h2>Arrays vs slices</h2>
+<p>An <strong>array</strong> has a fixed size that's part of its type (<code>[3]int</code>). A <strong>slice</strong> (<code>[]int</code>) is a flexible view that can grow. You'll use slices almost always.</p>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;sort&quot;
+)
+
+func main() {
+	marks := []int{78, 92, 45, 60}
+	marks = append(marks, 88)                 // append returns the new slice
+	fmt.Println(marks, &quot;len&quot;, len(marks))
+
+	fmt.Println(marks[1:3])                   // [92 45]: from index 1 up to (not including) 3
+	fmt.Println(marks[:2], marks[3:])
+
+	total := 0
+	for _, m := range marks {                 // _ ignores the index
+		total += m
+	}
+	fmt.Printf(&quot;Average %.1f\n&quot;, float64(total)/float64(len(marks)))
+
+	sort.Ints(marks)
+	fmt.Println(&quot;Sorted:&quot;, marks)
+
+	grid := make([][]int, 2)                  // a 2D slice
+	grid[0] = []int{1, 2, 3}
+	grid[1] = []int{4, 5, 6}
+	fmt.Println(grid[1][2])
+}</code></pre></figure>
+<p><code>make([]int, 0, 100)</code> creates an empty slice with room for 100 items (the <strong>capacity</strong>), which avoids re-allocating while you append.</p>
+<blockquote><p>A slice of a slice shares the same underlying array: changing <code>part := marks[0:2]</code> also changes <code>marks</code>. Use <code>copy</code> or <code>append([]int(nil), s...)</code> for an independent copy.</p></blockquote>
+<h2>Maps</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;sort&quot;
+	&quot;strings&quot;
+)
+
+func main() {
+	stock := map[string]int{
+		&quot;Unga&quot;:  12,
+		&quot;Sugar&quot;: 0,
+		&quot;Oil&quot;:   7,
+	}
+	stock[&quot;Rice&quot;] = 20
+	stock[&quot;Unga&quot;] -= 2
+	delete(stock, &quot;Sugar&quot;)
+
+	qty, ok := stock[&quot;Beans&quot;]                 // ok is false if the key is missing
+	fmt.Println(&quot;Beans:&quot;, qty, ok)
+
+	keys := make([]string, 0, len(stock))
+	for k := range stock {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)                        // maps have no order: sort keys to print neatly
+	for _, k := range keys {
+		fmt.Printf(&quot;%-5s %3d\n&quot;, k, stock[k])
+	}
+
+	counts := map[string]int{}
+	for _, w := range strings.Fields(&quot;haraka haraka haina baraka&quot;) {
+		counts[w]++                           // missing keys start at 0
+	}
+	fmt.Println(counts[&quot;haraka&quot;])
+}</code></pre></figure>
+<p>Maps iterate in <strong>random order</strong> on purpose. Sort the keys when order matters.</p>
+<h2>Strings</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;strings&quot;
+)
+
+func main() {
+	name := &quot;  amina hassan  &quot;
+	clean := strings.TrimSpace(name)
+	fmt.Println(strings.ToUpper(clean))
+	fmt.Println(strings.Title(clean))
+	fmt.Println(strings.Contains(clean, &quot;has&quot;), strings.HasPrefix(clean, &quot;am&quot;))
+	fmt.Println(strings.ReplaceAll(&quot;0712 345 678&quot;, &quot; &quot;, &quot;&quot;))
+	parts := strings.Split(&quot;Nairobi,Mombasa,Kisumu&quot;, &quot;,&quot;)
+	fmt.Println(len(parts), strings.Join(parts, &quot; | &quot;))
+
+	var b strings.Builder                      // efficient string building
+	for i := 1; i &lt;= 3; i++ {
+		fmt.Fprintf(&amp;b, &quot;Row %d; &quot;, i)
+	}
+	fmt.Println(b.String())
+
+	word := &quot;Karibu&quot;
+	for i, r := range word {                   // range gives runes (characters)
+		fmt.Print(i, &quot;:&quot;, string(r), &quot; &quot;)
+	}
+	fmt.Println()
+}</code></pre></figure>
+<p>Strings are UTF-8 bytes. <code>len(&quot;é&quot;)</code> is 2 (bytes); use <code>range</code> or <code>[]rune(s)</code> to work with characters.</p>
+<h2>Structs and slices of structs</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;sort&quot;
+)
+
+type Student struct {
+	Name string
+	Form string
+	Mark int
+}
+
+func main() {
+	class := []Student{
+		{&quot;Amina&quot;, &quot;2A&quot;, 78},
+		{&quot;Brian&quot;, &quot;3B&quot;, 92},
+		{&quot;Chebet&quot;, &quot;2A&quot;, 60},
+	}
+	sort.Slice(class, func(i, j int) bool { return class[i].Mark &gt; class[j].Mark })
+	for pos, s := range class {
+		fmt.Printf(&quot;%d. %-7s %s %d\n&quot;, pos+1, s.Name, s.Form, s.Mark)
+	}
+
+	byForm := map[string][]string{}
+	for _, s := range class {
+		byForm[s.Form] = append(byForm[s.Form], s.Name)
+	}
+	fmt.Println(byForm[&quot;2A&quot;])
+}</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which built-in function adds items to a slice?</p><details><summary>Show answer</summary><p>append</p></details></li><li><p>What does marks[1:3] include: indexes 1 and 2, or 1, 2 and 3?</p><details><summary>Show answer</summary><p>1 and 2</p></details></li><li><p>What does the second value ok mean in qty, ok := stock["Beans"]?</p><details><summary>Show answer</summary><p>whether the key exists</p></details></li><li><p>Do Go maps keep their keys in order? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which function sorts a slice using your own comparison?</p><details><summary>Show answer</summary><p>sort.Slice</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 6 in <a href="/learn/go/">Go (Golang)</a> · <a href="/learn/?book=go">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/go/variables-control-functions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Variables, control flow and functions in Go</a><a class="btn btn-solid btn-sm" href="/learn/go/structs-web/">Structs and a web server <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

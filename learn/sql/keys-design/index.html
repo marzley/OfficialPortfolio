@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Keys, relationships and table design | SQL</title>
+    <meta name="description" content="Free SQL lesson: Keys, relationships and table design." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/sql/keys-design/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Keys, relationships and table design | SQL" />
+    <meta property="og:description" content="Free SQL lesson: Keys, relationships and table design." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/sql/keys-design/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Keys, relationships and table design | SQL" />
+    <meta name="twitter:description" content="Free SQL lesson: Keys, relationships and table design." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/sql/keys-design/#lesson","name":"Keys, relationships and table design","description":"Free SQL lesson: Keys, relationships and table design.","url":"https://marzleytechsolutions.co.ke/learn/sql/keys-design/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/sql/#course","name":"SQL","url":"https://marzleytechsolutions.co.ke/learn/sql/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"SQL","item":"https://marzleytechsolutions.co.ke/learn/sql/"},{"@type":"ListItem","position":4,"name":"Keys, relationships and table design","item":"https://marzleytechsolutions.co.ke/learn/sql/keys-design/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/sql/">SQL</a> / <span>Keys, relationships and table design</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=keys-design"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Designing tables</h1>
+<h2>Primary and foreign keys</h2>
+<ul><li><strong>Primary key</strong>: uniquely identifies each row (<code>CustomerID</code>). Never repeats, never empty.</li><li><strong>Foreign key</strong>: a column pointing to another table's primary key (<code>Orders.CustomerID</code> → <code>Customers.CustomerID</code>). It links tables and prevents orders for customers who don't exist.</li></ul>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE TABLE Branches (BranchID INTEGER PRIMARY KEY, Town TEXT NOT NULL UNIQUE);
+CREATE TABLE Staff (
+  StaffID INTEGER PRIMARY KEY,
+  Name TEXT NOT NULL,
+  Phone TEXT UNIQUE,
+  Salary INTEGER CHECK (Salary &gt; 0),
+  BranchID INTEGER REFERENCES Branches(BranchID)
+);
+INSERT INTO Branches (Town) VALUES (&#x27;Nairobi&#x27;), (&#x27;Kisumu&#x27;);
+INSERT INTO Staff (Name, Phone, Salary, BranchID) VALUES (&#x27;Otieno&#x27;, &#x27;0711000001&#x27;, 45000, 2), (&#x27;Wairimu&#x27;, &#x27;0711000002&#x27;, 52000, 1);
+SELECT s.Name, b.Town, s.Salary FROM Staff s JOIN Branches b ON b.BranchID = s.BranchID;</code></pre></figure>
+<h2>Constraints</h2>
+<div class="static-table"><table><thead><tr><th>Constraint</th><th>Ensures</th></tr></thead><tbody><tr><td><code>PRIMARY KEY</code></td><td>Unique row identifier</td></tr><tr><td><code>NOT NULL</code></td><td>Must have a value</td></tr><tr><td><code>UNIQUE</code></td><td>No duplicates (phone, email)</td></tr><tr><td><code>CHECK</code></td><td>Value follows a rule</td></tr><tr><td><code>DEFAULT</code></td><td>Value used when none given</td></tr><tr><td><code>REFERENCES</code> / <code>FOREIGN KEY</code></td><td>Must exist in the other table</td></tr></tbody></table></div>
+<h2>Relationships</h2>
+<ul><li><strong>One-to-many</strong>: one customer → many orders (foreign key on the "many" side).</li><li><strong>Many-to-many</strong>: students ↔ courses → use a <strong>join table</strong> <code>Enrollments(StudentID, CourseID)</code>.</li><li><strong>One-to-one</strong>: a user ↔ a profile.</li></ul>
+<h2>Normalisation (simply)</h2>
+<p>Don't repeat the same information in many rows. If a customer's phone number is typed in every order, changing it means updating hundreds of rows. Put it once in <code>Customers</code> and link by ID.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which key uniquely identifies each row?</p><details><summary>Show answer</summary><p>primary key</p></details></li><li><p>Which key links to another table's primary key?</p><details><summary>Show answer</summary><p>foreign key</p></details></li><li><p>Students and courses have which kind of relationship?</p><details><summary>Show answer</summary><p>many-to-many</p></details></li><li><p>Which constraint stops two customers having the same phone number?</p><details><summary>Show answer</summary><p>UNIQUE</p></details></li></ol></section></div><p class="static-meta">Lesson 10 of 14 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/create-tables-constraints/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Creating tables: data types and constraints</a><a class="btn btn-solid btn-sm" href="/learn/sql/indexes-transactions/">Indexes, transactions and keeping data safe <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

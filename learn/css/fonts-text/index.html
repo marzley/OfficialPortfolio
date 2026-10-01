@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fonts and text styling | CSS</title>
+    <meta name="description" content="Most of a website is text, so good typography is the fastest way to make a page look professional. This lesson covers every text property you&#x27;ll use daily." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/css/fonts-text/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Fonts and text styling | CSS" />
+    <meta property="og:description" content="Most of a website is text, so good typography is the fastest way to make a page look professional. This lesson covers every text property you&#x27;ll use daily." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/css/fonts-text/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Fonts and text styling | CSS" />
+    <meta name="twitter:description" content="Most of a website is text, so good typography is the fastest way to make a page look professional. This lesson covers every text property you&#x27;ll use daily." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/css/fonts-text/#lesson","name":"Fonts and text styling","description":"Most of a website is text, so good typography is the fastest way to make a page look professional. This lesson covers every text property you'll use daily.","url":"https://marzleytechsolutions.co.ke/learn/css/fonts-text/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/css/#course","name":"CSS","url":"https://marzleytechsolutions.co.ke/learn/css/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"CSS","item":"https://marzleytechsolutions.co.ke/learn/css/"},{"@type":"ListItem","position":4,"name":"Fonts and text styling","item":"https://marzleytechsolutions.co.ke/learn/css/fonts-text/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/css/">CSS</a> / <span>Fonts and text styling</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=fonts-text"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Fonts and text styling</h1>
+<p>Most of a website is text, so good typography is the fastest way to make a page look professional. This lesson covers every text property you'll use daily.</p>
+<h2>font-family and font stacks</h2>
+<p><code>font-family</code> lists fonts in order of preference. The browser uses the first one it has.</p>
+<figure class="static-code"><figcaption>CSS</figcaption><pre><code class="language-css">body { font-family: &quot;Inter&quot;, &quot;Segoe UI&quot;, Roboto, Arial, sans-serif; }
+code { font-family: &quot;Fira Code&quot;, Consolas, monospace; }</code></pre></figure>
+<p>Always end with a <strong>generic family</strong>: <code>sans-serif</code>, <code>serif</code> or <code>monospace</code>. The fastest choice is the <strong>system font stack</strong>, which uses the phone's own font and downloads nothing:</p>
+<figure class="static-code"><figcaption>CSS</figcaption><pre><code class="language-css">body { font-family: system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, sans-serif; }</code></pre></figure>
+<h2>Size, weight, style and line height</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  body { font-family: system-ui, sans-serif; }
+  h1 { font-size: 2rem; font-weight: 800; line-height: 1.2; }
+  p { font-size: 1.05rem; line-height: 1.6; max-width: 60ch; }
+  .light { font-weight: 300; }
+  .italic { font-style: italic; }
+&lt;/style&gt;
+&lt;h1&gt;Fresh mangoes from Makueni&lt;/h1&gt;
+&lt;p&gt;Sweet, juicy and picked this week. We deliver across Nairobi every Tuesday and Friday. Order on WhatsApp and pay with M-Pesa when the fruit arrives.&lt;/p&gt;
+&lt;p class=&quot;light&quot;&gt;A light weight (300).&lt;/p&gt;
+&lt;p class=&quot;italic&quot;&gt;An italic style.&lt;/p&gt;</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Property</th><th>Common values</th><th>Tip</th></tr></thead><tbody><tr><td><code>font-size</code></td><td><code>16px</code>, <code>1rem</code>, <code>1.25rem</code></td><td>Use <code>rem</code> so text respects the user's settings</td></tr><tr><td><code>font-weight</code></td><td><code>400</code> normal, <code>600</code> semibold, <code>700</code> bold</td><td>Only use weights the font has</td></tr><tr><td><code>font-style</code></td><td><code>normal</code>, <code>italic</code></td><td></td></tr><tr><td><code>line-height</code></td><td><code>1.5</code>, <code>1.6</code> (no unit)</td><td>1.5–1.7 for body text is easiest to read</td></tr><tr><td><code>max-width</code> on text</td><td><code>60ch</code></td><td>50–75 characters per line reads best</td></tr></tbody></table></div>
+<h2>Alignment, decoration and case</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .center { text-align: center; }
+  .upper { text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.8rem; color: #955a06; font-weight: 700; }
+  a { color: #2563eb; text-decoration: underline; text-underline-offset: 3px; }
+  .no-line { text-decoration: none; }
+  .strike { text-decoration: line-through; color: #64748b; }
+  .indent { text-indent: 2em; }
+&lt;/style&gt;
+&lt;p class=&quot;upper&quot;&gt;Our services&lt;/p&gt;
+&lt;h2 class=&quot;center&quot;&gt;Websites that bring customers&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;#&quot;&gt;A normal underlined link&lt;/a&gt; and &lt;a class=&quot;no-line&quot; href=&quot;#&quot;&gt;one without a line&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Was &lt;span class=&quot;strike&quot;&gt;KSh 30,000&lt;/span&gt;, now KSh 25,000.&lt;/p&gt;
+&lt;p class=&quot;indent&quot;&gt;This paragraph starts with an indent, like a book.&lt;/p&gt;</code></pre></figure>
+<h2>Web fonts (Google Fonts)</h2>
+<p>To use a font the visitor may not have, load it. From fonts.google.com you get a line like:</p>
+<figure class="static-code"><figcaption>HTML</figcaption><pre><code class="language-html">&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;</code></pre></figure>
+<p>then:</p>
+<figure class="static-code"><figcaption>CSS</figcaption><pre><code class="language-css">body { font-family: &quot;Poppins&quot;, sans-serif; }</code></pre></figure>
+<p>Tips for speed:</p>
+<ul><li>Load only the weights you use (e.g. 400 and 700).</li><li>Keep <code>display=swap</code> so text shows immediately in a backup font.</li><li>One font family is usually enough; two at most (one for headings, one for body).</li></ul>
+<h2>Text shadow and overflow</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .hero { background: #0b1b35; color: #fff; padding: 20px; font-size: 1.8rem; text-shadow: 0 2px 8px rgba(0,0,0,.5); }
+  .cut { width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border: 1px solid #ccc; padding: 6px; }
+&lt;/style&gt;
+&lt;div class=&quot;hero&quot;&gt;Technology for real solutions&lt;/div&gt;
+&lt;p class=&quot;cut&quot;&gt;This very long product name will be cut with three dots at the end&lt;/p&gt;</code></pre></figure>
+<h2>A good typography starter</h2>
+<figure class="static-code"><figcaption>CSS</figcaption><pre><code class="language-css">html { font-size: 100%; }             /* respect the user&#x27;s setting (usually 16px) */
+body { font-family: system-ui, sans-serif; line-height: 1.6; color: #1e293b; }
+h1, h2, h3 { line-height: 1.2; color: #0b1b35; }
+h1 { font-size: clamp(1.8rem, 5vw, 3rem); }
+p { max-width: 65ch; }</code></pre></figure>
+<p><code>clamp(min, preferred, max)</code> makes the heading grow with the screen but never smaller than <code>1.8rem</code> or larger than <code>3rem</code>.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which generic font family should end a font stack for normal text: serif, sans-serif or monospace?</p><details><summary>Show answer</summary><p>sans-serif</p></details></li><li><p>Which property sets the space between lines of text?</p><details><summary>Show answer</summary><p>line-height</p></details></li><li><p>What font-weight number is normal text?</p><details><summary>Show answer</summary><p>400</p></details></li><li><p>Which property makes text uppercase without retyping it?</p><details><summary>Show answer</summary><p>text-transform</p></details></li><li><p>Which CSS function sets a size with a minimum, a preferred value and a maximum?</p><details><summary>Show answer</summary><p>clamp</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Style the paragraph: give <code>p</code> a <code>line-height</code> of <strong>1.6</strong> and a <code>font-family</code> that ends with <strong>sans-serif</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=fonts-text#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 3 of 17 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/selectors-colours/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Selectors and colours</a><a class="btn btn-solid btn-sm" href="/learn/css/units-sizing/">CSS units: px, %, em, rem, vw, vh and ch <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Objects in depth: destructuring, spread and JSON</title>
+    <meta name="description" content="Real data (a customer, an order, an API response) is almost always an object , often with arrays and objects inside it. These modern tools make working…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/javascript/objects-destructuring/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Objects in depth: destructuring, spread and JSON" />
+    <meta property="og:description" content="Real data (a customer, an order, an API response) is almost always an object , often with arrays and objects inside it. These modern tools make working…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/javascript/objects-destructuring/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Objects in depth: destructuring, spread and JSON" />
+    <meta name="twitter:description" content="Real data (a customer, an order, an API response) is almost always an object , often with arrays and objects inside it. These modern tools make working…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/javascript/objects-destructuring/#lesson","name":"Objects in depth: destructuring, spread and JSON","description":"Real data (a customer, an order, an API response) is almost always an object , often with arrays and objects inside it. These modern tools make working…","url":"https://marzleytechsolutions.co.ke/learn/javascript/objects-destructuring/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/javascript/#course","name":"JavaScript","url":"https://marzleytechsolutions.co.ke/learn/javascript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/"},{"@type":"ListItem","position":4,"name":"Objects in depth: destructuring, spread and JSON","item":"https://marzleytechsolutions.co.ke/learn/javascript/objects-destructuring/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/javascript/">JavaScript</a> / <span>Objects in depth: destructuring, spread and JSON</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=objects-destructuring"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Objects in depth: destructuring, spread and JSON</h1>
+<p>Real data (a customer, an order, an API response) is almost always an <strong>object</strong>, often with arrays and objects inside it. These modern tools make working with it much easier.</p>
+<h2>Creating and reading objects</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const order = {
+  id: &quot;ORD-1042&quot;,
+  customer: { name: &quot;Faith Njoki&quot;, phone: &quot;0712345678&quot; },
+  items: [
+    { name: &quot;Cake 1kg&quot;, price: 1800 },
+    { name: &quot;Candles&quot;, price: 150 },
+  ],
+  paid: false,
+};
+
+console.log(order.customer.name);          // dot notation
+console.log(order[&quot;id&quot;]);                  // bracket notation
+const field = &quot;paid&quot;;
+console.log(order[field]);                 // brackets with a variable
+console.log(order.items[1].name);          // &quot;Candles&quot;
+console.log(order.delivery?.town);         // undefined (optional chaining: no crash)</code></pre></figure>
+<p><code>?.</code> (<strong>optional chaining</strong>) stops and returns <code>undefined</code> if something in the chain is missing, instead of throwing an error.</p>
+<h2>Adding, changing and deleting</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const user = { name: &quot;Brian&quot; };
+user.town = &quot;Kisii&quot;;          // add
+user.name = &quot;Brian K.&quot;;       // change
+delete user.town;             // remove
+console.log(user);
+console.log(&quot;name&quot; in user, Object.keys(user), Object.values(user));
+
+for (const [key, value] of Object.entries({ a: 1, b: 2 })) {
+  console.log(key, &quot;=&quot;, value);
+}</code></pre></figure>
+<h2>Shorthand properties and methods</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const name = &quot;Tumaini&quot;, age = 19;
+const student = {
+  name,          // same as name: name
+  age,
+  greet() {      // a method
+    return `Hi, I&#x27;m ${this.name}`;
+  },
+};
+console.log(student.greet());</code></pre></figure>
+<h2>Destructuring: unpack values into variables</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const customer = { name: &quot;Faith&quot;, phone: &quot;0712345678&quot;, town: &quot;Thika&quot; };
+const { name, town } = customer;
+console.log(name, town);
+
+const { phone: mobile, country = &quot;Kenya&quot; } = customer;   // rename + default
+console.log(mobile, country);
+
+const [first, second, ...others] = [&quot;Gold&quot;, &quot;Silver&quot;, &quot;Bronze&quot;, &quot;4th&quot;, &quot;5th&quot;];
+console.log(first, second, others);
+
+// In function parameters: very common
+function receipt({ name, amount }) {
+  return `${name} paid KSh ${amount}`;
+}
+console.log(receipt({ name: &quot;Otieno&quot;, amount: 500, method: &quot;M-Pesa&quot; }));</code></pre></figure>
+<h2>Spread and rest: copy and merge</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const base = { size: &quot;M&quot;, colour: &quot;black&quot; };
+const shirt = { ...base, colour: &quot;red&quot;, price: 800 };   // copy, then override
+console.log(shirt);
+
+const a = [1, 2], b = [3, 4];
+const all = [...a, ...b, 5];
+console.log(all);
+
+function sum(...nums) { return nums.reduce((x, y) =&gt; x + y, 0); }  // rest parameter
+console.log(sum(10, 20, 30));</code></pre></figure>
+<blockquote><p>Spread makes a <strong>shallow</strong> copy: nested objects are still shared. For a full deep copy use <code>structuredClone(obj)</code>.</p></blockquote>
+<h2>References: a common surprise</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const a = { score: 1 };
+const b = a;          // NOT a copy: both names point to the same object
+b.score = 99;
+console.log(a.score); // 99
+
+const c = { ...a };   // a real (shallow) copy
+c.score = 5;
+console.log(a.score, c.score); // 99 5</code></pre></figure>
+<h2>JSON: objects as text</h2>
+<p><strong>JSON</strong> is how data travels between a website and a server, and how it's stored in files and <code>localStorage</code>.</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const cart = { items: [&quot;Unga&quot;, &quot;Oil&quot;], total: 530, paid: false };
+const text = JSON.stringify(cart);
+console.log(text, typeof text);                 // a string
+
+const back = JSON.parse(text);
+console.log(back.items[0], typeof back);        // &quot;Unga&quot; object
+
+console.log(JSON.stringify(cart, null, 2));     // pretty printed</code></pre></figure>
+<p>JSON rules: keys in <strong>double quotes</strong>, no trailing commas, no functions, no comments.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which operator reads a nested property safely without crashing if it is missing?</p><details><summary>Show answer</summary><p>?.</p></details></li><li><p>What do the three dots ... do in { ...base }?</p><details><summary>Show answer</summary><p>spread</p></details></li><li><p>Which function turns an object into a JSON string?</p><details><summary>Show answer</summary><p>JSON.stringify</p></details></li><li><p>If b = a (an object) and you change b.score, does a.score change? (yes or no)</p><details><summary>Show answer</summary><p>yes</p></details></li><li><p>Which function makes a full deep copy of an object?</p><details><summary>Show answer</summary><p>structuredClone</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Use destructuring to get <code>name</code> and <code>town</code> from <code>customer</code>, then log them so the output is <strong>Faith Thika</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=objects-destructuring#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 8 of 19 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/functions-objects/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Functions and objects</a><a class="btn btn-solid btn-sm" href="/learn/javascript/scope-closures/">Scope, hoisting and closures <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

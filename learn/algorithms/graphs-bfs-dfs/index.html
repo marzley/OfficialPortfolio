@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Graphs, BFS and DFS: routes and connections | Marzley Learn</title>
+    <meta name="description" content="A graph is a set of nodes (vertices) connected by edges . Roads between towns, friends on social media, computers in a network, and pages linked on the…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/algorithms/graphs-bfs-dfs/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Graphs, BFS and DFS: routes and connections | Marzley Learn" />
+    <meta property="og:description" content="A graph is a set of nodes (vertices) connected by edges . Roads between towns, friends on social media, computers in a network, and pages linked on the…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/algorithms/graphs-bfs-dfs/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Graphs, BFS and DFS: routes and connections | Marzley Learn" />
+    <meta name="twitter:description" content="A graph is a set of nodes (vertices) connected by edges . Roads between towns, friends on social media, computers in a network, and pages linked on the…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/graphs-bfs-dfs/#lesson","name":"Graphs, BFS and DFS: routes and connections","description":"A graph is a set of nodes (vertices) connected by edges . Roads between towns, friends on social media, computers in a network, and pages linked on the…","url":"https://marzleytechsolutions.co.ke/learn/algorithms/graphs-bfs-dfs/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/#course","name":"Algorithms & problem solving","url":"https://marzleytechsolutions.co.ke/learn/algorithms/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Algorithms & problem solving","item":"https://marzleytechsolutions.co.ke/learn/algorithms/"},{"@type":"ListItem","position":4,"name":"Graphs, BFS and DFS: routes and connections","item":"https://marzleytechsolutions.co.ke/learn/algorithms/graphs-bfs-dfs/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> / <span>Graphs, BFS and DFS: routes and connections</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=graphs-bfs-dfs"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Graphs, BFS and DFS: routes and connections</h1>
+<p>A <strong>graph</strong> is a set of <strong>nodes</strong> (vertices) connected by <strong>edges</strong>. Roads between towns, friends on social media, computers in a network, and pages linked on the web are all graphs. Graph algorithms power maps, delivery routing and recommendations.</p>
+<h2>Representing a graph: adjacency list</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">roads = {
+    &quot;Nairobi&quot;:  [&quot;Thika&quot;, &quot;Nakuru&quot;, &quot;Machakos&quot;],
+    &quot;Thika&quot;:    [&quot;Nairobi&quot;, &quot;Nyeri&quot;],
+    &quot;Nakuru&quot;:   [&quot;Nairobi&quot;, &quot;Eldoret&quot;, &quot;Kisumu&quot;],
+    &quot;Machakos&quot;: [&quot;Nairobi&quot;, &quot;Mombasa&quot;],
+    &quot;Nyeri&quot;:    [&quot;Thika&quot;],
+    &quot;Eldoret&quot;:  [&quot;Nakuru&quot;, &quot;Kisumu&quot;],
+    &quot;Kisumu&quot;:   [&quot;Nakuru&quot;, &quot;Eldoret&quot;],
+    &quot;Mombasa&quot;:  [&quot;Machakos&quot;],
+}
+for town, neighbours in roads.items():
+    print(f&quot;{town:&lt;9} -&gt; {&#x27;, &#x27;.join(neighbours)}&quot;)</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Term</th><th>Meaning</th></tr></thead><tbody><tr><td><strong>Undirected</strong></td><td>Roads go both ways</td></tr><tr><td><strong>Directed</strong></td><td>One-way (Twitter/X "follows", web links)</td></tr><tr><td><strong>Weighted</strong></td><td>Edges have a cost (distance in km, time, price)</td></tr><tr><td><strong>Path</strong></td><td>A sequence of connected nodes</td></tr><tr><td><strong>Cycle</strong></td><td>A path that returns to its start</td></tr></tbody></table></div>
+<h2>Breadth-first search (BFS): explore level by level</h2>
+<p>BFS visits all neighbours first, then their neighbours, using a <strong>queue</strong>. In an unweighted graph it finds the path with the <strong>fewest steps</strong>.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">from collections import deque
+
+roads = {
+    &quot;Nairobi&quot;: [&quot;Thika&quot;, &quot;Nakuru&quot;, &quot;Machakos&quot;], &quot;Thika&quot;: [&quot;Nairobi&quot;, &quot;Nyeri&quot;],
+    &quot;Nakuru&quot;: [&quot;Nairobi&quot;, &quot;Eldoret&quot;, &quot;Kisumu&quot;], &quot;Machakos&quot;: [&quot;Nairobi&quot;, &quot;Mombasa&quot;],
+    &quot;Nyeri&quot;: [&quot;Thika&quot;], &quot;Eldoret&quot;: [&quot;Nakuru&quot;, &quot;Kisumu&quot;], &quot;Kisumu&quot;: [&quot;Nakuru&quot;, &quot;Eldoret&quot;],
+    &quot;Mombasa&quot;: [&quot;Machakos&quot;],
+}
+
+def shortest_path(graph, start, goal):
+    queue = deque([[start]])
+    visited = {start}
+    while queue:
+        path = queue.popleft()
+        town = path[-1]
+        if town == goal:
+            return path
+        for nxt in graph[town]:
+            if nxt not in visited:
+                visited.add(nxt)
+                queue.append(path + [nxt])
+    return None
+
+print(&quot; -&gt; &quot;.join(shortest_path(roads, &quot;Nyeri&quot;, &quot;Kisumu&quot;)))
+print(&quot; -&gt; &quot;.join(shortest_path(roads, &quot;Mombasa&quot;, &quot;Eldoret&quot;)))</code></pre></figure>
+<h2>Depth-first search (DFS): go deep, then backtrack</h2>
+<p>DFS follows one path as far as possible before backing up, using <strong>recursion</strong> (or a stack). Good for exploring everything, finding connected groups and detecting cycles.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">roads = {
+    &quot;Nairobi&quot;: [&quot;Thika&quot;, &quot;Nakuru&quot;], &quot;Thika&quot;: [&quot;Nairobi&quot;, &quot;Nyeri&quot;], &quot;Nyeri&quot;: [&quot;Thika&quot;],
+    &quot;Nakuru&quot;: [&quot;Nairobi&quot;, &quot;Kisumu&quot;], &quot;Kisumu&quot;: [&quot;Nakuru&quot;],
+    &quot;Lamu&quot;: [&quot;Garissa&quot;], &quot;Garissa&quot;: [&quot;Lamu&quot;],          # a separate group: no road to the others here
+}
+
+def dfs(graph, town, visited=None):
+    if visited is None:
+        visited = []
+    visited.append(town)
+    for nxt in graph[town]:
+        if nxt not in visited:
+            dfs(graph, nxt, visited)
+    return visited
+
+print(&quot;Reachable from Nairobi:&quot;, dfs(roads, &quot;Nairobi&quot;))
+
+groups, seen = [], set()
+for town in roads:
+    if town not in seen:
+        group = dfs(roads, town)
+        seen.update(group)
+        groups.append(group)
+print(&quot;Connected groups:&quot;, groups)</code></pre></figure>
+<h2>Weighted graphs and Dijkstra's algorithm</h2>
+<p>When roads have distances, the path with the fewest towns isn't always the shortest. <strong>Dijkstra's algorithm</strong> always expands the closest unvisited town next, using a priority queue:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import heapq
+
+km = {
+    &quot;Nairobi&quot;: {&quot;Nakuru&quot;: 160, &quot;Machakos&quot;: 63, &quot;Thika&quot;: 45},
+    &quot;Nakuru&quot;: {&quot;Nairobi&quot;: 160, &quot;Kisumu&quot;: 185, &quot;Eldoret&quot;: 155},
+    &quot;Machakos&quot;: {&quot;Nairobi&quot;: 63, &quot;Mombasa&quot;: 430},
+    &quot;Thika&quot;: {&quot;Nairobi&quot;: 45},
+    &quot;Kisumu&quot;: {&quot;Nakuru&quot;: 185, &quot;Eldoret&quot;: 115},
+    &quot;Eldoret&quot;: {&quot;Nakuru&quot;: 155, &quot;Kisumu&quot;: 115},
+    &quot;Mombasa&quot;: {&quot;Machakos&quot;: 430},
+}
+
+def dijkstra(graph, start, goal):
+    heap = [(0, start, [start])]
+    best = {}
+    while heap:
+        dist, town, path = heapq.heappop(heap)
+        if town == goal:
+            return dist, path
+        if town in best:
+            continue
+        best[town] = dist
+        for nxt, d in graph[town].items():
+            if nxt not in best:
+                heapq.heappush(heap, (dist + d, nxt, path + [nxt]))
+    return None
+
+dist, path = dijkstra(km, &quot;Mombasa&quot;, &quot;Kisumu&quot;)
+print(f&quot;{&#x27; -&gt; &#x27;.join(path)}: {dist} km&quot;)</code></pre></figure>
+<p>(Distances are approximate, for practice.)</p>
+<h2>Where graphs are used</h2>
+<div class="static-table"><table><thead><tr><th>Application</th><th>Graph</th></tr></thead><tbody><tr><td>Google Maps, delivery apps</td><td>Roads, weighted by time</td></tr><tr><td>Social networks</td><td>People and friendships ("people you may know")</td></tr><tr><td>Computer networks</td><td>Routers and links (routing protocols like OSPF use Dijkstra)</td></tr><tr><td>Web search</td><td>Pages and links</td></tr><tr><td>Project planning</td><td>Tasks and dependencies</td></tr></tbody></table></div>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What are the connections between nodes in a graph called?</p><details><summary>Show answer</summary><p>edges</p></details></li><li><p>Which search uses a queue and finds the path with the fewest steps? (three letters)</p><details><summary>Show answer</summary><p>BFS</p></details></li><li><p>Which search goes deep first and often uses recursion? (three letters)</p><details><summary>Show answer</summary><p>DFS</p></details></li><li><p>Which algorithm finds the shortest route in a weighted graph?</p><details><summary>Show answer</summary><p>Dijkstra</p></details></li><li><p>Is a graph where edges have a one-way direction called directed or undirected?</p><details><summary>Show answer</summary><p>directed</p></details></li></ol></section></div><p class="static-meta">Lesson 10 of 11 in <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> · <a href="/learn/?book=algorithms">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/algorithms/recursion/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Recursion</a><a class="btn btn-solid btn-sm" href="/learn/algorithms/dynamic-programming/">Dynamic programming and memoisation <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

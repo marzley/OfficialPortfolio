@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Level 4: How machine learning works (with code you can run)</title>
+    <meta name="description" content="Now we open the box. In this level you&#x27;ll see how machines learn from data , using short Python programs that run right here. You don&#x27;t need to be an…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/artificial-intelligence/how-machine-learning-works/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Level 4: How machine learning works (with code you can run)" />
+    <meta property="og:description" content="Now we open the box. In this level you&#x27;ll see how machines learn from data , using short Python programs that run right here. You don&#x27;t need to be an…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/artificial-intelligence/how-machine-learning-works/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Level 4: How machine learning works (with code you can run)" />
+    <meta name="twitter:description" content="Now we open the box. In this level you&#x27;ll see how machines learn from data , using short Python programs that run right here. You don&#x27;t need to be an…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/how-machine-learning-works/#lesson","name":"Level 4: How machine learning works (with code you can run)","description":"Now we open the box. In this level you'll see how machines learn from data , using short Python programs that run right here. You don't need to be an…","url":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/how-machine-learning-works/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/#course","name":"Artificial intelligence (AI): from zero to pro","url":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Artificial intelligence (AI): from zero to pro","item":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/"},{"@type":"ListItem","position":4,"name":"Level 4: How machine learning works (with code you can run)","item":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/how-machine-learning-works/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/artificial-intelligence/">Artificial intelligence (AI): from zero to pro</a> / <span>Level 4: How machine learning works (with code you can run)</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=artificial-intelligence&amp;lesson=how-machine-learning-works"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Level 4: How machine learning works (with code you can run)</h1>
+<p>Now we open the box. In this level you'll see how machines <strong>learn from data</strong>, using short Python programs that run right here. You don't need to be an expert programmer: read the comments, press Run, change numbers and see what happens. (New to Python? Do the first lessons of the <strong>Python</strong> subject first.)</p>
+<h2>The machine learning recipe</h2>
+<ol><li><strong>Collect data</strong>: examples, for instance past house sizes and their rents.</li><li><strong>Choose features</strong>: the inputs that matter (size in square metres, distance to town, bedrooms).</li><li><strong>Choose a model</strong>: a mathematical shape that can fit the pattern (a straight line, a decision tree, a neural network).</li><li><strong>Train</strong>: adjust the model's numbers (its <strong>parameters</strong>) so its predictions match the examples as closely as possible.</li><li><strong>Test</strong>: check predictions on examples the model <strong>never saw</strong> during training.</li><li><strong>Use it</strong> (inference), and keep monitoring: the world changes.</li></ol>
+<h2>Three main types of learning</h2>
+<div class="static-table"><table><thead><tr><th>Type</th><th>Data</th><th>Example</th></tr></thead><tbody><tr><td><strong>Supervised learning</strong></td><td>Examples <strong>with answers</strong> (labels)</td><td>Predict rent from size; spam or not spam</td></tr><tr><td><strong>Unsupervised learning</strong></td><td>Examples <strong>without answers</strong></td><td>Group customers into similar types</td></tr><tr><td><strong>Reinforcement learning</strong></td><td>Rewards and penalties from trying actions</td><td>Game-playing AI, robots, fine-tuning chatbots</td></tr></tbody></table></div>
+<p>Supervised learning splits into <strong>regression</strong> (predict a number: rent, price, rainfall) and <strong>classification</strong> (predict a category: spam/OK, disease/healthy).</p>
+<h2>Your first model: predicting rent with a straight line</h2>
+<p>We have rents for apartments of different sizes. We'll <strong>learn</strong> the best line <code>rent = a × size + b</code> from the data, using the classic <strong>least squares</strong> method.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python"># size in square metres, rent in KSh per month (training data)
+sizes = [30, 45, 50, 60, 75, 90, 110]
+rents = [9000, 13000, 15000, 17500, 21000, 26000, 31000]
+
+n = len(sizes)
+mean_x = sum(sizes) / n
+mean_y = sum(rents) / n
+
+# least squares: the line that makes the squared errors as small as possible
+a = sum((x - mean_x) * (y - mean_y) for x, y in zip(sizes, rents)) / sum((x - mean_x) ** 2 for x in sizes)
+b = mean_y - a * mean_x
+print(f&quot;Learned model: rent = {a:.1f} x size + {b:.0f}&quot;)
+
+def predict(size):
+    return a * size + b
+
+for s in [40, 80, 120]:
+    print(f&quot;{s} m2 -&gt; predicted rent KSh {predict(s):,.0f}&quot;)</code></pre></figure>
+<p>The model <strong>learned</strong> about KSh 275 per extra square metre (plus a base of about KSh 829). Nobody typed that rule; it came from the data.</p>
+<h2>Training by gradient descent (how most AI learns)</h2>
+<p>Least squares has a formula, but neural networks don't. They learn by <strong>gradient descent</strong>: start with random numbers, measure the error, nudge the numbers a little in the direction that reduces the error, and repeat thousands of times. Watch the error fall:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">sizes = [30, 45, 50, 60, 75, 90, 110]
+rents = [9000, 13000, 15000, 17500, 21000, 26000, 31000]
+
+# scale numbers down so learning is stable
+xs = [s / 100 for s in sizes]
+ys = [r / 10000 for r in rents]
+
+a, b = 0.0, 0.0          # start knowing nothing
+lr = 0.5                 # learning rate: how big each nudge is
+
+for step in range(2001):
+    # gradients: which way (and how much) each parameter should move
+    grad_a = sum(2 * (a * x + b - y) * x for x, y in zip(xs, ys)) / len(xs)
+    grad_b = sum(2 * (a * x + b - y) for x, y in zip(xs, ys)) / len(xs)
+    a -= lr * grad_a
+    b -= lr * grad_b
+    if step % 500 == 0:
+        error = sum((a * x + b - y) ** 2 for x, y in zip(xs, ys)) / len(xs)
+        print(f&quot;step {step:4}: error {error:.5f}&quot;)
+
+print(f&quot;Learned: rent = {a * 100:.1f} x size + {b * 10000:.0f}&quot;)</code></pre></figure>
+<p>It arrives at almost the same line as the formula. <strong>This loop (predict, measure error, nudge) is how ChatGPT-sized models are trained too</strong>, just with billions of parameters instead of two.</p>
+<h2>Testing: never grade the model on its own homework</h2>
+<p>If you test on the training data, a model can look perfect by <strong>memorising</strong> instead of learning the pattern. This is called <strong>overfitting</strong>. Always keep some examples aside as a <strong>test set</strong>.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">data = [(30, 9000), (45, 13000), (50, 15000), (60, 17500), (75, 21000), (90, 26000), (110, 31000), (40, 11500), (65, 19000), (100, 28500)]
+train, test = data[:7], data[7:]          # 7 to learn from, 3 held back
+
+xs, ys = [d[0] for d in train], [d[1] for d in train]
+mx, my = sum(xs) / len(xs), sum(ys) / len(ys)
+a = sum((x - mx) * (y - my) for x, y in train) / sum((x - mx) ** 2 for x in xs)
+b = my - a * mx
+
+errors = []
+for size, actual in test:
+    guess = a * size + b
+    errors.append(abs(guess - actual))
+    print(f&quot;{size} m2: predicted {guess:,.0f}, actual {actual:,}&quot;)
+print(f&quot;Average error on unseen data: KSh {sum(errors) / len(errors):,.0f}&quot;)</code></pre></figure>
+<p>The <strong>average error on unseen data</strong> is the honest measure of how good a model is.</p>
+<h2>Key ideas to remember</h2>
+<div class="static-table"><table><thead><tr><th>Idea</th><th>Meaning</th></tr></thead><tbody><tr><td><strong>Parameters</strong></td><td>The numbers a model learns (here <code>a</code> and <code>b</code>; billions in an LLM)</td></tr><tr><td><strong>Loss / error</strong></td><td>How wrong the predictions are</td></tr><tr><td><strong>Gradient descent</strong></td><td>Repeatedly nudging parameters to reduce the loss</td></tr><tr><td><strong>Learning rate</strong></td><td>The size of each nudge (too big jumps around, too small is slow)</td></tr><tr><td><strong>Overfitting</strong></td><td>Memorising the training data instead of learning the pattern</td></tr><tr><td><strong>Train / test split</strong></td><td>Learn on some data, judge on the rest</td></tr><tr><td><strong>Garbage in, garbage out</strong></td><td>Bad or biased data makes bad or biased models</td></tr></tbody></table></div>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Learning from examples that include the correct answers is called ... learning?</p><details><summary>Show answer</summary><p>supervised</p></details></li><li><p>Predicting a number (like rent) is regression or classification?</p><details><summary>Show answer</summary><p>regression</p></details></li><li><p>Predicting a category (like spam or not) is regression or classification?</p><details><summary>Show answer</summary><p>classification</p></details></li><li><p>What is it called when a model memorises training data instead of learning the pattern?</p><details><summary>Show answer</summary><p>overfitting</p></details></li><li><p>What method nudges parameters step by step to reduce the error?</p><details><summary>Show answer</summary><p>gradient descent</p></details></li><li><p>Suppose a model learned rent = 276 x size + 700. What rent does it predict for 50 m2? Give the number.</p><details><summary>Show answer</summary><p>14500</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Suppose a model learned <code>rent = 276 * size + 700</code>. Use it to predict the rent of an <strong>85 m2</strong> apartment and print it as a whole number.</p><p><a class="btn btn-solid" href="/learn/?track=artificial-intelligence&amp;lesson=how-machine-learning-works#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 11 of 17 in <a href="/learn/artificial-intelligence/">Artificial intelligence (AI): from zero to pro</a> · <a href="/learn/?book=artificial-intelligence">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/artificial-intelligence/ai-automation-no-code/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Level 3: AI automation without code: custom assistants and workflows</a><a class="btn btn-solid btn-sm" href="/learn/artificial-intelligence/build-a-classifier/">Level 4: Build a classifier: nearest neighbours and a spam filter <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

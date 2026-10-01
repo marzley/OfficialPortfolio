@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Functions, includes and organising a PHP site | PHP &amp; MySQL</title>
+    <meta name="description" content="As a site grows, copying the same header onto 10 pages, or the same price calculation into 5 files, becomes a nightmare. Functions and includes let you…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/php/functions-includes/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Functions, includes and organising a PHP site | PHP &amp; MySQL" />
+    <meta property="og:description" content="As a site grows, copying the same header onto 10 pages, or the same price calculation into 5 files, becomes a nightmare. Functions and includes let you…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/php/functions-includes/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Functions, includes and organising a PHP site | PHP &amp; MySQL" />
+    <meta name="twitter:description" content="As a site grows, copying the same header onto 10 pages, or the same price calculation into 5 files, becomes a nightmare. Functions and includes let you…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/php/functions-includes/#lesson","name":"Functions, includes and organising a PHP site","description":"As a site grows, copying the same header onto 10 pages, or the same price calculation into 5 files, becomes a nightmare. Functions and includes let you…","url":"https://marzleytechsolutions.co.ke/learn/php/functions-includes/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/php/#course","name":"PHP & MySQL","url":"https://marzleytechsolutions.co.ke/learn/php/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"PHP & MySQL","item":"https://marzleytechsolutions.co.ke/learn/php/"},{"@type":"ListItem","position":4,"name":"Functions, includes and organising a PHP site","item":"https://marzleytechsolutions.co.ke/learn/php/functions-includes/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/php/">PHP &amp; MySQL</a> / <span>Functions, includes and organising a PHP site</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=php&amp;lesson=functions-includes"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Functions, includes and organising a PHP site</h1>
+<p>As a site grows, copying the same header onto 10 pages, or the same price calculation into 5 files, becomes a nightmare. <strong>Functions</strong> and <strong>includes</strong> let you write things once.</p>
+<h2>Writing functions</h2>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+function withVat(float $amount, float $rate = 16): float {
+    return round($amount * (1 + $rate / 100), 2);
+}
+
+function formatKsh(float $amount): string {
+    return &quot;KSh &quot; . number_format($amount, 2);
+}
+
+echo formatKsh(withVat(1000)), &quot;\n&quot;;       // KSh 1,160.00
+echo formatKsh(withVat(1000, 0)), &quot;\n&quot;;    // KSh 1,000.00
+echo formatKsh(withVat(amount: 2500)), &quot;\n&quot;; // named argument (PHP 8)</code></pre></figure>
+<ul><li>Type hints (<code>float</code>, <code>string</code>) and return types (<code>: float</code>) catch mistakes early.</li><li>Default values (<code>$rate = 16</code>) make arguments optional.</li><li><strong>Named arguments</strong> (PHP 8) make calls readable.</li></ul>
+<h2>Variable scope</h2>
+<p>Variables inside a function are <strong>local</strong>. Pass what the function needs as arguments:</p>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$shop = &quot;Duka Bora&quot;;
+
+function receiptTitle(string $shopName): string {
+    // echo $shop;  // would be undefined here
+    return strtoupper($shopName) . &quot; - RECEIPT&quot;;
+}
+echo receiptTitle($shop), &quot;\n&quot;;
+
+// Arrow functions (PHP 7.4+) automatically see outer variables
+$vatRate = 16;
+$addVat = fn($x) =&gt; $x * (1 + $vatRate / 100);
+echo $addVat(500), &quot;\n&quot;;
+
+// Functions as values: great with array functions
+$prices = [180, 350, 60];
+$withVat = array_map($addVat, $prices);
+$cheap = array_filter($prices, fn($p) =&gt; $p &lt; 200);
+print_r($withVat);
+print_r($cheap);
+echo array_sum($prices), &quot;\n&quot;;</code></pre></figure>
+<h2>Useful built-in functions</h2>
+<div class="static-table"><table><thead><tr><th>Area</th><th>Functions</th></tr></thead><tbody><tr><td>Strings</td><td><code>strlen</code>, <code>strtoupper</code>, <code>ucwords</code>, <code>trim</code>, <code>str_replace</code>, <code>str_contains</code>, <code>explode</code>, <code>implode</code>, <code>sprintf</code></td></tr><tr><td>Numbers</td><td><code>round</code>, <code>number_format</code>, <code>intdiv</code>, <code>max</code>, <code>min</code>, <code>random_int</code></td></tr><tr><td>Arrays</td><td><code>count</code>, <code>in_array</code>, <code>array_map</code>, <code>array_filter</code>, <code>array_sum</code>, <code>sort</code>, <code>usort</code>, <code>array_column</code></td></tr><tr><td>Dates</td><td><code>date(&#x27;Y-m-d&#x27;)</code>, <code>strtotime(&#x27;+30 days&#x27;)</code></td></tr><tr><td>Safety</td><td><code>htmlspecialchars</code>, <code>password_hash</code>, <code>password_verify</code>, <code>filter_var</code></td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+echo sprintf(&quot;%-10s %8s\n&quot;, &quot;Item&quot;, &quot;Price&quot;);
+echo sprintf(&quot;%-10s %8s\n&quot;, &quot;Sugar&quot;, number_format(160));
+echo date(&quot;d/m/Y&quot;, strtotime(&quot;2026-09-01 +30 days&quot;)), &quot;\n&quot;;
+echo ucwords(&quot;amina hassan&quot;), &quot;\n&quot;;
+var_dump(filter_var(&quot;amina@example.com&quot;, FILTER_VALIDATE_EMAIL) !== false);</code></pre></figure>
+<h2>include and require: reuse whole files</h2>
+<p>Split a site into parts:</p>
+<figure class="static-code"><pre><code>site/
+├── includes/
+│   ├── config.php      (settings, database connection)
+│   ├── functions.php   (your helper functions)
+│   ├── header.php      (the top of every page: &lt;head&gt;, menu)
+│   └── footer.php      (the bottom of every page)
+├── index.php
+├── about.php
+└── contact.php</code></pre></figure>
+<p><strong>includes/header.php</strong></p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;utf-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+  &lt;title&gt;&lt;?= htmlspecialchars($pageTitle ?? &#x27;Duka Bora&#x27;) ?&gt;&lt;/title&gt;
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;/css/style.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;nav&gt;&lt;a href=&quot;/&quot;&gt;Home&lt;/a&gt; &lt;a href=&quot;/about.php&quot;&gt;About&lt;/a&gt; &lt;a href=&quot;/contact.php&quot;&gt;Contact&lt;/a&gt;&lt;/nav&gt;</code></pre></figure>
+<p><strong>about.php</strong></p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+require_once __DIR__ . &#x27;/includes/functions.php&#x27;;
+$pageTitle = &#x27;About us | Duka Bora&#x27;;
+require __DIR__ . &#x27;/includes/header.php&#x27;;
+?&gt;
+&lt;main&gt;
+  &lt;h1&gt;About Duka Bora&lt;/h1&gt;
+  &lt;p&gt;Serving Thika since 2015.&lt;/p&gt;
+&lt;/main&gt;
+&lt;?php require __DIR__ . &#x27;/includes/footer.php&#x27;; ?&gt;</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Statement</th><th>If the file is missing</th><th>Loads twice?</th></tr></thead><tbody><tr><td><code>include</code></td><td>Warning, page continues</td><td>Yes</td></tr><tr><td><code>require</code></td><td>Fatal error, page stops</td><td>Yes</td></tr><tr><td><code>include_once</code> / <code>require_once</code></td><td>as above</td><td>No, only once</td></tr></tbody></table></div>
+<p>Use <code>require_once</code> for config and functions (they must exist and must load once), and <code>require</code> for templates like the header.</p>
+<blockquote><p><code>__DIR__</code> is the folder of the current file. Using it makes paths work no matter which page includes the file.</p></blockquote>
+<h2>Keep secrets out of the web folder</h2>
+<p>Put database passwords and API keys in a config file <strong>outside</strong> <code>public_html</code> (or protect it), and never commit it to Git:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">$config = require dirname(__DIR__) . &#x27;/private/config.php&#x27;;</code></pre></figure>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which statement stops the page with a fatal error if the file is missing?</p><details><summary>Show answer</summary><p>require</p></details></li><li><p>Which version loads a file only once even if called twice?</p><details><summary>Show answer</summary><p>require_once</p></details></li><li><p>Which constant gives the folder of the current PHP file?</p><details><summary>Show answer</summary><p>__DIR__</p></details></li><li><p>Which function formats 1500 as 1,500.00 when given 2 decimals?</p><details><summary>Show answer</summary><p>number_format</p></details></li><li><p>What does fn($x) =&gt; $x * 2 create? (two words)</p><details><summary>Show answer</summary><p>arrow function</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 13 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/arrays-loops/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Arrays, conditions and loops</a><a class="btn btn-solid btn-sm" href="/learn/php/oop-classes/">Object-oriented PHP: classes, interfaces and namespaces <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

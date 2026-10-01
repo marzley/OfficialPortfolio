@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Level 4: Build a classifier: nearest neighbours and a…</title>
+    <meta name="description" content="Classification means putting things into categories: spam or not, healthy or diseased leaf, loan likely repaid or not. You&#x27;ll build two real…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/artificial-intelligence/build-a-classifier/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Level 4: Build a classifier: nearest neighbours and a…" />
+    <meta property="og:description" content="Classification means putting things into categories: spam or not, healthy or diseased leaf, loan likely repaid or not. You&#x27;ll build two real…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/artificial-intelligence/build-a-classifier/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Level 4: Build a classifier: nearest neighbours and a…" />
+    <meta name="twitter:description" content="Classification means putting things into categories: spam or not, healthy or diseased leaf, loan likely repaid or not. You&#x27;ll build two real…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/build-a-classifier/#lesson","name":"Level 4: Build a classifier: nearest neighbours and a spam filter","description":"Classification means putting things into categories: spam or not, healthy or diseased leaf, loan likely repaid or not. You'll build two real…","url":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/build-a-classifier/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/#course","name":"Artificial intelligence (AI): from zero to pro","url":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Artificial intelligence (AI): from zero to pro","item":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/"},{"@type":"ListItem","position":4,"name":"Level 4: Build a classifier: nearest neighbours and a spam filter","item":"https://marzleytechsolutions.co.ke/learn/artificial-intelligence/build-a-classifier/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=a64a06bd78" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=48223b56a6" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/artificial-intelligence/">Artificial intelligence (AI): from zero to pro</a> / <span>Level 4: Build a classifier: nearest neighbours and a spam filter</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=artificial-intelligence&amp;lesson=build-a-classifier"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Level 4: Build a classifier: nearest neighbours and a spam filter</h1>
+<p><strong>Classification</strong> means putting things into categories: spam or not, healthy or diseased leaf, loan likely repaid or not. You'll build two real classifiers from scratch in pure Python.</p>
+<h2>Classifier 1: k-nearest neighbours (k-NN)</h2>
+<p>The idea is beautifully simple: <strong>to classify something new, look at the most similar examples you've seen, and go with the majority.</strong></p>
+<p>Example: a SACCO wants to predict whether a loan applicant will repay on time, using two features: <strong>monthly income</strong> (thousands of KSh) and <strong>number of loans already running</strong>.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import math
+
+# (income in thousands, active loans) -&gt; repaid on time?
+history = [
+    ((45, 0), &quot;repaid&quot;), ((60, 1), &quot;repaid&quot;), ((38, 1), &quot;repaid&quot;), ((80, 2), &quot;repaid&quot;),
+    ((25, 3), &quot;late&quot;), ((30, 2), &quot;late&quot;), ((18, 1), &quot;late&quot;), ((22, 4), &quot;late&quot;),
+    ((55, 3), &quot;repaid&quot;), ((28, 0), &quot;repaid&quot;), ((20, 2), &quot;late&quot;), ((70, 0), &quot;repaid&quot;),
+]
+
+def distance(p, q):
+    # straight-line distance; loans count more, so we scale them up
+    return math.sqrt((p[0] - q[0]) ** 2 + ((p[1] - q[1]) * 10) ** 2)
+
+def knn(new, k=3):
+    nearest = sorted(history, key=lambda item: distance(new, item[0]))[:k]
+    votes = {}
+    for _, label in nearest:
+        votes[label] = votes.get(label, 0) + 1
+    return max(votes, key=votes.get), nearest
+
+for applicant in [(50, 1), (24, 3), (35, 2)]:
+    label, nearest = knn(applicant)
+    print(f&quot;Applicant {applicant}: predicted {label}  (neighbours: {[n[1] for n in nearest]})&quot;)</code></pre></figure>
+<p>Things to notice:</p>
+<ul><li><strong>Features need scaling</strong>: income is in tens, loans are 0 to 4, so we multiplied loans by 10. Without scaling, one feature can drown the other.</li><li><strong>k matters</strong>: k=1 follows single odd examples (overfitting); a large k ignores local detail.</li><li><strong>Fairness matters</strong>: real lending models must avoid unfair features (like tribe, gender or religion) and are regulated. A model learns whatever bias is in its data.</li></ul>
+<h2>Classifier 2: a Naive Bayes spam filter</h2>
+<p>This is the method behind early email spam filters, and still a great baseline. It learns <strong>how often each word appears in spam vs normal messages</strong>, then combines the evidence.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import math
+from collections import Counter
+
+training = [
+    (&quot;Congratulations you have won KSh 100000 send fee to claim&quot;, &quot;spam&quot;),
+    (&quot;Your account will be blocked click this link now&quot;, &quot;spam&quot;),
+    (&quot;Win free airtime today reply YES now&quot;, &quot;spam&quot;),
+    (&quot;Send 500 to receive your prize money&quot;, &quot;spam&quot;),
+    (&quot;Hi, are we still meeting at 4pm&quot;, &quot;ham&quot;),
+    (&quot;Please send the report before Friday&quot;, &quot;ham&quot;),
+    (&quot;Mum says dinner is at 7&quot;, &quot;ham&quot;),
+    (&quot;Your order has been delivered thank you&quot;, &quot;ham&quot;),
+]
+
+def words(text):
+    return [w.strip(&quot;.,!?&quot;).lower() for w in text.split()]
+
+counts = {&quot;spam&quot;: Counter(), &quot;ham&quot;: Counter()}
+docs = Counter()
+for text, label in training:
+    counts[label].update(words(text))
+    docs[label] += 1
+vocab = set(counts[&quot;spam&quot;]) | set(counts[&quot;ham&quot;])
+
+def score(text, label):
+    total = sum(counts[label].values())
+    s = math.log(docs[label] / sum(docs.values()))          # how common the class is
+    for w in words(text):
+        s += math.log((counts[label][w] + 1) / (total + len(vocab)))   # +1 so unseen words aren&#x27;t zero
+    return s
+
+def classify(text):
+    return max([&quot;spam&quot;, &quot;ham&quot;], key=lambda label: score(text, label))
+
+tests = [&quot;Click now to claim your free prize&quot;, &quot;Can you send the invoice today&quot;, &quot;You have won airtime send fee&quot;]
+for t in tests:
+    print(f&quot;{classify(t):&gt;4}  &lt;- {t}&quot;)</code></pre></figure>
+<p>How it works:</p>
+<ul><li>It estimates the probability of each word in spam and in normal ("ham") messages.</li><li>For a new message, it multiplies the word probabilities (adding logs is the same, but avoids tiny numbers).</li><li><code>+1</code> (<strong>Laplace smoothing</strong>) stops a single unseen word from making a probability zero.</li></ul>
+<h2>Measuring a classifier properly</h2>
+<p><strong>Accuracy</strong> (percentage correct) can mislead. If only 2% of transactions are fraud, a model that always says "OK" is 98% accurate and completely useless. Professionals also measure:</p>
+<div class="static-table"><table><thead><tr><th>Measure</th><th>Question it answers</th></tr></thead><tbody><tr><td><strong>Precision</strong></td><td>Of the messages we flagged as spam, how many really were spam?</td></tr><tr><td><strong>Recall</strong></td><td>Of all the real spam, how much did we catch?</td></tr><tr><td><strong>Confusion matrix</strong></td><td>A table of correct and wrong predictions for each class</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">actual    = [&quot;spam&quot;, &quot;spam&quot;, &quot;ham&quot;, &quot;ham&quot;, &quot;spam&quot;, &quot;ham&quot;, &quot;ham&quot;, &quot;spam&quot;]
+predicted = [&quot;spam&quot;, &quot;ham&quot;,  &quot;ham&quot;, &quot;spam&quot;, &quot;spam&quot;, &quot;ham&quot;, &quot;ham&quot;, &quot;spam&quot;]
+
+tp = sum(a == p == &quot;spam&quot; for a, p in zip(actual, predicted))
+fp = sum(a == &quot;ham&quot; and p == &quot;spam&quot; for a, p in zip(actual, predicted))
+fn = sum(a == &quot;spam&quot; and p == &quot;ham&quot; for a, p in zip(actual, predicted))
+tn = sum(a == p == &quot;ham&quot; for a, p in zip(actual, predicted))
+
+print(f&quot;Accuracy:  {(tp + tn) / len(actual):.0%}&quot;)
+print(f&quot;Precision: {tp / (tp + fp):.0%}&quot;)
+print(f&quot;Recall:    {tp / (tp + fn):.0%}&quot;)
+print(f&quot;Confusion: TP={tp} FP={fp} FN={fn} TN={tn}&quot;)</code></pre></figure>
+<h2>In real projects</h2>
+<p>Professionals use libraries instead of writing these by hand: <strong>scikit-learn</strong> (k-NN, Naive Bayes, decision trees, random forests), <strong>pandas</strong> for data, and <strong>Jupyter</strong> or <strong>Google Colab</strong> notebooks (free, in the browser) to experiment. Writing them once yourself means you'll understand what those libraries do.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>k-NN classifies something new by looking at its most similar ...?</p><details><summary>Show answer</summary><p>neighbours</p></details></li><li><p>Which value of k makes k-NN follow single odd examples (overfitting)?</p><details><summary>Show answer</summary><p>1</p></details></li><li><p>In Naive Bayes, adding 1 to every word count is called Laplace ...?</p><details><summary>Show answer</summary><p>smoothing</p></details></li><li><p>Of everything we flagged as spam, the share that really was spam is called?</p><details><summary>Show answer</summary><p>precision</p></details></li><li><p>Of all real spam, the share we caught is called?</p><details><summary>Show answer</summary><p>recall</p></details></li><li><p>Which free browser tool runs Python notebooks for machine learning?</p><details><summary>Show answer</summary><p>Google Colab</p></details></li></ol></section></div><p class="static-meta">Lesson 12 of 17 in <a href="/learn/artificial-intelligence/">Artificial intelligence (AI): from zero to pro</a> · <a href="/learn/?book=artificial-intelligence">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/artificial-intelligence/how-machine-learning-works/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Level 4: How machine learning works (with code you can run)</a><a class="btn btn-solid btn-sm" href="/learn/artificial-intelligence/neural-networks-explained/">Level 4: Neural networks explained (and one you can train) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>
