@@ -16,6 +16,9 @@ Each file looks like this (everything after the header is the lesson body):
     === must_contain ===
     <strong>
 
+A new subject is a new folder with a _track.md file (title, lang and summary in the same
+--- header); it is added after the existing subjects.
+
 "after" is the lesson it follows in the subject, or START to come first (files are merged
 in name order, so a new lesson can follow another new one; without "after" it goes last). Running the script again replaces the lessons
 it added before, and the seed "version" changes whenever the content does, so the
@@ -55,8 +58,17 @@ def main():
     tracks = {t["slug"]: t for t in seed["tracks"]}
     added = 0
     for folder in sorted(p for p in SRC.iterdir() if p.is_dir()):
+        meta = folder / "_track.md"
+        if meta.exists():
+            head = dict(re.findall(r"^(\w+):\s*(.*)$", meta.read_text(encoding="utf-8").split("---")[1], re.M))
+            if folder.name not in tracks:
+                tracks[folder.name] = {"slug": folder.name, "lessons": []}
+                seed["tracks"].append(tracks[folder.name])
+            tracks[folder.name].update(title=head["title"], lang=head.get("lang", "none"), summary=head["summary"])
+        if folder.name not in tracks:
+            continue                       # an empty folder for a subject not written yet
         track = tracks[folder.name]
-        for path in sorted(folder.glob("*.md")):
+        for path in sorted(folder.glob("[!_]*.md")):
             after, lesson = parse(path)
             track["lessons"] = [l for l in track["lessons"] if l["slug"] != lesson["slug"]]
             slugs = [l["slug"] for l in track["lessons"]]

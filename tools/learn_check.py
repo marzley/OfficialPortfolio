@@ -1,8 +1,12 @@
 """Check the lessons in content/learn: headers, quiz blocks, and that every runnable example works.
 
 Runs each ```try-python / try-javascript / try-sql / try-c / try-cpp / try-java / try-go / try-php
-block with the matching local tool (python3, node, sqlite3 via Python, gcc, g++, javac, go, php)
-and reports failures. Browser-only JavaScript (DOM, fetch, localStorage...) and HTML are skipped.
+/ try-kotlin block with the matching local tool (python3, node, sqlite3 via Python, gcc, g++, javac,
+go, php, kotlinc) and reports failures. Browser-only JavaScript (DOM, fetch, localStorage...) and
+HTML are skipped. Examples learners copy elsewhere are checked too: ```dart programs run with
+`dart`, Flutter screens go through `flutter analyze`, ```kotlin programs with fun main run with
+kotlinc, and ```jsx / try-react must at least parse (esbuild). Point KOTLIN_HOME, DART_SDK,
+FLUTTER_ROOT and ESBUILD at the tools if they aren't on the PATH; missing tools are skipped.
 
     python3 tools/learn_check.py            # all lessons
     python3 tools/learn_check.py python     # one subject
@@ -30,7 +34,51 @@ def run(cmd, cwd, stdin=""):
     return p.returncode, (p.stdout + p.stderr).strip()
 
 
+def tool(env, name, sub):
+    base = os.environ.get(env)
+    if base and Path(base, sub).exists():
+        return str(Path(base, sub))
+    return shutil.which(name)
+
+
+KOTLINC = tool("KOTLIN_HOME", "kotlinc", "bin/kotlinc")
+DART = tool("DART_SDK", "dart", "bin/dart")
+FLUTTER = tool("FLUTTER_ROOT", "flutter", "bin/flutter")
+ESBUILD = os.environ.get("ESBUILD") or shutil.which("esbuild")
+FLUTTER_APP = Path(tempfile.gettempdir(), "learn-check-flutter")
+FLUTTER_PACKAGES = ["http", "provider", "shared_preferences", "sqflite", "path", "intl", "url_launcher", "image_picker",
+                    "go_router", "geolocator", "firebase_core", "firebase_auth", "cloud_firestore", "flutter_riverpod", "share_plus"]
+
+
+def flutter_app():
+    """A throwaway Flutter project (made once) whose lib/main.dart each example is analysed as."""
+    if not (FLUTTER_APP / "pubspec.lock").exists() or not all(p + ":" in (FLUTTER_APP / "pubspec.yaml").read_text() for p in FLUTTER_PACKAGES):
+        shutil.rmtree(FLUTTER_APP, ignore_errors=True)
+        subprocess.run([FLUTTER, "create", "--empty", "--project-name", "check_app", str(FLUTTER_APP)], capture_output=True, text=True, check=True)
+        subprocess.run([FLUTTER, "pub", "add"] + FLUTTER_PACKAGES, cwd=FLUTTER_APP, capture_output=True, text=True, check=True)
+    return FLUTTER_APP
+
+
 def run_block(lang, code, tmp):
+    if lang == "kotlin":
+        if "fun main" not in code or re.search(r"^import (android|androidx|kotlinx|retrofit2|okhttp3)\.", code, re.M):
+            return None                      # an Android screen: needs Android Studio, not checked here
+        Path(tmp, "main.kt").write_text(code)
+        rc, out = run([KOTLINC, "main.kt", "-include-runtime", "-nowarn", "-d", "main.jar"], tmp)
+        return (rc, out) if rc else run(["java", "-jar", "main.jar"], tmp)
+    if lang == "dart":
+        if re.search(r"^import 'package:", code, re.M):     # Flutter or packages: analyse it inside a Flutter project
+            app = flutter_app()
+            (app / "lib" / "main.dart").write_text(code)
+            rc, out = run([FLUTTER, "analyze", "--no-pub", "--no-fatal-infos", "--no-fatal-warnings", "lib/main.dart"], app)
+            return rc, out
+        if "void main" not in code and "Future<void> main" not in code:
+            return None                      # a fragment
+        Path(tmp, "main.dart").write_text(code)
+        return run([DART, "run", "main.dart"], tmp)
+    if lang in ("jsx", "react", "tsx"):
+        p = subprocess.run([ESBUILD, "--loader=" + ("tsx" if lang == "tsx" else "jsx"), "--log-level=error"], input=code, capture_output=True, text=True, timeout=60)
+        return p.returncode, p.stderr.strip()
     if lang == "python":
         return run([sys.executable, "-c", code], tmp, stdin="test\n" * 5)
     if lang == "javascript":
@@ -131,8 +179,9 @@ def main():
     verbose = "-v" in sys.argv
     only = [a for a in sys.argv[1:] if not a.startswith("-")]
     have = {t: shutil.which(t) for t in ("node", "gcc", "g++", "javac", "go", "php")}
+    have.update(kotlinc=KOTLINC, dart=DART, esbuild=ESBUILD)
     fails, ran, skipped = [], 0, 0
-    for path in sorted(SRC.glob("*/*.md")):
+    for path in sorted(SRC.glob("*/[!_]*.md")):
         if only and path.parent.name not in only:
             continue
         text = path.read_text(encoding="utf-8")
@@ -144,11 +193,12 @@ def main():
             if lang == "quiz":
                 fails += check_quiz(code, where)
                 continue
-            if not lang.startswith("try-"):
+            if not lang.startswith("try-") and lang not in ("dart", "kotlin", "jsx", "tsx"):
                 continue
-            lang = lang[4:]
-            tool = {"javascript": "node", "typescript": "node", "c": "gcc", "cpp": "g++", "java": "javac", "go": "go", "php": "php"}.get(lang)
-            if tool and not have[tool]:
+            lang = lang[4:] if lang.startswith("try-") else lang
+            need = {"javascript": "node", "typescript": "node", "c": "gcc", "cpp": "g++", "java": "javac", "go": "go", "php": "php",
+                    "kotlin": "kotlinc", "dart": "dart", "jsx": "esbuild", "tsx": "esbuild", "react": "esbuild"}.get(lang)
+            if need and not have[need] or (lang == "dart" and "import 'package:" in code and not FLUTTER):
                 skipped += 1
                 continue
             with tempfile.TemporaryDirectory() as tmp:

@@ -719,7 +719,7 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   ok("backup written", files.some((f) => /^portal-db-.*\.sql\.gz$/.test(f)), out);
   const offsite = fs.existsSync(WORK + "/fake/s3/test-bucket/portal") ? fs.readdirSync(WORK + "/fake/s3/test-bucket/portal") : [];
   ok("backup copied off-site with a valid signature", offsite.some((f) => /\.sql\.gz$/.test(f)), out);
-  const dump = execFileSync("sh", ["-c", `zcat ${WORK}/backups/${files.find((f) => /\.sql\.gz$/.test(f))}`]).toString();
+  const dump = execFileSync("sh", ["-c", `zcat ${WORK}/backups/${files.find((f) => /\.sql\.gz$/.test(f))}`], { maxBuffer: 256 * 1024 * 1024 }).toString();   // the lessons make the dump over 1 MB
   fs.writeFileSync(WORK + "/restore.sql", dump);
   execFileSync("php", ["-r", `$p=new PDO("sqlite:${WORK}/restore.db");$p->exec(file_get_contents("${WORK}/restore.sql"));`]);
   const restored = JSON.parse(execFileSync("php", [__dirname + "/sq.php", WORK + "/restore.db", "sel", "SELECT COUNT(*) AS n FROM payments"]).toString())[0].n;

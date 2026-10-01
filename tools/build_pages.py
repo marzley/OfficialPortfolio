@@ -390,8 +390,6 @@ def build_post(html, post, posts, kind="blog"):
         'with a live code editor. No account needed.</p>\n'
         '                        <a class="btn btn-ghost" href="learn/">Start learning free <span aria-hidden="true">→</span></a>\n'
         '                    </aside>\n'
-        '                    <a class="guide-link" href="user-guide" data-guide="1"><i class="fa-solid fa-book-open" aria-hidden="true"></i> '
-        'User guide: preview &amp; download (PDF)</a>\n'
         '                </article>\n'
         '{more}'
         '            </div>\n'
