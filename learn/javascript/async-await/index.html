@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Promises and async/await | JavaScript</title>
-    <meta name="description" content="Some things take time: loading data, waiting for a payment, a timer. JavaScript doesn&#x27;t stop and wait; it uses promises . - async functions can use…" />
+    <title>Promises and async/await: handling things that take time</title>
+    <meta name="description" content="Some tasks take time: loading data from a server, waiting for an M-Pesa payment confirmation, reading a file, a countdown timer. JavaScript can&#x27;t…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/javascript/async-await/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Promises and async/await | JavaScript" />
-    <meta property="og:description" content="Some things take time: loading data, waiting for a payment, a timer. JavaScript doesn&#x27;t stop and wait; it uses promises . - async functions can use…" />
+    <meta property="og:title" content="Promises and async/await: handling things that take time" />
+    <meta property="og:description" content="Some tasks take time: loading data from a server, waiting for an M-Pesa payment confirmation, reading a file, a countdown timer. JavaScript can&#x27;t…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/javascript/async-await/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Promises and async/await | JavaScript" />
-    <meta name="twitter:description" content="Some things take time: loading data, waiting for a payment, a timer. JavaScript doesn&#x27;t stop and wait; it uses promises . - async functions can use…" />
+    <meta name="twitter:title" content="Promises and async/await: handling things that take time" />
+    <meta name="twitter:description" content="Some tasks take time: loading data from a server, waiting for an M-Pesa payment confirmation, reading a file, a countdown timer. JavaScript can&#x27;t…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/javascript/async-await/#lesson","name":"Promises and async/await","description":"Some things take time: loading data, waiting for a payment, a timer. JavaScript doesn't stop and wait; it uses promises . - async functions can use…","url":"https://marzleytechsolutions.co.ke/learn/javascript/async-await/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/javascript/#course","name":"JavaScript","url":"https://marzleytechsolutions.co.ke/learn/javascript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/"},{"@type":"ListItem","position":4,"name":"Promises and async/await","item":"https://marzleytechsolutions.co.ke/learn/javascript/async-await/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/javascript/async-await/#lesson","name":"Promises and async/await: handling things that take time","description":"Some tasks take time: loading data from a server, waiting for an M-Pesa payment confirmation, reading a file, a countdown timer. JavaScript can't…","url":"https://marzleytechsolutions.co.ke/learn/javascript/async-await/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/javascript/#course","name":"JavaScript","url":"https://marzleytechsolutions.co.ke/learn/javascript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/"},{"@type":"ListItem","position":4,"name":"Promises and async/await: handling things that take time","item":"https://marzleytechsolutions.co.ke/learn/javascript/async-await/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,50 +36,171 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/javascript/">JavaScript</a> / <span>Promises and async/await</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=async-await"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Promises and async/await</h1>
-<p>Some things take time: loading data, waiting for a payment, a timer. JavaScript doesn't stop and wait; it uses <strong>promises</strong>.</p>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/javascript/">JavaScript</a> / <span>Promises and async/await: handling things that take time</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=async-await"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Promises and async/await: handling things that take time</h1>
+<p>Some tasks take time: loading data from a server, waiting for an M-Pesa payment confirmation, reading a file, a countdown timer. JavaScript can't freeze the page while waiting, or users couldn't tap or scroll. Instead it uses <strong>asynchronous</strong> code: start the task, keep the page responsive, and handle the result when it arrives. This unit explains callbacks, <strong>Promises</strong> and <strong>async/await</strong> from the ground up, with runnable examples.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Synchronous vs asynchronous code and the event loop (simply)</li><li>Callbacks and <code>setTimeout</code></li><li>Promises: pending, fulfilled, rejected; <code>.then</code>, <code>.catch</code>, <code>.finally</code></li><li>Creating your own Promise</li><li><code>async</code> functions and <code>await</code></li><li>Error handling with <code>try...catch</code></li><li>Running tasks in sequence vs in parallel (<code>Promise.all</code>, <code>allSettled</code>, <code>race</code>)</li><li>Timeouts, retries and polling (like checking a payment status)</li></ul></div></aside>
+<h2>Synchronous vs asynchronous</h2>
+<p><strong>Synchronous</strong> code runs line by line; each line waits for the previous one.</p>
+<p><strong>Asynchronous</strong> code starts a task and moves on; the result is handled later.</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">console.log(&quot;1. Order placed&quot;);
+setTimeout(() =&gt; console.log(&quot;3. Payment confirmed (after 1 second)&quot;), 1000);
+console.log(&quot;2. Showing &#x27;waiting for payment&#x27; message&quot;);</code></pre></figure>
+<p>The output order is 1, 2, 3: <code>setTimeout</code> schedules the function for later, and JavaScript continues immediately.</p>
+<h3>The event loop, simply</h3>
+<p>JavaScript runs on <strong>one thread</strong> (one thing at a time). Slow tasks (timers, network requests) are handed to the browser or Node.js. When they finish, their callbacks wait in a <strong>queue</strong>, and the <strong>event loop</strong> runs them when the main code is free. That's why a long loop that never ends freezes everything: the queue never gets a turn.</p>
+<h2>Callbacks</h2>
+<p>The original way: pass a function to be called when the task finishes.</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">function loadUser(id, callback) {
+  setTimeout(() =&gt; callback({ id, name: &quot;Achieng&quot; }), 300);
+}
+
+loadUser(7, (user) =&gt; {
+  console.log(&quot;Loaded&quot;, user.name);
+});</code></pre></figure>
+<p>Nested callbacks for steps that depend on each other become hard to read ("callback hell"):</p>
+<figure class="static-code"><pre><code>loadUser(7, (user) =&gt; {
+  loadOrders(user.id, (orders) =&gt; {
+    loadPayment(orders[0].id, (payment) =&gt; {
+      // deeper and deeper...
+    });
+  });
+});</code></pre></figure>
+<p>Promises solve this.</p>
+<h2>Promises</h2>
+<aside class="callout callout-define"><p class="callout-title">Promise</p><div class="callout-body"><p>An object representing a value that will be available <strong>later</strong> (or an error). A promise is <strong>pending</strong> at first, then becomes <strong>fulfilled</strong> (success, with a value) or <strong>rejected</strong> (failure, with an error).</p></div></aside>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">function checkPayment(code) {
+  return new Promise((resolve, reject) =&gt; {
+    setTimeout(() =&gt; {
+      if (code === 0) resolve({ receipt: &quot;SJ12ABC3DE&quot;, amount: 1500 });
+      else reject(new Error(&quot;Payment failed with code &quot; + code));
+    }, 400);
+  });
+}
+
+checkPayment(0)
+  .then((result) =&gt; console.log(&quot;Paid! Receipt:&quot;, result.receipt))
+  .catch((err) =&gt; console.log(&quot;Error:&quot;, err.message))
+  .finally(() =&gt; console.log(&quot;Hide the spinner&quot;));
+
+checkPayment(1032)
+  .then((result) =&gt; console.log(&quot;Paid!&quot;, result))
+  .catch((err) =&gt; console.log(&quot;Error:&quot;, err.message));</code></pre></figure>
+<ul><li><code>resolve(value)</code> fulfils the promise; <code>reject(error)</code> rejects it.</li><li><code>.then()</code> runs on success, <code>.catch()</code> on failure, <code>.finally()</code> either way.</li><li><code>.then()</code> returns a new promise, so you can <strong>chain</strong> steps.</li></ul>
+<h2><code>async</code> and <code>await</code></h2>
+<p><code>async/await</code> lets you write asynchronous code that <strong>reads like normal code</strong>:</p>
 <figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">function wait(ms) {
-  return new Promise(resolve =&gt; setTimeout(resolve, ms));
+  return new Promise((resolve) =&gt; setTimeout(resolve, ms));
 }
 
-async function checkout() {
-  console.log(&quot;Sending M-Pesa prompt…&quot;);
-  await wait(500);
-  console.log(&quot;Waiting for PIN…&quot;);
-  await wait(500);
-  console.log(&quot;Paid!&quot;);
-}
-checkout();
-console.log(&quot;This line runs first!&quot;);</code></pre></figure>
-<ul><li><code>async</code> functions can use <code>await</code>, which pauses <em>that function</em> until the promise finishes.</li><li>Everything else keeps running (that's why the last line printed first).</li></ul>
-<h2>Handling errors</h2>
-<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">async function getPrice(ok) {
-  if (!ok) throw new Error(&quot;Item not found&quot;);
-  return 1200;
+function getUser(id) { return wait(200).then(() =&gt; ({ id, name: &quot;Brian&quot; })); }
+function getOrders(userId) { return wait(200).then(() =&gt; [{ id: 91, total: 2400 }, { id: 92, total: 650 }]); }
+
+async function showDashboard() {
+  console.log(&quot;Loading...&quot;);
+  const user = await getUser(7);            // waits here without freezing the page
+  const orders = await getOrders(user.id);
+  const total = orders.reduce((sum, o) =&gt; sum + o.total, 0);
+  console.log(`${user.name} has ${orders.length} orders worth KSh ${total}`);
+  return total;
 }
 
-async function main() {
+showDashboard().then((t) =&gt; console.log(&quot;Returned:&quot;, t));</code></pre></figure>
+<p>Rules:</p>
+<ul><li><code>await</code> can only be used inside an <code>async</code> function (or at the top level of a module).</li><li>An <code>async</code> function <strong>always returns a promise</strong>.</li><li><code>await promise</code> pauses <strong>that function</strong> until the promise settles, while the rest of the page keeps working.</li></ul>
+<h2>Error handling with <code>try...catch</code></h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">function fakeRequest(ok) {
+  return new Promise((resolve, reject) =&gt;
+    setTimeout(() =&gt; (ok ? resolve(&quot;Data loaded&quot;) : reject(new Error(&quot;Network error&quot;))), 200));
+}
+
+async function load(ok) {
   try {
-    console.log(await getPrice(true));
-    console.log(await getPrice(false));
-  } catch (e) {
-    console.log(&quot;Error:&quot;, e.message);
+    const data = await fakeRequest(ok);
+    console.log(&quot;Success:&quot;, data);
+  } catch (err) {
+    console.log(&quot;Could not load:&quot;, err.message, &quot;→ show a &#x27;Try again&#x27; button&quot;);
+  } finally {
+    console.log(&quot;Done (hide loading spinner)&quot;);
   }
 }
-main();</code></pre></figure>
-<p>With fetch:</p>
-<figure class="static-code"><figcaption>JS</figcaption><pre><code class="language-js">async function loadProducts() {
-  try {
-    const res = await fetch(&quot;/api/products&quot;);
-    if (!res.ok) throw new Error(&quot;Server said &quot; + res.status);
-    const products = await res.json();
-    console.log(products);
-  } catch (e) {
-    console.log(&quot;Could not load:&quot;, e.message);
+
+load(true).then(() =&gt; load(false));</code></pre></figure>
+<p>Unhandled promise rejections cause console errors and can crash Node.js programs, so always catch errors.</p>
+<h2>Sequence vs parallel</h2>
+<p>If tasks <strong>depend</strong> on each other, await them one after another. If they're <strong>independent</strong>, start them together with <code>Promise.all</code>, which is much faster.</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const wait = (ms, value) =&gt; new Promise((r) =&gt; setTimeout(() =&gt; r(value), ms));
+
+async function sequential() {
+  const t = Date.now();
+  const a = await wait(300, &quot;products&quot;);
+  const b = await wait(300, &quot;categories&quot;);
+  const c = await wait(300, &quot;offers&quot;);
+  console.log(&quot;Sequential:&quot;, [a, b, c].join(&quot;, &quot;), &quot;in about&quot;, Math.round((Date.now() - t) / 100) * 100, &quot;ms&quot;);
+}
+
+async function parallel() {
+  const t = Date.now();
+  const [a, b, c] = await Promise.all([wait(300, &quot;products&quot;), wait(300, &quot;categories&quot;), wait(300, &quot;offers&quot;)]);
+  console.log(&quot;Parallel:&quot;, [a, b, c].join(&quot;, &quot;), &quot;in about&quot;, Math.round((Date.now() - t) / 100) * 100, &quot;ms&quot;);
+}
+
+sequential().then(parallel);</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Method</th><th>Behaviour</th></tr></thead><tbody><tr><td><code>Promise.all([...])</code></td><td>Waits for all; <strong>rejects as soon as one fails</strong></td></tr><tr><td><code>Promise.allSettled([...])</code></td><td>Waits for all; gives each result or error (none lost)</td></tr><tr><td><code>Promise.race([...])</code></td><td>Settles with the <strong>first</strong> to finish (success or failure)</td></tr><tr><td><code>Promise.any([...])</code></td><td>First <strong>successful</strong> one</td></tr></tbody></table></div>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A dashboard loads sales, stock and customer numbers from three separate API endpoints. Should it await them one by one or use Promise.all? What if the customer endpoint sometimes fails?</span><em>Show answer</em></summary><div class="callout-body"><p>They don't depend on each other, so start them together with <code>Promise.all</code> (or <code>allSettled</code>). If one may fail and you still want to show the other two, use <code>Promise.allSettled</code> and show an error only in the failed widget, instead of the whole dashboard failing.</p></div></details>
+<h2>Timeouts</h2>
+<p>Networks can hang. Race a request against a timer:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const wait = (ms) =&gt; new Promise((r) =&gt; setTimeout(r, ms));
+const slowServer = () =&gt; wait(2000).then(() =&gt; &quot;data&quot;);
+
+function withTimeout(promise, ms) {
+  const timeout = new Promise((_, reject) =&gt; setTimeout(() =&gt; reject(new Error(`Timed out after ${ms} ms`)), ms));
+  return Promise.race([promise, timeout]);
+}
+
+withTimeout(slowServer(), 500)
+  .then((d) =&gt; console.log(d))
+  .catch((e) =&gt; console.log(e.message, &quot;→ show &#x27;slow connection, try again&#x27;&quot;));</code></pre></figure>
+<p>(With real <code>fetch</code>, use <code>AbortSignal.timeout(ms)</code>.)</p>
+<h2>Polling: checking a payment status</h2>
+<p>After an M-Pesa STK push, the app often asks its own server every few seconds whether the payment has completed, stopping after success, failure or a time limit:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">let checks = 0;
+function fakeStatus() {           // simulates your backend&#x27;s /payments/status endpoint
+  checks++;
+  return Promise.resolve(checks &lt; 3 ? { status: &quot;pending&quot; } : { status: &quot;paid&quot;, receipt: &quot;SJ12ABC3DE&quot; });
+}
+const wait = (ms) =&gt; new Promise((r) =&gt; setTimeout(r, ms));
+
+async function waitForPayment({ every = 300, maxTries = 10 } = {}) {
+  for (let i = 1; i &lt;= maxTries; i++) {
+    const s = await fakeStatus();
+    console.log(`Check ${i}: ${s.status}`);
+    if (s.status === &quot;paid&quot;) return s;
+    if (s.status === &quot;failed&quot;) throw new Error(&quot;Payment failed&quot;);
+    await wait(every);
+  }
+  throw new Error(&quot;Still pending. We&#x27;ll confirm by SMS.&quot;);
+}
+
+waitForPayment()
+  .then((s) =&gt; console.log(&quot;Paid! Receipt&quot;, s.receipt))
+  .catch((e) =&gt; console.log(e.message));</code></pre></figure>
+<p>In real apps, intervals are a few seconds, and the server learns the result from Safaricom's callback (see the M-Pesa Daraja lesson).</p>
+<h2>Retries</h2>
+<figure class="static-code"><pre><code>async function retry(task, times = 3) {
+  for (let attempt = 1; attempt &lt;= times; attempt++) {
+    try { return await task(); }
+    catch (err) { if (attempt === times) throw err; await wait(500 * attempt); }
   }
 }</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword makes a function able to use await?</p><details><summary>Show answer</summary><p>async</p></details></li><li><p>Which statement catches errors from awaited code?</p><details><summary>Show answer</summary><p>try...catch</p></details></li><li><p>Does await stop all JavaScript on the page? (yes/no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 14 of 19 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/json-fetch/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> JSON and fetch</a><a class="btn btn-solid btn-sm" href="/learn/javascript/local-storage/">Saving data in the browser (localStorage) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<p>Only retry <strong>safe</strong> operations (loading data). Never blindly retry payments, or customers could be charged twice.</p>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Forgetting <code>await</code></td><td>You get a Promise object instead of the value</td></tr><tr><td><code>await</code> outside an <code>async</code> function</td><td>Make the function <code>async</code></td></tr><tr><td>No <code>try...catch</code> or <code>.catch()</code></td><td>Always handle errors</td></tr><tr><td>Awaiting independent tasks one by one</td><td><code>Promise.all</code></td></tr><tr><td>Using <code>Promise.all</code> when one failure shouldn't break everything</td><td><code>Promise.allSettled</code></td></tr><tr><td>Expecting code after <code>setTimeout</code> to wait</td><td>It doesn't; put follow-up code in the callback or <code>await</code> a promise</td></tr><tr><td>Retrying payment requests</td><td>Only retry safe operations; use idempotency on the server</td></tr></tbody></table></div>
+<h2>Practice tasks</h2>
+<ol><li>Write <code>wait(ms)</code> and use it to print a 3-2-1 countdown, one number per second.</li><li>Create a promise that resolves "In stock" or rejects "Out of stock" based on a quantity; handle both with <code>async/await</code>.</li><li>Load three fake resources with <code>Promise.all</code> and measure the time vs sequential.</li><li>Use <code>Promise.allSettled</code> with one failing task and print which succeeded.</li><li>Add a timeout to a slow fake request using <code>Promise.race</code>.</li></ol>
+<h2>Summary</h2>
+<ul><li>Asynchronous code starts slow tasks and handles results later, keeping the page responsive (event loop).</li><li>Callbacks work but nest badly; <strong>Promises</strong> represent future values: pending → fulfilled/rejected; <code>.then</code>, <code>.catch</code>, <code>.finally</code>.</li><li><code>async</code> functions return promises; <code>await</code> pauses the function until a promise settles; use <code>try...catch</code> for errors.</li><li>Run independent tasks in parallel with <code>Promise.all</code>/<code>allSettled</code>; use <code>race</code> for timeouts.</li><li>Polling and retries are common patterns; never blindly retry payments.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>In what order do these print: log A, setTimeout log B (0ms), log C? Write like A C B.</p><details><summary>Show answer</summary><p>A C B</p></details></li><li><p>What are the three states of a Promise? Write the first (initial) one.</p><details><summary>Show answer</summary><p>pending</p></details></li><li><p>Which method handles a rejected promise in a chain?</p><details><summary>Show answer</summary><p>catch</p></details></li><li><p>Which keyword must a function have to use await inside it?</p><details><summary>Show answer</summary><p>async</p></details></li><li><p>What does an async function always return?</p><details><summary>Show answer</summary><p>a promise</p></details></li><li><p>Which method waits for all promises and fails fast if one rejects?</p><details><summary>Show answer</summary><p>Promise.all</p></details></li><li><p>Which method waits for all and reports each success or failure?</p><details><summary>Show answer</summary><p>Promise.allSettled</p></details></li><li><p>Should a payment request be retried automatically? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Create an <code>async</code> function <code>main</code> that uses <code>await</code> on <code>Promise.resolve(500)</code> and prints the value. The output should be <strong>500</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=async-await#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 16 of 21 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/json-fetch/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> JSON and fetch: exchanging data with servers and APIs</a><a class="btn btn-solid btn-sm" href="/learn/javascript/local-storage/">Saving data in the browser: localStorage, sessionStorage, cookies and IndexedDB <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

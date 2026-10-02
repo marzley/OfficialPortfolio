@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Regular expressions: validating phone numbers, emails,…</title>
+    <meta name="description" content="How do you check that a phone number looks like 0712 345 678 , find every M-Pesa transaction code in a pasted SMS, or replace all double spaces in a…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/javascript/regular-expressions/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Regular expressions: validating phone numbers, emails,…" />
+    <meta property="og:description" content="How do you check that a phone number looks like 0712 345 678 , find every M-Pesa transaction code in a pasted SMS, or replace all double spaces in a…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/javascript/regular-expressions/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Regular expressions: validating phone numbers, emails,…" />
+    <meta name="twitter:description" content="How do you check that a phone number looks like 0712 345 678 , find every M-Pesa transaction code in a pasted SMS, or replace all double spaces in a…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/javascript/regular-expressions/#lesson","name":"Regular expressions: validating phone numbers, emails, KRA PINs and searching text","description":"How do you check that a phone number looks like 0712 345 678 , find every M-Pesa transaction code in a pasted SMS, or replace all double spaces in a…","url":"https://marzleytechsolutions.co.ke/learn/javascript/regular-expressions/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/javascript/#course","name":"JavaScript","url":"https://marzleytechsolutions.co.ke/learn/javascript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/"},{"@type":"ListItem","position":4,"name":"Regular expressions: validating phone numbers, emails, KRA PINs and searching text","item":"https://marzleytechsolutions.co.ke/learn/javascript/regular-expressions/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=19f64783be" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/javascript/">JavaScript</a> / <span>Regular expressions: validating phone numbers, emails, KRA PINs and searching text</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=regular-expressions"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Regular expressions: validating phone numbers, emails, KRA PINs and searching text</h1>
+<p>How do you check that a phone number looks like <code>0712 345 678</code>, find every M-Pesa transaction code in a pasted SMS, or replace all double spaces in a document? <strong>Regular expressions</strong> (regex) are patterns that describe text. They look cryptic at first, but a small set of symbols covers most everyday needs. This unit builds them up slowly with Kenyan examples you can run.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>What regex is and where it's used</li><li>Creating patterns in JavaScript: <code>/.../flags</code> and <code>RegExp</code></li><li>Literal characters, character classes, quantifiers and anchors</li><li>Groups, alternation and capturing</li><li><code>test</code>, <code>match</code>, <code>matchAll</code>, <code>replace</code>, <code>split</code></li><li>Practical patterns: phone numbers, emails, KRA PINs, M-Pesa codes, passwords</li><li>When not to use regex, and how to test patterns safely</li></ul></div></aside>
+<h2>What is a regular expression?</h2>
+<aside class="callout callout-define"><p class="callout-title">Regular expression (regex)</p><div class="callout-body"><p>A pattern that describes a set of text strings, used to <strong>check</strong> (does this text match?), <strong>find</strong> (where are the matches?) and <strong>replace</strong> text.</p></div></aside>
+<p>Where regex is used: form validation, search-and-replace in code editors (VS Code supports regex search), data cleaning in Excel/Python, log analysis, routing URLs on servers, and extracting data from messages.</p>
+<h2>Creating a regex in JavaScript</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const re = /unga/i;                       // literal syntax: /pattern/flags
+const re2 = new RegExp(&quot;unga&quot;, &quot;i&quot;);      // constructor (useful when the pattern is built from a variable)
+
+console.log(re.test(&quot;Buy UNGA today&quot;));   // true (i = case-insensitive)
+console.log(re2.test(&quot;Buy sugar&quot;));       // false</code></pre></figure>
+<h3>Flags</h3>
+<div class="static-table"><table><thead><tr><th>Flag</th><th>Meaning</th></tr></thead><tbody><tr><td><code>i</code></td><td>Ignore case</td></tr><tr><td><code>g</code></td><td>Global: find <strong>all</strong> matches, not just the first</td></tr><tr><td><code>m</code></td><td>Multiline: <code>^</code> and <code>$</code> match at line starts/ends</td></tr><tr><td><code>u</code></td><td>Unicode mode (better with emojis and non-English text)</td></tr><tr><td><code>s</code></td><td>Dot <code>.</code> also matches new lines</td></tr></tbody></table></div>
+<h2>The building blocks</h2>
+<h3>Character classes</h3>
+<div class="static-table"><table><thead><tr><th>Pattern</th><th>Matches</th></tr></thead><tbody><tr><td><code>\d</code></td><td>Any digit 0–9</td></tr><tr><td><code>\D</code></td><td>Any non-digit</td></tr><tr><td><code>\w</code></td><td>Word character: letters, digits, underscore</td></tr><tr><td><code>\s</code></td><td>Whitespace (space, tab, new line)</td></tr><tr><td><code>.</code></td><td>Any character (except new line)</td></tr><tr><td><code>[abc]</code></td><td>One of a, b or c</td></tr><tr><td><code>[a-z]</code></td><td>Any lowercase letter</td></tr><tr><td><code>[A-Z0-9]</code></td><td>Uppercase letter or digit</td></tr><tr><td><code>[^0-9]</code></td><td>Anything <strong>except</strong> a digit</td></tr></tbody></table></div>
+<h3>Quantifiers (how many)</h3>
+<div class="static-table"><table><thead><tr><th>Pattern</th><th>Means</th></tr></thead><tbody><tr><td><code>a?</code></td><td>0 or 1</td></tr><tr><td><code>a*</code></td><td>0 or more</td></tr><tr><td><code>a+</code></td><td>1 or more</td></tr><tr><td><code>a{3}</code></td><td>Exactly 3</td></tr><tr><td><code>a{2,4}</code></td><td>2 to 4</td></tr><tr><td><code>a{2,}</code></td><td>2 or more</td></tr></tbody></table></div>
+<h3>Anchors</h3>
+<div class="static-table"><table><thead><tr><th>Pattern</th><th>Means</th></tr></thead><tbody><tr><td><code>^</code></td><td>Start of the string</td></tr><tr><td><code>$</code></td><td>End of the string</td></tr><tr><td><code>\b</code></td><td>Word boundary</td></tr></tbody></table></div>
+<p><strong>Anchors matter for validation.</strong> <code>/\d{10}/</code> finds 10 digits <em>anywhere</em> (so "abc0712345678xyz" passes); <code>/^\d{10}$/</code> requires the <strong>whole</strong> string to be exactly 10 digits.</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">console.log(/\d{10}/.test(&quot;call 0712345678 now&quot;));    // true: found inside
+console.log(/^\d{10}$/.test(&quot;call 0712345678 now&quot;));  // false: whole string must be digits
+console.log(/^\d{10}$/.test(&quot;0712345678&quot;));           // true</code></pre></figure>
+<h3>Escaping special characters</h3>
+<p>These have special meanings: <code>. * + ? ^ $ { } ( ) [ ] | \ /</code>. To match them literally, add a backslash: <code>\.</code> matches a real dot, <code>\+</code> a real plus sign.</p>
+<h2>Groups and alternation</h2>
+<ul><li><code>(abc)</code> groups and <strong>captures</strong> the matched text.</li><li><code>(?:abc)</code> groups without capturing.</li><li><code>a|b</code> means a <strong>or</strong> b.</li><li><code>(?&lt;name&gt;...)</code> is a named capture group.</li></ul>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const re = /^(?:\+?254|0)([17]\d{8})$/;       // Kenyan mobile: 07.., 01.., 2547.., +2547..
+for (const raw of [&quot;0712345678&quot;, &quot;+254712345678&quot;, &quot;254112345678&quot;, &quot;0812345678&quot;, &quot;071234567&quot;]) {
+  const m = raw.match(re);
+  console.log(raw.padEnd(14), m ? &quot;valid → 254&quot; + m[1] : &quot;invalid&quot;);
+}</code></pre></figure>
+<p>The capture group <code>([17]\d{8})</code> grabs the part after the prefix, so we can normalise every format to <code>2547XXXXXXXX</code> (the format M-Pesa's API expects).</p>
+<h2>Regex methods</h2>
+<div class="static-table"><table><thead><tr><th>Method</th><th>Use</th></tr></thead><tbody><tr><td><code>regex.test(text)</code></td><td><code>true</code>/<code>false</code>: validation</td></tr><tr><td><code>text.match(regex)</code></td><td>First match with groups (or all matches with <code>g</code>)</td></tr><tr><td><code>text.matchAll(regex)</code></td><td>Iterate over all matches with their groups (needs <code>g</code>)</td></tr><tr><td><code>text.replace(regex, replacement)</code></td><td>Replace matches (<code>g</code> for all)</td></tr><tr><td><code>text.split(regex)</code></td><td>Split on a pattern</td></tr><tr><td><code>text.search(regex)</code></td><td>Index of the first match</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const sms = &quot;SJ12ABC3DE Confirmed. Ksh1,500.00 sent to JUMA SHOP. TQ45XYZ9KL Confirmed. Ksh250.00 paid to KPLC.&quot;;
+
+// Find all M-Pesa-style transaction codes (10 uppercase letters/digits) with their amounts
+const re = /\b([A-Z0-9]{10})\b Confirmed\. Ksh([\d,]+\.\d{2})/g;
+for (const m of sms.matchAll(re)) {
+  console.log(&quot;Code:&quot;, m[1], &quot;Amount:&quot;, Number(m[2].replace(/,/g, &quot;&quot;)));
+}
+
+// Replace: tidy extra spaces
+console.log(&quot;Too    many     spaces&quot;.replace(/\s+/g, &quot; &quot;));
+
+// Split on commas or semicolons with optional spaces
+console.log(&quot;Nairobi, Mombasa;Kisumu ;  Nakuru&quot;.split(/\s*[,;]\s*/));
+
+// Replace with groups: reformat 0712345678 as 0712 345 678
+console.log(&quot;0712345678&quot;.replace(/^(\d{4})(\d{3})(\d{3})$/, &quot;$1 $2 $3&quot;));</code></pre></figure>
+<h2>Practical validation patterns</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const patterns = {
+  kenyanMobile: /^(?:\+?254|0)[17]\d{8}$/,
+  // Simple email check (good enough for forms; real verification = send an email)
+  email: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
+  // KRA PIN format: a letter, 9 digits, a letter (e.g. A012345678Z)
+  kraPin: /^[A-Z]\d{9}[A-Z]$/i,
+  // Kenyan number plate (common format, e.g. KDA 123B)
+  numberPlate: /^K[A-Z]{2}\s?\d{3}[A-Z]$/i,
+  // Strong password: 8+ chars with lower, upper and a digit
+  password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
+  // Postal code: 5 digits
+  postalCode: /^\d{5}$/,
+};
+
+const samples = {
+  kenyanMobile: [&quot;0712345678&quot;, &quot;07123&quot;, &quot;+254712345678&quot;],
+  email: [&quot;wanjiku@gmail.com&quot;, &quot;wanjiku@gmail&quot;, &quot;a b@x.co&quot;],
+  kraPin: [&quot;A012345678Z&quot;, &quot;A12345Z&quot;],
+  numberPlate: [&quot;KDA 123B&quot;, &quot;KDA123B&quot;, &quot;ABC 123&quot;],
+  password: [&quot;Mombasa2026&quot;, &quot;password&quot;, &quot;Short1&quot;],
+  postalCode: [&quot;00100&quot;, &quot;100&quot;],
+};
+
+for (const [name, re] of Object.entries(patterns)) {
+  console.log(name + &quot;:&quot;, samples[name].map((s) =&gt; `${s} ${re.test(s) ? &quot;✓&quot; : &quot;✗&quot;}`).join(&quot; | &quot;));
+}</code></pre></figure>
+<p>(<code>(?=...)</code> is a <strong>lookahead</strong>: "somewhere ahead there must be...", used in the password pattern to require each character type.)</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> The email regex accepts "test@test.co". Does that prove the email address exists?</span><em>Show answer</em></summary><div class="callout-body"><p>No. Regex only checks the <strong>format</strong>. Whether the address exists and belongs to the user can only be confirmed by sending a verification email (or code). Use regex for quick format checks, then verify properly, and always validate again on the server.</p></div></details>
+<h2>Regex in HTML forms</h2>
+<p>The <code>pattern</code> attribute uses regex for built-in validation (the whole value must match; no slashes or flags):</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;form&gt;
+  &lt;label&gt;M-Pesa number
+    &lt;input name=&quot;phone&quot; required pattern=&quot;(\+?254|0)[17][0-9]{8}&quot; title=&quot;Format: 07XXXXXXXX or 2547XXXXXXXX&quot; placeholder=&quot;0712345678&quot;&gt;
+  &lt;/label&gt;
+  &lt;button&gt;Pay&lt;/button&gt;
+&lt;/form&gt;</code></pre></figure>
+<h2>When not to use regex</h2>
+<ul><li><strong>Parsing HTML or complex nested formats:</strong> use a proper parser (<code>DOMParser</code>, JSON).</li><li><strong>Very complex rules:</strong> a few lines of normal code with clear names is often more readable than one giant pattern.</li><li><strong>Untrusted, user-supplied patterns:</strong> some badly written patterns can take extremely long on certain inputs ("catastrophic backtracking", a possible denial-of-service). Keep patterns simple and avoid nested quantifiers like <code>(a+)+</code>.</li></ul>
+<h2>Testing and learning tools</h2>
+<ul><li><strong>regex101.com:</strong> explains each part of a pattern, shows matches live, and has a JavaScript mode.</li><li><strong>VS Code search</strong> with the <code>.*</code> button enabled lets you practise find-and-replace with regex on real files.</li><li>Write small tests with good and bad examples, like the samples above.</li></ul>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>No anchors in validation</td><td><code>^...$</code> to match the whole string</td></tr><tr><td>Forgetting to escape <code>.</code></td><td><code>\.</code> for a literal dot</td></tr><tr><td>Forgetting <code>g</code> when replacing all</td><td><code>/x/g</code></td></tr><tr><td>Overly strict email patterns rejecting valid emails</td><td>Keep it simple; verify by sending</td></tr><tr><td>Validating only in the browser</td><td>Validate again on the server</td></tr><tr><td>Unreadable mega-patterns</td><td>Split into steps or add comments in code</td></tr></tbody></table></div>
+<h2>Practice tasks</h2>
+<ol><li>Write a regex for a 4-digit M-Pesa PIN (don't actually collect PINs in real apps!) and test it.</li><li>Normalise a list of phone numbers in different formats to <code>2547XXXXXXXX</code>.</li><li>Extract all amounts (like <code>Ksh1,500.00</code>) from a pasted SMS and total them.</li><li>Write a pattern that checks a student admission number like <code>ADM/2026/0457</code>.</li><li>Use regex101 to explain each part of the Kenyan mobile pattern.</li></ol>
+<h2>Summary</h2>
+<ul><li>Regex patterns describe text; create with <code>/pattern/flags</code> or <code>new RegExp</code>.</li><li>Building blocks: character classes (<code>\d</code>, <code>\w</code>, <code>\s</code>, <code>[...]</code>), quantifiers (<code>?</code>, <code>*</code>, <code>+</code>, <code>{n,m}</code>), anchors (<code>^</code>, <code>$</code>, <code>\b</code>), groups and <code>|</code>.</li><li>Methods: <code>test</code>, <code>match</code>, <code>matchAll</code>, <code>replace</code>, <code>split</code>.</li><li>Use anchors for validation; escape special characters; keep patterns simple; validate on the server too.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which regex symbol matches any digit?</p><details><summary>Show answer</summary><p>\d</p></details></li><li><p>Which flag makes a regex ignore upper/lower case?</p><details><summary>Show answer</summary><p>i</p></details></li><li><p>Which flag finds all matches instead of just the first?</p><details><summary>Show answer</summary><p>g</p></details></li><li><p>Which anchor means "start of the string"?</p><details><summary>Show answer</summary><p>^</p></details></li><li><p>What does a{3} mean? (two words)</p><details><summary>Show answer</summary><p>exactly 3</p></details></li><li><p>Which method returns true or false for a match?</p><details><summary>Show answer</summary><p>test</p></details></li><li><p>How do you match a literal dot in regex?</p><details><summary>Show answer</summary><p>\.</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Use a regex with <code>test</code> to check whether <code>phone</code> is a valid Kenyan mobile number like <code>0712345678</code> (starts with 0, then 7 or 1, then 8 digits). Print the result: it should be <strong>true</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=regular-expressions#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 14 of 21 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/forms-validation/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Handling forms and validating input</a><a class="btn btn-solid btn-sm" href="/learn/javascript/json-fetch/">JSON and fetch: exchanging data with servers and APIs <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

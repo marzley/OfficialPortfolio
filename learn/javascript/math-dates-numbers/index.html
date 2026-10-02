@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Numbers, Math and dates: money, rounding, random numbers…</title>
+    <meta name="description" content="Almost every real app calculates: cart totals with VAT, loan interest, exam averages, discounts, random OTP codes, countdowns, &quot;posted 3 hours ago&quot;…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/javascript/math-dates-numbers/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Numbers, Math and dates: money, rounding, random numbers…" />
+    <meta property="og:description" content="Almost every real app calculates: cart totals with VAT, loan interest, exam averages, discounts, random OTP codes, countdowns, &quot;posted 3 hours ago&quot;…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/javascript/math-dates-numbers/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Numbers, Math and dates: money, rounding, random numbers…" />
+    <meta name="twitter:description" content="Almost every real app calculates: cart totals with VAT, loan interest, exam averages, discounts, random OTP codes, countdowns, &quot;posted 3 hours ago&quot;…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/javascript/math-dates-numbers/#lesson","name":"Numbers, Math and dates: money, rounding, random numbers and time","description":"Almost every real app calculates: cart totals with VAT, loan interest, exam averages, discounts, random OTP codes, countdowns, \"posted 3 hours ago\"…","url":"https://marzleytechsolutions.co.ke/learn/javascript/math-dates-numbers/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/javascript/#course","name":"JavaScript","url":"https://marzleytechsolutions.co.ke/learn/javascript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/"},{"@type":"ListItem","position":4,"name":"Numbers, Math and dates: money, rounding, random numbers and time","item":"https://marzleytechsolutions.co.ke/learn/javascript/math-dates-numbers/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=19f64783be" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/javascript/">JavaScript</a> / <span>Numbers, Math and dates: money, rounding, random numbers and time</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=math-dates-numbers"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Numbers, Math and dates: money, rounding, random numbers and time</h1>
+<p>Almost every real app calculates: cart totals with VAT, loan interest, exam averages, discounts, random OTP codes, countdowns, "posted 3 hours ago", and due dates. JavaScript's numbers, the <code>Math</code> object and <code>Date</code> (plus the newer <code>Intl</code> formatting tools) handle all of this, but each has traps: floating-point errors with money, months that start at 0, and time zones. This unit teaches the right way.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Number types, <code>NaN</code>, <code>Infinity</code> and converting strings to numbers</li><li>Floating-point problems and how to handle money safely</li><li>Rounding: <code>Math.round</code>, <code>floor</code>, <code>ceil</code>, <code>toFixed</code></li><li><code>Math</code> functions: <code>max</code>, <code>min</code>, <code>abs</code>, <code>pow</code>, <code>sqrt</code>, <code>random</code></li><li>Random numbers and why <code>Math.random</code> isn't for security</li><li>Formatting numbers and currency with <code>Intl.NumberFormat</code> and <code>toLocaleString</code></li><li>Dates: creating, reading, adding days, differences, formatting and time zones</li></ul></div></aside>
+<h2>Numbers in JavaScript</h2>
+<p>JavaScript has one main number type (64-bit floating point) for integers and decimals: <code>42</code>, <code>3.14</code>, <code>-7</code>. (There's also <code>BigInt</code> for huge integers, rarely needed.)</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">console.log(typeof 42, typeof 3.5);    // number number
+console.log(10 / 3);                   // 3.3333333333333335
+console.log(1 / 0);                    // Infinity
+console.log(&quot;abc&quot; * 2);                // NaN (Not a Number)
+console.log(Number.isNaN(&quot;abc&quot; * 2));  // true
+console.log(Number.MAX_SAFE_INTEGER);  // 9007199254740991</code></pre></figure>
+<h3>Converting strings to numbers</h3>
+<p>Form inputs and URL parameters are <strong>strings</strong>. Convert them before calculating:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">console.log(&quot;100&quot; + 50);               // &quot;10050&quot; (string joining!)
+console.log(Number(&quot;100&quot;) + 50);       // 150
+console.log(parseInt(&quot;250 bob&quot;, 10));  // 250 (reads digits at the start)
+console.log(parseFloat(&quot;3.75kg&quot;));     // 3.75
+console.log(Number(&quot;&quot;));               // 0 (careful: empty becomes 0)
+console.log(Number(&quot;12a&quot;));            // NaN
+console.log(+&quot;42&quot;);                    // 42 (unary plus)
+
+function readAmount(text) {
+  const n = Number(String(text).replace(/,/g, &quot;&quot;));   // allow &quot;1,500&quot;
+  return Number.isFinite(n) ? n : null;
+}
+console.log(readAmount(&quot;1,500&quot;), readAmount(&quot;abc&quot;));</code></pre></figure>
+<h2>Floating-point and money</h2>
+<p>Computers store decimals in binary, so some decimals can't be represented exactly:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">console.log(0.1 + 0.2);                // 0.30000000000000004
+console.log(0.1 + 0.2 === 0.3);        // false!</code></pre></figure>
+<p>For money this matters. Safe approaches:</p>
+<ol><li><strong>Work in whole units.</strong> KSh amounts are usually whole shillings; for cents, store <strong>cents as integers</strong> (KSh 199.50 → 19950).</li><li><strong>Round at the end</strong> for display.</li><li>For complex financial systems, use decimal libraries.</li></ol>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">// Prices in cents (integers): exact maths
+const items = [{ price: 19950, qty: 2 }, { price: 4999, qty: 3 }];   // KSh 199.50, KSh 49.99
+const totalCents = items.reduce((s, i) =&gt; s + i.price * i.qty, 0);
+console.log(&quot;Total:&quot;, (totalCents / 100).toFixed(2));                // &quot;548.97&quot;
+
+// VAT included in a price (Kenya 16%): VAT part = price × 16 / 116
+const price = 1160;
+const vat = Math.round(price * 16 / 116);
+console.log(`Price ${price} includes VAT of ${vat} (net ${price - vat})`);</code></pre></figure>
+<h2>Rounding</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">console.log(Math.round(4.5));      // 5   nearest integer (.5 rounds up)
+console.log(Math.round(-4.5));     // -4  (rounds towards +infinity at .5)
+console.log(Math.floor(4.9));      // 4   down
+console.log(Math.ceil(4.1));       // 5   up
+console.log(Math.trunc(-4.9));     // -4  remove decimals
+console.log((3.14159).toFixed(2)); // &quot;3.14&quot; (a string)
+console.log(Number((2.345).toFixed(2)));   // 2.35 or 2.34? floating point can surprise: test!
+
+// Round to 2 decimals as a number
+const round2 = (n) =&gt; Math.round((n + Number.EPSILON) * 100) / 100;
+console.log(round2(1.005), round2(2.675));</code></pre></figure>
+<p>Use <code>ceil</code> for "how many buses for 130 people at 33 seats each" (you can't hire a partial bus): <code>Math.ceil(130 / 33)</code> = 4.</p>
+<h2>The <code>Math</code> object</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const sales = [3400, 12000, 7800, 15200];
+console.log(Math.max(...sales), Math.min(...sales));   // 15200 3400
+console.log(Math.abs(-250));       // 250
+console.log(Math.pow(2, 10), 2 ** 10);   // 1024 1024
+console.log(Math.sqrt(144));       // 12
+console.log(Math.PI.toFixed(4));   // 3.1416
+
+// Compound interest: amount = P × (1 + r)^n
+const P = 50000, r = 0.12 / 12, n = 12;   // 12% a year, monthly, 1 year
+console.log(&quot;After 1 year:&quot;, Math.round(P * (1 + r) ** n));</code></pre></figure>
+<h2>Random numbers</h2>
+<p><code>Math.random()</code> gives a decimal from 0 (inclusive) up to 1 (exclusive):</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const randomInt = (min, max) =&gt; Math.floor(Math.random() * (max - min + 1)) + min;
+
+console.log(randomInt(1, 6));                     // dice roll
+const towns = [&quot;Nairobi&quot;, &quot;Mombasa&quot;, &quot;Kisumu&quot;, &quot;Nakuru&quot;, &quot;Eldoret&quot;];
+console.log(towns[randomInt(0, towns.length - 1)]);   // random pick
+
+// Shuffle (Fisher–Yates) for quiz questions
+const qs = [1, 2, 3, 4, 5];
+for (let i = qs.length - 1; i &gt; 0; i--) {
+  const j = randomInt(0, i);
+  [qs[i], qs[j]] = [qs[j], qs[i]];
+}
+console.log(qs);</code></pre></figure>
+<aside class="callout callout-warning"><p class="callout-title">Not for security</p><div class="callout-body"><p><code>Math.random()</code> is predictable enough that it must <strong>not</strong> be used for OTP codes, passwords, tokens or anything security-related. Use <code>crypto.getRandomValues()</code> in browsers (or <code>crypto.randomInt</code> in Node.js), and generate OTPs on the <strong>server</strong>.</p></div></aside>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const buf = new Uint32Array(1);
+crypto.getRandomValues(buf);
+const code = String(buf[0] % 1000000).padStart(6, &quot;0&quot;);
+console.log(&quot;Demo 6-digit code:&quot;, code);   // in real apps, generate on the server</code></pre></figure>
+<h2>Formatting numbers and currency</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const n = 1234567.891;
+console.log(n.toLocaleString(&quot;en-KE&quot;));                               // &quot;1,234,567.891&quot;
+console.log(n.toLocaleString(&quot;en-KE&quot;, { maximumFractionDigits: 0 })); // &quot;1,234,568&quot;
+
+const ksh = new Intl.NumberFormat(&quot;en-KE&quot;, { style: &quot;currency&quot;, currency: &quot;KES&quot; });
+console.log(ksh.format(2500));             // e.g. &quot;Ksh 2,500.00&quot; (format depends on the browser/runtime data)
+
+const compact = new Intl.NumberFormat(&quot;en&quot;, { notation: &quot;compact&quot; });
+console.log(compact.format(1500000));      // &quot;1.5M&quot;
+
+const pct = new Intl.NumberFormat(&quot;en&quot;, { style: &quot;percent&quot;, maximumFractionDigits: 1 });
+console.log(pct.format(0.163));            // &quot;16.3%&quot;</code></pre></figure>
+<p>Many Kenyan sites prefer to write <code>&quot;KSh &quot; + amount.toLocaleString(&quot;en-KE&quot;)</code> for a consistent look.</p>
+<h2>Dates and times</h2>
+<h3>Creating dates</h3>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const now = new Date();                                  // current date and time
+const d1 = new Date(&quot;2026-10-02&quot;);                       // ISO date (treated as UTC midnight)
+const d2 = new Date(2026, 9, 2, 14, 30);                 // year, MONTH (0-11!), day, hour, minute: local time
+console.log(d2.getFullYear(), d2.getMonth(), d2.getDate()); // 2026 9 2  (9 = October)
+console.log(d2.getDay());                                // day of week: 0 = Sunday
+console.log(typeof now.getTime(), now.getTime() &gt; 0);    // milliseconds since 1 Jan 1970 (UTC)</code></pre></figure>
+<aside class="callout callout-warning"><p class="callout-title">Months start at 0</p><div class="callout-body"><p>In <code>new Date(year, month, day)</code> and <code>getMonth()</code>, <strong>January is 0 and December is 11</strong>. This catches everyone at least once. Days of the month start at 1; <code>getDay()</code> (weekday) starts at 0 for Sunday.</p></div></aside>
+<h3>Adding days and calculating differences</h3>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const start = new Date(2026, 9, 2);           // 2 Oct 2026
+const due = new Date(start);
+due.setDate(due.getDate() + 30);              // add 30 days (month rollover handled)
+console.log(due.toDateString());              // Sun Nov 01 2026
+
+const DAY = 24 * 60 * 60 * 1000;
+const exam = new Date(2026, 10, 3);           // 3 Nov 2026
+const daysLeft = Math.ceil((exam - start) / DAY);
+console.log(daysLeft, &quot;days until the exam&quot;);
+
+// Age from date of birth
+function age(dob, today = new Date(2026, 9, 2)) {
+  let a = today.getFullYear() - dob.getFullYear();
+  const beforeBirthday = today.getMonth() &lt; dob.getMonth() || (today.getMonth() === dob.getMonth() &amp;&amp; today.getDate() &lt; dob.getDate());
+  return beforeBirthday ? a - 1 : a;
+}
+console.log(age(new Date(2005, 11, 15)));     // 20</code></pre></figure>
+<h3>Formatting dates</h3>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const d = new Date(Date.UTC(2026, 9, 2, 11, 30));   // 11:30 UTC = 14:30 in Nairobi (UTC+3)
+const fmt = new Intl.DateTimeFormat(&quot;en-KE&quot;, { dateStyle: &quot;full&quot;, timeStyle: &quot;short&quot;, timeZone: &quot;Africa/Nairobi&quot; });
+console.log(fmt.format(d));
+console.log(d.toISOString());                        // &quot;2026-10-02T11:30:00.000Z&quot;: for APIs and databases
+console.log(d.toLocaleDateString(&quot;en-GB&quot;, { day: &quot;numeric&quot;, month: &quot;short&quot;, year: &quot;numeric&quot;, timeZone: &quot;Africa/Nairobi&quot; }));
+
+// &quot;Time ago&quot;
+const rtf = new Intl.RelativeTimeFormat(&quot;en&quot;, { numeric: &quot;auto&quot; });
+console.log(rtf.format(-3, &quot;hour&quot;), &quot;|&quot;, rtf.format(1, &quot;day&quot;));</code></pre></figure>
+<h3>Time zones</h3>
+<ul><li>Kenya uses <strong>East Africa Time (EAT), UTC+3</strong>, with no daylight saving time.</li><li>Computers store moments as UTC timestamps; display converts to the user's zone.</li><li><strong>Store and send dates in ISO format with time zone</strong> (<code>2026-10-02T14:30:00+03:00</code> or UTC with <code>Z</code>); never store "02/10/2026" text (is that 2 October or 10 February?).</li><li>For heavy date work, libraries like <strong>date-fns</strong> or <strong>Day.js</strong> help, and the upcoming <strong>Temporal</strong> API improves dates in JavaScript.</li></ul>
+<h2>Countdown example</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">function countdown(target, now) {
+  let ms = Math.max(0, target - now);
+  const d = Math.floor(ms / 86400000); ms %= 86400000;
+  const h = Math.floor(ms / 3600000);  ms %= 3600000;
+  const m = Math.floor(ms / 60000);
+  return `${d} days ${h} hours ${m} minutes`;
+}
+console.log(countdown(new Date(2026, 11, 25, 0, 0), new Date(2026, 9, 2, 9, 15)), &quot;until Christmas&quot;);</code></pre></figure>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td><code>&quot;100&quot; + 50</code> = "10050"</td><td>Convert with <code>Number()</code> first</td></tr><tr><td>Comparing decimals with <code>===</code></td><td>Use integers (cents) or a tolerance</td></tr><tr><td><code>toFixed</code> returns a string</td><td>Wrap in <code>Number()</code> if you need a number</td></tr><tr><td><code>Math.random()</code> for OTPs/tokens</td><td><code>crypto.getRandomValues()</code> / server-side</td></tr><tr><td>Months from 1</td><td><code>new Date(2026, 0, 15)</code> is 15 January</td></tr><tr><td>Storing local date strings</td><td>ISO strings with time zone</td></tr></tbody></table></div>
+<h2>Practice tasks</h2>
+<ol><li>Write <code>addVat(net)</code> and <code>vatFromGross(gross)</code> for 16% VAT, keeping whole shillings.</li><li>Calculate a monthly loan repayment using the amortisation formula <code>P × r / (1 − (1 + r)^−n)</code>.</li><li>Generate a random quiz order of 10 questions with Fisher–Yates.</li><li>Show "Due in X days" or "Overdue by X days" for an invoice date.</li><li>Format 1234567 as KSh currency and as "1.2M".</li></ol>
+<h2>Summary</h2>
+<ul><li>JavaScript numbers are floating point; convert strings with <code>Number</code>, <code>parseInt</code>, <code>parseFloat</code>; check <code>Number.isFinite</code>.</li><li>Handle money in whole units or cents to avoid floating-point errors; round for display.</li><li><code>Math</code> gives rounding, max/min, powers, roots and <code>random</code> (never for security; use <code>crypto</code>).</li><li>Format with <code>toLocaleString</code> and <code>Intl.NumberFormat</code>.</li><li>Dates: months are 0–11; add days with <code>setDate</code>; differences in milliseconds; format with <code>Intl.DateTimeFormat</code>; Kenya is UTC+3; store ISO strings.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does "5" + 5 give in JavaScript?</p><details><summary>Show answer</summary><p>55</p></details></li><li><p>What does 0.1 + 0.2 === 0.3 give?</p><details><summary>Show answer</summary><p>false</p></details></li><li><p>Which Math method always rounds down?</p><details><summary>Show answer</summary><p>floor</p></details></li><li><p>Which Math method always rounds up?</p><details><summary>Show answer</summary><p>ceil</p></details></li><li><p>In new Date(2026, 0, 15), which month is it?</p><details><summary>Show answer</summary><p>January</p></details></li><li><p>Which function should generate secure random codes in browsers?</p><details><summary>Show answer</summary><p>crypto.getRandomValues</p></details></li><li><p>What is Kenya's time zone offset from UTC? Write like +3.</p><details><summary>Show answer</summary><p>+3</p></details></li><li><p>How many buses of 33 seats are needed for 130 people?</p><details><summary>Show answer</summary><p>4</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 21 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/strings-numbers-operators/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Strings, numbers and operators</a><a class="btn btn-solid btn-sm" href="/learn/javascript/conditions/">Conditions: if, else, comparison, logical operators, switch and the ternary operator <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

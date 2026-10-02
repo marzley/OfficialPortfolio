@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>JSON and fetch | JavaScript</title>
-    <meta name="description" content="JSON is the text format apps use to send data: {&quot;name&quot;: &quot;Mouse&quot;, &quot;price&quot;: 1200} . The M-Pesa API, weather apps, and this website&#x27;s chat all use JSON." />
+    <title>JSON and fetch: exchanging data with servers and APIs</title>
+    <meta name="description" content="Modern websites and apps constantly exchange data with servers: loading products, sending orders, checking payment status, showing weather, searching…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/javascript/json-fetch/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="JSON and fetch | JavaScript" />
-    <meta property="og:description" content="JSON is the text format apps use to send data: {&quot;name&quot;: &quot;Mouse&quot;, &quot;price&quot;: 1200} . The M-Pesa API, weather apps, and this website&#x27;s chat all use JSON." />
+    <meta property="og:title" content="JSON and fetch: exchanging data with servers and APIs" />
+    <meta property="og:description" content="Modern websites and apps constantly exchange data with servers: loading products, sending orders, checking payment status, showing weather, searching…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/javascript/json-fetch/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="JSON and fetch | JavaScript" />
-    <meta name="twitter:description" content="JSON is the text format apps use to send data: {&quot;name&quot;: &quot;Mouse&quot;, &quot;price&quot;: 1200} . The M-Pesa API, weather apps, and this website&#x27;s chat all use JSON." />
+    <meta name="twitter:title" content="JSON and fetch: exchanging data with servers and APIs" />
+    <meta name="twitter:description" content="Modern websites and apps constantly exchange data with servers: loading products, sending orders, checking payment status, showing weather, searching…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/javascript/json-fetch/#lesson","name":"JSON and fetch","description":"JSON is the text format apps use to send data: {\"name\": \"Mouse\", \"price\": 1200} . The M-Pesa API, weather apps, and this website's chat all use JSON.","url":"https://marzleytechsolutions.co.ke/learn/javascript/json-fetch/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/javascript/#course","name":"JavaScript","url":"https://marzleytechsolutions.co.ke/learn/javascript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/"},{"@type":"ListItem","position":4,"name":"JSON and fetch","item":"https://marzleytechsolutions.co.ke/learn/javascript/json-fetch/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/javascript/json-fetch/#lesson","name":"JSON and fetch: exchanging data with servers and APIs","description":"Modern websites and apps constantly exchange data with servers: loading products, sending orders, checking payment status, showing weather, searching…","url":"https://marzleytechsolutions.co.ke/learn/javascript/json-fetch/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/javascript/#course","name":"JavaScript","url":"https://marzleytechsolutions.co.ke/learn/javascript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/"},{"@type":"ListItem","position":4,"name":"JSON and fetch: exchanging data with servers and APIs","item":"https://marzleytechsolutions.co.ke/learn/javascript/json-fetch/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,29 +36,140 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/javascript/">JavaScript</a> / <span>JSON and fetch</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=json-fetch"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>JSON and fetch</h1>
-<p><strong>JSON</strong> is the text format apps use to send data: <code>{&quot;name&quot;: &quot;Mouse&quot;, &quot;price&quot;: 1200}</code>. The M-Pesa API, weather apps, and this website's chat all use JSON.</p>
-<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const text = &#x27;{&quot;name&quot;:&quot;Mouse&quot;,&quot;price&quot;:1200,&quot;tags&quot;:[&quot;usb&quot;,&quot;wireless&quot;]}&#x27;;
-const product = JSON.parse(text);          // text -&gt; object
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/javascript/">JavaScript</a> / <span>JSON and fetch: exchanging data with servers and APIs</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=json-fetch"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>JSON and fetch: exchanging data with servers and APIs</h1>
+<p>Modern websites and apps constantly exchange data with servers: loading products, sending orders, checking payment status, showing weather, searching. The format they almost always use is <strong>JSON</strong>, and the browser tool for sending and receiving it is **<code>fetch</code>**. This unit explains JSON completely, how HTTP requests work from JavaScript, how to use <code>fetch</code> for GET and POST, handle errors, and the security rules around APIs.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>What JSON is, its rules, and how it differs from JavaScript objects</li><li><code>JSON.parse</code> and <code>JSON.stringify</code> (with pretty printing)</li><li>What an API is and how client–server requests work</li><li><code>fetch</code> for GET and POST, headers and status codes</li><li>Handling errors and loading states</li><li>CORS, API keys and security</li><li>Practising with simulated responses in this editor</li></ul></div></aside>
+<h2>What is JSON?</h2>
+<aside class="callout callout-define"><p class="callout-title">JSON (JavaScript Object Notation)</p><div class="callout-body"><p>A lightweight <strong>text format</strong> for storing and sending structured data, based on JavaScript object syntax. Almost every API (M-Pesa Daraja, weather services, social media, this website's chat) sends and receives JSON.</p></div></aside>
+<figure class="static-code"><pre><code>{
+  &quot;name&quot;: &quot;Bluetooth speaker&quot;,
+  &quot;price&quot;: 3500,
+  &quot;inStock&quot;: true,
+  &quot;tags&quot;: [&quot;audio&quot;, &quot;wireless&quot;],
+  &quot;seller&quot;: { &quot;shop&quot;: &quot;Juma Electronics&quot;, &quot;town&quot;: &quot;Kisumu&quot; },
+  &quot;discount&quot;: null
+}</code></pre></figure>
+<h3>JSON rules (stricter than JavaScript)</h3>
+<div class="static-table"><table><thead><tr><th>Rule</th><th>JSON</th><th>JavaScript object</th></tr></thead><tbody><tr><td>Keys</td><td><strong>Must</strong> be in double quotes: <code>&quot;name&quot;</code></td><td>Quotes optional</td></tr><tr><td>Strings</td><td>Double quotes only</td><td>Single, double or backticks</td></tr><tr><td>Allowed values</td><td>string, number, boolean, null, array, object</td><td>Also functions, <code>undefined</code>, dates...</td></tr><tr><td>Trailing commas</td><td><strong>Not allowed</strong></td><td>Allowed</td></tr><tr><td>Comments</td><td><strong>Not allowed</strong></td><td>Allowed</td></tr></tbody></table></div>
+<p>JSON is <strong>text</strong>. To use it in JavaScript, you convert it to an object (parse); to send data, you convert an object to text (stringify).</p>
+<h2><code>JSON.parse</code> and <code>JSON.stringify</code></h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">// Text from a server -&gt; JavaScript object
+const text = &#x27;{&quot;name&quot;:&quot;Speaker&quot;,&quot;price&quot;:3500,&quot;tags&quot;:[&quot;audio&quot;,&quot;wireless&quot;],&quot;seller&quot;:{&quot;town&quot;:&quot;Kisumu&quot;}}&#x27;;
+const product = JSON.parse(text);
 console.log(product.name, product.price);
-console.log(product.tags.length);
+console.log(product.tags[1], product.seller.town);
 
-const back = JSON.stringify({ town: &quot;Nakuru&quot;, open: true });   // object -&gt; text
-console.log(back);</code></pre></figure>
-<h2>fetch: get data from a server</h2>
-<figure class="static-code"><figcaption>JS</figcaption><pre><code class="language-js">fetch(&quot;https://api.example.com/products&quot;)
-  .then(response =&gt; response.json())
-  .then(data =&gt; console.log(data))
-  .catch(error =&gt; console.log(&quot;Failed:&quot;, error));</code></pre></figure>
-<p>Sending data (e.g. a contact form) with POST:</p>
-<figure class="static-code"><figcaption>JS</figcaption><pre><code class="language-js">fetch(&quot;/api/contact&quot;, {
+// JavaScript object -&gt; text to send
+const order = { phone: &quot;254712345678&quot;, items: [{ id: 17, qty: 2 }], total: 7000 };
+const body = JSON.stringify(order);
+console.log(body);
+console.log(typeof body);          // &quot;string&quot;
+
+// Pretty printing (2-space indentation) for logs and files
+console.log(JSON.stringify(order, null, 2));</code></pre></figure>
+<h3>Invalid JSON throws an error</h3>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">function safeParse(text) {
+  try {
+    return JSON.parse(text);
+  } catch (err) {
+    console.log(&quot;Invalid JSON:&quot;, err.message);
+    return null;
+  }
+}
+
+console.log(safeParse(&#x27;{&quot;ok&quot;: true}&#x27;));
+console.log(safeParse(&quot;{ok: true}&quot;));          // keys without quotes: invalid
+console.log(safeParse(&#x27;{&quot;a&quot;: 1,}&#x27;));           // trailing comma: invalid</code></pre></figure>
+<p>Always wrap <code>JSON.parse</code> of untrusted text in <code>try...catch</code>.</p>
+<h2>APIs and requests</h2>
+<p>An <strong>API</strong> (Application Programming Interface) is a set of URLs (endpoints) on a server that programs can call to get or change data. For example:</p>
+<div class="static-table"><table><thead><tr><th>Method</th><th>Endpoint</th><th>Meaning</th></tr></thead><tbody><tr><td><code>GET</code></td><td><code>/api/products</code></td><td>List products</td></tr><tr><td><code>GET</code></td><td><code>/api/products/17</code></td><td>One product</td></tr><tr><td><code>POST</code></td><td><code>/api/orders</code></td><td>Create an order</td></tr><tr><td><code>PATCH</code></td><td><code>/api/orders/91</code></td><td>Update an order</td></tr><tr><td><code>DELETE</code></td><td><code>/api/cart/3</code></td><td>Remove a cart item</td></tr></tbody></table></div>
+<p>The browser sends a <strong>request</strong> (method, URL, headers, optional body); the server replies with a <strong>response</strong> (status code, headers, body, usually JSON). The <strong>APIs &amp; backends</strong> subject teaches how to build these servers.</p>
+<h2><code>fetch</code>: GET requests</h2>
+<figure class="static-code"><pre><code>fetch(&quot;https://api.example.com/products&quot;)
+  .then((response) =&gt; response.json())    // read the body as JSON (also async)
+  .then((products) =&gt; console.log(products))
+  .catch((error) =&gt; console.log(&quot;Network problem:&quot;, error));</code></pre></figure>
+<p><code>fetch</code> returns a <strong>Promise</strong> (a value that arrives later). The modern, cleaner way uses <code>async</code>/<code>await</code> (next unit):</p>
+<figure class="static-code"><pre><code>async function loadProducts() {
+  const response = await fetch(&quot;/api/products&quot;);
+  if (!response.ok) throw new Error(&quot;Server error &quot; + response.status);
+  const products = await response.json();
+  return products;
+}</code></pre></figure>
+<h3>Check <code>response.ok</code></h3>
+<p><code>fetch</code> only rejects (throws) on <strong>network failure</strong>. A 404 or 500 response still "succeeds" at the network level, so always check <code>response.ok</code> (true for status 200–299) or <code>response.status</code>.</p>
+<h2><code>fetch</code>: POST requests (sending data)</h2>
+<figure class="static-code"><pre><code>const response = await fetch(&quot;/api/orders&quot;, {
   method: &quot;POST&quot;,
   headers: { &quot;Content-Type&quot;: &quot;application/json&quot; },
-  body: JSON.stringify({ name: &quot;Achieng&quot;, phone: &quot;0712345678&quot; })
-});</code></pre></figure>
-<blockquote><p>The practice editor runs in a locked sandbox, so network requests from it won't reach other sites. Use these patterns in your own projects.</p></blockquote>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which method turns JSON text into a JavaScript object?</p><details><summary>Show answer</summary><p>JSON.parse</p></details></li><li><p>Which method turns an object into JSON text?</p><details><summary>Show answer</summary><p>JSON.stringify</p></details></li><li><p>Which built-in function makes HTTP requests from JavaScript?</p><details><summary>Show answer</summary><p>fetch</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Parse the JSON in <code>data</code> and print the <strong>price</strong> of the product. The output should be <strong>3500</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=json-fetch#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 13 of 19 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/forms-validation/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Handling forms and validating input</a><a class="btn btn-solid btn-sm" href="/learn/javascript/async-await/">Promises and async/await <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+  body: JSON.stringify({ phone: &quot;254712345678&quot;, items: [{ id: 17, qty: 2 }] }),
+});
+const result = await response.json();</code></pre></figure>
+<ul><li><code>method</code>: <code>&quot;POST&quot;</code>, <code>&quot;PUT&quot;</code>, <code>&quot;PATCH&quot;</code>, <code>&quot;DELETE&quot;</code>.</li><li><code>headers</code>: tell the server you're sending JSON.</li><li><code>body</code>: the JSON text.</li><li>For login sessions with cookies on the same site, cookies are sent automatically; for other sites add <code>credentials: &quot;include&quot;</code> (if the server allows it).</li></ul>
+<h2>Practising here with a simulated server</h2>
+<p>This editor runs in a locked sandbox, so it can't reach other websites. This example simulates a server with a delay, so you can practise the real pattern:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">// A fake &quot;server&quot;: resolves with a Response-like object after a delay
+const fakeDb = { 17: { id: 17, name: &quot;Bluetooth speaker&quot;, price: 3500 } };
+
+function fakeFetch(url) {
+  return new Promise((resolve) =&gt; {
+    setTimeout(() =&gt; {
+      const id = Number(url.split(&quot;/&quot;).pop());
+      const product = fakeDb[id];
+      resolve({
+        ok: Boolean(product),
+        status: product ? 200 : 404,
+        json: async () =&gt; (product ? product : { error: &quot;Product not found&quot; }),
+      });
+    }, 300);
+  });
+}
+
+async function showProduct(id) {
+  console.log(`Loading product ${id}...`);
+  try {
+    const res = await fakeFetch(`/api/products/${id}`);
+    const data = await res.json();
+    if (!res.ok) {
+      console.log(`Error ${res.status}: ${data.error}`);
+      return;
+    }
+    console.log(`${data.name}: KSh ${data.price.toLocaleString()}`);
+  } catch (err) {
+    console.log(&quot;Network problem. Check your connection.&quot;);
+  }
+}
+
+showProduct(17).then(() =&gt; showProduct(99));</code></pre></figure>
+<h2>Showing loading, success and error states</h2>
+<p>Every data request needs four UI states:</p>
+<ol><li><strong>Loading:</strong> spinner or skeleton, disable the button.</li><li><strong>Success with data:</strong> show it.</li><li><strong>Empty:</strong> "No products found".</li><li><strong>Error:</strong> a friendly message and a "Try again" button.</li></ol>
+<figure class="static-code"><pre><code>button.disabled = true;
+status.textContent = &quot;Loading…&quot;;
+try {
+  const data = await loadProducts();
+  render(data.length ? data : []);
+  status.textContent = data.length ? &quot;&quot; : &quot;No products yet.&quot;;
+} catch {
+  status.textContent = &quot;We couldn&#x27;t load products. Check your connection and try again.&quot;;
+} finally {
+  button.disabled = false;
+}</code></pre></figure>
+<aside class="callout callout-kenya"><p class="callout-title">In Kenya</p><div class="callout-body"><p>Mobile connections drop and slow down often, especially in matatus or rural areas. Good apps set <strong>timeouts</strong>, show clear retry options, and keep the last loaded data visible instead of a blank screen. <code>AbortController</code> lets you cancel slow requests: <code>fetch(url, { signal: AbortSignal.timeout(10000) })</code> gives up after 10 seconds in modern browsers.</p></div></aside>
+<h2>CORS: why some requests are blocked</h2>
+<p>Browsers block a page on one domain from reading responses from <strong>another domain</strong> unless that server allows it with CORS headers (<code>Access-Control-Allow-Origin</code>). That's why a request that works in Postman may fail in the browser. The fix is on the <strong>server</strong> (allow your domain) or calling your own backend, which then calls the other API.</p>
+<h2>Security rules for APIs</h2>
+<ul><li><strong>Never put secret API keys in front-end JavaScript.</strong> Anyone can open DevTools and read them. M-Pesa consumer secrets, passkeys and private keys must stay on your server; the browser calls your backend, and your backend calls Daraja.</li><li><strong>Validate on the server.</strong> The browser can send anything.</li><li><strong>Use HTTPS</strong> for all API calls.</li><li><strong>Don't trust data from APIs blindly</strong> when inserting into the page: use <code>textContent</code>, not <code>innerHTML</code>.</li></ul>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A developer puts the M-Pesa consumer key and secret in app.js so the browser can request payments directly. What's the risk?</span><em>Show answer</em></summary><div class="callout-body"><p>Anyone visiting the site can open DevTools, copy the keys and use them to make API calls as the business (and they may be able to misuse the account). Secrets belong only on the server. The browser should send the order to the developer's backend, which holds the keys and talks to Safaricom.</p></div></details>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Treating JSON text as an object</td><td><code>JSON.parse</code> it first</td></tr><tr><td>Single quotes or trailing commas in JSON</td><td>Double quotes, no trailing commas</td></tr><tr><td>Forgetting <code>await response.json()</code></td><td>Reading the body is asynchronous</td></tr><tr><td>Not checking <code>response.ok</code></td><td>404/500 don't throw by themselves</td></tr><tr><td>Sending an object as body without stringify</td><td><code>body: JSON.stringify(data)</code> with the JSON header</td></tr><tr><td>API secrets in front-end code</td><td>Keep them on the server</td></tr><tr><td>No loading/error states</td><td>Always show them</td></tr></tbody></table></div>
+<h2>Practice tasks</h2>
+<ol><li>Write JSON for a student with name, class, subjects (array) and a guardian object; parse it and print the guardian's phone.</li><li>Convert an array of 3 products to pretty-printed JSON.</li><li>Modify the fake fetch example to return a list of products and print the cheapest.</li><li>Write the <code>fetch</code> code (not runnable here) to POST a contact form <code>{ name, phone, message }</code> to <code>/api/contact</code>.</li><li>Explain in your own words why secrets can't live in front-end JavaScript.</li></ol>
+<h2>Summary</h2>
+<ul><li><strong>JSON</strong> is the text format for data exchange: double-quoted keys and strings, no comments or trailing commas.</li><li><code>JSON.parse</code> turns text into objects (wrap in <code>try...catch</code>); <code>JSON.stringify</code> turns objects into text (<code>null, 2</code> for pretty output).</li><li>APIs are server endpoints called with HTTP methods (GET, POST, PATCH, DELETE).</li><li><code>fetch</code> returns a Promise; check <code>response.ok</code>; read JSON with <code>await response.json()</code>; POST with method, headers and a JSON body.</li><li>Handle loading, empty and error states; understand CORS; never expose secrets in front-end code.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does JSON stand for? Write the full name.</p><details><summary>Show answer</summary><p>JavaScript Object Notation</p></details></li><li><p>Which method turns JSON text into a JavaScript object?</p><details><summary>Show answer</summary><p>JSON.parse</p></details></li><li><p>Which method turns an object into JSON text?</p><details><summary>Show answer</summary><p>JSON.stringify</p></details></li><li><p>Are trailing commas allowed in JSON? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which response property is true for status codes 200–299?</p><details><summary>Show answer</summary><p>ok</p></details></li><li><p>Which HTTP method is used to create an order?</p><details><summary>Show answer</summary><p>POST</p></details></li><li><p>Should M-Pesa secrets be in front-end JavaScript? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Parse the JSON in <code>data</code> and print the <strong>price</strong> of the product. The output should be <strong>3500</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=json-fetch#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 15 of 21 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/regular-expressions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Regular expressions: validating phone numbers, emails, KRA PINs and searching text</a><a class="btn btn-solid btn-sm" href="/learn/javascript/async-await/">Promises and async/await: handling things that take time <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

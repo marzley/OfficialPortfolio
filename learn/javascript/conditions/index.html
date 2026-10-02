@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Conditions | JavaScript</title>
-    <meta name="description" content="Use if , else if and else to run code only when something is true." />
+    <title>Conditions: if, else, comparison, logical operators,…</title>
+    <meta name="description" content="Programs become useful when they can decide : if the payment succeeded, show a receipt; if the phone number is wrong, show an error; if the cart is…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/javascript/conditions/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Conditions | JavaScript" />
-    <meta property="og:description" content="Use if , else if and else to run code only when something is true." />
+    <meta property="og:title" content="Conditions: if, else, comparison, logical operators,…" />
+    <meta property="og:description" content="Programs become useful when they can decide : if the payment succeeded, show a receipt; if the phone number is wrong, show an error; if the cart is…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/javascript/conditions/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Conditions | JavaScript" />
-    <meta name="twitter:description" content="Use if , else if and else to run code only when something is true." />
+    <meta name="twitter:title" content="Conditions: if, else, comparison, logical operators,…" />
+    <meta name="twitter:description" content="Programs become useful when they can decide : if the payment succeeded, show a receipt; if the phone number is wrong, show an error; if the cart is…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/javascript/conditions/#lesson","name":"Conditions","description":"Use if , else if and else to run code only when something is true.","url":"https://marzleytechsolutions.co.ke/learn/javascript/conditions/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/javascript/#course","name":"JavaScript","url":"https://marzleytechsolutions.co.ke/learn/javascript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/"},{"@type":"ListItem","position":4,"name":"Conditions","item":"https://marzleytechsolutions.co.ke/learn/javascript/conditions/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/javascript/conditions/#lesson","name":"Conditions: if, else, comparison, logical operators, switch and the ternary operator","description":"Programs become useful when they can decide : if the payment succeeded, show a receipt; if the phone number is wrong, show an error; if the cart is…","url":"https://marzleytechsolutions.co.ke/learn/javascript/conditions/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/javascript/#course","name":"JavaScript","url":"https://marzleytechsolutions.co.ke/learn/javascript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/"},{"@type":"ListItem","position":4,"name":"Conditions: if, else, comparison, logical operators, switch and the ternary operator","item":"https://marzleytechsolutions.co.ke/learn/javascript/conditions/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,24 +36,158 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/javascript/">JavaScript</a> / <span>Conditions</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=conditions"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Conditions</h1>
-<p>Use <code>if</code>, <code>else if</code> and <code>else</code> to run code only when something is true.</p>
-<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const amount = 1200;
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/javascript/">JavaScript</a> / <span>Conditions: if, else, comparison, logical operators, switch and the ternary operator</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=conditions"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Conditions: if, else, comparison, logical operators, switch and the ternary operator</h1>
+<p>Programs become useful when they can <strong>decide</strong>: if the payment succeeded, show a receipt; if the phone number is wrong, show an error; if the cart is over KSh 2,000, give free delivery; if the student scored 80 or more, award an A. These decisions are <strong>conditions</strong>. This unit covers every way JavaScript makes decisions, the true/false values behind them, and the mistakes that trip up beginners.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Booleans (<code>true</code> / <code>false</code>) and comparison operators</li><li>Why <code>===</code> is better than <code>==</code></li><li><code>if</code>, <code>else if</code>, <code>else</code></li><li>Logical operators <code>&amp;&amp;</code>, <code>||</code>, <code>!</code></li><li>Truthy and falsy values</li><li>The ternary operator, <code>switch</code>, <code>??</code> and <code>?.</code></li><li>Real examples: grading, delivery fees, validation, M-Pesa results</li></ul></div></aside>
+<h2>Booleans: true or false</h2>
+<p>A <strong>boolean</strong> has only two values: <code>true</code> or <code>false</code>. Comparisons produce booleans:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const age = 19;
+console.log(age &gt;= 18);     // true
+console.log(age &lt; 13);      // false
+console.log(typeof true);   // &quot;boolean&quot;</code></pre></figure>
+<h3>Comparison operators</h3>
+<div class="static-table"><table><thead><tr><th>Operator</th><th>Meaning</th><th>Example (<code>x = 10</code>)</th><th>Result</th></tr></thead><tbody><tr><td><code>===</code></td><td>Equal (value <strong>and</strong> type)</td><td><code>x === 10</code></td><td><code>true</code></td></tr><tr><td><code>!==</code></td><td>Not equal (value or type)</td><td><code>x !== 5</code></td><td><code>true</code></td></tr><tr><td><code>&gt;</code></td><td>Greater than</td><td><code>x &gt; 10</code></td><td><code>false</code></td></tr><tr><td><code>&gt;=</code></td><td>Greater than or equal</td><td><code>x &gt;= 10</code></td><td><code>true</code></td></tr><tr><td><code>&lt;</code></td><td>Less than</td><td><code>x &lt; 20</code></td><td><code>true</code></td></tr><tr><td><code>&lt;=</code></td><td>Less than or equal</td><td><code>x &lt;= 9</code></td><td><code>false</code></td></tr></tbody></table></div>
+<h3><code>===</code> vs <code>==</code></h3>
+<p><code>==</code> converts types before comparing, causing surprises; <code>===</code> doesn't convert.</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">console.log(5 == &quot;5&quot;);    // true  (string converted to number)
+console.log(5 === &quot;5&quot;);   // false (different types)
+console.log(0 == &quot;&quot;);     // true  (surprising!)
+console.log(0 === &quot;&quot;);    // false
+console.log(null == undefined);  // true
+console.log(null === undefined); // false</code></pre></figure>
+<p><strong>Rule:</strong> always use <code>===</code> and <code>!==</code>. Values from forms are <strong>strings</strong>, so convert them first (<code>Number(input)</code>) and compare with <code>===</code>.</p>
+<h2><code>if</code>, <code>else if</code>, <code>else</code></h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const score = 72;
 
-if (amount &gt;= 1000) {
-  console.log(&quot;Free delivery!&quot;);
-} else if (amount &gt;= 500) {
-  console.log(&quot;Delivery: KSh 100&quot;);
+if (score &gt;= 80) {
+  console.log(&quot;Grade A&quot;);
+} else if (score &gt;= 65) {
+  console.log(&quot;Grade B&quot;);
+} else if (score &gt;= 50) {
+  console.log(&quot;Grade C&quot;);
 } else {
-  console.log(&quot;Delivery: KSh 200&quot;);
+  console.log(&quot;Grade D: let&#x27;s practise more&quot;);
 }</code></pre></figure>
-<h2>Comparison operators</h2>
-<div class="static-table"><table><thead><tr><th>Operator</th><th>Meaning</th></tr></thead><tbody><tr><td><code>===</code></td><td>equal (value and type)</td></tr><tr><td><code>!==</code></td><td>not equal</td></tr><tr><td><code>&gt;</code> <code>&lt;</code> <code>&gt;=</code> <code>&lt;=</code></td><td>greater / less than</td></tr><tr><td><code>&amp;&amp;</code></td><td>and</td></tr><tr><td><code>||</code></td><td>or</td></tr></tbody></table></div>
-<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const age = 20, hasId = true;
-console.log(age &gt;= 18 &amp;&amp; hasId ? &quot;Allowed in&quot; : &quot;Not allowed&quot;);
-console.log(5 == &quot;5&quot;);   // true (loose, avoid)
-console.log(5 === &quot;5&quot;);  // false (strict, use this)</code></pre></figure></div><section class="static-exercise"><h2>Exercise</h2><p>Given <code>const score = 75;</code>, print <strong>Pass</strong> if the score is 50 or more, otherwise <strong>Fail</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=conditions#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 4 of 19 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/strings-numbers-operators/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Strings, numbers and operators</a><a class="btn btn-solid btn-sm" href="/learn/javascript/loops-arrays/">Arrays and loops <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<p>How it works:</p>
+<ol><li>The condition in brackets is checked.</li><li>If it's true, that block <code>{ ... }</code> runs and <strong>the rest is skipped</strong>.</li><li>If false, the next <code>else if</code> is checked, and so on.</li><li><code>else</code> runs only if nothing above was true.</li></ol>
+<p>Order matters: check the <strong>strictest</strong> condition first. If you checked <code>score &gt;= 50</code> first, a score of 95 would get a C.</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> What would happen if the conditions were ordered score &gt;= 50, then score &gt;= 65, then score &gt;= 80?</span><em>Show answer</em></summary><div class="callout-body"><p>A score of 72 (or even 95) would match <code>score &gt;= 50</code> first and print "Grade C"; the other branches would never be reached. With <code>else if</code> chains, put the most specific/highest thresholds first.</p></div></details>
+<h2>Logical operators</h2>
+<div class="static-table"><table><thead><tr><th>Operator</th><th>Name</th><th>True when</th></tr></thead><tbody><tr><td><code>&amp;&amp;</code></td><td>AND</td><td><strong>Both</strong> sides are true</td></tr><tr><td><code>\|\|</code></td><td>OR</td><td><strong>At least one</strong> side is true</td></tr><tr><td><code>!</code></td><td>NOT</td><td>Reverses true/false</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const total = 2500;
+const isMember = false;
+const county = &quot;Nairobi&quot;;
+
+// Free delivery: in Nairobi AND total of 2,000 or more
+if (county === &quot;Nairobi&quot; &amp;&amp; total &gt;= 2000) {
+  console.log(&quot;Free delivery&quot;);
+}
+
+// Discount: members OR orders over 5,000
+if (isMember || total &gt; 5000) {
+  console.log(&quot;10% discount&quot;);
+} else {
+  console.log(&quot;No discount&quot;);
+}
+
+// NOT
+const isOpen = false;
+if (!isOpen) {
+  console.log(&quot;Sorry, the shop is closed&quot;);
+}</code></pre></figure>
+<h3>Short-circuit evaluation</h3>
+<ul><li><code>a &amp;&amp; b</code>: if <code>a</code> is false, JavaScript doesn't even look at <code>b</code>.</li><li><code>a || b</code>: if <code>a</code> is true, it doesn't look at <code>b</code>.</li></ul>
+<p>This is used for defaults and guards: <code>const name = inputName || &quot;Customer&quot;;</code></p>
+<h2>Truthy and falsy values</h2>
+<p>In conditions, every value counts as true or false. These are <strong>falsy</strong>:</p>
+<p><code>false</code>, <code>0</code>, <code>-0</code>, <code>&quot;&quot;</code> (empty string), <code>null</code>, <code>undefined</code>, <code>NaN</code></p>
+<p><strong>Everything else is truthy</strong>, including <code>&quot;0&quot;</code>, <code>&quot;false&quot;</code>, <code>[]</code> (empty array) and <code>{}</code> (empty object).</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const phone = &quot;&quot;;
+if (!phone) {
+  console.log(&quot;Please enter your phone number&quot;);
+}
+
+const items = [];
+console.log(items ? &quot;truthy&quot; : &quot;falsy&quot;);      // truthy: empty arrays are truthy
+console.log(items.length ? &quot;has items&quot; : &quot;cart is empty&quot;);</code></pre></figure>
+<h2>The ternary operator</h2>
+<p>A short <code>if/else</code> that <strong>produces a value</strong>: <code>condition ? valueIfTrue : valueIfFalse</code></p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const stock = 0;
+const label = stock &gt; 0 ? &quot;In stock&quot; : &quot;Out of stock&quot;;
+console.log(label);
+
+const qty = 3;
+console.log(`You have ${qty} item${qty === 1 ? &quot;&quot; : &quot;s&quot;} in your cart`);</code></pre></figure>
+<p>Use it for simple choices; for complex logic, <code>if/else</code> is clearer. Avoid nesting ternaries.</p>
+<h2><code>switch</code></h2>
+<p>When comparing one value against many exact options:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const resultCode = 1032;   // M-Pesa STK result code
+
+switch (resultCode) {
+  case 0:
+    console.log(&quot;Payment successful&quot;);
+    break;
+  case 1032:
+    console.log(&quot;You cancelled the payment&quot;);
+    break;
+  case 1:
+    console.log(&quot;Insufficient balance&quot;);
+    break;
+  case 1037:
+    console.log(&quot;No response from your phone. Try again.&quot;);
+    break;
+  default:
+    console.log(&quot;Payment failed, code &quot; + resultCode);
+}</code></pre></figure>
+<ul><li><code>switch</code> uses strict comparison (<code>===</code>).</li><li><code>break</code> stops it falling into the next case; forgetting it is a classic bug.</li><li><code>default</code> handles anything not listed.</li></ul>
+<p>A modern alternative is an <strong>object lookup</strong>:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const messages = { 0: &quot;Payment successful&quot;, 1032: &quot;You cancelled the payment&quot;, 1: &quot;Insufficient balance&quot; };
+const code = 1;
+console.log(messages[code] ?? &quot;Payment failed, code &quot; + code);</code></pre></figure>
+<h2>Nullish coalescing <code>??</code> and optional chaining <code>?.</code></h2>
+<ul><li><code>a ?? b</code> gives <code>b</code> only if <code>a</code> is <code>null</code> or <code>undefined</code> (unlike <code>||</code>, it keeps <code>0</code> and <code>&quot;&quot;</code>).</li><li><code>obj?.prop</code> reads a property safely, giving <code>undefined</code> instead of an error if <code>obj</code> is null/undefined.</li></ul>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const settings = { volume: 0 };
+console.log(settings.volume || 50);   // 50 (wrong: 0 was a real value)
+console.log(settings.volume ?? 50);   // 0  (correct)
+
+const user = null;
+console.log(user?.name);              // undefined, no crash
+console.log(user?.name ?? &quot;Guest&quot;);   // &quot;Guest&quot;</code></pre></figure>
+<h2>Real-world examples</h2>
+<h3>Validating a Kenyan phone number (simplified)</h3>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">function checkPhone(raw) {
+  const digits = raw.replace(/\D/g, &quot;&quot;);          // remove spaces and symbols
+  if (digits.length === 0) return &quot;Enter your phone number&quot;;
+  if (digits.startsWith(&quot;0&quot;) &amp;&amp; digits.length === 10) return &quot;OK&quot;;
+  if (digits.startsWith(&quot;254&quot;) &amp;&amp; digits.length === 12) return &quot;OK&quot;;
+  return &quot;Enter a valid number like 0712 345 678&quot;;
+}
+
+console.log(checkPhone(&quot;&quot;));
+console.log(checkPhone(&quot;0712 345 678&quot;));
+console.log(checkPhone(&quot;254712345678&quot;));
+console.log(checkPhone(&quot;12345&quot;));</code></pre></figure>
+<h3>Delivery fee rules</h3>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">function deliveryFee(total, county) {
+  if (total === 0) return 0;
+  if (county === &quot;Nairobi&quot;) {
+    return total &gt;= 2000 ? 0 : 150;
+  }
+  return total &gt;= 5000 ? 200 : 400;   // upcountry
+}
+
+console.log(deliveryFee(1500, &quot;Nairobi&quot;));   // 150
+console.log(deliveryFee(2500, &quot;Nairobi&quot;));   // 0
+console.log(deliveryFee(3000, &quot;Nakuru&quot;));    // 400
+console.log(deliveryFee(6000, &quot;Nakuru&quot;));    // 200</code></pre></figure>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Example</th><th>Fix</th></tr></thead><tbody><tr><td><code>=</code> instead of <code>===</code></td><td><code>if (x = 5)</code></td><td><code>if (x === 5)</code> (<code>=</code> assigns!)</td></tr><tr><td>Using <code>==</code></td><td><code>if (input == 18)</code></td><td>Convert and use <code>===</code></td></tr><tr><td>Comparing strings from forms as numbers</td><td><code>&quot;100&quot; &gt; &quot;9&quot;</code> is <code>false</code> (string comparison)</td><td><code>Number(&quot;100&quot;) &gt; 9</code></td></tr><tr><td>Wrong order in <code>else if</code></td><td>Low threshold first</td><td>Highest/strictest first</td></tr><tr><td>Missing <code>break</code> in <code>switch</code></td><td>Falls through cases</td><td>Add <code>break</code></td></tr><tr><td><code>||</code> for defaults when 0 is valid</td><td><code>qty || 1</code></td><td><code>qty ?? 1</code></td></tr><tr><td><code>if (x &gt; 5 &amp;&amp; &lt; 10)</code></td><td>Invalid</td><td><code>if (x &gt; 5 &amp;&amp; x &lt; 10)</code></td></tr></tbody></table></div>
+<h2>Practice tasks</h2>
+<ol><li>Write a grading program for scores 0–100 with A–E grades, rejecting scores outside 0–100.</li><li>A matatu fare is KSh 100, but KSh 60 for students and free for children under 5. Print the fare for different passengers.</li><li>Write a function that returns "Good morning", "Good afternoon" or "Good evening" from an hour (0–23).</li><li>Use <code>switch</code> to print the name of a day from a number 1–7.</li><li>Use <code>??</code> to give a default quantity of 1 only when the quantity is missing (not when it's 0).</li></ol>
+<h2>Summary</h2>
+<ul><li>Booleans are <code>true</code>/<code>false</code>; comparisons produce booleans. Always use <code>===</code>/<code>!==</code>.</li><li><code>if / else if / else</code> choose between blocks; put strict conditions first.</li><li><code>&amp;&amp;</code> (and), <code>||</code> (or), <code>!</code> (not); they short-circuit.</li><li>Falsy values: <code>false</code>, <code>0</code>, <code>&quot;&quot;</code>, <code>null</code>, <code>undefined</code>, <code>NaN</code>; everything else is truthy.</li><li>Ternary <code>a ? b : c</code> for simple value choices; <code>switch</code> (with <code>break</code>) or object lookups for many exact options.</li><li><code>??</code> provides defaults only for null/undefined; <code>?.</code> reads properties safely.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which operator checks value and type equality?</p><details><summary>Show answer</summary><p>===</p></details></li><li><p>What does 5 === "5" give?</p><details><summary>Show answer</summary><p>false</p></details></li><li><p>Which logical operator needs both sides to be true?</p><details><summary>Show answer</summary><p>&amp;&amp;</p></details></li><li><p>Is an empty string truthy or falsy?</p><details><summary>Show answer</summary><p>falsy</p></details></li><li><p>Is an empty array truthy or falsy?</p><details><summary>Show answer</summary><p>truthy</p></details></li><li><p>What keyword stops a switch case falling into the next case?</p><details><summary>Show answer</summary><p>break</p></details></li><li><p>What does 0 ?? 50 give?</p><details><summary>Show answer</summary><p>0</p></details></li><li><p>What does the ternary operator look like? Write its two symbols in order.</p><details><summary>Show answer</summary><p>? :</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Given <code>const score = 75;</code>, print <strong>Pass</strong> if the score is 50 or more, otherwise <strong>Fail</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=conditions#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 5 of 21 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/math-dates-numbers/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Numbers, Math and dates: money, rounding, random numbers and time</a><a class="btn btn-solid btn-sm" href="/learn/javascript/loops-arrays/">Arrays and loops: storing lists of data and repeating actions <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

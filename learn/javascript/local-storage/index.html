@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Saving data in the browser (localStorage) | JavaScript</title>
-    <meta name="description" content="Save small data in the user&#x27;s browser so it&#x27;s still there after refresh: a cart, a theme, a draft. In this practice editor storage is blocked for…" />
+    <title>Saving data in the browser: localStorage,…</title>
+    <meta name="description" content="Websites often need to remember things between visits: a shopping cart, dark mode, a draft message, the last lesson you opened (this learning hub does…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/javascript/local-storage/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Saving data in the browser (localStorage) | JavaScript" />
-    <meta property="og:description" content="Save small data in the user&#x27;s browser so it&#x27;s still there after refresh: a cart, a theme, a draft. In this practice editor storage is blocked for…" />
+    <meta property="og:title" content="Saving data in the browser: localStorage,…" />
+    <meta property="og:description" content="Websites often need to remember things between visits: a shopping cart, dark mode, a draft message, the last lesson you opened (this learning hub does…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/javascript/local-storage/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Saving data in the browser (localStorage) | JavaScript" />
-    <meta name="twitter:description" content="Save small data in the user&#x27;s browser so it&#x27;s still there after refresh: a cart, a theme, a draft. In this practice editor storage is blocked for…" />
+    <meta name="twitter:title" content="Saving data in the browser: localStorage,…" />
+    <meta name="twitter:description" content="Websites often need to remember things between visits: a shopping cart, dark mode, a draft message, the last lesson you opened (this learning hub does…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/javascript/local-storage/#lesson","name":"Saving data in the browser (localStorage)","description":"Save small data in the user's browser so it's still there after refresh: a cart, a theme, a draft. In this practice editor storage is blocked for…","url":"https://marzleytechsolutions.co.ke/learn/javascript/local-storage/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/javascript/#course","name":"JavaScript","url":"https://marzleytechsolutions.co.ke/learn/javascript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/"},{"@type":"ListItem","position":4,"name":"Saving data in the browser (localStorage)","item":"https://marzleytechsolutions.co.ke/learn/javascript/local-storage/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/javascript/local-storage/#lesson","name":"Saving data in the browser: localStorage, sessionStorage, cookies and IndexedDB","description":"Websites often need to remember things between visits: a shopping cart, dark mode, a draft message, the last lesson you opened (this learning hub does…","url":"https://marzleytechsolutions.co.ke/learn/javascript/local-storage/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/javascript/#course","name":"JavaScript","url":"https://marzleytechsolutions.co.ke/learn/javascript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/"},{"@type":"ListItem","position":4,"name":"Saving data in the browser: localStorage, sessionStorage, cookies and IndexedDB","item":"https://marzleytechsolutions.co.ke/learn/javascript/local-storage/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,31 +36,125 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/javascript/">JavaScript</a> / <span>Saving data in the browser (localStorage)</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=local-storage"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>localStorage</h1>
-<p>Save small data in the user's browser so it's still there after refresh: a cart, a theme, a draft.</p>
-<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;input id=&quot;name&quot; placeholder=&quot;Your name&quot;&gt;
-&lt;button id=&quot;save&quot;&gt;Save&lt;/button&gt;
-&lt;p id=&quot;hello&quot;&gt;&lt;/p&gt;
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/javascript/">JavaScript</a> / <span>Saving data in the browser: localStorage, sessionStorage, cookies and IndexedDB</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=local-storage"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Saving data in the browser: localStorage, sessionStorage, cookies and IndexedDB</h1>
+<p>Websites often need to <strong>remember</strong> things between visits: a shopping cart, dark mode, a draft message, the last lesson you opened (this learning hub does all of these). Browsers offer several storage options. This unit explains each, focusing on <strong>localStorage</strong> (the simplest and most used), with safe patterns, limits and security rules.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Why browser storage exists and what it should (and shouldn't) hold</li><li><code>localStorage</code> and <code>sessionStorage</code>: setItem, getItem, removeItem, clear</li><li>Storing objects and arrays with JSON</li><li>Safe wrappers (storage can be blocked or full)</li><li>Building a persistent cart and theme preference</li><li>Cookies and IndexedDB: when to use them</li><li>Security and privacy rules</li></ul></div></aside>
+<h2>Why store data in the browser?</h2>
+<div class="static-table"><table><thead><tr><th>Use</th><th>Example</th></tr></thead><tbody><tr><td>Preferences</td><td>Dark mode, language, font size</td></tr><tr><td>Convenience</td><td>Shopping cart before login, form drafts, recently viewed products</td></tr><tr><td>Offline support</td><td>Saved notes, cached data for apps that work offline (PWAs)</td></tr><tr><td>Performance</td><td>Avoid reloading data that rarely changes</td></tr></tbody></table></div>
+<p>Data stored in the browser lives <strong>only on that device and browser</strong>. It's not shared with other devices, and users can clear it any time, so important data (orders, payments, accounts) must be saved on a <strong>server</strong>.</p>
+<h2>localStorage</h2>
+<aside class="callout callout-define"><p class="callout-title">localStorage</p><div class="callout-body"><p>A simple key–value store in the browser that keeps <strong>strings</strong> for a website, with <strong>no expiry</strong>: data stays after closing the browser until it's deleted by code or the user.</p></div></aside>
+<figure class="static-code"><pre><code>localStorage.setItem(&quot;theme&quot;, &quot;dark&quot;);          // save
+const theme = localStorage.getItem(&quot;theme&quot;);    // read: &quot;dark&quot; (or null if missing)
+localStorage.removeItem(&quot;theme&quot;);               // delete one key
+localStorage.clear();                           // delete everything for this site</code></pre></figure>
+<ul><li>Keys and values are <strong>strings</strong>.</li><li>Each website (origin: protocol + domain + port) has its own separate storage.</li><li>Typical limit: about <strong>5 MB</strong> per origin (varies by browser).</li><li>It's <strong>synchronous</strong> (blocks briefly); fine for small data.</li></ul>
+<h3>sessionStorage</h3>
+<p>Same methods, but data lasts only for the <strong>current tab</strong> session and is cleared when the tab closes. Useful for temporary data like a multi-step form in progress.</p>
+<div class="static-table"><table><thead><tr><th></th><th>localStorage</th><th>sessionStorage</th></tr></thead><tbody><tr><td>Lifetime</td><td>Until deleted</td><td>Until the tab closes</td></tr><tr><td>Shared between tabs of the same site</td><td>Yes</td><td>No (each tab separate)</td></tr><tr><td>Typical use</td><td>Preferences, cart</td><td>Temporary wizard steps</td></tr></tbody></table></div>
+<h2>Storing objects and arrays: use JSON</h2>
+<p>Storage only holds strings. Saving an object directly gives <code>&quot;[object Object]&quot;</code>. Convert with JSON:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">// A tiny in-memory stand-in for localStorage, so this runs anywhere
+const storage = new Map();
+const store = {
+  setItem: (k, v) =&gt; storage.set(k, String(v)),
+  getItem: (k) =&gt; (storage.has(k) ? storage.get(k) : null),
+};
+
+const cart = [{ id: 17, name: &quot;Speaker&quot;, qty: 1 }, { id: 4, name: &quot;Charger&quot;, qty: 2 }];
+
+store.setItem(&quot;cart-wrong&quot;, cart);
+console.log(store.getItem(&quot;cart-wrong&quot;));            // &quot;[object Object],[object Object]&quot; (useless)
+
+store.setItem(&quot;cart&quot;, JSON.stringify(cart));          // correct: save as JSON text
+const saved = JSON.parse(store.getItem(&quot;cart&quot;));      // read back as an array
+console.log(saved.length, &quot;items; first:&quot;, saved[0].name);
+
+console.log(store.getItem(&quot;missing&quot;));               // null when the key doesn&#x27;t exist</code></pre></figure>
+<p>Numbers and booleans come back as strings too: <code>Number(localStorage.getItem(&quot;visits&quot;))</code>, <code>localStorage.getItem(&quot;muted&quot;) === &quot;true&quot;</code>.</p>
+<h2>Storage can fail: always use a safe wrapper</h2>
+<p><code>localStorage</code> can throw errors:</p>
+<ul><li>In some <strong>private/incognito</strong> modes and in <strong>sandboxed frames</strong> (like this practice editor), access is blocked.</li><li>When storage is <strong>full</strong> (<code>QuotaExceededError</code>).</li><li>Saved text may be <strong>corrupted</strong> or from an older version of your app (invalid JSON).</li></ul>
+<p>A safe pattern:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const safeStore = {
+  get(key, fallback) {
+    try {
+      const raw = globalThis.localStorage ? localStorage.getItem(key) : null;
+      return raw === null ? fallback : JSON.parse(raw);
+    } catch (e) {
+      return fallback;                   // blocked or invalid JSON: use the default
+    }
+  },
+  set(key, value) {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+      return true;
+    } catch (e) {
+      return false;                      // blocked or full: carry on without saving
+    }
+  },
+};
+
+console.log(safeStore.get(&quot;cart&quot;, []));                 // [] if nothing saved or storage blocked
+console.log(&quot;Saved?&quot;, safeStore.set(&quot;theme&quot;, &quot;dark&quot;));  // false here (no localStorage in this runner)</code></pre></figure>
+<p>Your app should <strong>work even if storage fails</strong>; it just won't remember things.</p>
+<h2>Example: a cart that survives reloads</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;h3&gt;Cart (&lt;span id=&quot;count&quot;&gt;0&lt;/span&gt; items)&lt;/h3&gt;
+&lt;button data-name=&quot;Unga 2kg&quot;&gt;Add Unga&lt;/button&gt;
+&lt;button data-name=&quot;Sugar 1kg&quot;&gt;Add Sugar&lt;/button&gt;
+&lt;button id=&quot;clear&quot;&gt;Clear&lt;/button&gt;
+&lt;ul id=&quot;items&quot;&gt;&lt;/ul&gt;
+&lt;p id=&quot;note&quot; style=&quot;color:#64748b&quot;&gt;&lt;/p&gt;
 &lt;script&gt;
-  const hello = document.getElementById(&quot;hello&quot;);
-  const saved = localStorage.getItem(&quot;name&quot;);
-  if (saved) hello.textContent = &quot;Welcome back, &quot; + saved + &quot;!&quot;;
-  document.getElementById(&quot;save&quot;).onclick = () =&gt; {
-    const v = document.getElementById(&quot;name&quot;).value;
-    localStorage.setItem(&quot;name&quot;, v);
-    hello.textContent = &quot;Saved! Refresh and run again.&quot;;
-  };
+  const KEY = &quot;demo-cart&quot;;
+  let memory = [];
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY)) || []; }
+    catch (e) { document.querySelector(&quot;#note&quot;).textContent = &quot;(Storage is blocked in this practice editor, so the cart lives in memory only. On a real site it would survive a reload.)&quot;; return memory; }
+  }
+  function save(cart) {
+    try { localStorage.setItem(KEY, JSON.stringify(cart)); } catch (e) { memory = cart; }
+  }
+  function render() {
+    const cart = load();
+    document.querySelector(&quot;#count&quot;).textContent = cart.length;
+    const ul = document.querySelector(&quot;#items&quot;);
+    ul.replaceChildren(...cart.map((name) =&gt; { const li = document.createElement(&quot;li&quot;); li.textContent = name; return li; }));
+  }
+  document.querySelectorAll(&quot;[data-name]&quot;).forEach((btn) =&gt;
+    btn.addEventListener(&quot;click&quot;, () =&gt; { const cart = load(); cart.push(btn.dataset.name); save(cart); render(); }));
+  document.querySelector(&quot;#clear&quot;).addEventListener(&quot;click&quot;, () =&gt; { save([]); render(); });
+  render();
 &lt;/script&gt;</code></pre></figure>
-<blockquote><p>In this practice editor storage is blocked for safety, so the saved value won't persist here. Try it in your own project.</p></blockquote>
-<h2>Storing objects and arrays</h2>
-<p>localStorage stores <strong>text only</strong>, so use JSON:</p>
-<figure class="static-code"><figcaption>JS</figcaption><pre><code class="language-js">const cart = [{ id: 1, qty: 2 }];
-localStorage.setItem(&quot;cart&quot;, JSON.stringify(cart));
-const back = JSON.parse(localStorage.getItem(&quot;cart&quot;) || &quot;[]&quot;);</code></pre></figure>
-<h2>Rules</h2>
-<ul><li>Never store passwords, tokens or personal data; any script on the page can read it.</li><li>It's per device and browser; clearing browser data deletes it.</li><li>Limit is about 5 MB.</li></ul>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which method saves a value in localStorage?</p><details><summary>Show answer</summary><p>setItem</p></details></li><li><p>Can localStorage store objects directly, or only text?</p><details><summary>Show answer</summary><p>text</p></details></li><li><p>Should you store passwords in localStorage? (yes/no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 15 of 19 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/async-await/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Promises and async/await</a><a class="btn btn-solid btn-sm" href="/learn/javascript/classes-oop/">Classes and object-oriented JavaScript <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<p>On your own site (not in the sandbox), add items, reload the page, and the cart is still there.</p>
+<h2>Example: remembering dark mode</h2>
+<figure class="static-code"><pre><code>const saved = localStorage.getItem(&quot;theme&quot;);                // &quot;dark&quot;, &quot;light&quot; or null
+const prefersDark = matchMedia(&quot;(prefers-color-scheme: dark)&quot;).matches;
+document.documentElement.dataset.theme = saved || (prefersDark ? &quot;dark&quot; : &quot;light&quot;);</code></pre></figure>
+<p>Run this in a small script in the <code>&lt;head&gt;</code> so the right theme appears before the page paints (no flash of the wrong theme).</p>
+<h2>Listening for changes in other tabs</h2>
+<p>When localStorage changes in <strong>another tab</strong> of the same site, a <code>storage</code> event fires, so you can keep tabs in sync (e.g. cart count):</p>
+<figure class="static-code"><pre><code>window.addEventListener(&quot;storage&quot;, (e) =&gt; {
+  if (e.key === &quot;cart&quot;) updateCartBadge(JSON.parse(e.newValue || &quot;[]&quot;));
+});</code></pre></figure>
+<h2>Cookies</h2>
+<p><strong>Cookies</strong> are small pieces of data (about 4 KB each) that the browser <strong>sends to the server with every request</strong> to that site. They're mainly for <strong>sessions/logins</strong> and server-side features.</p>
+<div class="static-table"><table><thead><tr><th></th><th>localStorage</th><th>Cookies</th></tr></thead><tbody><tr><td>Sent to the server automatically</td><td>No</td><td>Yes, on every request</td></tr><tr><td>Size</td><td>~5 MB</td><td>~4 KB per cookie</td></tr><tr><td>Expiry</td><td>None (until deleted)</td><td>Set by the site</td></tr><tr><td>Readable by JavaScript</td><td>Yes</td><td>Yes, unless <code>HttpOnly</code></td></tr><tr><td>Best for</td><td>Client-side preferences and caches</td><td>Login sessions (set by the server)</td></tr></tbody></table></div>
+<p>Secure session cookies are set by the <strong>server</strong> with <code>HttpOnly</code> (JavaScript can't read them, protecting against theft), <code>Secure</code> (HTTPS only) and <code>SameSite</code> (protects against cross-site request forgery).</p>
+<h2>IndexedDB</h2>
+<p>For <strong>large or structured data</strong> (thousands of records, offline apps, files), browsers offer <strong>IndexedDB</strong>: an asynchronous database in the browser. Its API is more complex; libraries like <strong>idb</strong> or <strong>Dexie</strong> make it easier. Use it for offline-first apps (e.g. a field data collection app that syncs when back online).</p>
+<h2>Security and privacy rules</h2>
+<aside class="callout callout-warning"><p class="callout-title">Never store secrets in localStorage</p><div class="callout-body"><p>Any JavaScript running on your page (including a malicious script injected through an XSS bug or a compromised third-party library) can read localStorage. <strong>Don't</strong> store passwords, M-Pesa PINs, full card numbers, or long-lived login tokens there. Use server sessions with <code>HttpOnly</code> cookies for authentication.</p></div></aside>
+<ul><li>Store only what's necessary; it's personal data on a shared device in many households and cyber cafés.</li><li>Provide a way to clear data (e.g. "Sign out" clears cached personal data).</li><li>Kenya's Data Protection Act applies to personal data you collect, including what you store about users.</li><li>Respect users' choices about cookies and tracking (consent for analytics/ads cookies where required).</li></ul>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A school portal stores each student's full name, results and login token in localStorage so pages load faster. What problems could this cause on a shared computer in a cyber café?</span><em>Show answer</em></summary><div class="callout-body"><p>The next person using that browser could read the stored results and token (via DevTools or a malicious script) and possibly access the student's account. Sensitive data and tokens shouldn't be in localStorage; use server sessions with HttpOnly cookies, short session lifetimes, and clear any cached data on sign-out.</p></div></details>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Saving objects without <code>JSON.stringify</code></td><td>Stringify on save, parse on load</td></tr><tr><td>Not handling <code>null</code> for missing keys</td><td>Provide defaults</td></tr><tr><td>No <code>try...catch</code> around storage</td><td>Wrap in a safe helper</td></tr><tr><td>Storing secrets or tokens</td><td>Server sessions + HttpOnly cookies</td></tr><tr><td>Relying on localStorage for important data</td><td>Save orders/accounts on the server</td></tr><tr><td>Huge data in localStorage</td><td>IndexedDB for large data</td></tr></tbody></table></div>
+<h2>Practice tasks</h2>
+<ol><li>Save a visitor's name from an input and greet them on the next visit (test on your own computer, not the sandbox).</li><li>Count page visits with localStorage and display "You've visited X times".</li><li>Save a form draft on every <code>input</code> event and restore it on load.</li><li>Build a dark mode toggle that remembers the choice.</li><li>Write a <code>safeStore</code> helper and use it in a small project.</li></ol>
+<h2>Summary</h2>
+<ul><li>Browser storage remembers data on one device: preferences, carts, drafts, offline data.</li><li><code>localStorage</code> persists; <code>sessionStorage</code> lasts for the tab; both store strings via <code>setItem</code>, <code>getItem</code>, <code>removeItem</code>, <code>clear</code>.</li><li>Use JSON for objects/arrays; wrap storage in <code>try...catch</code>; handle <code>null</code> defaults.</li><li>Cookies travel to the server and suit sessions (HttpOnly, Secure, SameSite); IndexedDB suits large structured data.</li><li>Never store secrets or tokens in localStorage; keep important data on the server.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which storage keeps data after the browser is closed: localStorage or sessionStorage?</p><details><summary>Show answer</summary><p>localStorage</p></details></li><li><p>Which method saves a value in localStorage?</p><details><summary>Show answer</summary><p>setItem</p></details></li><li><p>What does getItem return when the key doesn't exist?</p><details><summary>Show answer</summary><p>null</p></details></li><li><p>What must you do to an object before saving it in localStorage?</p><details><summary>Show answer</summary><p>JSON.stringify</p></details></li><li><p>Roughly how much data can localStorage hold per site? Write in MB.</p><details><summary>Show answer</summary><p>5MB</p></details></li><li><p>Which cookie flag stops JavaScript from reading a cookie?</p><details><summary>Show answer</summary><p>HttpOnly</p></details></li><li><p>Should login tokens or passwords be stored in localStorage? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 17 of 21 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/async-await/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Promises and async/await: handling things that take time</a><a class="btn btn-solid btn-sm" href="/learn/javascript/classes-oop/">Classes and object-oriented JavaScript <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

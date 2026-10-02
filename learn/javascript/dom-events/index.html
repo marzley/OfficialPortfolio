@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>The DOM and events | JavaScript</title>
-    <meta name="description" content="The DOM is the page as JavaScript sees it. You can find elements, change them and react to clicks. Run this and click the button:" />
+    <title>The DOM and events: changing the page and responding to…</title>
+    <meta name="description" content="This is where JavaScript and web pages meet. The DOM (Document Object Model) is the browser&#x27;s live version of your HTML that JavaScript can read and…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/javascript/dom-events/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="The DOM and events | JavaScript" />
-    <meta property="og:description" content="The DOM is the page as JavaScript sees it. You can find elements, change them and react to clicks. Run this and click the button:" />
+    <meta property="og:title" content="The DOM and events: changing the page and responding to…" />
+    <meta property="og:description" content="This is where JavaScript and web pages meet. The DOM (Document Object Model) is the browser&#x27;s live version of your HTML that JavaScript can read and…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/javascript/dom-events/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="The DOM and events | JavaScript" />
-    <meta name="twitter:description" content="The DOM is the page as JavaScript sees it. You can find elements, change them and react to clicks. Run this and click the button:" />
+    <meta name="twitter:title" content="The DOM and events: changing the page and responding to…" />
+    <meta name="twitter:description" content="This is where JavaScript and web pages meet. The DOM (Document Object Model) is the browser&#x27;s live version of your HTML that JavaScript can read and…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/javascript/dom-events/#lesson","name":"The DOM and events","description":"The DOM is the page as JavaScript sees it. You can find elements, change them and react to clicks. Run this and click the button:","url":"https://marzleytechsolutions.co.ke/learn/javascript/dom-events/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/javascript/#course","name":"JavaScript","url":"https://marzleytechsolutions.co.ke/learn/javascript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/"},{"@type":"ListItem","position":4,"name":"The DOM and events","item":"https://marzleytechsolutions.co.ke/learn/javascript/dom-events/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/javascript/dom-events/#lesson","name":"The DOM and events: changing the page and responding to clicks, typing and more","description":"This is where JavaScript and web pages meet. The DOM (Document Object Model) is the browser's live version of your HTML that JavaScript can read and…","url":"https://marzleytechsolutions.co.ke/learn/javascript/dom-events/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/javascript/#course","name":"JavaScript","url":"https://marzleytechsolutions.co.ke/learn/javascript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/"},{"@type":"ListItem","position":4,"name":"The DOM and events: changing the page and responding to clicks, typing and more","item":"https://marzleytechsolutions.co.ke/learn/javascript/dom-events/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,34 +36,196 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/javascript/">JavaScript</a> / <span>The DOM and events</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=dom-events"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>The DOM and events</h1>
-<p>The <strong>DOM</strong> is the page as JavaScript sees it. You can find elements, change them and react to clicks.</p>
-<p>Run this and click the button:</p>
-<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;h2 id=&quot;count&quot;&gt;Clicks: 0&lt;/h2&gt;
-&lt;button id=&quot;btn&quot;&gt;Click me&lt;/button&gt;
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/javascript/">JavaScript</a> / <span>The DOM and events: changing the page and responding to clicks, typing and more</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=dom-events"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>The DOM and events: changing the page and responding to clicks, typing and more</h1>
+<p>This is where JavaScript and web pages meet. The <strong>DOM</strong> (Document Object Model) is the browser's live version of your HTML that JavaScript can read and change: update text, add items to a list, show an error, switch to dark mode. <strong>Events</strong> are things that happen (a click, typing, submitting a form, scrolling) that JavaScript can respond to. Master these and you can build interactive features for any website.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>What the DOM is and how it relates to HTML</li><li>Selecting elements: <code>querySelector</code>, <code>querySelectorAll</code>, <code>getElementById</code></li><li>Changing text, HTML, attributes, classes and styles safely</li><li>Creating, inserting and removing elements</li><li>Events: <code>addEventListener</code>, the event object, common events</li><li>Forms: reading values and preventing page reloads</li><li>Event delegation for dynamic lists</li><li>Accessibility and performance tips</li></ul></div></aside>
+<h2>What is the DOM?</h2>
+<p>When the browser loads HTML, it builds a <strong>tree of objects</strong> in memory, one object per element, text and attribute. That tree is the DOM.</p>
+<figure class="static-code"><pre><code>document
+└── html
+    ├── head
+    │   └── title
+    └── body
+        ├── h1  &quot;Juma&#x27;s Shop&quot;
+        └── ul#cart
+            ├── li  &quot;Unga&quot;
+            └── li  &quot;Sugar&quot;</code></pre></figure>
+<aside class="callout callout-define"><p class="callout-title">DOM (Document Object Model)</p><div class="callout-body"><p>The browser's live, tree-shaped representation of a web page, which JavaScript can read and change. Changing the DOM changes what the user sees, without reloading the page.</p></div></aside>
+<p>Important: the DOM isn't your HTML file. JavaScript changes the DOM in memory; your file on the server stays the same (refresh and changes disappear unless saved somewhere).</p>
+<p>The DOM is a <strong>browser</strong> feature, so DOM examples here run as HTML pages with a <code>&lt;script&gt;</code>.</p>
+<h2>Selecting elements</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;h1 id=&quot;title&quot;&gt;Juma&#x27;s Shop&lt;/h1&gt;
+&lt;p class=&quot;note&quot;&gt;Open daily 8am–8pm&lt;/p&gt;
+&lt;ul id=&quot;cart&quot;&gt;&lt;li&gt;Unga&lt;/li&gt;&lt;li&gt;Sugar&lt;/li&gt;&lt;li&gt;Milk&lt;/li&gt;&lt;/ul&gt;
 &lt;script&gt;
-  let clicks = 0;
-  const btn = document.getElementById(&quot;btn&quot;);
-  const label = document.getElementById(&quot;count&quot;);
+  const title = document.querySelector(&quot;#title&quot;);        // first match (CSS selector)
+  const note = document.querySelector(&quot;.note&quot;);
+  const items = document.querySelectorAll(&quot;#cart li&quot;);    // all matches (a NodeList)
+  const sameTitle = document.getElementById(&quot;title&quot;);     // by id (no #)
+
+  console.log(title.textContent);
+  console.log(note.textContent);
+  console.log(items.length, &quot;items in the cart&quot;);
+  items.forEach((li) =&gt; console.log(&quot;-&quot;, li.textContent));
+&lt;/script&gt;</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Method</th><th>Returns</th></tr></thead><tbody><tr><td><code>document.querySelector(css)</code></td><td>The <strong>first</strong> matching element, or <code>null</code></td></tr><tr><td><code>document.querySelectorAll(css)</code></td><td><strong>All</strong> matches (NodeList; use <code>forEach</code> or <code>for...of</code>)</td></tr><tr><td><code>document.getElementById(id)</code></td><td>Element with that id, or <code>null</code></td></tr><tr><td><code>element.querySelector(css)</code></td><td>Search <strong>inside</strong> an element</td></tr></tbody></table></div>
+<p>If a selector finds nothing, you get <code>null</code>, and using it (<code>null.textContent</code>) throws an error. Check spelling and make sure the script runs <strong>after</strong> the HTML exists (script at the end of <code>&lt;body&gt;</code> or <code>defer</code>).</p>
+<h2>Changing content</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;h2 id=&quot;msg&quot;&gt;Loading…&lt;/h2&gt;
+&lt;p id=&quot;price&quot;&gt;&lt;/p&gt;
+&lt;div id=&quot;box&quot;&gt;&lt;/div&gt;
+&lt;script&gt;
+  document.querySelector(&quot;#msg&quot;).textContent = &quot;Welcome back, Wanjiku!&quot;;
+  document.querySelector(&quot;#price&quot;).textContent = &quot;Total: KSh &quot; + (180 * 3).toLocaleString();
+
+  // innerHTML parses HTML: only use with trusted content
+  document.querySelector(&quot;#box&quot;).innerHTML = &quot;&lt;strong&gt;Free delivery&lt;/strong&gt; on orders over KSh 2,000&quot;;
+&lt;/script&gt;</code></pre></figure>
+<h3><code>textContent</code> vs <code>innerHTML</code></h3>
+<div class="static-table"><table><thead><tr><th></th><th><code>textContent</code></th><th><code>innerHTML</code></th></tr></thead><tbody><tr><td>Treats value as</td><td>Plain text</td><td>HTML code</td></tr><tr><td>Safe with user input</td><td><strong>Yes</strong></td><td><strong>No</strong></td></tr><tr><td>Use for</td><td>Names, messages, numbers</td><td>Your own trusted HTML templates</td></tr></tbody></table></div>
+<aside class="callout callout-warning"><p class="callout-title">innerHTML and user input = security risk</p><div class="callout-body"><p>Never put text typed by users (names, comments, search terms) into <code>innerHTML</code>. Someone could type <code>&lt;img src=x onerror=&quot;stealData()&quot;&gt;</code> and run code on other users' browsers. This attack is called <strong>XSS (cross-site scripting)</strong>. Use <code>textContent</code>, or create elements and set their text.</p></div></aside>
+<h2>Attributes, classes and styles</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .highlight { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 8px; }
+  .hidden { display: none; }
+&lt;/style&gt;
+&lt;p id=&quot;offer&quot;&gt;Weekend offer: 10% off&lt;/p&gt;
+&lt;a id=&quot;link&quot; href=&quot;#&quot;&gt;Our shop&lt;/a&gt;
+&lt;img id=&quot;pic&quot; src=&quot;https://picsum.photos/120/80&quot; alt=&quot;Shop&quot;&gt;
+&lt;p id=&quot;secret&quot; class=&quot;hidden&quot;&gt;Secret discount code: KARIBU10&lt;/p&gt;
+&lt;script&gt;
+  const offer = document.querySelector(&quot;#offer&quot;);
+  offer.classList.add(&quot;highlight&quot;);          // add a class
+  offer.classList.toggle(&quot;bold&quot;);            // add if missing, remove if present
+  console.log(offer.classList.contains(&quot;highlight&quot;));   // true
+
+  const link = document.querySelector(&quot;#link&quot;);
+  link.setAttribute(&quot;href&quot;, &quot;https://marzleytechsolutions.co.ke&quot;);
+  link.textContent = &quot;Visit Marzley Tech&quot;;
+
+  document.querySelector(&quot;#pic&quot;).alt = &quot;Inside our Kisumu shop&quot;;
+
+  document.querySelector(&quot;#secret&quot;).classList.remove(&quot;hidden&quot;);   // show it
+
+  offer.style.fontSize = &quot;20px&quot;;             // inline style (camelCase property)
+&lt;/script&gt;</code></pre></figure>
+<p><strong>Prefer classes over inline styles:</strong> keep design in CSS, and use JavaScript to add or remove classes (<code>is-open</code>, <code>is-active</code>, <code>has-error</code>). It's cleaner and easier to maintain.</p>
+<h2>Creating and removing elements</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;ul id=&quot;list&quot;&gt;&lt;/ul&gt;
+&lt;script&gt;
+  const list = document.querySelector(&quot;#list&quot;);
+  const products = [&quot;Unga 2kg&quot;, &quot;Sugar 1kg&quot;, &quot;Milk 500ml&quot;];
+
+  for (const name of products) {
+    const li = document.createElement(&quot;li&quot;);   // create
+    li.textContent = name;                     // safe text
+    list.append(li);                           // insert at the end
+  }
+
+  const first = document.createElement(&quot;li&quot;);
+  first.textContent = &quot;Bread (new!)&quot;;
+  list.prepend(first);                         // insert at the start
+
+  list.lastElementChild.remove();              // remove the last item
+&lt;/script&gt;</code></pre></figure>
+<p>Other insert methods: <code>before()</code>, <code>after()</code>, <code>insertAdjacentHTML()</code> (trusted HTML only), <code>replaceWith()</code>.</p>
+<h2>Events</h2>
+<p>An <strong>event</strong> is a signal that something happened. You attach a <strong>listener</strong>: a function that runs when the event occurs.</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;button id=&quot;btn&quot;&gt;Add to cart&lt;/button&gt;
+&lt;p id=&quot;count&quot;&gt;Items in cart: 0&lt;/p&gt;
+&lt;script&gt;
+  let count = 0;
+  const btn = document.querySelector(&quot;#btn&quot;);
+  const out = document.querySelector(&quot;#count&quot;);
+
   btn.addEventListener(&quot;click&quot;, () =&gt; {
-    clicks++;
-    label.textContent = &quot;Clicks: &quot; + clicks;
-    console.log(&quot;Clicked&quot;, clicks, &quot;times&quot;);
+    count++;
+    out.textContent = &quot;Items in cart: &quot; + count;
   });
 &lt;/script&gt;</code></pre></figure>
-<h2>A tiny calculator</h2>
-<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;input id=&quot;a&quot; type=&quot;number&quot; value=&quot;1500&quot;&gt; ×
-&lt;input id=&quot;b&quot; type=&quot;number&quot; value=&quot;3&quot;&gt;
-&lt;button id=&quot;go&quot;&gt;=&lt;/button&gt; &lt;strong id=&quot;res&quot;&gt;&lt;/strong&gt;
+<p><code>element.addEventListener(&quot;eventName&quot;, function)</code>. Avoid old inline <code>onclick=&quot;...&quot;</code> attributes in HTML: they mix code into markup and are blocked by strict security policies (CSP).</p>
+<h3>Common events</h3>
+<div class="static-table"><table><thead><tr><th>Event</th><th>Fires when</th></tr></thead><tbody><tr><td><code>click</code></td><td>Element is clicked/tapped (also Enter/Space on buttons)</td></tr><tr><td><code>input</code></td><td>Value of an input changes (every keystroke)</td></tr><tr><td><code>change</code></td><td>Value committed (select changed, checkbox toggled, input left)</td></tr><tr><td><code>submit</code></td><td>Form is submitted</td></tr><tr><td><code>keydown</code> / <code>keyup</code></td><td>Key pressed / released</td></tr><tr><td><code>focus</code> / <code>blur</code></td><td>Element gains / loses focus</td></tr><tr><td><code>mouseenter</code> / <code>mouseleave</code></td><td>Mouse enters / leaves (no equivalent on touch screens)</td></tr><tr><td><code>scroll</code></td><td>Page or element scrolls</td></tr><tr><td><code>DOMContentLoaded</code></td><td>HTML is fully parsed</td></tr><tr><td><code>load</code></td><td>Page and all images/resources loaded</td></tr></tbody></table></div>
+<h3>The event object</h3>
+<p>The listener receives an <strong>event object</strong> with details:</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;input id=&quot;search&quot; placeholder=&quot;Search products&quot;&gt;
+&lt;p id=&quot;info&quot;&gt;&lt;/p&gt;
 &lt;script&gt;
-  document.getElementById(&quot;go&quot;).addEventListener(&quot;click&quot;, () =&gt; {
-    const a = Number(document.getElementById(&quot;a&quot;).value);
-    const b = Number(document.getElementById(&quot;b&quot;).value);
-    document.getElementById(&quot;res&quot;).textContent = a * b;
+  const search = document.querySelector(&quot;#search&quot;);
+  const info = document.querySelector(&quot;#info&quot;);
+
+  search.addEventListener(&quot;input&quot;, (event) =&gt; {
+    info.textContent = `You typed: &quot;${event.target.value}&quot; (${event.target.value.length} characters)`;
+  });
+
+  search.addEventListener(&quot;keydown&quot;, (event) =&gt; {
+    if (event.key === &quot;Escape&quot;) { search.value = &quot;&quot;; info.textContent = &quot;Cleared&quot;; }
   });
 &lt;/script&gt;</code></pre></figure>
-<blockquote><p>Use <code>textContent</code> (not <code>innerHTML</code>) to show text typed by users. It's safer.</p></blockquote></div><section class="static-exercise"><h2>Exercise</h2><p>Using <code>document.querySelector</code>, change the text of the <code>&lt;h1&gt;</code> to <strong>Done</strong> and print it with <code>console.log</code>.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=dom-events#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 11 of 19 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/errors-debugging/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Errors, try/catch and debugging</a><a class="btn btn-solid btn-sm" href="/learn/javascript/forms-validation/">Handling forms and validating input <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<ul><li><code>event.target</code>: the element that triggered the event.</li><li><code>event.key</code>: which key was pressed.</li><li><code>event.preventDefault()</code>: stop the browser's default action (e.g. form reload, link navigation).</li></ul>
+<h2>Forms with JavaScript</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;form id=&quot;order&quot;&gt;
+  &lt;label for=&quot;phone&quot;&gt;M-Pesa number&lt;/label&gt;
+  &lt;input id=&quot;phone&quot; name=&quot;phone&quot; type=&quot;tel&quot; placeholder=&quot;0712 345 678&quot;&gt;
+  &lt;label for=&quot;qty&quot;&gt;Quantity&lt;/label&gt;
+  &lt;input id=&quot;qty&quot; name=&quot;qty&quot; type=&quot;number&quot; value=&quot;1&quot; min=&quot;1&quot;&gt;
+  &lt;button type=&quot;submit&quot;&gt;Order&lt;/button&gt;
+  &lt;p id=&quot;feedback&quot; role=&quot;status&quot;&gt;&lt;/p&gt;
+&lt;/form&gt;
+&lt;script&gt;
+  const form = document.querySelector(&quot;#order&quot;);
+  const feedback = document.querySelector(&quot;#feedback&quot;);
+
+  form.addEventListener(&quot;submit&quot;, (e) =&gt; {
+    e.preventDefault();                          // stop the page reloading
+    const phone = form.phone.value.replace(/\D/g, &quot;&quot;);
+    const qty = Number(form.qty.value);
+
+    if (!/^(0|254)[17]\d{8}$/.test(phone)) {
+      feedback.textContent = &quot;Enter a valid Safaricom or Airtel number.&quot;;
+      form.phone.focus();
+      return;
+    }
+    feedback.textContent = `Order received: ${qty} item(s). We&#x27;ll send an M-Pesa prompt to ${phone}.`;
+  });
+&lt;/script&gt;</code></pre></figure>
+<p>Remember: browser-side validation is for convenience; the <strong>server must validate again</strong> (anyone can bypass JavaScript).</p>
+<h2>Event delegation</h2>
+<p>Adding a listener to every item in a long or changing list is wasteful, and new items wouldn't have listeners. Instead, listen on the <strong>parent</strong> and check what was clicked (events <strong>bubble</strong> up from the target to its ancestors):</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;ul id=&quot;tasks&quot;&gt;
+  &lt;li&gt;Buy unga &lt;button class=&quot;del&quot;&gt;✕&lt;/button&gt;&lt;/li&gt;
+  &lt;li&gt;Pay rent &lt;button class=&quot;del&quot;&gt;✕&lt;/button&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;button id=&quot;add&quot;&gt;Add task&lt;/button&gt;
+&lt;script&gt;
+  const tasks = document.querySelector(&quot;#tasks&quot;);
+  tasks.addEventListener(&quot;click&quot;, (e) =&gt; {
+    const btn = e.target.closest(&quot;.del&quot;);      // did the click happen on a delete button?
+    if (btn) btn.closest(&quot;li&quot;).remove();
+  });
+
+  let n = 1;
+  document.querySelector(&quot;#add&quot;).addEventListener(&quot;click&quot;, () =&gt; {
+    const li = document.createElement(&quot;li&quot;);
+    li.textContent = &quot;New task &quot; + n++ + &quot; &quot;;
+    const del = document.createElement(&quot;button&quot;);
+    del.className = &quot;del&quot;;
+    del.textContent = &quot;✕&quot;;
+    li.append(del);
+    tasks.append(li);                            // works without adding new listeners
+  });
+&lt;/script&gt;</code></pre></figure>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why does deleting a newly added task still work, even though no listener was added to its button?</span><em>Show answer</em></summary><div class="callout-body"><p>Because the listener is on the <code>&lt;ul&gt;</code>. Clicks on any button inside <strong>bubble up</strong> to the <code>&lt;ul&gt;</code>, where the code checks <code>e.target.closest(&quot;.del&quot;)</code>. Any present or future child button is handled by that single parent listener.</p></div></details>
+<h2>Accessibility and performance tips</h2>
+<ul><li>Use real <code>&lt;button&gt;</code> elements for clickable actions (keyboard and screen reader support for free).</li><li>Announce dynamic messages with <code>role=&quot;status&quot;</code> or <code>aria-live=&quot;polite&quot;</code> (as in the form example).</li><li>Move focus sensibly (e.g. to the first error field, or into an opened dialog).</li><li>Batch DOM changes: build items then insert once (e.g. using a <code>DocumentFragment</code> or building an array of elements) for big lists.</li><li>For <code>scroll</code> and <code>input</code> events that fire very often, keep handlers light (or debounce them).</li></ul>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Script runs before the HTML exists (<code>null</code> errors)</td><td>Script at end of <code>&lt;body&gt;</code> or <code>defer</code></td></tr><tr><td>Wrong selector (<code>&quot;title&quot;</code> instead of <code>&quot;#title&quot;</code>)</td><td>Use CSS selector syntax</td></tr><tr><td><code>innerHTML</code> with user input</td><td><code>textContent</code> / <code>createElement</code></td></tr><tr><td>Calling the function when adding the listener: <code>addEventListener(&quot;click&quot;, save())</code></td><td>Pass it: <code>addEventListener(&quot;click&quot;, save)</code></td></tr><tr><td>Forgetting <code>preventDefault()</code> on form submit</td><td>Page reloads and data is lost</td></tr><tr><td>Comparing input values as numbers</td><td><code>Number(input.value)</code></td></tr><tr><td><code>div</code> with click handler instead of <code>button</code></td><td>Use <code>&lt;button&gt;</code></td></tr></tbody></table></div>
+<h2>Practice tasks</h2>
+<ol><li>Build a counter with + and − buttons that never goes below 0.</li><li>Make a "Show more" button that reveals hidden text by toggling a class.</li><li>Build a live character counter for a 160-character SMS textarea.</li><li>Create a product list from an array of objects using <code>createElement</code>.</li><li>Build a to-do list where tasks can be added and deleted (use event delegation).</li></ol>
+<h2>Summary</h2>
+<ul><li>The DOM is the browser's live tree of the page; JavaScript reads and changes it.</li><li>Select with <code>querySelector</code>, <code>querySelectorAll</code>, <code>getElementById</code>.</li><li>Change content with <code>textContent</code> (safe) or <code>innerHTML</code> (trusted HTML only); change classes with <code>classList</code>; attributes with <code>setAttribute</code> or properties.</li><li>Create with <code>createElement</code>, insert with <code>append</code>/<code>prepend</code>, remove with <code>remove()</code>.</li><li>Respond to events with <code>addEventListener</code>; use the event object (<code>target</code>, <code>key</code>, <code>preventDefault()</code>).</li><li>Handle forms with <code>submit</code> + <code>preventDefault</code>; use event delegation for dynamic lists; keep it accessible.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does DOM stand for? Write the first word.</p><details><summary>Show answer</summary><p>Document</p></details></li><li><p>Which method selects the first element matching a CSS selector?</p><details><summary>Show answer</summary><p>querySelector</p></details></li><li><p>Which property safely sets plain text in an element?</p><details><summary>Show answer</summary><p>textContent</p></details></li><li><p>Which method attaches an event listener?</p><details><summary>Show answer</summary><p>addEventListener</p></details></li><li><p>Which event fires on every keystroke in an input?</p><details><summary>Show answer</summary><p>input</p></details></li><li><p>Which event method stops a form from reloading the page?</p><details><summary>Show answer</summary><p>preventDefault</p></details></li><li><p>Which classList method adds a class if missing and removes it if present?</p><details><summary>Show answer</summary><p>toggle</p></details></li><li><p>What is the attack called when user input is run as code through innerHTML? (three letters)</p><details><summary>Show answer</summary><p>XSS</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Using <code>document.querySelector</code>, change the text of the <code>&lt;h1&gt;</code> to <strong>Done</strong> and print it with <code>console.log</code>.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=dom-events#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 12 of 21 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/errors-debugging/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Errors, try/catch and debugging</a><a class="btn btn-solid btn-sm" href="/learn/javascript/forms-validation/">Handling forms and validating input <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Arrays and loops | JavaScript</title>
-    <meta name="description" content="An array holds a list of values." />
+    <title>Arrays and loops: storing lists of data and repeating…</title>
+    <meta name="description" content="Real programs work with lists : products in a shop, students in a class, transactions in a statement, messages in a chat. JavaScript stores lists in…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/javascript/loops-arrays/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Arrays and loops | JavaScript" />
-    <meta property="og:description" content="An array holds a list of values." />
+    <meta property="og:title" content="Arrays and loops: storing lists of data and repeating…" />
+    <meta property="og:description" content="Real programs work with lists : products in a shop, students in a class, transactions in a statement, messages in a chat. JavaScript stores lists in…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/javascript/loops-arrays/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Arrays and loops | JavaScript" />
-    <meta name="twitter:description" content="An array holds a list of values." />
+    <meta name="twitter:title" content="Arrays and loops: storing lists of data and repeating…" />
+    <meta name="twitter:description" content="Real programs work with lists : products in a shop, students in a class, transactions in a statement, messages in a chat. JavaScript stores lists in…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/javascript/loops-arrays/#lesson","name":"Arrays and loops","description":"An array holds a list of values.","url":"https://marzleytechsolutions.co.ke/learn/javascript/loops-arrays/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/javascript/#course","name":"JavaScript","url":"https://marzleytechsolutions.co.ke/learn/javascript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/"},{"@type":"ListItem","position":4,"name":"Arrays and loops","item":"https://marzleytechsolutions.co.ke/learn/javascript/loops-arrays/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/javascript/loops-arrays/#lesson","name":"Arrays and loops: storing lists of data and repeating actions","description":"Real programs work with lists : products in a shop, students in a class, transactions in a statement, messages in a chat. JavaScript stores lists in…","url":"https://marzleytechsolutions.co.ke/learn/javascript/loops-arrays/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/javascript/#course","name":"JavaScript","url":"https://marzleytechsolutions.co.ke/learn/javascript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"JavaScript","item":"https://marzleytechsolutions.co.ke/learn/javascript/"},{"@type":"ListItem","position":4,"name":"Arrays and loops: storing lists of data and repeating actions","item":"https://marzleytechsolutions.co.ke/learn/javascript/loops-arrays/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,30 +36,171 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/javascript/">JavaScript</a> / <span>Arrays and loops</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=loops-arrays"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Arrays and loops</h1>
-<p>An <strong>array</strong> holds a list of values.</p>
-<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const towns = [&quot;Nairobi&quot;, &quot;Mombasa&quot;, &quot;Kisumu&quot;];
-console.log(towns[0]);        // first item
-console.log(towns.length);    // how many
-towns.push(&quot;Nakuru&quot;);         // add one
-console.log(towns);</code></pre></figure>
-<h2>Loops</h2>
-<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const prices = [200, 450, 1200];
-let total = 0;
-for (const p of prices) {
-  total += p;
-}
-console.log(&quot;Total:&quot;, total);
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/javascript/">JavaScript</a> / <span>Arrays and loops: storing lists of data and repeating actions</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=loops-arrays"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Arrays and loops: storing lists of data and repeating actions</h1>
+<p>Real programs work with <strong>lists</strong>: products in a shop, students in a class, transactions in a statement, messages in a chat. JavaScript stores lists in <strong>arrays</strong>, and processes them with <strong>loops</strong> that repeat an action for every item. Together, arrays and loops let a few lines of code handle ten items or ten million. This unit covers arrays and every common loop in depth, with Kenyan examples.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Creating arrays, indexes and <code>length</code></li><li>Reading, changing, adding and removing items</li><li><code>for</code>, <code>for...of</code>, <code>while</code>, <code>do...while</code> and <code>forEach</code></li><li><code>break</code> and <code>continue</code></li><li>Totals, counting, finding the largest, filtering with loops</li><li>Arrays of objects (preview), nested loops and avoiding infinite loops</li></ul></div></aside>
+<h2>What is an array?</h2>
+<aside class="callout callout-define"><p class="callout-title">Array</p><div class="callout-body"><p>An ordered list of values stored in one variable, written with square brackets: <code>[&quot;Unga&quot;, &quot;Sugar&quot;, &quot;Milk&quot;]</code>. Each item has a numbered position called an <strong>index</strong>, starting at <strong>0</strong>.</p></div></aside>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const items = [&quot;Unga&quot;, &quot;Sugar&quot;, &quot;Milk&quot;, &quot;Bread&quot;];
 
-for (let i = 1; i &lt;= 3; i++) {
-  console.log(&quot;Round &quot; + i);
+console.log(items);          // the whole array
+console.log(items[0]);       // &quot;Unga&quot;  (first item is index 0)
+console.log(items[2]);       // &quot;Milk&quot;
+console.log(items.length);   // 4
+console.log(items[items.length - 1]);   // &quot;Bread&quot; (last item)
+console.log(items.at(-1));   // &quot;Bread&quot; (modern way to get the last item)
+console.log(items[10]);      // undefined (no item there)</code></pre></figure>
+<p>Why zero-based? The index means "how many steps from the start": the first item is 0 steps away.</p>
+<p>Arrays can hold any type, even mixed: <code>[180, &quot;Unga&quot;, true]</code>, but usually one kind of data per array.</p>
+<h2>Changing arrays</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const cart = [&quot;Unga&quot;, &quot;Sugar&quot;];
+
+cart.push(&quot;Milk&quot;);          // add to the end
+cart.unshift(&quot;Bread&quot;);      // add to the start
+console.log(cart);          // [&quot;Bread&quot;, &quot;Unga&quot;, &quot;Sugar&quot;, &quot;Milk&quot;]
+
+const last = cart.pop();    // remove from the end (returns it)
+const first = cart.shift(); // remove from the start
+console.log(last, first, cart);
+
+cart[0] = &quot;Unga 2kg&quot;;       // replace by index
+console.log(cart);
+
+console.log(cart.includes(&quot;Sugar&quot;));   // true
+console.log(cart.indexOf(&quot;Sugar&quot;));    // 1 (or -1 if not found)
+
+cart.splice(1, 1);          // at index 1, remove 1 item
+console.log(cart);</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Method</th><th>Does</th></tr></thead><tbody><tr><td><code>push(x)</code></td><td>Add to end</td></tr><tr><td><code>pop()</code></td><td>Remove from end</td></tr><tr><td><code>unshift(x)</code></td><td>Add to start</td></tr><tr><td><code>shift()</code></td><td>Remove from start</td></tr><tr><td><code>splice(i, n, ...new)</code></td><td>Remove/insert at any position</td></tr><tr><td><code>includes(x)</code></td><td>Is it in the array?</td></tr><tr><td><code>indexOf(x)</code></td><td>Position, or -1</td></tr><tr><td><code>slice(a, b)</code></td><td>Copy part (doesn't change the original)</td></tr><tr><td><code>join(&quot;, &quot;)</code></td><td>Turn into a string</td></tr><tr><td><code>concat(other)</code> or <code>[...a, ...b]</code></td><td>Combine arrays</td></tr></tbody></table></div>
+<aside class="callout callout-tip"><p class="callout-title">const arrays can still change</p><div class="callout-body"><p><code>const cart = []</code> means the variable <code>cart</code> always points to the <strong>same array</strong>, but you can still push and pop items inside it. You just can't do <code>cart = somethingElse</code>.</p></div></aside>
+<h2>Why loops?</h2>
+<p>Printing four items one by one is fine. Printing 500 products isn't. A <strong>loop</strong> repeats code for each item or until a condition is met.</p>
+<h2>The <code>for</code> loop</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">for (let i = 0; i &lt; 5; i++) {
+  console.log(&quot;Count:&quot;, i);
 }</code></pre></figure>
-<h2>Useful array methods</h2>
-<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const prices = [200, 450, 1200];
-console.log(prices.map(p =&gt; p * 2));          // [400, 900, 2400]
-console.log(prices.filter(p =&gt; p &gt; 300));     // [450, 1200]
-console.log(prices.reduce((a, b) =&gt; a + b));  // 1850</code></pre></figure></div><section class="static-exercise"><h2>Exercise</h2><p>Use a loop (or <code>reduce</code>) to add up the numbers in <code>nums</code> and print the total. It should be <strong>100</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=loops-arrays#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 5 of 19 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/conditions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Conditions</a><a class="btn btn-solid btn-sm" href="/learn/javascript/array-methods/">Array methods: map, filter, reduce, find and sort <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<figure class="static-code"><pre><code>for (let i = 0;   i &lt; 5;   i++)
+     │            │        │
+     start        keep going while true    after each round</code></pre></figure>
+<ol><li><code>let i = 0</code> runs once at the start.</li><li>Before each round, <code>i &lt; 5</code> is checked; if false, the loop ends.</li><li>The body runs.</li><li><code>i++</code> (add 1) runs, then back to step 2.</li></ol>
+<p>Looping through an array by index:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const students = [&quot;Amina&quot;, &quot;Brian&quot;, &quot;Chebet&quot;, &quot;David&quot;];
+for (let i = 0; i &lt; students.length; i++) {
+  console.log(`${i + 1}. ${students[i]}`);
+}</code></pre></figure>
+<h2><code>for...of</code>: the simplest way to loop through items</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const prices = [180, 150, 60, 65];
+let total = 0;
+for (const price of prices) {
+  total += price;            // same as total = total + price
+}
+console.log(&quot;Total: KSh&quot;, total);</code></pre></figure>
+<p>Use <code>for...of</code> when you need each <strong>value</strong>; use a classic <code>for</code> when you need the <strong>index</strong> too (or <code>for (const [i, v] of arr.entries())</code>).</p>
+<h2><code>forEach</code></h2>
+<p>An array method that runs a function for every item:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const towns = [&quot;Nairobi&quot;, &quot;Mombasa&quot;, &quot;Kisumu&quot;];
+towns.forEach((town, index) =&gt; {
+  console.log(index, town.toUpperCase());
+});</code></pre></figure>
+<p><code>forEach</code> can't be stopped early with <code>break</code>; use <code>for...of</code> if you need that.</p>
+<h2><code>while</code> and <code>do...while</code></h2>
+<p><code>while</code> repeats <strong>as long as</strong> a condition is true, useful when you don't know how many rounds you'll need:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">// How many months to save KSh 50,000 if you save KSh 4,500 a month?
+let saved = 0;
+let months = 0;
+while (saved &lt; 50000) {
+  saved += 4500;
+  months++;
+}
+console.log(`${months} months (saved KSh ${saved})`);</code></pre></figure>
+<p><code>do...while</code> runs the body <strong>at least once</strong>, then checks:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">let attempts = 0;
+do {
+  attempts++;
+  console.log(&quot;Attempt&quot;, attempts);
+} while (attempts &lt; 3);</code></pre></figure>
+<h3>Infinite loops</h3>
+<p>If the condition never becomes false, the loop never ends and the page freezes:</p>
+<figure class="static-code"><pre><code>let i = 0;
+while (i &lt; 5) {
+  console.log(i);
+  // forgot i++ : infinite loop!
+}</code></pre></figure>
+<p>Always make sure something inside the loop moves it towards ending.</p>
+<h2><code>break</code> and <code>continue</code></h2>
+<ul><li><code>break</code> stops the loop completely.</li><li><code>continue</code> skips to the next round.</li></ul>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const balances = [1200, 0, 540, -300, 980];
+for (const b of balances) {
+  if (b === 0) continue;               // skip empty accounts
+  if (b &lt; 0) { console.log(&quot;Negative balance found, stopping&quot;); break; }
+  console.log(&quot;Balance:&quot;, b);
+}</code></pre></figure>
+<h2>Common loop patterns</h2>
+<h3>Sum and average</h3>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const marks = [78, 65, 90, 54, 82];
+let sum = 0;
+for (const m of marks) sum += m;
+const average = sum / marks.length;
+console.log(&quot;Average:&quot;, average.toFixed(1));</code></pre></figure>
+<h3>Counting</h3>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const votes = [&quot;Yes&quot;, &quot;No&quot;, &quot;Yes&quot;, &quot;Yes&quot;, &quot;No&quot;, &quot;Yes&quot;];
+let yes = 0;
+for (const v of votes) {
+  if (v === &quot;Yes&quot;) yes++;
+}
+console.log(`Yes: ${yes}, No: ${votes.length - yes}`);</code></pre></figure>
+<h3>Finding the largest</h3>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const sales = [3400, 12000, 7800, 15200, 9100];
+let best = sales[0];
+for (const s of sales) {
+  if (s &gt; best) best = s;
+}
+console.log(&quot;Best day: KSh&quot;, best);
+console.log(&quot;Also:&quot;, Math.max(...sales));   // built-in shortcut</code></pre></figure>
+<h3>Building a new array (filtering by hand)</h3>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const products = [180, 1500, 60, 2300, 450];
+const expensive = [];
+for (const p of products) {
+  if (p &gt; 1000) expensive.push(p);
+}
+console.log(expensive);</code></pre></figure>
+<p>The next units show <code>filter</code>, <code>map</code> and <code>reduce</code>, which do these jobs in one line.</p>
+<h2>Arrays of objects (preview)</h2>
+<p>Real data is usually a list of <strong>objects</strong>:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const cart = [
+  { name: &quot;Unga 2kg&quot;, price: 180, qty: 2 },
+  { name: &quot;Sugar 1kg&quot;, price: 150, qty: 1 },
+  { name: &quot;Milk 500ml&quot;, price: 60, qty: 4 },
+];
+
+let total = 0;
+for (const item of cart) {
+  const line = item.price * item.qty;
+  console.log(`${item.name.padEnd(12)} x${item.qty}  KSh ${line}`);
+  total += line;
+}
+console.log(&quot;TOTAL&quot;.padEnd(16), &quot;KSh&quot;, total);</code></pre></figure>
+<h2>Nested loops</h2>
+<p>A loop inside a loop, e.g. a multiplication table or rows and columns:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">for (let row = 1; row &lt;= 3; row++) {
+  let line = &quot;&quot;;
+  for (let col = 1; col &lt;= 5; col++) {
+    line += String(row * col).padStart(4);
+  }
+  console.log(line);
+}</code></pre></figure>
+<p>Nested loops multiply the work (100 × 100 = 10,000 rounds), so be careful with large data.</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> You loop through 47 counties and, for each county, loop through 47 counties again to compare them. How many rounds run in total?</span><em>Show answer</em></summary><div class="callout-body"><p>47 × 47 = 2,209 rounds. That's fine for a computer, but the same pattern with 100,000 records would be 10 billion rounds, which is far too slow. That's why programmers learn better approaches (objects/maps for lookups, sorting) for large data.</p></div></details>
+<h2>Choosing a loop</h2>
+<div class="static-table"><table><thead><tr><th>Need</th><th>Use</th></tr></thead><tbody><tr><td>Each item's value</td><td><code>for...of</code></td></tr><tr><td>Index and value</td><td><code>for</code> or <code>arr.entries()</code></td></tr><tr><td>Run a function per item, no early stop</td><td><code>forEach</code></td></tr><tr><td>Unknown number of rounds</td><td><code>while</code></td></tr><tr><td>Run at least once</td><td><code>do...while</code></td></tr><tr><td>Transform/filter/total</td><td><code>map</code>, <code>filter</code>, <code>reduce</code> (next units)</td></tr></tbody></table></div>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Starting at index 1</td><td>Arrays start at 0</td></tr><tr><td><code>i &lt;= arr.length</code></td><td><code>i &lt; arr.length</code> (last index is length − 1)</td></tr><tr><td>Forgetting to change the loop variable</td><td>Avoid infinite loops</td></tr><tr><td>Modifying an array while looping it with indexes</td><td>Build a new array instead</td></tr><tr><td>Using <code>for...in</code> on arrays</td><td><code>for...in</code> is for object keys; use <code>for...of</code></td></tr></tbody></table></div>
+<h2>Practice tasks</h2>
+<ol><li>Store 5 Kenyan towns in an array; print each with its position number.</li><li>Calculate the total and average of a week's sales.</li><li>Count how many students passed (50+) from an array of marks.</li><li>Find the cheapest product in a price array without <code>Math.min</code>.</li><li>Print a 1–10 multiplication table for the number 7 using a loop.</li></ol>
+<h2>Summary</h2>
+<ul><li>Arrays store ordered lists; indexes start at 0; <code>length</code> gives the count.</li><li>Change arrays with <code>push</code>, <code>pop</code>, <code>shift</code>, <code>unshift</code>, <code>splice</code>; check with <code>includes</code>/<code>indexOf</code>.</li><li>Loops: <code>for</code> (index), <code>for...of</code> (values), <code>forEach</code>, <code>while</code>, <code>do...while</code>; <code>break</code> stops, <code>continue</code> skips.</li><li>Common patterns: sum, average, count, largest, building filtered arrays.</li><li>Avoid infinite loops and off-by-one errors.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the index of the first item in an array?</p><details><summary>Show answer</summary><p>0</p></details></li><li><p>Which property gives the number of items in an array?</p><details><summary>Show answer</summary><p>length</p></details></li><li><p>Which method adds an item to the end of an array?</p><details><summary>Show answer</summary><p>push</p></details></li><li><p>Which method removes the last item?</p><details><summary>Show answer</summary><p>pop</p></details></li><li><p>Which loop is simplest for reading each value of an array? (for...?)</p><details><summary>Show answer</summary><p>for...of</p></details></li><li><p>Which keyword skips to the next round of a loop?</p><details><summary>Show answer</summary><p>continue</p></details></li><li><p>An array has 6 items. What is the index of the last one?</p><details><summary>Show answer</summary><p>5</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Use a loop (or <code>reduce</code>) to add up the numbers in <code>nums</code> and print the total. It should be <strong>100</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=loops-arrays#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 6 of 21 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/conditions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Conditions: if, else, comparison, logical operators, switch and the ternary operator</a><a class="btn btn-solid btn-sm" href="/learn/javascript/array-methods/">Array methods: map, filter, reduce, find and sort <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
