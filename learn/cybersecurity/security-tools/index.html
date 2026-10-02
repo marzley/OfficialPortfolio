@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Essential security tools: Wireshark, Nmap, Burp Suite,…</title>
+    <meta name="description" content="Security professionals rely on a toolkit to see what&#x27;s happening on networks and systems, find weaknesses before attackers do, and detect attacks in…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/cybersecurity/security-tools/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Essential security tools: Wireshark, Nmap, Burp Suite,…" />
+    <meta property="og:description" content="Security professionals rely on a toolkit to see what&#x27;s happening on networks and systems, find weaknesses before attackers do, and detect attacks in…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/cybersecurity/security-tools/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Essential security tools: Wireshark, Nmap, Burp Suite,…" />
+    <meta name="twitter:description" content="Security professionals rely on a toolkit to see what&#x27;s happening on networks and systems, find weaknesses before attackers do, and detect attacks in…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/cybersecurity/security-tools/#lesson","name":"Essential security tools: Wireshark, Nmap, Burp Suite, password managers, SIEMs and how professionals use them","description":"Security professionals rely on a toolkit to see what's happening on networks and systems, find weaknesses before attackers do, and detect attacks in…","url":"https://marzleytechsolutions.co.ke/learn/cybersecurity/security-tools/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/cybersecurity/#course","name":"Cybersecurity","url":"https://marzleytechsolutions.co.ke/learn/cybersecurity/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Cybersecurity","item":"https://marzleytechsolutions.co.ke/learn/cybersecurity/"},{"@type":"ListItem","position":4,"name":"Essential security tools: Wireshark, Nmap, Burp Suite, password managers, SIEMs and how professionals use them","item":"https://marzleytechsolutions.co.ke/learn/cybersecurity/security-tools/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=19f64783be" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/cybersecurity/">Cybersecurity</a> / <span>Essential security tools: Wireshark, Nmap, Burp Suite, password managers, SIEMs and how professionals use them</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=cybersecurity&amp;lesson=security-tools"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Essential security tools: Wireshark, Nmap, Burp Suite, password managers, SIEMs and how professionals use them</h1>
+<p>Security professionals rely on a toolkit to see what's happening on networks and systems, find weaknesses before attackers do, and detect attacks in progress. This unit introduces the essential tools every beginner should know, what each is for, how it's used in real jobs, and simple safe exercises you can do in your own lab.</p>
+<aside class="callout callout-warning"><p class="callout-title">Use tools only where you're allowed</p><div class="callout-body"><p>Scanning or intercepting traffic on networks and systems you don't own, without written permission, can be a crime under Kenya's Computer Misuse and Cybercrimes Act and breaks most institutions' rules. Use your own devices, your home lab, or legal practice platforms.</p></div></aside>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Wireshark: capturing and reading network traffic</li><li>Nmap: discovering hosts, open ports and services</li><li>Burp Suite and OWASP ZAP: testing web applications</li><li>Kali Linux and other distributions for security work</li><li>Password and secrets tools, hashing utilities</li><li>Defensive tools: antivirus/EDR, SIEMs like Wazuh, log analysis</li><li>Online tools: VirusTotal, Have I Been Pwned, header and SSL scanners</li><li>Building a safe practice lab</li></ul></div></aside>
+<h2>Wireshark: see the packets</h2>
+<p><strong>Wireshark</strong> captures network traffic and shows every packet, decoded layer by layer (Ethernet, IP, TCP/UDP, HTTP, DNS...). Network engineers use it to troubleshoot; security analysts use it to investigate suspicious traffic and malware behaviour.</p>
+<p>Getting started (on your own computer):</p>
+<ol><li>Install Wireshark (Windows, macOS, Linux).</li><li>Choose your Wi-Fi or Ethernet interface and click <strong>Start</strong>.</li><li>Browse a website, then <strong>Stop</strong>.</li><li>Use <strong>display filters</strong>:</li></ol>
+<div class="static-table"><table><thead><tr><th>Filter</th><th>Shows</th></tr></thead><tbody><tr><td><code>dns</code></td><td>DNS lookups (which names your PC resolved)</td></tr><tr><td><code>http</code></td><td>Unencrypted web traffic</td></tr><tr><td><code>tls</code></td><td>Encrypted HTTPS traffic (contents unreadable, but you see server names in the handshake)</td></tr><tr><td><code>ip.addr == 192.168.1.10</code></td><td>Traffic to or from one device</td></tr><tr><td><code>tcp.port == 443</code></td><td>HTTPS traffic</td></tr><tr><td><code>tcp.flags.syn == 1 &amp;&amp; tcp.flags.ack == 0</code></td><td>New TCP connection attempts (useful to spot scans)</td></tr></tbody></table></div>
+<p>Try this: visit an <code>http://</code> test site and you'll see form data in clear text, then an <code>https://</code> site where content is encrypted. It's the clearest demonstration of why HTTPS matters.</p>
+<h2>Nmap: what's on the network?</h2>
+<p><strong>Nmap</strong> discovers devices and the services they run. Administrators use it to inventory networks and verify firewall rules; attackers use it for reconnaissance, which is why defenders should know what it reveals.</p>
+<p>Safe exercises on your <strong>own</strong> network or lab:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">nmap -sn 192.168.1.0/24          # host discovery: which devices are up?
+nmap 192.168.1.1                 # top 1,000 TCP ports on your router
+nmap -sV -p 22,80,443 192.168.1.50   # service versions on chosen ports
+nmap -p- 10.0.2.15               # all 65,535 ports on a lab VM
+nmap -O 10.0.2.15                # guess the operating system (needs admin rights)</code></pre></figure>
+<p>Reading results:</p>
+<div class="static-table"><table><thead><tr><th>State</th><th>Meaning</th></tr></thead><tbody><tr><td><strong>open</strong></td><td>A service is listening: make sure it should be</td></tr><tr><td><strong>closed</strong></td><td>Reachable, nothing listening</td></tr><tr><td><strong>filtered</strong></td><td>A firewall is dropping probes</td></tr></tbody></table></div>
+<p>A typical finding: your home router has its admin page or a remote-management port open to the internet. Fix: disable remote administration.</p>
+<h2>Burp Suite and OWASP ZAP: testing web apps</h2>
+<p>These sit between your browser and a website as a <strong>proxy</strong>, letting you see and modify every request: change parameters, test for injection and access control flaws, and scan for common vulnerabilities.</p>
+<div class="static-table"><table><thead><tr><th>Tool</th><th>Notes</th></tr></thead><tbody><tr><td><strong>Burp Suite Community</strong></td><td>Free edition; the industry standard for web testing (Pro is paid)</td></tr><tr><td><strong>OWASP ZAP</strong></td><td>Free and open source, with an automated scanner</td></tr></tbody></table></div>
+<p>Practise with <strong>PortSwigger Web Security Academy</strong> labs (free, legal) and <strong>OWASP Juice Shop</strong> running on your own computer. A classic first lab: intercept a request like <code>GET /account?id=17</code>, change it to <code>18</code>, and see whether the app checks authorisation (the IDOR flaw from the web security lesson).</p>
+<h2>Security-focused Linux distributions</h2>
+<div class="static-table"><table><thead><tr><th>Distribution</th><th>Use</th></tr></thead><tbody><tr><td><strong>Kali Linux</strong></td><td>Hundreds of pre-installed testing tools; run it in a VM, not as your daily OS</td></tr><tr><td><strong>Parrot Security</strong></td><td>Similar, also has a privacy edition</td></tr><tr><td><strong>Security Onion</strong></td><td>Free platform for network monitoring and intrusion detection</td></tr><tr><td><strong>REMnux</strong></td><td>Malware analysis toolkit</td></tr></tbody></table></div>
+<h2>Passwords, hashes and secrets</h2>
+<ul><li><strong>Password managers</strong> (Bitwarden, KeePassXC) protect your own credentials.</li><li><strong>Hashing utilities</strong>: <code>sha256sum file</code> (Linux) or <code>Get-FileHash file</code> (PowerShell) verify downloads match the publisher's published checksum.</li><li><strong>Hashcat / John the Ripper</strong>: password-cracking tools used by testers (with permission) to show how weak password hashes fall; in training they demonstrate why long passphrases and bcrypt matter.</li><li><strong>Secret scanners</strong> (e.g. gitleaks, GitHub secret scanning) find API keys accidentally committed to code.</li></ul>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import hashlib
+
+data = b&quot;Marzley learning hub installer v1.0&quot;
+print(&quot;SHA-256:&quot;, hashlib.sha256(data).hexdigest())
+
+tampered = b&quot;Marzley learning hub installer v1.0 (modified)&quot;
+print(&quot;Tampered:&quot;, hashlib.sha256(tampered).hexdigest())
+print(&quot;Any change gives a completely different hash, so checksums reveal tampering.&quot;)</code></pre></figure>
+<h2>Defensive tools</h2>
+<div class="static-table"><table><thead><tr><th>Tool type</th><th>Examples</th><th>Purpose</th></tr></thead><tbody><tr><td><strong>Antivirus / EDR</strong></td><td>Microsoft Defender, CrowdStrike, SentinelOne, Sophos</td><td>Detect and block malware on endpoints; EDR records behaviour for investigations</td></tr><tr><td><strong>SIEM</strong></td><td><strong>Wazuh</strong> (free), Splunk, Elastic Security, Microsoft Sentinel</td><td>Collect logs from many systems, correlate events, raise alerts</td></tr><tr><td><strong>IDS/IPS</strong></td><td>Suricata, Snort, Zeek</td><td>Detect (and block) malicious network traffic</td></tr><tr><td><strong>Vulnerability scanners</strong></td><td>OpenVAS/Greenbone (free), Nessus, Qualys</td><td>Find missing patches and misconfigurations across systems</td></tr><tr><td><strong>Firewall/WAF</strong></td><td>pfSense, OPNsense, Cloudflare WAF, ModSecurity</td><td>Filter network and web traffic</td></tr></tbody></table></div>
+<p>SOC analysts spend much of their day in a SIEM: reviewing alerts like "50 failed logins followed by a success from a new country", deciding whether it's real, and escalating.</p>
+<h2>Log analysis basics</h2>
+<p>Logs tell the story of an attack. On Linux, simple commands go far:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo grep &quot;Failed password&quot; /var/log/auth.log | awk &#x27;{print $(NF-3)}&#x27; | sort | uniq -c | sort -rn | head</code></pre></figure>
+<p>This lists the IP addresses with the most failed SSH logins (typical brute-force bots). On Windows, <strong>Event Viewer</strong> → Security log: event ID <strong>4625</strong> is a failed logon, <strong>4624</strong> a successful one.</p>
+<h2>Useful online tools</h2>
+<div class="static-table"><table><thead><tr><th>Tool</th><th>Use</th></tr></thead><tbody><tr><td><strong>VirusTotal</strong></td><td>Scan a suspicious file or URL with many antivirus engines (don't upload confidential documents: uploads may be shared with researchers)</td></tr><tr><td><strong>Have I Been Pwned</strong></td><td>Check whether an email appears in known breaches</td></tr><tr><td><strong>urlscan.io</strong></td><td>See what a suspicious link loads without visiting it yourself</td></tr><tr><td><strong>securityheaders.com, Mozilla Observatory</strong></td><td>Check your website's security headers</td></tr><tr><td><strong>SSL Labs (Qualys)</strong></td><td>Test HTTPS/TLS configuration</td></tr><tr><td><strong>Shodan</strong></td><td>Search engine for internet-connected devices (shows why exposed cameras and routers are risky)</td></tr></tbody></table></div>
+<h2>Build a safe practice lab</h2>
+<ol><li>Install <strong>VirtualBox</strong> on a computer with 8–16 GB RAM.</li><li>Create a <strong>host-only or internal network</strong> so lab traffic stays isolated.</li><li>Add VMs: Kali Linux, a vulnerable target (Metasploitable 2, a VulnHub image or OWASP Juice Shop), and an Ubuntu server with <strong>Wazuh</strong> to watch the attacks from the defender's side.</li><li>Practise: scan the target with Nmap, inspect traffic in Wireshark, attack Juice Shop with Burp, then find the evidence in Wazuh alerts and logs.</li><li>Write up what you did: attacker view and defender view. That's a strong portfolio piece.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> You run Nmap against your own small office server and find ports 22 (SSH), 80, 443, 3306 (MySQL) and 3389 (RDP) open to the internet. Which findings worry you and what would you do?</span><em>Show answer</em></summary><div class="callout-body"><p>80 and 443 are expected for a website. SSH should be key-only and ideally restricted to known IPs or VPN. MySQL (3306) and RDP (3389) should not be exposed to the internet: close them in the firewall, keep MySQL listening on localhost, and use a VPN for remote desktop access. Re-scan to confirm.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Wireshark shows packets (filters like dns, http, tls, ip.addr) and proves why HTTPS matters.</li><li>Nmap discovers hosts, open/closed/filtered ports and services; use it to verify your own exposure.</li><li>Burp Suite and OWASP ZAP test web apps as intercepting proxies; practise on PortSwigger labs and Juice Shop.</li><li>Defenders use EDR, SIEMs (Wazuh, Splunk), IDS (Suricata), vulnerability scanners and log analysis.</li><li>Use tools only with permission, inside an isolated lab, and document both attacker and defender views.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which tool captures and decodes network packets?</p><details><summary>Show answer</summary><p>Wireshark</p></details></li><li><p>Which tool discovers hosts and open ports?</p><details><summary>Show answer</summary><p>Nmap</p></details></li><li><p>Which free open-source SIEM is good for a home lab?</p><details><summary>Show answer</summary><p>Wazuh</p></details></li><li><p>Which Windows event ID records a failed logon?</p><details><summary>Show answer</summary><p>4625</p></details></li><li><p>Which Linux distribution comes with hundreds of testing tools?</p><details><summary>Show answer</summary><p>Kali</p></details></li><li><p>In Nmap, what state means a firewall is dropping probes?</p><details><summary>Show answer</summary><p>filtered</p></details></li></ol></section></div><p class="static-meta">Lesson 11 of 13 in <a href="/learn/cybersecurity/">Cybersecurity</a> · <a href="/learn/?book=cybersecurity">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/cybersecurity/incident-response/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> What to do when you&#x27;ve been hacked (incident response)</a><a class="btn btn-solid btn-sm" href="/learn/cybersecurity/small-business-security/">Securing a small business: a practical 30-day security plan for shops, schools, clinics, SACCOs and offices <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>
