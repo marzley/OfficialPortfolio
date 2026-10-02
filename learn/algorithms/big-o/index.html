@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Big O: how fast is your code? | Algorithms &amp; problem solving</title>
-    <meta name="description" content="Big O notation describes how the work grows as the input grows. It helps you choose code that stays fast when your shop has 10 customers or 10 million…" />
+    <title>Big O: measuring how fast code grows, common…</title>
+    <meta name="description" content="Code that works on 10 records can become painfully slow on 100,000. A school system that checks every student against every other student, a shop app…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/algorithms/big-o/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Big O: how fast is your code? | Algorithms &amp; problem solving" />
-    <meta property="og:description" content="Big O notation describes how the work grows as the input grows. It helps you choose code that stays fast when your shop has 10 customers or 10 million…" />
+    <meta property="og:title" content="Big O: measuring how fast code grows, common…" />
+    <meta property="og:description" content="Code that works on 10 records can become painfully slow on 100,000. A school system that checks every student against every other student, a shop app…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/algorithms/big-o/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Big O: how fast is your code? | Algorithms &amp; problem solving" />
-    <meta name="twitter:description" content="Big O notation describes how the work grows as the input grows. It helps you choose code that stays fast when your shop has 10 customers or 10 million…" />
+    <meta name="twitter:title" content="Big O: measuring how fast code grows, common…" />
+    <meta name="twitter:description" content="Code that works on 10 records can become painfully slow on 100,000. A school system that checks every student against every other student, a shop app…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/big-o/#lesson","name":"Big O: how fast is your code?","description":"Big O notation describes how the work grows as the input grows. It helps you choose code that stays fast when your shop has 10 customers or 10 million…","url":"https://marzleytechsolutions.co.ke/learn/algorithms/big-o/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/#course","name":"Algorithms & problem solving","url":"https://marzleytechsolutions.co.ke/learn/algorithms/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Algorithms & problem solving","item":"https://marzleytechsolutions.co.ke/learn/algorithms/"},{"@type":"ListItem","position":4,"name":"Big O: how fast is your code?","item":"https://marzleytechsolutions.co.ke/learn/algorithms/big-o/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/big-o/#lesson","name":"Big O: measuring how fast code grows, common complexities, analysing loops, space complexity and practical optimisation","description":"Code that works on 10 records can become painfully slow on 100,000. A school system that checks every student against every other student, a shop app…","url":"https://marzleytechsolutions.co.ke/learn/algorithms/big-o/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/#course","name":"Algorithms & problem solving","url":"https://marzleytechsolutions.co.ke/learn/algorithms/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Algorithms & problem solving","item":"https://marzleytechsolutions.co.ke/learn/algorithms/"},{"@type":"ListItem","position":4,"name":"Big O: measuring how fast code grows, common complexities, analysing loops, space complexity and practical optimisation","item":"https://marzleytechsolutions.co.ke/learn/algorithms/big-o/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,37 +36,100 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> / <span>Big O: how fast is your code?</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=big-o"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Big O: how fast is your code?</h1>
-<p><strong>Big O notation</strong> describes how the work grows as the input grows. It helps you choose code that stays fast when your shop has 10 customers or 10 million.</p>
-<div class="static-table"><table><thead><tr><th>Big O</th><th>Name</th><th>Example</th><th>1,000 items → steps</th></tr></thead><tbody><tr><td>O(1)</td><td>Constant</td><td>Get <code>items[5]</code>, look up a dictionary key</td><td>1</td></tr><tr><td>O(log n)</td><td>Logarithmic</td><td>Binary search</td><td>~10</td></tr><tr><td>O(n)</td><td>Linear</td><td>Loop through a list once</td><td>1,000</td></tr><tr><td>O(n log n)</td><td>Linearithmic</td><td>Merge sort, Python's <code>sorted()</code></td><td>~10,000</td></tr><tr><td>O(n²)</td><td>Quadratic</td><td>Loop inside a loop (bubble sort, comparing every pair)</td><td>1,000,000</td></tr></tbody></table></div>
-<h2>See the difference</h2>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> / <span>Big O: measuring how fast code grows, common complexities, analysing loops, space complexity and practical optimisation</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=big-o"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Big O: measuring how fast code grows, common complexities, analysing loops, space complexity and practical optimisation</h1>
+<p>Code that works on 10 records can become painfully slow on 100,000. A school system that checks every student against every other student, a shop app that searches the whole product list for each order line, or a report that re-reads the database inside a loop may be fine in testing and then grind to a halt in real use. <strong>Big O notation</strong> describes how an algorithm's running time (or memory) <strong>grows</strong> as the input grows. It helps you predict performance, compare solutions, and answer the "what's the time complexity?" questions that appear in almost every developer interview.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Why we measure growth rather than seconds</li><li>What Big O means, and dropping constants and smaller terms</li><li>The common complexities: O(1), O(log n), O(n), O(n log n), O(n²), O(2ⁿ)</li><li>How to analyse loops, nested loops and function calls</li><li>Best, average and worst cases</li><li>Space complexity</li><li>Complexity of common Python operations</li><li>Practical optimisation: choosing better data structures and algorithms</li></ul></div></aside>
+<h2>Why growth, not seconds?</h2>
+<p>Running time in seconds depends on the computer, language and other programs running. Big O ignores those details and asks: <strong>if the input doubles, what happens to the work?</strong></p>
+<div class="static-table"><table><thead><tr><th>Input size n</th><th>O(1)</th><th>O(log n)</th><th>O(n)</th><th>O(n log n)</th><th>O(n²)</th></tr></thead><tbody><tr><td>10</td><td>1</td><td>~3</td><td>10</td><td>~33</td><td>100</td></tr><tr><td>1,000</td><td>1</td><td>~10</td><td>1,000</td><td>~10,000</td><td>1,000,000</td></tr><tr><td>1,000,000</td><td>1</td><td>~20</td><td>1,000,000</td><td>~20,000,000</td><td>1,000,000,000,000</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import math
+print(f&quot;{&#x27;n&#x27;:&gt;10} {&#x27;log n&#x27;:&gt;7} {&#x27;n log n&#x27;:&gt;12} {&#x27;n^2&#x27;:&gt;16}&quot;)
+for n in [10, 100, 1_000, 10_000, 1_000_000]:
+    print(f&quot;{n:&gt;10,} {math.log2(n):&gt;7.1f} {n * math.log2(n):&gt;12,.0f} {n * n:&gt;16,}&quot;)</code></pre></figure>
+<h2>Rules of Big O</h2>
+<ol><li><strong>Drop constants</strong>: O(2n) → O(n); O(500) → O(1).</li><li><strong>Keep the dominant term</strong>: O(n² + n + 100) → O(n²), because n² dominates for large n.</li><li><strong>Different inputs, different variables</strong>: looping over list A then list B is O(a + b); nested loops over both are O(a × b).</li><li>Big O usually means the <strong>worst case</strong> unless stated otherwise.</li></ol>
+<h2>Common complexities</h2>
+<h3>O(1): constant</h3>
+<p>The work doesn't depend on input size.</p>
+<figure class="static-code"><figcaption>Python</figcaption><pre><code class="language-python">first = items[0]             # index access
+price = prices[&quot;mango&quot;]      # dictionary lookup (average)
+items.append(x)              # list append (amortised)</code></pre></figure>
+<h3>O(log n): logarithmic</h3>
+<p>Each step cuts the problem in half: binary search, balanced tree lookups, database indexes.</p>
+<h3>O(n): linear</h3>
+<p>Work grows in proportion to the input: one loop over the data.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def total(prices):
+    s = 0
+    for p in prices:      # runs n times
+        s += p
+    return s
+print(total([120, 450, 80, 300]))</code></pre></figure>
+<h3>O(n log n): linearithmic</h3>
+<p>Efficient sorting (merge sort, Timsort), many divide-and-conquer algorithms.</p>
+<h3>O(n²): quadratic</h3>
+<p>Nested loops over the same data: comparing every item with every other.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def has_duplicate_slow(items):
+    for i in range(len(items)):
+        for j in range(i + 1, len(items)):   # nested loop
+            if items[i] == items[j]:
+                return True
+    return False
+
+def has_duplicate_fast(items):
+    seen = set()
+    for x in items:                         # one loop, set lookups are O(1) on average
+        if x in seen:
+            return True
+        seen.add(x)
+    return False
+
+receipts = [&quot;QJK1&quot;, &quot;QJK2&quot;, &quot;QJK3&quot;, &quot;QJK2&quot;]
+print(has_duplicate_slow(receipts), has_duplicate_fast(receipts))</code></pre></figure>
+<p>Same answer, very different growth: O(n²) vs O(n).</p>
+<h3>O(2ⁿ) and O(n!): exponential and factorial</h3>
+<p>Work explodes: trying every subset or every ordering (naive recursive Fibonacci, brute-force route planning). Only usable for tiny inputs; dynamic programming or clever algorithms are needed (see the dynamic programming lesson).</p>
+<h2>Analysing code step by step</h2>
+<ol><li>Count how many times each loop runs in terms of n.</li><li>Nested loops <strong>multiply</strong>; sequential blocks <strong>add</strong>.</li><li>Function calls cost their own complexity (calling an O(n) function inside an O(n) loop gives O(n²)).</li><li>Simplify with the rules.</li></ol>
+<figure class="static-code"><figcaption>Python</figcaption><pre><code class="language-python">def report(students):            # n students
+    for s in students:           # O(n)
+        print(s)
+    for s in students:           # O(n)
+        for t in students:       # O(n) inside → O(n²)
+            compare(s, t)
+# total O(n + n²) → O(n²)</code></pre></figure>
+<p>Hidden loops to watch for: <code>x in list</code> (O(n)), <code>list.index()</code>, <code>list.remove()</code>, <code>list.insert(0, x)</code>, string concatenation in loops, and <strong>database queries inside loops</strong> (the "N+1 query" problem in web apps).</p>
+<h2>Measure it</h2>
 <figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import time
 
-n = 3000
-data = list(range(n))
+def count_pairs_slow(n):
+    c = 0
+    for i in range(n):
+        for j in range(n):
+            c += 1
+    return c
 
-start = time.time()
-total = 0
-for x in data:            # O(n)
-    total += x
-print(&quot;O(n) loop:&quot;, round(time.time() - start, 4), &quot;s&quot;)
-
-start = time.time()
-pairs = 0
-for x in data:            # O(n²): a loop inside a loop
-    for y in data:
-        pairs += 1
-print(&quot;O(n²) loops:&quot;, round(time.time() - start, 4), &quot;s,&quot;, pairs, &quot;steps&quot;)</code></pre></figure>
-<h2>A practical tip: use sets and dictionaries for lookups</h2>
-<p>Checking <code>if x in some_list</code> is O(n). Checking <code>if x in some_set</code> is O(1) on average.</p>
-<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import time
-phones = [f&quot;07{n:08d}&quot; for n in range(200_000)]
-phone_set = set(phones)
-
-start = time.time(); print(&quot;0700199999&quot; in phones); print(&quot;list:&quot;, round(time.time() - start, 5), &quot;s&quot;)
-start = time.time(); print(&quot;0700199999&quot; in phone_set); print(&quot;set: &quot;, round(time.time() - start, 5), &quot;s&quot;)</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the Big O of looking up a key in a dictionary (on average)?</p><details><summary>Show answer</summary><p>O(1)</p></details></li><li><p>What is the Big O of a loop inside a loop over the same list?</p><details><summary>Show answer</summary><p>O(n²)</p></details></li><li><p>What is the Big O of binary search?</p><details><summary>Show answer</summary><p>O(log n)</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 11 in <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> · <a href="/learn/?book=algorithms">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/algorithms/sorting/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Sorting algorithms</a><a class="btn btn-solid btn-sm" href="/learn/algorithms/data-structures/">Data structures: stacks, queues and more <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+for n in [200, 400, 800]:
+    t = time.perf_counter()
+    count_pairs_slow(n)
+    print(f&quot;n={n}: {time.perf_counter() - t:.4f}s&quot;)</code></pre></figure>
+<p>Doubling n roughly <strong>quadruples</strong> the time for O(n²) code: that pattern tells you the complexity even without maths.</p>
+<h2>Best, average and worst cases</h2>
+<div class="static-table"><table><thead><tr><th>Algorithm</th><th>Best</th><th>Average</th><th>Worst</th></tr></thead><tbody><tr><td>Linear search</td><td>O(1)</td><td>O(n)</td><td>O(n)</td></tr><tr><td>Binary search</td><td>O(1)</td><td>O(log n)</td><td>O(log n)</td></tr><tr><td>Quick sort</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n²)</td></tr><tr><td>Dictionary lookup</td><td>O(1)</td><td>O(1)</td><td>O(n) (rare, many collisions)</td></tr></tbody></table></div>
+<p>Plan for the worst case when it matters (e.g. payment systems under heavy load).</p>
+<h2>Space complexity</h2>
+<p>Big O also measures <strong>memory</strong>:</p>
+<ul><li>Summing a list with a running total: O(1) extra space.</li><li>Making a copy of the list or a set of seen items: O(n) extra space.</li><li>Recursion uses stack space: depth n → O(n).</li></ul>
+<p>There's often a <strong>time–space trade-off</strong>: the fast duplicate check uses O(n) memory to save time.</p>
+<h2>Complexity of common Python operations</h2>
+<div class="static-table"><table><thead><tr><th>Operation</th><th>list</th><th>dict / set</th></tr></thead><tbody><tr><td>Access by index / key</td><td>O(1)</td><td>O(1) average</td></tr><tr><td><code>x in collection</code></td><td>O(n)</td><td>O(1) average</td></tr><tr><td>Append / add</td><td>O(1) amortised</td><td>O(1) average</td></tr><tr><td>Insert/remove at the start</td><td>O(n)</td><td>—</td></tr><tr><td>Remove by value</td><td>O(n)</td><td>O(1) average</td></tr><tr><td>Sort</td><td>O(n log n)</td><td>—</td></tr></tbody></table></div>
+<p><code>collections.deque</code> gives O(1) appends and pops at both ends (good for queues).</p>
+<h2>Practical optimisation</h2>
+<ol><li><strong>Measure first</strong> (time it, profile it); don't guess.</li><li><strong>Choose the right data structure</strong>: sets/dicts for membership and lookups, deque for queues, heaps for priorities.</li><li><strong>Avoid repeated work</strong>: compute once outside the loop; cache results.</li><li><strong>Use built-ins</strong> (written in C, very fast): <code>sum</code>, <code>sorted</code>, <code>max</code>, <code>in</code> on sets.</li><li><strong>Push work to the database</strong>: use SQL <code>WHERE</code>, <code>JOIN</code>, <code>GROUP BY</code> and indexes instead of loading everything into Python.</li><li><strong>Batch</strong> network/database calls instead of one per item.</li><li>Keep code readable: optimise the slow parts that matter, not everything.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A web app shows each order with its customer's name. The code loads 2,000 orders, then for each order runs a separate database query to get the customer. Why is this slow, and how would you fix it?</span><em>Show answer</em></summary><div class="callout-body"><p>It's the N+1 query problem: 1 query for orders plus 2,000 customer queries, each with network and database overhead (effectively O(n) round trips). Fix with a single SQL JOIN between orders and customers (with an index on customer ID), or load all needed customers in one query into a dictionary and look them up in O(1).</p></div></details>
+<h2>Summary</h2>
+<ul><li>Big O describes how work grows with input size, ignoring hardware and constants.</li><li>Drop constants and smaller terms; sequential blocks add, nested loops multiply.</li><li>Know O(1), O(log n), O(n), O(n log n), O(n²), O(2ⁿ) and recognise them in code.</li><li>Consider best/average/worst cases and space complexity (time–space trade-offs).</li><li>Optimise by measuring, choosing better data structures (sets, dicts), avoiding hidden loops and N+1 queries, and using built-ins and the database.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the Big O of looking up a key in a Python dictionary (average)?</p><details><summary>Show answer</summary><p>O(1)</p></details></li><li><p>What is the Big O of two nested loops over the same list of n items?</p><details><summary>Show answer</summary><p>O(n^2)</p></details></li><li><p>Simplify O(3n + 5).</p><details><summary>Show answer</summary><p>O(n)</p></details></li><li><p>Binary search has which complexity?</p><details><summary>Show answer</summary><p>O(log n)</p></details></li><li><p>If doubling n roughly quadruples running time, what complexity is likely?</p><details><summary>Show answer</summary><p>O(n^2)</p></details></li><li><p>Running one database query per item in a loop is called the N+1 what problem?</p><details><summary>Show answer</summary><p>query</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 11 in <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> · <a href="/learn/?book=algorithms">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/algorithms/sorting/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Sorting algorithms: bubble, selection, insertion, merge and quick sort, stability, complexity and sorting real data</a><a class="btn btn-solid btn-sm" href="/learn/algorithms/data-structures/">Data structures: arrays/lists, tuples, sets, dictionaries, stacks, queues, linked lists, trees, heaps and graphs, and when to use each <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Data structures: stacks, queues and more | Marzley Learn</title>
-    <meta name="description" content="A data structure is a way of organising data so the operations you need are fast." />
+    <title>Data structures: arrays/lists, tuples, sets,…</title>
+    <meta name="description" content="A data structure is a way of organising data in memory so it can be used efficiently. Choosing the right one can make a program thousands of times…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/algorithms/data-structures/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Data structures: stacks, queues and more | Marzley Learn" />
-    <meta property="og:description" content="A data structure is a way of organising data so the operations you need are fast." />
+    <meta property="og:title" content="Data structures: arrays/lists, tuples, sets,…" />
+    <meta property="og:description" content="A data structure is a way of organising data in memory so it can be used efficiently. Choosing the right one can make a program thousands of times…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/algorithms/data-structures/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Data structures: stacks, queues and more | Marzley Learn" />
-    <meta name="twitter:description" content="A data structure is a way of organising data so the operations you need are fast." />
+    <meta name="twitter:title" content="Data structures: arrays/lists, tuples, sets,…" />
+    <meta name="twitter:description" content="A data structure is a way of organising data in memory so it can be used efficiently. Choosing the right one can make a program thousands of times…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/data-structures/#lesson","name":"Data structures: stacks, queues and more","description":"A data structure is a way of organising data so the operations you need are fast.","url":"https://marzleytechsolutions.co.ke/learn/algorithms/data-structures/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/#course","name":"Algorithms & problem solving","url":"https://marzleytechsolutions.co.ke/learn/algorithms/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Algorithms & problem solving","item":"https://marzleytechsolutions.co.ke/learn/algorithms/"},{"@type":"ListItem","position":4,"name":"Data structures: stacks, queues and more","item":"https://marzleytechsolutions.co.ke/learn/algorithms/data-structures/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/data-structures/#lesson","name":"Data structures: arrays/lists, tuples, sets, dictionaries, stacks, queues, linked lists, trees, heaps and graphs, and when to use each","description":"A data structure is a way of organising data in memory so it can be used efficiently. Choosing the right one can make a program thousands of times…","url":"https://marzleytechsolutions.co.ke/learn/algorithms/data-structures/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/#course","name":"Algorithms & problem solving","url":"https://marzleytechsolutions.co.ke/learn/algorithms/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Algorithms & problem solving","item":"https://marzleytechsolutions.co.ke/learn/algorithms/"},{"@type":"ListItem","position":4,"name":"Data structures: arrays/lists, tuples, sets, dictionaries, stacks, queues, linked lists, trees, heaps and graphs, and when to use each","item":"https://marzleytechsolutions.co.ke/learn/algorithms/data-structures/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,56 +36,150 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> / <span>Data structures: stacks, queues and more</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=data-structures"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Data structures: stacks, queues and more</h1>
-<p>A <strong>data structure</strong> is a way of organising data so the operations you need are fast.</p>
-<h2>Stack: last in, first out (LIFO)</h2>
-<p>Like a pile of plates. Used for the browser's Back button and undo.</p>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> / <span>Data structures: arrays/lists, tuples, sets, dictionaries, stacks, queues, linked lists, trees, heaps and graphs, and when to use each</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=data-structures"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Data structures: arrays/lists, tuples, sets, dictionaries, stacks, queues, linked lists, trees, heaps and graphs, and when to use each</h1>
+<p>A <strong>data structure</strong> is a way of organising data in memory so it can be used efficiently. Choosing the right one can make a program thousands of times faster and much simpler: a set for checking duplicate M-Pesa receipts, a queue for customers waiting for service, a dictionary for looking up students by admission number, a tree for a school's folder structure, a graph for matatu routes. This unit surveys the essential data structures, how they work, their strengths and costs, and how to use them in Python, with deeper dives in the lessons that follow.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Why data structures matter</li><li>Arrays and Python lists</li><li>Tuples and immutability</li><li>Sets for uniqueness and fast membership</li><li>Dictionaries (hash tables) for key–value lookups</li><li>Stacks (LIFO) and queues (FIFO), deques</li><li>Linked lists</li><li>Trees, binary search trees and heaps (priority queues)</li><li>Graphs</li><li>A decision guide for choosing a structure</li></ul></div></aside>
+<h2>Why they matter</h2>
+<p>Every structure makes some operations fast and others slow. The question is always: <strong>what will my program do most often?</strong> Look up by key? Keep order? Remove the oldest item? Find the smallest? Check if something exists?</p>
+<h2>Arrays and lists</h2>
+<p>An <strong>array</strong> stores items in contiguous memory, accessed by <strong>index</strong>. Python's <strong>list</strong> is a dynamic array: it grows automatically.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">marks = [67, 82, 45, 90]
+print(marks[0], marks[-1])       # index access: O(1)
+marks.append(58)                 # add to end: O(1) amortised
+marks.insert(0, 99)              # insert at start: O(n), shifts everything
+print(marks, len(marks))
+print(82 in marks)               # search: O(n)
+print(marks[1:3])                # slicing</code></pre></figure>
+<p><strong>Use for</strong>: ordered collections you loop over or access by position.</p>
+<h2>Tuples</h2>
+<p>Like lists, but <strong>immutable</strong> (can't change after creation). Good for fixed records and as dictionary keys.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">location = (-1.2921, 36.8219)       # Nairobi latitude, longitude
+lat, lon = location                 # unpacking
+routes = {(&quot;Nairobi&quot;, &quot;Nakuru&quot;): 160, (&quot;Nairobi&quot;, &quot;Mombasa&quot;): 485}
+print(routes[(&quot;Nairobi&quot;, &quot;Nakuru&quot;)], &quot;km&quot;)</code></pre></figure>
+<h2>Sets</h2>
+<p>Unordered collections of <strong>unique</strong> items, with very fast membership checks (hash-based).</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">used_receipts = {&quot;QJK1A&quot;, &quot;QJK2B&quot;}
+new = &quot;QJK2B&quot;
+if new in used_receipts:                       # O(1) average
+    print(&quot;Duplicate receipt! Reject payment&quot;)
+used_receipts.add(&quot;QJK3C&quot;)
+
+form3 = {&quot;Brian&quot;, &quot;Faith&quot;, &quot;Halima&quot;}
+football = {&quot;Faith&quot;, &quot;Juma&quot;, &quot;Halima&quot;}
+print(form3 &amp; football)    # intersection: in both
+print(form3 | football)    # union
+print(form3 - football)    # difference</code></pre></figure>
+<p><strong>Use for</strong>: removing duplicates, membership tests, comparing groups.</p>
+<h2>Dictionaries (hash tables)</h2>
+<p>Store <strong>key → value</strong> pairs with average O(1) lookups.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">stock = {&quot;unga&quot;: 40, &quot;sugar&quot;: 25, &quot;oil&quot;: 12}
+stock[&quot;sugar&quot;] -= 3                      # update
+stock[&quot;rice&quot;] = 30                       # add
+print(stock.get(&quot;salt&quot;, 0))              # default if missing
+for item, qty in stock.items():
+    if qty &lt; 20:
+        print(&quot;Reorder&quot;, item)
+
+# Counting with a dictionary
+votes = [&quot;A&quot;, &quot;B&quot;, &quot;A&quot;, &quot;C&quot;, &quot;A&quot;, &quot;B&quot;]
+counts = {}
+for v in votes:
+    counts[v] = counts.get(v, 0) + 1
+print(counts)</code></pre></figure>
+<p><strong>Use for</strong>: lookups by ID/name, counting, caching, JSON-like records. (See the hash tables lesson.)</p>
+<h2>Stacks: last in, first out (LIFO)</h2>
+<p>Like a pile of plates: add (push) and remove (pop) from the top.</p>
 <figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">history = []
-history.append(&quot;home&quot;)        # push
-history.append(&quot;pricing&quot;)
-history.append(&quot;contact&quot;)
-print(&quot;Back to:&quot;, history.pop())   # pop removes the last one
-print(history)</code></pre></figure>
-<h2>Queue: first in, first out (FIFO)</h2>
-<p>Like a bank queue. Used for print jobs, messages, customer support tickets.</p>
+for page in [&quot;home&quot;, &quot;products&quot;, &quot;cart&quot;]:
+    history.append(page)          # push
+print(&quot;Back to:&quot;, history.pop())  # pop → &quot;cart&quot;
+print(&quot;Now on:&quot;, history[-1])     # peek</code></pre></figure>
+<p><strong>Uses</strong>: undo/redo, browser back button, checking balanced brackets, function calls (the call stack), depth-first search.</p>
+<h2>Queues: first in, first out (FIFO)</h2>
+<p>Like a queue at a bank: the first person to arrive is served first. Use <code>collections.deque</code> (fast at both ends).</p>
 <figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">from collections import deque
-queue = deque()
-queue.append(&quot;Wanjiku&quot;)       # join the queue
-queue.append(&quot;Otieno&quot;)
-queue.append(&quot;Amina&quot;)
-print(&quot;Serving:&quot;, queue.popleft())
-print(&quot;Waiting:&quot;, list(queue))</code></pre></figure>
-<h2>Dictionary (hash map)</h2>
-<p>Key → value, with very fast lookups. Used everywhere: user accounts by email, prices by product.</p>
-<h2>Tree</h2>
-<p>Items arranged in a hierarchy: folders on a computer, the HTML DOM, a company org chart.</p>
-<h2>Graph</h2>
-<p>Points (nodes) connected by lines (edges): roads between towns, friends on social media, routers on the internet. Google Maps finds routes with graph algorithms such as Dijkstra's.</p>
+customers = deque()
+customers.append(&quot;Wanjiku&quot;)        # enqueue
+customers.append(&quot;Otieno&quot;)
+customers.append(&quot;Achieng&quot;)
+print(&quot;Serving:&quot;, customers.popleft())   # dequeue → Wanjiku
+print(&quot;Waiting:&quot;, list(customers))</code></pre></figure>
+<p><strong>Uses</strong>: task queues (sending SMS in order), print queues, breadth-first search, handling requests. (See the stacks and queues lesson.)</p>
+<h2>Linked lists</h2>
+<p>Each <strong>node</strong> stores a value and a pointer to the next node. Inserting/removing at the front is O(1) without shifting, but accessing the k-th item requires walking the chain (O(n)).</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">class Node:
+    def __init__(self, value, next=None):
+        self.value = value
+        self.next = next
+
+# Build: 10 -&gt; 20 -&gt; 30
+head = Node(10, Node(20, Node(30)))
+head = Node(5, head)               # insert at front: O(1)
+
+node = head
+while node:
+    print(node.value, end=&quot; -&gt; &quot; if node.next else &quot;\n&quot;)
+    node = node.next</code></pre></figure>
+<p>In Python you rarely build linked lists yourself (lists and deques cover most needs), but they explain how many structures work and are common interview topics.</p>
+<h2>Trees</h2>
+<p>A <strong>tree</strong> is a hierarchy of nodes: one <strong>root</strong>, and each node has <strong>children</strong>. Examples: folders on a computer, an organisation chart, HTML documents (the DOM), categories in an online shop.</p>
+<p>A <strong>binary search tree (BST)</strong> keeps smaller values to the left and larger to the right, allowing O(log n) search when balanced:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">class BST:
+    def __init__(self, value):
+        self.value, self.left, self.right = value, None, None
+    def insert(self, v):
+        if v &lt; self.value:
+            if self.left: self.left.insert(v)
+            else: self.left = BST(v)
+        else:
+            if self.right: self.right.insert(v)
+            else: self.right = BST(v)
+    def contains(self, v):
+        if v == self.value: return True
+        branch = self.left if v &lt; self.value else self.right
+        return branch.contains(v) if branch else False
+    def in_order(self):                     # visits values in sorted order
+        left = self.left.in_order() if self.left else []
+        right = self.right.in_order() if self.right else []
+        return left + [self.value] + right
+
+t = BST(50)
+for v in [30, 70, 20, 40, 60, 80]:
+    t.insert(v)
+print(t.contains(60), t.contains(65))
+print(t.in_order())</code></pre></figure>
+<p>Databases use balanced trees (B-trees) for their indexes.</p>
+<h2>Heaps (priority queues)</h2>
+<p>A <strong>heap</strong> always gives quick access to the <strong>smallest</strong> (min-heap) or largest item. Great for "what's most urgent next?"</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import heapq
+tasks = []
+heapq.heappush(tasks, (2, &quot;Reply to supplier&quot;))
+heapq.heappush(tasks, (1, &quot;Fix payment outage&quot;))      # lower number = higher priority
+heapq.heappush(tasks, (3, &quot;Update blog&quot;))
+while tasks:
+    priority, task = heapq.heappop(tasks)
+    print(priority, task)</code></pre></figure>
+<p><strong>Uses</strong>: scheduling, hospital triage systems, Dijkstra's shortest path, finding top-k items.</p>
+<h2>Graphs</h2>
+<p>A <strong>graph</strong> has <strong>nodes</strong> (vertices) connected by <strong>edges</strong>: towns and roads, people and friendships, web pages and links, network devices and cables. Often stored as an <strong>adjacency list</strong> (a dictionary of neighbours):</p>
 <figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">roads = {
-    &quot;Nairobi&quot;: [&quot;Nakuru&quot;, &quot;Thika&quot;, &quot;Machakos&quot;],
+    &quot;Nairobi&quot;: [&quot;Nakuru&quot;, &quot;Machakos&quot;, &quot;Thika&quot;],
     &quot;Nakuru&quot;: [&quot;Nairobi&quot;, &quot;Eldoret&quot;, &quot;Kisumu&quot;],
-    &quot;Eldoret&quot;: [&quot;Nakuru&quot;],
-    &quot;Kisumu&quot;: [&quot;Nakuru&quot;],
+    &quot;Eldoret&quot;: [&quot;Nakuru&quot;, &quot;Kisumu&quot;],
+    &quot;Kisumu&quot;: [&quot;Nakuru&quot;, &quot;Eldoret&quot;],
+    &quot;Machakos&quot;: [&quot;Nairobi&quot;],
     &quot;Thika&quot;: [&quot;Nairobi&quot;],
-    &quot;Machakos&quot;: [&quot;Nairobi&quot;, &quot;Mombasa&quot;],
-    &quot;Mombasa&quot;: [&quot;Machakos&quot;],
 }
-
-def route(start, goal):
-    # breadth-first search: finds the route with the fewest towns
-    queue, seen = [[start]], {start}
-    while queue:
-        path = queue.pop(0)
-        if path[-1] == goal:
-            return path
-        for nxt in roads[path[-1]]:
-            if nxt not in seen:
-                seen.add(nxt)
-                queue.append(path + [nxt])
-
-print(&quot; -&gt; &quot;.join(route(&quot;Kisumu&quot;, &quot;Mombasa&quot;)))</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which data structure is last in, first out?</p><details><summary>Show answer</summary><p>stack</p></details></li><li><p>Which data structure is first in, first out?</p><details><summary>Show answer</summary><p>queue</p></details></li><li><p>Folders inside folders on a computer form which data structure?</p><details><summary>Show answer</summary><p>tree</p></details></li><li><p>Towns connected by roads form which data structure?</p><details><summary>Show answer</summary><p>graph</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Use a list as a <strong>stack</strong>: push <code>&quot;a&quot;</code>, <code>&quot;b&quot;</code> and <code>&quot;c&quot;</code>, then pop once and print the popped value.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=data-structures#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 6 of 11 in <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> · <a href="/learn/?book=algorithms">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/algorithms/big-o/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Big O: how fast is your code?</a><a class="btn btn-solid btn-sm" href="/learn/algorithms/stacks-queues/">Stacks and queues <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+print(&quot;Direct roads from Nakuru:&quot;, roads[&quot;Nakuru&quot;])</code></pre></figure>
+<p>See the graphs, BFS and DFS lesson for searching routes.</p>
+<h2>Choosing a structure</h2>
+<div class="static-table"><table><thead><tr><th>Need</th><th>Use</th></tr></thead><tbody><tr><td>Ordered items, access by position</td><td>List</td></tr><tr><td>Fixed record that shouldn't change</td><td>Tuple</td></tr><tr><td>Unique items, fast "is it there?"</td><td>Set</td></tr><tr><td>Look up by key, counting</td><td>Dictionary</td></tr><tr><td>Undo, back button, nested structures</td><td>Stack (list)</td></tr><tr><td>First come, first served</td><td>Queue (deque)</td></tr><tr><td>Always get the smallest/most urgent</td><td>Heap (heapq)</td></tr><tr><td>Hierarchy</td><td>Tree</td></tr><tr><td>Networks and connections</td><td>Graph</td></tr><tr><td>Sorted data with fast search and inserts</td><td>Balanced tree / database index (or sorted list + bisect for small data)</td></tr></tbody></table></div>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A matatu SACCO app must: (1) record buses in the order they arrive at the stage to load passengers fairly, (2) quickly check whether a number plate is registered, and (3) store each bus's driver and route. Which data structures fit each need?</span><em>Show answer</em></summary><div class="callout-body"><p>(1) A queue (deque) for arrival order (FIFO). (2) A set of registered plates for O(1) membership checks. (3) A dictionary mapping plate → {"driver": ..., "route": ...}.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Data structures organise data for efficient operations; choose based on what you do most.</li><li>Lists (ordered, index access), tuples (immutable), sets (unique, fast membership), dictionaries (key lookups).</li><li>Stacks are LIFO, queues FIFO (use deque); linked lists allow O(1) front inserts but slow indexing.</li><li>Trees model hierarchies (BSTs, database B-trees); heaps give the smallest/most urgent item fast; graphs model networks.</li><li>Use the decision guide to pick the right structure for each requirement.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which structure works last in, first out?</p><details><summary>Show answer</summary><p>stack</p></details></li><li><p>Which structure works first in, first out?</p><details><summary>Show answer</summary><p>queue</p></details></li><li><p>Which Python structure stores unique items with fast membership checks?</p><details><summary>Show answer</summary><p>set</p></details></li><li><p>Which Python module provides a heap (priority queue)?</p><details><summary>Show answer</summary><p>heapq</p></details></li><li><p>Which data structure models towns connected by roads?</p><details><summary>Show answer</summary><p>graph</p></details></li><li><p>Which Python class from collections gives fast appends and pops at both ends?</p><details><summary>Show answer</summary><p>deque</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Use a list as a <strong>stack</strong>: push <code>&quot;a&quot;</code>, <code>&quot;b&quot;</code> and <code>&quot;c&quot;</code>, then pop once and print the popped value.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=data-structures#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 6 of 11 in <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> · <a href="/learn/?book=algorithms">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/algorithms/big-o/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Big O: measuring how fast code grows, common complexities, analysing loops, space complexity and practical optimisation</a><a class="btn btn-solid btn-sm" href="/learn/algorithms/stacks-queues/">Stacks and queues <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

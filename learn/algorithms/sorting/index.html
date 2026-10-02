@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Sorting algorithms | Algorithms &amp; problem solving</title>
-    <meta name="description" content="Sorting puts items in order: prices from cheapest, names A–Z, scores highest first." />
+    <title>Sorting algorithms: bubble, selection, insertion, merge…</title>
+    <meta name="description" content="Sorting puts items in order: students by marks, products by price, transactions by date, names alphabetically, leaderboards by score. Sorted data is…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/algorithms/sorting/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Sorting algorithms | Algorithms &amp; problem solving" />
-    <meta property="og:description" content="Sorting puts items in order: prices from cheapest, names A–Z, scores highest first." />
+    <meta property="og:title" content="Sorting algorithms: bubble, selection, insertion, merge…" />
+    <meta property="og:description" content="Sorting puts items in order: students by marks, products by price, transactions by date, names alphabetically, leaderboards by score. Sorted data is…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/algorithms/sorting/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Sorting algorithms | Algorithms &amp; problem solving" />
-    <meta name="twitter:description" content="Sorting puts items in order: prices from cheapest, names A–Z, scores highest first." />
+    <meta name="twitter:title" content="Sorting algorithms: bubble, selection, insertion, merge…" />
+    <meta name="twitter:description" content="Sorting puts items in order: students by marks, products by price, transactions by date, names alphabetically, leaderboards by score. Sorted data is…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/sorting/#lesson","name":"Sorting algorithms","description":"Sorting puts items in order: prices from cheapest, names A–Z, scores highest first.","url":"https://marzleytechsolutions.co.ke/learn/algorithms/sorting/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/#course","name":"Algorithms & problem solving","url":"https://marzleytechsolutions.co.ke/learn/algorithms/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Algorithms & problem solving","item":"https://marzleytechsolutions.co.ke/learn/algorithms/"},{"@type":"ListItem","position":4,"name":"Sorting algorithms","item":"https://marzleytechsolutions.co.ke/learn/algorithms/sorting/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/sorting/#lesson","name":"Sorting algorithms: bubble, selection, insertion, merge and quick sort, stability, complexity and sorting real data","description":"Sorting puts items in order: students by marks, products by price, transactions by date, names alphabetically, leaderboards by score. Sorted data is…","url":"https://marzleytechsolutions.co.ke/learn/algorithms/sorting/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/algorithms/#course","name":"Algorithms & problem solving","url":"https://marzleytechsolutions.co.ke/learn/algorithms/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Algorithms & problem solving","item":"https://marzleytechsolutions.co.ke/learn/algorithms/"},{"@type":"ListItem","position":4,"name":"Sorting algorithms: bubble, selection, insertion, merge and quick sort, stability, complexity and sorting real data","item":"https://marzleytechsolutions.co.ke/learn/algorithms/sorting/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,45 +36,156 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> / <span>Sorting algorithms</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=sorting"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Sorting algorithms</h1>
-<p>Sorting puts items in order: prices from cheapest, names A–Z, scores highest first.</p>
-<h2>Bubble sort (easy to understand, slow)</h2>
-<p>Compare neighbours and swap them if they're in the wrong order. Repeat until nothing swaps. The biggest values "bubble" to the end.</p>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> / <span>Sorting algorithms: bubble, selection, insertion, merge and quick sort, stability, complexity and sorting real data</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=sorting"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Sorting algorithms: bubble, selection, insertion, merge and quick sort, stability, complexity and sorting real data</h1>
+<p>Sorting puts items in order: students by marks, products by price, transactions by date, names alphabetically, leaderboards by score. Sorted data is easier to read and makes other operations fast (binary search, finding duplicates, medians, ranges). Studying sorting algorithms is the classic way to learn how to think about efficiency, and it appears in exams and technical interviews. This unit explains the main algorithms step by step with runnable code, compares their speed, and shows how to sort real data in Python.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Why sorting matters</li><li>Bubble sort, selection sort and insertion sort (simple, O(n²))</li><li>Merge sort and quick sort (divide and conquer, O(n log n))</li><li>Counting comparisons and timing algorithms</li><li>Stability and in-place sorting</li><li>Python's sorted() and .sort(), keys, reverse and multi-level sorts</li><li>Choosing a sort in practice</li></ul></div></aside>
+<h2>Bubble sort</h2>
+<p>Repeatedly compare <strong>adjacent</strong> items and swap them if they're in the wrong order. After each pass, the largest remaining item "bubbles" to the end.</p>
+<p>Pass 1 on <code>[5, 1, 4, 2]</code>: compare 5,1 → swap <code>[1,5,4,2]</code>; 5,4 → swap <code>[1,4,5,2]</code>; 5,2 → swap <code>[1,4,2,5]</code>.</p>
 <figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def bubble_sort(items):
-    items = items[:]            # work on a copy
-    n = len(items)
-    for i in range(n):
+    a = items[:]                      # work on a copy
+    n = len(a)
+    for i in range(n - 1):
         swapped = False
-        for j in range(n - 1 - i):
-            if items[j] &gt; items[j + 1]:
-                items[j], items[j + 1] = items[j + 1], items[j]
+        for j in range(n - 1 - i):    # the last i items are already in place
+            if a[j] &gt; a[j + 1]:
+                a[j], a[j + 1] = a[j + 1], a[j]
                 swapped = True
-        if not swapped:
+        if not swapped:               # already sorted: stop early
             break
-    return items
+    return a
 
-print(bubble_sort([29, 3, 72, 15, 8, 41]))</code></pre></figure>
-<h2>Selection and insertion sort</h2>
-<ul><li><strong>Selection sort</strong>: find the smallest item, put it first; find the next smallest, put it second; and so on.</li><li><strong>Insertion sort</strong>: like sorting playing cards in your hand: take each item and insert it into the right place among the ones already sorted. Fast on nearly-sorted data.</li></ul>
-<h2>Merge sort (fast)</h2>
-<p>Split the list in half, sort each half (by splitting again), then <strong>merge</strong> the two sorted halves. This "divide and conquer" approach is much faster on big lists.</p>
+print(bubble_sort([64, 25, 12, 22, 11]))</code></pre></figure>
+<p>Simple to understand, but slow for large lists: <strong>O(n²)</strong> comparisons in the worst case.</p>
+<h2>Selection sort</h2>
+<p>Find the <strong>smallest</strong> remaining item and swap it into the next position.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def selection_sort(items):
+    a = items[:]
+    for i in range(len(a)):
+        smallest = i
+        for j in range(i + 1, len(a)):
+            if a[j] &lt; a[smallest]:
+                smallest = j
+        a[i], a[smallest] = a[smallest], a[i]
+    return a
+
+print(selection_sort([29, 10, 14, 37, 13]))</code></pre></figure>
+<p>Always O(n²) comparisons but few swaps (useful when writing data is expensive).</p>
+<h2>Insertion sort</h2>
+<p>Build a sorted section one item at a time, inserting each new item into its correct place, like sorting playing cards in your hand.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def insertion_sort(items):
+    a = items[:]
+    for i in range(1, len(a)):
+        key = a[i]
+        j = i - 1
+        while j &gt;= 0 and a[j] &gt; key:
+            a[j + 1] = a[j]          # shift bigger items right
+            j -= 1
+        a[j + 1] = key
+    return a
+
+print(insertion_sort([12, 11, 13, 5, 6]))</code></pre></figure>
+<p>O(n²) worst case, but very fast for <strong>small or nearly sorted</strong> lists (close to O(n)), which is why real-world sorts use it for small pieces.</p>
+<h2>Merge sort (divide and conquer)</h2>
+<ol><li><strong>Divide</strong> the list into halves until each piece has one item.</li><li><strong>Merge</strong> pieces back together in order.</li></ol>
 <figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def merge_sort(items):
     if len(items) &lt;= 1:
         return items
     mid = len(items) // 2
-    left, right = merge_sort(items[:mid]), merge_sort(items[mid:])
-    merged, i, j = [], 0, 0
-    while i &lt; len(left) and j &lt; len(right):
-        if left[i] &lt;= right[j]:
-            merged.append(left[i]); i += 1
-        else:
-            merged.append(right[j]); j += 1
-    return merged + left[i:] + right[j:]
+    left = merge_sort(items[:mid])
+    right = merge_sort(items[mid:])
+    return merge(left, right)
 
-print(merge_sort([29, 3, 72, 15, 8, 41, 0, 56]))</code></pre></figure>
-<p>In real Python code, just use <code>sorted(items)</code> or <code>items.sort()</code>: they use <strong>Timsort</strong>, a very fast hybrid of merge and insertion sort.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which sort repeatedly swaps neighbouring items that are in the wrong order?</p><details><summary>Show answer</summary><p>bubble sort</p></details></li><li><p>Merge sort uses which strategy? (three words)</p><details><summary>Show answer</summary><p>divide and conquer</p></details></li><li><p>What is the name of the algorithm Python's sorted() uses?</p><details><summary>Show answer</summary><p>Timsort</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Use <code>sorted()</code> with <code>reverse=True</code> to print the list <code>[40, 85, 12, 67]</code> from highest to lowest.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=sorting#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 4 of 11 in <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> · <a href="/learn/?book=algorithms">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/algorithms/searching/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Searching: linear and binary search</a><a class="btn btn-solid btn-sm" href="/learn/algorithms/big-o/">Big O: how fast is your code? <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+def merge(left, right):
+    result, i, j = [], 0, 0
+    while i &lt; len(left) and j &lt; len(right):
+        if left[i] &lt;= right[j]:       # &lt;= keeps equal items in order (stable)
+            result.append(left[i]); i += 1
+        else:
+            result.append(right[j]); j += 1
+    return result + left[i:] + right[j:]
+
+print(merge_sort([38, 27, 43, 3, 9, 82, 10]))</code></pre></figure>
+<p>Always <strong>O(n log n)</strong>, stable, but needs extra memory for merging.</p>
+<h2>Quick sort</h2>
+<ol><li>Choose a <strong>pivot</strong>.</li><li><strong>Partition</strong>: items smaller than the pivot go left, larger go right.</li><li>Recursively sort both sides.</li></ol>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def quick_sort(items):
+    if len(items) &lt;= 1:
+        return items
+    pivot = items[len(items) // 2]
+    left = [x for x in items if x &lt; pivot]
+    middle = [x for x in items if x == pivot]
+    right = [x for x in items if x &gt; pivot]
+    return quick_sort(left) + middle + quick_sort(right)
+
+print(quick_sort([10, 7, 8, 9, 1, 5, 7]))</code></pre></figure>
+<p>Average <strong>O(n log n)</strong> and very fast in practice; worst case O(n²) with bad pivots (e.g. always the first item on already sorted data). Good implementations choose pivots carefully and sort in place.</p>
+<h2>Comparing performance</h2>
+<p>Time the algorithms on random data (functions are defined before the loop that calls them, because Python runs top to bottom):</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import random, time
+
+def bubble_sort(a):
+    a = a[:]
+    for i in range(len(a) - 1):
+        for j in range(len(a) - 1 - i):
+            if a[j] &gt; a[j + 1]:
+                a[j], a[j + 1] = a[j + 1], a[j]
+    return a
+
+def merge_sort(a):
+    if len(a) &lt;= 1:
+        return a
+    m = len(a) // 2
+    l, r = merge_sort(a[:m]), merge_sort(a[m:])
+    out, i, j = [], 0, 0
+    while i &lt; len(l) and j &lt; len(r):
+        if l[i] &lt;= r[j]:
+            out.append(l[i]); i += 1
+        else:
+            out.append(r[j]); j += 1
+    return out + l[i:] + r[j:]
+
+def timed(fn, data):
+    start = time.perf_counter()
+    fn(data)
+    return time.perf_counter() - start
+
+random.seed(1)
+for n in [500, 2000]:
+    data = [random.randint(0, 100000) for _ in range(n)]
+    print(f&quot;n={n}: bubble {timed(bubble_sort, data):.3f}s, merge {timed(merge_sort, data):.4f}s, built-in {timed(sorted, data):.5f}s&quot;)</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Algorithm</th><th>Best</th><th>Average</th><th>Worst</th><th>Extra memory</th><th>Stable?</th></tr></thead><tbody><tr><td>Bubble</td><td>O(n) (with early stop)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>Yes</td></tr><tr><td>Selection</td><td>O(n²)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>No</td></tr><tr><td>Insertion</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>Yes</td></tr><tr><td>Merge</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n)</td><td>Yes</td></tr><tr><td>Quick</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n²)</td><td>O(log n)</td><td>No (typical in-place versions)</td></tr><tr><td>Python's Timsort</td><td>O(n)</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n)</td><td>Yes</td></tr></tbody></table></div>
+<h2>Stability</h2>
+<p>A <strong>stable</strong> sort keeps items with equal keys in their original order. Example: students already sorted by name, then sorted by grade; with a stable sort, students with the same grade remain alphabetical. That's why multi-level sorting works.</p>
+<h2>Sorting in Python</h2>
+<p>Python's built-in sort (<strong>Timsort</strong>, a hybrid of merge and insertion sort) is fast and stable. Use it in real code.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">scores = [40, 85, 12, 67]
+print(sorted(scores))                  # new list, ascending
+print(sorted(scores, reverse=True))    # descending
+scores.sort()                          # sorts the list in place
+print(scores)
+
+students = [
+    {&quot;name&quot;: &quot;Wanjiku&quot;, &quot;form&quot;: 3, &quot;mark&quot;: 78},
+    {&quot;name&quot;: &quot;Otieno&quot;, &quot;form&quot;: 4, &quot;mark&quot;: 91},
+    {&quot;name&quot;: &quot;Amina&quot;, &quot;form&quot;: 3, &quot;mark&quot;: 91},
+    {&quot;name&quot;: &quot;Kiprop&quot;, &quot;form&quot;: 4, &quot;mark&quot;: 65},
+]
+by_mark = sorted(students, key=lambda s: s[&quot;mark&quot;], reverse=True)
+print([s[&quot;name&quot;] for s in by_mark])
+
+# Multi-level: form ascending, then mark descending
+multi = sorted(students, key=lambda s: (s[&quot;form&quot;], -s[&quot;mark&quot;]))
+print([(s[&quot;form&quot;], s[&quot;name&quot;], s[&quot;mark&quot;]) for s in multi])
+
+print(sorted([&quot;banana&quot;, &quot;Avocado&quot;, &quot;mango&quot;], key=str.lower))   # case-insensitive</code></pre></figure>
+<h2>Choosing a sort in practice</h2>
+<ul><li><strong>Use the language's built-in sort</strong> (Python <code>sorted</code>, JavaScript <code>Array.prototype.sort</code> with a compare function, SQL <code>ORDER BY</code>).</li><li>Learn the classic algorithms to understand complexity and for interviews/exams.</li><li>Nearly sorted small data: insertion sort shines.</li><li>Huge datasets that don't fit in memory: external merge sorts (databases handle this).</li></ul>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Trace one pass of bubble sort on [7, 3, 9, 2]. What is the list after the first pass?</span><em>Show answer</em></summary><div class="callout-body"><p>Compare 7,3 → swap [3,7,9,2]; 7,9 → no swap; 9,2 → swap [3,7,2,9]. After pass 1: [3, 7, 2, 9], with the largest (9) at the end.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Sorting orders data and enables fast searching and analysis.</li><li>Bubble, selection and insertion sorts are simple O(n²) algorithms; insertion is great for nearly sorted data.</li><li>Merge sort (stable, O(n log n), extra memory) and quick sort (fast average O(n log n), careful pivots) use divide and conquer.</li><li>Stability preserves the order of equal items, enabling multi-level sorts.</li><li>In real code use built-in sorts (Python's stable Timsort) with key, reverse and tuple keys.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which simple sort repeatedly swaps adjacent items?</p><details><summary>Show answer</summary><p>bubble</p></details></li><li><p>What is the average time complexity of merge sort?</p><details><summary>Show answer</summary><p>O(n log n)</p></details></li><li><p>Which sort chooses a pivot?</p><details><summary>Show answer</summary><p>quick</p></details></li><li><p>What is a sort called that keeps equal items in their original order?</p><details><summary>Show answer</summary><p>stable</p></details></li><li><p>What sorting algorithm does Python's sorted() use?</p><details><summary>Show answer</summary><p>Timsort</p></details></li><li><p>Which sort is very fast on nearly sorted small lists?</p><details><summary>Show answer</summary><p>insertion</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Use <code>sorted()</code> with <code>reverse=True</code> to print the list <code>[40, 85, 12, 67]</code> from highest to lowest.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=sorting#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 4 of 11 in <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> · <a href="/learn/?book=algorithms">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/algorithms/searching/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Searching algorithms: linear search, binary search, step counts, edge cases and searching real data</a><a class="btn btn-solid btn-sm" href="/learn/algorithms/big-o/">Big O: measuring how fast code grows, common complexities, analysing loops, space complexity and practical optimisation <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
