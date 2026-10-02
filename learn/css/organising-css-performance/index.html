@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Organising CSS for real projects: naming (BEM), file…</title>
+    <meta name="description" content="A 50-line stylesheet is easy. A real business site or web app can have thousands of lines, edited by several people over years. Without organisation…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/css/organising-css-performance/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Organising CSS for real projects: naming (BEM), file…" />
+    <meta property="og:description" content="A 50-line stylesheet is easy. A real business site or web app can have thousands of lines, edited by several people over years. Without organisation…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/css/organising-css-performance/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Organising CSS for real projects: naming (BEM), file…" />
+    <meta name="twitter:description" content="A 50-line stylesheet is easy. A real business site or web app can have thousands of lines, edited by several people over years. Without organisation…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/css/organising-css-performance/#lesson","name":"Organising CSS for real projects: naming (BEM), file structure, reuse and performance","description":"A 50-line stylesheet is easy. A real business site or web app can have thousands of lines, edited by several people over years. Without organisation…","url":"https://marzleytechsolutions.co.ke/learn/css/organising-css-performance/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/css/#course","name":"CSS","url":"https://marzleytechsolutions.co.ke/learn/css/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"CSS","item":"https://marzleytechsolutions.co.ke/learn/css/"},{"@type":"ListItem","position":4,"name":"Organising CSS for real projects: naming (BEM), file structure, reuse and performance","item":"https://marzleytechsolutions.co.ke/learn/css/organising-css-performance/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=19f64783be" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/css/">CSS</a> / <span>Organising CSS for real projects: naming (BEM), file structure, reuse and performance</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=organising-css-performance"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Organising CSS for real projects: naming (BEM), file structure, reuse and performance</h1>
+<p>A 50-line stylesheet is easy. A real business site or web app can have thousands of lines, edited by several people over years. Without organisation, CSS becomes "append-only": nobody dares delete anything, rules fight each other, and every change breaks something else. This unit teaches how professionals structure CSS: naming conventions like <strong>BEM</strong>, file organisation, reusable components, modern features (nesting, layers) and performance.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Why CSS gets messy and the principles that keep it clean</li><li>Naming conventions: BEM</li><li>Organising files and sections</li><li>Components, utilities and design tokens</li><li>Keeping specificity low; cascade layers and nesting</li><li>CSS performance: size, loading, critical CSS, fonts</li></ul></div></aside>
+<h2>Why CSS gets messy</h2>
+<ul><li><strong>Global scope:</strong> every rule can affect any element anywhere.</li><li><strong>Specificity wars:</strong> fixing one thing with a stronger selector forces the next fix to be even stronger, until <code>!important</code> appears everywhere.</li><li><strong>No ownership:</strong> unclear which rules belong to which part of the site.</li><li><strong>Fear of deleting:</strong> unused CSS piles up.</li></ul>
+<h2>Principles of maintainable CSS</h2>
+<ol><li><strong>Low, flat specificity:</strong> mostly single class selectors (<code>.card-title</code>), not <code>#main div ul li a</code>.</li><li><strong>Components:</strong> style reusable blocks (card, button, navbar) independently of where they appear.</li><li><strong>Consistency:</strong> design tokens (variables) for colours, spacing and fonts.</li><li><strong>Predictable naming:</strong> names tell you what something is and where its styles live.</li><li><strong>Delete freely:</strong> if components are self-contained, removing one doesn't break others.</li></ol>
+<h2>BEM naming</h2>
+<p><strong>BEM</strong> stands for <strong>Block, Element, Modifier</strong>:</p>
+<div class="static-table"><table><thead><tr><th>Part</th><th>Syntax</th><th>Example</th><th>Meaning</th></tr></thead><tbody><tr><td>Block</td><td><code>.block</code></td><td><code>.card</code></td><td>A standalone component</td></tr><tr><td>Element</td><td><code>.block__element</code></td><td><code>.card__title</code>, <code>.card__price</code></td><td>A part of the block (double underscore)</td></tr><tr><td>Modifier</td><td><code>.block--modifier</code></td><td><code>.card--featured</code></td><td>A variation (double hyphen)</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .card { border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; max-width: 260px; font-family: system-ui, sans-serif; margin-bottom: 10px; }
+  .card__title { margin: 0 0 4px; font-size: 18px; }
+  .card__price { color: #475569; margin: 0 0 12px; }
+  .card__button { display: inline-block; background: #0b1b35; color: #fff; padding: 8px 14px; border-radius: 8px; text-decoration: none; }
+  .card--featured { border-color: #f59e0b; background: #fff7e0; }
+  .card--featured .card__button { background: #f59e0b; color: #0b1b35; }
+&lt;/style&gt;
+&lt;div class=&quot;card&quot;&gt;
+  &lt;h3 class=&quot;card__title&quot;&gt;Starter website&lt;/h3&gt;
+  &lt;p class=&quot;card__price&quot;&gt;KSh 15,000&lt;/p&gt;
+  &lt;a class=&quot;card__button&quot; href=&quot;#&quot;&gt;Choose&lt;/a&gt;
+&lt;/div&gt;
+&lt;div class=&quot;card card--featured&quot;&gt;
+  &lt;h3 class=&quot;card__title&quot;&gt;Business website&lt;/h3&gt;
+  &lt;p class=&quot;card__price&quot;&gt;KSh 35,000 · Most popular&lt;/p&gt;
+  &lt;a class=&quot;card__button&quot; href=&quot;#&quot;&gt;Choose&lt;/a&gt;
+&lt;/div&gt;</code></pre></figure>
+<p>Benefits: you know <code>.card__price</code> belongs to the card component, specificity stays at one class, and the same card works anywhere on the site.</p>
+<h2>Organising files</h2>
+<p>For a small to medium site, one file with clear sections works:</p>
+<figure class="static-code"><pre><code>/* =========================================
+   1. Tokens (variables)
+   2. Reset / base (html, body, headings, links, images)
+   3. Layout (container, grid, header, footer)
+   4. Components (buttons, cards, forms, navbar, modal)
+   5. Pages (home hero, pricing page specifics)
+   6. Utilities (.sr-only, .text-center, .mt-4)
+   7. Media queries per component, or at the end
+   ========================================= */</code></pre></figure>
+<p>For bigger projects, split into files and combine them with a build tool or <code>@import</code> during build:</p>
+<figure class="static-code"><pre><code>css/
+├── tokens.css
+├── base.css
+├── layout.css
+├── components/
+│   ├── button.css
+│   ├── card.css
+│   └── navbar.css
+├── pages/
+│   └── home.css
+└── utilities.css</code></pre></figure>
+<p>Avoid many separate <code>&lt;link&gt;</code> files in production without bundling: each file is an extra request (HTTP/2 reduces the cost, but bundling and minifying is still common).</p>
+<h2>Base styles and resets</h2>
+<p>A small, modern base:</p>
+<figure class="static-code"><pre><code>*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; font-family: var(--font-sans); line-height: 1.6; color: var(--color-text); background: var(--color-bg); }
+img, svg, video { display: block; max-width: 100%; height: auto; }
+input, button, select, textarea { font: inherit; }
+h1, h2, h3 { line-height: 1.2; }
+a { color: var(--color-link); }</code></pre></figure>
+<h2>Utilities</h2>
+<p>Small single-purpose classes for common needs:</p>
+<figure class="static-code"><pre><code>.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }   /* visible to screen readers only */
+.text-center { text-align: center; }
+.mt-4 { margin-top: var(--space-4); }</code></pre></figure>
+<p>Keep utilities few and consistent (or use a utility framework like Tailwind).</p>
+<h2>Keeping specificity under control</h2>
+<div class="static-table"><table><thead><tr><th>Avoid</th><th>Prefer</th></tr></thead><tbody><tr><td><code>#header .nav ul li a</code></td><td><code>.nav__link</code></td></tr><tr><td>Styling by IDs</td><td>Classes</td></tr><tr><td><code>!important</code> to win fights</td><td>Fix the selector or order (reserve <code>!important</code> for utilities and reduced-motion overrides)</td></tr><tr><td>Qualifying classes with elements (<code>div.card</code>)</td><td><code>.card</code></td></tr></tbody></table></div>
+<h3><code>:where()</code> for zero specificity</h3>
+<p><code>:where(.content) a { ... }</code> has the specificity of just <code>a</code>, making base styles easy to override.</p>
+<h3>Cascade layers (<code>@layer</code>)</h3>
+<p>Modern CSS lets you declare layers whose order decides priority, regardless of selector specificity:</p>
+<figure class="static-code"><pre><code>@layer reset, base, components, utilities;
+
+@layer base { a { color: navy; } }
+@layer components { .btn { color: white; } }
+@layer utilities { .text-red { color: red; } }</code></pre></figure>
+<p>Later layers win over earlier ones; great for taming third-party CSS (put a framework in an early layer so your styles win easily).</p>
+<h3>Native CSS nesting</h3>
+<p>Modern browsers support nesting (previously only in Sass):</p>
+<figure class="static-code"><pre><code>.card {
+  padding: 16px;
+  &amp; .card__title { font-size: 18px; }
+  &amp;:hover { box-shadow: var(--shadow); }
+  @media (min-width: 700px) { padding: 24px; }
+}</code></pre></figure>
+<p>Nest shallowly; deep nesting recreates long, specific selectors.</p>
+<h2>CSS performance</h2>
+<p>CSS is <strong>render-blocking</strong>: the browser won't paint the page until it has downloaded and parsed the CSS in the <code>&lt;head&gt;</code>. Keep it fast:</p>
+<ol><li><strong>Keep CSS small:</strong> remove unused rules (Chrome DevTools <strong>Coverage</strong> tab shows unused CSS); avoid importing huge frameworks for a few components.</li><li><strong>Minify</strong> for production (removes spaces and comments) and enable <strong>compression</strong> (gzip/Brotli) on the server.</li><li><strong>Cache:</strong> use long cache times with versioned file names (<code>style.css?v=abc123</code> or <code>style.abc123.css</code>) so returning visitors don't download CSS again. (This site does this.)</li><li><strong>Critical CSS:</strong> inline the small amount of CSS needed for the first screen in <code>&lt;head&gt;</code>, load the rest after; useful for slow mobile networks.</li><li>**Avoid <code>@import</code> chains** inside CSS files; they load one after another.</li><li><strong>Fonts:</strong> use few font weights, <code>font-display: swap</code>, self-host or preconnect, and prefer WOFF2.</li><li><strong>Efficient effects:</strong> large <code>box-shadow</code> and <code>filter: blur()</code> on many elements can slow scrolling on budget phones.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Your site's CSS is 400 KB because the whole Bootstrap framework plus three icon libraries are included, but only a few components are used. What can you do?</span><em>Show answer</em></summary><div class="callout-body"><p>Remove the libraries you don't need, include only the Bootstrap components you use (Bootstrap's Sass source lets you import selected parts), subset or replace icon fonts with a few inline SVG icons, run the Coverage tool to find unused CSS, then minify and compress. Smaller CSS means faster first paint, especially on mobile data.</p></div></details>
+<h2>Documentation and teamwork</h2>
+<ul><li>Comment sections and non-obvious decisions ("/* 3px nudge aligns the icon with the text baseline */").</li><li>Keep a simple style guide page showing buttons, forms, cards and colours.</li><li>Use a linter (<strong>Stylelint</strong>) and formatter (<strong>Prettier</strong>) for consistent code.</li><li>Use version control (<strong>Git</strong>) so changes can be reviewed and undone.</li></ul>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Deep, specific selectors</td><td>Single classes with BEM</td></tr><tr><td><code>!important</code> everywhere</td><td>Fix specificity/order; use layers</td></tr><tr><td>Page-specific hacks scattered everywhere</td><td>Components + page sections</td></tr><tr><td>Unused CSS never removed</td><td>Coverage tool; self-contained components</td></tr><tr><td>Huge frameworks for small sites</td><td>Plain CSS or selected components</td></tr><tr><td>No caching/versioning</td><td>Versioned, minified, cached files</td></tr></tbody></table></div>
+<h2>Practice tasks</h2>
+<ol><li>Rewrite a messy stylesheet's card section using BEM names.</li><li>Organise your project's CSS into the seven sections listed above.</li><li>Use the Coverage tab to find how much of a website's CSS is unused on its home page.</li><li>Put a third-party stylesheet into an early <code>@layer</code> and override it easily.</li><li>Minify your CSS with a free online minifier or build tool and compare file sizes.</li></ol>
+<h2>Summary</h2>
+<ul><li>Maintainable CSS uses low specificity, self-contained components, design tokens and predictable naming.</li><li><strong>BEM:</strong> <code>.block</code>, <code>.block__element</code>, <code>.block--modifier</code>.</li><li>Organise CSS into tokens, base, layout, components, pages and utilities; bundle for production.</li><li>Use <code>:where()</code>, <code>@layer</code> and shallow native nesting to control the cascade.</li><li>Performance: small, minified, compressed, cached CSS; critical CSS for the first screen; efficient fonts and effects.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does the B in BEM stand for?</p><details><summary>Show answer</summary><p>Block</p></details></li><li><p>In BEM, which separator marks an element? (two characters)</p><details><summary>Show answer</summary><p>__</p></details></li><li><p>In BEM, which separator marks a modifier? (two characters)</p><details><summary>Show answer</summary><p>--</p></details></li><li><p>Which pseudo-class gives a selector zero specificity?</p><details><summary>Show answer</summary><p>:where</p></details></li><li><p>Which at-rule creates cascade layers?</p><details><summary>Show answer</summary><p>@layer</p></details></li><li><p>Which DevTools tab shows unused CSS?</p><details><summary>Show answer</summary><p>Coverage</p></details></li><li><p>Is CSS in the head render-blocking? (yes or no)</p><details><summary>Show answer</summary><p>yes</p></details></li></ol></section></div><p class="static-meta">Lesson 11 of 21 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/css-debugging-devtools/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Debugging CSS with browser DevTools: find and fix any layout problem</a><a class="btn btn-solid btn-sm" href="/learn/css/flexbox/">Flexbox layout: rows, columns, alignment, wrapping and real layouts <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

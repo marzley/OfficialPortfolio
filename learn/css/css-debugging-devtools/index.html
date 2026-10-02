@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Debugging CSS with browser DevTools: find and fix any…</title>
+    <meta name="description" content="Every developer writes CSS that doesn&#x27;t work the first time. The difference between beginners and professionals isn&#x27;t avoiding bugs; it&#x27;s finding them…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/css/css-debugging-devtools/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Debugging CSS with browser DevTools: find and fix any…" />
+    <meta property="og:description" content="Every developer writes CSS that doesn&#x27;t work the first time. The difference between beginners and professionals isn&#x27;t avoiding bugs; it&#x27;s finding them…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/css/css-debugging-devtools/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Debugging CSS with browser DevTools: find and fix any…" />
+    <meta name="twitter:description" content="Every developer writes CSS that doesn&#x27;t work the first time. The difference between beginners and professionals isn&#x27;t avoiding bugs; it&#x27;s finding them…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/css/css-debugging-devtools/#lesson","name":"Debugging CSS with browser DevTools: find and fix any layout problem","description":"Every developer writes CSS that doesn't work the first time. The difference between beginners and professionals isn't avoiding bugs; it's finding them…","url":"https://marzleytechsolutions.co.ke/learn/css/css-debugging-devtools/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/css/#course","name":"CSS","url":"https://marzleytechsolutions.co.ke/learn/css/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"CSS","item":"https://marzleytechsolutions.co.ke/learn/css/"},{"@type":"ListItem","position":4,"name":"Debugging CSS with browser DevTools: find and fix any layout problem","item":"https://marzleytechsolutions.co.ke/learn/css/css-debugging-devtools/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=19f64783be" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/css/">CSS</a> / <span>Debugging CSS with browser DevTools: find and fix any layout problem</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=css-debugging-devtools"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Debugging CSS with browser DevTools: find and fix any layout problem</h1>
+<p>Every developer writes CSS that doesn't work the first time. The difference between beginners and professionals isn't avoiding bugs; it's <strong>finding them quickly</strong>. Browser <strong>DevTools</strong> (built into Chrome, Edge, Firefox and Safari) show exactly which rules apply to an element, which are overridden, its box model, flex and grid lines, and how it looks on a phone. This unit teaches a step-by-step debugging method and the DevTools features you'll use daily.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Opening DevTools and inspecting elements</li><li>Reading the Styles panel: applied, overridden and invalid rules</li><li>The Computed tab and box model diagram</li><li>Flexbox and Grid overlays</li><li>Device mode for responsive testing</li><li>Finding horizontal scroll, overflow and z-index problems</li><li>A reliable debugging checklist</li></ul></div></aside>
+<h2>Opening DevTools</h2>
+<ul><li><strong>Windows/Linux:</strong> <code>F12</code> or <code>Ctrl+Shift+I</code>; <strong>Mac:</strong> <code>Cmd+Option+I</code>.</li><li>Or right-click any element → <strong>Inspect</strong>: DevTools opens with that element selected.</li><li>On Android, you can debug a phone's Chrome from a computer via USB (<code>chrome://inspect</code>), useful for phone-only bugs.</li></ul>
+<h2>The Elements panel</h2>
+<p>The left side shows the live <strong>DOM</strong> (the HTML after the browser parsed it and JavaScript changed it). Hovering a node highlights it on the page with margin (orange), padding (green) and content (blue) overlays.</p>
+<p>You can:</p>
+<ul><li>Double-click to edit text or attributes.</li><li>Drag elements to reorder them (temporarily).</li><li>Right-click → <strong>Force state</strong> → <code>:hover</code>, <code>:focus</code>, <code>:active</code> to inspect hover styles without holding the mouse.</li></ul>
+<h2>The Styles panel</h2>
+<p>For the selected element, Styles lists <strong>every matching rule</strong>, most specific first:</p>
+<ul><li><strong>Crossed-out</strong> declarations are overridden by a more specific or later rule.</li><li>A <strong>warning triangle</strong> marks an invalid property or value (typo like <code>colr</code> or <code>20 px</code>).</li><li>Greyed-out properties don't apply (e.g. <code>width</code> on an inline element; DevTools often explains why when you hover the icon).</li><li>Each rule shows its <strong>source file and line</strong> (click to jump to it).</li><li>Click any value to edit it live; use arrow keys to nudge numbers (Shift for steps of 10).</li><li>Tick boxes toggle declarations on/off to see their effect.</li><li>Add new rules with <strong>+</strong>.</li></ul>
+<aside class="callout callout-tip"><p class="callout-title">Edits are temporary</p><div class="callout-body"><p>Changes in DevTools disappear on reload. When you find the fix, copy it into your real CSS file.</p></div></aside>
+<h2>The Computed tab and box model</h2>
+<p><strong>Computed</strong> shows final values after the cascade (e.g. the actual <code>font-size</code> in px) and a <strong>box model diagram</strong> with exact content size, padding, border and margin. Click a computed property to see which rule set it. This is how you answer "why is this box 350px when I wrote 300px?" (padding and border with <code>content-box</code>).</p>
+<h2>Flexbox and Grid tools</h2>
+<p>In the Elements panel, containers show a small <strong>flex</strong> or <strong>grid</strong> badge. Click it to overlay:</p>
+<ul><li>Grid line numbers, track sizes, gaps and named areas.</li><li>Flex item boundaries and free space.</li></ul>
+<p>Chrome's flexbox editor lets you click to try <code>justify-content</code> and <code>align-items</code> values visually.</p>
+<h2>Device mode (responsive testing)</h2>
+<p>Click the phone/tablet icon (<code>Ctrl+Shift+M</code>):</p>
+<ul><li>Choose device presets or drag the width freely.</li><li>Throttle network ("Slow 4G") and CPU to feel budget-phone performance.</li><li>See which media queries exist (enable "Show media queries" in the device toolbar menu) and click to jump to a breakpoint.</li></ul>
+<p>Remember: device mode simulates sizes, but real phones can still behave differently (fonts, touch, performance). Test on a real phone too.</p>
+<h2>Solving common CSS problems</h2>
+<h3>"My style isn't applying"</h3>
+<ol><li>Inspect the element. Is your rule listed?</li><li><strong>Not listed:</strong> the selector doesn't match (typo in class name, wrong element, missing dot) or the CSS file didn't load (check the <strong>Network</strong> tab for a 404 on <code>style.css</code>, or the <strong>Console</strong> for errors).</li><li><strong>Listed but crossed out:</strong> another rule wins. See which one (more specific or later), then adjust specificity or order.</li><li><strong>Warning triangle:</strong> invalid syntax; fix the typo.</li><li>Check the cache: hard refresh with <code>Ctrl+Shift+R</code>.</li></ol>
+<h3>"There's a horizontal scrollbar on mobile"</h3>
+<p>Some element is wider than the screen. Find it:</p>
+<ol><li>In device mode at 360px width, scroll right and look for what sticks out.</li><li>Or paste this in the <strong>Console</strong> to list elements wider than the viewport:</li></ol>
+<figure class="static-code"><pre><code>[...document.querySelectorAll(&quot;*&quot;)].filter(e =&gt; e.getBoundingClientRect().right &gt; innerWidth + 1).forEach(e =&gt; console.log(e));</code></pre></figure>
+<ol><li>Usual culprits: images without <code>max-width: 100%</code>, fixed widths, wide tables, long words or URLs (<code>overflow-wrap: anywhere</code>), <code>100vw</code> elements (which include the scrollbar width), negative margins.</li></ol>
+<p>A temporary debugging trick to see every box:</p>
+<figure class="static-code"><pre><code>* { outline: 1px solid red; }</code></pre></figure>
+<h3>"There's a mysterious gap"</h3>
+<p>Inspect the elements around the gap and check the box model: usually margins (including collapsing margins), default browser margins on <code>body</code>, <code>h1</code> or <code>p</code>, line-height on inline images (fix with <code>display: block</code> on the image), or whitespace between <code>inline-block</code> elements.</p>
+<h3>"z-index doesn't work"</h3>
+<p>Check: is the element positioned (or a flex/grid item)? Is it inside a <strong>stacking context</strong> with a lower z-index (look for parents with <code>z-index</code>, <code>transform</code>, <code>opacity &lt; 1</code>, <code>filter</code>)? The Layers panel (Chrome: More tools → Layers) can visualise stacking.</p>
+<h3>"My hover style doesn't show"</h3>
+<p>Use <strong>Force state → :hover</strong> in the Elements panel. Check specificity versus the normal state rule, and remember phones don't hover.</p>
+<h3>"The font looks different"</h3>
+<p>Computed tab → scroll to <strong>Rendered fonts</strong> at the bottom to see which font file is actually used (maybe your web font failed to load and a fallback is showing).</p>
+<h2>The debugging checklist</h2>
+<ol><li><strong>Reproduce</strong> the problem reliably (which page, which screen size, which browser).</li><li><strong>Inspect</strong> the exact element.</li><li><strong>Read</strong> the Styles panel: missing, crossed-out or invalid?</li><li><strong>Check</strong> the box model and Computed values.</li><li><strong>Toggle</strong> declarations on/off to find the cause.</li><li><strong>Isolate</strong>: remove things until the bug disappears, then add them back.</li><li><strong>Fix</strong> in your source file, then <strong>test</strong> on other screen sizes and browsers.</li><li><strong>Learn</strong>: note the cause so you recognise it next time.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A button looks correct on your laptop but its text is cut off on a small Android phone. What DevTools steps would you take?</span><em>Show answer</em></summary><div class="callout-body"><p>Use device mode at a small width (e.g. 360px) and inspect the button. Check its computed width/height and padding: a fixed <code>height</code> or <code>width</code> or <code>white-space: nowrap</code> may be cutting text off. Toggle those declarations, try <code>min-height</code> instead of <code>height</code> and allow wrapping, then confirm on the real phone (fonts may be bigger there, especially if the user has increased text size).</p></div></details>
+<h2>Other useful panels</h2>
+<div class="static-table"><table><thead><tr><th>Panel</th><th>Use</th></tr></thead><tbody><tr><td><strong>Console</strong></td><td>JavaScript errors, quick tests</td></tr><tr><td><strong>Network</strong></td><td>Did CSS, images and fonts load? File sizes and timing</td></tr><tr><td><strong>Lighthouse</strong></td><td>Performance, accessibility, SEO audits</td></tr><tr><td><strong>Performance</strong></td><td>Find slow animations and layout thrashing</td></tr><tr><td><strong>Accessibility tree / contrast checker</strong></td><td>Names, roles and colour contrast (click a colour swatch in Styles to see the contrast ratio)</td></tr><tr><td><strong>CSS Overview</strong> (Chrome)</td><td>All colours, fonts and media queries used on a page</td></tr></tbody></table></div>
+<h2>Practice tasks</h2>
+<ol><li>Inspect a heading on a big website and find which rule sets its font size; change it live.</li><li>Create a page with a horizontal scroll bug (a 600px-wide image) and find it using the console snippet.</li><li>Force <code>:hover</code> on a button and edit its hover colour.</li><li>Use the Grid overlay on a grid layout and read the line numbers.</li><li>Run Lighthouse on your project and fix one accessibility issue.</li></ol>
+<h2>Summary</h2>
+<ul><li>Open DevTools with F12 or right-click → Inspect; the Elements panel shows the live DOM.</li><li>The Styles panel shows matching rules, crossed-out overrides and invalid declarations; edit and toggle live.</li><li>Computed shows final values and the box model; flex/grid badges show layout overlays.</li><li>Device mode tests responsive sizes and slow networks; still test on real phones.</li><li>Debug systematically: reproduce, inspect, read, check box model, toggle, isolate, fix, test.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which key usually opens DevTools?</p><details><summary>Show answer</summary><p>F12</p></details></li><li><p>In the Styles panel, what does a crossed-out declaration mean? (one word)</p><details><summary>Show answer</summary><p>overridden</p></details></li><li><p>Which DevTools tab shows final values and the box model diagram?</p><details><summary>Show answer</summary><p>Computed</p></details></li><li><p>Which DevTools mode tests phone and tablet sizes? (one word)</p><details><summary>Show answer</summary><p>device</p></details></li><li><p>Which temporary CSS rule outlines every element to find layout problems? Write the selector.</p><details><summary>Show answer</summary><p>*</p></details></li><li><p>Which panel shows whether style.css failed to load with a 404?</p><details><summary>Show answer</summary><p>Network</p></details></li></ol></section></div><p class="static-meta">Lesson 10 of 21 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/cascade-specificity/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> The cascade, specificity and inheritance</a><a class="btn btn-solid btn-sm" href="/learn/css/organising-css-performance/">Organising CSS for real projects: naming (BEM), file structure, reuse and performance <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

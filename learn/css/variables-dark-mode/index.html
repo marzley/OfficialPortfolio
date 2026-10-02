@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>CSS variables and dark mode | CSS</title>
-    <meta name="description" content="Custom properties (CSS variables) store values you reuse: brand colours, spacing, fonts. Change one place, the whole site updates." />
+    <title>CSS variables (custom properties) and dark mode: themes…</title>
+    <meta name="description" content="Imagine a client says: &quot;Change our blue to green everywhere,&quot; and the blue appears in 140 places in your CSS. Or users ask for a dark mode . CSS custom…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/css/variables-dark-mode/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="CSS variables and dark mode | CSS" />
-    <meta property="og:description" content="Custom properties (CSS variables) store values you reuse: brand colours, spacing, fonts. Change one place, the whole site updates." />
+    <meta property="og:title" content="CSS variables (custom properties) and dark mode: themes…" />
+    <meta property="og:description" content="Imagine a client says: &quot;Change our blue to green everywhere,&quot; and the blue appears in 140 places in your CSS. Or users ask for a dark mode . CSS custom…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/css/variables-dark-mode/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="CSS variables and dark mode | CSS" />
-    <meta name="twitter:description" content="Custom properties (CSS variables) store values you reuse: brand colours, spacing, fonts. Change one place, the whole site updates." />
+    <meta name="twitter:title" content="CSS variables (custom properties) and dark mode: themes…" />
+    <meta name="twitter:description" content="Imagine a client says: &quot;Change our blue to green everywhere,&quot; and the blue appears in 140 places in your CSS. Or users ask for a dark mode . CSS custom…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/css/variables-dark-mode/#lesson","name":"CSS variables and dark mode","description":"Custom properties (CSS variables) store values you reuse: brand colours, spacing, fonts. Change one place, the whole site updates.","url":"https://marzleytechsolutions.co.ke/learn/css/variables-dark-mode/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/css/#course","name":"CSS","url":"https://marzleytechsolutions.co.ke/learn/css/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"CSS","item":"https://marzleytechsolutions.co.ke/learn/css/"},{"@type":"ListItem","position":4,"name":"CSS variables and dark mode","item":"https://marzleytechsolutions.co.ke/learn/css/variables-dark-mode/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/css/variables-dark-mode/#lesson","name":"CSS variables (custom properties) and dark mode: themes that are easy to change","description":"Imagine a client says: \"Change our blue to green everywhere,\" and the blue appears in 140 places in your CSS. Or users ask for a dark mode . CSS custom…","url":"https://marzleytechsolutions.co.ke/learn/css/variables-dark-mode/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/css/#course","name":"CSS","url":"https://marzleytechsolutions.co.ke/learn/css/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"CSS","item":"https://marzleytechsolutions.co.ke/learn/css/"},{"@type":"ListItem","position":4,"name":"CSS variables (custom properties) and dark mode: themes that are easy to change","item":"https://marzleytechsolutions.co.ke/learn/css/variables-dark-mode/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,33 +36,143 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/css/">CSS</a> / <span>CSS variables and dark mode</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=variables-dark-mode"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>CSS variables and dark mode</h1>
-<p><strong>Custom properties</strong> (CSS variables) store values you reuse: brand colours, spacing, fonts. Change one place, the whole site updates.</p>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/css/">CSS</a> / <span>CSS variables (custom properties) and dark mode: themes that are easy to change</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=variables-dark-mode"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>CSS variables (custom properties) and dark mode: themes that are easy to change</h1>
+<p>Imagine a client says: "Change our blue to green everywhere," and the blue appears in 140 places in your CSS. Or users ask for a <strong>dark mode</strong>. <strong>CSS custom properties</strong> (usually called CSS variables) solve both: you define a value once, use it everywhere, and change it in one place, even live with JavaScript or automatically when the user prefers dark mode. This unit covers variables thoroughly and builds a complete light/dark theme system.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>What CSS variables are and why they're better than copy-pasting values</li><li>Declaring (<code>--name</code>) and using (<code>var(--name)</code>) variables, with fallbacks</li><li>Scope and inheritance: global <code>:root</code> variables and local overrides</li><li>Design tokens: colours, spacing, fonts and radii</li><li>Dark mode with <code>prefers-color-scheme</code> and a manual toggle</li><li>Changing variables with JavaScript</li><li>Common mistakes</li></ul></div></aside>
+<h2>What are CSS variables?</h2>
+<aside class="callout callout-define"><p class="callout-title">CSS custom property (variable)</p><div class="callout-body"><p>A property you name yourself, starting with two hyphens (<code>--brand</code>), that stores a value you can reuse anywhere with <code>var(--brand)</code>. Unlike variables in preprocessors such as Sass, CSS variables are <strong>live</strong>: they follow the cascade, inherit, and can change at runtime.</p></div></aside>
+<h2>Declaring and using variables</h2>
 <figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
-  :root { --brand: #ffb800; --bg: #ffffff; --text: #0f172a; --radius: 12px; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #0b1628; --text: #e2e8f0; } }
-  body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 16px; }
-  .btn { background: var(--brand); color: #0b1b35; border: 0; padding: 12px 18px; border-radius: var(--radius); font-weight: bold; }
+  :root {
+    --brand: #0b1b35;
+    --accent: #ffb800;
+    --radius: 12px;
+    --space: 16px;
+  }
+  .btn { background: var(--accent); color: var(--brand); padding: calc(var(--space) * 0.75) var(--space); border-radius: var(--radius); border: 0; font: bold 15px sans-serif; }
+  .card { border: 2px solid var(--brand); border-radius: var(--radius); padding: var(--space); margin-bottom: var(--space); font-family: sans-serif; }
 &lt;/style&gt;
-&lt;h2&gt;Themed with variables&lt;/h2&gt;
-&lt;button class=&quot;btn&quot;&gt;Buy now&lt;/button&gt;
-&lt;p&gt;Switch your phone or computer to dark mode and run again.&lt;/p&gt;</code></pre></figure>
-<h2>A dark mode toggle</h2>
+&lt;div class=&quot;card&quot;&gt;Change --brand or --radius in :root and watch everything update.&lt;/div&gt;
+&lt;button class=&quot;btn&quot;&gt;Book now&lt;/button&gt;</code></pre></figure>
+<ul><li>Names start with <code>--</code> and are <strong>case-sensitive</strong> (<code>--Brand</code> ≠ <code>--brand</code>).</li><li><code>:root</code> is the <code>&lt;html&gt;</code> element; variables declared there are available everywhere (global).</li><li><code>var()</code> can be used inside other functions like <code>calc()</code>.</li></ul>
+<h3>Fallback values</h3>
+<p><code>var(--accent, orange)</code> uses <code>orange</code> if <code>--accent</code> isn't defined. You can nest: <code>var(--button-bg, var(--accent, orange))</code>.</p>
+<h2>Scope: global and local variables</h2>
+<p>Variables <strong>inherit</strong> like <code>color</code> does. Redefine a variable on any element to change it for that element and its children only:</p>
 <figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
-  :root { --bg: #fff; --text: #111; }
-  [data-theme=&quot;dark&quot;] { --bg: #111827; --text: #f9fafb; }
-  body { background: var(--bg); color: var(--text); font-family: sans-serif; transition: background .3s; }
+  :root { --card-bg: #f1f5f9; --card-text: #0f172a; }
+  .card { background: var(--card-bg); color: var(--card-text); padding: 14px; border-radius: 10px; margin: 8px 0; font-family: sans-serif; }
+  .card.featured { --card-bg: #0b1b35; --card-text: #ffffff; }   /* local override */
 &lt;/style&gt;
-&lt;button id=&quot;t&quot;&gt;Toggle dark mode&lt;/button&gt;
-&lt;p&gt;Hello!&lt;/p&gt;
+&lt;div class=&quot;card&quot;&gt;Normal card&lt;/div&gt;
+&lt;div class=&quot;card featured&quot;&gt;Featured card: same CSS, different variables&lt;/div&gt;</code></pre></figure>
+<p>This makes component variations clean: change the variables, not every property.</p>
+<h2>Design tokens</h2>
+<p>Professional teams store all design decisions as variables called <strong>design tokens</strong>:</p>
+<figure class="static-code"><pre><code>:root {
+  /* Colours */
+  --color-bg: #ffffff;
+  --color-surface: #f8fafc;
+  --color-text: #0f172a;
+  --color-muted: #475569;
+  --color-border: #e2e8f0;
+  --color-primary: #0b1b35;
+  --color-accent: #ffb800;
+  --color-danger: #dc2626;
+  --color-success: #059669;
+
+  /* Spacing scale */
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px;  --space-4: 16px;
+  --space-6: 24px; --space-8: 32px; --space-12: 48px;
+
+  /* Typography */
+  --font-sans: &quot;Inter&quot;, system-ui, sans-serif;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: clamp(1.5rem, 3vw, 2.25rem);
+
+  /* Shapes */
+  --radius-sm: 6px; --radius: 12px; --radius-full: 999px;
+  --shadow: 0 8px 24px rgb(15 23 42 / 8%);
+}</code></pre></figure>
+<p>Benefits: consistent design, quick rebranding, easier teamwork, and it matches how design tools like Figma define styles ("variables").</p>
+<h2>Dark mode</h2>
+<h3>Why dark mode?</h3>
+<ul><li>Many users prefer it, especially at night; it reduces glare.</li><li>On phones with OLED screens, dark interfaces can save some battery.</li><li>Operating systems (Android, iOS, Windows, macOS) let users choose light or dark, and websites can follow that choice.</li></ul>
+<h3>Method 1: follow the system setting automatically</h3>
+<figure class="static-code"><pre><code>:root {
+  --bg: #ffffff;
+  --text: #0f172a;
+  --surface: #f1f5f9;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b1220;
+    --text: #e2e8f0;
+    --surface: #111c33;
+  }
+}
+
+body { background: var(--bg); color: var(--text); }
+.card { background: var(--surface); }</code></pre></figure>
+<p>Because all colours use variables, the whole site switches by redefining a few values.</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  :root { --bg: #ffffff; --text: #0f172a; --surface: #f1f5f9; --accent: #b45309; color-scheme: light dark; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0b1220; --text: #e2e8f0; --surface: #13203a; --accent: #fbbf24; }
+  }
+  body { background: var(--bg); color: var(--text); font-family: sans-serif; }
+  .card { background: var(--surface); padding: 16px; border-radius: 10px; }
+  .card a { color: var(--accent); }
+&lt;/style&gt;
+&lt;div class=&quot;card&quot;&gt;
+  &lt;h3&gt;Follows your device theme&lt;/h3&gt;
+  &lt;p&gt;Switch your device to dark mode and run this again. &lt;a href=&quot;#&quot;&gt;A link&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;</code></pre></figure>
+<p><code>color-scheme: light dark;</code> also tells the browser to style form controls and scrollbars appropriately.</p>
+<h3>Method 2: a manual toggle (user choice wins)</h3>
+<p>Users should be able to override the system. Use a <code>data-theme</code> attribute on <code>&lt;html&gt;</code> and a little JavaScript to set it and remember it:</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  :root { --bg: #ffffff; --text: #0f172a; --surface: #f1f5f9; }
+  :root[data-theme=&quot;dark&quot;] { --bg: #0b1220; --text: #e2e8f0; --surface: #13203a; }
+  body { background: var(--bg); color: var(--text); font-family: sans-serif; transition: background-color .2s, color .2s; }
+  .card { background: var(--surface); padding: 16px; border-radius: 10px; }
+  button { padding: 8px 14px; border-radius: 8px; border: 1px solid #94a3b8; background: var(--surface); color: var(--text); cursor: pointer; }
+&lt;/style&gt;
+&lt;div class=&quot;card&quot;&gt;
+  &lt;p&gt;Theme demo&lt;/p&gt;
+  &lt;button id=&quot;toggle&quot; aria-pressed=&quot;false&quot;&gt;Dark mode&lt;/button&gt;
+&lt;/div&gt;
 &lt;script&gt;
-  document.getElementById(&quot;t&quot;).onclick = () =&gt; {
-    const root = document.documentElement;
-    root.dataset.theme = root.dataset.theme === &quot;dark&quot; ? &quot;light&quot; : &quot;dark&quot;;
-  };
+  const btn = document.getElementById(&quot;toggle&quot;);
+  btn.addEventListener(&quot;click&quot;, () =&gt; {
+    const dark = document.documentElement.dataset.theme !== &quot;dark&quot;;
+    document.documentElement.dataset.theme = dark ? &quot;dark&quot; : &quot;light&quot;;
+    btn.setAttribute(&quot;aria-pressed&quot;, dark);
+    btn.textContent = dark ? &quot;Light mode&quot; : &quot;Dark mode&quot;;
+    try { localStorage.setItem(&quot;theme&quot;, dark ? &quot;dark&quot; : &quot;light&quot;); } catch (e) {}
+  });
 &lt;/script&gt;</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>How do you read a CSS variable called --brand?</p><details><summary>Show answer</summary><p>var(--brand)</p></details></li><li><p>Where are global CSS variables usually declared?</p><details><summary>Show answer</summary><p>:root</p></details></li><li><p>Which media query detects the user's dark mode setting?</p><details><summary>Show answer</summary><p>prefers-color-scheme</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Create a variable <code>--brand</code> on <code>:root</code> and use it as the <code>background</code> of <code>.btn</code>.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=variables-dark-mode#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 16 of 17 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/transitions-animations/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Transitions and animations</a><a class="btn btn-solid btn-sm" href="/learn/css/project-business-page/">Project: a complete responsive business page <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<p>On a real site, read the saved choice from <code>localStorage</code> <strong>as early as possible</strong> (a tiny script in the <code>&lt;head&gt;</code>) to avoid a flash of the wrong theme. This learning hub's moon button works exactly this way.</p>
+<h3>Designing a good dark theme</h3>
+<ul><li><strong>Don't use pure black and pure white.</strong> Very dark navy/grey backgrounds (<code>#0b1220</code>) with light grey text (<code>#e2e8f0</code>) are easier on the eyes.</li><li><strong>Reduce saturation</strong> of bright colours; strong colours "vibrate" on dark backgrounds. Lighten accent colours to keep contrast.</li><li><strong>Elevation with lightness</strong>, not shadows: raised surfaces are slightly lighter than the background.</li><li><strong>Check contrast again</strong> (4.5:1 for text) in dark mode.</li><li><strong>Images and logos:</strong> provide versions that work on dark backgrounds (e.g. a light logo), or add a light background behind transparent PNGs.</li></ul>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Your logo is navy on a transparent background. What happens in dark mode, and how can you fix it?</span><em>Show answer</em></summary><div class="callout-body"><p>Navy on a dark navy background becomes almost invisible. Fixes: use a light or white version of the logo in dark mode (swap with <code>&lt;picture&gt;</code> and <code>prefers-color-scheme</code>, or with a CSS variable for an SVG's <code>fill</code>), or place the logo on a light badge/background.</p></div></details>
+<h2>Changing variables with JavaScript</h2>
+<figure class="static-code"><pre><code>document.documentElement.style.setProperty(&quot;--accent&quot;, &quot;#059669&quot;);
+const accent = getComputedStyle(document.documentElement).getPropertyValue(&quot;--accent&quot;);</code></pre></figure>
+<p>Uses: theme pickers, letting users choose brand colours in a website builder, adjusting a progress bar width (<code>--progress: 70%</code>).</p>
+<h2>Variables vs Sass variables</h2>
+<div class="static-table"><table><thead><tr><th></th><th>CSS variables</th><th>Sass variables (<code>$brand</code>)</th></tr></thead><tbody><tr><td>Processed</td><td>In the browser, live</td><td>When compiling Sass to CSS</td></tr><tr><td>Change at runtime / per element</td><td>Yes</td><td>No</td></tr><tr><td>Media queries/themes</td><td>Easy</td><td>Must output separate CSS</td></tr></tbody></table></div>
+<p>Modern CSS variables cover most needs that once required Sass.</p>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Forgetting <code>var()</code>: <code>color: --brand;</code></td><td><code>color: var(--brand);</code></td></tr><tr><td>One hyphen: <code>-brand</code></td><td>Two hyphens: <code>--brand</code></td></tr><tr><td>Case mismatch <code>--Brand</code> vs <code>--brand</code></td><td>Use one consistent lowercase style</td></tr><tr><td>Hard-coded colours scattered in CSS</td><td>Replace with tokens</td></tr><tr><td>Dark mode with pure <code>#000</code> and <code>#fff</code></td><td>Use softer dark and light values</td></tr><tr><td>Theme flashes on page load</td><td>Apply the saved theme in the <code>&lt;head&gt;</code> early</td></tr><tr><td>Forgetting dark-mode contrast and logos</td><td>Re-check contrast; provide logo variants</td></tr></tbody></table></div>
+<h2>Practice tasks</h2>
+<ol><li>Create tokens for colours, spacing and radius, then rebuild a card and button using only variables.</li><li>Make a <code>.card.featured</code> variant purely by overriding variables.</li><li>Add automatic dark mode with <code>prefers-color-scheme</code>.</li><li>Add a manual toggle that remembers the choice in <code>localStorage</code>.</li><li>Check contrast of your dark theme's text and links with DevTools.</li></ol>
+<h2>Summary</h2>
+<ul><li>CSS variables: declare <code>--name: value;</code> (usually on <code>:root</code>), use <code>var(--name, fallback)</code>.</li><li>They follow the cascade and inherit; override them locally for variations.</li><li>Use design tokens for colours, spacing, typography and shapes.</li><li>Dark mode: redefine colour variables in <code>@media (prefers-color-scheme: dark)</code> and/or <code>[data-theme=&quot;dark&quot;]</code> with a remembered toggle; design dark themes with soft colours and checked contrast.</li><li>JavaScript can read and change variables at runtime.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What do CSS variable names start with?</p><details><summary>Show answer</summary><p>--</p></details></li><li><p>Which function reads a CSS variable?</p><details><summary>Show answer</summary><p>var</p></details></li><li><p>Which selector is usually used for global variables?</p><details><summary>Show answer</summary><p>:root</p></details></li><li><p>Which media feature detects dark mode preference?</p><details><summary>Show answer</summary><p>prefers-color-scheme</p></details></li><li><p>Are CSS variable names case-sensitive? (yes or no)</p><details><summary>Show answer</summary><p>yes</p></details></li><li><p>Which browser storage is used to remember a theme choice?</p><details><summary>Show answer</summary><p>localStorage</p></details></li><li><p>In var(--accent, orange), what is orange called?</p><details><summary>Show answer</summary><p>fallback</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Create a variable <code>--brand</code> on <code>:root</code> and use it as the <code>background</code> of <code>.btn</code>.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=variables-dark-mode#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 19 of 21 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/styling-forms-buttons/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Styling forms and buttons: inputs, focus states, errors and mobile-friendly forms</a><a class="btn btn-solid btn-sm" href="/learn/css/css-frameworks-bootstrap-tailwind/">CSS frameworks: Bootstrap and Tailwind CSS, when to use them and how they work <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

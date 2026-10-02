@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>The box model | CSS</title>
-    <meta name="description" content="Every element is a box made of four layers: 1. Content : the text or image 2. Padding : space inside the border 3. Border : the line around it 4…" />
+    <title>The box model: content, padding, border, margin and…</title>
+    <meta name="description" content="Here&#x27;s the most important idea in CSS layout: every element is a rectangular box . Headings, paragraphs, images, buttons, even a single link: all…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/css/box-model/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="The box model | CSS" />
-    <meta property="og:description" content="Every element is a box made of four layers: 1. Content : the text or image 2. Padding : space inside the border 3. Border : the line around it 4…" />
+    <meta property="og:title" content="The box model: content, padding, border, margin and…" />
+    <meta property="og:description" content="Here&#x27;s the most important idea in CSS layout: every element is a rectangular box . Headings, paragraphs, images, buttons, even a single link: all…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/css/box-model/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="The box model | CSS" />
-    <meta name="twitter:description" content="Every element is a box made of four layers: 1. Content : the text or image 2. Padding : space inside the border 3. Border : the line around it 4…" />
+    <meta name="twitter:title" content="The box model: content, padding, border, margin and…" />
+    <meta name="twitter:description" content="Here&#x27;s the most important idea in CSS layout: every element is a rectangular box . Headings, paragraphs, images, buttons, even a single link: all…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/css/box-model/#lesson","name":"The box model","description":"Every element is a box made of four layers: 1. Content : the text or image 2. Padding : space inside the border 3. Border : the line around it 4…","url":"https://marzleytechsolutions.co.ke/learn/css/box-model/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/css/#course","name":"CSS","url":"https://marzleytechsolutions.co.ke/learn/css/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"CSS","item":"https://marzleytechsolutions.co.ke/learn/css/"},{"@type":"ListItem","position":4,"name":"The box model","item":"https://marzleytechsolutions.co.ke/learn/css/box-model/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/css/box-model/#lesson","name":"The box model: content, padding, border, margin and box-sizing","description":"Here's the most important idea in CSS layout: every element is a rectangular box . Headings, paragraphs, images, buttons, even a single link: all…","url":"https://marzleytechsolutions.co.ke/learn/css/box-model/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/css/#course","name":"CSS","url":"https://marzleytechsolutions.co.ke/learn/css/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"CSS","item":"https://marzleytechsolutions.co.ke/learn/css/"},{"@type":"ListItem","position":4,"name":"The box model: content, padding, border, margin and box-sizing","item":"https://marzleytechsolutions.co.ke/learn/css/box-model/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,25 +36,121 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/css/">CSS</a> / <span>The box model</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=box-model"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>The box model</h1>
-<p>Every element is a box made of four layers:</p>
-<ol><li><strong>Content</strong>: the text or image</li><li><strong>Padding</strong>: space inside the border</li><li><strong>Border</strong>: the line around it</li><li><strong>Margin</strong>: space outside, between boxes</li></ol>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/css/">CSS</a> / <span>The box model: content, padding, border, margin and box-sizing</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=box-model"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>The box model: content, padding, border, margin and box-sizing</h1>
+<p>Here's the most important idea in CSS layout: <strong>every element is a rectangular box</strong>. Headings, paragraphs, images, buttons, even a single link: all boxes. How big each box is and how much space surrounds it is controlled by the <strong>box model</strong>. When layouts break ("why is this wider than I said?", "why is there a gap here?"), the answer is almost always in the box model. Master it and CSS becomes predictable.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>The four layers of every box: content, padding, border, margin</li><li>Setting width and height, and why widths "grow"</li><li><code>box-sizing: border-box</code> and why everyone uses it</li><li>Margin shorthand, centring with <code>margin: auto</code>, and collapsing margins</li><li>Block vs inline boxes and how the box model differs</li><li><code>min-</code>/<code>max-</code> sizes for responsive boxes</li><li>Seeing the box model in DevTools</li></ul></div></aside>
+<h2>The four layers</h2>
+<p>From inside to outside:</p>
+<figure class="static-code"><pre><code>┌─────────────────────────────── margin (transparent space outside) ─┐
+│  ┌─────────────────────────── border (the edge line) ───────────┐  │
+│  │  ┌─────────────────────── padding (space inside the border) ┐│  │
+│  │  │                                                          ││  │
+│  │  │                 content (text, image)                    ││  │
+│  │  │                                                          ││  │
+│  │  └──────────────────────────────────────────────────────────┘│  │
+│  └──────────────────────────────────────────────────────────────┘  │
+└────────────────────────────────────────────────────────────────────┘</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Layer</th><th>What it is</th><th>Has background colour?</th></tr></thead><tbody><tr><td><strong>Content</strong></td><td>The text or image itself; sized by <code>width</code>/<code>height</code></td><td>Yes</td></tr><tr><td><strong>Padding</strong></td><td>Space between content and border (breathing room inside)</td><td>Yes (the element's background)</td></tr><tr><td><strong>Border</strong></td><td>A line around the padding</td><td>Its own colour</td></tr><tr><td><strong>Margin</strong></td><td>Space outside the border, pushing other elements away</td><td>No (always transparent)</td></tr></tbody></table></div>
+<aside class="callout callout-define"><p class="callout-title">Box model</p><div class="callout-body"><p>The CSS rule that every element is a rectangle made of content, padding, border and margin, which together decide how much space the element takes and how far it sits from its neighbours.</p></div></aside>
+<p>Think of a framed photo on a wall: the photo is the <strong>content</strong>, the white mat around it is <strong>padding</strong>, the wooden frame is the <strong>border</strong>, and the gap between this frame and the next one is the <strong>margin</strong>.</p>
 <figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
-  .card {
+  .box {
     width: 220px;
-    padding: 16px;
-    border: 3px solid #ffb800;
-    margin: 20px;
-    border-radius: 12px;
-    background: #fff7e0;
-    font-family: sans-serif;
+    padding: 20px;
+    border: 6px solid #0b1b35;
+    margin: 30px;
+    background: #fef3c7;   /* fills content + padding */
   }
-  * { box-sizing: border-box; }
 &lt;/style&gt;
-&lt;div class=&quot;card&quot;&gt;I have padding, a border and a margin.&lt;/div&gt;
-&lt;div class=&quot;card&quot;&gt;So do I.&lt;/div&gt;</code></pre></figure>
-<blockquote><p><code>box-sizing: border-box</code> makes <code>width</code> include padding and border. Most developers set it on everything.</p></blockquote></div><section class="static-exercise"><h2>Exercise</h2><p>Give <code>.box</code> a padding of <strong>20px</strong> and a <strong>2px solid</strong> border.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=box-model#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 6 of 17 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/backgrounds-borders-shadows/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Backgrounds, borders, rounded corners and shadows</a><a class="btn btn-solid btn-sm" href="/learn/css/display-overflow/">display, visibility and overflow <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+&lt;div class=&quot;box&quot;&gt;Content area. The yellow covers content and padding; the margin outside is transparent.&lt;/div&gt;
+&lt;div class=&quot;box&quot;&gt;Second box: notice the margin space between the boxes.&lt;/div&gt;</code></pre></figure>
+<p>Open DevTools (F12), select a box, and look at the box model diagram in the <strong>Computed</strong> tab: you'll see 220 × auto content, 20 padding, 6 border, 30 margin.</p>
+<h2>Padding, border and margin properties</h2>
+<p>Each can be set per side:</p>
+<figure class="static-code"><pre><code>padding-top: 10px;   padding-right: 20px;   padding-bottom: 10px;   padding-left: 20px;
+margin-top: ...      border-left: ...</code></pre></figure>
+<h3>Shorthand (clockwise from the top: Top, Right, Bottom, Left)</h3>
+<div class="static-table"><table><thead><tr><th>Shorthand</th><th>Means</th></tr></thead><tbody><tr><td><code>padding: 20px;</code></td><td>All four sides 20px</td></tr><tr><td><code>padding: 10px 20px;</code></td><td>Top/bottom 10px, left/right 20px</td></tr><tr><td><code>padding: 10px 20px 30px;</code></td><td>Top 10, left/right 20, bottom 30</td></tr><tr><td><code>padding: 10px 20px 30px 40px;</code></td><td>Top 10, right 20, bottom 30, left 40</td></tr></tbody></table></div>
+<p>Remember <strong>TRBL</strong>: "TRouBLe", top–right–bottom–left, clockwise like a clock.</p>
+<h3>Border shorthand</h3>
+<figure class="static-code"><pre><code>border: 2px solid #e2e8f0;      /* width style colour */
+border-bottom: 3px dashed red;
+border-radius: 12px;            /* rounded corners (not part of the box size) */</code></pre></figure>
+<p>Border styles: <code>solid</code>, <code>dashed</code>, <code>dotted</code>, <code>double</code>, <code>none</code>.</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .card { padding: 16px 20px; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 16px; }
+  .alert { padding: 12px; border-left: 5px solid #dc2626; background: #fef2f2; }
+  .tag { padding: 4px 10px; border: 2px dashed #2563eb; border-radius: 999px; }
+&lt;/style&gt;
+&lt;div class=&quot;card&quot;&gt;A card with padding 16px top/bottom and 20px left/right.&lt;/div&gt;
+&lt;div class=&quot;alert&quot;&gt;Your M-Pesa payment failed. Try again.&lt;/div&gt;
+&lt;p&gt;&lt;span class=&quot;tag&quot;&gt;New&lt;/span&gt;&lt;/p&gt;</code></pre></figure>
+<h2>Width, height and the "growing box" problem</h2>
+<p>By default (<code>box-sizing: content-box</code>), <code>width</code> sets <strong>only the content</strong>. Padding and border are <strong>added on top</strong>:</p>
+<figure class="static-code"><pre><code>width: 300px + padding 20px × 2 + border 5px × 2 = 350px total</code></pre></figure>
+<p>This surprises everyone at first: you say 300px, it takes 350px, and your two "50% columns" don't fit side by side.</p>
+<h3>The fix: <code>box-sizing: border-box</code></h3>
+<p>With <code>border-box</code>, <code>width</code> includes padding and border. You say 300px; it <strong>is</strong> 300px, and the content shrinks to make room.</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .a, .b { width: 300px; padding: 20px; border: 5px solid #0b1b35; margin-bottom: 10px; background: #e0f2fe; }
+  .b { box-sizing: border-box; }
+&lt;/style&gt;
+&lt;div class=&quot;a&quot;&gt;content-box: 300 + 40 + 10 = 350px wide&lt;/div&gt;
+&lt;div class=&quot;b&quot;&gt;border-box: exactly 300px wide&lt;/div&gt;</code></pre></figure>
+<p>Almost every professional stylesheet starts with:</p>
+<figure class="static-code"><pre><code>*, *::before, *::after {
+  box-sizing: border-box;
+}</code></pre></figure>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Two divs are each set to width: 50% with padding: 20px, but the second one drops below the first. Why, and what's the fix?</span><em>Show answer</em></summary><div class="callout-body"><p>With the default <code>content-box</code>, each box is 50% <strong>plus</strong> 40px padding (plus any border), so together they exceed 100% and the second wraps to the next line. Adding <code>box-sizing: border-box</code> makes each box exactly 50% including padding, so they fit side by side. (In modern layouts you'd also often use Flexbox or Grid with <code>gap</code>.)</p></div></details>
+<h3>Height</h3>
+<p>Usually let height be <strong>automatic</strong> (it grows to fit the content). Fixed heights cause text to overflow when content is longer than expected (or when users enlarge text). Use <code>min-height</code> if you need a minimum.</p>
+<h3><code>min-width</code>, <code>max-width</code>, <code>min-height</code>, <code>max-height</code></h3>
+<p>These make boxes responsive:</p>
+<figure class="static-code"><pre><code>.container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+img { max-width: 100%; height: auto; }     /* images never overflow their container */
+.hero { min-height: 60vh; }</code></pre></figure>
+<p><code>max-width</code> is one of the most useful properties in CSS: full width on phones, capped on big screens.</p>
+<h2>Margins in depth</h2>
+<h3>Centring a block with <code>margin: auto</code></h3>
+<p>A block with a set width (or max-width) and <code>margin-left</code>/<code>margin-right</code> set to <code>auto</code> is centred horizontally:</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .page { max-width: 420px; margin: 0 auto; padding: 16px; background: #f1f5f9; border: 1px solid #cbd5e1; }
+&lt;/style&gt;
+&lt;div class=&quot;page&quot;&gt;This box is centred: margin 0 top/bottom, auto left/right.&lt;/div&gt;</code></pre></figure>
+<p>(Vertical centring is easier with Flexbox or Grid, coming soon.)</p>
+<h3>Negative margins</h3>
+<p>Margins can be negative (pulling elements closer or overlapping). Useful occasionally; use with care.</p>
+<h3>Collapsing margins</h3>
+<p>When two <strong>vertical</strong> margins of block elements meet, they don't add up: the <strong>larger one wins</strong>. A paragraph with <code>margin-bottom: 20px</code> followed by one with <code>margin-top: 30px</code> are 30px apart, not 50px.</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .p1 { margin-bottom: 20px; background: #fde68a; }
+  .p2 { margin-top: 30px; background: #bfdbfe; }
+&lt;/style&gt;
+&lt;p class=&quot;p1&quot;&gt;margin-bottom: 20px&lt;/p&gt;
+&lt;p class=&quot;p2&quot;&gt;margin-top: 30px: the gap is 30px, not 50px (margins collapse)&lt;/p&gt;</code></pre></figure>
+<p>Margins don't collapse horizontally, or inside Flexbox/Grid containers. Many developers avoid surprises by using margins in <strong>one direction only</strong> (e.g. only <code>margin-bottom</code>) or using <code>gap</code> in flex/grid layouts.</p>
+<h2>Block vs inline boxes</h2>
+<div class="static-table"><table><thead><tr><th></th><th>Block (e.g. <code>div</code>, <code>p</code>, <code>h1</code>, <code>section</code>)</th><th>Inline (e.g. <code>span</code>, <code>a</code>, <code>strong</code>)</th></tr></thead><tbody><tr><td>Starts on a new line</td><td>Yes</td><td>No, flows within text</td></tr><tr><td>Width</td><td>Fills the available width by default</td><td>Only as wide as its content</td></tr><tr><td><code>width</code>/<code>height</code></td><td>Respected</td><td><strong>Ignored</strong></td></tr><tr><td>Vertical margin/padding</td><td>Push other elements</td><td>Padding shows but doesn't push lines apart; vertical margins ignored</td></tr></tbody></table></div>
+<p><code>display: inline-block</code> is a mix: flows inline but respects width, height and all padding/margins. Buttons and badges often use it.</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  span.inline { background: #fde68a; padding: 10px; width: 200px; }        /* width ignored */
+  span.ib { display: inline-block; background: #bbf7d0; padding: 10px; width: 160px; margin: 6px 0; }
+&lt;/style&gt;
+&lt;p&gt;Text with an &lt;span class=&quot;inline&quot;&gt;inline span&lt;/span&gt; inside: vertical padding overlaps lines.&lt;/p&gt;
+&lt;p&gt;Text with an &lt;span class=&quot;ib&quot;&gt;inline-block span&lt;/span&gt; that respects width and margins.&lt;/p&gt;</code></pre></figure>
+<p>The <strong>Block vs inline elements</strong> unit goes deeper.</p>
+<h2>Outline vs border</h2>
+<p><code>outline</code> draws a line <strong>outside</strong> the border and <strong>doesn't take up space</strong> (doesn't change layout). Browsers use it for <strong>focus</strong> rings on keyboard navigation. Never remove focus outlines (<code>outline: none</code>) without providing a visible replacement; keyboard users need them.</p>
+<h2>Practical spacing system</h2>
+<p>Professional designs use a consistent <strong>spacing scale</strong> rather than random numbers, e.g. 4, 8, 12, 16, 24, 32, 48, 64px. With CSS variables (later): <code>--space-2: 8px; --space-4: 16px;</code>. Consistent spacing makes layouts look calm and intentional.</p>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Boxes wider than expected</td><td><code>box-sizing: border-box</code> on everything</td></tr><tr><td>Fixed heights cutting off text</td><td>Let height be auto or use <code>min-height</code></td></tr><tr><td>Images overflowing on phones</td><td><code>max-width: 100%; height: auto;</code></td></tr><tr><td>Expecting margins of 20 + 30 = 50</td><td>Vertical margins collapse (larger wins)</td></tr><tr><td>Setting width on inline elements</td><td>Use <code>inline-block</code> or <code>block</code></td></tr><tr><td><code>outline: none</code> with no replacement</td><td>Keep or restyle focus outlines</td></tr><tr><td>Random spacing values</td><td>Use a spacing scale</td></tr></tbody></table></div>
+<h2>Practice tasks</h2>
+<ol><li>Build a card: 300px wide (border-box), 20px padding, 1px border, 12px radius, 24px margin below. Check its exact size in DevTools.</li><li>Make two side-by-side boxes at 50% each with padding, first without and then with <code>border-box</code>.</li><li>Centre a 600px-max container with <code>margin: 0 auto</code>.</li><li>Demonstrate margin collapsing with two paragraphs and measure the gap in DevTools.</li><li>Create a badge using <code>display: inline-block</code> with padding and rounded corners.</li></ol>
+<h2>Summary</h2>
+<ul><li>Every element is a box: <strong>content → padding → border → margin</strong>.</li><li>Shorthands go clockwise: top, right, bottom, left (TRBL).</li><li>Default <code>content-box</code> adds padding and border to <code>width</code>; <code>box-sizing: border-box</code> keeps widths exact (use it everywhere).</li><li>Prefer automatic heights and <code>max-width</code> for responsive boxes; centre blocks with <code>margin: 0 auto</code>.</li><li>Vertical margins collapse; inline elements ignore width/height; <code>inline-block</code> respects them.</li><li>Inspect boxes in DevTools to understand any layout.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which layer of the box model is always transparent?</p><details><summary>Show answer</summary><p>margin</p></details></li><li><p>Which layer sits between the content and the border?</p><details><summary>Show answer</summary><p>padding</p></details></li><li><p>Which box-sizing value makes width include padding and border?</p><details><summary>Show answer</summary><p>border-box</p></details></li><li><p>In "padding: 10px 20px", how much padding is on the left?</p><details><summary>Show answer</summary><p>20px</p></details></li><li><p>Two vertical margins of 20px and 30px meet. What is the gap?</p><details><summary>Show answer</summary><p>30px</p></details></li><li><p>Which value of margin-left and margin-right centres a block with a set width?</p><details><summary>Show answer</summary><p>auto</p></details></li><li><p>Do inline elements like span respect width? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which property prevents images overflowing their container? Write property: value.</p><details><summary>Show answer</summary><p>max-width: 100%</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Give <code>.box</code> a padding of <strong>20px</strong> and a <strong>2px solid</strong> border.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=box-model#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 6 of 21 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/backgrounds-borders-shadows/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Backgrounds, borders, rounded corners and shadows</a><a class="btn btn-solid btn-sm" href="/learn/css/display-overflow/">display, visibility and overflow <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

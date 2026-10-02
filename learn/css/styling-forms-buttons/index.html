@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Styling forms and buttons: inputs, focus states, errors…</title>
+    <meta name="description" content="Forms are where websites make money: sign-ups, bookings, orders and payments. Browser default forms look plain and differ between browsers and phones…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/css/styling-forms-buttons/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Styling forms and buttons: inputs, focus states, errors…" />
+    <meta property="og:description" content="Forms are where websites make money: sign-ups, bookings, orders and payments. Browser default forms look plain and differ between browsers and phones…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/css/styling-forms-buttons/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Styling forms and buttons: inputs, focus states, errors…" />
+    <meta name="twitter:description" content="Forms are where websites make money: sign-ups, bookings, orders and payments. Browser default forms look plain and differ between browsers and phones…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/css/styling-forms-buttons/#lesson","name":"Styling forms and buttons: inputs, focus states, errors and mobile-friendly forms","description":"Forms are where websites make money: sign-ups, bookings, orders and payments. Browser default forms look plain and differ between browsers and phones…","url":"https://marzleytechsolutions.co.ke/learn/css/styling-forms-buttons/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/css/#course","name":"CSS","url":"https://marzleytechsolutions.co.ke/learn/css/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"CSS","item":"https://marzleytechsolutions.co.ke/learn/css/"},{"@type":"ListItem","position":4,"name":"Styling forms and buttons: inputs, focus states, errors and mobile-friendly forms","item":"https://marzleytechsolutions.co.ke/learn/css/styling-forms-buttons/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=19f64783be" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/css/">CSS</a> / <span>Styling forms and buttons: inputs, focus states, errors and mobile-friendly forms</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=styling-forms-buttons"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Styling forms and buttons: inputs, focus states, errors and mobile-friendly forms</h1>
+<p>Forms are where websites make money: sign-ups, bookings, orders and payments. Browser default forms look plain and differ between browsers and phones. This unit shows how to style inputs, selects, checkboxes and buttons so they're attractive, consistent, easy to tap and accessible, including clear focus and error states.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Resetting and styling text inputs, selects and textareas</li><li>Labels, spacing and layout for readable forms</li><li>Focus styles with <code>:focus</code> and <code>:focus-visible</code></li><li>Validation states with <code>:invalid</code>, <code>:user-invalid</code> and error messages</li><li>Styling checkboxes and radios with <code>accent-color</code></li><li>Button styles: primary, secondary, disabled, loading</li><li>Mobile form best practices</li></ul></div></aside>
+<h2>Why styling forms matters</h2>
+<ul><li><strong>Conversion:</strong> clear, friendly forms get completed more often.</li><li><strong>Trust:</strong> a payment form that looks broken makes people doubt the business.</li><li><strong>Accessibility:</strong> visible labels, focus outlines and readable error messages help everyone, especially keyboard and screen reader users.</li><li><strong>Mobile:</strong> small fields and buttons cause mistaps and frustration.</li></ul>
+<h2>A clean base for inputs</h2>
+<p>Form controls don't inherit fonts by default. Start with:</p>
+<figure class="static-code"><pre><code>input, select, textarea, button { font: inherit; color: inherit; }</code></pre></figure>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .form { max-width: 380px; display: grid; gap: 14px; font-family: system-ui, sans-serif; }
+  .field { display: grid; gap: 6px; }
+  .field label { font-weight: 600; font-size: 15px; }
+  .field input, .field select, .field textarea {
+    font: inherit; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 10px; background: #fff; color: #0f172a; width: 100%; box-sizing: border-box;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgb(37 99 235 / 25%);
+  }
+  .hint { font-size: 13px; color: #64748b; }
+&lt;/style&gt;
+&lt;form class=&quot;form&quot;&gt;
+  &lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;n&quot;&gt;Full name&lt;/label&gt;&lt;input id=&quot;n&quot; autocomplete=&quot;name&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;p&quot;&gt;Phone&lt;/label&gt;&lt;input id=&quot;p&quot; type=&quot;tel&quot; placeholder=&quot;0712 345 678&quot;&gt;&lt;span class=&quot;hint&quot;&gt;We&#x27;ll send an M-Pesa prompt to this number.&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;c&quot;&gt;County&lt;/label&gt;&lt;select id=&quot;c&quot;&gt;&lt;option&gt;Nairobi&lt;/option&gt;&lt;option&gt;Mombasa&lt;/option&gt;&lt;option&gt;Kisumu&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;
+  &lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;m&quot;&gt;Message&lt;/label&gt;&lt;textarea id=&quot;m&quot; rows=&quot;3&quot;&gt;&lt;/textarea&gt;&lt;/div&gt;
+&lt;/form&gt;</code></pre></figure>
+<p>Key choices: labels <strong>above</strong> fields (best on phones), generous padding (taller fields are easier to tap), a clear border, rounded corners, and a strong focus ring.</p>
+<aside class="callout callout-warning"><p class="callout-title">Never remove focus without a replacement</p><div class="callout-body"><p><code>outline: none</code> alone makes the form unusable for keyboard users, who can't see which field is active. If you remove the default outline, add a visible alternative (border colour + <code>box-shadow</code> ring as above).</p></div></aside>
+<h3><code>:focus</code> vs <code>:focus-visible</code></h3>
+<ul><li><code>:focus</code> matches whenever an element has focus (mouse click or keyboard).</li><li><code>:focus-visible</code> matches when the browser decides a focus ring is helpful, mainly keyboard navigation. Use it for buttons and links so mouse users don't see rings on click, while keyboard users still do. For text inputs, always show focus.</li></ul>
+<h2>Validation and error states</h2>
+<p>HTML validation (<code>required</code>, <code>type=&quot;email&quot;</code>, <code>pattern</code>) can be styled:</p>
+<div class="static-table"><table><thead><tr><th>Pseudo-class</th><th>Matches</th></tr></thead><tbody><tr><td><code>:invalid</code> / <code>:valid</code></td><td>Fields currently failing/passing validation (even before the user types)</td></tr><tr><td><code>:user-invalid</code></td><td>Fields that are invalid <strong>after</strong> the user interacted (supported in modern browsers)</td></tr><tr><td><code>:required</code> / <code>:optional</code></td><td>Required or optional fields</td></tr><tr><td><code>:placeholder-shown</code></td><td>Fields showing their placeholder (empty)</td></tr><tr><td><code>:disabled</code></td><td>Disabled fields</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .f { display: grid; gap: 6px; max-width: 340px; font-family: system-ui, sans-serif; }
+  .f input { padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; font: inherit; }
+  .f input:user-invalid { border-color: #dc2626; background: #fef2f2; }
+  .f .error { display: none; color: #b91c1c; font-size: 13px; }
+  .f input:user-invalid + .error { display: block; }
+  .f input:valid:not(:placeholder-shown) { border-color: #059669; }
+&lt;/style&gt;
+&lt;form class=&quot;f&quot;&gt;
+  &lt;label for=&quot;e&quot;&gt;Email&lt;/label&gt;
+  &lt;input id=&quot;e&quot; type=&quot;email&quot; required placeholder=&quot;you@example.com&quot;&gt;
+  &lt;span class=&quot;error&quot;&gt;⚠ Enter a valid email address, like wanjiku@gmail.com.&lt;/span&gt;
+&lt;/form&gt;
+&lt;p style=&quot;font-family:sans-serif&quot;&gt;Type something invalid, then click outside the field.&lt;/p&gt;</code></pre></figure>
+<p>Error message rules:</p>
+<ul><li>Show errors <strong>next to the field</strong> in text (not colour alone), with an icon.</li><li>Explain how to fix: "Enter a phone number like 0712 345 678" beats "Invalid input".</li><li>Use <code>aria-describedby</code> to connect the message to the input for screen readers (with JavaScript-driven validation).</li><li>Never rely only on browser validation: the server must check too.</li></ul>
+<h2>Checkboxes, radios and range sliders</h2>
+<p><code>accent-color</code> restyles native controls with one line, keeping their accessibility:</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .opts { accent-color: #f59e0b; font-family: sans-serif; }
+  .opts label { display: flex; align-items: center; gap: 8px; padding: 8px 0; }
+  .opts input { width: 20px; height: 20px; }
+&lt;/style&gt;
+&lt;div class=&quot;opts&quot;&gt;
+  &lt;label&gt;&lt;input type=&quot;checkbox&quot; checked&gt; Website&lt;/label&gt;
+  &lt;label&gt;&lt;input type=&quot;checkbox&quot;&gt; Hosting&lt;/label&gt;
+  &lt;label&gt;&lt;input type=&quot;radio&quot; name=&quot;pay&quot; checked&gt; M-Pesa&lt;/label&gt;
+  &lt;label&gt;&lt;input type=&quot;radio&quot; name=&quot;pay&quot;&gt; Card&lt;/label&gt;
+  &lt;label&gt;Budget &lt;input type=&quot;range&quot; min=&quot;10000&quot; max=&quot;100000&quot;&gt;&lt;/label&gt;
+&lt;/div&gt;</code></pre></figure>
+<p>Fully custom checkboxes are possible (<code>appearance: none</code> and drawing your own) but take care to keep focus states, sizes and keyboard behaviour.</p>
+<h3>Option cards (radio buttons styled as selectable cards)</h3>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; font-family: system-ui, sans-serif; }
+  .plan { position: relative; display: block; border: 2px solid #e2e8f0; border-radius: 12px; padding: 14px; cursor: pointer; }
+  .plan input { position: absolute; opacity: 0; }
+  .plan strong { display: block; }
+  .plan:has(input:checked) { border-color: #0b1b35; background: #fff7e0; }
+  .plan:has(input:focus-visible) { outline: 3px solid #2563eb; outline-offset: 2px; }
+&lt;/style&gt;
+&lt;div class=&quot;plans&quot;&gt;
+  &lt;label class=&quot;plan&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;plan&quot; checked&gt;&lt;strong&gt;Starter&lt;/strong&gt;KSh 15,000&lt;/label&gt;
+  &lt;label class=&quot;plan&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;plan&quot;&gt;&lt;strong&gt;Business&lt;/strong&gt;KSh 35,000&lt;/label&gt;
+  &lt;label class=&quot;plan&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;plan&quot;&gt;&lt;strong&gt;Shop&lt;/strong&gt;KSh 40,000&lt;/label&gt;
+&lt;/div&gt;</code></pre></figure>
+<p><code>:has()</code> (the "parent selector", supported by modern browsers) styles the card when its radio is checked. The input remains in the page (just invisible), so keyboard and screen readers still work.</p>
+<h2>Buttons</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 10px; border: 2px solid transparent; font: 600 15px system-ui, sans-serif; cursor: pointer; transition: background-color .15s, transform .1s; }
+  .btn:active { transform: translateY(1px); }
+  .btn:focus-visible { outline: 3px solid #2563eb; outline-offset: 2px; }
+  .btn-primary { background: #0b1b35; color: #fff; }
+  .btn-primary:hover { background: #1e3a6b; }
+  .btn-secondary { background: #fff; color: #0b1b35; border-color: #0b1b35; }
+  .btn-danger { background: #dc2626; color: #fff; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading::before { content: &quot;&quot;; width: 14px; height: 14px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; }
+&lt;/style&gt;
+&lt;p&gt;
+  &lt;button class=&quot;btn btn-primary&quot;&gt;Pay KSh 1,500&lt;/button&gt;
+  &lt;button class=&quot;btn btn-secondary&quot;&gt;Cancel&lt;/button&gt;
+  &lt;button class=&quot;btn btn-danger&quot;&gt;Delete&lt;/button&gt;
+  &lt;button class=&quot;btn btn-primary&quot; disabled&gt;Disabled&lt;/button&gt;
+  &lt;button class=&quot;btn btn-primary loading&quot; aria-busy=&quot;true&quot;&gt;Processing…&lt;/button&gt;
+&lt;/p&gt;</code></pre></figure>
+<p>Button guidelines:</p>
+<ul><li>One <strong>primary</strong> button per form/screen; secondary actions look quieter.</li><li><strong>Minimum height ~44px</strong> for touch.</li><li>Clear labels: "Pay KSh 1,500", "Create account".</li><li>States: hover, active (pressed), focus-visible, disabled, loading.</li><li>Use <code>&lt;button&gt;</code> for actions and <code>&lt;a&gt;</code> for navigation, even if they look the same.</li></ul>
+<h2>Mobile form best practices</h2>
+<ul><li><strong>Font size at least 16px</strong> in inputs (iPhones zoom in on smaller text in focused inputs).</li><li><strong>Full-width fields</strong> and buttons on phones.</li><li><strong>Correct input types</strong> (<code>tel</code>, <code>email</code>, <code>number</code>) and <code>autocomplete</code> so phones show the right keyboard and autofill.</li><li><strong>Space</strong> between fields so fingers don't hit the wrong one.</li><li><strong>Keep the submit button visible</strong> and not covered by fixed elements like chat bubbles.</li></ul>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Inputs using the browser's small default font</td><td><code>font: inherit</code> and 16px+</td></tr><tr><td>Removing focus outlines</td><td>Visible custom focus styles</td></tr><tr><td>Red border as the only error signal</td><td>Text message + icon</td></tr><tr><td>Errors shown before the user typed</td><td>Use <code>:user-invalid</code> or validate on blur/submit</td></tr><tr><td>Tiny checkboxes and radios</td><td>Larger size and full-label tap areas</td></tr><tr><td>Several primary-looking buttons</td><td>One primary action</td></tr><tr><td>Links styled as buttons doing actions</td><td>Use <code>&lt;button&gt;</code></td></tr></tbody></table></div>
+<h2>Practice tasks</h2>
+<ol><li>Style a booking form: labels above fields, 12px padding, rounded borders and a blue focus ring.</li><li>Add error styling with <code>:user-invalid</code> and a helpful message under the email field.</li><li>Restyle checkboxes and radios with <code>accent-color</code> and larger sizes.</li><li>Build radio "plan cards" using <code>:has(input:checked)</code>.</li><li>Create a button system with primary, secondary, danger, disabled and loading states.</li></ol>
+<h2>Summary</h2>
+<ul><li>Give form controls <code>font: inherit</code>, generous padding, clear borders and labels above fields.</li><li>Always provide visible focus styles (<code>:focus</code>, <code>:focus-visible</code>).</li><li>Style validation with <code>:invalid</code>, <code>:user-invalid</code>, <code>:placeholder-shown</code>, and show text error messages.</li><li><code>accent-color</code> restyles checkboxes, radios and ranges simply; <code>:has()</code> enables selectable option cards.</li><li>Buttons need clear hierarchy, 44px height, all states, and the right element (<code>&lt;button&gt;</code> vs <code>&lt;a&gt;</code>).</li><li>On phones: 16px+ inputs, full-width fields, correct types and autocomplete.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which pseudo-class matches a field that is invalid after the user interacted with it?</p><details><summary>Show answer</summary><p>:user-invalid</p></details></li><li><p>Which property restyles checkbox and radio colours with one line?</p><details><summary>Show answer</summary><p>accent-color</p></details></li><li><p>What minimum font size in inputs stops iPhones zooming in? Write in px.</p><details><summary>Show answer</summary><p>16px</p></details></li><li><p>Which pseudo-class shows focus mainly for keyboard users?</p><details><summary>Show answer</summary><p>:focus-visible</p></details></li><li><p>Which selector lets a parent react to a checked input inside it? Write it with the colon.</p><details><summary>Show answer</summary><p>:has</p></details></li><li><p>Should errors be shown by colour alone? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Style <code>input</code> with a <code>padding</code> and add an <code>input:focus</code> rule that changes its <code>border-color</code>.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=styling-forms-buttons#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 18 of 21 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/transitions-animations/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Transitions and animations: smooth hover effects, keyframes and motion done right</a><a class="btn btn-solid btn-sm" href="/learn/css/variables-dark-mode/">CSS variables (custom properties) and dark mode: themes that are easy to change <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>
