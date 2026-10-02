@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>How the web works: browsers, servers, URLs, DNS, HTTP…</title>
+    <meta name="description" content="Before going deeper into HTML, it helps to understand the journey a web page takes from a computer somewhere in the world to the screen in your hand…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/html/how-the-web-works/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="How the web works: browsers, servers, URLs, DNS, HTTP…" />
+    <meta property="og:description" content="Before going deeper into HTML, it helps to understand the journey a web page takes from a computer somewhere in the world to the screen in your hand…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/html/how-the-web-works/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="How the web works: browsers, servers, URLs, DNS, HTTP…" />
+    <meta name="twitter:description" content="Before going deeper into HTML, it helps to understand the journey a web page takes from a computer somewhere in the world to the screen in your hand…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/html/how-the-web-works/#lesson","name":"How the web works: browsers, servers, URLs, DNS, HTTP and hosting","description":"Before going deeper into HTML, it helps to understand the journey a web page takes from a computer somewhere in the world to the screen in your hand…","url":"https://marzleytechsolutions.co.ke/learn/html/how-the-web-works/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/html/#course","name":"HTML","url":"https://marzleytechsolutions.co.ke/learn/html/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"HTML","item":"https://marzleytechsolutions.co.ke/learn/html/"},{"@type":"ListItem","position":4,"name":"How the web works: browsers, servers, URLs, DNS, HTTP and hosting","item":"https://marzleytechsolutions.co.ke/learn/html/how-the-web-works/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=2253794972" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=9963f0ee62" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/html/">HTML</a> / <span>How the web works: browsers, servers, URLs, DNS, HTTP and hosting</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=html&amp;lesson=how-the-web-works"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>How the web works: browsers, servers, URLs, DNS, HTTP and hosting</h1>
+<p>Before going deeper into HTML, it helps to understand the journey a web page takes from a computer somewhere in the world to the screen in your hand. Knowing this makes you a better developer: you'll understand why sites are slow, why links break, what "hosting" and "domain" mean when a client asks, and where HTML fits.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>The difference between the internet and the web</li><li>Clients and servers, and what a web browser really does</li><li>URLs: every part of a web address explained</li><li>IP addresses and DNS (the internet's phone book)</li><li>HTTP and HTTPS requests, responses and status codes (200, 404, 500)</li><li>Domains, hosting and how a website goes live in Kenya</li><li>Static vs dynamic websites</li></ul></div></aside>
+<h2>The internet vs the web</h2>
+<p>People use the words interchangeably, but they're different:</p>
+<div class="static-table"><table><thead><tr><th></th><th>The internet</th><th>The World Wide Web</th></tr></thead><tbody><tr><td>What it is</td><td>The global <strong>network</strong> of connected computers and cables</td><td>A <strong>service</strong> that runs on the internet: linked pages viewed in browsers</td></tr><tr><td>Analogy</td><td>The roads</td><td>The matatus and the places they take you</td></tr><tr><td>Other services on it</td><td>Email, WhatsApp, video calls, online games, M-Pesa apps</td><td>(The web is one of many services)</td></tr></tbody></table></div>
+<p>The internet physically connects through undersea fibre-optic cables. Kenya is connected through several cables landing at Mombasa (such as TEAMS, SEACOM, EASSy, LION2 and PEACE), then fibre runs inland to data centres, mobile masts and homes. When a cable is damaged at sea, internet in East Africa can slow down for days, which shows how physical the internet really is.</p>
+<h2>Clients and servers</h2>
+<ul><li>A <strong>client</strong> is the device asking for something: your phone or laptop, using a <strong>browser</strong> (Chrome, Safari, Firefox, Edge, Opera Mini).</li><li>A <strong>server</strong> is a computer that stores websites and sends pages when asked. It's usually in a data centre, running 24/7.</li></ul>
+<aside class="callout callout-define"><p class="callout-title">Web server</p><div class="callout-body"><p>A computer (and the software on it, like Apache, Nginx or LiteSpeed) that stores website files and delivers them to browsers when they request them.</p></div></aside>
+<h3>What a browser does</h3>
+<ol><li>Takes the address you type or the link you tap.</li><li>Finds the server and requests the page.</li><li>Reads the HTML, requests the CSS, JavaScript, images and fonts it mentions.</li><li>Builds the page (the <strong>DOM</strong>), applies styles, runs scripts and draws it.</li><li>Handles your clicks, typing and scrolling.</li></ol>
+<p>Different browsers use different <strong>engines</strong> (Chromium/Blink for Chrome, Edge, Opera and Brave; WebKit for Safari; Gecko for Firefox). That's why testing in more than one browser matters.</p>
+<h2>URLs: the parts of a web address</h2>
+<figure class="static-code"><pre><code>https://shop.example.co.ke:443/products/laptops?brand=hp&amp;page=2#reviews
+└─┬─┘   └┬─┘ └─────┬────┘ └┬┘ └──────┬──────┘ └───────┬───────┘ └──┬──┘
+scheme  sub   domain name  port    path          query string     fragment</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Part</th><th>Example</th><th>Meaning</th></tr></thead><tbody><tr><td><strong>Scheme/protocol</strong></td><td><code>https</code></td><td>How to talk to the server (HTTPS = secure)</td></tr><tr><td><strong>Subdomain</strong></td><td><code>shop</code></td><td>A section of the domain (www, shop, mail, portal)</td></tr><tr><td><strong>Domain name</strong></td><td><code>example.co.ke</code></td><td>The site's name; <code>.co.ke</code> is the <strong>top-level</strong> part for Kenyan companies</td></tr><tr><td><strong>Port</strong></td><td><code>443</code></td><td>Usually hidden (443 for HTTPS, 80 for HTTP)</td></tr><tr><td><strong>Path</strong></td><td><code>/products/laptops</code></td><td>Which page or file on the server</td></tr><tr><td><strong>Query string</strong></td><td><code>?brand=hp&amp;page=2</code></td><td>Extra data, <code>name=value</code> pairs joined with <code>&amp;</code> (filters, searches)</td></tr><tr><td><strong>Fragment</strong></td><td><code>#reviews</code></td><td>A section within the page; never sent to the server</td></tr></tbody></table></div>
+<h3>Kenyan domain endings</h3>
+<div class="static-table"><table><thead><tr><th>Ending</th><th>For</th></tr></thead><tbody><tr><td><code>.co.ke</code></td><td>Companies and businesses (most common)</td></tr><tr><td><code>.or.ke</code></td><td>Organisations, NGOs</td></tr><tr><td><code>.ac.ke</code></td><td>Universities and colleges</td></tr><tr><td><code>.sc.ke</code></td><td>Schools</td></tr><tr><td><code>.go.ke</code></td><td>Government</td></tr><tr><td><code>.ke</code></td><td>General (shorter, newer)</td></tr><tr><td><code>.me.ke</code>, <code>.info.ke</code>, <code>.mobi.ke</code></td><td>Personal and other uses</td></tr></tbody></table></div>
+<p>These are managed by <strong>KENIC</strong> (Kenya Network Information Centre) and sold through accredited registrars. Global endings like <code>.com</code>, <code>.org</code> and <code>.africa</code> are also popular.</p>
+<h2>IP addresses and DNS</h2>
+<p>Computers find each other using <strong>IP addresses</strong>, numbers like <code>142.250.185.78</code> (IPv4) or longer ones like <code>2a00:1450:4001::200e</code> (IPv6). Humans remember names better than numbers, so the <strong>Domain Name System (DNS)</strong> translates names into IP addresses.</p>
+<aside class="callout callout-define"><p class="callout-title">DNS</p><div class="callout-body"><p>The internet's phone book: a worldwide system that converts domain names (<code>google.com</code>) into the IP addresses computers use to connect.</p></div></aside>
+<p>The lookup, simplified:</p>
+<ol><li>You type <code>example.co.ke</code>.</li><li>Your device checks its memory (cache). If not found, it asks your internet provider's <strong>DNS resolver</strong> (Safaricom, Airtel, your Wi-Fi provider, or public ones like 1.1.1.1 / 8.8.8.8).</li><li>The resolver asks the <strong>root servers</strong>, then the <code>.ke</code> servers, then the domain's own <strong>nameservers</strong>, which hold its records.</li><li>The answer (an IP address) comes back and is cached for a while.</li><li>Your browser connects to that IP.</li></ol>
+<p>Common DNS records you'll meet when setting up sites:</p>
+<div class="static-table"><table><thead><tr><th>Record</th><th>Purpose</th></tr></thead><tbody><tr><td><strong>A</strong></td><td>Domain → IPv4 address of the web server</td></tr><tr><td><strong>AAAA</strong></td><td>Domain → IPv6 address</td></tr><tr><td><strong>CNAME</strong></td><td>An alias pointing to another name (<code>www</code> → <code>example.co.ke</code>)</td></tr><tr><td><strong>MX</strong></td><td>Which server receives the domain's email</td></tr><tr><td><strong>TXT</strong></td><td>Text for verification (Google Search Console) and email security (SPF, DKIM)</td></tr><tr><td><strong>NS</strong></td><td>The nameservers responsible for the domain</td></tr></tbody></table></div>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> You change your domain's nameservers to a new host, but some people still see the old site for hours. Why?</span><em>Show answer</em></summary><div class="callout-body"><p>DNS answers are <strong>cached</strong> by resolvers and devices for a period set by each record (the TTL, time to live), so some resolvers keep the old answer until it expires. This "propagation" can take from minutes up to 24–48 hours. It isn't broken; it just takes time.</p></div></details>
+<h2>HTTP and HTTPS</h2>
+<p><strong>HTTP</strong> (HyperText Transfer Protocol) is the language browsers and servers use. The browser sends a <strong>request</strong>; the server sends a <strong>response</strong>.</p>
+<p>A request (simplified):</p>
+<figure class="static-code"><pre><code>GET /products/laptops HTTP/1.1
+Host: shop.example.co.ke
+User-Agent: Chrome on Android
+Accept: text/html</code></pre></figure>
+<p>A response:</p>
+<figure class="static-code"><pre><code>HTTP/1.1 200 OK
+Content-Type: text/html; charset=utf-8
+Content-Length: 18240
+
+&lt;!DOCTYPE html&gt;&lt;html&gt;...</code></pre></figure>
+<h3>Methods</h3>
+<div class="static-table"><table><thead><tr><th>Method</th><th>Meaning</th></tr></thead><tbody><tr><td><code>GET</code></td><td>Get a page or data</td></tr><tr><td><code>POST</code></td><td>Send data (forms, orders)</td></tr><tr><td><code>PUT</code> / <code>PATCH</code></td><td>Update data (APIs)</td></tr><tr><td><code>DELETE</code></td><td>Delete data (APIs)</td></tr></tbody></table></div>
+<h3>Status codes you must know</h3>
+<div class="static-table"><table><thead><tr><th>Code</th><th>Meaning</th><th>You'll see it when</th></tr></thead><tbody><tr><td><strong>200</strong> OK</td><td>Success</td><td>The page loaded</td></tr><tr><td><strong>301</strong> Moved Permanently</td><td>Redirect</td><td>A page moved to a new address (important for SEO)</td></tr><tr><td><strong>302</strong> Found</td><td>Temporary redirect</td><td>After logging in</td></tr><tr><td><strong>304</strong> Not Modified</td><td>Use your cached copy</td><td>Revisiting a page</td></tr><tr><td><strong>400</strong> Bad Request</td><td>The request was invalid</td><td>Broken form data</td></tr><tr><td><strong>401</strong> Unauthorized</td><td>Login needed</td><td>Protected pages</td></tr><tr><td><strong>403</strong> Forbidden</td><td>Not allowed</td><td>Wrong file permissions on a server</td></tr><tr><td><strong>404</strong> Not Found</td><td>No such page</td><td>A broken link or typo</td></tr><tr><td><strong>429</strong> Too Many Requests</td><td>Slow down</td><td>Too many attempts</td></tr><tr><td><strong>500</strong> Internal Server Error</td><td>The server's code crashed</td><td>A PHP error</td></tr><tr><td><strong>503</strong> Service Unavailable</td><td>Server overloaded or down</td><td>Maintenance, traffic spikes</td></tr></tbody></table></div>
+<p>Groups: <strong>2xx</strong> success, <strong>3xx</strong> redirect, <strong>4xx</strong> client mistake, <strong>5xx</strong> server problem.</p>
+<h3>HTTPS: the S means secure</h3>
+<p><strong>HTTPS</strong> encrypts the connection with <strong>TLS</strong>, so people on the same Wi-Fi, your internet provider or attackers can't read or change what's sent (passwords, M-Pesa numbers, messages). The padlock in the address bar shows HTTPS. Browsers label plain HTTP pages "Not secure", and Google prefers HTTPS sites. Certificates are free with <strong>Let's Encrypt</strong> and cPanel's <strong>AutoSSL</strong>, so there's no excuse for HTTP today.</p>
+<aside class="callout callout-tip"><p class="callout-title">See it yourself</p><div class="callout-body"><p>Open Chrome DevTools (F12) → <strong>Network</strong> tab, then reload any page. You'll see every request the page makes, its status code, size and time. Developers use this every day to find slow images and broken files.</p></div></aside>
+<h2>Hosting and how a site goes live</h2>
+<p>To publish a website you need:</p>
+<ol><li><strong>A domain name</strong> (e.g. <code>mybakery.co.ke</code>), rented yearly from a registrar. <code>.co.ke</code> domains typically cost around KSh 1,000–1,500 per year (prices vary by registrar).</li><li><strong>Hosting</strong>: space on a server that's always online, rented monthly or yearly.</li><li><strong>Files</strong>: your HTML, CSS, JavaScript and images, uploaded to the server (usually into a folder called <code>public_html</code>).</li><li><strong>DNS</strong> pointing the domain to the hosting server.</li><li><strong>An SSL certificate</strong> for HTTPS.</li></ol>
+<div class="static-table"><table><thead><tr><th>Hosting type</th><th>What it is</th><th>Good for</th></tr></thead><tbody><tr><td><strong>Shared hosting</strong> (cPanel)</td><td>Many sites share one server</td><td>Small business sites, blogs; cheapest</td></tr><tr><td><strong>VPS</strong></td><td>Your own virtual server</td><td>Growing sites and custom apps; you manage it</td></tr><tr><td><strong>Cloud</strong> (AWS, Google Cloud, Azure)</td><td>Pay for what you use, scale up</td><td>Large systems</td></tr><tr><td><strong>Static hosting</strong> (GitHub Pages, Netlify, Cloudflare Pages)</td><td>Serves HTML/CSS/JS files only</td><td>Portfolios, landing pages; often free</td></tr><tr><td><strong>Website builders</strong> (WordPress.com, Wix, Shopify)</td><td>Hosting + editor in one</td><td>Non-technical owners</td></tr></tbody></table></div>
+<p>Kenyan hosting companies and international ones both serve Kenyan sites; servers closer to users (or a CDN) load faster.</p>
+<h3>CDNs</h3>
+<p>A <strong>Content Delivery Network</strong> (like Cloudflare) keeps copies of your files in data centres around the world, including Nairobi and Mombasa, so visitors download from a nearby location. It also protects against attacks.</p>
+<h2>Static vs dynamic websites</h2>
+<div class="static-table"><table><thead><tr><th></th><th>Static</th><th>Dynamic</th></tr></thead><tbody><tr><td>How pages are made</td><td>The same HTML file is sent to everyone</td><td>The server <strong>builds</strong> HTML for each request using code and a database</td></tr><tr><td>Technologies</td><td>HTML, CSS, JavaScript</td><td>PHP, Node.js, Python + MySQL/PostgreSQL; WordPress</td></tr><tr><td>Examples</td><td>Portfolio, landing page</td><td>Online shop, school portal, M-Pesa-integrated system, blog with comments</td></tr><tr><td>Pros</td><td>Fast, cheap, secure</td><td>Logins, payments, content managers, personalisation</td></tr></tbody></table></div>
+<p>Either way, <strong>the browser always receives HTML</strong>. That's why HTML is the foundation.</p>
+<h2>The full journey, in one picture</h2>
+<figure class="static-code"><pre><code>You tap a link
+   │
+   ▼
+Browser ── DNS lookup ──► &quot;example.co.ke = 102.x.x.x&quot;
+   │
+   ▼
+Browser ── HTTPS request (GET /) ──► Web server (data centre)
+                                         │ static: reads index.html
+                                         │ dynamic: PHP + database build HTML
+   ◄── HTTP response 200 + HTML ─────────┘
+   │
+   ├── requests CSS, JS, images, fonts (more requests)
+   ▼
+Browser builds the DOM, applies CSS, runs JS, paints the page</code></pre></figure>
+<h2>Common misunderstandings</h2>
+<div class="static-table"><table><thead><tr><th>Myth</th><th>Truth</th></tr></thead><tbody><tr><td>"The domain is the website"</td><td>The domain is just the name; you also need hosting and files</td></tr><tr><td>"Buying a domain gives me email"</td><td>Email needs an email service (hosting email, Google Workspace, Zoho) and MX records</td></tr><tr><td>"HTTPS is only for shops"</td><td>Every site should use HTTPS</td></tr><tr><td>"My site is on my laptop, so it's online"</td><td>Files on your laptop are only visible to you until uploaded to a server</td></tr><tr><td>"404 means the server is down"</td><td>404 means that page isn't there; the server answered fine</td></tr></tbody></table></div>
+<h2>Practice tasks</h2>
+<ol><li>Break this URL into its parts: <code>https://portal.school.ac.ke/results?year=2026&amp;term=2#math</code>.</li><li>Open DevTools → Network on a news site. How many requests does it make? What's the largest file?</li><li>Find a page that gives a 404 on a big website (type a made-up path). What does their 404 page offer?</li><li>Explain to a friend in three sentences the difference between a domain and hosting.</li><li>List the DNS records you'd need for a site at <code>mybakery.co.ke</code> with email at <code>info@mybakery.co.ke</code>.</li></ol>
+<h2>Summary</h2>
+<ul><li>The internet is the network; the web is linked pages running on it.</li><li>Browsers (clients) request pages from servers; the browser builds the page from HTML, CSS and JS.</li><li>A URL has a scheme, (sub)domain, path, query string and fragment; <code>.co.ke</code>, <code>.ac.ke</code>, <code>.go.ke</code> etc. are managed by KENIC.</li><li>DNS turns names into IP addresses; records include A, CNAME, MX and TXT.</li><li>HTTP requests and responses carry pages; know status codes 200, 301, 404 and 500; always use HTTPS.</li><li>Going live needs a domain, hosting, uploaded files, DNS and SSL. Static sites send the same files; dynamic sites build HTML on the server.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Is the web the same as the internet? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>What system converts domain names into IP addresses? Write the abbreviation.</p><details><summary>Show answer</summary><p>DNS</p></details></li><li><p>Which status code means "page not found"?</p><details><summary>Show answer</summary><p>404</p></details></li><li><p>Which status code means success?</p><details><summary>Show answer</summary><p>200</p></details></li><li><p>Which DNS record type tells the world which server receives a domain's email?</p><details><summary>Show answer</summary><p>MX</p></details></li><li><p>Which Kenyan domain ending is used by companies? Write it with dots.</p><details><summary>Show answer</summary><p>.co.ke</p></details></li><li><p>In the URL ...?brand=hp, what is the part after the ? called? (two words)</p><details><summary>Show answer</summary><p>query string</p></details></li><li><p>Which organisation manages .ke domains?</p><details><summary>Show answer</summary><p>KENIC</p></details></li><li><p>What folder in cPanel hosting usually holds the website files?</p><details><summary>Show answer</summary><p>public_html</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 19 in <a href="/learn/html/">HTML</a> · <a href="/learn/?book=html">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/html/introduction/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> HTML introduction: what it is, why we need it, who uses it and your first page</a><a class="btn btn-solid btn-sm" href="/learn/html/headings-paragraphs/">Headings, paragraphs and text structure: the outline of every page <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Advanced tables: colspan, rowspan, timetables, reports…</title>
+    <meta name="description" content="Real tables are rarely simple grids. A school timetable has a lunch break across all columns; a results sheet groups subjects under &quot;Sciences&quot; and…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/html/tables-advanced/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Advanced tables: colspan, rowspan, timetables, reports…" />
+    <meta property="og:description" content="Real tables are rarely simple grids. A school timetable has a lunch break across all columns; a results sheet groups subjects under &quot;Sciences&quot; and…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/html/tables-advanced/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Advanced tables: colspan, rowspan, timetables, reports…" />
+    <meta name="twitter:description" content="Real tables are rarely simple grids. A school timetable has a lunch break across all columns; a results sheet groups subjects under &quot;Sciences&quot; and…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/html/tables-advanced/#lesson","name":"Advanced tables: colspan, rowspan, timetables, reports and accessible data","description":"Real tables are rarely simple grids. A school timetable has a lunch break across all columns; a results sheet groups subjects under \"Sciences\" and…","url":"https://marzleytechsolutions.co.ke/learn/html/tables-advanced/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/html/#course","name":"HTML","url":"https://marzleytechsolutions.co.ke/learn/html/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"HTML","item":"https://marzleytechsolutions.co.ke/learn/html/"},{"@type":"ListItem","position":4,"name":"Advanced tables: colspan, rowspan, timetables, reports and accessible data","item":"https://marzleytechsolutions.co.ke/learn/html/tables-advanced/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=2253794972" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=9963f0ee62" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/html/">HTML</a> / <span>Advanced tables: colspan, rowspan, timetables, reports and accessible data</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=html&amp;lesson=tables-advanced"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Advanced tables: colspan, rowspan, timetables, reports and accessible data</h1>
+<p>Real tables are rarely simple grids. A school timetable has a lunch break across all columns; a results sheet groups subjects under "Sciences" and "Languages"; a sales report has sub-totals. This unit teaches you to build complex tables correctly with **<code>colspan</code><strong>, </strong><code>rowspan</code>**, column groups and accessible headers, and to make them work on phones.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Merging cells across columns (<code>colspan</code>) and rows (<code>rowspan</code>)</li><li>Planning complex tables on paper first</li><li>Multi-level headers and <code>scope=&quot;colgroup&quot;</code></li><li><code>&lt;colgroup&gt;</code> and <code>&lt;col&gt;</code> for column styling</li><li><code>headers</code> and <code>id</code> for very complex tables</li><li>Responsive tables for phones and print-friendly reports</li></ul></div></aside>
+<h2>Who builds complex tables?</h2>
+<p>School systems (timetables, mark sheets, report cards), hospitals (duty rosters), businesses (sales and stock reports), SACCOs (loan schedules), transport (bus and flight schedules) and government reports. If you build systems for clients, you'll build these often.</p>
+<h2><code>colspan</code>: a cell across several columns</h2>
+<p><code>colspan=&quot;n&quot;</code> makes a cell stretch across <strong>n columns</strong>.</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;table border=&quot;1&quot; cellpadding=&quot;6&quot;&gt;
+  &lt;caption&gt;Grade 9 timetable (Monday)&lt;/caption&gt;
+  &lt;tr&gt;&lt;th scope=&quot;col&quot;&gt;Time&lt;/th&gt;&lt;th scope=&quot;col&quot;&gt;Lesson&lt;/th&gt;&lt;th scope=&quot;col&quot;&gt;Teacher&lt;/th&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;8:00&lt;/td&gt;&lt;td&gt;Mathematics&lt;/td&gt;&lt;td&gt;Mr Otieno&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;8:40&lt;/td&gt;&lt;td&gt;English&lt;/td&gt;&lt;td&gt;Mrs Wambui&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;10:00&lt;/td&gt;&lt;td colspan=&quot;2&quot;&gt;&lt;strong&gt;Break&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;10:30&lt;/td&gt;&lt;td&gt;Integrated Science&lt;/td&gt;&lt;td&gt;Ms Chebet&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;12:40&lt;/td&gt;&lt;td colspan=&quot;2&quot;&gt;&lt;strong&gt;Lunch&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</code></pre></figure>
+<p>The "Break" row has only <strong>2</strong> cells, but the second covers 2 columns, so the row still adds up to 3 columns.</p>
+<h2><code>rowspan</code>: a cell down several rows</h2>
+<p><code>rowspan=&quot;n&quot;</code> makes a cell stretch <strong>down n rows</strong>. The rows below then have <strong>one fewer cell</strong> in that position.</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;table border=&quot;1&quot; cellpadding=&quot;6&quot;&gt;
+  &lt;caption&gt;Clinic duty roster&lt;/caption&gt;
+  &lt;tr&gt;&lt;th scope=&quot;col&quot;&gt;Day&lt;/th&gt;&lt;th scope=&quot;col&quot;&gt;Shift&lt;/th&gt;&lt;th scope=&quot;col&quot;&gt;Nurse on duty&lt;/th&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;th scope=&quot;row&quot; rowspan=&quot;2&quot;&gt;Monday&lt;/th&gt;&lt;td&gt;Day&lt;/td&gt;&lt;td&gt;Nurse Akinyi&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Night&lt;/td&gt;&lt;td&gt;Nurse Mutua&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;th scope=&quot;row&quot; rowspan=&quot;2&quot;&gt;Tuesday&lt;/th&gt;&lt;td&gt;Day&lt;/td&gt;&lt;td&gt;Nurse Wairimu&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Night&lt;/td&gt;&lt;td&gt;Nurse Kiprono&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</code></pre></figure>
+<h2>The counting rule</h2>
+<p>The most common error with spans is rows that don't add up. Every row must cover the <strong>same number of columns</strong>:</p>
+<ul><li>Count each normal cell as 1 and each <code>colspan=&quot;n&quot;</code> cell as n.</li><li>Remember cells from rows <strong>above</strong> that reach down with <code>rowspan</code> and occupy a slot.</li></ul>
+<aside class="callout callout-tip"><p class="callout-title">Plan on paper first</p><div class="callout-body"><p>Draw the table as a grid on paper (or in Excel), shade merged cells, then write the HTML row by row. Five minutes of planning saves an hour of confusing misaligned cells.</p></div></aside>
+<h2>Multi-level headers</h2>
+<p>A results table where subject groups sit above subject names:</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;table border=&quot;1&quot; cellpadding=&quot;6&quot;&gt;
+  &lt;caption&gt;Term 2 results&lt;/caption&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th scope=&quot;col&quot; rowspan=&quot;2&quot;&gt;Student&lt;/th&gt;
+      &lt;th scope=&quot;colgroup&quot; colspan=&quot;2&quot;&gt;Sciences&lt;/th&gt;
+      &lt;th scope=&quot;colgroup&quot; colspan=&quot;2&quot;&gt;Languages&lt;/th&gt;
+      &lt;th scope=&quot;col&quot; rowspan=&quot;2&quot;&gt;Average&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th scope=&quot;col&quot;&gt;Maths&lt;/th&gt;&lt;th scope=&quot;col&quot;&gt;Biology&lt;/th&gt;
+      &lt;th scope=&quot;col&quot;&gt;English&lt;/th&gt;&lt;th scope=&quot;col&quot;&gt;Kiswahili&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;Amina&lt;/th&gt;&lt;td&gt;78&lt;/td&gt;&lt;td&gt;84&lt;/td&gt;&lt;td&gt;71&lt;/td&gt;&lt;td&gt;80&lt;/td&gt;&lt;td&gt;78.3&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;Brian&lt;/th&gt;&lt;td&gt;65&lt;/td&gt;&lt;td&gt;72&lt;/td&gt;&lt;td&gt;88&lt;/td&gt;&lt;td&gt;79&lt;/td&gt;&lt;td&gt;76.0&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre></figure>
+<ul><li><code>scope=&quot;colgroup&quot;</code> says the header labels a <strong>group</strong> of columns.</li><li>"Student" and "Average" use <code>rowspan=&quot;2&quot;</code> to fill both header rows.</li></ul>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> In the results table, how many column slots does the first header row cover, and does it match the body rows?</span><em>Show answer</em></summary><div class="callout-body"><p>Student (1) + Sciences (2) + Languages (2) + Average (1) = 6 slots. Each body row has 1 <code>&lt;th&gt;</code> + 5 <code>&lt;td&gt;</code> = 6. The second header row has 4 cells, plus Student and Average reaching down with rowspan = 6. Everything matches.</p></div></details>
+<h2><code>&lt;colgroup&gt;</code> and <code>&lt;col&gt;</code>: styling whole columns</h2>
+<p><code>&lt;col&gt;</code> elements (inside <code>&lt;colgroup&gt;</code>, right after <code>&lt;caption&gt;</code>) let you style entire columns, for example highlighting the "Total" column, without adding classes to every cell.</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;table border=&quot;1&quot; cellpadding=&quot;6&quot;&gt;
+  &lt;caption&gt;Weekly sales (KSh)&lt;/caption&gt;
+  &lt;colgroup&gt;
+    &lt;col&gt;
+    &lt;col span=&quot;3&quot;&gt;
+    &lt;col style=&quot;background:#fff7e0&quot;&gt;
+  &lt;/colgroup&gt;
+  &lt;tr&gt;&lt;th scope=&quot;col&quot;&gt;Product&lt;/th&gt;&lt;th scope=&quot;col&quot;&gt;Mon&lt;/th&gt;&lt;th scope=&quot;col&quot;&gt;Tue&lt;/th&gt;&lt;th scope=&quot;col&quot;&gt;Wed&lt;/th&gt;&lt;th scope=&quot;col&quot;&gt;Total&lt;/th&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;Bread&lt;/th&gt;&lt;td&gt;3,600&lt;/td&gt;&lt;td&gt;4,100&lt;/td&gt;&lt;td&gt;3,900&lt;/td&gt;&lt;td&gt;11,600&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;Milk&lt;/th&gt;&lt;td&gt;2,200&lt;/td&gt;&lt;td&gt;2,500&lt;/td&gt;&lt;td&gt;2,350&lt;/td&gt;&lt;td&gt;7,050&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</code></pre></figure>
+<p>Only a few CSS properties work on <code>&lt;col&gt;</code> (mainly <code>background</code>, <code>width</code>, <code>border</code>, <code>visibility</code>).</p>
+<h2><code>headers</code> and <code>id</code>: for very complex tables</h2>
+<p>When <code>scope</code> isn't enough (headers in irregular places), give each header an <code>id</code> and list them in each data cell's <code>headers</code> attribute:</p>
+<figure class="static-code"><pre><code>&lt;th id=&quot;q1&quot;&gt;Q1&lt;/th&gt; &lt;th id=&quot;nbi&quot;&gt;Nairobi&lt;/th&gt;
+&lt;td headers=&quot;nbi q1&quot;&gt;1.2M&lt;/td&gt;</code></pre></figure>
+<p>Screen readers then read "Nairobi, Q1, 1.2M". Usually it's better to <strong>simplify the table</strong> (split it) than to rely on complex <code>headers</code> markup.</p>
+<h2>Numbers in tables</h2>
+<ul><li><strong>Right-align numbers</strong> (with CSS) so digits line up.</li><li>Use the <strong>same number of decimals</strong> in a column.</li><li>Put <strong>units in the header</strong> ("Price (KSh)") instead of every cell.</li><li>Use <strong>thousands separators</strong>: 1,250,000.</li></ul>
+<h2>Tables on phones</h2>
+<p>Options (most need CSS, which you'll learn soon):</p>
+<ol><li><strong>Horizontal scroll container</strong>: wrap the table in <code>&lt;div class=&quot;table-wrap&quot;&gt;</code> with <code>overflow-x: auto</code>. Simple and keeps the table intact. (This learning hub does it.)</li><li><strong>Sticky first column</strong> so the row labels stay visible while scrolling sideways.</li><li><strong>Stacked cards</strong>: each row becomes a card on small screens (CSS + a <code>data-label</code> attribute per cell).</li><li><strong>Fewer columns</strong>: hide less important columns on phones, or link to the full table.</li></ol>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;div style=&quot;overflow-x:auto;max-width:280px;border:1px dashed #999&quot;&gt;
+  &lt;table border=&quot;1&quot; cellpadding=&quot;6&quot; style=&quot;min-width:520px&quot;&gt;
+    &lt;caption&gt;Loan repayment schedule&lt;/caption&gt;
+    &lt;tr&gt;&lt;th scope=&quot;col&quot;&gt;Month&lt;/th&gt;&lt;th scope=&quot;col&quot;&gt;Opening balance&lt;/th&gt;&lt;th scope=&quot;col&quot;&gt;Payment&lt;/th&gt;&lt;th scope=&quot;col&quot;&gt;Interest&lt;/th&gt;&lt;th scope=&quot;col&quot;&gt;Closing balance&lt;/th&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;1&lt;/td&gt;&lt;td&gt;100,000&lt;/td&gt;&lt;td&gt;9,000&lt;/td&gt;&lt;td&gt;1,500&lt;/td&gt;&lt;td&gt;92,500&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;2&lt;/td&gt;&lt;td&gt;92,500&lt;/td&gt;&lt;td&gt;9,000&lt;/td&gt;&lt;td&gt;1,388&lt;/td&gt;&lt;td&gt;84,888&lt;/td&gt;&lt;/tr&gt;
+  &lt;/table&gt;
+&lt;/div&gt;
+&lt;p&gt;(Scroll the table sideways inside the box.)&lt;/p&gt;</code></pre></figure>
+<h2>Printing reports</h2>
+<p>Long tables often get printed (report cards, invoices). With <code>&lt;thead&gt;</code>, browsers can repeat the header row on every printed page, and CSS print styles can avoid breaking rows across pages (<code>tr { break-inside: avoid; }</code>).</p>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Rows with different column totals</td><td>Count spans; plan on paper</td></tr><tr><td>Forgetting that <code>rowspan</code> takes a slot in rows below</td><td>Remove one cell from those rows</td></tr><tr><td>Merged cells used for visual layout</td><td>Tables are for data only</td></tr><tr><td>No header cells in complex tables</td><td><code>&lt;th&gt;</code> with <code>scope</code> (or <code>headers</code>/<code>id</code>)</td></tr><tr><td>Tables too wide for phones</td><td>Scroll container, fewer columns or cards</td></tr><tr><td>Numbers left-aligned with mixed decimals</td><td>Right-align, consistent decimals, units in headers</td></tr></tbody></table></div>
+<h2>Practice tasks</h2>
+<ol><li>Build your school's full Monday timetable with break and lunch rows using <code>colspan</code>.</li><li>Build a two-week duty roster with <code>rowspan</code> for each day.</li><li>Build a results table with grouped headers (Sciences, Languages, Humanities) using <code>scope=&quot;colgroup&quot;</code>.</li><li>Build a sales table with a highlighted Total column using <code>&lt;colgroup&gt;</code>.</li><li>Wrap your widest table in a scrolling container and test it on your phone.</li></ol>
+<h2>Summary</h2>
+<ul><li><code>colspan</code> merges across columns; <code>rowspan</code> merges down rows (and removes a cell from rows below).</li><li>Every row must add up to the same number of column slots; plan on paper first.</li><li>Use <code>scope=&quot;col&quot;</code>, <code>&quot;row&quot;</code> and <code>&quot;colgroup&quot;</code>; use <code>headers</code>/<code>id</code> only for truly irregular tables.</li><li><code>&lt;colgroup&gt;</code>/<code>&lt;col&gt;</code> style whole columns.</li><li>Format numbers clearly, and make wide tables scroll or reflow on phones.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which attribute merges a cell across several columns?</p><details><summary>Show answer</summary><p>colspan</p></details></li><li><p>Which attribute merges a cell down several rows?</p><details><summary>Show answer</summary><p>rowspan</p></details></li><li><p>A row has 2 normal cells and one cell with colspan="3". How many column slots does it cover?</p><details><summary>Show answer</summary><p>5</p></details></li><li><p>Which scope value labels a group of columns?</p><details><summary>Show answer</summary><p>colgroup</p></details></li><li><p>Which element inside colgroup styles a whole column?</p><details><summary>Show answer</summary><p>col</p></details></li><li><p>Should numbers in a column be aligned left or right?</p><details><summary>Show answer</summary><p>right</p></details></li><li><p>Which CSS property makes a wide table scroll sideways inside its container? Write the property name.</p><details><summary>Show answer</summary><p>overflow-x</p></details></li></ol></section></div><p class="static-meta">Lesson 11 of 19 in <a href="/learn/html/">HTML</a> · <a href="/learn/?book=html">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/html/lists-tables/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Lists and tables: organising information clearly</a><a class="btn btn-solid btn-sm" href="/learn/html/block-inline-divs/">Block vs inline elements, div and span <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

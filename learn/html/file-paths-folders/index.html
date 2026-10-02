@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>File paths and website folders: absolute, relative and…</title>
+    <meta name="description" content="&quot;My image doesn&#x27;t show!&quot; and &quot;the link opens a 404!&quot; are the two complaints every beginner has, and almost always the cause is a wrong file path . Once…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/html/file-paths-folders/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="File paths and website folders: absolute, relative and…" />
+    <meta property="og:description" content="&quot;My image doesn&#x27;t show!&quot; and &quot;the link opens a 404!&quot; are the two complaints every beginner has, and almost always the cause is a wrong file path . Once…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/html/file-paths-folders/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="File paths and website folders: absolute, relative and…" />
+    <meta name="twitter:description" content="&quot;My image doesn&#x27;t show!&quot; and &quot;the link opens a 404!&quot; are the two complaints every beginner has, and almost always the cause is a wrong file path . Once…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/html/file-paths-folders/#lesson","name":"File paths and website folders: absolute, relative and root-relative links","description":"\"My image doesn't show!\" and \"the link opens a 404!\" are the two complaints every beginner has, and almost always the cause is a wrong file path . Once…","url":"https://marzleytechsolutions.co.ke/learn/html/file-paths-folders/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/html/#course","name":"HTML","url":"https://marzleytechsolutions.co.ke/learn/html/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"HTML","item":"https://marzleytechsolutions.co.ke/learn/html/"},{"@type":"ListItem","position":4,"name":"File paths and website folders: absolute, relative and root-relative links","item":"https://marzleytechsolutions.co.ke/learn/html/file-paths-folders/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=2253794972" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=9963f0ee62" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/html/">HTML</a> / <span>File paths and website folders: absolute, relative and root-relative links</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=html&amp;lesson=file-paths-folders"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>File paths and website folders: absolute, relative and root-relative links</h1>
+<p>"My image doesn't show!" and "the link opens a 404!" are the two complaints every beginner has, and almost always the cause is a wrong <strong>file path</strong>. Once you understand paths, these problems disappear. This unit explains how websites are organised in folders and how to point links, images, CSS and scripts at the right file every time.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>How to organise a website's files and folders</li><li>Absolute URLs, relative paths and root-relative paths</li><li>Moving into folders (<code>folder/file</code>) and out of them (<code>../</code>)</li><li>Why the same path works on your laptop but breaks online (and the opposite)</li><li>Case sensitivity, spaces and other path traps</li><li>A method to fix any broken link or image</li></ul></div></aside>
+<h2>Why paths matter</h2>
+<p>Every link (<code>href</code>), image (<code>src</code>), stylesheet (<code>&lt;link href&gt;</code>), script (<code>&lt;script src&gt;</code>) and video points to a file using a path. If the path is wrong by even one letter or folder, the browser can't find the file: images show as broken icons, styles don't apply, and links give <strong>404 Not Found</strong>.</p>
+<h2>Organising a website's files</h2>
+<p>A typical small site:</p>
+<figure class="static-code"><pre><code>my-website/                 ← the site&#x27;s root folder (public_html on a server)
+├── index.html              ← home page
+├── about.html
+├── contact.html
+├── css/
+│   └── style.css
+├── js/
+│   └── main.js
+├── images/
+│   ├── logo.png
+│   └── team/
+│       └── wanjiku.jpg
+└── services/
+    ├── index.html          ← opens at /services/
+    └── web-design.html</code></pre></figure>
+<p>Good habits:</p>
+<ul><li>Keep <code>index.html</code> in the root.</li><li>Put files of the same kind in folders: <code>css/</code>, <code>js/</code>, <code>images/</code>.</li><li>Use <strong>lowercase</strong>, <strong>no spaces</strong>, words joined with <strong>hyphens</strong>: <code>web-design.html</code>, <code>wanjiku-kamau.jpg</code>.</li><li>Descriptive names (<code>shop-front.jpg</code>, not <code>IMG_20260214_103522.jpg</code>): they're easier to manage and help image SEO.</li></ul>
+<h2>Three kinds of paths</h2>
+<h3>1. Absolute URLs</h3>
+<p>The <strong>full address</strong> including <code>https://</code> and the domain. Use for <strong>other websites</strong> (and in places that need full URLs, like Open Graph images and sitemaps).</p>
+<figure class="static-code"><pre><code>&lt;a href=&quot;https://www.kra.go.ke&quot;&gt;KRA&lt;/a&gt;
+&lt;img src=&quot;https://example.co.ke/images/logo.png&quot; alt=&quot;Example logo&quot;&gt;</code></pre></figure>
+<h3>2. Relative paths</h3>
+<p>A path <strong>relative to the current file's folder</strong>. Use for your own files. The site keeps working if you move the whole folder or change domains.</p>
+<div class="static-table"><table><thead><tr><th>Path</th><th>Meaning</th></tr></thead><tbody><tr><td><code>about.html</code></td><td>A file in the <strong>same folder</strong></td></tr><tr><td><code>images/logo.png</code></td><td>Go <strong>into</strong> the <code>images</code> folder, then the file</td></tr><tr><td><code>images/team/wanjiku.jpg</code></td><td>Into <code>images</code>, into <code>team</code>, then the file</td></tr><tr><td><code>../index.html</code></td><td>Go <strong>up one folder</strong> (<code>..</code> = parent folder), then the file</td></tr><tr><td><code>../../css/style.css</code></td><td>Up two folders, into <code>css</code></td></tr><tr><td><code>./about.html</code></td><td><code>./</code> means "this folder"; same as <code>about.html</code></td></tr></tbody></table></div>
+<h3>3. Root-relative paths</h3>
+<p>Start with a single <code>/</code>: the path from the <strong>root of the website</strong>, wherever the current page is.</p>
+<figure class="static-code"><pre><code>&lt;img src=&quot;/images/logo.png&quot; alt=&quot;Logo&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;/css/style.css&quot;&gt;</code></pre></figure>
+<p>Great for menus and templates used on pages at different folder depths. The catch: on your laptop, if you open files by double-clicking (<code>file:///C:/Users/...</code>), <code>/</code> means the root of your <strong>drive</strong>, so root-relative paths break locally. They work on a real server or a local development server (like VS Code's Live Server extension).</p>
+<h2>Working through examples</h2>
+<p>Using the folder tree above:</p>
+<p>**From <code>index.html</code> (root):**</p>
+<figure class="static-code"><pre><code>&lt;a href=&quot;about.html&quot;&gt;About&lt;/a&gt;
+&lt;a href=&quot;services/web-design.html&quot;&gt;Web design&lt;/a&gt;
+&lt;img src=&quot;images/logo.png&quot; alt=&quot;Logo&quot;&gt;
+&lt;img src=&quot;images/team/wanjiku.jpg&quot; alt=&quot;Wanjiku, our designer&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;css/style.css&quot;&gt;</code></pre></figure>
+<p>**From <code>services/web-design.html</code> (one folder down):**</p>
+<figure class="static-code"><pre><code>&lt;a href=&quot;../index.html&quot;&gt;Home&lt;/a&gt;             ← up to the root
+&lt;a href=&quot;index.html&quot;&gt;All services&lt;/a&gt;        ← services/index.html, same folder
+&lt;img src=&quot;../images/logo.png&quot; alt=&quot;Logo&quot;&gt;    ← up, then into images
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../css/style.css&quot;&gt;</code></pre></figure>
+<p><strong>The same, root-relative (works from any folder on a server):</strong></p>
+<figure class="static-code"><pre><code>&lt;a href=&quot;/&quot;&gt;Home&lt;/a&gt;
+&lt;img src=&quot;/images/logo.png&quot; alt=&quot;Logo&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;/css/style.css&quot;&gt;</code></pre></figure>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> You're in images/team/ and want to link to contact.html in the root. What relative path do you write?</span><em>Show answer</em></summary><div class="callout-body"><p><code>../../contact.html</code>. The first <code>../</code> goes from <code>team</code> up to <code>images</code>, the second from <code>images</code> up to the root, then <code>contact.html</code>. (A page usually isn't inside an images folder, but the counting method is the same for any depth.)</p></div></details>
+<h2>Folder URLs and index.html</h2>
+<p>When a URL ends in a folder (<code>https://example.co.ke/services/</code>), the server looks for <code>index.html</code> (or <code>index.php</code>) inside it. So you can link to <code>services/</code> instead of <code>services/index.html</code> for cleaner URLs. Many professional sites use one folder per page for this reason: <code>/about/index.html</code> is served at <code>/about/</code>.</p>
+<h2>Path traps</h2>
+<div class="static-table"><table><thead><tr><th>Trap</th><th>What happens</th><th>Fix</th></tr></thead><tbody><tr><td><strong>Case sensitivity</strong></td><td>Works on Windows, breaks on Linux servers: <code>Logo.PNG</code> ≠ <code>logo.png</code></td><td>Lowercase everything, match exactly</td></tr><tr><td><strong>Spaces</strong> in names</td><td><code>my photo.jpg</code> becomes <code>my%20photo.jpg</code>; easy to break</td><td>Use hyphens</td></tr><tr><td><strong>Backslashes</strong> <code>\</code></td><td>Windows-style paths don't work on the web</td><td>Always forward slashes <code>/</code></td></tr><tr><td><strong>Local computer paths</strong></td><td><code>C:\Users\Juma\Desktop\logo.png</code> only exists on your PC</td><td>Use relative paths</td></tr><tr><td><strong>Wrong extension</strong></td><td><code>.jpeg</code> vs <code>.jpg</code>, <code>.PNG</code> vs <code>.png</code></td><td>Check the real file name (turn on file extensions)</td></tr><tr><td><strong>Missing upload</strong></td><td>File exists locally but wasn't uploaded</td><td>Upload it to the matching folder</td></tr><tr><td><strong>Root-relative locally</strong></td><td><code>/css/style.css</code> fails when double-clicking files</td><td>Use a local server, or relative paths</td></tr></tbody></table></div>
+<aside class="callout callout-warning"><p class="callout-title">The classic Windows trap</p><div class="callout-body"><p>Windows doesn't care about capital letters, so <code>Images/Logo.png</code> works on your laptop even if the file is <code>images/logo.png</code>. Most web servers run <strong>Linux</strong>, which treats them as different files. The site works at home and breaks online. Using lowercase names from the start prevents this completely.</p></div></aside>
+<h2>How to fix any broken path (a method)</h2>
+<ol><li><strong>Find the failing request:</strong> open DevTools (F12) → <strong>Console</strong> or <strong>Network</strong>. Red 404 entries show the exact URL the browser tried.</li><li><strong>Compare</strong> that URL with where the file really is. Which folder or letter is different?</li><li><strong>Check spelling, capital letters and extensions</strong> character by character.</li><li><strong>Count folder levels</strong> from the current page: how many <code>../</code> do you need?</li><li><strong>Open the file URL directly</strong> in the browser address bar. If it 404s, the file isn't where you think (or wasn't uploaded).</li><li><strong>Clear the cache</strong> (Ctrl+Shift+R) after fixing, so you don't see an old cached error.</li></ol>
+<h2>Paths in CSS (preview)</h2>
+<p>Inside a CSS file, paths are relative to <strong>the CSS file's location</strong>, not the HTML page:</p>
+<figure class="static-code"><pre><code>/* css/style.css */
+body { background-image: url(&quot;../images/pattern.png&quot;); }   /* up from css/, into images/ */</code></pre></figure>
+<h2>Practice tasks</h2>
+<ol><li>Create the folder tree above on your computer with empty files.</li><li>From <code>index.html</code>, write links to every page and an <code>&lt;img&gt;</code> for <code>wanjiku.jpg</code>.</li><li>From <code>services/web-design.html</code>, write relative links back to <code>index.html</code>, <code>contact.html</code> and the logo.</li><li>Rename <code>logo.png</code> to <code>Logo.png</code> and explain what would happen on a Linux server.</li><li>Use DevTools to find and fix a broken image path on a test page.</li></ol>
+<h2>Summary</h2>
+<ul><li>Organise sites in clear folders with lowercase, hyphenated names; <code>index.html</code> is the default page of a folder.</li><li><strong>Absolute URLs</strong> include <code>https://</code> and the domain (other sites, OG images, sitemaps).</li><li><strong>Relative paths</strong> start from the current file's folder: <code>folder/file</code>, <code>../</code> goes up one level.</li><li><strong>Root-relative paths</strong> start with <code>/</code> from the site root; they need a server.</li><li>Most broken links/images come from wrong folders, capital letters, spaces, extensions or missing uploads; DevTools shows the exact failing URL.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What do the two dots in ../ mean?</p><details><summary>Show answer</summary><p>up one folder</p></details></li><li><p>Which file does a server show for a folder URL like /services/?</p><details><summary>Show answer</summary><p>index.html</p></details></li><li><p>Does a path starting with / start from the current folder or the site root?</p><details><summary>Show answer</summary><p>root</p></details></li><li><p>On Linux servers, are Logo.png and logo.png the same file? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which slash must web paths use: forward or backward?</p><details><summary>Show answer</summary><p>forward</p></details></li><li><p>From services/page.html, what relative path reaches images/logo.png?</p><details><summary>Show answer</summary><p>../images/logo.png</p></details></li><li><p>Inside a CSS file, are paths relative to the CSS file or the HTML page?</p><details><summary>Show answer</summary><p>CSS file</p></details></li></ol></section></div><p class="static-meta">Lesson 8 of 19 in <a href="/learn/html/">HTML</a> · <a href="/learn/?book=html">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/html/links-images/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Links and images: connecting pages and showing pictures</a><a class="btn btn-solid btn-sm" href="/learn/html/responsive-images/">Images done right: sizes, formats, figure and lazy loading <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>
