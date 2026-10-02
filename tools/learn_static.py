@@ -96,6 +96,9 @@ def quiz_html(code):
     return '<section class="static-quiz"><h2>Check yourself</h2><ol>%s</ol></section>' % lis
 
 
+CALLOUT = {"note": "Note", "tip": "Tip", "warning": "Watch out", "example": "Example", "define": "Key term", "kenya": "In Kenya", "career": "Careers"}
+
+
 def markdown(src):
     """The same small Markdown subset the hub uses (learn/learn.js), rendered without JavaScript."""
     lines = src.replace("\r", "").split("\n")
@@ -138,6 +141,24 @@ def markdown(src):
                 out.append('<figure class="static-code">%s<pre><code%s>%s</code></pre></figure>' % (
                     ('<figcaption>%s%s</figcaption>' % (e(label), " · runs live in the interactive lesson" if live else "")) if label else "",
                     (' class="language-%s"' % e(name)) if name else "", e(body)))
+            continue
+        box = re.match(r"^:::\s*(note|tip|warning|example|think|define|kenya|career)\b\s*(.*)$", line)
+        if box:
+            flush()
+            inner = []
+            i += 1
+            while i < len(lines) and not re.match(r"^:::\s*$", lines[i]):
+                inner.append(lines[i])
+                i += 1
+            i += 1
+            kind, label = box.group(1), box.group(2).strip()
+            body = markdown("\n".join(inner))
+            if kind == "think":
+                out.append('<details class="callout callout-think"><summary><span><b>Think about it:</b> %s</span><em>Show answer</em></summary>'
+                           '<div class="callout-body">%s</div></details>' % (inline(label), body))
+            else:
+                out.append('<aside class="callout callout-%s"><p class="callout-title">%s</p><div class="callout-body">%s</div></aside>'
+                           % (kind, inline(label) if label else CALLOUT[kind], body))
             continue
         h = re.match(r"^(#{1,4})\s+(.*)$", line)
         if h:

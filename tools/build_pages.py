@@ -640,6 +640,7 @@ def learn_search_index(posts):
     def plain(md):
         md = re.sub(r"^```(quiz|youtube)\n.*?^```", " ", md, flags=re.S | re.M)   # answers and video ids aren't searchable text
         md = re.sub(r"^```[\w-]*$", " ", md, flags=re.M)
+        md = re.sub(r"^:::\s*(note|tip|warning|example|think|define|kenya|career)?", " ", md, flags=re.M)
         md = re.sub(r"!?\[([^\]]*)\]\([^)]*\)", r"\1", md)
         md = re.sub(r"[#*`>|_]+|-{3,}", " ", md)
         return re.sub(r"\s+", " ", md).strip()

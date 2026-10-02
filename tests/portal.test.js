@@ -510,8 +510,21 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
     sql("UPDATE learn_lessons SET title = 'My own intro' WHERE slug = 'introduction' AND track_id = (SELECT id FROM learn_tracks WHERE slug = 'html')");
     sql("DELETE FROM learn_lessons WHERE track_id = (SELECT id FROM learn_tracks WHERE slug = 'networking')");
     sql("DELETE FROM learn_tracks WHERE slug = 'networking'");
+    // an untouched lesson from an older tutorials file (here: another shipped lesson's text) gets the new text; an edited one doesn't
+    sql("UPDATE learn_lessons SET body = (SELECT body FROM learn_lessons WHERE slug = 'introduction' AND track_id = (SELECT id FROM learn_tracks WHERE slug = 'css')), " +
+      "exercise = (SELECT exercise FROM learn_lessons WHERE slug = 'introduction' AND track_id = (SELECT id FROM learn_tracks WHERE slug = 'css')), " +
+      "starter = (SELECT starter FROM learn_lessons WHERE slug = 'introduction' AND track_id = (SELECT id FROM learn_tracks WHERE slug = 'css')), " +
+      "expected = (SELECT expected FROM learn_lessons WHERE slug = 'introduction' AND track_id = (SELECT id FROM learn_tracks WHERE slug = 'css')), " +
+      "must_contain = (SELECT must_contain FROM learn_lessons WHERE slug = 'introduction' AND track_id = (SELECT id FROM learn_tracks WHERE slug = 'css')) " +
+      "WHERE slug = 'introduction' AND track_id = (SELECT id FROM learn_tracks WHERE slug = 'javascript')");
+    sql("UPDATE learn_lessons SET body = body || ' (our own note)' WHERE slug = 'introduction' AND track_id = (SELECT id FROM learn_tracks WHERE slug = 'python')");
     sql("UPDATE settings SET v = '1' WHERE k = 'learn_seed_version'");
     r = await lget(guest, "catalog");
+    const seedFile = JSON.parse(fs.readFileSync(ROOT + "/data/learn-seed.json", "utf8"));
+    const seedBody = (tr, sl) => seedFile.tracks.find((t) => t.slug === tr).lessons.find((l) => l.slug === sl).body;
+    const dbBody = (tr) => one("SELECT body FROM learn_lessons WHERE slug = 'introduction' AND track_id = (SELECT id FROM learn_tracks WHERE slug = '" + tr + "')").body;
+    ok("rewritten lessons replace untouched older copies", dbBody("javascript") === seedBody("javascript", "introduction"));
+    ok("rewritten lessons never replace a lesson edited in the portal", /\(our own note\)$/.test(dbBody("python")));
     const netTrack = r.j.tracks.find((t) => t.slug === "networking");
     ok("new subjects are added to an existing site automatically", netTrack && netTrack.lessons.some((l) => l.slug === "cidr"));
     ok("lessons edited in the portal are kept", one("SELECT title FROM learn_lessons WHERE slug = 'introduction' AND track_id = (SELECT id FROM learn_tracks WHERE slug = 'html')").title === "My own intro");

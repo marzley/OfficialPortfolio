@@ -145,6 +145,8 @@
     cells.push(cur.trim());
     return cells;
   }
+  var CALLOUT = { note: ["fa-circle-info", "Note"], tip: ["fa-lightbulb", "Tip"], warning: ["fa-triangle-exclamation", "Watch out"], example: ["fa-flask", "Example"],
+    define: ["fa-book", "Key term"], kenya: ["fa-location-dot", "In Kenya"], career: ["fa-briefcase", "Careers"] };
   /** Returns { html, blocks } where blocks are the "try it" code samples, placed at <div data-try="n">. */
   function markdown(src, top) {
     var lines = String(src || "").replace(/\r/g, "").split("\n"), out = [], blocks = [], quizzes = [], i = 0, para = [];
@@ -164,6 +166,20 @@
         else if (/^tool-/.test(lang)) out.push('<div data-tool="' + esc(lang.slice(5)) + '"></div>');
         else if (lang === "youtube") code.forEach(function (l) { var p = l.split("|"); if (p[0].trim()) out.push(ytEmbed(p[0].trim(), (p[1] || "").trim())); });
         else out.push('<pre class="code-sample"><code>' + esc(code.join("\n")) + "</code></pre>");
+        continue;
+      }
+      var box = line.match(/^:::\s*(note|tip|warning|example|think|define|kenya|career)\b\s*(.*)$/);
+      if (box) {
+        flush();
+        var inner = [];
+        i++;
+        while (i < lines.length && !/^:::\s*$/.test(lines[i])) inner.push(lines[i++]);
+        i++;
+        var sub = markdown(inner.join("\n"), false), kind = box[1], label = box[2].trim();
+        sub.blocks.forEach(function (b) { blocks.push(b); });
+        var body = sub.html.replace(/data-try="(\d+)"/g, function (m, n) { return 'data-try="' + (blocks.length - sub.blocks.length + Number(n)) + '"'; });
+        if (kind === "think") out.push('<details class="callout callout-think"><summary><i class="fa-solid fa-brain" aria-hidden="true"></i><span><b>Think about it:</b> ' + inline(label) + '</span><em>Show answer</em></summary><div class="callout-body">' + body + "</div></details>");
+        else out.push('<aside class="callout callout-' + kind + '"><p class="callout-title"><i class="fa-solid ' + CALLOUT[kind][0] + '" aria-hidden="true"></i> ' + (label ? inline(label) : CALLOUT[kind][1]) + '</p><div class="callout-body">' + body + "</div></aside>");
         continue;
       }
       var hd = line.match(/^(#{1,4})\s+(.*)$/);
@@ -533,12 +549,32 @@
     document.body.classList.toggle("has-side", on);
     closeSide();
   }
-  function closeSide() { document.body.classList.remove("side-open"); sideToggle.setAttribute("aria-expanded", "false"); scrim.hidden = true; }
-  sideToggle.addEventListener("click", function () {
+  function closeSide() { document.body.classList.remove("side-open"); if (!wide.matches) sideToggle.setAttribute("aria-expanded", "false"); scrim.hidden = true; }
+  // Wide screens: the button folds the lesson list away (remembered); small screens: it slides the list in over the page
+  var wide = window.matchMedia("(min-width: 901px)");
+  function syncCollapsed() {
+    var folded = store.get("side-folded") === "1";
+    document.body.classList.toggle("side-folded", folded);
+    if (wide.matches) sideToggle.setAttribute("aria-expanded", String(!folded));
+    sideToggle.title = wide.matches ? (folded ? "Show the lesson list" : "Hide the lesson list") : "Lessons";
+  }
+  function toggleSide() {
+    if (wide.matches) {
+      store.set("side-folded", document.body.classList.contains("side-folded") ? "0" : "1");
+      syncCollapsed();
+      return;
+    }
     var open = !document.body.classList.contains("side-open");
     document.body.classList.toggle("side-open", open);
     sideToggle.setAttribute("aria-expanded", String(open));
     scrim.hidden = !open;
+  }
+  sideToggle.addEventListener("click", toggleSide);
+  if (wide.addEventListener) wide.addEventListener("change", function () { closeSide(); syncCollapsed(); });
+  syncCollapsed();
+  side.addEventListener("click", function (e) { if (e.target.closest(".side-fold")) toggleSide(); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "[" && !e.ctrlKey && !e.metaKey && !e.altKey && document.body.classList.contains("has-side") && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName) && !document.activeElement.closest(".CodeMirror")) toggleSide();
   });
   scrim.addEventListener("click", closeSide);
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeSide(); });
@@ -715,7 +751,7 @@
   function renderSide(track, lessonSlug) {
     var tracks = state.catalog || [];
     var groups = groupTracks(tracks);
-    side.innerHTML = '<div class="side-search" id="side-search"></div><nav class="subject-menu" aria-label="Subjects"><h2 class="side-title side-title-top">Subjects</h2>' + groups.map(function (g) {
+    side.innerHTML = '<button type="button" class="side-fold" title="Hide the lesson list (shortcut: [ )"><i class="fa-solid fa-angles-left" aria-hidden="true"></i> Hide lessons</button><div class="side-search" id="side-search"></div><nav class="subject-menu" aria-label="Subjects"><h2 class="side-title side-title-top">Subjects</h2>' + groups.map(function (g) {
       var here = g.items.some(function (t) { return t.slug === track.slug; });
       return '<details class="subj-group"' + (here ? " open" : "") + '><summary><i class="' + g.icon + '" aria-hidden="true"></i><span>' + esc(g.title) + '</span><span class="subj-n">' + g.items.length + '</span><i class="fa-solid fa-chevron-down subj-caret" aria-hidden="true"></i></summary>' +
         '<ul class="subj-list">' + g.items.map(function (t) {
@@ -850,6 +886,7 @@
           '<p class="done-row"><button type="button" class="btn btn-line btn-sm" id="mark-done">' + (isDone(l.id) ? '<i class="fa-solid fa-check" aria-hidden="true"></i> Completed' : "Mark as completed") + "</button></p>") + pager + '<section class="lesson-social" id="reviews" aria-label="Likes and reviews"></section></article>';
         md.blocks.forEach(function (b, n) { codeBlock(main.querySelector('[data-try="' + n + '"]'), { lang: b.lang, code: b.code }); });
         lessonVideos(track, l, main.querySelector(".lesson-body"));
+        enhanceLesson(main.querySelector(".lesson"), l);
         var quizDone = 0;
         md.quizzes.forEach(function (q, n) {
           renderQuiz(main.querySelector('[data-quiz="' + n + '"]'), q, function () {
@@ -864,6 +901,93 @@
         main.focus({ preventScroll: true });
       });
     }).catch(function (e) { errorBox(e.message); });
+  }
+
+  // ---------- long lessons: contents list, reading progress, reading time and "I understand this section" ticks ----------
+  var readerScroll = null;
+  function slugify(t) { return String(t).toLowerCase().replace(/<[^>]+>/g, "").replace(/&[a-z]+;/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || "section"; }
+  function enhanceLesson(article, l) {
+    if (readerScroll) { window.removeEventListener("scroll", readerScroll); readerScroll = null; }
+    var body = article && article.querySelector(".lesson-body");
+    if (!body) return;
+    var words = (body.textContent || "").split(/\s+/).filter(Boolean).length, mins = Math.max(1, Math.round(words / 200));
+    var heads = [].slice.call(body.querySelectorAll(":scope > h2"));
+    var h1 = body.querySelector("h1");
+    var meta = el('<p class="lesson-meta"><span><i class="fa-regular fa-clock" aria-hidden="true"></i> About ' + plural(mins, "minute") + ' of reading</span>' +
+      (heads.length ? '<span><i class="fa-solid fa-list-check" aria-hidden="true"></i> ' + plural(heads.length, "section") + "</span>" : "") + "</p>");
+    if (h1) h1.insertAdjacentElement("afterend", meta); else body.insertBefore(meta, body.firstChild);
+    var bar = el('<div class="read-progress" aria-hidden="true"><span></span></div>');
+    article.insertBefore(bar, article.firstChild);
+    var fill = bar.firstChild;
+    if (heads.length < 3) {
+      readerScroll = function () { var r = body.getBoundingClientRect(), total = r.height - innerHeight * 0.6; fill.style.width = Math.min(100, Math.max(0, total > 0 ? -r.top / total * 100 : 100)) + "%"; };
+      window.addEventListener("scroll", readerScroll, { passive: true }); readerScroll();
+      return;
+    }
+    // Wrap each h2 and what follows it in a section, ending with a button to tick it off
+    var key = "sections:" + l.id, got = {};
+    try { got = JSON.parse(store.get(key) || "{}") || {}; } catch (e) { got = {}; }
+    var used = {};
+    var sections = heads.map(function (h) {
+      var id = slugify(h.textContent);
+      while (used[id]) id += "-2";
+      used[id] = 1;
+      var sec = document.createElement("section");
+      sec.className = "lsec";
+      sec.id = "s-" + id;
+      h.parentNode.insertBefore(sec, h);
+      var n = h;
+      while (n && !(n !== h && n.nodeType === 1 && n.tagName === "H2")) { var nx = n.nextSibling; sec.appendChild(n); n = nx; }
+      var btn = el('<p class="lsec-done"><button type="button" class="btn btn-line btn-sm" aria-pressed="false"><i class="fa-regular fa-circle-check" aria-hidden="true"></i> <span>I understand this section</span></button></p>');
+      sec.appendChild(btn);
+      return { id: id, sec: sec, title: h.textContent, btn: btn.querySelector("button") };
+    });
+    var toc = el('<nav class="lesson-toc" aria-label="In this lesson"><details open><summary><span>In this lesson</span><small class="toc-count"></small></summary><ol></ol></details></nav>');
+    var ol = toc.querySelector("ol");
+    sections.forEach(function (s) {
+      s.link = el('<li><a href="#s-' + s.id + '"><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>' + esc(s.title) + "</span></a></li>").firstChild;
+      ol.appendChild(s.link.parentNode);
+      s.link.addEventListener("click", function (e) { e.preventDefault(); s.sec.scrollIntoView({ behavior: "smooth", block: "start" }); history.replaceState(history.state, "", location.search + "#s-" + s.id); if (innerWidth < 1200) toc.querySelector("details").open = false; });
+    });
+    var count = toc.querySelector(".toc-count");
+    var paint = function () {
+      var n = 0;
+      sections.forEach(function (s) {
+        var on = !!got[s.id];
+        if (on) n++;
+        s.btn.setAttribute("aria-pressed", String(on));
+        s.btn.classList.toggle("is-on", on);
+        s.btn.querySelector("i").className = on ? "fa-solid fa-circle-check" : "fa-regular fa-circle-check";
+        s.btn.querySelector("span").textContent = on ? "Understood" : "I understand this section";
+        s.link.classList.toggle("got", on);
+      });
+      count.textContent = n + " of " + sections.length + " understood";
+    };
+    sections.forEach(function (s) {
+      s.btn.addEventListener("click", function () {
+        if (got[s.id]) delete got[s.id]; else got[s.id] = 1;
+        store.set(key, JSON.stringify(got));
+        paint();
+      });
+    });
+    paint();
+    var wrap = el('<div class="lesson-wrap"></div>');
+    body.parentNode.insertBefore(wrap, body);
+    wrap.appendChild(body);
+    wrap.appendChild(toc);
+    article.classList.add("has-toc");
+    if (innerWidth < 1200) toc.querySelector("details").open = false;
+    readerScroll = function () {
+      var r = body.getBoundingClientRect(), total = r.height - innerHeight * 0.6;
+      fill.style.width = Math.min(100, Math.max(0, total > 0 ? -r.top / total * 100 : 100)) + "%";
+      var cur = sections[0];
+      sections.forEach(function (s) { if (s.sec.getBoundingClientRect().top < 140) cur = s; });
+      sections.forEach(function (s) { s.link.classList.toggle("is-current", s === cur); });
+    };
+    window.addEventListener("scroll", readerScroll, { passive: true });
+    readerScroll();
+    var target = /^#s-/.test(location.hash) && document.getElementById(location.hash.slice(1));
+    if (target) setTimeout(function () { target.scrollIntoView({ block: "start" }); }, 50);
   }
 
   // ---------- likes, star ratings and comments under each lesson (everyone reads them; signing in lets you post) ----------

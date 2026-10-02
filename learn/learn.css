@@ -59,6 +59,7 @@ body.has-side .learn-shell { grid-template-columns: 280px minmax(0, 1fr); }
 .side-practice { display: flex; align-items: center; gap: 8px; margin: 16px 8px 0; padding: 10px 12px; border: 1px dashed var(--field-border); border-radius: 10px; font-weight: 700; text-decoration: none; color: var(--heading) !important; }
 .side-scrim { display: none; }
 .side-toggle { display: none; }
+.side-toggle:not([hidden]) { display: inline-grid; }
 
 /* ---------- home ---------- */
 .hero-learn { display: grid; grid-template-columns: 1.3fr 1fr; gap: 32px; align-items: center; padding: 16px 0 24px; }
@@ -86,6 +87,8 @@ body.has-side .learn-shell { grid-template-columns: 280px minmax(0, 1fr); }
 
 /* ---------- lesson ---------- */
 .lesson { max-width: 900px; }
+.lesson.has-toc { margin: 0 auto; }
+@media (min-width: 1200px) { .lesson.has-toc { max-width: 1180px; } .lesson.has-toc .lesson-wrap ~ *, .lesson.has-toc > :not(.lesson-wrap):not(.read-progress) { max-width: 890px; } }
 .crumbs { font-size: 14px; color: var(--fg-muted); margin: 0 0 12px; }
 .lesson-body h1 { font-size: clamp(28px, 3.4vw, 40px); color: var(--heading); margin: 8px 0 16px; letter-spacing: -.01em; }
 .lesson-body h2 { font-size: 24px; color: var(--heading); margin: 32px 0 10px; }
@@ -587,3 +590,65 @@ html.js .learn-static { display: none; }
 .static-lesson .lesson-body blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--amber); background: var(--card); border-radius: 8px; }
 @media print { .static-live, .static-ctas, .pager { display: none !important; } }
 .static-code pre code { background: none; padding: 0; border: 0; font-size: inherit; color: inherit; white-space: pre; }
+
+/* ---------- folding the lesson list away on wide screens ---------- */
+.side-fold { display: flex; align-items: center; gap: 8px; width: 100%; margin: 0 0 12px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--fg-muted); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+.side-fold:hover { color: var(--heading); border-color: var(--field-border); }
+@media (min-width: 901px) {
+    body.has-side.side-folded .learn-shell { grid-template-columns: minmax(0, 1fr); }
+    body.has-side.side-folded .learn-side { display: none; }
+}
+@media (max-width: 900px) { .side-fold { display: none; } }
+
+/* ---------- long lessons: progress, contents and section ticks ---------- */
+.read-progress { position: sticky; top: 64px; z-index: 30; height: 4px; margin: calc(-1 * clamp(16px, 3vw, 36px)) 0 clamp(12px, 2vw, 24px); background: transparent; }
+.read-progress span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--amber), var(--green)); border-radius: 0 4px 4px 0; transition: width .1s linear; }
+.lesson-meta { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: -4px 0 18px; color: var(--fg-muted); font-size: 14px; font-weight: 600; }
+.lesson-meta i { color: var(--amber-text); margin-right: 4px; }
+.lesson-wrap { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 40px; }
+.lesson-toc { order: -1; margin: 0 0 18px; }
+.lesson-toc details { border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
+.lesson-toc summary { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 10px; padding: 12px 14px; cursor: pointer; font-weight: 800; color: var(--heading); list-style: none; }
+.lesson-toc summary::-webkit-details-marker { display: none; }
+.toc-count { white-space: nowrap; font-size: 12px; font-weight: 700; color: var(--fg-muted); }
+.lesson-toc ol { list-style: none; margin: 0; padding: 0 8px 10px; max-height: calc(100vh - 200px); overflow-y: auto; }
+.lesson-toc a { display: flex; gap: 8px; align-items: flex-start; padding: 6px 8px; border-radius: 8px; color: var(--fg-muted); text-decoration: none; font-size: 14px; line-height: 1.35; }
+.lesson-toc a i { color: var(--line); margin-top: 2px; font-size: 13px; }
+.lesson-toc a.got i { color: var(--green); }
+.lesson-toc a:hover { background: var(--bg); color: var(--heading); }
+.lesson-toc a.is-current { color: var(--heading); font-weight: 700; background: var(--current-bg); box-shadow: inset 3px 0 0 var(--amber); }
+@media (min-width: 1200px) {
+    .lesson-wrap { grid-template-columns: minmax(0, 1fr) 250px; }
+    .lesson-toc { order: 0; margin: 0; }
+    .lesson-toc details { position: sticky; top: 84px; }
+}
+.lsec { scroll-margin-top: 84px; }
+.lsec-done { margin: 18px 0 8px; }
+.lsec-done .btn.is-on { border-color: var(--green); color: var(--green); }
+
+/* ---------- callout boxes in lessons ---------- */
+.callout { margin: 22px 0; border: 1px solid var(--line); border-left: 4px solid var(--blue); border-radius: 12px; background: var(--card); padding: 12px 16px; }
+.callout-title { margin: 0 0 6px; font-weight: 800; color: var(--heading); display: flex; gap: 8px; align-items: baseline; }
+.callout-title i { color: var(--blue); }
+.callout-body > :first-child { margin-top: 0; }
+.callout-body > :last-child { margin-bottom: 0; }
+.callout-tip { border-left-color: var(--amber); background: var(--current-bg); }
+.callout-tip .callout-title i, .callout-kenya .callout-title i { color: var(--amber-text); }
+.callout-warning { border-left-color: #dc2626; }
+.callout-warning .callout-title i { color: #dc2626; }
+.callout-example, .callout-career { border-left-color: var(--green); }
+.callout-example .callout-title i, .callout-career .callout-title i { color: var(--green); }
+.callout-define { border-left-color: #7c3aed; }
+.callout-define .callout-title i { color: #7c3aed; }
+.callout-kenya { border-left-color: var(--amber); }
+.callout-think { border-left-color: #7c3aed; padding: 0; }
+.callout-think summary { display: flex; align-items: center; gap: 10px; padding: 12px 16px; cursor: pointer; list-style: none; color: var(--heading); }
+.callout-think summary::-webkit-details-marker { display: none; }
+.callout-think summary i { color: #7c3aed; }
+.callout-think summary span { flex: 1; }
+.callout-think summary em { font-style: normal; font-size: 13px; font-weight: 700; color: var(--blue); white-space: nowrap; }
+.callout-think[open] summary em { visibility: hidden; }
+.callout-think .callout-body { padding: 0 16px 14px 42px; }
+[data-theme=dark] .callout-warning .callout-title i { color: #f87171; }
+[data-theme=dark] .callout-define .callout-title i, [data-theme=dark] .callout-think summary i { color: #a78bfa; }
+@media print { .read-progress, .lesson-toc, .lsec-done, .side-fold { display: none !important; } .callout-think .callout-body { display: block; } }

@@ -1196,7 +1196,10 @@ function learn_seed(PDO $pdo): void {
     if ((string)$st->fetchColumn() === $version) return;
     $findTrack = $pdo->prepare('SELECT id FROM learn_tracks WHERE slug = ?');
     $addTrack = $pdo->prepare('INSERT INTO learn_tracks (slug, title, lang, summary, position, published) VALUES (?, ?, ?, ?, ?, 1)');
-    $findLesson = $pdo->prepare('SELECT id FROM learn_lessons WHERE track_id = ? AND slug = ?');
+    $findLesson = $pdo->prepare('SELECT id, body, exercise, starter, expected, must_contain FROM learn_lessons WHERE track_id = ? AND slug = ?');
+    // Lesson versions this site has shipped before: a lesson still matching one was never edited here, so a rewrite may replace it
+    $shipped = array_flip((array)json_decode((string)@file_get_contents(site_root() . '/data/learn-seed-history.json'), true));
+    $refresh = $pdo->prepare('UPDATE learn_lessons SET title = ?, body = ?, exercise = ?, starter = ?, expected = ?, must_contain = ?, updated_at = ? WHERE id = ?');
     $addLesson = $pdo->prepare('INSERT INTO learn_lessons (track_id, slug, title, position, body, exercise, starter, expected, must_contain, published, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)');
     $setPosition = $pdo->prepare('UPDATE learn_lessons SET position = ? WHERE id = ?');
     // Earlier seed files kept the quotes around some titles ("Level 1: …"); repair those copies only
@@ -1212,10 +1215,16 @@ function learn_seed(PDO $pdo): void {
         $unquoteTrack->execute([$t['title'], $tid, '"' . $t['title'] . '"']);
         foreach ($t['lessons'] as $j => $l) {
             $findLesson->execute([$tid, $l['slug']]);
-            $lid = (int)$findLesson->fetchColumn();
+            $row = $findLesson->fetch(PDO::FETCH_ASSOC);
+            $lid = $row ? (int)$row['id'] : 0;
             if ($lid) {
-                // Keep the lesson's content, but follow the seed's order so new lessons slot in between
+                // Follow the seed's order so new lessons slot in between; take the seed's newer text unless an admin edited the lesson
                 $setPosition->execute([$j + 1, $lid]);
+                $now = learn_content_hash($row);
+                if ($now !== learn_content_hash($l) && isset($shipped[$now])) {
+                    $refresh->execute([$l['title'], $l['body'], $l['exercise'] ?? '', $l['starter'] ?? '', $l['expected'] ?? '', $l['must_contain'] ?? '', date('Y-m-d H:i:s'), $lid]);
+                    continue;
+                }
                 $unquoteLesson->execute([$l['title'], $lid, '"' . $l['title'] . '"']);
                 continue;
             }
@@ -1224,6 +1233,13 @@ function learn_seed(PDO $pdo): void {
     }
     $pdo->prepare('DELETE FROM settings WHERE k = ?')->execute(['learn_seed_version']);
     $pdo->prepare('INSERT INTO settings (k, v) VALUES (?, ?)')->execute(['learn_seed_version', $version]);
+}
+
+/** Matches content_hash() in tools/learn_merge.py. */
+function learn_content_hash(array $l): string {
+    $parts = [];
+    foreach (['body', 'exercise', 'starter', 'expected', 'must_contain'] as $k) $parts[] = (string)($l[$k] ?? '');
+    return substr(sha1(implode("\0", $parts)), 0, 16);
 }
 
 /** Private folder for hub videos, posters and notes. */
