@@ -142,6 +142,11 @@ def markdown(src):
                     ('<figcaption>%s%s</figcaption>' % (e(label), " · runs live in the interactive lesson" if live else "")) if label else "",
                     (' class="language-%s"' % e(name)) if name else "", e(body)))
             continue
+        if re.match(r"^\s*-{3,}\s*$", line):
+            flush()
+            out.append("<hr>")
+            i += 1
+            continue
         box = re.match(r"^:::\s*(note|tip|warning|example|think|define|kenya|career)\b\s*(.*)$", line)
         if box:
             flush()

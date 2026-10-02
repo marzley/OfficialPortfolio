@@ -13,14 +13,14 @@
     java: "fa-brands fa-java", "c-programming": "fa-solid fa-microchip", cpp: "fa-solid fa-gears", csharp: "fa-brands fa-microsoft", "dart-flutter": "fa-solid fa-mobile-screen",
     go: "fa-brands fa-golang", "digital-literacy": "fa-solid fa-user-shield", "ms-word": "fa-solid fa-file-word", excel: "fa-solid fa-table",
     powerpoint: "fa-solid fa-person-chalkboard", "google-workspace": "fa-solid fa-cloud", "ai-tools": "fa-solid fa-robot", "e-services-kenya": "fa-solid fa-landmark",
-    "computer-maintenance": "fa-solid fa-screwdriver-wrench" };
+    "computer-maintenance": "fa-solid fa-screwdriver-wrench", "earn-online": "fa-solid fa-hand-holding-dollar" };
   var TRACK_GROUPS = [
     { title: "Web & coding", icon: "fa-solid fa-code", slugs: ["html", "css", "javascript", "python", "sql", "php", "typescript", "algorithms", "git"] },
     { title: "App development", icon: "fa-solid fa-mobile-screen-button", slugs: ["app-dev-basics", "dart-flutter", "flutter", "kotlin-android", "react", "react-native", "apis-backend"] },
     { title: "Artificial intelligence (AI)", icon: "fa-solid fa-brain", slugs: ["artificial-intelligence", "ai-tools"] },
     { title: "More programming languages", icon: "fa-solid fa-laptop-code", slugs: ["java", "c-programming", "cpp", "csharp", "go"] },
     { title: "Design", icon: "fa-solid fa-palette", slugs: ["web-design", "graphic-design"] },
-    { title: "ICT & digital skills", icon: "fa-solid fa-computer", slugs: ["it-basics", "digital-literacy", "ms-word", "excel", "powerpoint", "google-workspace", "e-services-kenya", "computer-maintenance"] },
+    { title: "ICT & digital skills", icon: "fa-solid fa-computer", slugs: ["earn-online", "it-basics", "digital-literacy", "ms-word", "excel", "powerpoint", "google-workspace", "e-services-kenya", "computer-maintenance"] },
     { title: "Networking, systems & security", icon: "fa-solid fa-network-wired", slugs: ["networking", "linux", "cybersecurity", "hosting"] },
     { title: "Business & earning online", icon: "fa-solid fa-sack-dollar", slugs: ["make-money-online", "marketing"] }
   ];
@@ -182,6 +182,7 @@
         else out.push('<aside class="callout callout-' + kind + '"><p class="callout-title"><i class="fa-solid ' + CALLOUT[kind][0] + '" aria-hidden="true"></i> ' + (label ? inline(label) : CALLOUT[kind][1]) + '</p><div class="callout-body">' + body + "</div></aside>");
         continue;
       }
+      if (/^\s*-{3,}\s*$/.test(line)) { flush(); out.push("<hr>"); i++; continue; }
       var hd = line.match(/^(#{1,4})\s+(.*)$/);
       if (hd) { flush(); var lv = Math.min(4, hd[1].length + (top ? 0 : 1)); out.push("<h" + lv + ">" + inline(hd[2]) + "</h" + lv + ">"); i++; continue; }
       if (/^\s*\|/.test(line) && i + 1 < lines.length && /^\s*\|?[\s:-]+\|/.test(lines[i + 1])) {
@@ -947,6 +948,20 @@
     sections.forEach(function (s) {
       s.link = el('<li><a href="#s-' + s.id + '"><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>' + esc(s.title) + "</span></a></li>").firstChild;
       ol.appendChild(s.link.parentNode);
+      var subs = [].slice.call(s.sec.querySelectorAll(":scope > h3"));
+      if (subs.length > 1) {
+        var sub = document.createElement("ol");
+        sub.className = "toc-sub";
+        subs.forEach(function (h) {
+          var hid = "s-" + s.id + "-" + slugify(h.textContent);
+          h.id = hid;
+          h.classList.add("lsec-sub");
+          var a = el('<li><a href="#' + hid + '">' + esc(h.textContent) + "</a></li>");
+          a.firstChild.addEventListener("click", function (e) { e.preventDefault(); h.scrollIntoView({ behavior: "smooth", block: "start" }); history.replaceState(history.state, "", location.search + "#" + hid); if (innerWidth < 1200) toc.querySelector("details").open = false; });
+          sub.appendChild(a);
+        });
+        s.link.parentNode.appendChild(sub);
+      }
       s.link.addEventListener("click", function (e) { e.preventDefault(); s.sec.scrollIntoView({ behavior: "smooth", block: "start" }); history.replaceState(history.state, "", location.search + "#s-" + s.id); if (innerWidth < 1200) toc.querySelector("details").open = false; });
     });
     var count = toc.querySelector(".toc-count");
@@ -986,7 +1001,7 @@
     };
     window.addEventListener("scroll", readerScroll, { passive: true });
     readerScroll();
-    var target = /^#s-/.test(location.hash) && document.getElementById(location.hash.slice(1));
+    var target = /^#s-/.test(location.hash) && document.getElementById(decodeURIComponent(location.hash.slice(1)));
     if (target) setTimeout(function () { target.scrollIntoView({ block: "start" }); }, 50);
   }
 
