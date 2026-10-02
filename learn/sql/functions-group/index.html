@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Functions and GROUP BY | SQL</title>
-    <meta name="description" content="Free SQL lesson: Functions and GROUP BY." />
+    <title>Aggregate functions and GROUP BY: COUNT, SUM, AVG, MIN,…</title>
+    <meta name="description" content="Managers rarely want to see every single row. They ask summary questions: How many customers do we have? What&#x27;s our total revenue? What&#x27;s the average…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/sql/functions-group/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Functions and GROUP BY | SQL" />
-    <meta property="og:description" content="Free SQL lesson: Functions and GROUP BY." />
+    <meta property="og:title" content="Aggregate functions and GROUP BY: COUNT, SUM, AVG, MIN,…" />
+    <meta property="og:description" content="Managers rarely want to see every single row. They ask summary questions: How many customers do we have? What&#x27;s our total revenue? What&#x27;s the average…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/sql/functions-group/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Functions and GROUP BY | SQL" />
-    <meta name="twitter:description" content="Free SQL lesson: Functions and GROUP BY." />
+    <meta name="twitter:title" content="Aggregate functions and GROUP BY: COUNT, SUM, AVG, MIN,…" />
+    <meta name="twitter:description" content="Managers rarely want to see every single row. They ask summary questions: How many customers do we have? What&#x27;s our total revenue? What&#x27;s the average…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/sql/functions-group/#lesson","name":"Functions and GROUP BY","description":"Free SQL lesson: Functions and GROUP BY.","url":"https://marzleytechsolutions.co.ke/learn/sql/functions-group/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/sql/#course","name":"SQL","url":"https://marzleytechsolutions.co.ke/learn/sql/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"SQL","item":"https://marzleytechsolutions.co.ke/learn/sql/"},{"@type":"ListItem","position":4,"name":"Functions and GROUP BY","item":"https://marzleytechsolutions.co.ke/learn/sql/functions-group/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/sql/functions-group/#lesson","name":"Aggregate functions and GROUP BY: COUNT, SUM, AVG, MIN, MAX and summary reports","description":"Managers rarely want to see every single row. They ask summary questions: How many customers do we have? What's our total revenue? What's the average…","url":"https://marzleytechsolutions.co.ke/learn/sql/functions-group/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/sql/#course","name":"SQL","url":"https://marzleytechsolutions.co.ke/learn/sql/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"SQL","item":"https://marzleytechsolutions.co.ke/learn/sql/"},{"@type":"ListItem","position":4,"name":"Aggregate functions and GROUP BY: COUNT, SUM, AVG, MIN, MAX and summary reports","item":"https://marzleytechsolutions.co.ke/learn/sql/functions-group/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,25 +36,110 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/sql/">SQL</a> / <span>Functions and GROUP BY</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=functions-group"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Functions and GROUP BY</h1>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/sql/">SQL</a> / <span>Aggregate functions and GROUP BY: COUNT, SUM, AVG, MIN, MAX and summary reports</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=functions-group"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Aggregate functions and GROUP BY: COUNT, SUM, AVG, MIN, MAX and summary reports</h1>
+<p>Managers rarely want to see every single row. They ask summary questions: <em>How many customers do we have? What's our total revenue? What's the average price per category? Which town buys the most?</em> <strong>Aggregate functions</strong> turn many rows into one number, and <strong>GROUP BY</strong> produces one summary row per group. This is the heart of reporting, dashboards and business analysis, and it's one of the most tested SQL topics in job interviews.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>The five core aggregates: COUNT, SUM, AVG, MIN, MAX</li><li>COUNT(*) vs COUNT(column) vs COUNT(DISTINCT column)</li><li>GROUP BY one or several columns</li><li>The golden rule of GROUP BY</li><li>Sorting and limiting grouped results</li><li>Filtering before grouping (WHERE) and after (HAVING, introduced here)</li><li>Building real business summaries</li></ul></div></aside>
 <h2>Aggregate functions</h2>
-<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT COUNT(*) AS products, MIN(Price) AS cheapest, MAX(Price) AS dearest, AVG(Price) AS average
+<div class="static-table"><table><thead><tr><th>Function</th><th>Returns</th></tr></thead><tbody><tr><td><code>COUNT(*)</code></td><td>number of rows</td></tr><tr><td><code>COUNT(column)</code></td><td>number of non-NULL values in the column</td></tr><tr><td><code>COUNT(DISTINCT column)</code></td><td>number of different values</td></tr><tr><td><code>SUM(column)</code></td><td>total</td></tr><tr><td><code>AVG(column)</code></td><td>average (mean)</td></tr><tr><td><code>MIN(column)</code> / <code>MAX(column)</code></td><td>smallest / largest</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT COUNT(*) AS Customers FROM Customers;</code></pre></figure>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT COUNT(*) AS Products,
+       SUM(Price) AS TotalOfPrices,
+       ROUND(AVG(Price), 2) AS AveragePrice,
+       MIN(Price) AS Cheapest,
+       MAX(Price) AS MostExpensive
 FROM Products;</code></pre></figure>
-<h2>GROUP BY</h2>
-<p><code>GROUP BY</code> puts rows into groups, then the functions work per group.</p>
-<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT City, COUNT(*) AS customers
+<h3>COUNT variations</h3>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT COUNT(*) AS AllRows,
+       COUNT(City) AS RowsWithCity,
+       COUNT(DISTINCT City) AS DifferentCities
+FROM Customers;</code></pre></figure>
+<p><code>COUNT(column)</code> skips NULL values; <code>COUNT(*)</code> counts every row. All aggregates except <code>COUNT(*)</code> ignore NULLs.</p>
+<h3>MIN and MAX work on text and dates too</h3>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT MIN(OrderDate) AS FirstOrder, MAX(OrderDate) AS LatestOrder FROM Orders;</code></pre></figure>
+<h3>Aggregates with WHERE</h3>
+<p><code>WHERE</code> filters rows <strong>before</strong> they're aggregated:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT COUNT(*) AS NairobiCustomers FROM Customers WHERE City = &#x27;Nairobi&#x27;;</code></pre></figure>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT SUM(Quantity) AS UnitsSoldInAugust
+FROM Orders
+WHERE OrderDate BETWEEN &#x27;2026-08-01&#x27; AND &#x27;2026-08-31&#x27;;</code></pre></figure>
+<h2>GROUP BY: one row per group</h2>
+<p>How many customers are in each city?</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT City, COUNT(*) AS Customers
 FROM Customers
-GROUP BY City
-ORDER BY customers DESC;</code></pre></figure>
-<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Category, COUNT(*) AS items, SUM(Price) AS total_value
+GROUP BY City;</code></pre></figure>
+<p>The database:</p>
+<ol><li>Splits the rows into groups with the same City.</li><li>Runs <code>COUNT(*)</code> on each group.</li><li>Returns one row per group.</li></ol>
+<div class="static-table"><table><thead><tr><th>City</th><th>Customers</th></tr></thead><tbody><tr><td>Eldoret</td><td>1</td></tr><tr><td>Kisumu</td><td>2</td></tr><tr><td>Mombasa</td><td>1</td></tr><tr><td>Nairobi</td><td>2</td></tr><tr><td>Nakuru</td><td>1</td></tr></tbody></table></div>
+<p>More examples:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Category,
+       COUNT(*) AS Products,
+       MIN(Price) AS Cheapest,
+       MAX(Price) AS Dearest,
+       ROUND(AVG(Price)) AS AveragePrice
 FROM Products
 GROUP BY Category;</code></pre></figure>
-<h2>HAVING filters groups</h2>
-<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT City, COUNT(*) AS customers
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">-- Units sold per product
+SELECT ProductID, SUM(Quantity) AS UnitsSold
+FROM Orders
+GROUP BY ProductID
+ORDER BY UnitsSold DESC;</code></pre></figure>
+<h2>The golden rule of GROUP BY</h2>
+<p>Every column in <code>SELECT</code> must either be:</p>
+<ol><li>listed in <code>GROUP BY</code>, or</li><li>inside an aggregate function.</li></ol>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">-- Wrong idea: which Name should the database show for the whole city group?
+SELECT City, Name, COUNT(*) FROM Customers GROUP BY City;</code></pre></figure>
+<p>PostgreSQL, SQL Server and strict MySQL reject this with an error. SQLite allows it but picks an arbitrary Name, which gives misleading results. Follow the rule always.</p>
+<h2>Grouping by several columns</h2>
+<p>One row for each combination:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT CustomerID, ProductID, SUM(Quantity) AS Units
+FROM Orders
+GROUP BY CustomerID, ProductID
+ORDER BY CustomerID;</code></pre></figure>
+<p>Group by month using a date function (<code>SUBSTR</code> takes the first 7 characters, <code>YYYY-MM</code>):</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT SUBSTR(OrderDate, 1, 7) AS Month,
+       COUNT(*) AS Orders,
+       SUM(Quantity) AS Units
+FROM Orders
+GROUP BY Month
+ORDER BY Month;</code></pre></figure>
+<h2>Sorting and top groups</h2>
+<p>Which city has the most customers?</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT City, COUNT(*) AS Customers
 FROM Customers
 GROUP BY City
-HAVING COUNT(*) &gt; 1;</code></pre></figure></div><section class="static-exercise"><h2>Exercise</h2><p>Count how many products are in each <strong>Category</strong> (use <code>GROUP BY</code>).</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=functions-group#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 4 of 14 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/where-order/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> WHERE and ORDER BY</a><a class="btn btn-solid btn-sm" href="/learn/sql/case-null-having/">CASE, NULL values and HAVING <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+ORDER BY Customers DESC, City
+LIMIT 1;</code></pre></figure>
+<p>Notice two cities tie at 2. Adding <code>City</code> as a second sort makes the result predictable.</p>
+<h2>HAVING: filter groups after aggregation</h2>
+<p><code>WHERE</code> can't use aggregates because it runs before grouping. <code>HAVING</code> filters the groups:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT City, COUNT(*) AS Customers
+FROM Customers
+GROUP BY City
+HAVING COUNT(*) &gt;= 2;</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Clause</th><th>Filters</th><th>Can use aggregates?</th></tr></thead><tbody><tr><td><code>WHERE</code></td><td>rows, before grouping</td><td>No</td></tr><tr><td><code>HAVING</code></td><td>groups, after grouping</td><td>Yes</td></tr></tbody></table></div>
+<p>Both together:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">-- Categories whose products over KSh 1,000 average more than KSh 3,000
+SELECT Category, ROUND(AVG(Price)) AS AvgPrice
+FROM Products
+WHERE Price &gt; 1000
+GROUP BY Category
+HAVING AVG(Price) &gt; 3000;</code></pre></figure>
+<h2>A business summary</h2>
+<p>Revenue needs Price from Products and Quantity from Orders. That needs a JOIN (next lessons), but here's a preview of a real sales report:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT p.Category,
+       SUM(o.Quantity) AS Units,
+       SUM(o.Quantity * p.Price) AS Revenue
+FROM Orders o
+JOIN Products p ON p.ProductID = o.ProductID
+GROUP BY p.Category
+ORDER BY Revenue DESC;</code></pre></figure>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td><code>WHERE COUNT(*) &gt; 1</code></td><td>Use <code>HAVING COUNT(*) &gt; 1</code></td></tr><tr><td>Selecting a non-grouped column</td><td>Add it to GROUP BY or wrap it in an aggregate</td></tr><tr><td><code>AVG</code> on whole numbers looks rounded</td><td>SQLite's AVG returns a decimal; use <code>ROUND(AVG(x), 2)</code> to tidy it</td></tr><tr><td>Forgetting that NULLs are skipped</td><td>Use <code>COUNT(*)</code> to count rows, or <code>COALESCE</code> to treat NULL as 0</td></tr></tbody></table></div>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A report shows "Average order quantity: 1.57". Your manager asks for the average quantity <em>per customer</em>, i.e. first total each customer's quantity, then average those totals. How would you do it?</span><em>Show answer</em></summary><div class="callout-body"><p>Two steps: group by customer to get totals, then average them with a subquery: <code>SELECT AVG(Total) FROM (SELECT CustomerID, SUM(Quantity) AS Total FROM Orders GROUP BY CustomerID);</code>. The subqueries lesson covers this technique.</p></div></details>
+<h2>Summary</h2>
+<ul><li>COUNT, SUM, AVG, MIN and MAX turn many rows into one value; they skip NULLs (except COUNT(*)).</li><li>COUNT(DISTINCT column) counts different values.</li><li>GROUP BY makes one summary row per group; every selected column must be grouped or aggregated.</li><li>WHERE filters rows before grouping; HAVING filters groups after.</li><li>Combine with ORDER BY and LIMIT for "top" reports.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which function adds up values in a column?</p><details><summary>Show answer</summary><p>SUM</p></details></li><li><p>Which counts every row including NULLs: COUNT(*) or COUNT(column)?</p><details><summary>Show answer</summary><p>COUNT(*)</p></details></li><li><p>Which clause filters groups after aggregation?</p><details><summary>Show answer</summary><p>HAVING</p></details></li><li><p>Can WHERE use COUNT(*) in its condition? (yes/no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>How many different cities are in the Customers table?</p><details><summary>Show answer</summary><p>5</p></details></li><li><p>Which function returns the average?</p><details><summary>Show answer</summary><p>AVG</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Count how many products are in each <strong>Category</strong> (use <code>GROUP BY</code>).</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=functions-group#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 4 of 16 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/where-order/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> WHERE and ORDER BY: filtering rows with conditions, AND/OR, IN, BETWEEN, LIKE and sorting</a><a class="btn btn-solid btn-sm" href="/learn/sql/case-null-having/">CASE, NULL values and HAVING <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

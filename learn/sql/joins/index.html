@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>JOIN | SQL</title>
-    <meta name="description" content="Data is split across tables. JOIN puts it back together using matching IDs. Join three tables and do some maths:" />
+    <title>JOIN: combining tables with INNER, LEFT, RIGHT, FULL,…</title>
+    <meta name="description" content="Good databases split data into separate tables so nothing is repeated: customers in one table, products in another, orders in a third. Each order only…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/sql/joins/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="JOIN | SQL" />
-    <meta property="og:description" content="Data is split across tables. JOIN puts it back together using matching IDs. Join three tables and do some maths:" />
+    <meta property="og:title" content="JOIN: combining tables with INNER, LEFT, RIGHT, FULL,…" />
+    <meta property="og:description" content="Good databases split data into separate tables so nothing is repeated: customers in one table, products in another, orders in a third. Each order only…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/sql/joins/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="JOIN | SQL" />
-    <meta name="twitter:description" content="Data is split across tables. JOIN puts it back together using matching IDs. Join three tables and do some maths:" />
+    <meta name="twitter:title" content="JOIN: combining tables with INNER, LEFT, RIGHT, FULL,…" />
+    <meta name="twitter:description" content="Good databases split data into separate tables so nothing is repeated: customers in one table, products in another, orders in a third. Each order only…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/sql/joins/#lesson","name":"JOIN","description":"Data is split across tables. JOIN puts it back together using matching IDs. Join three tables and do some maths:","url":"https://marzleytechsolutions.co.ke/learn/sql/joins/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/sql/#course","name":"SQL","url":"https://marzleytechsolutions.co.ke/learn/sql/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"SQL","item":"https://marzleytechsolutions.co.ke/learn/sql/"},{"@type":"ListItem","position":4,"name":"JOIN","item":"https://marzleytechsolutions.co.ke/learn/sql/joins/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/sql/joins/#lesson","name":"JOIN: combining tables with INNER, LEFT, RIGHT, FULL, self and cross joins","description":"Good databases split data into separate tables so nothing is repeated: customers in one table, products in another, orders in a third. Each order only…","url":"https://marzleytechsolutions.co.ke/learn/sql/joins/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/sql/#course","name":"SQL","url":"https://marzleytechsolutions.co.ke/learn/sql/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"SQL","item":"https://marzleytechsolutions.co.ke/learn/sql/"},{"@type":"ListItem","position":4,"name":"JOIN: combining tables with INNER, LEFT, RIGHT, FULL, self and cross joins","item":"https://marzleytechsolutions.co.ke/learn/sql/joins/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,24 +36,112 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/sql/">SQL</a> / <span>JOIN</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=joins"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>JOIN</h1>
-<p>Data is split across tables. <code>JOIN</code> puts it back together using matching IDs.</p>
-<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Orders.OrderID, Customers.Name, Orders.OrderDate
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/sql/">SQL</a> / <span>JOIN: combining tables with INNER, LEFT, RIGHT, FULL, self and cross joins</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=joins"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>JOIN: combining tables with INNER, LEFT, RIGHT, FULL, self and cross joins</h1>
+<p>Good databases split data into separate tables so nothing is repeated: customers in one table, products in another, orders in a third. Each order only stores a <code>CustomerID</code> and a <code>ProductID</code>. To see "Wanjiku bought a Bluetooth speaker for KSh 3,500", you must <strong>join</strong> the tables back together. JOINs are what make relational databases powerful, and they're the topic most beginners find hardest, so this unit goes slowly with pictures in words and many runnable examples.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Why data is split into tables, and how keys link them</li><li>INNER JOIN step by step</li><li>Table aliases and qualified column names</li><li>Joining three tables</li><li>LEFT JOIN and finding rows with no match</li><li>RIGHT and FULL OUTER JOIN</li><li>Self joins and CROSS JOIN</li><li>Joins with GROUP BY for real reports</li><li>Common join mistakes</li></ul></div></aside>
+<h2>Why join?</h2>
+<p>Imagine storing everything in one table:</p>
+<div class="static-table"><table><thead><tr><th>OrderID</th><th>CustomerName</th><th>City</th><th>Product</th><th>Price</th><th>Quantity</th></tr></thead><tbody><tr><td>1</td><td>Wanjiku Mwangi</td><td>Nairobi</td><td>Bluetooth speaker</td><td>3500</td><td>1</td></tr><tr><td>3</td><td>Wanjiku Mwangi</td><td>Nairobi</td><td>Wireless mouse</td><td>1200</td><td>2</td></tr></tbody></table></div>
+<p>Wanjiku's name and city repeat on every order. If she moves to Thika, you must update many rows, and if you miss one, the data contradicts itself. Splitting data into tables (normalisation) stores each fact once. <strong>Keys</strong> connect them:</p>
+<ul><li><code>Customers.CustomerID</code> is the <strong>primary key</strong> of Customers.</li><li><code>Orders.CustomerID</code> is a <strong>foreign key</strong> pointing to it.</li><li><code>Orders.ProductID</code> points to <code>Products.ProductID</code>.</li></ul>
+<h2>INNER JOIN</h2>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">SELECT columns
+FROM TableA
+INNER JOIN TableB ON TableA.key = TableB.key;</code></pre></figure>
+<p>An INNER JOIN returns only rows that have a match in <strong>both</strong> tables.</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Orders.OrderID, Customers.Name, Orders.Quantity
 FROM Orders
-JOIN Customers ON Customers.CustomerID = Orders.CustomerID;</code></pre></figure>
-<p>Join three tables and do some maths:</p>
-<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT c.Name AS customer, p.Name AS product, o.Quantity, p.Price * o.Quantity AS total
+INNER JOIN Customers ON Orders.CustomerID = Customers.CustomerID;</code></pre></figure>
+<p>How it works: for each order, the database finds the customer whose <code>CustomerID</code> equals the order's <code>CustomerID</code>, and glues the two rows together. <code>JOIN</code> on its own means <code>INNER JOIN</code>.</p>
+<h2>Table aliases</h2>
+<p>Writing full table names gets long. Give each table a short alias:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT o.OrderID, c.Name, c.City, o.OrderDate
+FROM Orders o
+JOIN Customers c ON o.CustomerID = c.CustomerID
+ORDER BY o.OrderDate;</code></pre></figure>
+<p>When both tables have a column with the same name (like <code>Name</code> in Customers and Products, or <code>CustomerID</code>), you <strong>must</strong> say which one: <code>c.Name</code>, <code>p.Name</code>. Otherwise you get an "ambiguous column name" error.</p>
+<h2>Joining three tables</h2>
+<p>Who bought what, and for how much?</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT o.OrderID,
+       c.Name AS Customer,
+       p.Name AS Product,
+       o.Quantity,
+       p.Price,
+       o.Quantity * p.Price AS LineTotal
 FROM Orders o
 JOIN Customers c ON c.CustomerID = o.CustomerID
 JOIN Products p ON p.ProductID = o.ProductID
-ORDER BY total DESC;</code></pre></figure>
-<h2>LEFT JOIN</h2>
-<p><code>LEFT JOIN</code> keeps every row from the first table, even with no match. Who hasn't ordered yet?</p>
+ORDER BY o.OrderID;</code></pre></figure>
+<p>Each JOIN adds one table with its own <code>ON</code> condition. You can keep chaining joins this way.</p>
+<p>You can still filter and sort:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT c.Name, p.Name AS Product, o.OrderDate
+FROM Orders o
+JOIN Customers c ON c.CustomerID = o.CustomerID
+JOIN Products p ON p.ProductID = o.ProductID
+WHERE c.City = &#x27;Kisumu&#x27;
+ORDER BY o.OrderDate;</code></pre></figure>
+<h2>LEFT JOIN: keep everything from the left table</h2>
+<p>A LEFT JOIN returns <strong>all rows from the left table</strong>, plus matching rows from the right. Where there's no match, the right side's columns are NULL.</p>
+<p>Which customers have ordered, and which haven't?</p>
 <figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT c.Name, o.OrderID
 FROM Customers c
 LEFT JOIN Orders o ON o.CustomerID = c.CustomerID
-WHERE o.OrderID IS NULL;</code></pre></figure></div><section class="static-exercise"><h2>Exercise</h2><p>Show each order's <strong>OrderID</strong> with the <strong>product Name</strong>, by joining Orders and Products.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=joins#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 7 of 14 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/text-date-functions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Text, number and date functions</a><a class="btn btn-solid btn-sm" href="/learn/sql/changing-data/">INSERT, UPDATE and DELETE <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+ORDER BY c.Name;</code></pre></figure>
+<p>Kiprop Kiptoo appears with a NULL OrderID: he has never ordered. An INNER JOIN would have hidden him.</p>
+<h3>Finding rows with no match</h3>
+<p>A very common task: "customers who never ordered", "products that never sold":</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT c.Name, c.City
+FROM Customers c
+LEFT JOIN Orders o ON o.CustomerID = c.CustomerID
+WHERE o.OrderID IS NULL;</code></pre></figure>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT p.Name
+FROM Products p
+LEFT JOIN Orders o ON o.ProductID = p.ProductID
+WHERE o.OrderID IS NULL;</code></pre></figure>
+<p>(Every product in the sample has sold at least once, so the second query returns no rows. That's a valid answer.)</p>
+<h2>RIGHT and FULL OUTER JOIN</h2>
+<div class="static-table"><table><thead><tr><th>Join</th><th>Returns</th></tr></thead><tbody><tr><td><code>INNER JOIN</code></td><td>Only matching rows</td></tr><tr><td><code>LEFT JOIN</code></td><td>All left rows + matches</td></tr><tr><td><code>RIGHT JOIN</code></td><td>All right rows + matches</td></tr><tr><td><code>FULL OUTER JOIN</code></td><td>All rows from both, matched where possible</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">SELECT c.Name, o.OrderID
+FROM Orders o
+RIGHT JOIN Customers c ON o.CustomerID = c.CustomerID;</code></pre></figure>
+<p>A RIGHT JOIN is just a LEFT JOIN with the tables swapped, so many developers only use LEFT JOIN. MySQL doesn't support FULL OUTER JOIN (you combine a LEFT and a RIGHT join with UNION); recent SQLite versions and PostgreSQL support both.</p>
+<h2>Self join: a table joined to itself</h2>
+<p>Which customers live in the same city as another customer?</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT a.Name AS Customer, b.Name AS Neighbour, a.City
+FROM Customers a
+JOIN Customers b ON a.City = b.City AND a.CustomerID &lt; b.CustomerID;</code></pre></figure>
+<p><code>a.CustomerID &lt; b.CustomerID</code> avoids pairing someone with themselves and listing each pair twice. Self joins are also used for employee → manager relationships stored in one table.</p>
+<h2>CROSS JOIN: every combination</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT c.Name, p.Name AS Product
+FROM Customers c
+CROSS JOIN Products p
+LIMIT 10;</code></pre></figure>
+<p>7 customers × 6 products = 42 rows. Useful for generating combinations (sizes × colours, dates × stores), dangerous by accident: two tables of 10,000 rows give 100 million rows.</p>
+<h2>Joins with GROUP BY: real reports</h2>
+<p>Revenue per customer:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT c.Name,
+       COUNT(o.OrderID) AS Orders,
+       SUM(o.Quantity * p.Price) AS Spent
+FROM Customers c
+JOIN Orders o ON o.CustomerID = c.CustomerID
+JOIN Products p ON p.ProductID = o.ProductID
+GROUP BY c.CustomerID, c.Name
+ORDER BY Spent DESC;</code></pre></figure>
+<p>Revenue per city, including cities with no sales (LEFT JOIN + COALESCE turns NULL into 0):</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT c.City,
+       COALESCE(SUM(o.Quantity * p.Price), 0) AS Revenue
+FROM Customers c
+LEFT JOIN Orders o ON o.CustomerID = c.CustomerID
+LEFT JOIN Products p ON p.ProductID = o.ProductID
+GROUP BY c.City
+ORDER BY Revenue DESC;</code></pre></figure>
+<h2>Common join mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Symptom</th><th>Fix</th></tr></thead><tbody><tr><td>Missing <code>ON</code> condition</td><td>Huge result (every combination)</td><td>Always join on the key columns</td></tr><tr><td>Joining on the wrong columns (<code>o.OrderID = c.CustomerID</code>)</td><td>Nonsense matches</td><td>Join foreign key to primary key</td></tr><tr><td>Ambiguous column</td><td>Error: ambiguous column name</td><td>Prefix with the alias: <code>c.Name</code></td></tr><tr><td>Filtering a LEFT JOIN's right table in WHERE</td><td>Unmatched rows vanish (becomes an inner join)</td><td>Put the condition in the <code>ON</code> clause instead</td></tr><tr><td>Counting with <code>COUNT(*)</code> after LEFT JOIN</td><td>Customers with no orders count as 1</td><td>Use <code>COUNT(o.OrderID)</code></td></tr></tbody></table></div>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> You LEFT JOIN Customers to Orders and add <code>WHERE o.OrderDate &gt;= &#x27;2026-09-01&#x27;</code> to see each customer's September orders, but customers without September orders disappear. Why, and how do you fix it?</span><em>Show answer</em></summary><div class="callout-body"><p>Rows with no matching order have NULL OrderDate, and <code>NULL &gt;= &#x27;2026-09-01&#x27;</code> isn't true, so WHERE removes them. Move the condition into the join: <code>LEFT JOIN Orders o ON o.CustomerID = c.CustomerID AND o.OrderDate &gt;= &#x27;2026-09-01&#x27;</code>.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Data is split into tables to avoid repetition; primary and foreign keys link them.</li><li>INNER JOIN returns matches in both tables; use aliases and prefix shared column names.</li><li>Chain JOINs to combine three or more tables.</li><li>LEFT JOIN keeps all left rows; <code>WHERE right.key IS NULL</code> finds rows with no match.</li><li>RIGHT and FULL joins exist; self joins compare rows in one table; CROSS JOIN makes every combination.</li><li>Joins + GROUP BY produce real business reports.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which join returns only rows that match in both tables?</p><details><summary>Show answer</summary><p>INNER JOIN</p></details></li><li><p>Which join keeps all rows from the first (left) table?</p><details><summary>Show answer</summary><p>LEFT JOIN</p></details></li><li><p>After a LEFT JOIN, what value appears in right-table columns with no match?</p><details><summary>Show answer</summary><p>NULL</p></details></li><li><p>7 customers CROSS JOIN 6 products gives how many rows?</p><details><summary>Show answer</summary><p>42</p></details></li><li><p>Which customer in the sample has never placed an order? (full name)</p><details><summary>Show answer</summary><p>Kiprop Kiptoo</p></details></li><li><p>A key in Orders that points to Customers is called a what? (two words)</p><details><summary>Show answer</summary><p>foreign key</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Show each order's <strong>OrderID</strong> with the <strong>product Name</strong>, by joining Orders and Products.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=joins#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 7 of 16 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/text-date-functions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Text, number and date functions</a><a class="btn btn-solid btn-sm" href="/learn/sql/changing-data/">INSERT, UPDATE and DELETE: adding, changing and removing data safely <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

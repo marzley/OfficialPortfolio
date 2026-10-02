@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Subqueries, CASE, views and indexes | SQL</title>
-    <meta name="description" content="Free SQL lesson: Subqueries, CASE, views and indexes." />
+    <title>Subqueries, CTEs, views and UNION: queries inside…</title>
+    <meta name="description" content="Some questions need two steps. &quot;Which products cost more than the average ?&quot; means first calculating the average, then comparing each product with it…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/sql/subqueries-views/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Subqueries, CASE, views and indexes | SQL" />
-    <meta property="og:description" content="Free SQL lesson: Subqueries, CASE, views and indexes." />
+    <meta property="og:title" content="Subqueries, CTEs, views and UNION: queries inside…" />
+    <meta property="og:description" content="Some questions need two steps. &quot;Which products cost more than the average ?&quot; means first calculating the average, then comparing each product with it…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/sql/subqueries-views/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Subqueries, CASE, views and indexes | SQL" />
-    <meta name="twitter:description" content="Free SQL lesson: Subqueries, CASE, views and indexes." />
+    <meta name="twitter:title" content="Subqueries, CTEs, views and UNION: queries inside…" />
+    <meta name="twitter:description" content="Some questions need two steps. &quot;Which products cost more than the average ?&quot; means first calculating the average, then comparing each product with it…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/sql/subqueries-views/#lesson","name":"Subqueries, CASE, views and indexes","description":"Free SQL lesson: Subqueries, CASE, views and indexes.","url":"https://marzleytechsolutions.co.ke/learn/sql/subqueries-views/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/sql/#course","name":"SQL","url":"https://marzleytechsolutions.co.ke/learn/sql/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"SQL","item":"https://marzleytechsolutions.co.ke/learn/sql/"},{"@type":"ListItem","position":4,"name":"Subqueries, CASE, views and indexes","item":"https://marzleytechsolutions.co.ke/learn/sql/subqueries-views/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/sql/subqueries-views/#lesson","name":"Subqueries, CTEs, views and UNION: queries inside queries and reusable results","description":"Some questions need two steps. \"Which products cost more than the average ?\" means first calculating the average, then comparing each product with it…","url":"https://marzleytechsolutions.co.ke/learn/sql/subqueries-views/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/sql/#course","name":"SQL","url":"https://marzleytechsolutions.co.ke/learn/sql/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"SQL","item":"https://marzleytechsolutions.co.ke/learn/sql/"},{"@type":"ListItem","position":4,"name":"Subqueries, CTEs, views and UNION: queries inside queries and reusable results","item":"https://marzleytechsolutions.co.ke/learn/sql/subqueries-views/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,34 +36,136 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/sql/">SQL</a> / <span>Subqueries, CASE, views and indexes</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=subqueries-views"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Subqueries, CASE, views and indexes</h1>
-<h2>Subqueries</h2>
-<p>A query inside another query.</p>
-<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Name, Price FROM Products
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/sql/">SQL</a> / <span>Subqueries, CTEs, views and UNION: queries inside queries and reusable results</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=subqueries-views"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Subqueries, CTEs, views and UNION: queries inside queries and reusable results</h1>
+<p>Some questions need two steps. "Which products cost more than the <strong>average</strong>?" means first calculating the average, then comparing each product with it. "Who are our <strong>top customers</strong>, and what did they buy?" needs a list first, then details. <strong>Subqueries</strong> (queries inside queries) and <strong>CTEs</strong> (named temporary results) let you solve multi-step questions in one statement. <strong>Views</strong> save a query under a name so everyone can reuse it, and <strong>UNION</strong> stacks results on top of each other.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Scalar subqueries (one value)</li><li>Subqueries with IN and NOT IN</li><li>Correlated subqueries and EXISTS</li><li>Subqueries in FROM (derived tables)</li><li>CTEs with WITH, including several CTEs</li><li>Views: creating, using and dropping them</li><li>UNION, UNION ALL, INTERSECT and EXCEPT</li><li>When to use a join vs a subquery</li></ul></div></aside>
+<h2>Scalar subqueries: one value</h2>
+<p>A subquery in brackets that returns a single value can be used like a number:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Name, Price
+FROM Products
 WHERE Price &gt; (SELECT AVG(Price) FROM Products);</code></pre></figure>
-<p>Customers who have ordered at least once:</p>
-<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Name, City FROM Customers
+<p>The database runs the inner query first (average ≈ 2,567), then the outer query compares each price to it.</p>
+<p>Use one in SELECT to show the comparison:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Name,
+       Price,
+       ROUND((SELECT AVG(Price) FROM Products)) AS AvgPrice,
+       Price - ROUND((SELECT AVG(Price) FROM Products)) AS Difference
+FROM Products
+ORDER BY Difference DESC;</code></pre></figure>
+<p>The most expensive product, without LIMIT:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Name, Price FROM Products WHERE Price = (SELECT MAX(Price) FROM Products);</code></pre></figure>
+<h2>Subqueries returning a list: IN and NOT IN</h2>
+<p>Customers who have placed at least one order:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Name FROM Customers
 WHERE CustomerID IN (SELECT CustomerID FROM Orders);</code></pre></figure>
-<h2>CASE: if/else in SQL</h2>
-<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Name, Price,
-  CASE
-    WHEN Price &gt;= 5000 THEN &#x27;Premium&#x27;
-    WHEN Price &gt;= 1500 THEN &#x27;Standard&#x27;
-    ELSE &#x27;Budget&#x27;
-  END AS Tier
-FROM Products ORDER BY Price;</code></pre></figure>
+<p>Customers who have never ordered:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Name FROM Customers
+WHERE CustomerID NOT IN (SELECT CustomerID FROM Orders);</code></pre></figure>
+<aside class="callout callout-warning"><p class="callout-title">NOT IN and NULL</p><div class="callout-body"><p>If the subquery returns any NULL, <code>NOT IN</code> returns no rows at all (because "x is not equal to unknown" is unknown). Add <code>WHERE CustomerID IS NOT NULL</code> inside the subquery, or use <code>NOT EXISTS</code>.</p></div></aside>
+<p>Products bought by Nairobi customers (a subquery inside a subquery):</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Name FROM Products
+WHERE ProductID IN (
+  SELECT ProductID FROM Orders
+  WHERE CustomerID IN (SELECT CustomerID FROM Customers WHERE City = &#x27;Nairobi&#x27;)
+);</code></pre></figure>
+<h2>Correlated subqueries</h2>
+<p>A <strong>correlated</strong> subquery refers to the outer query's current row, so it runs once per row.</p>
+<p>Products that cost more than the average <strong>of their own category</strong>:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT p.Name, p.Category, p.Price
+FROM Products p
+WHERE p.Price &gt; (
+  SELECT AVG(p2.Price) FROM Products p2 WHERE p2.Category = p.Category
+);</code></pre></figure>
+<p>Each customer's most recent order date:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT c.Name,
+       (SELECT MAX(o.OrderDate) FROM Orders o WHERE o.CustomerID = c.CustomerID) AS LastOrder
+FROM Customers c;</code></pre></figure>
+<h3>EXISTS and NOT EXISTS</h3>
+<p><code>EXISTS</code> is true if the subquery returns at least one row. It's often clearer and safer than IN/NOT IN:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT c.Name
+FROM Customers c
+WHERE NOT EXISTS (SELECT 1 FROM Orders o WHERE o.CustomerID = c.CustomerID);</code></pre></figure>
+<h2>Subqueries in FROM (derived tables)</h2>
+<p>A subquery in FROM acts as a temporary table. It must have an alias:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT ROUND(AVG(Total), 2) AS AvgUnitsPerCustomer
+FROM (
+  SELECT CustomerID, SUM(Quantity) AS Total
+  FROM Orders
+  GROUP BY CustomerID
+) AS t;</code></pre></figure>
+<h2>CTEs: WITH</h2>
+<p>A <strong>Common Table Expression</strong> names a subquery at the top so the main query reads like steps:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">WITH CustomerSpend AS (
+  SELECT o.CustomerID, SUM(o.Quantity * p.Price) AS Spent
+  FROM Orders o
+  JOIN Products p ON p.ProductID = o.ProductID
+  GROUP BY o.CustomerID
+)
+SELECT c.Name, cs.Spent
+FROM CustomerSpend cs
+JOIN Customers c ON c.CustomerID = cs.CustomerID
+ORDER BY cs.Spent DESC;</code></pre></figure>
+<p>Several CTEs, each using the ones before:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">WITH Spend AS (
+  SELECT o.CustomerID, SUM(o.Quantity * p.Price) AS Spent
+  FROM Orders o JOIN Products p ON p.ProductID = o.ProductID
+  GROUP BY o.CustomerID
+),
+Average AS (
+  SELECT AVG(Spent) AS AvgSpent FROM Spend
+)
+SELECT c.Name, s.Spent, ROUND(a.AvgSpent) AS AvgSpent,
+       CASE WHEN s.Spent &gt; a.AvgSpent THEN &#x27;Above average&#x27; ELSE &#x27;Below average&#x27; END AS Segment
+FROM Spend s
+JOIN Customers c ON c.CustomerID = s.CustomerID
+CROSS JOIN Average a
+ORDER BY s.Spent DESC;</code></pre></figure>
+<p>CTEs make complex reports readable, and they're used heavily in data analysis jobs. A <strong>recursive CTE</strong> can even generate sequences or walk hierarchies:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">WITH RECURSIVE Days(d) AS (
+  SELECT &#x27;2026-09-01&#x27;
+  UNION ALL
+  SELECT DATE(d, &#x27;+1 day&#x27;) FROM Days WHERE d &lt; &#x27;2026-09-07&#x27;
+)
+SELECT d AS Day FROM Days;</code></pre></figure>
 <h2>Views: saved queries</h2>
-<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE VIEW OrderTotals AS
-SELECT o.OrderID, c.Name AS Customer, p.Price * o.Quantity AS Total
-FROM Orders o JOIN Customers c ON c.CustomerID = o.CustomerID JOIN Products p ON p.ProductID = o.ProductID;
+<p>A <strong>view</strong> is a named, saved query that behaves like a read-only table:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE VIEW OrderDetails AS
+SELECT o.OrderID, o.OrderDate, c.Name AS Customer, c.City,
+       p.Name AS Product, o.Quantity, p.Price,
+       o.Quantity * p.Price AS LineTotal
+FROM Orders o
+JOIN Customers c ON c.CustomerID = o.CustomerID
+JOIN Products p ON p.ProductID = o.ProductID;
 
-SELECT Customer, SUM(Total) AS Spent FROM OrderTotals GROUP BY Customer ORDER BY Spent DESC;</code></pre></figure>
-<h2>Indexes: speed</h2>
-<p>An <strong>index</strong> is like the index at the back of a book: the database finds rows fast without reading the whole table.</p>
-<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">CREATE INDEX idx_orders_customer ON Orders(CustomerID);</code></pre></figure>
-<p>Add indexes on columns you often search, join or sort by. Too many indexes slow down inserts.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is a query inside another query called?</p><details><summary>Show answer</summary><p>subquery</p></details></li><li><p>Which SQL keyword works like if/else inside a SELECT?</p><details><summary>Show answer</summary><p>CASE</p></details></li><li><p>What is a saved query you can select from like a table?</p><details><summary>Show answer</summary><p>view</p></details></li><li><p>What makes searching a column faster?</p><details><summary>Show answer</summary><p>index</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Select the <strong>Name</strong> of products that cost more than the <strong>average</strong> price, using a subquery.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=subqueries-views#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 12 of 14 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/indexes-transactions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Indexes, transactions and keeping data safe</a><a class="btn btn-solid btn-sm" href="/learn/sql/window-functions/">Window functions: rankings, running totals and more <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+SELECT Customer, Product, LineTotal FROM OrderDetails WHERE City = &#x27;Kisumu&#x27;;</code></pre></figure>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE VIEW OrderDetails AS
+SELECT o.OrderID, c.City, o.Quantity * p.Price AS LineTotal
+FROM Orders o
+JOIN Customers c ON c.CustomerID = o.CustomerID
+JOIN Products p ON p.ProductID = o.ProductID;
+
+SELECT City, SUM(LineTotal) AS Revenue FROM OrderDetails GROUP BY City ORDER BY Revenue DESC;</code></pre></figure>
+<p>Why use views:</p>
+<ul><li><strong>Simplicity</strong>: analysts query <code>OrderDetails</code> without writing joins.</li><li><strong>Consistency</strong>: everyone uses the same definition of "revenue".</li><li><strong>Security</strong>: give a user access to a view that hides sensitive columns (like phone numbers) instead of the full table.</li></ul>
+<p>A view stores the query, not the data, so it always shows current data. Remove one with <code>DROP VIEW OrderDetails;</code>.</p>
+<h2>UNION and friends: stacking results</h2>
+<p><code>UNION</code> combines the rows of two queries with the <strong>same number of columns</strong> and compatible types:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Name, &#x27;Customer&#x27; AS Type FROM Customers WHERE City = &#x27;Kisumu&#x27;
+UNION
+SELECT Name, &#x27;Product&#x27; AS Type FROM Products WHERE Category = &#x27;Storage&#x27;;</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Operator</th><th>Result</th></tr></thead><tbody><tr><td><code>UNION</code></td><td>Rows from both, duplicates removed</td></tr><tr><td><code>UNION ALL</code></td><td>Rows from both, duplicates kept (faster)</td></tr><tr><td><code>INTERSECT</code></td><td>Rows in both results</td></tr><tr><td><code>EXCEPT</code></td><td>Rows in the first but not the second (Oracle: <code>MINUS</code>)</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">-- Cities that have customers but no orders
+SELECT City FROM Customers
+EXCEPT
+SELECT c.City FROM Orders o JOIN Customers c ON c.CustomerID = o.CustomerID;</code></pre></figure>
+<h2>Join or subquery?</h2>
+<div class="static-table"><table><thead><tr><th>Use a JOIN when...</th><th>Use a subquery/CTE when...</th></tr></thead><tbody><tr><td>You need columns from both tables in the result</td><td>You only need to filter by another table</td></tr><tr><td>Simple relationships</td><td>Multi-step logic (aggregate, then compare)</td></tr><tr><td></td><td>Readability: naming steps with CTEs</td></tr></tbody></table></div>
+<p>Modern databases often optimise both into the same plan, so choose the clearest one.</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Write the steps (in words) for: "Show customers who spent more than KSh 5,000 in total, with their city."</span><em>Show answer</em></summary><div class="callout-body"><p>Step 1: a CTE that totals each customer's spending (Orders JOIN Products, GROUP BY CustomerID). Step 2: join it to Customers for name and city. Step 3: filter <code>WHERE Spent &gt; 5000</code> (or use HAVING in step 1).</p></div></details>
+<h2>Summary</h2>
+<ul><li>Scalar subqueries return one value; IN/NOT IN subqueries return a list (beware NULL with NOT IN).</li><li>Correlated subqueries run per row; EXISTS/NOT EXISTS test for matching rows.</li><li>Subqueries in FROM need an alias; CTEs (WITH) name steps and make complex queries readable; recursive CTEs generate sequences.</li><li>Views save queries for simplicity, consistency and security.</li><li>UNION, UNION ALL, INTERSECT and EXCEPT combine results with matching columns.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword starts a CTE?</p><details><summary>Show answer</summary><p>WITH</p></details></li><li><p>Which operator combines two results and removes duplicates?</p><details><summary>Show answer</summary><p>UNION</p></details></li><li><p>Which keeps duplicates: UNION or UNION ALL?</p><details><summary>Show answer</summary><p>UNION ALL</p></details></li><li><p>A saved query that behaves like a table is called a what?</p><details><summary>Show answer</summary><p>view</p></details></li><li><p>Which keyword tests whether a subquery returns any rows?</p><details><summary>Show answer</summary><p>EXISTS</p></details></li><li><p>Which operator returns rows in the first result but not the second (SQLite)?</p><details><summary>Show answer</summary><p>EXCEPT</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Select the <strong>Name</strong> of products that cost more than the <strong>average</strong> price, using a subquery.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=subqueries-views#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 12 of 16 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/indexes-transactions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Indexes, transactions and keeping data safe</a><a class="btn btn-solid btn-sm" href="/learn/sql/window-functions/">Window functions: rankings, running totals and more <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

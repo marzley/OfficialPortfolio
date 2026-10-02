@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SELECT | SQL</title>
-    <meta name="description" content="SQL (Structured Query Language) is how programs read and change data in databases like MySQL, PostgreSQL and SQLite. Nearly every website and app uses…" />
+    <title>SELECT: reading data from a table, choosing columns,…</title>
+    <meta name="description" content="SELECT is the SQL command you&#x27;ll use more than any other. It asks the database a question and gets back a result set : a table of rows and columns…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/sql/select/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="SELECT | SQL" />
-    <meta property="og:description" content="SQL (Structured Query Language) is how programs read and change data in databases like MySQL, PostgreSQL and SQLite. Nearly every website and app uses…" />
+    <meta property="og:title" content="SELECT: reading data from a table, choosing columns,…" />
+    <meta property="og:description" content="SELECT is the SQL command you&#x27;ll use more than any other. It asks the database a question and gets back a result set : a table of rows and columns…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/sql/select/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="SELECT | SQL" />
-    <meta name="twitter:description" content="SQL (Structured Query Language) is how programs read and change data in databases like MySQL, PostgreSQL and SQLite. Nearly every website and app uses…" />
+    <meta name="twitter:title" content="SELECT: reading data from a table, choosing columns,…" />
+    <meta name="twitter:description" content="SELECT is the SQL command you&#x27;ll use more than any other. It asks the database a question and gets back a result set : a table of rows and columns…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/sql/select/#lesson","name":"SELECT","description":"SQL (Structured Query Language) is how programs read and change data in databases like MySQL, PostgreSQL and SQLite. Nearly every website and app uses…","url":"https://marzleytechsolutions.co.ke/learn/sql/select/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/sql/#course","name":"SQL","url":"https://marzleytechsolutions.co.ke/learn/sql/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"SQL","item":"https://marzleytechsolutions.co.ke/learn/sql/"},{"@type":"ListItem","position":4,"name":"SELECT","item":"https://marzleytechsolutions.co.ke/learn/sql/select/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/sql/select/#lesson","name":"SELECT: reading data from a table, choosing columns, aliases, calculations and DISTINCT","description":"SELECT is the SQL command you'll use more than any other. It asks the database a question and gets back a result set : a table of rows and columns…","url":"https://marzleytechsolutions.co.ke/learn/sql/select/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/sql/#course","name":"SQL","url":"https://marzleytechsolutions.co.ke/learn/sql/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"SQL","item":"https://marzleytechsolutions.co.ke/learn/sql/"},{"@type":"ListItem","position":4,"name":"SELECT: reading data from a table, choosing columns, aliases, calculations and DISTINCT","item":"https://marzleytechsolutions.co.ke/learn/sql/select/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,18 +36,75 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/sql/">SQL</a> / <span>SELECT</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=select"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>SQL SELECT</h1>
-<p><strong>SQL</strong> (Structured Query Language) is how programs read and change data in databases like MySQL, PostgreSQL and SQLite. Nearly every website and app uses one.</p>
-<p>You have a sample shop database with three tables:</p>
-<ul><li><strong>Customers</strong> (CustomerID, Name, City, Phone)</li><li><strong>Products</strong> (ProductID, Name, Category, Price)</li><li><strong>Orders</strong> (OrderID, CustomerID, ProductID, Quantity, OrderDate)</li></ul>
-<p><code>SELECT</code> reads data. <code>*</code> means every column.</p>
-<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT * FROM Customers;</code></pre></figure>
-<p>Choose columns by name:</p>
-<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Name, City FROM Customers;</code></pre></figure>
-<p>Only unique values:</p>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/sql/">SQL</a> / <span>SELECT: reading data from a table, choosing columns, aliases, calculations and DISTINCT</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=select"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>SELECT: reading data from a table, choosing columns, aliases, calculations and DISTINCT</h1>
+<p><code>SELECT</code> is the SQL command you'll use more than any other. It asks the database a question and gets back a <strong>result set</strong>: a table of rows and columns. Every report, dashboard, app screen and data analysis starts with a <code>SELECT</code>. When you open your M-Pesa statement, an online shop's product list or your school portal results, a <code>SELECT</code> query ran behind the scenes.</p>
+<p>This unit teaches <code>SELECT</code> thoroughly using the sample Kenyan shop database built into this hub: <strong>Customers</strong>, <strong>Products</strong> and <strong>Orders</strong>. Every example can be run with the <strong>Run</strong> button.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>The structure of a SELECT query and how the database reads it</li><li>Selecting all columns vs specific columns</li><li>Column aliases with AS</li><li>Calculated columns (arithmetic) and string joining</li><li>DISTINCT to remove duplicates</li><li>LIMIT to get a few rows</li><li>Comments, formatting and common errors</li></ul></div></aside>
+<h2>The sample database</h2>
+<div class="static-table"><table><thead><tr><th>Table</th><th>Columns</th></tr></thead><tbody><tr><td><strong>Customers</strong></td><td>CustomerID, Name, City, Phone</td></tr><tr><td><strong>Products</strong></td><td>ProductID, Name, Category, Price</td></tr><tr><td><strong>Orders</strong></td><td>OrderID, CustomerID, ProductID, Quantity, OrderDate</td></tr></tbody></table></div>
+<h2>The basic shape</h2>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">SELECT column1, column2
+FROM table_name;</code></pre></figure>
+<ul><li><code>SELECT</code> lists <strong>what</strong> you want (columns or calculations).</li><li><code>FROM</code> says <strong>where</strong> the data comes from (a table).</li><li>The semicolon <code>;</code> ends the statement. Many tools accept a single query without it, but it's a good habit.</li></ul>
+<p>SQL keywords are <strong>not case-sensitive</strong> (<code>select</code> works like <code>SELECT</code>), but writing keywords in capitals makes queries easier to read. Table and column names in this database start with capitals.</p>
+<h2>Select every column</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT * FROM Products;</code></pre></figure>
+<p><code>*</code> means "all columns". It's great for exploring a table, but in real applications list the columns you need: it's faster, clearer, and won't break if someone adds a column later.</p>
+<h2>Select specific columns</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Name, Price FROM Products;</code></pre></figure>
+<p>The result shows columns in the order you list them, not the order in the table:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Price, Name, Category FROM Products;</code></pre></figure>
+<h2>Aliases: renaming columns in the result</h2>
+<p><code>AS</code> gives a column a friendlier name in the output. It doesn't change the table.</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Name AS Product, Price AS &quot;Price (KSh)&quot; FROM Products;</code></pre></figure>
+<p>Use double quotes for aliases with spaces or special characters. Aliases are very useful for calculated columns, which otherwise get ugly names.</p>
+<h2>Calculated columns</h2>
+<p>You can do arithmetic in <code>SELECT</code>: <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>.</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Name,
+       Price,
+       Price * 1.16 AS PriceWithVAT,
+       Price * 0.9 AS SalePrice
+FROM Products;</code></pre></figure>
+<p>Rounding makes money look right:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Name, ROUND(Price * 1.16, 2) AS PriceWithVAT FROM Products;</code></pre></figure>
+<aside class="callout callout-warning"><p class="callout-title">Integer division</p><div class="callout-body"><p>In SQLite (and some other databases) dividing two whole numbers gives a whole number: <code>7 / 2</code> is <code>3</code>. Use a decimal to get <code>3.5</code>: <code>7 / 2.0</code> or <code>7 * 1.0 / 2</code>.</p></div></aside>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT 7 / 2 AS WholeDivision, 7 / 2.0 AS DecimalDivision;</code></pre></figure>
+<h2>Joining text together</h2>
+<p>The <code>||</code> operator joins (concatenates) text in SQLite, PostgreSQL and Oracle. MySQL uses <code>CONCAT()</code>.</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Name || &#x27; (&#x27; || City || &#x27;)&#x27; AS CustomerLabel FROM Customers;</code></pre></figure>
+<h2>DISTINCT: unique values only</h2>
+<p>Which cities do our customers live in?</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT City FROM Customers;</code></pre></figure>
+<p>Some cities repeat. <code>DISTINCT</code> removes duplicates:</p>
 <figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT DISTINCT City FROM Customers;</code></pre></figure>
-<blockquote><p>Your changes never break anything: the sample database is fresh every time you press Run.</p></blockquote></div><section class="static-exercise"><h2>Exercise</h2><p>Select only the <strong>Name</strong> and <strong>Price</strong> columns from the <strong>Products</strong> table.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=select#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 2 of 14 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/what-is-a-database/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> What is a database? Tables, rows, keys and SQL</a><a class="btn btn-solid btn-sm" href="/learn/sql/where-order/">WHERE and ORDER BY <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<p>With several columns, <code>DISTINCT</code> removes rows where <strong>all</strong> listed columns are the same:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT DISTINCT Category FROM Products;</code></pre></figure>
+<h2>LIMIT: just a few rows</h2>
+<p>Large tables can have millions of rows. <code>LIMIT</code> returns only the first few:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Name, Price FROM Products LIMIT 3;</code></pre></figure>
+<p>Different databases spell this differently: SQL Server uses <code>SELECT TOP 3 ...</code>, Oracle uses <code>FETCH FIRST 3 ROWS ONLY</code>. Without <code>ORDER BY</code> (next lesson) "the first 3" can be any 3 rows.</p>
+<h2>Selecting without a table</h2>
+<p>You can use <code>SELECT</code> as a calculator or to test functions:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT 2500 * 3 AS Total, UPPER(&#x27;nairobi&#x27;) AS Town, DATE(&#x27;now&#x27;) AS Today;</code></pre></figure>
+<h2>Comments and formatting</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">-- This is a single-line comment
+/* This is a
+   multi-line comment */
+SELECT Name,      -- product name
+       Price      -- in KSh
+FROM Products;</code></pre></figure>
+<p>Put each column on its own line in longer queries. Readable SQL is easier to debug and review.</p>
+<h2>How the database processes a SELECT</h2>
+<p>You write <code>SELECT ... FROM ...</code>, but the database logically works in this order:</p>
+<ol><li><strong>FROM</strong>: find the table(s)</li><li><strong>WHERE</strong>: filter rows</li><li><strong>GROUP BY</strong>: make groups</li><li><strong>HAVING</strong>: filter groups</li><li><strong>SELECT</strong>: compute the columns</li><li><strong>ORDER BY</strong>: sort</li><li><strong>LIMIT</strong>: cut the rows</li></ol>
+<p>This explains things later, such as why you can't use a SELECT alias in WHERE in most databases.</p>
+<h2>Common errors</h2>
+<div class="static-table"><table><thead><tr><th>Error</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td><code>no such table: product</code></td><td>Wrong table name</td><td>Check spelling: <code>Products</code></td></tr><tr><td><code>no such column: Prise</code></td><td>Typo in column name</td><td>Check spelling</td></tr><tr><td><code>near &quot;FROM&quot;: syntax error</code></td><td>Missing comma or extra comma before FROM</td><td><code>SELECT Name, Price FROM</code>, no comma before FROM</td></tr><tr><td>Text without quotes</td><td><code>&#x27;Nairobi&#x27;</code> must be in single quotes</td><td>Use single quotes for text values</td></tr></tbody></table></div>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> You write <code>SELECT Name Price FROM Products;</code> (forgetting the comma). It runs without an error, but the result has one column called "Price" containing product names. Why?</span><em>Show answer</em></summary><div class="callout-body"><p>Without the comma, SQL reads <code>Price</code> as an <strong>alias</strong> for <code>Name</code> (the <code>AS</code> keyword is optional). So it shows the Name column renamed to Price. Always check commas between columns.</p></div></details>
+<h2>Summary</h2>
+<ul><li><code>SELECT columns FROM table</code> reads data; <code>*</code> selects all columns.</li><li><code>AS</code> creates aliases; calculated columns use arithmetic and functions like <code>ROUND</code>.</li><li><code>||</code> joins text in SQLite; watch out for integer division.</li><li><code>DISTINCT</code> removes duplicate rows; <code>LIMIT</code> returns a few rows.</li><li>The database processes FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which symbol selects all columns?</p><details><summary>Show answer</summary><p>*</p></details></li><li><p>Which keyword gives a column a new name in the result?</p><details><summary>Show answer</summary><p>AS</p></details></li><li><p>Which keyword removes duplicate rows from the result?</p><details><summary>Show answer</summary><p>DISTINCT</p></details></li><li><p>In SQLite, what is 7 / 2?</p><details><summary>Show answer</summary><p>3</p></details></li><li><p>Which keyword returns only the first few rows in SQLite and MySQL?</p><details><summary>Show answer</summary><p>LIMIT</p></details></li><li><p>Which clause does the database process first: SELECT or FROM?</p><details><summary>Show answer</summary><p>FROM</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Select only the <strong>Name</strong> and <strong>Price</strong> columns from the <strong>Products</strong> table.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=select#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 2 of 16 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/what-is-a-database/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> What is a database? Tables, rows, keys and SQL</a><a class="btn btn-solid btn-sm" href="/learn/sql/where-order/">WHERE and ORDER BY: filtering rows with conditions, AND/OR, IN, BETWEEN, LIKE and sorting <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

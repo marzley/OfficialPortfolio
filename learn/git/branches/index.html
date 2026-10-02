@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Branches and merging | Git &amp; GitHub</title>
-    <meta name="description" content="A branch lets you work on something new while main stays working. git branch lists branches; the current one has a ." />
+    <title>Branches and merging: working on features safely,…</title>
+    <meta name="description" content="A branch is a separate line of work. Your main branch holds the working, stable version of the project. When you start something new (a login page, an…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/git/branches/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Branches and merging | Git &amp; GitHub" />
-    <meta property="og:description" content="A branch lets you work on something new while main stays working. git branch lists branches; the current one has a ." />
+    <meta property="og:title" content="Branches and merging: working on features safely,…" />
+    <meta property="og:description" content="A branch is a separate line of work. Your main branch holds the working, stable version of the project. When you start something new (a login page, an…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/git/branches/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Branches and merging | Git &amp; GitHub" />
-    <meta name="twitter:description" content="A branch lets you work on something new while main stays working. git branch lists branches; the current one has a ." />
+    <meta name="twitter:title" content="Branches and merging: working on features safely,…" />
+    <meta name="twitter:description" content="A branch is a separate line of work. Your main branch holds the working, stable version of the project. When you start something new (a login page, an…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/git/branches/#lesson","name":"Branches and merging","description":"A branch lets you work on something new while main stays working. git branch lists branches; the current one has a .","url":"https://marzleytechsolutions.co.ke/learn/git/branches/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/git/#course","name":"Git & GitHub","url":"https://marzleytechsolutions.co.ke/learn/git/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Git & GitHub","item":"https://marzleytechsolutions.co.ke/learn/git/"},{"@type":"ListItem","position":4,"name":"Branches and merging","item":"https://marzleytechsolutions.co.ke/learn/git/branches/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/git/branches/#lesson","name":"Branches and merging: working on features safely, switching, fast-forward and merge commits","description":"A branch is a separate line of work. Your main branch holds the working, stable version of the project. When you start something new (a login page, an…","url":"https://marzleytechsolutions.co.ke/learn/git/branches/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/git/#course","name":"Git & GitHub","url":"https://marzleytechsolutions.co.ke/learn/git/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Git & GitHub","item":"https://marzleytechsolutions.co.ke/learn/git/"},{"@type":"ListItem","position":4,"name":"Branches and merging: working on features safely, switching, fast-forward and merge commits","item":"https://marzleytechsolutions.co.ke/learn/git/branches/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,26 +36,89 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/git/">Git &amp; GitHub</a> / <span>Branches and merging</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=git&amp;lesson=branches"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Branches and merging</h1>
-<p>A <strong>branch</strong> lets you work on something new while <code>main</code> stays working.</p>
-<figure class="static-code"><pre><code>git switch -c feature/contact-form   # create and move to a new branch
-# ... edit files, add, commit ...
-git switch main                      # back to main
-git merge feature/contact-form       # bring the work in
-git branch -d feature/contact-form   # delete the finished branch</code></pre></figure>
-<p><code>git branch</code> lists branches; the current one has a <code>*</code>.</p>
-<h2>Merge conflicts</h2>
-<p>If two branches change the <strong>same lines</strong>, Git can't decide and marks the file:</p>
-<figure class="static-code"><pre><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
-&lt;h1&gt;Welcome to our shop&lt;/h1&gt;
-=======
-&lt;h1&gt;Karibu to our shop&lt;/h1&gt;
-&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/kiswahili</code></pre></figure>
-<p>Fix it: edit the file to the version you want, delete the markers, then <code>git add</code> and <code>git commit</code>. VS Code shows buttons: "Accept current", "Accept incoming", "Accept both".</p>
-<h2>A simple team workflow</h2>
-<ol><li><code>main</code> always works and is what's live.</li><li>Each feature or fix gets its own branch.</li><li>Push the branch, open a <strong>pull request</strong>, get it reviewed.</li><li>Merge into <code>main</code>, then deploy.</li></ol>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command creates a new branch and switches to it (modern Git)?</p><details><summary>Show answer</summary><p>git switch -c</p></details></li><li><p>Which branch should always be working and live?</p><details><summary>Show answer</summary><p>main</p></details></li><li><p>What happens when two branches change the same lines differently?</p><details><summary>Show answer</summary><p>conflict</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 10 in <a href="/learn/git/">Git &amp; GitHub</a> · <a href="/learn/?book=git">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/git/gitignore-good-commits/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> .gitignore, good commit messages and viewing history</a><a class="btn btn-solid btn-sm" href="/learn/git/merge-conflicts/">Merging, merge conflicts and rebasing <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/git/">Git &amp; GitHub</a> / <span>Branches and merging: working on features safely, switching, fast-forward and merge commits</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=git&amp;lesson=branches"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Branches and merging: working on features safely, switching, fast-forward and merge commits</h1>
+<p>A <strong>branch</strong> is a separate line of work. Your <code>main</code> branch holds the working, stable version of the project. When you start something new (a login page, an M-Pesa integration, a redesign) you create a branch, make commits there, and only merge back into <code>main</code> when it works. If the experiment fails, you delete the branch and <code>main</code> was never touched.</p>
+<p>Branches are cheap and fast in Git, so professionals create them for every task, even a 10-minute fix.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>What a branch really is (a pointer to a commit)</li><li>Creating, listing, switching and renaming branches</li><li>Working on two branches and seeing them diverge</li><li>Merging: fast-forward vs merge commit</li><li>Deleting branches</li><li>Branch naming conventions</li><li>Popular branching workflows used by teams</li><li>Stashing unfinished work</li></ul></div></aside>
+<h2>What is a branch, really?</h2>
+<p>A branch is just a <strong>movable label pointing to a commit</strong>. When you commit on a branch, the label moves forward to the new commit. <code>HEAD</code> points to the branch you're currently on.</p>
+<figure class="static-code"><pre><code>          C---D   feature/contact  (HEAD)
+         /
+A---B---E         main</code></pre></figure>
+<p>Here <code>main</code> and <code>feature/contact</code> share history up to B, then each has its own commits.</p>
+<h2>Creating and switching</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git branch                       # list branches; * marks the current one
+git branch feature/contact       # create a branch (stay where you are)
+git switch feature/contact       # move to it
+git switch -c feature/gallery    # create AND switch in one step
+git switch main                  # go back to main</code></pre></figure>
+<p>Older tutorials use <code>git checkout feature/contact</code> and <code>git checkout -b feature/gallery</code>. Those still work; <code>switch</code> is the newer, clearer command.</p>
+<p>When you switch branches, Git changes the files in your folder to match that branch. Commit (or stash) your changes before switching so nothing gets mixed up.</p>
+<h2>A full example</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git switch -c feature/contact
+# create contact.html
+git add contact.html
+git commit -m &quot;Add contact page&quot;
+# edit contact.html to add a form
+git commit -am &quot;Add contact form&quot;     # -a stages modified tracked files automatically
+
+git switch main
+ls                                     # contact.html isn&#x27;t here: it only exists on the branch</code></pre></figure>
+<p>Meanwhile, someone fixes a typo on main:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git switch main
+# fix the typo in index.html
+git commit -am &quot;Fix typo in heading&quot;
+git log --oneline --graph --all</code></pre></figure>
+<figure class="static-code"><pre><code>* 7e1f2a0 (HEAD -&gt; main) Fix typo in heading
+| * 4b9c8d1 (feature/contact) Add contact form
+| * 2a3b4c5 Add contact page
+|/
+* 9c8d7e6 Add intro paragraph and basic styles</code></pre></figure>
+<h2>Merging</h2>
+<p>To bring the feature into main, switch to the branch that should <strong>receive</strong> the changes, then merge:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git switch main
+git merge feature/contact</code></pre></figure>
+<h3>Fast-forward merge</h3>
+<p>If main has <strong>no new commits</strong> since the branch was created, Git simply moves the main label forward. No new commit is made:</p>
+<figure class="static-code"><pre><code>Before:  A---B (main)
+              \
+               C---D (feature)
+
+After:   A---B---C---D (main, feature)</code></pre></figure>
+<h3>Merge commit (three-way merge)</h3>
+<p>If both branches have new commits, Git combines them and creates a <strong>merge commit</strong> with two parents:</p>
+<figure class="static-code"><pre><code>A---B---E-------M (main)
+     \         /
+      C-------D (feature)</code></pre></figure>
+<p>Git opens an editor for the merge message (save and close to accept the default). If both branches changed the same lines, you get a <strong>merge conflict</strong>, covered in the next lesson.</p>
+<p>To always create a merge commit (some teams like it for a clear history): <code>git merge --no-ff feature/contact</code>.</p>
+<h2>Deleting branches</h2>
+<p>After merging, delete the branch label (the commits stay in main's history):</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git branch -d feature/contact       # safe: refuses if not merged
+git branch -D experiment            # force delete an unmerged branch (its commits are abandoned)</code></pre></figure>
+<p>Rename a branch: <code>git branch -m old-name new-name</code>.</p>
+<h2>Naming conventions</h2>
+<div class="static-table"><table><thead><tr><th>Prefix</th><th>Use</th><th>Example</th></tr></thead><tbody><tr><td><code>feature/</code></td><td>New functionality</td><td><code>feature/mpesa-checkout</code></td></tr><tr><td><code>fix/</code> or <code>bugfix/</code></td><td>Bug fixes</td><td><code>fix/menu-overlap</code></td></tr><tr><td><code>hotfix/</code></td><td>Urgent production fixes</td><td><code>hotfix/payment-timeout</code></td></tr><tr><td><code>docs/</code></td><td>Documentation</td><td><code>docs/setup-guide</code></td></tr><tr><td><code>chore/</code></td><td>Maintenance</td><td><code>chore/update-dependencies</code></td></tr></tbody></table></div>
+<p>Use lowercase and hyphens; many teams include a ticket number: <code>feature/123-login-page</code>.</p>
+<h2>Team workflows</h2>
+<div class="static-table"><table><thead><tr><th>Workflow</th><th>How it works</th><th>Used by</th></tr></thead><tbody><tr><td><strong>GitHub Flow</strong></td><td><code>main</code> is always deployable; every change is a short branch + pull request</td><td>Most web teams and startups</td></tr><tr><td><strong>Trunk-based development</strong></td><td>Very short branches (hours), merged to main daily, features hidden behind flags</td><td>Fast-moving teams with good automated tests</td></tr><tr><td><strong>Git Flow</strong></td><td><code>main</code> + <code>develop</code> + feature/release/hotfix branches</td><td>Software with scheduled releases</td></tr></tbody></table></div>
+<p>Start with GitHub Flow: it's simple and widely used.</p>
+<h2>Stashing unfinished work</h2>
+<p>You're halfway through a feature when an urgent bug comes in. Instead of committing half-done work:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git stash                 # save uncommitted changes and clean the folder
+git switch main
+git switch -c hotfix/login
+# fix, commit, merge...
+git switch feature/gallery
+git stash pop             # bring the saved changes back
+git stash list            # see saved stashes</code></pre></figure>
+<h2>Practice task</h2>
+<ol><li>In your practice repo, create <code>feature/about</code>, add <code>about.html</code>, commit twice.</li><li>Switch to main and make a different commit.</li><li>View <code>git log --oneline --graph --all</code>.</li><li>Merge the feature into main (you'll get a merge commit).</li><li>Delete the feature branch.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> You're on <code>main</code> and you run <code>git merge feature/x</code>. Which branch changes: main or feature/x?</span><em>Show answer</em></summary><div class="callout-body"><p><code>main</code> changes: it receives the commits from feature/x. You always switch to the branch that should receive the work, then merge the other branch into it. feature/x is unchanged.</p></div></details>
+<h2>Summary</h2>
+<ul><li>A branch is a movable pointer to a commit; HEAD marks where you are.</li><li><code>git switch -c name</code> creates and switches; <code>git branch</code> lists; commit or stash before switching.</li><li><code>git merge other</code> brings other's commits into the current branch: fast-forward if no divergence, otherwise a merge commit.</li><li>Delete merged branches with <code>git branch -d</code>; name branches with prefixes like <code>feature/</code> and <code>fix/</code>.</li><li>GitHub Flow (short branches + pull requests) is a simple team workflow; <code>git stash</code> saves unfinished work.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command creates a new branch and switches to it? (three words, e.g. git ... ...)</p><details><summary>Show answer</summary><p>git switch -c</p></details></li><li><p>A merge where Git just moves the branch label forward is called what? (hyphenated)</p><details><summary>Show answer</summary><p>fast-forward</p></details></li><li><p>Which command safely deletes a merged branch named old? (four words)</p><details><summary>Show answer</summary><p>git branch -d old</p></details></li><li><p>Which command temporarily saves uncommitted changes? (two words)</p><details><summary>Show answer</summary><p>git stash</p></details></li><li><p>To merge feature/x into main, which branch should you be on?</p><details><summary>Show answer</summary><p>main</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 12 in <a href="/learn/git/">Git &amp; GitHub</a> · <a href="/learn/?book=git">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/git/gitignore-good-commits/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> .gitignore, good commit messages and viewing history</a><a class="btn btn-solid btn-sm" href="/learn/git/merge-conflicts/">Merging, merge conflicts and rebasing <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

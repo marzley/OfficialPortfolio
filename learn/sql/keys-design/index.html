@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Keys, relationships and table design | SQL</title>
-    <meta name="description" content="Free SQL lesson: Keys, relationships and table design." />
+    <title>Keys, relationships and table design: primary keys,…</title>
+    <meta name="description" content="Writing queries is half of SQL. The other half is designing tables so data stays correct, fast and easy to query for years. A badly designed database…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/sql/keys-design/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Keys, relationships and table design | SQL" />
-    <meta property="og:description" content="Free SQL lesson: Keys, relationships and table design." />
+    <meta property="og:title" content="Keys, relationships and table design: primary keys,…" />
+    <meta property="og:description" content="Writing queries is half of SQL. The other half is designing tables so data stays correct, fast and easy to query for years. A badly designed database…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/sql/keys-design/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Keys, relationships and table design | SQL" />
-    <meta name="twitter:description" content="Free SQL lesson: Keys, relationships and table design." />
+    <meta name="twitter:title" content="Keys, relationships and table design: primary keys,…" />
+    <meta name="twitter:description" content="Writing queries is half of SQL. The other half is designing tables so data stays correct, fast and easy to query for years. A badly designed database…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/sql/keys-design/#lesson","name":"Keys, relationships and table design","description":"Free SQL lesson: Keys, relationships and table design.","url":"https://marzleytechsolutions.co.ke/learn/sql/keys-design/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/sql/#course","name":"SQL","url":"https://marzleytechsolutions.co.ke/learn/sql/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"SQL","item":"https://marzleytechsolutions.co.ke/learn/sql/"},{"@type":"ListItem","position":4,"name":"Keys, relationships and table design","item":"https://marzleytechsolutions.co.ke/learn/sql/keys-design/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/sql/keys-design/#lesson","name":"Keys, relationships and table design: primary keys, foreign keys, one-to-many, many-to-many and normalisation","description":"Writing queries is half of SQL. The other half is designing tables so data stays correct, fast and easy to query for years. A badly designed database…","url":"https://marzleytechsolutions.co.ke/learn/sql/keys-design/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/sql/#course","name":"SQL","url":"https://marzleytechsolutions.co.ke/learn/sql/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"SQL","item":"https://marzleytechsolutions.co.ke/learn/sql/"},{"@type":"ListItem","position":4,"name":"Keys, relationships and table design: primary keys, foreign keys, one-to-many, many-to-many and normalisation","item":"https://marzleytechsolutions.co.ke/learn/sql/keys-design/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,28 +36,100 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/sql/">SQL</a> / <span>Keys, relationships and table design</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=keys-design"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Designing tables</h1>
-<h2>Primary and foreign keys</h2>
-<ul><li><strong>Primary key</strong>: uniquely identifies each row (<code>CustomerID</code>). Never repeats, never empty.</li><li><strong>Foreign key</strong>: a column pointing to another table's primary key (<code>Orders.CustomerID</code> → <code>Customers.CustomerID</code>). It links tables and prevents orders for customers who don't exist.</li></ul>
-<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE TABLE Branches (BranchID INTEGER PRIMARY KEY, Town TEXT NOT NULL UNIQUE);
-CREATE TABLE Staff (
-  StaffID INTEGER PRIMARY KEY,
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/sql/">SQL</a> / <span>Keys, relationships and table design: primary keys, foreign keys, one-to-many, many-to-many and normalisation</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=keys-design"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Keys, relationships and table design: primary keys, foreign keys, one-to-many, many-to-many and normalisation</h1>
+<p>Writing queries is half of SQL. The other half is <strong>designing</strong> tables so data stays correct, fast and easy to query for years. A badly designed database causes duplicate records, contradictions ("which phone number is right?"), slow reports and painful changes. A well-designed one makes almost every question a simple JOIN away.</p>
+<p>This unit teaches how professionals design databases: keys, relationships, normalisation and a step-by-step method you can use for a school, a chama, a shop or a hospital system.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Entities, attributes and rows</li><li>Primary keys: natural vs surrogate</li><li>Foreign keys and referential integrity</li><li>One-to-one, one-to-many and many-to-many relationships</li><li>Junction (bridge) tables</li><li>Normalisation: 1NF, 2NF, 3NF in plain language</li><li>When to denormalise</li><li>A full design walkthrough: a school system</li><li>Drawing ER diagrams</li></ul></div></aside>
+<h2>Entities and attributes</h2>
+<ul><li>An <strong>entity</strong> is a "thing" you store data about: Student, Course, Teacher, Payment. Each entity usually becomes a <strong>table</strong>.</li><li>An <strong>attribute</strong> is a fact about it: a student's name, date of birth, admission number. Each attribute becomes a <strong>column</strong>.</li><li>Each <strong>row</strong> is one instance: one particular student.</li></ul>
+<h2>Primary keys</h2>
+<p>A <strong>primary key (PK)</strong> uniquely identifies each row. Rules: unique, never NULL, and ideally never changes.</p>
+<div class="static-table"><table><thead><tr><th>Type</th><th>Example</th><th>Pros</th><th>Cons</th></tr></thead><tbody><tr><td><strong>Natural key</strong></td><td>National ID number, KRA PIN, admission number</td><td>Meaningful</td><td>Can change, can be missing (children have no ID), privacy concerns</td></tr><tr><td><strong>Surrogate key</strong></td><td>Auto-number <code>StudentID</code> 1, 2, 3...</td><td>Simple, stable, small</td><td>Has no meaning outside the database</td></tr></tbody></table></div>
+<p>Most systems use a <strong>surrogate</strong> key as the PK and store natural identifiers as ordinary columns with a <code>UNIQUE</code> constraint.</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE TABLE Students (
+  StudentID INTEGER PRIMARY KEY,           -- surrogate key
+  AdmissionNo TEXT NOT NULL UNIQUE,        -- natural identifier
   Name TEXT NOT NULL,
-  Phone TEXT UNIQUE,
-  Salary INTEGER CHECK (Salary &gt; 0),
-  BranchID INTEGER REFERENCES Branches(BranchID)
+  DateOfBirth TEXT
 );
-INSERT INTO Branches (Town) VALUES (&#x27;Nairobi&#x27;), (&#x27;Kisumu&#x27;);
-INSERT INTO Staff (Name, Phone, Salary, BranchID) VALUES (&#x27;Otieno&#x27;, &#x27;0711000001&#x27;, 45000, 2), (&#x27;Wairimu&#x27;, &#x27;0711000002&#x27;, 52000, 1);
-SELECT s.Name, b.Town, s.Salary FROM Staff s JOIN Branches b ON b.BranchID = s.BranchID;</code></pre></figure>
-<h2>Constraints</h2>
-<div class="static-table"><table><thead><tr><th>Constraint</th><th>Ensures</th></tr></thead><tbody><tr><td><code>PRIMARY KEY</code></td><td>Unique row identifier</td></tr><tr><td><code>NOT NULL</code></td><td>Must have a value</td></tr><tr><td><code>UNIQUE</code></td><td>No duplicates (phone, email)</td></tr><tr><td><code>CHECK</code></td><td>Value follows a rule</td></tr><tr><td><code>DEFAULT</code></td><td>Value used when none given</td></tr><tr><td><code>REFERENCES</code> / <code>FOREIGN KEY</code></td><td>Must exist in the other table</td></tr></tbody></table></div>
-<h2>Relationships</h2>
-<ul><li><strong>One-to-many</strong>: one customer → many orders (foreign key on the "many" side).</li><li><strong>Many-to-many</strong>: students ↔ courses → use a <strong>join table</strong> <code>Enrollments(StudentID, CourseID)</code>.</li><li><strong>One-to-one</strong>: a user ↔ a profile.</li></ul>
-<h2>Normalisation (simply)</h2>
-<p>Don't repeat the same information in many rows. If a customer's phone number is typed in every order, changing it means updating hundreds of rows. Put it once in <code>Customers</code> and link by ID.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which key uniquely identifies each row?</p><details><summary>Show answer</summary><p>primary key</p></details></li><li><p>Which key links to another table's primary key?</p><details><summary>Show answer</summary><p>foreign key</p></details></li><li><p>Students and courses have which kind of relationship?</p><details><summary>Show answer</summary><p>many-to-many</p></details></li><li><p>Which constraint stops two customers having the same phone number?</p><details><summary>Show answer</summary><p>UNIQUE</p></details></li></ol></section></div><p class="static-meta">Lesson 10 of 14 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/create-tables-constraints/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Creating tables: data types and constraints</a><a class="btn btn-solid btn-sm" href="/learn/sql/indexes-transactions/">Indexes, transactions and keeping data safe <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+INSERT INTO Students (AdmissionNo, Name, DateOfBirth) VALUES (&#x27;ADM001&#x27;, &#x27;Brian Kipchumba&#x27;, &#x27;2010-03-14&#x27;);
+INSERT INTO Students (AdmissionNo, Name, DateOfBirth) VALUES (&#x27;ADM002&#x27;, &#x27;Faith Chebet&#x27;, &#x27;2010-07-02&#x27;);
+SELECT * FROM Students;</code></pre></figure>
+<p>A <strong>composite key</strong> uses two or more columns together, e.g. <code>(StudentID, CourseID)</code> in an enrolments table.</p>
+<h2>Foreign keys</h2>
+<p>A <strong>foreign key (FK)</strong> is a column that refers to another table's primary key. It enforces <strong>referential integrity</strong>: you can't have an order for a customer who doesn't exist.</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">PRAGMA foreign_keys = ON;   -- SQLite needs this switched on
+CREATE TABLE Classes (ClassID INTEGER PRIMARY KEY, Name TEXT NOT NULL);
+CREATE TABLE Pupils (
+  PupilID INTEGER PRIMARY KEY,
+  Name TEXT NOT NULL,
+  ClassID INTEGER REFERENCES Classes(ClassID)
+);
+INSERT INTO Classes VALUES (1, &#x27;Grade 7 East&#x27;), (2, &#x27;Grade 7 West&#x27;);
+INSERT INTO Pupils (Name, ClassID) VALUES (&#x27;Halima&#x27;, 1), (&#x27;Juma&#x27;, 2);
+SELECT p.Name, c.Name AS Class FROM Pupils p JOIN Classes c ON c.ClassID = p.ClassID;</code></pre></figure>
+<p>Now try inserting a pupil into class 9, which doesn't exist:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">-- fails on purpose: class 9 does not exist
+PRAGMA foreign_keys = ON;
+CREATE TABLE Classes (ClassID INTEGER PRIMARY KEY, Name TEXT);
+CREATE TABLE Pupils (PupilID INTEGER PRIMARY KEY, Name TEXT, ClassID INTEGER REFERENCES Classes(ClassID));
+INSERT INTO Classes VALUES (1, &#x27;Grade 7 East&#x27;);
+INSERT INTO Pupils (Name, ClassID) VALUES (&#x27;Ghost pupil&#x27;, 9);</code></pre></figure>
+<p>The database refuses with a "FOREIGN KEY constraint failed" error, protecting your data.</p>
+<h3>What happens on delete?</h3>
+<div class="static-table"><table><thead><tr><th>Option</th><th>Meaning</th></tr></thead><tbody><tr><td><code>ON DELETE RESTRICT</code> / <code>NO ACTION</code> (default)</td><td>Can't delete a class that still has pupils</td></tr><tr><td><code>ON DELETE CASCADE</code></td><td>Deleting a class deletes its pupils too (careful!)</td></tr><tr><td><code>ON DELETE SET NULL</code></td><td>Pupils stay, but their ClassID becomes NULL</td></tr></tbody></table></div>
+<p>Use CASCADE for truly dependent data (an order's line items), not for important records.</p>
+<h2>Relationship types</h2>
+<h3>One-to-many (most common)</h3>
+<p>One customer has many orders; each order belongs to one customer. Put the FK on the "many" side: <code>Orders.CustomerID</code>.</p>
+<h3>One-to-one</h3>
+<p>One user has one profile. Put a UNIQUE FK on one side, or keep both in one table unless you have a reason to split (optional or sensitive data).</p>
+<h3>Many-to-many</h3>
+<p>A student takes many courses; a course has many students. You <strong>can't</strong> store this with a single FK. You need a <strong>junction table</strong> (also called a bridge or link table):</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE TABLE Students (StudentID INTEGER PRIMARY KEY, Name TEXT);
+CREATE TABLE Courses (CourseID INTEGER PRIMARY KEY, Title TEXT);
+CREATE TABLE Enrolments (
+  StudentID INTEGER REFERENCES Students(StudentID),
+  CourseID INTEGER REFERENCES Courses(CourseID),
+  EnrolledOn TEXT,
+  Grade TEXT,
+  PRIMARY KEY (StudentID, CourseID)
+);
+INSERT INTO Students VALUES (1, &#x27;Brian&#x27;), (2, &#x27;Faith&#x27;), (3, &#x27;Wairimu&#x27;);
+INSERT INTO Courses VALUES (10, &#x27;Python&#x27;), (11, &#x27;Excel&#x27;), (12, &#x27;Networking&#x27;);
+INSERT INTO Enrolments VALUES (1, 10, &#x27;2026-01-10&#x27;, &#x27;A&#x27;), (1, 11, &#x27;2026-01-10&#x27;, &#x27;B&#x27;),
+                              (2, 10, &#x27;2026-01-12&#x27;, &#x27;B&#x27;), (3, 12, &#x27;2026-02-01&#x27;, NULL);
+SELECT s.Name, c.Title, e.Grade
+FROM Enrolments e
+JOIN Students s ON s.StudentID = e.StudentID
+JOIN Courses c ON c.CourseID = e.CourseID
+ORDER BY s.Name;</code></pre></figure>
+<p>The junction table can carry facts about the relationship itself: enrolment date, grade, fee paid.</p>
+<h2>Normalisation in plain language</h2>
+<p>Normalisation is a set of rules that remove repetition and contradictions.</p>
+<h3>Unnormalised data</h3>
+<div class="static-table"><table><thead><tr><th>StudentName</th><th>Phone</th><th>Courses</th></tr></thead><tbody><tr><td>Brian</td><td>0711..., 0722...</td><td>Python, Excel</td></tr></tbody></table></div>
+<p>Problems: several values in one cell, hard to search, hard to update.</p>
+<h3>First Normal Form (1NF): one value per cell, no repeating groups</h3>
+<p>Each cell holds a single value; no columns like Course1, Course2, Course3. Use extra rows or a separate table instead.</p>
+<h3>Second Normal Form (2NF): every column depends on the whole key</h3>
+<p>In a table keyed by <code>(StudentID, CourseID)</code>, <code>StudentName</code> depends only on StudentID, not the whole key. Move it to the Students table.</p>
+<h3>Third Normal Form (3NF): no column depends on another non-key column</h3>
+<p>If a Students table has <code>ClassID</code> and <code>ClassTeacher</code>, the teacher depends on the class, not the student. Move ClassTeacher to the Classes table.</p>
+<p>A memorable summary: every non-key column should depend on <strong>the key, the whole key, and nothing but the key</strong>.</p>
+<h2>When to denormalise</h2>
+<p>Sometimes you intentionally repeat data for speed or history:</p>
+<ul><li>Store <code>UnitPrice</code> on each order line, because the product price will change later but the order must remember what was charged.</li><li>Reporting tables or data warehouses store pre-joined, summarised data for fast dashboards.</li></ul>
+<p>Denormalise deliberately, not by accident.</p>
+<h2>Design walkthrough: a school fees system</h2>
+<ol><li><strong>List the entities</strong>: Students, Classes, Terms, FeeItems (tuition, lunch, transport), Invoices, Payments, Guardians.</li><li><strong>List attributes</strong> for each: Students(AdmissionNo, Name, DOB, ClassID), Payments(Amount, Method, MpesaRef, PaidOn)...</li><li><strong>Find relationships</strong>:</li><li>Class 1–many Students</li><li>Student many–many Guardians (a guardian may have several children; a child may have two guardians) → <code>StudentGuardians</code> junction</li><li>Student 1–many Invoices; Invoice 1–many Payments</li><li><strong>Choose keys</strong>: surrogate PKs; UNIQUE on AdmissionNo and MpesaRef.</li><li><strong>Add constraints</strong>: <code>Amount &gt; 0</code>, <code>NOT NULL</code> where required.</li><li><strong>Test with questions</strong>: "What's each student's balance this term?" If a question needs messy workarounds, revisit the design.</li></ol>
+<h2>ER diagrams</h2>
+<p>An <strong>Entity-Relationship (ER) diagram</strong> draws tables as boxes and relationships as lines. Crow's-foot notation shows "many" as a three-pronged foot. Free tools: draw.io (diagrams.net), dbdiagram.io, Lucidchart (free tier). Draw the diagram before writing <code>CREATE TABLE</code> statements; it's much cheaper to fix a drawing than a live database.</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A chama database has a Members table with columns Contribution1, Contribution2, ... Contribution12 for each month. What's wrong, and how would you redesign it?</span><em>Show answer</em></summary><div class="callout-body"><p>It breaks 1NF (repeating groups): adding a 13th month needs a new column, and totals are awkward. Create a Contributions table: ContributionID, MemberID (FK), Month, Amount, PaidOn, MpesaRef. Then totals are a simple GROUP BY.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Entities become tables, attributes become columns; each table needs a primary key (usually a surrogate).</li><li>Foreign keys link tables and enforce referential integrity; choose ON DELETE behaviour carefully.</li><li>One-to-many uses an FK on the many side; many-to-many needs a junction table.</li><li>Normalise to 3NF: one value per cell, depend on the whole key, nothing but the key.</li><li>Denormalise only on purpose (historical prices, reporting); design on an ER diagram first.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What uniquely identifies each row in a table? (two words)</p><details><summary>Show answer</summary><p>primary key</p></details></li><li><p>What kind of table links two tables in a many-to-many relationship? (one word)</p><details><summary>Show answer</summary><p>junction</p></details></li><li><p>In a one-to-many relationship, which side gets the foreign key: one or many?</p><details><summary>Show answer</summary><p>many</p></details></li><li><p>An auto-numbered ID with no outside meaning is what kind of key?</p><details><summary>Show answer</summary><p>surrogate</p></details></li><li><p>Columns like Course1, Course2, Course3 break which normal form? (e.g. 1NF)</p><details><summary>Show answer</summary><p>1NF</p></details></li><li><p>Which ON DELETE option deletes child rows automatically?</p><details><summary>Show answer</summary><p>CASCADE</p></details></li></ol></section></div><p class="static-meta">Lesson 10 of 16 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/create-tables-constraints/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Creating tables: data types and constraints</a><a class="btn btn-solid btn-sm" href="/learn/sql/indexes-transactions/">Indexes, transactions and keeping data safe <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

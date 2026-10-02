@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Your first repository | Git &amp; GitHub</title>
-    <meta name="description" content="Free Git &amp; GitHub lesson: Your first repository." />
+    <title>Your first repository: init, status, add, commit, log…</title>
+    <meta name="description" content="In this unit you&#x27;ll create a real Git repository on your own computer and practise the core loop you&#x27;ll repeat thousands of times in your career: edit…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/git/first-repo/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Your first repository | Git &amp; GitHub" />
-    <meta property="og:description" content="Free Git &amp; GitHub lesson: Your first repository." />
+    <meta property="og:title" content="Your first repository: init, status, add, commit, log…" />
+    <meta property="og:description" content="In this unit you&#x27;ll create a real Git repository on your own computer and practise the core loop you&#x27;ll repeat thousands of times in your career: edit…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/git/first-repo/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Your first repository | Git &amp; GitHub" />
-    <meta name="twitter:description" content="Free Git &amp; GitHub lesson: Your first repository." />
+    <meta name="twitter:title" content="Your first repository: init, status, add, commit, log…" />
+    <meta name="twitter:description" content="In this unit you&#x27;ll create a real Git repository on your own computer and practise the core loop you&#x27;ll repeat thousands of times in your career: edit…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/git/first-repo/#lesson","name":"Your first repository","description":"Free Git & GitHub lesson: Your first repository.","url":"https://marzleytechsolutions.co.ke/learn/git/first-repo/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/git/#course","name":"Git & GitHub","url":"https://marzleytechsolutions.co.ke/learn/git/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Git & GitHub","item":"https://marzleytechsolutions.co.ke/learn/git/"},{"@type":"ListItem","position":4,"name":"Your first repository","item":"https://marzleytechsolutions.co.ke/learn/git/first-repo/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/git/first-repo/#lesson","name":"Your first repository: init, status, add, commit, log and diff step by step","description":"In this unit you'll create a real Git repository on your own computer and practise the core loop you'll repeat thousands of times in your career: edit…","url":"https://marzleytechsolutions.co.ke/learn/git/first-repo/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/git/#course","name":"Git & GitHub","url":"https://marzleytechsolutions.co.ke/learn/git/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Git & GitHub","item":"https://marzleytechsolutions.co.ke/learn/git/"},{"@type":"ListItem","position":4,"name":"Your first repository: init, status, add, commit, log and diff step by step","item":"https://marzleytechsolutions.co.ke/learn/git/first-repo/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,31 +36,98 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/git/">Git &amp; GitHub</a> / <span>Your first repository</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=git&amp;lesson=first-repo"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Your first repository</h1>
-<h2>The three areas</h2>
-<ol><li><strong>Working directory</strong>: your files as you edit them.</li><li><strong>Staging area</strong>: changes you've chosen for the next commit (<code>git add</code>).</li><li><strong>Repository</strong>: saved commits (<code>git commit</code>).</li></ol>
-<h2>Step by step</h2>
-<figure class="static-code"><pre><code>mkdir my-site
-cd my-site
-git init                      # start tracking this folder
-echo &quot;&lt;h1&gt;Hello&lt;/h1&gt;&quot; &gt; index.html
-git status                    # see what changed
-git add index.html            # stage the file   (git add . = everything)
-git commit -m &quot;Add home page&quot; # save a snapshot
-git log --oneline             # history</code></pre></figure>
-<h2>Everyday commands</h2>
-<div class="static-table"><table><thead><tr><th>Command</th><th>What it does</th></tr></thead><tbody><tr><td><code>git status</code></td><td>What's changed, what's staged</td></tr><tr><td><code>git add file</code> / <code>git add .</code></td><td>Stage one file / all changes</td></tr><tr><td><code>git commit -m &quot;message&quot;</code></td><td>Save staged changes</td></tr><tr><td><code>git log --oneline</code></td><td>Short history</td></tr><tr><td><code>git diff</code></td><td>Show unstaged changes line by line</td></tr><tr><td><code>git restore file</code></td><td>Throw away unsaved changes to a file</td></tr><tr><td><code>git restore --staged file</code></td><td>Unstage a file</td></tr><tr><td><code>git revert &lt;commit&gt;</code></td><td>Safely undo a commit with a new commit</td></tr></tbody></table></div>
-<h2>Good commit messages</h2>
-<p>Short, in the imperative, saying <em>what and why</em>: "Fix M-Pesa callback URL", "Add pricing page". Not "changes" or "stuff".</p>
-<h2>.gitignore</h2>
-<p>A file listing things Git must <strong>not</strong> track: passwords, config with secrets, <code>node_modules/</code>, <code>vendor/</code>, <code>.env</code>, uploads, big files.</p>
-<figure class="static-code"><pre><code>.env
-config.php
-node_modules/
-*.log</code></pre></figure>
-<blockquote><p>Never commit passwords or API keys. If you do, change them immediately. Deleting the file later doesn't remove it from history.</p></blockquote>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command starts tracking a folder with Git?</p><details><summary>Show answer</summary><p>git init</p></details></li><li><p>Which command stages all changes?</p><details><summary>Show answer</summary><p>git add .</p></details></li><li><p>Which command shows what has changed and what is staged?</p><details><summary>Show answer</summary><p>git status</p></details></li><li><p>What file tells Git which files to ignore?</p><details><summary>Show answer</summary><p>.gitignore</p></details></li><li><p>Should you commit your M-Pesa API passwords to GitHub? (yes/no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 10 in <a href="/learn/git/">Git &amp; GitHub</a> · <a href="/learn/?book=git">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/git/install-configure/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Installing and setting up Git (Windows, Mac, Linux)</a><a class="btn btn-solid btn-sm" href="/learn/git/gitignore-good-commits/">.gitignore, good commit messages and viewing history <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/git/">Git &amp; GitHub</a> / <span>Your first repository: init, status, add, commit, log and diff step by step</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=git&amp;lesson=first-repo"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Your first repository: init, status, add, commit, log and diff step by step</h1>
+<p>In this unit you'll create a real Git repository on your own computer and practise the core loop you'll repeat thousands of times in your career: <strong>edit → status → add → commit</strong>. You'll also learn to read the history and see exactly what changed. Follow along in a terminal: <strong>Git Bash</strong> on Windows, <strong>Terminal</strong> on macOS or Linux.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Creating a project folder and turning it into a repository (<code>git init</code>)</li><li>Checking what's happening with <code>git status</code></li><li>Staging with <code>git add</code> (single files, everything, parts of files)</li><li>Committing with good messages</li><li>Reading history with <code>git log</code></li><li>Seeing changes with <code>git diff</code></li><li>Renaming and removing tracked files</li><li>What's inside the <code>.git</code> folder</li></ul></div></aside>
+<h2>Step 1: Create a project folder</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">cd ~                    # go to your home folder
+mkdir my-website        # make a folder
+cd my-website           # enter it</code></pre></figure>
+<p>On Windows, Git Bash understands these Linux-style commands. You can also create the folder in File Explorer, then right-click → "Open Git Bash here".</p>
+<h2>Step 2: Initialise the repository</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git init</code></pre></figure>
+<p>Output: <code>Initialized empty Git repository in /home/you/my-website/.git/</code></p>
+<p>Git created a hidden <code>.git</code> folder that stores all history. <strong>Never delete or edit it by hand</strong>: deleting <code>.git</code> deletes the whole history (your files stay, but they're no longer tracked).</p>
+<h2>Step 3: Create a file and check status</h2>
+<p>Create <code>index.html</code> in your editor (VS Code: <code>code .</code> opens the folder) with:</p>
+<figure class="static-code"><figcaption>HTML</figcaption><pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;&lt;title&gt;My website&lt;/title&gt;&lt;/head&gt;
+  &lt;body&gt;&lt;h1&gt;Hello, I&#x27;m Wanjiku&lt;/h1&gt;&lt;/body&gt;
+&lt;/html&gt;</code></pre></figure>
+<p>Then:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git status</code></pre></figure>
+<figure class="static-code"><pre><code>On branch main
+No commits yet
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+        index.html</code></pre></figure>
+<p><strong>Untracked</strong> means Git sees the file but isn't recording it yet. Run <code>git status</code> constantly: it always tells you what state you're in and suggests next commands.</p>
+<h2>Step 4: Stage the file</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git add index.html
+git status</code></pre></figure>
+<figure class="static-code"><pre><code>Changes to be committed:
+        new file:   index.html</code></pre></figure>
+<p>Ways to stage:</p>
+<div class="static-table"><table><thead><tr><th>Command</th><th>Stages</th></tr></thead><tbody><tr><td><code>git add index.html</code></td><td>One file</td></tr><tr><td><code>git add css/</code></td><td>A folder</td></tr><tr><td><code>git add .</code></td><td>Everything changed in the current folder and below</td></tr><tr><td><code>git add -p</code></td><td>Pick individual chunks of changes interactively</td></tr></tbody></table></div>
+<p>To unstage (keep the change, just remove it from the next commit): <code>git restore --staged index.html</code>.</p>
+<h2>Step 5: Commit</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git commit -m &quot;Add home page with heading&quot;</code></pre></figure>
+<figure class="static-code"><pre><code>[main (root-commit) 3f2a1bc] Add home page with heading
+ 1 file changed, 5 insertions(+)
+ create mode 100644 index.html</code></pre></figure>
+<p><code>3f2a1bc</code> is the short <strong>hash</strong>, the commit's unique ID.</p>
+<h3>Writing good commit messages</h3>
+<ul><li>Use the imperative mood, like a command: "Add contact form", "Fix broken menu link", "Update prices".</li><li>Keep the first line under about 50–72 characters.</li><li>Say <strong>what and why</strong>, not "changes" or "stuff".</li><li>For bigger commits, run <code>git commit</code> without <code>-m</code> to open an editor and write a summary line, a blank line, then details.</li></ul>
+<div class="static-table"><table><thead><tr><th>Bad</th><th>Good</th></tr></thead><tbody><tr><td><code>update</code></td><td><code>Update services page with 2026 prices</code></td></tr><tr><td><code>fix</code></td><td><code>Fix mobile menu not closing on tap</code></td></tr><tr><td><code>asdf</code></td><td><code>Add M-Pesa payment instructions to checkout</code></td></tr></tbody></table></div>
+<h2>Step 6: Make more changes</h2>
+<p>Edit <code>index.html</code> to add a paragraph, and create <code>style.css</code>. Then:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git status</code></pre></figure>
+<figure class="static-code"><pre><code>Changes not staged for commit:
+        modified:   index.html
+Untracked files:
+        style.css</code></pre></figure>
+<h3>See exactly what changed</h3>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git diff                # changes not yet staged
+git diff --staged       # changes staged for the next commit</code></pre></figure>
+<p>Lines starting with <code>-</code> were removed; <code>+</code> were added. Then:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git add index.html style.css
+git commit -m &quot;Add intro paragraph and basic styles&quot;</code></pre></figure>
+<h2>Step 7: Read the history</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git log</code></pre></figure>
+<figure class="static-code"><pre><code>commit 9c8d7e6... (HEAD -&gt; main)
+Author: Wanjiku Kamau &lt;wanjiku@example.com&gt;
+Date:   Mon Sep 7 10:15:02 2026 +0300
+
+    Add intro paragraph and basic styles
+
+commit 3f2a1bc...
+    Add home page with heading</code></pre></figure>
+<p>Useful variations:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git log --oneline                 # one line per commit
+git log --oneline --graph --all   # a drawing of branches
+git log -p index.html             # full changes to one file
+git log --author=&quot;Wanjiku&quot;        # commits by one person
+git show 3f2a1bc                  # details of one commit</code></pre></figure>
+<p>Press <code>q</code> to leave the log viewer.</p>
+<h2>The cycle</h2>
+<figure class="static-code"><pre><code>edit files → git status → git diff → git add → git commit → (repeat)</code></pre></figure>
+<p>Commit <strong>small and often</strong>: each commit should be one logical change. Small commits are easier to understand, review and undo.</p>
+<h2>Renaming and deleting tracked files</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git mv style.css styles.css      # rename and stage the rename
+git rm old-page.html             # delete and stage the deletion
+git commit -m &quot;Rename stylesheet and remove old page&quot;</code></pre></figure>
+<p>If you rename or delete in your file explorer instead, <code>git add -A</code> stages those changes too.</p>
+<h2>What's inside .git?</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">ls .git</code></pre></figure>
+<p>You'll see <code>HEAD</code> (which branch you're on), <code>config</code> (repo settings), <code>objects/</code> (compressed snapshots), <code>refs/</code> (branch pointers). You don't need to touch these, but knowing they exist explains how Git works: branches are just tiny files pointing to commits.</p>
+<h2>Practice task</h2>
+<ol><li>Create a folder <code>recipes</code>, run <code>git init</code>.</li><li>Add <code>ugali.md</code> with ingredients; commit "Add ugali recipe".</li><li>Add <code>chapati.md</code>; commit "Add chapati recipe".</li><li>Edit <code>ugali.md</code> to add steps; view <code>git diff</code>; commit "Add ugali cooking steps".</li><li>Run <code>git log --oneline</code>: you should see 3 commits.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> You edited three files: fixed a bug in <code>login.js</code>, changed colours in <code>style.css</code>, and fixed a typo in <code>README.md</code>. How should you commit them?</span><em>Show answer</em></summary><div class="callout-body"><p>Ideally as separate commits, each one logical change: <code>git add login.js</code> → "Fix login failing with spaces in email", then <code>git add style.css</code> → "Update brand colours", then <code>git add README.md</code> → "Fix typo in README". Small, focused commits are easier to review and revert.</p></div></details>
+<h2>Summary</h2>
+<ul><li><code>git init</code> turns a folder into a repository (history lives in <code>.git</code>).</li><li><code>git status</code> shows untracked, modified and staged files; use it constantly.</li><li><code>git add</code> stages changes; <code>git commit -m &quot;message&quot;</code> saves a snapshot.</li><li><code>git diff</code> shows unstaged changes; <code>git diff --staged</code> shows staged ones.</li><li><code>git log --oneline</code> and <code>git show</code> explore history; commit small, often, with clear imperative messages.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command turns a folder into a Git repository? (two words)</p><details><summary>Show answer</summary><p>git init</p></details></li><li><p>Which command shows which files are modified, staged or untracked? (two words)</p><details><summary>Show answer</summary><p>git status</p></details></li><li><p>Which command shows commits one per line? (three words, including git)</p><details><summary>Show answer</summary><p>git log --oneline</p></details></li><li><p>Which command shows changes that are staged for the next commit? (three words)</p><details><summary>Show answer</summary><p>git diff --staged</p></details></li><li><p>What is the name of the hidden folder where Git stores history?</p><details><summary>Show answer</summary><p>.git</p></details></li><li><p>Is "Fix mobile menu not closing on tap" a better commit message than "fix"? (yes/no)</p><details><summary>Show answer</summary><p>yes</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 12 in <a href="/learn/git/">Git &amp; GitHub</a> · <a href="/learn/?book=git">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/git/install-configure/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Installing and setting up Git (Windows, Mac, Linux)</a><a class="btn btn-solid btn-sm" href="/learn/git/gitignore-good-commits/">.gitignore, good commit messages and viewing history <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

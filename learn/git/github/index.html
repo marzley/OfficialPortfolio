@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>GitHub: push, pull, clone | Git &amp; GitHub</title>
-    <meta name="description" content="Free Git &amp; GitHub lesson: GitHub: push, pull, clone." />
+    <title>GitHub: remotes, push, pull, clone, SSH keys, tokens and…</title>
+    <meta name="description" content="So far your repository lives only on your computer. GitHub puts it online: a backup if your laptop is stolen, a place to collaborate, and a public…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/git/github/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="GitHub: push, pull, clone | Git &amp; GitHub" />
-    <meta property="og:description" content="Free Git &amp; GitHub lesson: GitHub: push, pull, clone." />
+    <meta property="og:title" content="GitHub: remotes, push, pull, clone, SSH keys, tokens and…" />
+    <meta property="og:description" content="So far your repository lives only on your computer. GitHub puts it online: a backup if your laptop is stolen, a place to collaborate, and a public…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/git/github/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="GitHub: push, pull, clone | Git &amp; GitHub" />
-    <meta name="twitter:description" content="Free Git &amp; GitHub lesson: GitHub: push, pull, clone." />
+    <meta name="twitter:title" content="GitHub: remotes, push, pull, clone, SSH keys, tokens and…" />
+    <meta name="twitter:description" content="So far your repository lives only on your computer. GitHub puts it online: a backup if your laptop is stolen, a place to collaborate, and a public…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/git/github/#lesson","name":"GitHub: push, pull, clone","description":"Free Git & GitHub lesson: GitHub: push, pull, clone.","url":"https://marzleytechsolutions.co.ke/learn/git/github/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/git/#course","name":"Git & GitHub","url":"https://marzleytechsolutions.co.ke/learn/git/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Git & GitHub","item":"https://marzleytechsolutions.co.ke/learn/git/"},{"@type":"ListItem","position":4,"name":"GitHub: push, pull, clone","item":"https://marzleytechsolutions.co.ke/learn/git/github/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/git/github/#lesson","name":"GitHub: remotes, push, pull, clone, SSH keys, tokens and a profile that gets you hired","description":"So far your repository lives only on your computer. GitHub puts it online: a backup if your laptop is stolen, a place to collaborate, and a public…","url":"https://marzleytechsolutions.co.ke/learn/git/github/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/git/#course","name":"Git & GitHub","url":"https://marzleytechsolutions.co.ke/learn/git/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Git & GitHub","item":"https://marzleytechsolutions.co.ke/learn/git/"},{"@type":"ListItem","position":4,"name":"GitHub: remotes, push, pull, clone, SSH keys, tokens and a profile that gets you hired","item":"https://marzleytechsolutions.co.ke/learn/git/github/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,25 +36,79 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/git/">Git &amp; GitHub</a> / <span>GitHub: push, pull, clone</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=git&amp;lesson=github"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Working with GitHub</h1>
-<h2>Put your project on GitHub</h2>
-<ol><li>On GitHub click <strong>New repository</strong>, name it (e.g. <code>my-site</code>), don't add a README if your project already exists.</li><li>Connect and push:</li></ol>
-<figure class="static-code"><pre><code>git remote add origin https://github.com/yourname/my-site.git
-git push -u origin main</code></pre></figure>
-<p>GitHub will ask you to log in: use the <strong>GitHub CLI</strong> (<code>gh auth login</code>), <strong>Git Credential Manager</strong> (comes with Git for Windows), or an <strong>SSH key</strong>. Passwords alone don't work for Git anymore.</p>
-<h2>Daily sync</h2>
-<figure class="static-code"><pre><code>git pull          # get the latest from GitHub before you start
-# work, add, commit
-git push          # send your commits</code></pre></figure>
-<h2>Clone someone's project</h2>
-<figure class="static-code"><pre><code>git clone https://github.com/user/project.git</code></pre></figure>
-<h2>Contributing to other projects</h2>
-<ol><li><strong>Fork</strong> the repo (your own copy on GitHub).</li><li>Clone your fork, create a branch, commit your change.</li><li>Push and open a <strong>pull request</strong> to the original project.</li></ol>
-<p>This is how open-source works, and contributing is a great way to learn and get noticed.</p>
-<h2>Your GitHub profile = your CV</h2>
-<ul><li>Pin your best 4–6 projects.</li><li>Each repo needs a <strong>README.md</strong>: what it is, screenshot, how to run it, live link.</li><li>Commit regularly; employers like to see steady activity.</li></ul>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command sends your commits to GitHub?</p><details><summary>Show answer</summary><p>git push</p></details></li><li><p>Which command gets the latest changes from GitHub?</p><details><summary>Show answer</summary><p>git pull</p></details></li><li><p>What do you create on GitHub to make your own copy of someone else's repo?</p><details><summary>Show answer</summary><p>fork</p></details></li><li><p>What file explains a project on its GitHub page?</p><details><summary>Show answer</summary><p>README.md</p></details></li></ol></section></div><p class="static-meta">Lesson 7 of 10 in <a href="/learn/git/">Git &amp; GitHub</a> · <a href="/learn/?book=git">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/git/merge-conflicts/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Merging, merge conflicts and rebasing</a><a class="btn btn-solid btn-sm" href="/learn/git/pull-requests-teamwork/">Pull requests, forks and working in a team <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/git/">Git &amp; GitHub</a> / <span>GitHub: remotes, push, pull, clone, SSH keys, tokens and a profile that gets you hired</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=git&amp;lesson=github"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>GitHub: remotes, push, pull, clone, SSH keys, tokens and a profile that gets you hired</h1>
+<p>So far your repository lives only on your computer. <strong>GitHub</strong> puts it online: a backup if your laptop is stolen, a place to collaborate, and a public portfolio employers and clients can see. In this unit you'll connect a local repo to GitHub, push and pull changes, clone projects, set up secure authentication, and polish your GitHub profile.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Creating a repository on GitHub</li><li>Remotes: <code>origin</code>, <code>git remote add</code>, <code>git remote -v</code></li><li>Pushing your work (<code>git push -u</code>)</li><li>Cloning existing repositories</li><li>Fetch vs pull, and keeping in sync with a team</li><li>Authentication: HTTPS with personal access tokens, or SSH keys</li><li>README files, licences and repository settings</li><li>Building a profile that impresses employers</li></ul></div></aside>
+<h2>Step 1: Create a repository on GitHub</h2>
+<ol><li>Sign in at github.com → <strong>+</strong> (top right) → <strong>New repository</strong>.</li><li>Name it (e.g. <code>my-website</code>), add a short description.</li><li>Choose <strong>Public</strong> (portfolio) or <strong>Private</strong>.</li><li>If you already have a local repo, <strong>don't</strong> tick "Add a README" (it avoids a first-push conflict).</li><li>Click <strong>Create repository</strong>. GitHub shows the commands to connect.</li></ol>
+<h2>Step 2: Connect your local repo (add a remote)</h2>
+<p>A <strong>remote</strong> is a named link to a copy of the repo elsewhere. The convention is to call your main one <code>origin</code>.</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git remote add origin https://github.com/wanjiku-dev/my-website.git
+git remote -v            # list remotes</code></pre></figure>
+<h2>Step 3: Push</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git push -u origin main</code></pre></figure>
+<ul><li><code>push</code> sends your commits to the remote.</li><li><code>-u</code> (upstream) remembers that local <code>main</code> tracks <code>origin/main</code>, so afterwards plain <code>git push</code> and <code>git pull</code> work.</li></ul>
+<p>Refresh the GitHub page: your files and commit history are online.</p>
+<h2>Authentication</h2>
+<p>GitHub no longer accepts your account password for Git operations. Choose one:</p>
+<h3>Option A: HTTPS with a personal access token (PAT)</h3>
+<ol><li>GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate.</li><li>Give it access to the repositories you need, with an expiry date.</li><li>When Git asks for a password, paste the token. A credential manager (installed with Git for Windows; <code>gh auth login</code> with GitHub CLI) stores it securely.</li></ol>
+<h3>Option B: SSH keys (popular with developers)</h3>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">ssh-keygen -t ed25519 -C &quot;wanjiku@example.com&quot;   # press Enter for the default file; set a passphrase
+cat ~/.ssh/id_ed25519.pub                        # copy this PUBLIC key</code></pre></figure>
+<p>GitHub → Settings → SSH and GPG keys → New SSH key → paste. Test:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">ssh -T git@github.com</code></pre></figure>
+<p>Then use SSH URLs: <code>git@github.com:wanjiku-dev/my-website.git</code>. Change an existing remote with <code>git remote set-url origin git@github.com:wanjiku-dev/my-website.git</code>.</p>
+<aside class="callout callout-warning"><p class="callout-title">Keep secrets secret</p><div class="callout-body"><p>Never share your <strong>private</strong> key (<code>id_ed25519</code> without <code>.pub</code>) or a token. Never commit passwords, API keys, M-Pesa credentials or <code>.env</code> files to a repository, even a private one. If you do by mistake, revoke the key immediately: removing it in a later commit isn't enough because it stays in history.</p></div></aside>
+<h2>Cloning: downloading a repository</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git clone https://github.com/wanjiku-dev/my-website.git
+cd my-website</code></pre></figure>
+<p>Clone gives you the files, the full history, and an <code>origin</code> remote already set up. Clone into a different folder name: <code>git clone URL new-folder</code>.</p>
+<h2>Staying in sync: fetch and pull</h2>
+<div class="static-table"><table><thead><tr><th>Command</th><th>What it does</th></tr></thead><tbody><tr><td><code>git fetch</code></td><td>Downloads new commits from the remote but doesn't change your files</td></tr><tr><td><code>git pull</code></td><td><code>fetch</code> + merge the remote branch into your current branch</td></tr><tr><td><code>git pull --rebase</code></td><td><code>fetch</code> + replay your local commits on top (a straight history)</td></tr></tbody></table></div>
+<p>A safe daily routine:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git switch main
+git pull                     # get the latest
+git switch -c feature/faq    # start new work from up-to-date main</code></pre></figure>
+<h3>"Rejected" pushes</h3>
+<figure class="static-code"><pre><code>! [rejected]  main -&gt; main (fetch first)</code></pre></figure>
+<p>Someone pushed commits you don't have. Run <code>git pull</code> (resolve any conflicts), then <code>git push</code> again. <strong>Never</strong> "fix" this with <code>git push --force</code> on a shared branch: it deletes your teammates' commits from the remote.</p>
+<h2>Pushing branches</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git switch -c feature/faq
+# commit work...
+git push -u origin feature/faq</code></pre></figure>
+<p>GitHub then offers a button to open a <strong>pull request</strong> (covered in the pull requests lesson).</p>
+<h2>README, licence and settings</h2>
+<p>A <strong>README.md</strong> is the front page of your repository. A good one has:</p>
+<figure class="static-code"><figcaption>Markdown</figcaption><pre><code class="language-markdown"># Mama Mboga Online Shop
+
+A responsive online grocery shop with M-Pesa checkout, built with HTML, CSS, JavaScript and PHP.
+
+![Screenshot](screenshot.png)
+
+## Features
+- Product search and categories
+- Cart and M-Pesa STK push checkout (sandbox)
+- Admin dashboard for orders
+
+## Run it locally
+1. Clone the repo
+2. Copy `config.sample.php` to `config.php` and add your sandbox keys
+3. Open with PHP&#x27;s built-in server: `php -S localhost:8000`
+
+## Live demo
+https://wanjiku-dev.github.io/mama-mboga
+
+## Author
+Wanjiku Kamau – [LinkedIn](https://linkedin.com/in/...)</code></pre></figure>
+<ul><li>Add a <strong>licence</strong> (MIT is common for open projects) so others know how they may use the code.</li><li>Add <strong>topics</strong> (tags) and a website link in the repo's About section.</li></ul>
+<h2>A GitHub profile that gets you hired</h2>
+<ol><li><strong>Profile README</strong>: create a public repo named exactly like your username; its README shows on your profile. Introduce yourself, your skills and links.</li><li><strong>Pin 4–6 best projects</strong> with clear READMEs, screenshots and live demos.</li><li><strong>Commit regularly</strong>: the contribution graph shows consistent activity (quality matters more than green squares).</li><li><strong>Real projects beat tutorials</strong>: a school fees tracker, a chama app, a booking site for a local business.</li><li><strong>Contribute to open source</strong>: documentation fixes and small issues labelled "good first issue".</li><li>Use a professional photo, name, location (Nairobi, Kenya) and a link to your portfolio/LinkedIn.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> You cloned a team project yesterday. Today you made two commits and try <code>git push</code>, but it's rejected. What happened and what should you do?</span><em>Show answer</em></summary><div class="callout-body"><p>A teammate pushed new commits to the remote since you cloned. Run <code>git pull</code> to fetch and merge their work (fix any conflicts and commit), then <code>git push</code>. Don't force-push, which would erase their commits from the remote.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Create a repo on GitHub, connect it with <code>git remote add origin URL</code>, and publish with <code>git push -u origin main</code>.</li><li>Authenticate with a personal access token (HTTPS) or SSH keys; never commit or share secrets.</li><li><code>git clone</code> downloads a repo with history; <code>git fetch</code> downloads, <code>git pull</code> downloads and merges.</li><li>Rejected push → pull first; never force-push shared branches.</li><li>A strong README and a polished profile with pinned real projects help you get hired.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the conventional name of the main remote?</p><details><summary>Show answer</summary><p>origin</p></details></li><li><p>Which command downloads a repository from GitHub to your computer? (two words)</p><details><summary>Show answer</summary><p>git clone</p></details></li><li><p>Which command downloads new commits without changing your files? (two words)</p><details><summary>Show answer</summary><p>git fetch</p></details></li><li><p>What does git pull do in addition to fetch?</p><details><summary>Show answer</summary><p>merge</p></details></li><li><p>Can you use your GitHub account password for git push over HTTPS today? (yes/no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which file is the front page of a repository?</p><details><summary>Show answer</summary><p>README.md</p></details></li></ol></section></div><p class="static-meta">Lesson 7 of 12 in <a href="/learn/git/">Git &amp; GitHub</a> · <a href="/learn/?book=git">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/git/merge-conflicts/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Merging, merge conflicts and rebasing</a><a class="btn btn-solid btn-sm" href="/learn/git/pull-requests-teamwork/">Pull requests, forks and working in a team <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

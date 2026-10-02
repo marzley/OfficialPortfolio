@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Undo mistakes safely | Git &amp; GitHub</title>
-    <meta name="description" content="Situation Command --- --- Throw away changes to a file you haven&#x27;t staged git restore file.html Unstage a file (keep the changes) git restore --staged…" />
+    <title>Undo mistakes safely: restore, amend, revert, reset,…</title>
+    <meta name="description" content="Everyone makes mistakes with Git: committing to the wrong branch, a typo in a commit message, deleting a file, committing a password, or &quot;breaking…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/git/undo-and-rescue/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Undo mistakes safely | Git &amp; GitHub" />
-    <meta property="og:description" content="Situation Command --- --- Throw away changes to a file you haven&#x27;t staged git restore file.html Unstage a file (keep the changes) git restore --staged…" />
+    <meta property="og:title" content="Undo mistakes safely: restore, amend, revert, reset,…" />
+    <meta property="og:description" content="Everyone makes mistakes with Git: committing to the wrong branch, a typo in a commit message, deleting a file, committing a password, or &quot;breaking…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/git/undo-and-rescue/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Undo mistakes safely | Git &amp; GitHub" />
-    <meta name="twitter:description" content="Situation Command --- --- Throw away changes to a file you haven&#x27;t staged git restore file.html Unstage a file (keep the changes) git restore --staged…" />
+    <meta name="twitter:title" content="Undo mistakes safely: restore, amend, revert, reset,…" />
+    <meta name="twitter:description" content="Everyone makes mistakes with Git: committing to the wrong branch, a typo in a commit message, deleting a file, committing a password, or &quot;breaking…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/git/undo-and-rescue/#lesson","name":"Undo mistakes safely","description":"Situation Command --- --- Throw away changes to a file you haven't staged git restore file.html Unstage a file (keep the changes) git restore --staged…","url":"https://marzleytechsolutions.co.ke/learn/git/undo-and-rescue/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/git/#course","name":"Git & GitHub","url":"https://marzleytechsolutions.co.ke/learn/git/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Git & GitHub","item":"https://marzleytechsolutions.co.ke/learn/git/"},{"@type":"ListItem","position":4,"name":"Undo mistakes safely","item":"https://marzleytechsolutions.co.ke/learn/git/undo-and-rescue/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/git/undo-and-rescue/#lesson","name":"Undo mistakes safely: restore, amend, revert, reset, reflog and recovering lost work","description":"Everyone makes mistakes with Git: committing to the wrong branch, a typo in a commit message, deleting a file, committing a password, or \"breaking…","url":"https://marzleytechsolutions.co.ke/learn/git/undo-and-rescue/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/git/#course","name":"Git & GitHub","url":"https://marzleytechsolutions.co.ke/learn/git/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Git & GitHub","item":"https://marzleytechsolutions.co.ke/learn/git/"},{"@type":"ListItem","position":4,"name":"Undo mistakes safely: restore, amend, revert, reset, reflog and recovering lost work","item":"https://marzleytechsolutions.co.ke/learn/git/undo-and-rescue/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,12 +36,78 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/git/">Git &amp; GitHub</a> / <span>Undo mistakes safely</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=git&amp;lesson=undo-and-rescue"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Undo mistakes safely</h1>
-<div class="static-table"><table><thead><tr><th>Situation</th><th>Command</th></tr></thead><tbody><tr><td>Throw away changes to a file you haven't staged</td><td><code>git restore file.html</code></td></tr><tr><td>Unstage a file (keep the changes)</td><td><code>git restore --staged file.html</code></td></tr><tr><td>Fix the last commit message (not yet pushed)</td><td><code>git commit --amend -m &quot;Better message&quot;</code></td></tr><tr><td>Add a forgotten file to the last commit (not pushed)</td><td><code>git add file</code> then <code>git commit --amend --no-edit</code></td></tr><tr><td>Undo a commit that's already pushed</td><td><code>git revert &lt;commit-id&gt;</code> (makes a new "undo" commit)</td></tr><tr><td>Go back to see an old version</td><td><code>git switch --detach &lt;commit-id&gt;</code> then <code>git switch main</code> to return</td></tr><tr><td>Save unfinished work temporarily</td><td><code>git stash</code> … later <code>git stash pop</code></td></tr><tr><td>Find a lost commit</td><td><code>git reflog</code></td></tr></tbody></table></div>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/git/">Git &amp; GitHub</a> / <span>Undo mistakes safely: restore, amend, revert, reset, reflog and recovering lost work</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=git&amp;lesson=undo-and-rescue"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Undo mistakes safely: restore, amend, revert, reset, reflog and recovering lost work</h1>
+<p>Everyone makes mistakes with Git: committing to the wrong branch, a typo in a commit message, deleting a file, committing a password, or "breaking everything". The good news is that Git almost never loses committed work, and there's an undo for nearly every situation. The key is choosing the <strong>right</strong> undo: some are safe on shared branches, others rewrite history and can hurt your team.</p>
+<p>This unit is a rescue guide: find your situation, apply the fix.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Discarding uncommitted changes (<code>git restore</code>)</li><li>Unstaging files</li><li>Fixing the last commit (<code>--amend</code>)</li><li>Undoing a pushed commit safely (<code>git revert</code>)</li><li>Moving a branch back (<code>git reset</code> soft, mixed, hard)</li><li>Recovering "lost" commits with <code>git reflog</code></li><li>Moving commits to the right branch</li><li>Removing secrets from a repository</li><li>Golden rules for shared branches</li></ul></div></aside>
+<h2>Quick decision table</h2>
+<div class="static-table"><table><thead><tr><th>Situation</th><th>Command</th></tr></thead><tbody><tr><td>Throw away changes to a file (not committed)</td><td><code>git restore file</code></td></tr><tr><td>Unstage a file (keep changes)</td><td><code>git restore --staged file</code></td></tr><tr><td>Fix the last commit's message or add a forgotten file (not pushed)</td><td><code>git commit --amend</code></td></tr><tr><td>Undo a commit that's already pushed/shared</td><td><code>git revert &lt;hash&gt;</code></td></tr><tr><td>Undo local commits but keep the changes</td><td><code>git reset --soft HEAD~1</code> or <code>git reset HEAD~1</code></td></tr><tr><td>Completely discard local commits and changes</td><td><code>git reset --hard &lt;hash&gt;</code> (careful!)</td></tr><tr><td>Find a commit you "lost" after a reset</td><td><code>git reflog</code></td></tr><tr><td>Get one file back from an old commit</td><td><code>git restore --source &lt;hash&gt; file</code></td></tr></tbody></table></div>
+<p><code>HEAD~1</code> means "one commit before HEAD"; <code>HEAD~3</code> is three back.</p>
+<h2>1. Discard uncommitted changes</h2>
+<p>You edited <code>index.html</code> and want the last committed version back:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git restore index.html</code></pre></figure>
+<p>All files: <code>git restore .</code></p>
+<aside class="callout callout-warning"><p class="callout-title">No undo for this one</p><div class="callout-body"><p>Uncommitted changes discarded with <code>restore</code> (or <code>reset --hard</code>) are gone; Git never saved them. Commit or stash first if you might want them.</p></div></aside>
+<p>Delete untracked files (new files never added): <code>git clean -n</code> to preview, <code>git clean -fd</code> to delete.</p>
+<h2>2. Unstage</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git add .
+# oops, I didn&#x27;t want notes.txt in this commit
+git restore --staged notes.txt</code></pre></figure>
+<h2>3. Fix the last commit (amend)</h2>
+<p>Typo in the message:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git commit --amend -m &quot;Add contact form validation&quot;</code></pre></figure>
+<p>Forgot a file:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git add forgotten.css
+git commit --amend --no-edit</code></pre></figure>
+<p><code>--amend</code> <strong>replaces</strong> the last commit with a new one (new hash). Only amend commits you haven't pushed; if you already pushed, prefer a new commit.</p>
+<h2>4. Undo a pushed commit: revert</h2>
+<p><code>git revert</code> creates a <strong>new commit</strong> that does the opposite of an old one. History is kept, so it's safe on shared branches:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git log --oneline
+# a1b2c3d Change prices (this broke the checkout)
+git revert a1b2c3d
+git push</code></pre></figure>
+<p>To revert a merge commit you must say which parent to keep: <code>git revert -m 1 &lt;merge-hash&gt;</code>.</p>
+<h2>5. Reset: move the branch back</h2>
+<p><code>git reset</code> moves the current branch label to an older commit. Three modes:</p>
+<div class="static-table"><table><thead><tr><th>Mode</th><th>Commits after the target</th><th>Changes in those commits</th></tr></thead><tbody><tr><td><code>--soft</code></td><td>Removed from branch</td><td>Kept, <strong>staged</strong></td></tr><tr><td><code>--mixed</code> (default)</td><td>Removed from branch</td><td>Kept, <strong>unstaged</strong> in your files</td></tr><tr><td><code>--hard</code></td><td>Removed from branch</td><td><strong>Discarded</strong> (files match the target)</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git reset --soft HEAD~1     # undo last commit, keep everything staged (re-commit differently)
+git reset HEAD~2            # undo last 2 commits, keep changes in files
+git reset --hard HEAD~1     # throw away the last commit and its changes
+git reset --hard origin/main  # make local main exactly match GitHub</code></pre></figure>
+<p>Use reset only on commits that <strong>haven't been pushed</strong> (or on your own branch nobody else uses).</p>
+<h2>6. The safety net: reflog</h2>
+<p>Git keeps a log of where HEAD has been, even after resets and branch deletions (for around 90 days by default):</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git reflog</code></pre></figure>
+<figure class="static-code"><pre><code>9c8d7e6 HEAD@{0}: reset: moving to HEAD~1
+4f5e6d7 HEAD@{1}: commit: Add gallery page      &lt;- the &quot;lost&quot; commit
+9c8d7e6 HEAD@{2}: commit: Add intro paragraph</code></pre></figure>
+<p>Recover it:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git reset --hard 4f5e6d7          # move back to it
+# or keep current state and create a branch at the lost commit:
+git branch rescue 4f5e6d7</code></pre></figure>
+<p>The reflog is local only: it isn't on GitHub.</p>
+<h2>7. Committed to the wrong branch</h2>
+<p>You made two commits on <code>main</code> that belong on a feature branch (not pushed yet):</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git branch feature/gallery       # new branch label at the current commit (keeps the commits)
+git reset --hard HEAD~2          # move main back two commits
+git switch feature/gallery       # your commits are here</code></pre></figure>
+<p>To copy a single commit to another branch: <code>git cherry-pick &lt;hash&gt;</code> while on the target branch.</p>
+<h2>8. Get an old version of one file</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git log --oneline -- index.html               # commits that changed it
+git restore --source 3f2a1bc index.html       # bring back that version
+git commit -am &quot;Restore old home page layout&quot;</code></pre></figure>
+<p>Browse an old state without changing anything: <code>git switch --detach 3f2a1bc</code> (return with <code>git switch main</code>).</p>
+<h2>9. You committed a secret</h2>
+<p>Passwords, API keys, M-Pesa consumer secrets, <code>.env</code> files:</p>
+<ol><li><strong>Revoke/rotate the secret immediately</strong> (generate a new key in the provider's dashboard). Assume it's compromised: bots scan GitHub for keys within minutes.</li><li>Remove the file and add it to <code>.gitignore</code>.</li><li>If it was pushed, removing it in a new commit doesn't erase it from history. Use a history-rewriting tool such as <code>git filter-repo</code> or BFG Repo-Cleaner, then force-push, and ask collaborators to re-clone. GitHub's documentation on removing sensitive data explains the steps.</li><li>Enable GitHub's <strong>secret scanning</strong> and <strong>push protection</strong> where available.</li></ol>
+<p>Prevention: keep secrets in environment variables or config files outside the repo, and add them to <code>.gitignore</code> before the first commit.</p>
 <h2>Golden rules</h2>
-<ul><li><strong>Never rewrite history that others have pulled</strong> (<code>--amend</code>, <code>rebase</code>, <code>reset --hard</code>, <code>push --force</code> on shared branches). Use <code>revert</code> instead.</li><li>Commit small and often, so undoing is easy.</li><li>Before risky changes, create a branch.</li></ul>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command safely undoes a commit that is already pushed?</p><details><summary>Show answer</summary><p>git revert</p></details></li><li><p>Which command temporarily saves unfinished work?</p><details><summary>Show answer</summary><p>git stash</p></details></li><li><p>Which command can find "lost" commits?</p><details><summary>Show answer</summary><p>git reflog</p></details></li></ol></section></div><p class="static-meta">Lesson 10 of 10 in <a href="/learn/git/">Git &amp; GitHub</a> · <a href="/learn/?book=git">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/git/github-pages/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Publish a website free with GitHub Pages</a><span></span></nav></article>
+<ol><li><strong>Don't rewrite shared history</strong>: no <code>reset</code>, <code>--amend</code> or rebase on commits others have pulled. Use <code>revert</code> instead.</li><li>**Never <code>git push --force</code> to main**. If you must force-push your own branch, use <code>git push --force-with-lease</code>, which refuses if someone else pushed.</li><li>Commit often: committed work can almost always be recovered.</li><li>Before risky operations, create a backup branch: <code>git branch backup-before-reset</code>.</li><li>Read <code>git status</code> before and after every undo.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> You pushed a commit to main that broke the live website. A teammate has already pulled it. Should you use git reset --hard and force-push, or git revert? Why?</span><em>Show answer</em></summary><div class="callout-body"><p>Use <code>git revert &lt;hash&gt;</code> and push. It adds a new commit undoing the change without rewriting history, so your teammate's copy stays consistent. Reset + force-push would rewrite shared history and cause confusion or lost work for them.</p></div></details>
+<h2>Summary</h2>
+<ul><li><code>git restore</code> discards uncommitted changes; <code>--staged</code> unstages.</li><li><code>git commit --amend</code> fixes the last unpushed commit.</li><li><code>git revert</code> safely undoes pushed commits by adding an opposite commit.</li><li><code>git reset --soft/--mixed/--hard</code> moves the branch back; use it only on unpushed work.</li><li><code>git reflog</code> finds "lost" commits; <code>cherry-pick</code> copies commits; rotate any leaked secret immediately.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command safely undoes a commit that has already been pushed? (two words)</p><details><summary>Show answer</summary><p>git revert</p></details></li><li><p>Which command shows where HEAD has been, so you can find lost commits? (two words)</p><details><summary>Show answer</summary><p>git reflog</p></details></li><li><p>Which reset mode discards changes completely? (one word, without dashes)</p><details><summary>Show answer</summary><p>hard</p></details></li><li><p>Which reset mode keeps the changes staged?</p><details><summary>Show answer</summary><p>soft</p></details></li><li><p>You committed an API key and pushed it. What is the first thing to do?</p><details><summary>Show answer</summary><p>revoke it</p></details></li><li><p>Which safer force-push option refuses if someone else has pushed?</p><details><summary>Show answer</summary><p>--force-with-lease</p></details></li></ol></section></div><p class="static-meta">Lesson 12 of 12 in <a href="/learn/git/">Git &amp; GitHub</a> · <a href="/learn/?book=git">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/git/github-pages/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Publish a website free with GitHub Pages: setup, custom domains, HTTPS and automatic deploys</a><span></span></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

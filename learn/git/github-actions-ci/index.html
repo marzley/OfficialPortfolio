@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GitHub Actions and CI: run tests automatically on every push</title>
+    <meta name="description" content="Imagine every time anyone pushes code, a robot checks it: runs the tests, checks formatting, builds the app, and puts a ✅ or ❌ on the pull request…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/git/github-actions-ci/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="GitHub Actions and CI: run tests automatically on every push" />
+    <meta property="og:description" content="Imagine every time anyone pushes code, a robot checks it: runs the tests, checks formatting, builds the app, and puts a ✅ or ❌ on the pull request…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/git/github-actions-ci/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="GitHub Actions and CI: run tests automatically on every push" />
+    <meta name="twitter:description" content="Imagine every time anyone pushes code, a robot checks it: runs the tests, checks formatting, builds the app, and puts a ✅ or ❌ on the pull request…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/git/github-actions-ci/#lesson","name":"GitHub Actions and CI: run tests automatically on every push","description":"Imagine every time anyone pushes code, a robot checks it: runs the tests, checks formatting, builds the app, and puts a ✅ or ❌ on the pull request…","url":"https://marzleytechsolutions.co.ke/learn/git/github-actions-ci/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/git/#course","name":"Git & GitHub","url":"https://marzleytechsolutions.co.ke/learn/git/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Git & GitHub","item":"https://marzleytechsolutions.co.ke/learn/git/"},{"@type":"ListItem","position":4,"name":"GitHub Actions and CI: run tests automatically on every push","item":"https://marzleytechsolutions.co.ke/learn/git/github-actions-ci/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=19f64783be" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/git/">Git &amp; GitHub</a> / <span>GitHub Actions and CI: run tests automatically on every push</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=git&amp;lesson=github-actions-ci"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>GitHub Actions and CI: run tests automatically on every push</h1>
+<p>Imagine every time anyone pushes code, a robot checks it: runs the tests, checks formatting, builds the app, and puts a ✅ or ❌ on the pull request. That's <strong>Continuous Integration (CI)</strong>, and <strong>GitHub Actions</strong> is GitHub's built-in tool for it. Teams use CI so broken code never reaches <code>main</code>, and <strong>Continuous Deployment (CD)</strong> goes one step further by publishing the app automatically when tests pass.</p>
+<p>Knowing the basics of CI is a big plus in developer and DevOps job interviews.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>What CI/CD is and why teams use it</li><li>How GitHub Actions works: workflows, events, jobs, steps, runners</li><li>Writing your first workflow in YAML</li><li>Testing Python and JavaScript projects automatically</li><li>Status checks on pull requests and branch protection</li><li>Secrets in Actions</li><li>Deploying automatically, and free usage limits</li></ul></div></aside>
+<h2>Why CI?</h2>
+<div class="static-table"><table><thead><tr><th>Without CI</th><th>With CI</th></tr></thead><tbody><tr><td>"It works on my computer"</td><td>Tests run on a clean machine every time</td></tr><tr><td>Bugs found by customers</td><td>Bugs found minutes after the push</td></tr><tr><td>Reviewers check everything by hand</td><td>Robots check tests and style; humans review logic</td></tr><tr><td>Manual, error-prone deployments</td><td>One reliable, repeatable process</td></tr></tbody></table></div>
+<h2>How GitHub Actions works</h2>
+<div class="static-table"><table><thead><tr><th>Term</th><th>Meaning</th></tr></thead><tbody><tr><td><strong>Workflow</strong></td><td>A YAML file in <code>.github/workflows/</code> describing automation</td></tr><tr><td><strong>Event (trigger)</strong></td><td>What starts it: <code>push</code>, <code>pull_request</code>, a schedule, a manual button</td></tr><tr><td><strong>Job</strong></td><td>A group of steps that runs on one machine</td></tr><tr><td><strong>Step</strong></td><td>A single command (<code>run:</code>) or a reusable action (<code>uses:</code>)</td></tr><tr><td><strong>Runner</strong></td><td>The virtual machine (Ubuntu, Windows or macOS) that runs the job</td></tr><tr><td><strong>Action</strong></td><td>A reusable building block, e.g. <code>actions/checkout</code> to download your code</td></tr></tbody></table></div>
+<h2>YAML in 60 seconds</h2>
+<p>YAML uses <strong>indentation with spaces</strong> (never tabs) to show structure:</p>
+<figure class="static-code"><figcaption>YAML</figcaption><pre><code class="language-yaml">name: My workflow      # key: value
+on: [push]             # a list
+jobs:                  # nested mapping
+  test:
+    runs-on: ubuntu-latest</code></pre></figure>
+<p>Most Actions errors are indentation mistakes.</p>
+<h2>Your first workflow</h2>
+<p>Create <code>.github/workflows/hello.yml</code>:</p>
+<figure class="static-code"><figcaption>YAML</figcaption><pre><code class="language-yaml">name: Hello CI
+on:
+  push:
+  pull_request:
+jobs:
+  say-hello:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Show files
+        run: ls -la
+      - name: Greet
+        run: echo &quot;Hello from GitHub Actions on commit ${{ github.sha }}&quot;</code></pre></figure>
+<p>Commit and push, then open the repository's <strong>Actions</strong> tab to watch it run and read the logs.</p>
+<h2>Testing a Python project</h2>
+<p>Project layout:</p>
+<figure class="static-code"><pre><code>calculator/
+├── calc.py
+├── test_calc.py
+├── requirements.txt      # pytest
+└── .github/workflows/tests.yml</code></pre></figure>
+<p><code>calc.py</code> and its test:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def vat(amount, rate=0.16):
+    return round(amount * rate, 2)
+
+def test_vat():
+    assert vat(1000) == 160.0
+    assert vat(250, 0.08) == 20.0
+
+test_vat()
+print(&quot;tests passed&quot;)</code></pre></figure>
+<p>The workflow:</p>
+<figure class="static-code"><figcaption>YAML</figcaption><pre><code class="language-yaml">name: Tests
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [&quot;3.11&quot;, &quot;3.12&quot;]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -r requirements.txt
+      - run: pytest -q</code></pre></figure>
+<p>The <strong>matrix</strong> runs the tests on two Python versions in parallel.</p>
+<h2>Testing a JavaScript project</h2>
+<figure class="static-code"><figcaption>YAML</figcaption><pre><code class="language-yaml">name: Node tests
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test</code></pre></figure>
+<p><code>npm ci</code> installs exactly what's in <code>package-lock.json</code>, which keeps builds repeatable.</p>
+<h2>Status checks and branch protection</h2>
+<p>When a workflow runs on a pull request, GitHub shows ✅ or ❌ next to it. To <strong>require</strong> passing checks before merging:</p>
+<p>Repository → <strong>Settings → Branches (or Rules → Rulesets)</strong> → add a rule for <code>main</code>:</p>
+<ul><li>Require a pull request before merging (and optionally approvals)</li><li>Require status checks to pass (select your workflow job)</li><li>Block force pushes</li></ul>
+<p>Now nobody, including you, can merge broken code into <code>main</code> by accident.</p>
+<h2>Secrets in Actions</h2>
+<p>Deployments need passwords or API keys. Never put them in the YAML. Add them in <strong>Settings → Secrets and variables → Actions</strong>, then use them:</p>
+<figure class="static-code"><figcaption>YAML</figcaption><pre><code class="language-yaml">- name: Deploy over SSH
+  run: ./deploy.sh
+  env:
+    SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}</code></pre></figure>
+<p>GitHub hides secret values in logs. Workflows triggered from forks don't get your secrets by default, which protects you from malicious pull requests.</p>
+<h2>Scheduled and manual workflows</h2>
+<figure class="static-code"><figcaption>YAML</figcaption><pre><code class="language-yaml">on:
+  schedule:
+    - cron: &quot;0 5 * * 1&quot;     # every Monday 05:00 UTC (08:00 in Kenya)
+  workflow_dispatch:         # adds a &quot;Run workflow&quot; button</code></pre></figure>
+<p>Useful for nightly tests, checking for broken links, or generating reports.</p>
+<h2>Continuous deployment</h2>
+<p>After tests pass, a job can deploy: to GitHub Pages (see the Pages lesson), to a server over SSH, or to Netlify/Vercel/Cloudflare. Use <code>needs:</code> so deploy runs only when tests succeed:</p>
+<figure class="static-code"><figcaption>YAML</figcaption><pre><code class="language-yaml">jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci &amp;&amp; npm test
+  deploy:
+    needs: test
+    if: github.ref == &#x27;refs/heads/main&#x27;
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo &quot;deploying...&quot;</code></pre></figure>
+<h2>Costs and limits</h2>
+<ul><li>Public repositories get free standard runner minutes.</li><li>Private repositories get a monthly allowance of free minutes on free plans, then paid usage (check GitHub's current pricing).</li><li>Keep workflows fast: cache dependencies, run only what's needed, cancel outdated runs.</li></ul>
+<h2>Security tips</h2>
+<ul><li>Pin third-party actions to a version (<code>@v4</code>) or a full commit hash for sensitive workflows.</li><li>Give workflows the minimum <code>permissions:</code> they need.</li><li>Review workflows in pull requests from outsiders carefully.</li></ul>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A teammate's pull request shows a red ❌ from the Tests workflow, but they say "the code works on my laptop". What should the team do?</span><em>Show answer</em></summary><div class="callout-body"><p>Open the Actions log to see which test failed and why (often a missing dependency, an environment difference or a real bug). Fix the code or the test on the branch and push; the workflow re-runs automatically. Don't merge or disable the check until it's green.</p></div></details>
+<h2>Summary</h2>
+<ul><li>CI runs tests automatically on each push/PR; CD deploys automatically after tests pass.</li><li>Workflows are YAML files in <code>.github/workflows/</code>, triggered by events, made of jobs and steps on runners.</li><li>Use setup actions for Python/Node, matrices for multiple versions, and <code>npm ci</code>/<code>pip install -r</code> for repeatable installs.</li><li>Protect <code>main</code> with required status checks; store credentials in Actions secrets.</li><li>Use <code>needs:</code> and conditions to deploy only after tests pass on main.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>In which folder do GitHub Actions workflow files live? (path)</p><details><summary>Show answer</summary><p>.github/workflows</p></details></li><li><p>What does CI stand for?</p><details><summary>Show answer</summary><p>Continuous Integration</p></details></li><li><p>Which key makes a job wait for another job to succeed?</p><details><summary>Show answer</summary><p>needs</p></details></li><li><p>Should you write API keys directly in the workflow YAML? (yes/no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which action downloads your repository code into the runner? (e.g. actions/...)</p><details><summary>Show answer</summary><p>actions/checkout</p></details></li><li><p>YAML indentation must use spaces or tabs?</p><details><summary>Show answer</summary><p>spaces</p></details></li></ol></section></div><p class="static-meta">Lesson 9 of 12 in <a href="/learn/git/">Git &amp; GitHub</a> · <a href="/learn/?book=git">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/git/pull-requests-teamwork/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Pull requests, forks and working in a team</a><a class="btn btn-solid btn-sm" href="/learn/git/issues-open-source/">Issues, project boards and contributing to open source: your first real contribution <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

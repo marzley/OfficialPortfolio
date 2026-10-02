@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Using SQL from code: Python sqlite3, parameters, SQL…</title>
+    <meta name="description" content="Typing queries into a tool is great for learning and analysis, but most SQL in the real world is run by programs : a website saving a sign-up form, an…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/sql/sql-from-code/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Using SQL from code: Python sqlite3, parameters, SQL…" />
+    <meta property="og:description" content="Typing queries into a tool is great for learning and analysis, but most SQL in the real world is run by programs : a website saving a sign-up form, an…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/sql/sql-from-code/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Using SQL from code: Python sqlite3, parameters, SQL…" />
+    <meta name="twitter:description" content="Typing queries into a tool is great for learning and analysis, but most SQL in the real world is run by programs : a website saving a sign-up form, an…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/sql/sql-from-code/#lesson","name":"Using SQL from code: Python sqlite3, parameters, SQL injection and connecting apps to MySQL/PostgreSQL","description":"Typing queries into a tool is great for learning and analysis, but most SQL in the real world is run by programs : a website saving a sign-up form, an…","url":"https://marzleytechsolutions.co.ke/learn/sql/sql-from-code/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/sql/#course","name":"SQL","url":"https://marzleytechsolutions.co.ke/learn/sql/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"SQL","item":"https://marzleytechsolutions.co.ke/learn/sql/"},{"@type":"ListItem","position":4,"name":"Using SQL from code: Python sqlite3, parameters, SQL injection and connecting apps to MySQL/PostgreSQL","item":"https://marzleytechsolutions.co.ke/learn/sql/sql-from-code/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=19f64783be" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/sql/">SQL</a> / <span>Using SQL from code: Python sqlite3, parameters, SQL injection and connecting apps to MySQL/PostgreSQL</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=sql-from-code"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Using SQL from code: Python sqlite3, parameters, SQL injection and connecting apps to MySQL/PostgreSQL</h1>
+<p>Typing queries into a tool is great for learning and analysis, but most SQL in the real world is run <strong>by programs</strong>: a website saving a sign-up form, an M-Pesa callback recording a payment, a Python script producing a daily sales report, a mobile app syncing data. This unit shows how code talks to a database, using Python's built-in <code>sqlite3</code> module (no installation needed), and the one security rule every developer must follow: <strong>never build SQL by pasting user input into a string</strong>.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>How applications connect to databases (drivers, connections, cursors)</li><li>Creating tables and inserting data from Python</li><li>Parameterised queries and why they matter</li><li>SQL injection: how attacks work and how to prevent them</li><li>Fetching results and turning them into reports</li><li>Transactions in code</li><li>Connecting to MySQL and PostgreSQL from Python, PHP and Node.js</li><li>ORMs: what they are and when to use one</li></ul></div></aside>
+<h2>How code talks to a database</h2>
+<ol><li><strong>Driver/library</strong>: code that knows how to speak to a specific database (<code>sqlite3</code>, <code>mysql-connector-python</code>, <code>psycopg</code>, PHP's PDO, Node's <code>mysql2</code>/<code>pg</code>).</li><li><strong>Connection</strong>: opened with a file path (SQLite) or host, port, database name, user and password (MySQL/PostgreSQL).</li><li><strong>Cursor / statement</strong>: sends a query and receives rows.</li><li><strong>Commit</strong>: saves changes; <strong>close</strong>: releases the connection.</li></ol>
+<h2>Your first database in Python</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import sqlite3
+
+conn = sqlite3.connect(&quot;:memory:&quot;)      # a temporary database in memory; use &quot;shop.db&quot; for a file
+cur = conn.cursor()
+
+cur.execute(&quot;&quot;&quot;
+CREATE TABLE Products (
+  ProductID INTEGER PRIMARY KEY,
+  Name TEXT NOT NULL,
+  Price INTEGER NOT NULL CHECK (Price &gt; 0)
+)&quot;&quot;&quot;)
+
+cur.execute(&quot;INSERT INTO Products (Name, Price) VALUES (?, ?)&quot;, (&quot;Laptop bag&quot;, 2500))
+cur.executemany(&quot;INSERT INTO Products (Name, Price) VALUES (?, ?)&quot;, [
+    (&quot;USB flash 32GB&quot;, 900),
+    (&quot;Wireless mouse&quot;, 1200),
+    (&quot;Bluetooth speaker&quot;, 3500),
+])
+conn.commit()
+
+for row in cur.execute(&quot;SELECT ProductID, Name, Price FROM Products ORDER BY Price DESC&quot;):
+    print(row)
+
+conn.close()</code></pre></figure>
+<ul><li><code>?</code> marks are <strong>placeholders</strong>; the values are passed separately as a tuple.</li><li><code>executemany</code> inserts many rows efficiently.</li><li>Iterating over <code>cur.execute(...)</code> gives each row as a tuple.</li></ul>
+<h2>Fetching results</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import sqlite3
+conn = sqlite3.connect(&quot;:memory:&quot;)
+conn.row_factory = sqlite3.Row          # rows behave like dictionaries
+conn.execute(&quot;CREATE TABLE Customers (Name TEXT, City TEXT)&quot;)
+conn.executemany(&quot;INSERT INTO Customers VALUES (?, ?)&quot;,
+                 [(&quot;Wanjiku&quot;, &quot;Nairobi&quot;), (&quot;Otieno&quot;, &quot;Kisumu&quot;), (&quot;Njeri&quot;, &quot;Nairobi&quot;)])
+
+one = conn.execute(&quot;SELECT COUNT(*) AS n FROM Customers&quot;).fetchone()
+print(&quot;Customers:&quot;, one[&quot;n&quot;])
+
+rows = conn.execute(&quot;SELECT Name, City FROM Customers WHERE City = ?&quot;, (&quot;Nairobi&quot;,)).fetchall()
+for r in rows:
+    print(r[&quot;Name&quot;], &quot;lives in&quot;, r[&quot;City&quot;])</code></pre></figure>
+<p>Note <code>(&quot;Nairobi&quot;,)</code>: a one-item tuple needs the trailing comma.</p>
+<h2>SQL injection: the most famous database attack</h2>
+<p>Imagine a login check written like this:</p>
+<figure class="static-code"><figcaption>Python</figcaption><pre><code class="language-python"># DANGEROUS – never do this
+query = &quot;SELECT * FROM Users WHERE username = &#x27;&quot; + username + &quot;&#x27; AND password = &#x27;&quot; + password + &quot;&#x27;&quot;</code></pre></figure>
+<p>If an attacker types the username <code>admin&#x27; --</code>, the query becomes:</p>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">SELECT * FROM Users WHERE username = &#x27;admin&#x27; --&#x27; AND password = &#x27;...&#x27;</code></pre></figure>
+<p><code>--</code> starts a comment, so the password check disappears and the attacker logs in as admin. Other inputs can read every table or delete data. SQL injection has caused many real data breaches.</p>
+<p>Here's a safe demonstration of the difference:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import sqlite3
+conn = sqlite3.connect(&quot;:memory:&quot;)
+conn.execute(&quot;CREATE TABLE Users (username TEXT, secret TEXT)&quot;)
+conn.executemany(&quot;INSERT INTO Users VALUES (?, ?)&quot;, [(&quot;admin&quot;, &quot;top-secret&quot;), (&quot;amina&quot;, &quot;my-notes&quot;)])
+
+evil = &quot;nobody&#x27; OR &#x27;1&#x27;=&#x27;1&quot;
+
+unsafe = &quot;SELECT username FROM Users WHERE username = &#x27;&quot; + evil + &quot;&#x27;&quot;
+print(&quot;Unsafe query returns:&quot;, conn.execute(unsafe).fetchall())      # every user leaks
+
+safe = conn.execute(&quot;SELECT username FROM Users WHERE username = ?&quot;, (evil,)).fetchall()
+print(&quot;Parameterised query returns:&quot;, safe)                          # nobody has that odd name</code></pre></figure>
+<p>With placeholders, the database treats the input purely as <strong>data</strong>, never as SQL code.</p>
+<aside class="callout callout-warning"><p class="callout-title">The rules</p><div class="callout-body"><ul><li>Always use parameters (<code>?</code>, <code>%s</code>, <code>:name</code>, depending on the library) for every value that comes from users, files, URLs or APIs.</li><li>Never format SQL with <code>+</code>, f-strings or <code>.format()</code> using outside input.</li><li>Table and column names can't be parameters; if they must vary, pick them from a fixed allow-list in your code.</li><li>Give the app's database user only the permissions it needs.</li><li>Store passwords hashed (bcrypt/argon2), never as plain text.</li></ul></div></aside>
+<h2>Transactions in code</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import sqlite3
+conn = sqlite3.connect(&quot;:memory:&quot;)
+conn.execute(&quot;CREATE TABLE Accounts (Name TEXT PRIMARY KEY, Balance INTEGER CHECK (Balance &gt;= 0))&quot;)
+conn.executemany(&quot;INSERT INTO Accounts VALUES (?, ?)&quot;, [(&quot;Wanjiku&quot;, 5000), (&quot;Otieno&quot;, 1000)])
+conn.commit()
+
+def transfer(sender, receiver, amount):
+    try:
+        with conn:      # commits if the block succeeds, rolls back if it raises an error
+            conn.execute(&quot;UPDATE Accounts SET Balance = Balance + ? WHERE Name = ?&quot;, (amount, receiver))
+            conn.execute(&quot;UPDATE Accounts SET Balance = Balance - ? WHERE Name = ?&quot;, (amount, sender))
+        print(&quot;Sent&quot;, amount)
+    except sqlite3.IntegrityError:
+        print(&quot;Transfer of&quot;, amount, &quot;failed: insufficient balance, nothing changed&quot;)
+
+transfer(&quot;Wanjiku&quot;, &quot;Otieno&quot;, 2000)
+transfer(&quot;Wanjiku&quot;, &quot;Otieno&quot;, 9000)
+print(conn.execute(&quot;SELECT * FROM Accounts&quot;).fetchall())</code></pre></figure>
+<p>The second transfer adds 9,000 to Otieno first, then fails the CHECK on Wanjiku's balance, so the whole transaction is rolled back and Otieno's balance is restored.</p>
+<h2>A daily report script</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import sqlite3, csv, io
+conn = sqlite3.connect(&quot;:memory:&quot;)
+conn.executescript(&quot;&quot;&quot;
+CREATE TABLE Sales (Day TEXT, Product TEXT, Qty INTEGER, Price INTEGER);
+INSERT INTO Sales VALUES (&#x27;2026-09-01&#x27;,&#x27;Charger&#x27;,3,800), (&#x27;2026-09-01&#x27;,&#x27;Mouse&#x27;,1,1200),
+                         (&#x27;2026-09-02&#x27;,&#x27;Charger&#x27;,2,800), (&#x27;2026-09-02&#x27;,&#x27;Speaker&#x27;,1,3500);
+&quot;&quot;&quot;)
+rows = conn.execute(&quot;&quot;&quot;
+  SELECT Day, SUM(Qty) AS Units, SUM(Qty * Price) AS Revenue
+  FROM Sales GROUP BY Day ORDER BY Day
+&quot;&quot;&quot;).fetchall()
+
+out = io.StringIO()               # in a real script: open(&quot;report.csv&quot;, &quot;w&quot;, newline=&quot;&quot;)
+w = csv.writer(out)
+w.writerow([&quot;Day&quot;, &quot;Units&quot;, &quot;Revenue&quot;])
+w.writerows(rows)
+print(out.getvalue())</code></pre></figure>
+<p>Schedule a script like this with cron (Linux) or Task Scheduler (Windows) and email the CSV every morning.</p>
+<h2>Connecting to MySQL and PostgreSQL</h2>
+<p>The pattern is the same; only the driver and placeholder style change.</p>
+<p><strong>Python + MySQL</strong> (<code>pip install mysql-connector-python</code>):</p>
+<figure class="static-code"><figcaption>Python</figcaption><pre><code class="language-python">import mysql.connector
+conn = mysql.connector.connect(host=&quot;localhost&quot;, user=&quot;shop_app&quot;, password=os.environ[&quot;DB_PASS&quot;], database=&quot;shop&quot;)
+cur = conn.cursor()
+cur.execute(&quot;SELECT Name, Price FROM Products WHERE Price &lt; %s&quot;, (1000,))
+print(cur.fetchall())</code></pre></figure>
+<p><strong>Python + PostgreSQL</strong> (<code>pip install psycopg</code>): same <code>%s</code> placeholders.</p>
+<p><strong>PHP (PDO)</strong>:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">$pdo = new PDO(&#x27;mysql:host=localhost;dbname=shop;charset=utf8mb4&#x27;, &#x27;shop_app&#x27;, getenv(&#x27;DB_PASS&#x27;));
+$stmt = $pdo-&gt;prepare(&#x27;SELECT Name, Price FROM Products WHERE Category = ?&#x27;);
+$stmt-&gt;execute([$_GET[&#x27;category&#x27;] ?? &#x27;&#x27;]);
+$products = $stmt-&gt;fetchAll(PDO::FETCH_ASSOC);</code></pre></figure>
+<p><strong>Node.js (mysql2)</strong>:</p>
+<figure class="static-code"><figcaption>JS</figcaption><pre><code class="language-js">const [rows] = await pool.execute(&#x27;SELECT Name FROM Customers WHERE City = ?&#x27;, [city]);</code></pre></figure>
+<aside class="callout callout-tip"><p class="callout-title">Keep credentials out of code</p><div class="callout-body"><p>Read database passwords from environment variables or a config file <strong>outside</strong> your public web folder, and never commit them to Git.</p></div></aside>
+<h2>ORMs</h2>
+<p>An <strong>ORM</strong> (Object-Relational Mapper) lets you work with tables as classes and objects: SQLAlchemy and Django ORM (Python), Eloquent (Laravel/PHP), Prisma and Sequelize (Node.js), Room (Android). Benefits: less repetitive code, automatic parameters, migrations. Downsides: it can hide slow queries. Learn SQL first; then ORMs make sense and you can debug them.</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A PHP page builds <code>&quot;SELECT * FROM Orders WHERE OrderID = &quot; . $_GET[&#x27;id&#x27;]</code>. An attacker visits <code>orders.php?id=1 OR 1=1</code>. What happens, and how do you fix it?</span><em>Show answer</em></summary><div class="callout-body"><p>The query becomes <code>... WHERE OrderID = 1 OR 1=1</code>, which is true for every row, so all orders leak. Fix: a prepared statement with a placeholder (<code>WHERE OrderID = ?</code> and <code>execute([$_GET[&#x27;id&#x27;]])</code>), plus checking that the user is allowed to see that order.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Programs use a driver to open a connection, run queries through a cursor/statement, commit changes and close.</li><li>Python's sqlite3 needs no installation: <code>execute</code>, <code>executemany</code>, <code>fetchone</code>, <code>fetchall</code>, <code>row_factory</code>.</li><li>Always use parameterised queries; string-built SQL allows SQL injection.</li><li>Use transactions (<code>with conn:</code>) so multi-step changes succeed or fail together.</li><li>MySQL/PostgreSQL work the same way with their own drivers and placeholders; keep credentials out of code; ORMs build on SQL knowledge.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which placeholder symbol does Python's sqlite3 use?</p><details><summary>Show answer</summary><p>?</p></details></li><li><p>What is the attack where user input changes the meaning of a SQL query? (two words)</p><details><summary>Show answer</summary><p>SQL injection</p></details></li><li><p>Which method inserts many rows in one call?</p><details><summary>Show answer</summary><p>executemany</p></details></li><li><p>Which method returns just one row?</p><details><summary>Show answer</summary><p>fetchone</p></details></li><li><p>Can a table name be passed as a query parameter? (yes/no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>What does ORM stand for?</p><details><summary>Show answer</summary><p>Object-Relational Mapper</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Using the sample shop database, write the query an app would run (with the city typed in directly for now) to list the <strong>Name</strong> and <strong>Phone</strong> of customers in <strong>Kisumu</strong>, sorted by name.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=sql-from-code#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 14 of 16 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/window-functions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Window functions: rankings, running totals and more</a><a class="btn btn-solid btn-sm" href="/learn/sql/project-sales-report/">Project: a business sales report in SQL <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>
