@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Switching, MAC addresses, ARP and VLANs | Networking</title>
-    <meta name="description" content="Free Networking lesson: Switching, MAC addresses, ARP and VLANs." />
+    <title>Switching, MAC addresses, ARP and VLANs: how LANs really…</title>
+    <meta name="description" content="Inside every office, school and data centre, switches connect the computers, printers, phones, access points and cameras. They work at layer 2 using…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/networking/switching-vlans/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Switching, MAC addresses, ARP and VLANs | Networking" />
-    <meta property="og:description" content="Free Networking lesson: Switching, MAC addresses, ARP and VLANs." />
+    <meta property="og:title" content="Switching, MAC addresses, ARP and VLANs: how LANs really…" />
+    <meta property="og:description" content="Inside every office, school and data centre, switches connect the computers, printers, phones, access points and cameras. They work at layer 2 using…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/networking/switching-vlans/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Switching, MAC addresses, ARP and VLANs | Networking" />
-    <meta name="twitter:description" content="Free Networking lesson: Switching, MAC addresses, ARP and VLANs." />
+    <meta name="twitter:title" content="Switching, MAC addresses, ARP and VLANs: how LANs really…" />
+    <meta name="twitter:description" content="Inside every office, school and data centre, switches connect the computers, printers, phones, access points and cameras. They work at layer 2 using…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/networking/switching-vlans/#lesson","name":"Switching, MAC addresses, ARP and VLANs","description":"Free Networking lesson: Switching, MAC addresses, ARP and VLANs.","url":"https://marzleytechsolutions.co.ke/learn/networking/switching-vlans/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/networking/#course","name":"Networking","url":"https://marzleytechsolutions.co.ke/learn/networking/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Networking","item":"https://marzleytechsolutions.co.ke/learn/networking/"},{"@type":"ListItem","position":4,"name":"Switching, MAC addresses, ARP and VLANs","item":"https://marzleytechsolutions.co.ke/learn/networking/switching-vlans/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/networking/switching-vlans/#lesson","name":"Switching, MAC addresses, ARP and VLANs: how LANs really work, trunks, spanning tree and PoE","description":"Inside every office, school and data centre, switches connect the computers, printers, phones, access points and cameras. They work at layer 2 using…","url":"https://marzleytechsolutions.co.ke/learn/networking/switching-vlans/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/networking/#course","name":"Networking","url":"https://marzleytechsolutions.co.ke/learn/networking/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Networking","item":"https://marzleytechsolutions.co.ke/learn/networking/"},{"@type":"ListItem","position":4,"name":"Switching, MAC addresses, ARP and VLANs: how LANs really work, trunks, spanning tree and PoE","item":"https://marzleytechsolutions.co.ke/learn/networking/switching-vlans/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,32 +36,91 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/networking/">Networking</a> / <span>Switching, MAC addresses, ARP and VLANs</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=networking&amp;lesson=switching-vlans"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Switching, MAC addresses, ARP and VLANs</h1>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/networking/">Networking</a> / <span>Switching, MAC addresses, ARP and VLANs: how LANs really work, trunks, spanning tree and PoE</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=networking&amp;lesson=switching-vlans"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Switching, MAC addresses, ARP and VLANs: how LANs really work, trunks, spanning tree and PoE</h1>
+<p>Inside every office, school and data centre, <strong>switches</strong> connect the computers, printers, phones, access points and cameras. They work at <strong>layer 2</strong> using <strong>MAC addresses</strong>, deciding which port each frame should go out of. <strong>VLANs</strong> let one physical switch act like several separate networks, so staff, students, guests and CCTV can share the same cabling but stay apart. This unit explains how switches learn and forward, how ARP links IP addresses to MAC addresses, and how VLANs, trunks and spanning tree are used in real networks.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>MAC addresses: format, OUI, unicast/broadcast</li><li>How a switch learns MAC addresses and forwards frames</li><li>Collision and broadcast domains; hubs vs switches</li><li>ARP: finding a MAC address from an IP address</li><li>VLANs: why and how, access vs trunk ports, 802.1Q tagging, native VLAN</li><li>Inter-VLAN routing</li><li>Spanning Tree Protocol and loops</li><li>Managed vs unmanaged switches, PoE, port security</li><li>Basic Cisco switch commands</li></ul></div></aside>
 <h2>MAC addresses</h2>
-<p>Every network card has a <strong>MAC address</strong>: 48 bits written in hex, e.g. <code>3C:52:82:1A:0F:9B</code>. The first half (OUI) identifies the maker. MAC addresses are used for delivery <strong>inside</strong> a LAN (layer 2); IP addresses for delivery <strong>between</strong> networks (layer 3).</p>
-<h2>How a switch learns</h2>
-<p>A switch keeps a <strong>MAC address table</strong> (CAM table):</p>
-<ol><li>A frame arrives on port 3 from MAC A → the switch <strong>learns</strong> "A is on port 3".</li><li>If it knows the destination's port, it <strong>forwards</strong> only there.</li><li>If not, it <strong>floods</strong> the frame out of all other ports.</li><li>Entries age out after about 5 minutes.</li></ol>
-<p>This is why switches are much better than old <strong>hubs</strong>, which repeated everything to everyone.</p>
-<h2>ARP: finding the MAC for an IP</h2>
-<p>Before sending to 192.168.1.20 on the same LAN, a PC must know its MAC. It <strong>broadcasts</strong> an ARP request: "Who has 192.168.1.20? Tell 192.168.1.5." The owner replies with its MAC, which is cached. See yours with <code>arp -a</code>.</p>
-<p>For addresses in other networks, the PC ARPs for the <strong>gateway's</strong> MAC instead.</p>
-<h2>VLANs</h2>
-<p>A <strong>VLAN</strong> (Virtual LAN) splits one physical switch into several separate networks. Examples in a school: VLAN 10 Staff, VLAN 20 Students, VLAN 30 Guests Wi-Fi, VLAN 40 CCTV.</p>
-<p>Benefits: security (students can't reach the finance PCs), smaller broadcast areas, and flexible moves.</p>
-<ul><li><strong>Access port</strong>: belongs to one VLAN (for PCs, printers).</li><li><strong>Trunk port</strong>: carries many VLANs between switches or to a router, <strong>tagging</strong> each frame with its VLAN ID (<strong>IEEE 802.1Q</strong>, 12 bits → VLANs 1–4094).</li><li>VLANs talk to each other only through a <strong>router</strong> or <strong>layer 3 switch</strong> (inter-VLAN routing, "router on a stick").</li><li>Each VLAN normally gets its own <strong>IP subnet</strong>, e.g. VLAN 10 = 10.10.10.0/24.</li></ul>
-<h2>Loops and STP</h2>
-<p>Redundant cables between switches create <strong>loops</strong> that can flood a network in seconds (broadcast storm). <strong>Spanning Tree Protocol (STP)</strong> blocks extra paths and re-enables them if a link fails.</p>
-<h2>Cisco example</h2>
-<figure class="static-code"><pre><code>Switch(config)# vlan 20
-Switch(config-vlan)# name STUDENTS
-Switch(config)# interface fa0/5
-Switch(config-if)# switchport mode access
-Switch(config-if)# switchport access vlan 20
-Switch(config)# interface gi0/1
-Switch(config-if)# switchport mode trunk</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>How many bits long is a MAC address?</p><details><summary>Show answer</summary><p>48</p></details></li><li><p>Which protocol finds the MAC address for a known IPv4 address?</p><details><summary>Show answer</summary><p>ARP</p></details></li><li><p>What does a switch do with a frame for an unknown destination MAC?</p><details><summary>Show answer</summary><p>flood</p></details></li><li><p>Which standard tags VLANs on trunk links?</p><details><summary>Show answer</summary><p>802.1Q</p></details></li><li><p>What kind of port carries many VLANs between switches?</p><details><summary>Show answer</summary><p>trunk</p></details></li><li><p>Which protocol prevents loops between switches?</p><details><summary>Show answer</summary><p>STP</p></details></li></ol></section></div><p class="static-meta">Lesson 16 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/nat-routing/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> NAT, gateways and routing</a><a class="btn btn-solid btn-sm" href="/learn/networking/packet-tracer-first-lab/">Your first lab in Cisco Packet Tracer <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<p>A <strong>MAC (Media Access Control) address</strong> is a <strong>48-bit</strong> hardware address burned into each network interface (Ethernet card, Wi-Fi card, phone):</p>
+<figure class="static-code"><pre><code>3C:52:82:1A:0F:9B      (Linux/macOS style)
+3C-52-82-1A-0F-9B      (Windows)
+3c52.821a.0f9b         (Cisco)</code></pre></figure>
+<ul><li>The first 24 bits are the <strong>OUI</strong> (Organisationally Unique Identifier) showing the manufacturer.</li><li><code>FF:FF:FF:FF:FF:FF</code> is the <strong>broadcast</strong> MAC: every device on the LAN receives it.</li><li>MAC addresses only matter on the <strong>local</strong> network; routers replace them at every hop.</li><li>Phones and laptops often use <strong>random/private MAC addresses</strong> per Wi-Fi network for privacy, which matters if you use MAC-based reservations or filtering.</li></ul>
+<p>Find yours: <code>ipconfig /all</code> (Physical Address), <code>ip link</code> (Linux).</p>
+<h2>How a switch works</h2>
+<p>A switch keeps a <strong>MAC address table</strong> (CAM table) mapping MAC addresses to ports.</p>
+<ol><li><strong>Learn</strong>: when a frame arrives, the switch records the <strong>source</strong> MAC and the port it came in on.</li><li><strong>Forward</strong>: it looks up the <strong>destination</strong> MAC:</li><li>Known → send out only that port.</li><li>Unknown → <strong>flood</strong> out all ports except the incoming one (the reply will teach it where that device is).</li><li>Broadcast → flood to all ports in the VLAN.</li><li><strong>Age out</strong>: entries not seen for a while (typically 5 minutes) are removed.</li></ol>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">mac_table = {}
+frames = [  # (in_port, src_mac, dst_mac)
+    (1, &quot;AA&quot;, &quot;BB&quot;),
+    (2, &quot;BB&quot;, &quot;AA&quot;),
+    (3, &quot;CC&quot;, &quot;FF&quot;),       # FF = broadcast
+    (1, &quot;AA&quot;, &quot;CC&quot;),
+]
+ports = [1, 2, 3, 4]
+for port, src, dst in frames:
+    mac_table[src] = port                       # learn
+    if dst == &quot;FF&quot; or dst not in mac_table:
+        out = [p for p in ports if p != port]   # flood
+        action = &quot;flood&quot;
+    else:
+        out = [mac_table[dst]]
+        action = &quot;forward&quot;
+    print(f&quot;frame {src}-&gt;{dst} in port {port}: {action} to {out}; table {mac_table}&quot;)</code></pre></figure>
+<h2>Collision and broadcast domains</h2>
+<div class="static-table"><table><thead><tr><th>Device</th><th>Collision domain</th><th>Broadcast domain</th></tr></thead><tbody><tr><td><strong>Hub</strong> (old)</td><td>All ports share one (only one device can talk at a time)</td><td>One</td></tr><tr><td><strong>Switch</strong></td><td>Each port is its own (full duplex, no collisions)</td><td>One per VLAN</td></tr><tr><td><strong>Router</strong></td><td>Each interface separate</td><td>Each interface separate: routers stop broadcasts</td></tr></tbody></table></div>
+<p>That's why hubs disappeared: switches let every device send and receive at full speed simultaneously.</p>
+<h2>ARP: Address Resolution Protocol</h2>
+<p>To send a frame to <code>192.168.1.50</code> on the same LAN, a PC needs its MAC address. ARP finds it:</p>
+<ol><li>PC broadcasts: "<strong>Who has 192.168.1.50? Tell 192.168.1.20</strong>" (destination MAC FF:FF:FF:FF:FF:FF).</li><li>The device with that IP replies directly: "<strong>192.168.1.50 is at 3C:52:82:1A:0F:9B</strong>".</li><li>The PC stores the answer in its <strong>ARP cache</strong> for a few minutes.</li></ol>
+<p>For destinations on <strong>other</strong> networks, the PC ARPs for the <strong>gateway's</strong> MAC, not the remote host's.</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">arp -a          # Windows/Linux/macOS: view the ARP cache
+ip neigh        # Linux</code></pre></figure>
+<p><strong>ARP spoofing</strong>: an attacker on the LAN replies falsely ("I'm the gateway"), intercepting traffic. Managed switches defend with <strong>Dynamic ARP Inspection</strong>. IPv6 uses NDP instead of ARP.</p>
+<h2>VLANs: Virtual LANs</h2>
+<p>A <strong>VLAN</strong> splits one physical switch (or many) into separate logical networks. Each VLAN is its <strong>own broadcast domain</strong> and usually its <strong>own subnet</strong>.</p>
+<div class="static-table"><table><thead><tr><th>Why VLANs</th><th>Example</th></tr></thead><tbody><tr><td><strong>Security</strong></td><td>Guests and CCTV can't reach staff PCs or servers</td></tr><tr><td><strong>Smaller broadcast domains</strong></td><td>Less broadcast traffic per device</td></tr><tr><td><strong>Flexibility</strong></td><td>Group users by department regardless of physical location</td></tr><tr><td><strong>Quality of service</strong></td><td>Voice VLAN for IP phones gets priority</td></tr></tbody></table></div>
+<p>Example school design:</p>
+<div class="static-table"><table><thead><tr><th>VLAN</th><th>Name</th><th>Subnet</th></tr></thead><tbody><tr><td>10</td><td>LAB1</td><td>10.20.10.0/24</td></tr><tr><td>20</td><td>STAFF</td><td>10.20.20.0/24</td></tr><tr><td>30</td><td>STUDENT-WIFI</td><td>10.20.32.0/22</td></tr><tr><td>40</td><td>CCTV</td><td>10.20.40.0/24</td></tr><tr><td>60</td><td>GUEST</td><td>10.20.60.0/24</td></tr><tr><td>99</td><td>MANAGEMENT</td><td>10.20.99.0/24 (switch and AP management)</td></tr></tbody></table></div>
+<h3>Access ports and trunk ports</h3>
+<div class="static-table"><table><thead><tr><th>Port type</th><th>Carries</th><th>Connects to</th></tr></thead><tbody><tr><td><strong>Access</strong></td><td>One VLAN, untagged</td><td>PCs, printers, cameras</td></tr><tr><td><strong>Trunk</strong></td><td>Many VLANs, tagged</td><td>Other switches, routers, firewalls, Wi-Fi APs with several SSIDs</td></tr></tbody></table></div>
+<h3>802.1Q tagging</h3>
+<p>On a trunk, each frame gets a 4-byte <strong>802.1Q tag</strong> containing the <strong>VLAN ID</strong> (1–4094), so the receiving switch knows which VLAN it belongs to. Frames on the <strong>native VLAN</strong> travel untagged (VLAN 1 by default; best practice is to change it to an unused VLAN for security).</p>
+<h2>Inter-VLAN routing</h2>
+<p>VLANs are separate networks, so traffic between them needs <strong>routing</strong>: a router-on-a-stick, a <strong>layer 3 switch</strong> with SVIs, or a firewall. Routing between VLANs is where you apply access control (e.g. allow staff → server, block guests → anything internal).</p>
+<h2>Spanning Tree Protocol (STP)</h2>
+<p>Network designers add <strong>redundant links</strong> between switches so one cable failure doesn't cut people off. But layer 2 has no TTL, so a loop lets broadcast frames circle forever (a <strong>broadcast storm</strong>) and brings the network down within seconds.</p>
+<p><strong>STP</strong> (IEEE 802.1D; faster versions <strong>RSTP</strong> 802.1w and per-VLAN variants) prevents loops:</p>
+<ol><li>Switches elect a <strong>root bridge</strong> (lowest bridge ID).</li><li>Each switch finds its best path to the root.</li><li>Redundant ports are put into <strong>blocking</strong> state.</li><li>If an active link fails, a blocked port takes over.</li></ol>
+<p><strong>Classic office mistake</strong>: someone plugs both ends of a cable into the same switch, or connects two wall ports together. With STP enabled, it's harmless; on cheap unmanaged switches without STP, the whole network may freeze.</p>
+<p>Features like <strong>PortFast</strong> (for ports to end devices) and <strong>BPDU Guard</strong> (shut a port if a switch appears where a PC should be) make STP faster and safer.</p>
+<h2>Managed vs unmanaged switches</h2>
+<div class="static-table"><table><thead><tr><th></th><th>Unmanaged</th><th>Managed</th></tr></thead><tbody><tr><td>Configuration</td><td>None: plug and play</td><td>Web/CLI configuration</td></tr><tr><td>VLANs, STP control, monitoring</td><td>No</td><td>Yes</td></tr><tr><td>Price</td><td>Cheap</td><td>More expensive</td></tr><tr><td>Use</td><td>Homes, very small offices</td><td>Businesses, schools, anything with VLANs or CCTV</td></tr></tbody></table></div>
+<p><strong>PoE (Power over Ethernet)</strong> switches power devices through the network cable: IP cameras, Wi-Fi access points, IP phones. Check the <strong>PoE budget</strong> (total watts) covers all devices, and the standard (802.3af/at/bt).</p>
+<p><strong>Port security</strong> limits which/how many MAC addresses can use a port, stopping someone plugging an unknown device into a classroom wall socket.</p>
+<h2>Basic Cisco switch commands</h2>
+<figure class="static-code"><pre><code>enable
+configure terminal
+vlan 10
+ name LAB1
+vlan 40
+ name CCTV
+interface fastEthernet0/5
+ switchport mode access
+ switchport access vlan 10
+interface gigabitEthernet0/1
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,30,40,60,99
+end
+show vlan brief
+show interfaces trunk
+show mac address-table
+copy running-config startup-config</code></pre></figure>
+<p>Practise these in Cisco Packet Tracer (see the Packet Tracer lab lesson).</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A teacher's PC in VLAN 20 can't print to a printer in VLAN 50, but PCs in VLAN 50 can. Both VLANs exist on the switch. What's likely missing?</span><em>Show answer</em></summary><div class="callout-body"><p>Inter-VLAN routing or a rule allowing it: the router/layer 3 switch may not have an interface (SVI or sub-interface) for VLAN 50, the trunk may not allow VLAN 50, or a firewall/ACL blocks VLAN 20 → 50. Check <code>show interfaces trunk</code>, the routing device's interfaces, and ACLs.</p></div></details>
+<h2>Summary</h2>
+<ul><li>MAC addresses are 48-bit hardware addresses used on the local network; the OUI identifies the maker.</li><li>Switches learn source MACs, forward known destinations, flood unknown and broadcast frames.</li><li>ARP maps IPv4 addresses to MACs via broadcast; check with <code>arp -a</code>; beware ARP spoofing.</li><li>VLANs split switches into separate broadcast domains; access ports carry one VLAN, trunks carry many with 802.1Q tags.</li><li>STP blocks redundant links to stop loops; managed switches add VLANs, PoE, monitoring and port security.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>How many bits long is a MAC address?</p><details><summary>Show answer</summary><p>48</p></details></li><li><p>Which protocol finds the MAC address for a known IPv4 address?</p><details><summary>Show answer</summary><p>ARP</p></details></li><li><p>What does a switch do with a frame for an unknown destination MAC?</p><details><summary>Show answer</summary><p>flood</p></details></li><li><p>Which standard tags VLANs on trunk links?</p><details><summary>Show answer</summary><p>802.1Q</p></details></li><li><p>What kind of port carries many VLANs between switches?</p><details><summary>Show answer</summary><p>trunk</p></details></li><li><p>Which protocol prevents loops between switches?</p><details><summary>Show answer</summary><p>STP</p></details></li><li><p>What is the broadcast MAC address?</p><details><summary>Show answer</summary><p>FF:FF:FF:FF:FF:FF</p></details></li></ol></section></div><p class="static-meta">Lesson 16 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/nat-routing/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> NAT, gateways and routing: how packets find their way, routing tables, static and dynamic routing, NAT and PAT</a><a class="btn btn-solid btn-sm" href="/learn/networking/packet-tracer-first-lab/">Your first lab in Cisco Packet Tracer <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

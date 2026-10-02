@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Subnet masks | Networking</title>
-    <meta name="description" content="A subnet mask is 32 bits that mark which part of an IP address is the network (1s) and which part is the host (0s). The 1s are always together on the left." />
+    <title>Subnet masks: what they do, the AND operation,…</title>
+    <meta name="description" content="An IP address on its own doesn&#x27;t say where the network part ends and the host part begins. The subnet mask does. It&#x27;s a 32-bit pattern of 1s (network)…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/networking/subnet-masks/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Subnet masks | Networking" />
-    <meta property="og:description" content="A subnet mask is 32 bits that mark which part of an IP address is the network (1s) and which part is the host (0s). The 1s are always together on the left." />
+    <meta property="og:title" content="Subnet masks: what they do, the AND operation,…" />
+    <meta property="og:description" content="An IP address on its own doesn&#x27;t say where the network part ends and the host part begins. The subnet mask does. It&#x27;s a 32-bit pattern of 1s (network)…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/networking/subnet-masks/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Subnet masks | Networking" />
-    <meta name="twitter:description" content="A subnet mask is 32 bits that mark which part of an IP address is the network (1s) and which part is the host (0s). The 1s are always together on the left." />
+    <meta name="twitter:title" content="Subnet masks: what they do, the AND operation,…" />
+    <meta name="twitter:description" content="An IP address on its own doesn&#x27;t say where the network part ends and the host part begins. The subnet mask does. It&#x27;s a 32-bit pattern of 1s (network)…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/networking/subnet-masks/#lesson","name":"Subnet masks","description":"A subnet mask is 32 bits that mark which part of an IP address is the network (1s) and which part is the host (0s). The 1s are always together on the left.","url":"https://marzleytechsolutions.co.ke/learn/networking/subnet-masks/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/networking/#course","name":"Networking","url":"https://marzleytechsolutions.co.ke/learn/networking/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Networking","item":"https://marzleytechsolutions.co.ke/learn/networking/"},{"@type":"ListItem","position":4,"name":"Subnet masks","item":"https://marzleytechsolutions.co.ke/learn/networking/subnet-masks/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/networking/subnet-masks/#lesson","name":"Subnet masks: what they do, the AND operation, mask/prefix tables, network and broadcast addresses, wildcard masks","description":"An IP address on its own doesn't say where the network part ends and the host part begins. The subnet mask does. It's a 32-bit pattern of 1s (network)…","url":"https://marzleytechsolutions.co.ke/learn/networking/subnet-masks/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/networking/#course","name":"Networking","url":"https://marzleytechsolutions.co.ke/learn/networking/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Networking","item":"https://marzleytechsolutions.co.ke/learn/networking/"},{"@type":"ListItem","position":4,"name":"Subnet masks: what they do, the AND operation, mask/prefix tables, network and broadcast addresses, wildcard masks","item":"https://marzleytechsolutions.co.ke/learn/networking/subnet-masks/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,35 +36,63 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/networking/">Networking</a> / <span>Subnet masks</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=networking&amp;lesson=subnet-masks"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Subnet masks</h1>
-<p>A <strong>subnet mask</strong> is 32 bits that mark which part of an IP address is the <strong>network</strong> (1s) and which part is the <strong>host</strong> (0s). The 1s are always together on the left.</p>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/networking/">Networking</a> / <span>Subnet masks: what they do, the AND operation, mask/prefix tables, network and broadcast addresses, wildcard masks</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=networking&amp;lesson=subnet-masks"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Subnet masks: what they do, the AND operation, mask/prefix tables, network and broadcast addresses, wildcard masks</h1>
+<p>An IP address on its own doesn't say where the network part ends and the host part begins. The <strong>subnet mask</strong> does. It's a 32-bit pattern of <strong>1s (network)</strong> followed by <strong>0s (host)</strong>. Your computer uses the mask every time it sends data, to answer one question: <em>"Is the destination on my local network, or must I send it to the router?"</em> Get the mask wrong and devices can't talk to each other or the internet, even with correct IP addresses.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>What a subnet mask is and why every device needs one</li><li>Masks in binary and dotted decimal</li><li>Finding the network address with the AND operation</li><li>The full mask ↔ prefix table and how to rebuild it from memory</li><li>Network and broadcast addresses, and why two addresses aren't usable</li><li>How a device decides "local or remote"</li><li>Wildcard masks for ACLs and OSPF</li><li>Common mask mistakes and their symptoms</li></ul></div></aside>
+<h2>Masks in binary</h2>
+<p>The 1s are always <strong>contiguous</strong> (together) on the left:</p>
 <figure class="static-code"><pre><code>IP address:  192.168.10.77   = 11000000.10101000.00001010.01001101
 Mask:        255.255.255.0   = 11111111.11111111.11111111.00000000
                                |------- network --------||- host -|</code></pre></figure>
-<h2>Finding the network address: the AND operation</h2>
-<p>The network address = <strong>IP AND mask</strong>, bit by bit (1 AND 1 = 1, anything else = 0).</p>
-<figure class="static-code"><pre><code>01001101   (77)
-AND
-00000000   (mask octet 0)
-= 00000000 (0)      → network 192.168.10.0</code></pre></figure>
-<p>With a mask ending in 224:</p>
-<figure class="static-code"><pre><code>01001101   (77)
-AND
-11100000   (224)
-= 01000000 (64)     → network 192.168.10.64</code></pre></figure>
+<p>Valid mask octet values are only: <strong>0, 128, 192, 224, 240, 248, 252, 254, 255</strong>. So <code>255.255.255.200</code> or <code>255.255.0.255</code> are <strong>invalid</strong> masks.</p>
+<p>The <strong>prefix</strong> (CIDR notation) is simply the number of 1s: 255.255.255.0 has 24 ones → <strong>/24</strong>.</p>
+<h2>The AND operation: finding the network address</h2>
+<p>The <strong>network address</strong> = IP address <strong>AND</strong> mask, bit by bit:</p>
+<div class="static-table"><table><thead><tr><th>A</th><th>B</th><th>A AND B</th></tr></thead><tbody><tr><td>1</td><td>1</td><td>1</td></tr><tr><td>1</td><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td><td>0</td></tr><tr><td>0</td><td>0</td><td>0</td></tr></tbody></table></div>
+<p>Where the mask has 255, the IP octet passes through unchanged. Where the mask has 0, the result is 0. Only the "interesting" octet (where the mask is between 0 and 255) needs work.</p>
+<p>Example: <code>192.168.10.77</code> with mask <code>255.255.255.224</code>:</p>
+<figure class="static-code"><pre><code>77  = 01001101
+224 = 11100000
+AND = 01000000 = 64      → network 192.168.10.64</code></pre></figure>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def network(ip, mask):
+    return &quot;.&quot;.join(str(int(a) &amp; int(b)) for a, b in zip(ip.split(&quot;.&quot;), mask.split(&quot;.&quot;)))
+
+print(network(&quot;192.168.10.77&quot;, &quot;255.255.255.0&quot;))
+print(network(&quot;192.168.10.77&quot;, &quot;255.255.255.224&quot;))
+print(network(&quot;10.20.30.40&quot;, &quot;255.255.252.0&quot;))</code></pre></figure>
 <h2>Mask ↔ prefix table (last octet)</h2>
 <div class="static-table"><table><thead><tr><th>Mask</th><th>Prefix</th><th>Host bits</th><th>Total addresses</th><th>Usable hosts</th></tr></thead><tbody><tr><td>255.255.255.0</td><td>/24</td><td>8</td><td>256</td><td>254</td></tr><tr><td>255.255.255.128</td><td>/25</td><td>7</td><td>128</td><td>126</td></tr><tr><td>255.255.255.192</td><td>/26</td><td>6</td><td>64</td><td>62</td></tr><tr><td>255.255.255.224</td><td>/27</td><td>5</td><td>32</td><td>30</td></tr><tr><td>255.255.255.240</td><td>/28</td><td>4</td><td>16</td><td>14</td></tr><tr><td>255.255.255.248</td><td>/29</td><td>3</td><td>8</td><td>6</td></tr><tr><td>255.255.255.252</td><td>/30</td><td>2</td><td>4</td><td>2</td></tr><tr><td>255.255.255.254</td><td>/31</td><td>1</td><td>2</td><td>2 (point-to-point links only)</td></tr><tr><td>255.255.255.255</td><td>/32</td><td>0</td><td>1</td><td>1 (a single host)</td></tr></tbody></table></div>
-<p>The same pattern repeats in the third octet: 255.255.128.0 = /17, 255.255.192.0 = /18, 255.255.224.0 = /19, 255.255.240.0 = /20, 255.255.248.0 = /21, 255.255.252.0 = /22, 255.255.254.0 = /23.</p>
-<h2>Why two addresses are not usable</h2>
+<p>The same pattern repeats in the third octet:</p>
+<div class="static-table"><table><thead><tr><th>Mask</th><th>Prefix</th><th>Addresses</th><th>Mask</th><th>Prefix</th><th>Addresses</th></tr></thead><tbody><tr><td>255.255.128.0</td><td>/17</td><td>32,768</td><td>255.255.248.0</td><td>/21</td><td>2,048</td></tr><tr><td>255.255.192.0</td><td>/18</td><td>16,384</td><td>255.255.252.0</td><td>/22</td><td>1,024</td></tr><tr><td>255.255.224.0</td><td>/19</td><td>8,192</td><td>255.255.254.0</td><td>/23</td><td>512</td></tr><tr><td>255.255.240.0</td><td>/20</td><td>4,096</td><td>255.255.255.0</td><td>/24</td><td>256</td></tr></tbody></table></div>
+<p>And the second octet: /9 = 255.128.0.0 ... /16 = 255.255.0.0.</p>
+<h3>Rebuild the table from memory</h3>
+<ol><li>Write the mask values: 128, 192, 224, 240, 248, 252, 254, 255.</li><li>In the 4th octet, these are /25 to /32; in the 3rd octet, /17 to /24; in the 2nd, /9 to /16.</li><li>Host bits = 32 − prefix; addresses = 2^host bits; usable = addresses − 2.</li></ol>
+<h2>Network and broadcast addresses</h2>
 <p>In every normal subnet:</p>
-<ul><li>The <strong>first</strong> address (all host bits 0) is the <strong>network address</strong>, the name of the subnet.</li><li>The <strong>last</strong> address (all host bits 1) is the <strong>broadcast address</strong>.</li></ul>
-<p>So usable hosts = total − 2.</p>
-<h2>The wildcard mask</h2>
-<p>Routers (Cisco ACLs, OSPF) often use a <strong>wildcard mask</strong>, the mask inverted: 255.255.255.255 − mask.</p>
-<ul><li>Mask 255.255.255.0 → wildcard <strong>0.0.0.255</strong></li><li>Mask 255.255.255.224 → wildcard <strong>0.0.0.31</strong></li></ul>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What prefix length is the mask 255.255.255.192?</p><details><summary>Show answer</summary><p>/26</p></details></li><li><p>What mask matches /28?</p><details><summary>Show answer</summary><p>255.255.255.240</p></details></li><li><p>How many usable hosts does a /29 give?</p><details><summary>Show answer</summary><p>6</p></details></li><li><p>What is the network address of 192.168.10.77 with mask 255.255.255.224?</p><details><summary>Show answer</summary><p>192.168.10.64</p></details></li><li><p>What is the wildcard mask for 255.255.255.248?</p><details><summary>Show answer</summary><p>0.0.0.7</p></details></li><li><p>What mask matches /20?</p><details><summary>Show answer</summary><p>255.255.240.0</p></details></li></ol></section>
-<p><strong>Learn more:</strong> <a href="https://www.practicalnetworking.net/series/subnetting/subnetting/" target="_blank" rel="noopener noreferrer">Practical Networking: subnetting mastery</a></p></div><p class="static-meta">Lesson 6 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/ipv4-addresses/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> IPv4 addresses</a><a class="btn btn-solid btn-sm" href="/learn/networking/cidr/">CIDR notation and calculations <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<ul><li>The <strong>network address</strong> has all host bits = <strong>0</strong>. It names the subnet (used in routing tables). Devices can't use it.</li><li>The <strong>broadcast address</strong> has all host bits = <strong>1</strong>. Sending to it reaches every device in the subnet. Devices can't use it either.</li><li>Everything between is <strong>usable</strong> for hosts.</li></ul>
+<p>For <code>192.168.10.77/27</code>: block size 32 → subnets at .0, .32, <strong>.64</strong>, .96... So network <strong>192.168.10.64</strong>, broadcast <strong>192.168.10.95</strong> (next subnet .96 minus 1), usable <strong>.65 – .94</strong> (30 hosts).</p>
+<p>Exceptions: <strong>/31</strong> (RFC 3021) uses both addresses for point-to-point router links, and <strong>/32</strong> identifies one single host (e.g. a loopback interface on a router).</p>
+<h2>Local or remote? How a device decides</h2>
+<p>Before sending, a device ANDs <strong>its own IP</strong> and <strong>the destination IP</strong> with <strong>its own mask</strong>:</p>
+<ul><li>Same result → destination is <strong>local</strong>: deliver directly (using ARP to find the MAC address).</li><li>Different result → destination is <strong>remote</strong>: send to the <strong>default gateway</strong> (router).</li></ul>
+<p>Example: PC <code>192.168.1.20/24</code> sends to <code>192.168.1.50</code> → both give <code>192.168.1.0</code> → local. Sending to <code>8.8.8.8</code> → <code>8.8.8.0</code> ≠ <code>192.168.1.0</code> → remote, go to the gateway.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import ipaddress
+pc = ipaddress.ip_interface(&quot;192.168.1.20/24&quot;)
+for dest in [&quot;192.168.1.50&quot;, &quot;192.168.2.50&quot;, &quot;8.8.8.8&quot;]:
+    local = ipaddress.ip_address(dest) in pc.network
+    print(dest, &quot;-&gt; local, send directly&quot; if local else &quot;-&gt; remote, send to gateway&quot;)</code></pre></figure>
+<h2>Wildcard masks</h2>
+<p>Cisco ACLs and OSPF use a <strong>wildcard mask</strong>: the subnet mask inverted. Calculate it as <strong>255.255.255.255 − mask</strong>:</p>
+<div class="static-table"><table><thead><tr><th>Subnet mask</th><th>Wildcard</th></tr></thead><tbody><tr><td>255.255.255.0</td><td>0.0.0.255</td></tr><tr><td>255.255.255.224</td><td>0.0.0.31</td></tr><tr><td>255.255.255.252</td><td>0.0.0.3</td></tr><tr><td>255.255.240.0</td><td>0.0.15.255</td></tr></tbody></table></div>
+<p>In a wildcard, <strong>0 means "must match"</strong> and <strong>1 means "don't care"</strong>. So <code>access-list 10 permit 192.168.10.0 0.0.0.255</code> matches every address 192.168.10.0–255.</p>
+<h2>Common mask mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Symptom</th></tr></thead><tbody><tr><td>PC has /24 but the network is /25</td><td>Can reach some local devices but not others; traffic to the other half goes to the router unnecessarily or fails</td></tr><tr><td>Gateway outside the PC's subnet (e.g. PC 192.168.1.20/26, gateway 192.168.1.129)</td><td>No internet: the gateway is "remote" so the PC can't reach it</td></tr><tr><td>Typing 255.255.255.200</td><td>Invalid mask, rejected or behaves unpredictably</td></tr><tr><td>Two devices with the same IP</td><td>"IP address conflict" warnings, intermittent connection</td></tr></tbody></table></div>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A PC is 192.168.5.70 with mask 255.255.255.192 and gateway 192.168.5.1. It can't reach the internet, but it can reach 192.168.5.100. Why?</span><em>Show answer</em></summary><div class="callout-body"><p>With /26, the PC's subnet is 192.168.5.64–127 (block size 64). The gateway 192.168.5.1 is in a different subnet (.0–.63), so the PC can't reach it directly. Fix the mask (probably /24) or use a gateway inside .65–.126.</p></div></details>
+<h2>Summary</h2>
+<ul><li>A subnet mask is 32 bits of contiguous 1s (network) then 0s (host); the prefix counts the 1s.</li><li>Valid octet values: 0, 128, 192, 224, 240, 248, 252, 254, 255.</li><li>Network address = IP AND mask; broadcast = all host bits 1; usable hosts = total − 2 (except /31, /32).</li><li>Devices compare network addresses to decide whether to deliver locally or send to the gateway.</li><li>Wildcard = 255.255.255.255 − mask (0 = match, 1 = don't care).</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What prefix length is the mask 255.255.255.192?</p><details><summary>Show answer</summary><p>/26</p></details></li><li><p>What mask matches /28?</p><details><summary>Show answer</summary><p>255.255.255.240</p></details></li><li><p>How many usable hosts does a /29 give?</p><details><summary>Show answer</summary><p>6</p></details></li><li><p>What is the network address of 192.168.10.77 with mask 255.255.255.224?</p><details><summary>Show answer</summary><p>192.168.10.64</p></details></li><li><p>What is the wildcard mask for 255.255.255.248?</p><details><summary>Show answer</summary><p>0.0.0.7</p></details></li><li><p>What mask matches /20?</p><details><summary>Show answer</summary><p>255.255.240.0</p></details></li><li><p>Is 255.255.255.200 a valid subnet mask? (yes/no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section>
+<p><strong>Learn more:</strong> <a href="https://www.practicalnetworking.net/series/subnetting/subnetting/" target="_blank" rel="noopener noreferrer">Practical Networking: subnetting mastery</a></p></div><p class="static-meta">Lesson 6 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/ipv4-addresses/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> IPv4 addresses: structure, network and host parts, classes, private and public ranges, special addresses</a><a class="btn btn-solid btn-sm" href="/learn/networking/cidr/">CIDR notation and calculations: prefixes, formulas, block sizes, worked examples in every octet <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

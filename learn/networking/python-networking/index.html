@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Networking with Python (practice) | Networking</title>
-    <meta name="description" content="Python&#x27;s built-in ipaddress module does subnetting for you. It is perfect for checking your work, planning networks and writing small network tools…" />
+    <title>Networking with Python: subnet calculators, IP plans,…</title>
+    <meta name="description" content="Modern network engineers don&#x27;t configure 200 switches by hand or calculate every subnet on paper. They write small scripts. Network automation with…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/networking/python-networking/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Networking with Python (practice) | Networking" />
-    <meta property="og:description" content="Python&#x27;s built-in ipaddress module does subnetting for you. It is perfect for checking your work, planning networks and writing small network tools…" />
+    <meta property="og:title" content="Networking with Python: subnet calculators, IP plans,…" />
+    <meta property="og:description" content="Modern network engineers don&#x27;t configure 200 switches by hand or calculate every subnet on paper. They write small scripts. Network automation with…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/networking/python-networking/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Networking with Python (practice) | Networking" />
-    <meta name="twitter:description" content="Python&#x27;s built-in ipaddress module does subnetting for you. It is perfect for checking your work, planning networks and writing small network tools…" />
+    <meta name="twitter:title" content="Networking with Python: subnet calculators, IP plans,…" />
+    <meta name="twitter:description" content="Modern network engineers don&#x27;t configure 200 switches by hand or calculate every subnet on paper. They write small scripts. Network automation with…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/networking/python-networking/#lesson","name":"Networking with Python (practice)","description":"Python's built-in ipaddress module does subnetting for you. It is perfect for checking your work, planning networks and writing small network tools…","url":"https://marzleytechsolutions.co.ke/learn/networking/python-networking/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/networking/#course","name":"Networking","url":"https://marzleytechsolutions.co.ke/learn/networking/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Networking","item":"https://marzleytechsolutions.co.ke/learn/networking/"},{"@type":"ListItem","position":4,"name":"Networking with Python (practice)","item":"https://marzleytechsolutions.co.ke/learn/networking/python-networking/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/networking/python-networking/#lesson","name":"Networking with Python: subnet calculators, IP plans, VLSM, summaries, port checks and automation basics","description":"Modern network engineers don't configure 200 switches by hand or calculate every subnet on paper. They write small scripts. Network automation with…","url":"https://marzleytechsolutions.co.ke/learn/networking/python-networking/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/networking/#course","name":"Networking","url":"https://marzleytechsolutions.co.ke/learn/networking/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Networking","item":"https://marzleytechsolutions.co.ke/learn/networking/"},{"@type":"ListItem","position":4,"name":"Networking with Python: subnet calculators, IP plans, VLSM, summaries, port checks and automation basics","item":"https://marzleytechsolutions.co.ke/learn/networking/python-networking/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,9 +36,11 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/networking/">Networking</a> / <span>Networking with Python (practice)</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=networking&amp;lesson=python-networking"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Networking with Python</h1>
-<p>Python's built-in <strong>ipaddress</strong> module does subnetting for you. It is perfect for checking your work, planning networks and writing small network tools. Run each example and change the numbers.</p>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/networking/">Networking</a> / <span>Networking with Python: subnet calculators, IP plans, VLSM, summaries, port checks and automation basics</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=networking&amp;lesson=python-networking"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Networking with Python: subnet calculators, IP plans, VLSM, summaries, port checks and automation basics</h1>
+<p>Modern network engineers don't configure 200 switches by hand or calculate every subnet on paper. They write small scripts. <strong>Network automation</strong> with Python is now part of the Cisco CCNA, and job adverts for network and cloud engineers increasingly ask for it. This unit starts with Python's built-in <strong>ipaddress</strong> module, which does subnetting perfectly (great for checking your homework and planning real networks), then builds small but useful tools: IP plan generators, address validators, a port checker and an introduction to automating devices.</p>
+<p>Run every example and change the numbers. You don't need to be a programmer: basic Python from the Python subject is enough.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>The ipaddress module: networks, interfaces and addresses</li><li>Network, broadcast, mask, host ranges and private checks</li><li>Splitting networks and generating a full IP plan</li><li>VLSM planning in code</li><li>Summarising and checking overlaps</li><li>IPv6 with the same tools</li><li>Validating addresses from a spreadsheet/CSV</li><li>Sockets: checking whether a port is open</li><li>Where automation goes next: Netmiko, NAPALM, Ansible, APIs</li></ul></div></aside>
 <h2>Look at a network</h2>
 <figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import ipaddress
 
@@ -46,15 +48,23 @@ net = ipaddress.ip_network(&quot;192.168.10.0/26&quot;)
 print(&quot;Network:  &quot;, net.network_address)
 print(&quot;Broadcast:&quot;, net.broadcast_address)
 print(&quot;Mask:     &quot;, net.netmask)
+print(&quot;Wildcard: &quot;, net.hostmask)
+print(&quot;Prefix:   &quot;, net.prefixlen)
 print(&quot;Hosts:    &quot;, net.num_addresses - 2)
 hosts = list(net.hosts())
 print(&quot;First host:&quot;, hosts[0], &quot; Last host:&quot;, hosts[-1])</code></pre></figure>
+<p><code>ip_network</code> needs the real network address; for a host address use <code>ip_interface</code> (or <code>strict=False</code>).</p>
 <h2>Which subnet is a host in?</h2>
 <figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import ipaddress
 
-iface = ipaddress.ip_interface(&quot;10.14.200.9/19&quot;)
-print(&quot;Network of this host:&quot;, iface.network)
-print(&quot;Is private?&quot;, iface.ip.is_private)</code></pre></figure>
+for text in [&quot;10.14.200.9/19&quot;, &quot;192.168.37.150/28&quot;, &quot;172.16.5.200/26&quot;]:
+    iface = ipaddress.ip_interface(text)
+    print(f&quot;{text:18} network {iface.network}  private={iface.ip.is_private}&quot;)
+
+# Are two hosts in the same subnet?
+a = ipaddress.ip_interface(&quot;192.168.1.20/26&quot;)
+b = ipaddress.ip_address(&quot;192.168.1.70&quot;)
+print(&quot;Same subnet?&quot;, b in a.network)</code></pre></figure>
 <h2>Split a network into subnets</h2>
 <figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import ipaddress
 
@@ -62,6 +72,20 @@ net = ipaddress.ip_network(&quot;192.168.50.0/24&quot;)
 for i, sub in enumerate(net.subnets(new_prefix=27), start=1):
     hosts = list(sub.hosts())
     print(f&quot;{i}. {sub}  hosts {hosts[0]} - {hosts[-1]}  broadcast {sub.broadcast_address}&quot;)</code></pre></figure>
+<h2>Generate a full IP plan</h2>
+<p>This builds an addressing plan for a school, with gateway and DHCP ranges, the kind of table you'd hand to a client:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import ipaddress
+
+site = ipaddress.ip_network(&quot;10.20.0.0/16&quot;)
+vlans = [(10, &quot;LAB1&quot;), (11, &quot;LAB2&quot;), (20, &quot;STAFF&quot;), (40, &quot;CCTV&quot;), (60, &quot;GUEST&quot;)]
+
+print(f&quot;{&#x27;VLAN&#x27;:5} {&#x27;Name&#x27;:6} {&#x27;Network&#x27;:16} {&#x27;Gateway&#x27;:12} {&#x27;DHCP range&#x27;}&quot;)
+for vid, name in vlans:
+    net = ipaddress.ip_network(f&quot;10.20.{vid}.0/24&quot;)
+    assert net.subnet_of(site)
+    gw = net[1]
+    dhcp = f&quot;{net[50]} - {net[250]}&quot; if name != &quot;CCTV&quot; else &quot;static only&quot;
+    print(f&quot;{vid:&lt;5} {name:6} {str(net):16} {str(gw):12} {dhcp}&quot;)</code></pre></figure>
 <h2>Plan with VLSM</h2>
 <figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import ipaddress, math
 
@@ -70,21 +94,85 @@ start = ipaddress.ip_address(&quot;192.168.10.0&quot;)
 for name, hosts in sorted(needs.items(), key=lambda x: -x[1]):
     prefix = 32 - math.ceil(math.log2(hosts + 2))
     sub = ipaddress.ip_network(f&quot;{start}/{prefix}&quot;)
-    print(f&quot;{name:7} needs {hosts:3} -&gt; {sub}&quot;)
+    print(f&quot;{name:7} needs {hosts:3} -&gt; {sub}  usable {sub.num_addresses - 2}&quot;)
     start = sub.broadcast_address + 1</code></pre></figure>
-<h2>Summarise networks</h2>
+<h2>Summarise networks and check overlaps</h2>
 <figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import ipaddress
 
 nets = [ipaddress.ip_network(f&quot;192.168.{i}.0/24&quot;) for i in range(8, 12)]
-print(list(ipaddress.collapse_addresses(nets)))</code></pre></figure>
+print(&quot;Summary:&quot;, list(ipaddress.collapse_addresses(nets)))
+
+plan = [&quot;10.20.10.0/24&quot;, &quot;10.20.32.0/22&quot;, &quot;10.20.34.0/24&quot;, &quot;10.20.60.0/24&quot;]
+nets = [ipaddress.ip_network(p) for p in plan]
+for i, a in enumerate(nets):
+    for b in nets[i + 1:]:
+        if a.overlaps(b):
+            print(&quot;OVERLAP:&quot;, a, &quot;and&quot;, b)</code></pre></figure>
+<p>The overlap check catches a classic planning error: 10.20.34.0/24 sits inside 10.20.32.0/22.</p>
 <h2>IPv6 too</h2>
 <figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import ipaddress
 
 a = ipaddress.ip_address(&quot;2001:0db8:0000:0000:0000:0000:0000:0001&quot;)
 print(&quot;Short form:&quot;, a.compressed)
-print(&quot;Long form: &quot;, a.exploded)</code></pre></figure>
-<p>Challenge: change the VLSM example to your own school or office and print a full IP plan.</p>
-<p><strong>Learn more:</strong> <a href="https://docs.python.org/3/library/ipaddress.html" target="_blank" rel="noopener noreferrer">Python ipaddress documentation</a></p></div><p class="static-meta">Lesson 23 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/firewalls-vpns/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Firewalls, VPNs and remote access</a><a class="btn btn-solid btn-sm" href="/learn/networking/careers-certs/">Networking careers and certifications <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+print(&quot;Long form: &quot;, a.exploded)
+
+site = ipaddress.ip_network(&quot;2001:db8:5a00::/48&quot;)
+for sub in list(site.subnets(new_prefix=64))[:4]:
+    print(sub)</code></pre></figure>
+<h2>Validate addresses from a spreadsheet</h2>
+<p>Real data is messy. This checks a device list (as it might come from a CSV export) for invalid addresses, wrong subnets and duplicates:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import csv, io, ipaddress
+
+data = &quot;&quot;&quot;name,ip
+Reception PC,10.20.20.15
+Printer,10.20.20.300
+Camera 1,10.20.40.11
+Camera 2,10.20.40.11
+Bursar PC,10.20.21.9
+&quot;&quot;&quot;
+staff = ipaddress.ip_network(&quot;10.20.20.0/24&quot;)
+cctv = ipaddress.ip_network(&quot;10.20.40.0/24&quot;)
+seen = {}
+for row in csv.DictReader(io.StringIO(data)):
+    try:
+        ip = ipaddress.ip_address(row[&quot;ip&quot;])
+    except ValueError:
+        print(&quot;INVALID:&quot;, row[&quot;name&quot;], row[&quot;ip&quot;])
+        continue
+    if ip in seen:
+        print(&quot;DUPLICATE:&quot;, row[&quot;name&quot;], &quot;and&quot;, seen[ip], &quot;use&quot;, ip)
+    seen[ip] = row[&quot;name&quot;]
+    if ip not in staff and ip not in cctv:
+        print(&quot;OUTSIDE PLAN:&quot;, row[&quot;name&quot;], ip)</code></pre></figure>
+<h2>Checking whether a port is open (sockets)</h2>
+<p>Python's <code>socket</code> module can test TCP connections, like a tiny <code>Test-NetConnection</code>. (This runs on your own computer; the browser runner here can't make network connections, so try it locally.)</p>
+<figure class="static-code"><figcaption>Python</figcaption><pre><code class="language-python">import socket
+
+def port_open(host, port, timeout=2):
+    try:
+        with socket.create_connection((host, port), timeout=timeout):
+            return True
+    except OSError:
+        return False
+
+for port in [22, 80, 443, 3306]:
+    print(port, &quot;open&quot; if port_open(&quot;example.com&quot;, port) else &quot;closed/filtered&quot;)</code></pre></figure>
+<p>Only scan systems you own or have permission to test: unauthorised scanning can break laws and policies.</p>
+<h2>Where automation goes next</h2>
+<div class="static-table"><table><thead><tr><th>Tool</th><th>What it does</th></tr></thead><tbody><tr><td><strong>Netmiko</strong></td><td>Python library that logs in to routers/switches over SSH and runs commands (Cisco, MikroTik, Huawei, Juniper...)</td></tr><tr><td><strong>NAPALM</strong></td><td>A common Python interface to get facts and push configs to many vendors</td></tr><tr><td><strong>Ansible</strong></td><td>Automation tool using YAML "playbooks" to configure hundreds of devices at once</td></tr><tr><td><strong>REST APIs</strong></td><td>Modern devices, controllers and cloud platforms (Meraki, cloud VPCs) are configured over HTTPS APIs with JSON</td></tr><tr><td><strong>Jinja2 templates</strong></td><td>Generate device configs from a template and a spreadsheet of values</td></tr></tbody></table></div>
+<p>A taste of Netmiko (run locally against a lab device):</p>
+<figure class="static-code"><figcaption>Python</figcaption><pre><code class="language-python">from netmiko import ConnectHandler
+
+device = {&quot;device_type&quot;: &quot;cisco_ios&quot;, &quot;host&quot;: &quot;10.20.99.2&quot;,
+          &quot;username&quot;: &quot;admin&quot;, &quot;password&quot;: &quot;use-a-secret-store&quot;}
+with ConnectHandler(**device) as conn:
+    print(conn.send_command(&quot;show ip interface brief&quot;))</code></pre></figure>
+<p>Practise automation safely with Cisco's free DevNet sandboxes or lab routers in GNS3/EVE-NG, never first on production networks.</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Your manager gives you a spreadsheet of 300 devices and asks you to find any with IPs outside the official plan or duplicates. How would Python help, and which module/functions would you use?</span><em>Show answer</em></summary><div class="callout-body"><p>Read the CSV with the csv module, parse each address with <code>ipaddress.ip_address</code> (catching ValueError for invalid entries), check membership with <code>ip in network</code> for each planned subnet, and track seen addresses in a dictionary to find duplicates. It takes seconds instead of hours and is repeatable.</p></div></details>
+<h2>Summary</h2>
+<ul><li><code>ipaddress</code> handles networks (<code>ip_network</code>), host+prefix (<code>ip_interface</code>) and addresses (<code>ip_address</code>) for IPv4 and IPv6.</li><li>It gives network, broadcast, mask, wildcard, hosts, private checks, subnets, summaries and overlap checks.</li><li>Scripts generate IP plans and VLSM allocations, and validate device lists.</li><li><code>socket</code> can test ports locally (only with permission).</li><li>Next steps: Netmiko, NAPALM, Ansible, REST APIs and templates in safe labs.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which built-in Python module does subnetting?</p><details><summary>Show answer</summary><p>ipaddress</p></details></li><li><p>Which function returns the subnets of a network? (method name)</p><details><summary>Show answer</summary><p>subnets</p></details></li><li><p>Which function combines networks into summaries?</p><details><summary>Show answer</summary><p>collapse_addresses</p></details></li><li><p>Which method checks whether two networks overlap?</p><details><summary>Show answer</summary><p>overlaps</p></details></li><li><p>Which Python library logs in to network devices over SSH to run commands?</p><details><summary>Show answer</summary><p>Netmiko</p></details></li></ol></section>
+<p><strong>Learn more:</strong> <a href="https://docs.python.org/3/library/ipaddress.html" target="_blank" rel="noopener noreferrer">Python ipaddress documentation</a> · <a href="https://developer.cisco.com/" target="_blank" rel="noopener noreferrer">Cisco DevNet (free labs and sandboxes)</a></p></div><p class="static-meta">Lesson 23 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/firewalls-vpns/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Firewalls, VPNs and remote access</a><a class="btn btn-solid btn-sm" href="/learn/networking/careers-certs/">Networking careers and certifications: jobs, skills, certificates, home labs and a study plan <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

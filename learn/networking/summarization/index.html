@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Route summarisation (supernetting) | Networking</title>
-    <meta name="description" content="Summarisation is the opposite of subnetting: combining several networks into one bigger route. Routers then need fewer entries, and a problem in one…" />
+    <title>Route summarisation (supernetting): combining networks…</title>
+    <meta name="description" content="Summarisation (also called supernetting or route aggregation) is the opposite of subnetting: combining several networks into one bigger route . Instead…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/networking/summarization/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Route summarisation (supernetting) | Networking" />
-    <meta property="og:description" content="Summarisation is the opposite of subnetting: combining several networks into one bigger route. Routers then need fewer entries, and a problem in one…" />
+    <meta property="og:title" content="Route summarisation (supernetting): combining networks…" />
+    <meta property="og:description" content="Summarisation (also called supernetting or route aggregation) is the opposite of subnetting: combining several networks into one bigger route . Instead…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/networking/summarization/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Route summarisation (supernetting) | Networking" />
-    <meta name="twitter:description" content="Summarisation is the opposite of subnetting: combining several networks into one bigger route. Routers then need fewer entries, and a problem in one…" />
+    <meta name="twitter:title" content="Route summarisation (supernetting): combining networks…" />
+    <meta name="twitter:description" content="Summarisation (also called supernetting or route aggregation) is the opposite of subnetting: combining several networks into one bigger route . Instead…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/networking/summarization/#lesson","name":"Route summarisation (supernetting)","description":"Summarisation is the opposite of subnetting: combining several networks into one bigger route. Routers then need fewer entries, and a problem in one…","url":"https://marzleytechsolutions.co.ke/learn/networking/summarization/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/networking/#course","name":"Networking","url":"https://marzleytechsolutions.co.ke/learn/networking/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Networking","item":"https://marzleytechsolutions.co.ke/learn/networking/"},{"@type":"ListItem","position":4,"name":"Route summarisation (supernetting)","item":"https://marzleytechsolutions.co.ke/learn/networking/summarization/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/networking/summarization/#lesson","name":"Route summarisation (supernetting): combining networks into one route, step by step","description":"Summarisation (also called supernetting or route aggregation) is the opposite of subnetting: combining several networks into one bigger route . Instead…","url":"https://marzleytechsolutions.co.ke/learn/networking/summarization/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/networking/#course","name":"Networking","url":"https://marzleytechsolutions.co.ke/learn/networking/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Networking","item":"https://marzleytechsolutions.co.ke/learn/networking/"},{"@type":"ListItem","position":4,"name":"Route summarisation (supernetting): combining networks into one route, step by step","item":"https://marzleytechsolutions.co.ke/learn/networking/summarization/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,29 +36,61 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/networking/">Networking</a> / <span>Route summarisation (supernetting)</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=networking&amp;lesson=summarization"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Route summarisation (supernetting)</h1>
-<p><strong>Summarisation</strong> is the opposite of subnetting: combining several networks into one bigger route. Routers then need fewer entries, and a problem in one small subnet doesn't disturb routers far away.</p>
-<p>Example: a branch office uses</p>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/networking/">Networking</a> / <span>Route summarisation (supernetting): combining networks into one route, step by step</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=networking&amp;lesson=summarization"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Route summarisation (supernetting): combining networks into one route, step by step</h1>
+<p><strong>Summarisation</strong> (also called supernetting or route aggregation) is the opposite of subnetting: combining several networks into <strong>one bigger route</strong>. Instead of telling the whole network about every small subnet at a branch, the branch router advertises a single summary. Routers then need fewer entries, use less memory and CPU, converge faster after changes, and a problem in one small subnet (a link flapping up and down) doesn't disturb routers far away.</p>
+<p>The internet depends on it: ISPs receive large blocks and advertise one route for thousands of customers. Without summarisation, the global routing table would be unmanageable.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Why summarisation matters</li><li>Finding a summary route using binary (step by step)</li><li>A faster method using block sizes</li><li>Checking a summary covers exactly what you intend</li><li>Over-summarisation and black holes</li><li>Designing addresses so they summarise well</li><li>Where summaries are configured (static routes, OSPF, EIGRP, BGP)</li></ul></div></aside>
+<h2>A first example</h2>
+<p>A branch office uses:</p>
 <figure class="static-code"><pre><code>192.168.8.0/24
 192.168.9.0/24
 192.168.10.0/24
 192.168.11.0/24</code></pre></figure>
 <p>Instead of four routes, the head office can use <strong>one</strong>: <code>192.168.8.0/22</code>.</p>
-<h2>How to find the summary</h2>
-<ol><li>Write the <strong>changing octet</strong> of each network in binary.</li></ol>
+<h2>Method 1: binary</h2>
+<ol><li>Write the <strong>changing octet</strong> of each network in binary (the octets before it are identical):</li></ol>
 <figure class="static-code"><pre><code> 8 = 000010 00
  9 = 000010 01
 10 = 000010 10
 11 = 000010 11</code></pre></figure>
-<ol><li>Count the <strong>bits that are the same</strong> from the left: the first 6 bits (<code>000010</code>) match.</li><li>Summary prefix = bits in earlier octets + matching bits = 16 + 6 = <strong>/22</strong>.</li><li>Summary address = the matching bits followed by zeros = 00001000 = <strong>8</strong> → <code>192.168.8.0/22</code>.</li></ol>
-<h2>Check it</h2>
-<p>192.168.8.0/22 covers 2^10 = 1,024 addresses = 4 × 256 → exactly .8.0 to .11.255. ✓</p>
-<h2>Careful: don't over-summarise</h2>
-<p><code>172.16.4.0/24</code> and <code>172.16.7.0/24</code> share <code>000001</code> → 172.16.4.0/22, but that summary <strong>also includes</strong> 172.16.5.0 and .6.0. If those networks are somewhere else, traffic will go to the wrong place. Only summarise address space that really lives behind that router.</p>
+<ol><li>Count the <strong>bits that are the same</strong> from the left: the first 6 bits (<code>000010</code>) match.</li><li>Summary prefix = bits in the earlier octets + matching bits = 16 + 6 = <strong>/22</strong>.</li><li>Summary address = the matching bits followed by zeros: <code>00001000</code> = <strong>8</strong> → <code>192.168.8.0/22</code>.</li></ol>
+<h2>Method 2: block sizes (faster)</h2>
+<ol><li>Count the networks: 4 consecutive /24s.</li><li>Is the count a power of 2? 4 = 2² → the summary is 2 bits shorter: /24 − 2 = <strong>/22</strong>.</li><li>Does the first network sit on a boundary of that size? A /22 has a block size of 4 in the third octet: valid starts are 0, 4, <strong>8</strong>, 12... 8 is a multiple of 4 ✓.</li><li>Summary: <code>192.168.8.0/22</code>.</li></ol>
+<p>If the first network isn't on the boundary, the summary must be bigger (and will include extra networks).</p>
+<h2>More examples</h2>
+<div class="static-table"><table><thead><tr><th>Networks</th><th>Summary</th><th>Why</th></tr></thead><tbody><tr><td>10.1.4.0/24 – 10.1.7.0/24</td><td>10.1.4.0/22</td><td>4 networks, start 4 is a multiple of 4</td></tr><tr><td>172.16.32.0/24 – 172.16.47.0/24</td><td>172.16.32.0/20</td><td>16 networks = 2⁴, 32 is a multiple of 16</td></tr><tr><td>192.168.0.0/24 + 192.168.1.0/24</td><td>192.168.0.0/23</td><td>2 networks</td></tr><tr><td>10.0.0.0/16 – 10.7.0.0/16</td><td>10.0.0.0/13</td><td>8 networks in the 2nd octet</td></tr><tr><td>192.168.10.0/26, .64/26, .128/26, .192/26</td><td>192.168.10.0/24</td><td>Four /26s make a /24</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import ipaddress
+groups = [
+    [&quot;192.168.8.0/24&quot;, &quot;192.168.9.0/24&quot;, &quot;192.168.10.0/24&quot;, &quot;192.168.11.0/24&quot;],
+    [&quot;172.16.32.0/24&quot;, &quot;172.16.47.0/24&quot;],     # endpoints only: the smallest supernet that holds both
+    [&quot;10.1.4.0/24&quot;, &quot;10.1.7.0/24&quot;],
+]
+for nets in groups:
+    nets = [ipaddress.ip_network(n) for n in nets]
+    summary = nets[0]
+    while not all(n.subnet_of(summary) for n in nets):
+        summary = summary.supernet()
+    print(&quot;, &quot;.join(map(str, nets)), &quot;-&gt;&quot;, summary)</code></pre></figure>
+<h2>Check the summary</h2>
+<p>A summary <code>/p</code> covers 2^(32 − p) addresses. For 192.168.8.0/22: 2¹⁰ = 1,024 = 4 × 256 → exactly 192.168.8.0 to 192.168.11.255 ✓.</p>
+<h2>Careful: over-summarisation</h2>
+<p>Networks <code>172.16.4.0/24</code> and <code>172.16.7.0/24</code> share the first 6 bits of the third octet (<code>000001</code>), giving <code>172.16.4.0/22</code>. But that summary <strong>also includes</strong> 172.16.5.0 and 172.16.6.0. If those networks are at another site, routers will send their traffic to the wrong place.</p>
+<p>Even worse, if the summarising router receives traffic for a network inside the summary that <strong>doesn't exist</strong>, it may drop it or bounce it around. Routers usually add a route to <strong>Null0</strong> (a "discard" route) for the summary to prevent loops; traffic for non-existent subnets is quietly dropped. That's the safe behaviour, but it means a misplaced summary can create a <strong>black hole</strong> for real networks elsewhere.</p>
+<p><strong>Only summarise address space that really lives behind that router.</strong></p>
+<h2>Non-contiguous networks</h2>
+<p>Networks 192.168.1.0/24 and 192.168.3.0/24 can't be summarised exactly: the smallest summary is 192.168.0.0/22, which also covers .0 and .2. Options: advertise them separately, or redesign addressing.</p>
+<h2>Designing for summarisation</h2>
+<p>Good IP plans make summaries natural:</p>
+<ul><li>Give each site or region a <strong>contiguous, power-of-two block</strong>: Nairobi 10.1.0.0/16, Mombasa 10.2.0.0/16, Kisumu 10.3.0.0/16.</li><li>Inside each site, subnet from its block (10.1.10.0/24, 10.1.20.0/24...).</li><li>The core then needs only one route per site: 10.1.0.0/16 via the Nairobi router.</li></ul>
+<h2>Where summaries are configured</h2>
+<div class="static-table"><table><thead><tr><th>Method</th><th>Example</th></tr></thead><tbody><tr><td><strong>Static route</strong></td><td><code>ip route 10.2.0.0 255.255.0.0 172.16.2.226</code> (Cisco)</td></tr><tr><td><strong>OSPF</strong></td><td>Summaries at area border routers (<code>area 1 range 10.2.0.0 255.255.0.0</code>)</td></tr><tr><td><strong>EIGRP</strong></td><td>Summary on an interface (<code>ip summary-address eigrp ...</code>)</td></tr><tr><td><strong>BGP</strong></td><td><code>aggregate-address</code> to advertise one prefix to other networks</td></tr></tbody></table></div>
 <h2>Why providers love CIDR</h2>
-<p>Internet providers receive big blocks (for example a /16) and advertise <strong>one</strong> route to the rest of the internet, while splitting it into thousands of customer subnets inside. This is why the global routing table has around one million routes instead of billions.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the summary of 10.1.4.0/24, 10.1.5.0/24, 10.1.6.0/24 and 10.1.7.0/24?</p><details><summary>Show answer</summary><p>10.1.4.0/22</p></details></li><li><p>What is the summary of 172.16.32.0/24 through 172.16.47.0/24 (16 networks)?</p><details><summary>Show answer</summary><p>172.16.32.0/20 · 16 networks = 2^4, so 4 fewer bits than /24.</p></details></li><li><p>How many /24 networks does one /21 summary cover?</p><details><summary>Show answer</summary><p>8</p></details></li><li><p>What is the summary of 192.168.0.0/24 and 192.168.1.0/24?</p><details><summary>Show answer</summary><p>192.168.0.0/23</p></details></li></ol></section></div><p class="static-meta">Lesson 11 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/vlsm/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> VLSM: different sizes in one network</a><a class="btn btn-solid btn-sm" href="/learn/networking/ipv6/">IPv6 addressing <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<p>Internet providers receive big blocks and advertise <strong>one</strong> route to the rest of the internet, while splitting it into thousands of customer subnets inside. The global IPv4 routing table has around a million routes instead of billions, because of aggregation.</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Head office routes need to reach a branch with 10.50.0.0/24, 10.50.1.0/24, 10.50.2.0/24 and 10.50.3.0/24, plus a second branch using 10.50.4.0/24. Can you summarise the first branch as 10.50.0.0/21? What should you use instead?</span><em>Show answer</em></summary><div class="callout-body"><p>No: 10.50.0.0/21 covers 10.50.0.0–10.50.7.255, including the second branch's 10.50.4.0/24. Use 10.50.0.0/22 for the first branch (exactly .0–.3) and 10.50.4.0/24 for the second.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Summarisation combines contiguous networks into one shorter-prefix route, shrinking routing tables and hiding instability.</li><li>Binary method: count matching bits; block method: power-of-two count starting on a boundary.</li><li>Verify the summary covers exactly the intended networks; over-summarising sends traffic to the wrong place.</li><li>Design addressing per site in contiguous power-of-two blocks so summaries are clean.</li><li>Configure summaries in static routes, OSPF, EIGRP and BGP.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the summary of 10.1.4.0/24, 10.1.5.0/24, 10.1.6.0/24 and 10.1.7.0/24?</p><details><summary>Show answer</summary><p>10.1.4.0/22</p></details></li><li><p>What is the summary of 172.16.32.0/24 through 172.16.47.0/24 (16 networks)?</p><details><summary>Show answer</summary><p>172.16.32.0/20 · 16 networks = 2^4, so 4 fewer bits than /24.</p></details></li><li><p>How many /24 networks does one /21 summary cover?</p><details><summary>Show answer</summary><p>8</p></details></li><li><p>What is the summary of 192.168.0.0/24 and 192.168.1.0/24?</p><details><summary>Show answer</summary><p>192.168.0.0/23</p></details></li><li><p>Four /26 subnets of 192.168.10.0 summarise to what?</p><details><summary>Show answer</summary><p>192.168.10.0/24</p></details></li><li><p>What interface do routers point summary discard routes to? (Cisco)</p><details><summary>Show answer</summary><p>Null0</p></details></li></ol></section></div><p class="static-meta">Lesson 11 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/vlsm/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> VLSM: different subnet sizes in one network, step by step with full worked designs</a><a class="btn btn-solid btn-sm" href="/learn/networking/ipv6/">IPv6 addressing: why it exists, notation and shortening, address types, prefixes, SLAAC and dual stack <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
