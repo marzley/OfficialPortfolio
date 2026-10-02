@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Financial functions and what-if analysis: loans,…</title>
+    <meta name="description" content="Should you take the 12-month or 24-month loan? How much must you save monthly to reach KSh 500,000 in three years? What price gives the profit you…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/excel/financial-functions-what-if/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Financial functions and what-if analysis: loans,…" />
+    <meta property="og:description" content="Should you take the 12-month or 24-month loan? How much must you save monthly to reach KSh 500,000 in three years? What price gives the profit you…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/excel/financial-functions-what-if/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Financial functions and what-if analysis: loans,…" />
+    <meta name="twitter:description" content="Should you take the 12-month or 24-month loan? How much must you save monthly to reach KSh 500,000 in three years? What price gives the profit you…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/excel/financial-functions-what-if/#lesson","name":"Financial functions and what-if analysis: loans, savings, depreciation, Goal Seek and scenarios","description":"Should you take the 12-month or 24-month loan? How much must you save monthly to reach KSh 500,000 in three years? What price gives the profit you…","url":"https://marzleytechsolutions.co.ke/learn/excel/financial-functions-what-if/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/excel/#course","name":"Excel & Google Sheets","url":"https://marzleytechsolutions.co.ke/learn/excel/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Excel & Google Sheets","item":"https://marzleytechsolutions.co.ke/learn/excel/"},{"@type":"ListItem","position":4,"name":"Financial functions and what-if analysis: loans, savings, depreciation, Goal Seek and scenarios","item":"https://marzleytechsolutions.co.ke/learn/excel/financial-functions-what-if/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=19f64783be" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/excel/">Excel &amp; Google Sheets</a> / <span>Financial functions and what-if analysis: loans, savings, depreciation, Goal Seek and scenarios</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=excel&amp;lesson=financial-functions-what-if"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Financial functions and what-if analysis: loans, savings, depreciation, Goal Seek and scenarios</h1>
+<p>Should you take the 12-month or 24-month loan? How much must you save monthly to reach KSh 500,000 in three years? What price gives the profit you need? Excel's financial functions and <strong>what-if analysis</strong> tools answer these questions in seconds, and they're used daily in banks, SACCOs, microfinance institutions, accounting, business planning and personal finance. This unit explains them with practical Kenyan examples.</p>
+<aside class="callout callout-warning"><p class="callout-title">Learning examples only</p><div class="callout-body"><p>Interest rates, fees and loan terms here are illustrative. Real loans include fees, insurance and specific interest methods; always read the lender's terms and the Annual Percentage Rate (APR) or total cost of credit disclosed.</p></div></aside>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Interest basics: flat vs reducing balance, simple vs compound</li><li>PMT (repayments), IPMT/PPMT (interest and principal parts)</li><li>Building a loan amortisation schedule</li><li>FV and PV (savings and investments), RATE and NPER</li><li>NPV and IRR for evaluating projects (introduction)</li><li>Depreciation (SLN, DB)</li><li>Goal Seek, Data Tables and Scenario Manager</li></ul></div></aside>
+<h2>Interest basics</h2>
+<div class="static-table"><table><thead><tr><th>Concept</th><th>Meaning</th></tr></thead><tbody><tr><td><strong>Principal</strong></td><td>The amount borrowed or invested</td></tr><tr><td><strong>Rate</strong></td><td>Interest per period (e.g. 14% per year = 14%/12 per month)</td></tr><tr><td><strong>Periods (nper)</strong></td><td>Number of payment periods (e.g. 24 months)</td></tr><tr><td><strong>Simple interest</strong></td><td>Interest only on the original principal</td></tr><tr><td><strong>Compound interest</strong></td><td>Interest on principal <strong>plus</strong> accumulated interest</td></tr><tr><td><strong>Flat-rate loan</strong></td><td>Interest calculated on the original amount for the whole term (common in some informal/chama loans); the effective rate is much higher than it looks</td></tr><tr><td><strong>Reducing-balance loan</strong></td><td>Interest calculated on the remaining balance each period (banks, SACCOs commonly)</td></tr></tbody></table></div>
+<h3>Flat vs reducing: the same "10%" isn't the same</h3>
+<ul><li><strong>Flat 10% per year</strong> on KSh 100,000 for 1 year: interest = 10,000 → total 110,000 → monthly 9,167.</li><li><strong>Reducing 10% per year</strong> on KSh 100,000 for 12 months: monthly repayment <code>=PMT(10%/12, 12, -100000)</code> ≈ 8,792 → total ≈ 105,500.</li></ul>
+<p>The flat loan costs more because you pay interest on money you've already repaid.</p>
+<h2>PMT: loan repayments</h2>
+<figure class="static-code"><pre><code>=PMT(rate, nper, pv, [fv], [type])</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Argument</th><th>Meaning</th><th>Example</th></tr></thead><tbody><tr><td>rate</td><td>Interest <strong>per period</strong></td><td><code>14%/12</code> (monthly)</td></tr><tr><td>nper</td><td>Number of periods</td><td><code>24</code></td></tr><tr><td>pv</td><td>Present value (loan amount); enter as negative to get a positive payment</td><td><code>-200000</code></td></tr><tr><td>fv</td><td>Future value (usually 0 for loans)</td><td></td></tr><tr><td>type</td><td>0 = payments at end of period (default), 1 = beginning</td><td></td></tr></tbody></table></div>
+<p>Example: KSh 200,000 at 14% per year over 24 months:</p>
+<figure class="static-code"><pre><code>=PMT(14%/12, 24, -200000)      → about 9,603 per month</code></pre></figure>
+<p>Total repaid: <code>=9,603 × 24</code> ≈ 230,470; total interest ≈ 30,470.</p>
+<p><strong>Use cell references</strong> (rate in B1, months in B2, amount in B3): <code>=PMT(B1/12, B2, -B3)</code>. Then change inputs to compare options instantly.</p>
+<h3>IPMT and PPMT</h3>
+<p>Each payment contains <strong>interest</strong> and <strong>principal</strong>:</p>
+<ul><li><code>=IPMT(rate, period, nper, pv)</code> → interest part of a given payment.</li><li><code>=PPMT(rate, period, nper, pv)</code> → principal part.</li></ul>
+<p>Early payments are mostly interest; later ones mostly principal.</p>
+<h2>Building an amortisation schedule</h2>
+<div class="static-table"><table><thead><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr></thead><tbody><tr><td>1</td><td>Loan amount</td><td>200,000</td><td></td><td></td><td></td></tr><tr><td>2</td><td>Annual rate</td><td>14%</td><td></td><td></td><td></td></tr><tr><td>3</td><td>Months</td><td>24</td><td></td><td></td><td></td></tr><tr><td>4</td><td>Monthly payment</td><td><code>=PMT(B2/12,B3,-B1)</code></td><td></td><td></td><td></td></tr><tr><td>6</td><td><strong>Month</strong></td><td><strong>Opening balance</strong></td><td><strong>Interest</strong></td><td><strong>Principal</strong></td><td><strong>Closing balance</strong></td></tr><tr><td>7</td><td>1</td><td><code>=B1</code></td><td><code>=B7*$B$2/12</code></td><td><code>=$B$4-C7</code></td><td><code>=B7-D7</code></td></tr><tr><td>8</td><td>2</td><td><code>=E7</code></td><td><code>=B8*$B$2/12</code></td><td><code>=$B$4-C8</code></td><td><code>=B8-D8</code></td></tr></tbody></table></div>
+<p>Copy row 8 down to month 24; the closing balance reaches (about) zero. Add totals of interest and principal; chart the declining balance.</p>
+<p>This is exactly how lenders compute schedules (with their specific conventions).</p>
+<h2>Savings and investments: FV, PV, RATE, NPER</h2>
+<h3>FV: what will my savings grow to?</h3>
+<figure class="static-code"><pre><code>=FV(rate, nper, pmt, [pv], [type])</code></pre></figure>
+<p>Saving KSh 5,000 monthly for 3 years at 9% per year (e.g. an illustrative money market fund return, compounded monthly):</p>
+<figure class="static-code"><pre><code>=FV(9%/12, 36, -5000)          → about 205,800</code></pre></figure>
+<p>(You deposit 180,000; the rest is growth. Real returns vary and aren't guaranteed.)</p>
+<h3>PV: what's a future amount worth today?</h3>
+<p><code>=PV(rate, nper, pmt, [fv])</code> e.g. how much to invest today to have KSh 500,000 in 5 years at 10%: <code>=PV(10%, 5, 0, -500000)</code> → about 310,460.</p>
+<h3>Monthly saving needed for a goal</h3>
+<p>Goal: KSh 500,000 in 3 years at 9% per year:</p>
+<figure class="static-code"><pre><code>=PMT(9%/12, 36, 0, -500000)    → about 12,150 per month</code></pre></figure>
+<h3>RATE and NPER</h3>
+<ul><li><code>=RATE(nper, pmt, pv)</code> finds the interest rate: useful to reveal the true cost of a loan quoted as "KSh 10,000 now, pay KSh 1,000 weekly for 12 weeks": <code>=RATE(12, -1000, 10000)</code> gives the weekly rate (multiply by 52 for a rough yearly rate: it's very high).</li><li><code>=NPER(rate, pmt, pv)</code> finds how many periods to repay or reach a goal.</li></ul>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A digital lender offers KSh 5,000 today, repaid as KSh 5,750 after 30 days. How could you use Excel to understand the cost?</span><em>Show answer</em></summary><div class="callout-body"><p>The cost is 750 on 5,000 for 30 days = 15% per month. Excel's <code>=RATE(1, 0, 5000, -5750)</code> confirms 15% per period. Annualised (roughly ×12, or compounded <code>=(1+15%)^12-1</code>), that's extremely expensive compared with bank or SACCO loans. Comparing true costs helps avoid debt traps.</p></div></details>
+<h2>Evaluating projects: NPV and IRR (introduction)</h2>
+<p>A business considers buying a posho mill for KSh 300,000 that's expected to bring net cash flows of 90,000, 110,000, 120,000 and 120,000 over four years.</p>
+<ul><li><strong>NPV</strong> (net present value) discounts future cash flows to today using a required rate (e.g. 12%):</li></ul>
+<figure class="static-code"><pre><code>=NPV(12%, B2:B5) - 300000</code></pre></figure>
+<p>Positive NPV → the project earns more than the required rate.</p>
+<ul><li><strong>IRR</strong> (internal rate of return): the rate at which NPV = 0:</li></ul>
+<figure class="static-code"><pre><code>=IRR(B1:B5)       where B1 = -300000 and B2:B5 are the yearly cash flows</code></pre></figure>
+<p>Compare IRR with your cost of capital/loan rate. These are standard tools in business plans and investment decisions.</p>
+<h2>Depreciation</h2>
+<p>Assets (vehicles, computers, machines) lose value over time; depreciation spreads the cost across their useful life (for accounting).</p>
+<div class="static-table"><table><thead><tr><th>Function</th><th>Method</th><th>Example</th></tr></thead><tbody><tr><td><code>=SLN(cost, salvage, life)</code></td><td>Straight-line (same amount each year)</td><td>Laptop KSh 90,000, salvage 10,000, 4 years → <code>=SLN(90000,10000,4)</code> = 20,000/year</td></tr><tr><td><code>=DB(cost, salvage, life, period)</code></td><td>Declining balance (more in early years)</td><td></td></tr><tr><td><code>=DDB(...)</code></td><td>Double-declining balance</td><td></td></tr></tbody></table></div>
+<p>(Tax depreciation rules, called capital allowances, follow KRA rules and differ from accounting depreciation.)</p>
+<h2>What-if analysis tools</h2>
+<p><strong>Data → What-If Analysis</strong> (Excel):</p>
+<h3>Goal Seek: work backwards to a target</h3>
+<p>"What selling price gives a profit of KSh 50,000?"</p>
+<ol><li>Build the model: price (input) → revenue → costs → profit (formula).</li><li>Data → What-If Analysis → <strong>Goal Seek</strong>.</li><li><strong>Set cell:</strong> the profit cell; <strong>To value:</strong> 50000; <strong>By changing cell:</strong> the price cell.</li><li>Excel finds the price.</li></ol>
+<p>Other uses: the loan amount you can afford with a KSh 15,000 monthly repayment; the sales volume needed to break even (set profit to 0).</p>
+<h3>Data Tables: many scenarios at once</h3>
+<p>A <strong>one-variable data table</strong> shows repayments for different loan terms:</p>
+<div class="static-table"><table><thead><tr><th>Months</th><th>Payment</th></tr></thead><tbody><tr><td></td><td><code>=B4</code> (link to the PMT result)</td></tr><tr><td>12</td><td></td></tr><tr><td>24</td><td></td></tr><tr><td>36</td><td></td></tr><tr><td>48</td><td></td></tr></tbody></table></div>
+<p>Select the table → What-If Analysis → <strong>Data Table</strong> → Column input cell: the months input (B3). Excel fills payments for each term.</p>
+<p>A <strong>two-variable data table</strong> varies two inputs (e.g. interest rates across the top, terms down the side) for a full comparison grid.</p>
+<h3>Scenario Manager</h3>
+<p>Save sets of inputs as named scenarios ("Pessimistic", "Expected", "Optimistic": different sales volumes, prices and costs), switch between them, and create a <strong>summary report</strong> comparing outcomes. Great for business plans and budgets.</p>
+<p><strong>Google Sheets:</strong> no built-in Goal Seek (there's a Google add-on), but formulas and tables work similarly; Scenario Manager isn't available.</p>
+<h2>Practice tasks</h2>
+<ol><li>Calculate the monthly repayment for KSh 150,000 at 13% per year over 18 months, and the total interest.</li><li>Build a full amortisation schedule and a line chart of the balance.</li><li>Calculate how much to save monthly to reach KSh 300,000 in 2 years at 8%.</li><li>Use RATE to find the monthly cost of a short-term loan offer.</li><li>Use Goal Seek to find the break-even number of units for a small business model.</li></ol>
+<h2>Summary</h2>
+<ul><li>Know principal, rate per period, number of periods, simple vs compound interest, and flat vs reducing-balance loans (flat costs more).</li><li>PMT calculates repayments; IPMT/PPMT split interest and principal; build amortisation schedules with formulas.</li><li>FV, PV, PMT (for goals), RATE and NPER handle savings and loan analysis.</li><li>NPV and IRR evaluate investments; SLN and DB calculate depreciation.</li><li>Goal Seek works backwards to a target; Data Tables compare many inputs; Scenario Manager compares named scenarios.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which function calculates a loan's fixed periodic repayment?</p><details><summary>Show answer</summary><p>PMT</p></details></li><li><p>For a 14% yearly rate with monthly payments, what rate do you enter in PMT? Write like 14%/12.</p><details><summary>Show answer</summary><p>14%/12</p></details></li><li><p>Which function shows the future value of regular savings?</p><details><summary>Show answer</summary><p>FV</p></details></li><li><p>Which loan type costs more for the same quoted rate: flat or reducing balance?</p><details><summary>Show answer</summary><p>flat</p></details></li><li><p>Which tool works backwards to find the input that gives a target result? (two words)</p><details><summary>Show answer</summary><p>Goal Seek</p></details></li><li><p>Which function gives straight-line depreciation?</p><details><summary>Show answer</summary><p>SLN</p></details></li><li><p>Which function finds the interest rate when you know payments and amount?</p><details><summary>Show answer</summary><p>RATE</p></details></li></ol></section></div><p class="static-meta">Lesson 9 of 11 in <a href="/learn/excel/">Excel &amp; Google Sheets</a> · <a href="/learn/?book=excel">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/excel/charts-pivots/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Charts and pivot tables: summarising thousands of rows and presenting results clearly</a><a class="btn btn-solid btn-sm" href="/learn/excel/conditional-formatting-validation/">Conditional formatting, data validation and protecting sheets <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>
