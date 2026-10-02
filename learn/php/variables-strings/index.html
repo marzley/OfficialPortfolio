@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Variables, strings and numbers | PHP &amp; MySQL</title>
-    <meta name="description" content="Variables start with $ :" />
+    <title>Variables, data types, strings and numbers: everything…</title>
+    <meta name="description" content="Every program works with data: a customer&#x27;s name, a product price, a phone number, whether an order is paid. Variables store that data, and PHP gives…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/php/variables-strings/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Variables, strings and numbers | PHP &amp; MySQL" />
-    <meta property="og:description" content="Variables start with $ :" />
+    <meta property="og:title" content="Variables, data types, strings and numbers: everything…" />
+    <meta property="og:description" content="Every program works with data: a customer&#x27;s name, a product price, a phone number, whether an order is paid. Variables store that data, and PHP gives…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/php/variables-strings/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Variables, strings and numbers | PHP &amp; MySQL" />
-    <meta name="twitter:description" content="Variables start with $ :" />
+    <meta name="twitter:title" content="Variables, data types, strings and numbers: everything…" />
+    <meta name="twitter:description" content="Every program works with data: a customer&#x27;s name, a product price, a phone number, whether an order is paid. Variables store that data, and PHP gives…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/php/variables-strings/#lesson","name":"Variables, strings and numbers","description":"Variables start with $ :","url":"https://marzleytechsolutions.co.ke/learn/php/variables-strings/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/php/#course","name":"PHP & MySQL","url":"https://marzleytechsolutions.co.ke/learn/php/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"PHP & MySQL","item":"https://marzleytechsolutions.co.ke/learn/php/"},{"@type":"ListItem","position":4,"name":"Variables, strings and numbers","item":"https://marzleytechsolutions.co.ke/learn/php/variables-strings/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/php/variables-strings/#lesson","name":"Variables, data types, strings and numbers: everything you need to store and format data in PHP","description":"Every program works with data: a customer's name, a product price, a phone number, whether an order is paid. Variables store that data, and PHP gives…","url":"https://marzleytechsolutions.co.ke/learn/php/variables-strings/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/php/#course","name":"PHP & MySQL","url":"https://marzleytechsolutions.co.ke/learn/php/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"PHP & MySQL","item":"https://marzleytechsolutions.co.ke/learn/php/"},{"@type":"ListItem","position":4,"name":"Variables, data types, strings and numbers: everything you need to store and format data in PHP","item":"https://marzleytechsolutions.co.ke/learn/php/variables-strings/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,43 +36,179 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/php/">PHP &amp; MySQL</a> / <span>Variables, strings and numbers</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=php&amp;lesson=variables-strings"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Variables, strings and numbers</h1>
-<p>Variables start with <code>$</code>:</p>
-<figure class="static-code"><pre><code>&lt;?php
-$name = &quot;Achieng&quot;;           // string
-$age = 21;                   // integer
-$price = 1499.50;            // float
-$isMember = true;            // boolean
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/php/">PHP &amp; MySQL</a> / <span>Variables, data types, strings and numbers: everything you need to store and format data in PHP</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=php&amp;lesson=variables-strings"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Variables, data types, strings and numbers: everything you need to store and format data in PHP</h1>
+<p>Every program works with data: a customer's name, a product price, a phone number, whether an order is paid. <strong>Variables</strong> store that data, and PHP gives you many tools to work with text (strings) and numbers: joining, searching, formatting money, rounding, calculating VAT. This unit covers them all with runnable examples, including the formatting you'll use on real Kenyan business sites (KSh amounts, phone numbers, dates).</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Creating variables and naming rules</li><li>Data types: string, int, float, bool, null, array</li><li>Checking and converting types</li><li>Constants</li><li>Strings: quotes, joining, interpolation, heredoc</li><li>Useful string functions (length, case, search, replace, trim, split)</li><li>Numbers: arithmetic, rounding, number_format, integer division and modulus</li><li>Dates and times basics</li><li>Common mistakes</li></ul></div></aside>
+<h2>Variables</h2>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$name = &quot;Wanjiku&quot;;
+$age = 24;
+$price = 1499.99;
+$isMember = true;
 
-echo &quot;Hello $name&quot;;          // double quotes insert variables
-echo &#x27;Hello $name&#x27;;          // single quotes don&#x27;t: prints $name literally
-echo &quot;Total: KSh &quot; . number_format($price * 3, 2);   // . joins strings</code></pre></figure>
-<h2>Useful string functions</h2>
-<figure class="static-code"><pre><code>strlen(&quot;Marzley&quot;)                 // 7
-strtoupper(&quot;nairobi&quot;)             // NAIROBI
-ucwords(&quot;mama mboga shop&quot;)        // Mama Mboga Shop
-str_replace(&quot;mama&quot;, &quot;baba&quot;, $s)   // replace text
-trim(&quot;  hello  &quot;)                 // remove spaces at the ends
-substr(&quot;0712345678&quot;, 1)           // 712345678
-explode(&quot;,&quot;, &quot;a,b,c&quot;)             // [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;]
-implode(&quot;, &quot;, $list)              // join an array into a string</code></pre></figure>
-<h2>Numbers and maths</h2>
-<figure class="static-code"><pre><code>$vat = 1000 * 0.16;              // 160
-$rounded = round(10 / 3, 2);     // 3.33
-$whole = intdiv(10, 3);          // 3
-$left = 10 % 3;                  // 1</code></pre></figure>
-<h2>Phone numbers: a real example</h2>
-<figure class="static-code"><pre><code>&lt;?php
-// Turn 0712 345 678 or +254712345678 into 254712345678 for M-Pesa
-function mpesaNumber(string $raw): ?string {
-    $digits = preg_replace(&#x27;/\D/&#x27;, &#x27;&#x27;, $raw);
-    if (preg_match(&#x27;/^0?(7|1)\d{8}$/&#x27;, $digits)) return &#x27;254&#x27; . substr($digits, -9);
-    if (preg_match(&#x27;/^254(7|1)\d{8}$/&#x27;, $digits)) return $digits;
-    return null;
+echo &quot;Name: $name\n&quot;;
+echo &quot;Age: $age\n&quot;;
+echo &quot;Price: $price\n&quot;;
+echo &quot;Member: &quot; . ($isMember ? &quot;yes&quot; : &quot;no&quot;) . &quot;\n&quot;;
+
+$age = $age + 1;        // variables can change
+echo &quot;Next year: $age\n&quot;;</code></pre></figure>
+<p>Naming rules:</p>
+<ul><li>Start with <code>$</code>, then a letter or underscore: <code>$total</code>, <code>$_temp</code> (not <code>$1total</code>).</li><li>Letters, numbers and underscores only; no spaces or hyphens.</li><li>Case-sensitive: <code>$Total</code> ≠ <code>$total</code>.</li><li>Use clear names: <code>$orderTotal</code> (camelCase) or <code>$order_total</code> (snake_case); pick one style.</li></ul>
+<h2>Data types</h2>
+<div class="static-table"><table><thead><tr><th>Type</th><th>Example</th><th>Notes</th></tr></thead><tbody><tr><td><strong>string</strong></td><td><code>&quot;Nairobi&quot;</code></td><td>Text</td></tr><tr><td><strong>int</strong></td><td><code>42</code>, <code>-7</code></td><td>Whole numbers</td></tr><tr><td><strong>float</strong></td><td><code>3.14</code>, <code>1499.99</code></td><td>Decimals</td></tr><tr><td><strong>bool</strong></td><td><code>true</code>, <code>false</code></td><td>Yes/no</td></tr><tr><td><strong>null</strong></td><td><code>null</code></td><td>"No value"</td></tr><tr><td><strong>array</strong></td><td><code>[&quot;Nairobi&quot;, &quot;Mombasa&quot;]</code></td><td>A list or map (next lesson)</td></tr><tr><td><strong>object</strong></td><td><code>new DateTime()</code></td><td>From classes (OOP lesson)</td></tr></tbody></table></div>
+<p>PHP decides the type from the value (dynamic typing). Check it:</p>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$values = [&quot;Nairobi&quot;, 42, 3.14, true, null, [1, 2]];
+foreach ($values as $v) {
+    echo gettype($v), &quot;\n&quot;;
 }
-echo mpesaNumber(&quot;0712 345 678&quot;);   // 254712345678</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What symbol do PHP variables start with?</p><details><summary>Show answer</summary><p>$</p></details></li><li><p>What does strlen("Nairobi") return?</p><details><summary>Show answer</summary><p>7</p></details></li><li><p>Which operator joins two strings in PHP?</p><details><summary>Show answer</summary><p>.</p></details></li><li><p>Do single quotes insert variable values into a string? (yes/no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 13 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/introduction/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> PHP introduction</a><a class="btn btn-solid btn-sm" href="/learn/php/arrays-loops/">Arrays, conditions and loops <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+var_dump(1499.99);            // shows type and value: very useful for debugging
+var_dump(&quot;5&quot; == 5);           // loose comparison: true
+var_dump(&quot;5&quot; === 5);          // strict comparison (type too): false</code></pre></figure>
+<aside class="callout callout-tip"><p class="callout-title">Use === for comparisons</p><div class="callout-body"><p><code>==</code> converts types before comparing, which can surprise you. <code>===</code> compares value <strong>and</strong> type. Prefer <code>===</code> and <code>!==</code>.</p></div></aside>
+<h2>Converting types</h2>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$qty = &quot;3&quot;;                       // from a form, everything arrives as a string
+$total = (int)$qty * 250;
+echo $total, &quot;\n&quot;;                // 750
+
+echo (float)&quot;12.5abc&quot;, &quot;\n&quot;;      // 12.5
+echo intval(&quot;0712&quot;), &quot;\n&quot;;        // 712: careful with phone numbers! Keep them as strings
+echo (string)2026, &quot;\n&quot;;
+var_dump((bool)&quot;0&quot;, (bool)&quot;&quot;, (bool)&quot;hello&quot;);   // false, false, true
+var_dump(is_numeric(&quot;12.5&quot;), is_numeric(&quot;12a&quot;));</code></pre></figure>
+<p>Phone numbers, ID numbers and M-Pesa codes are <strong>strings</strong>, not numbers: converting <code>0712345678</code> to an integer loses the leading zero.</p>
+<h2>Constants</h2>
+<p>Values that never change:</p>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+const VAT_RATE = 0.16;
+define(&quot;SHOP_NAME&quot;, &quot;Mama Mboga Online&quot;);
+
+$price = 1000;
+echo SHOP_NAME, &quot;: VAT on KSh $price is KSh &quot;, $price * VAT_RATE, &quot;\n&quot;;</code></pre></figure>
+<p>Constants have no <code>$</code> and are written in CAPITALS by convention.</p>
+<h2>Strings</h2>
+<h3>Single vs double quotes</h3>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$town = &quot;Kisumu&quot;;
+echo &quot;I live in $town\n&quot;;       // double quotes: variables are replaced
+echo &#x27;I live in $town\n&#x27;;       // single quotes: printed exactly (no \n either)
+echo &quot;\n&quot;;
+echo &quot;Total: {$town}-branch\n&quot;; // braces separate the variable from following text</code></pre></figure>
+<h3>Joining strings</h3>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$first = &quot;Otieno&quot;;
+$last = &quot;Odhiambo&quot;;
+$full = $first . &quot; &quot; . $last;
+$greeting = &quot;Hello&quot;;
+$greeting .= &quot;, &quot; . $full . &quot;!&quot;;   // .= appends
+echo $greeting, &quot;\n&quot;;</code></pre></figure>
+<h3>Heredoc for long text</h3>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$name = &quot;Achieng&quot;;
+$amount = number_format(2500);
+$message = &lt;&lt;&lt;TEXT
+Dear $name,
+We have received your payment of KSh $amount.
+Thank you for shopping with us.
+TEXT;
+echo $message, &quot;\n&quot;;</code></pre></figure>
+<h2>Useful string functions</h2>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$s = &quot;  Wireless Mouse - Black  &quot;;
+echo &quot;[&quot; . trim($s) . &quot;]\n&quot;;                  // remove spaces at both ends
+echo strlen(trim($s)), &quot;\n&quot;;                  // length
+echo strtoupper(&quot;nairobi&quot;), &quot;\n&quot;;             // NAIROBI
+echo strtolower(&quot;MOMBASA&quot;), &quot;\n&quot;;             // mombasa
+echo ucwords(&quot;kamau njoroge&quot;), &quot;\n&quot;;          // Kamau Njoroge
+echo str_replace(&quot;Black&quot;, &quot;White&quot;, $s), &quot;\n&quot;; // replace
+echo strpos(&quot;hello world&quot;, &quot;world&quot;), &quot;\n&quot;;    // position (0-based): 6
+var_dump(str_contains(&quot;Laptop bag&quot;, &quot;bag&quot;));  // PHP 8: true
+var_dump(str_starts_with(&quot;0712345678&quot;, &quot;07&quot;));
+echo substr(&quot;2026-09-15&quot;, 0, 4), &quot;\n&quot;;        // 2026
+print_r(explode(&quot;,&quot;, &quot;Nairobi,Mombasa,Kisumu&quot;));   // split into an array
+echo implode(&quot; | &quot;, [&quot;Tea&quot;, &quot;Mandazi&quot;, &quot;Chapati&quot;]), &quot;\n&quot;;  // join an array
+echo str_pad(&quot;7&quot;, 3, &quot;0&quot;, STR_PAD_LEFT), &quot;\n&quot;;      // 007</code></pre></figure>
+<p>Note: <code>strlen</code> counts bytes, so for text with accents or emojis use <code>mb_strlen</code> and the other <code>mb_</code> functions.</p>
+<h3>Practical: format a Kenyan phone number</h3>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+function normalisePhone(string $phone): ?string {
+    $digits = preg_replace(&#x27;/\D/&#x27;, &#x27;&#x27;, $phone);      // keep digits only
+    if (str_starts_with($digits, &quot;0&quot;) &amp;&amp; strlen($digits) === 10) {
+        return &quot;254&quot; . substr($digits, 1);
+    }
+    if (str_starts_with($digits, &quot;254&quot;) &amp;&amp; strlen($digits) === 12) {
+        return $digits;
+    }
+    if (strlen($digits) === 9 &amp;&amp; ($digits[0] === &quot;7&quot; || $digits[0] === &quot;1&quot;)) {
+        return &quot;254&quot; . $digits;
+    }
+    return null;                                      // invalid
+}
+
+foreach ([&quot;0712 345 678&quot;, &quot;+254 712345678&quot;, &quot;712345678&quot;, &quot;0110 123 456&quot;, &quot;12345&quot;] as $p) {
+    echo str_pad($p, 16), &quot; -&gt; &quot;, normalisePhone($p) ?? &quot;invalid&quot;, &quot;\n&quot;;
+}</code></pre></figure>
+<p>M-Pesa APIs need numbers in the <code>2547XXXXXXXX</code> / <code>2541XXXXXXXX</code> format, so this function is genuinely useful.</p>
+<h2>Numbers</h2>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$a = 17; $b = 5;
+echo $a + $b, &quot;\n&quot;;        // 22
+echo $a - $b, &quot;\n&quot;;        // 12
+echo $a * $b, &quot;\n&quot;;        // 85
+echo $a / $b, &quot;\n&quot;;        // 3.4
+echo intdiv($a, $b), &quot;\n&quot;; // 3 (whole number division)
+echo $a % $b, &quot;\n&quot;;        // 2 (remainder: modulus)
+echo $a ** 2, &quot;\n&quot;;        // 289 (power)
+
+$count = 10;
+$count++;                  // add 1
+$count += 5;               // add 5
+echo $count, &quot;\n&quot;;         // 16</code></pre></figure>
+<h3>Rounding and money</h3>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$price = 1234.5678;
+echo round($price), &quot;\n&quot;;          // 1235
+echo round($price, 2), &quot;\n&quot;;       // 1234.57
+echo floor($price), &quot;\n&quot;;          // 1234
+echo ceil($price), &quot;\n&quot;;           // 1235
+echo number_format($price), &quot;\n&quot;;            // 1,235
+echo number_format($price, 2), &quot;\n&quot;;         // 1,234.57
+echo &quot;KSh &quot; . number_format(2500000), &quot;\n&quot;;  // KSh 2,500,000
+
+// VAT calculation
+$net = 8620.69;
+$vat = round($net * 0.16, 2);
+echo &quot;Net KSh &quot; . number_format($net, 2) . &quot; + VAT KSh &quot; . number_format($vat, 2)
+   . &quot; = KSh &quot; . number_format($net + $vat, 2) . &quot;\n&quot;;</code></pre></figure>
+<aside class="callout callout-warning"><p class="callout-title">Floats and money</p><div class="callout-body"><p>Floats can't store some decimals exactly: <code>0.1 + 0.2</code> isn't exactly <code>0.3</code>. For money, many systems store amounts as <strong>whole cents/shillings in integers</strong> (e.g. 150050 for KSh 1,500.50), or use <code>round()</code> at each step and <code>DECIMAL</code> columns in MySQL.</p></div></aside>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+var_dump(0.1 + 0.2 == 0.3);          // false!
+var_dump(round(0.1 + 0.2, 2) == 0.3); // true</code></pre></figure>
+<h2>Dates and times basics</h2>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+date_default_timezone_set(&quot;Africa/Nairobi&quot;);
+echo date(&quot;Y-m-d&quot;), &quot;\n&quot;;              // 2026-09-15 style
+echo date(&quot;l, j F Y&quot;), &quot;\n&quot;;           // Tuesday, 15 September 2026 style
+echo date(&quot;H:i&quot;), &quot;\n&quot;;                // 24-hour time
+
+$due = new DateTime(&quot;2026-10-01&quot;);
+$due-&gt;modify(&quot;+30 days&quot;);
+echo &quot;Due: &quot; . $due-&gt;format(&quot;d/m/Y&quot;) . &quot;\n&quot;;
+
+$start = new DateTime(&quot;2026-01-10&quot;);
+$end = new DateTime(&quot;2026-03-25&quot;);
+echo &quot;Days between: &quot; . $start-&gt;diff($end)-&gt;days . &quot;\n&quot;;</code></pre></figure>
+<p>Always set the timezone (<code>Africa/Nairobi</code>) so times are right for Kenyan users.</p>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Forgetting <code>$</code></td><td><code>$name</code>, not <code>name</code></td></tr><tr><td>Using <code>+</code> to join strings</td><td>Use <code>.</code></td></tr><tr><td>Variables inside single quotes</td><td>Use double quotes or concatenation</td></tr><tr><td>Comparing with <code>==</code> and getting surprises</td><td>Use <code>===</code></td></tr><tr><td>Storing phone numbers as integers</td><td>Keep them as strings</td></tr><tr><td>Money rounding errors</td><td>Round each step, or use integer cents</td></tr></tbody></table></div>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A form sends quantity "3" and price "250.50". Write the steps to calculate the total including 16% VAT, displayed like "KSh 871.74".</span><em>Show answer</em></summary><div class="callout-body"><p>Convert: <code>$qty = (int)$_POST[&#x27;qty&#x27;]; $price = (float)$_POST[&#x27;price&#x27;];</code> (after validating both are numeric). Subtotal = 3 × 250.50 = 751.50; VAT = round(751.50 × 0.16, 2) = 120.24; total = 871.74; display with <code>&quot;KSh &quot; . number_format($total, 2)</code>.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Variables start with <code>$</code>, are case-sensitive and hold strings, ints, floats, bools, null, arrays or objects.</li><li>Use <code>var_dump</code>/<code>gettype</code> to inspect, casts like <code>(int)</code> to convert, and <code>===</code> to compare strictly.</li><li>Constants (<code>const</code>, <code>define</code>) hold fixed values like VAT rates.</li><li>Strings: double quotes interpolate, <code>.</code> joins, heredoc for long text; many functions: trim, strtoupper, str_replace, explode, implode, str_contains.</li><li>Numbers: arithmetic, intdiv, %, round, number_format; be careful with floats for money; set the Africa/Nairobi timezone for dates.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which function formats 2500000 as 2,500,000?</p><details><summary>Show answer</summary><p>number_format</p></details></li><li><p>What does 17 % 5 return?</p><details><summary>Show answer</summary><p>2</p></details></li><li><p>Which comparison checks value AND type?</p><details><summary>Show answer</summary><p>===</p></details></li><li><p>Which function splits "a,b,c" into an array?</p><details><summary>Show answer</summary><p>explode</p></details></li><li><p>Should phone numbers be stored as integers or strings?</p><details><summary>Show answer</summary><p>strings</p></details></li><li><p>Which function removes spaces from both ends of a string?</p><details><summary>Show answer</summary><p>trim</p></details></li></ol></section>
+<p><strong>Learn more:</strong> <a href="https://www.php.net/manual/en/language.types.string.php" target="_blank" rel="noopener noreferrer">PHP manual: strings</a> · <a href="https://www.php.net/manual/en/ref.strings.php" target="_blank" rel="noopener noreferrer">PHP manual: string functions</a></p></div><p class="static-meta">Lesson 2 of 15 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/introduction/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> PHP introduction: what PHP is, how server-side code works, who uses it and setting up your computer</a><a class="btn btn-solid btn-sm" href="/learn/php/arrays-loops/">Arrays, conditions and loops: lists, associative arrays, if/else, match, for, foreach, while and array functions <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

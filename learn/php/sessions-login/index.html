@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Sessions and a login system | PHP &amp; MySQL</title>
-    <meta name="description" content="HTTP forgets you between pages. Sessions remember a visitor using a cookie with a random ID." />
+    <title>Sessions and a secure login system: cookies, sessions,…</title>
+    <meta name="description" content="HTTP is stateless : each page request is independent, and the server doesn&#x27;t automatically remember who you are. Yet websites keep you logged in…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/php/sessions-login/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Sessions and a login system | PHP &amp; MySQL" />
-    <meta property="og:description" content="HTTP forgets you between pages. Sessions remember a visitor using a cookie with a random ID." />
+    <meta property="og:title" content="Sessions and a secure login system: cookies, sessions,…" />
+    <meta property="og:description" content="HTTP is stateless : each page request is independent, and the server doesn&#x27;t automatically remember who you are. Yet websites keep you logged in…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/php/sessions-login/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Sessions and a login system | PHP &amp; MySQL" />
-    <meta name="twitter:description" content="HTTP forgets you between pages. Sessions remember a visitor using a cookie with a random ID." />
+    <meta name="twitter:title" content="Sessions and a secure login system: cookies, sessions,…" />
+    <meta name="twitter:description" content="HTTP is stateless : each page request is independent, and the server doesn&#x27;t automatically remember who you are. Yet websites keep you logged in…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/php/sessions-login/#lesson","name":"Sessions and a login system","description":"HTTP forgets you between pages. Sessions remember a visitor using a cookie with a random ID.","url":"https://marzleytechsolutions.co.ke/learn/php/sessions-login/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/php/#course","name":"PHP & MySQL","url":"https://marzleytechsolutions.co.ke/learn/php/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"PHP & MySQL","item":"https://marzleytechsolutions.co.ke/learn/php/"},{"@type":"ListItem","position":4,"name":"Sessions and a login system","item":"https://marzleytechsolutions.co.ke/learn/php/sessions-login/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/php/sessions-login/#lesson","name":"Sessions and a secure login system: cookies, sessions, password hashing, registration, roles and protection against attacks","description":"HTTP is stateless : each page request is independent, and the server doesn't automatically remember who you are. Yet websites keep you logged in…","url":"https://marzleytechsolutions.co.ke/learn/php/sessions-login/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/php/#course","name":"PHP & MySQL","url":"https://marzleytechsolutions.co.ke/learn/php/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"PHP & MySQL","item":"https://marzleytechsolutions.co.ke/learn/php/"},{"@type":"ListItem","position":4,"name":"Sessions and a secure login system: cookies, sessions, password hashing, registration, roles and protection against attacks","item":"https://marzleytechsolutions.co.ke/learn/php/sessions-login/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,42 +36,187 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/php/">PHP &amp; MySQL</a> / <span>Sessions and a login system</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=php&amp;lesson=sessions-login"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Sessions and logins</h1>
-<p>HTTP forgets you between pages. <strong>Sessions</strong> remember a visitor using a cookie with a random ID.</p>
-<h2>Register</h2>
-<figure class="static-code"><pre><code>&lt;?php
-$hash = password_hash($_POST[&#x27;password&#x27;], PASSWORD_DEFAULT);
-$pdo-&gt;prepare(&#x27;INSERT INTO users (email, password_hash) VALUES (?, ?)&#x27;)
-    -&gt;execute([strtolower(trim($_POST[&#x27;email&#x27;])), $hash]);</code></pre></figure>
-<h2>Log in</h2>
-<figure class="static-code"><pre><code>&lt;?php
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/php/">PHP &amp; MySQL</a> / <span>Sessions and a secure login system: cookies, sessions, password hashing, registration, roles and protection against attacks</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=php&amp;lesson=sessions-login"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Sessions and a secure login system: cookies, sessions, password hashing, registration, roles and protection against attacks</h1>
+<p>HTTP is <strong>stateless</strong>: each page request is independent, and the server doesn't automatically remember who you are. Yet websites keep you logged in, remember your cart and show your name on every page. They do it with <strong>cookies</strong> and <strong>sessions</strong>. This unit explains both, then builds a complete, secure login system: registration, password hashing, login, logout, protected pages, roles (admin vs user), and defences against the attacks that target logins.</p>
+<p>Login systems are in almost every project: client portals, school systems, admin dashboards, SACCO member areas. Getting them right matters: a weak login exposes everyone's data.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Cookies vs sessions, and how sessions work</li><li>Starting sessions and storing data</li><li>Secure session settings</li><li>Password hashing with password_hash and password_verify</li><li>A users table design</li><li>Registration with validation</li><li>Login, session fixation protection and logout</li><li>Protecting pages and admin-only areas (roles)</li><li>Brute-force protection, password resets and "remember me"</li><li>Two-factor authentication and other upgrades</li></ul></div></aside>
+<h2>Cookies</h2>
+<p>A <strong>cookie</strong> is a small piece of data the server asks the browser to store and send back with every request to that site.</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">setcookie(&#x27;theme&#x27;, &#x27;dark&#x27;, [
+    &#x27;expires&#x27; =&gt; time() + 60 * 60 * 24 * 30,   // 30 days
+    &#x27;path&#x27; =&gt; &#x27;/&#x27;,
+    &#x27;secure&#x27; =&gt; true,      // only over HTTPS
+    &#x27;httponly&#x27; =&gt; true,    // JavaScript can&#x27;t read it
+    &#x27;samesite&#x27; =&gt; &#x27;Lax&#x27;,   // not sent on most cross-site requests (CSRF protection)
+]);
+echo $_COOKIE[&#x27;theme&#x27;] ?? &#x27;light&#x27;;</code></pre></figure>
+<p>Cookies are stored on the user's device and <strong>can be edited by the user</strong>, so never store anything trusted in them (like "is_admin=1").</p>
+<h2>Sessions</h2>
+<p>A <strong>session</strong> stores data <strong>on the server</strong>. The browser only holds a random <strong>session ID</strong> in a cookie (named <code>PHPSESSID</code> by default).</p>
+<ol><li><code>session_start()</code> creates or resumes a session and sends the ID cookie.</li><li>You read and write <code>$_SESSION</code> like an array.</li><li>On the next request, the browser sends the ID; PHP loads that user's <code>$_SESSION</code>.</li></ol>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
 session_start();
-$stmt = $pdo-&gt;prepare(&#x27;SELECT id, password_hash FROM users WHERE email = ?&#x27;);
-$stmt-&gt;execute([strtolower(trim($_POST[&#x27;email&#x27;]))]);
-$user = $stmt-&gt;fetch();
+$_SESSION[&#x27;cart&#x27;][101] = ($_SESSION[&#x27;cart&#x27;][101] ?? 0) + 1;   // add product 101 to cart
+echo &#x27;Items in cart: &#x27; . array_sum($_SESSION[&#x27;cart&#x27;]);</code></pre></figure>
+<p>Call <code>session_start()</code> <strong>before any output</strong> (even a blank line before <code>&lt;?php</code> breaks it with "headers already sent").</p>
+<h3>Secure session settings</h3>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+session_set_cookie_params([
+    &#x27;lifetime&#x27; =&gt; 0,          // until the browser closes
+    &#x27;path&#x27; =&gt; &#x27;/&#x27;,
+    &#x27;secure&#x27; =&gt; true,         // HTTPS only (your site must use HTTPS)
+    &#x27;httponly&#x27; =&gt; true,
+    &#x27;samesite&#x27; =&gt; &#x27;Lax&#x27;,
+]);
+ini_set(&#x27;session.use_strict_mode&#x27;, &#x27;1&#x27;);
+session_start();</code></pre></figure>
+<h2>Password hashing</h2>
+<p><strong>Never store passwords as plain text</strong>, and never with fast hashes like MD5 or SHA-1. If your database leaks, attackers can crack those instantly. PHP's <code>password_hash()</code> uses slow, salted algorithms (bcrypt by default, Argon2 available) designed for passwords:</p>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$password = &quot;Correct-Horse-Battery-42&quot;;
+$hash = password_hash($password, PASSWORD_DEFAULT);
+echo &quot;Stored hash: $hash\n&quot;;
+echo &quot;Length: &quot; . strlen($hash) . &quot;\n&quot;;
 
-if ($user &amp;&amp; password_verify($_POST[&#x27;password&#x27;], $user[&#x27;password_hash&#x27;])) {
-    session_regenerate_id(true);          // prevents session fixation
-    $_SESSION[&#x27;user_id&#x27;] = $user[&#x27;id&#x27;];
-    header(&#x27;Location: dashboard.php&#x27;);
-    exit;
-}
-echo &#x27;Wrong email or password.&#x27;;          // same message for both: don&#x27;t reveal which</code></pre></figure>
-<h2>Protect pages</h2>
-<figure class="static-code"><pre><code>&lt;?php
+var_dump(password_verify(&quot;Correct-Horse-Battery-42&quot;, $hash));   // true
+var_dump(password_verify(&quot;wrong-password&quot;, $hash));             // false
+
+// Each hash is different (random salt), even for the same password:
+echo password_hash($password, PASSWORD_DEFAULT) === $hash ? &quot;same\n&quot; : &quot;different\n&quot;;</code></pre></figure>
+<p>Store the hash in a <code>VARCHAR(255)</code> column. Use <code>password_needs_rehash()</code> at login to upgrade old hashes when PHP's defaults improve.</p>
+<h2>The users table</h2>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(190) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  role ENUM(&#x27;user&#x27;,&#x27;admin&#x27;) NOT NULL DEFAULT &#x27;user&#x27;,
+  failed_logins INT NOT NULL DEFAULT 0,
+  locked_until DATETIME NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);</code></pre></figure>
+<h2>Registration</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+session_start();
+require __DIR__ . &#x27;/db.php&#x27;;
+
+$errors = [];
+if ($_SERVER[&#x27;REQUEST_METHOD&#x27;] === &#x27;POST&#x27;) {
+    // (check the CSRF token here – see the forms lesson)
+    $name = trim($_POST[&#x27;name&#x27;] ?? &#x27;&#x27;);
+    $email = strtolower(trim($_POST[&#x27;email&#x27;] ?? &#x27;&#x27;));
+    $password = $_POST[&#x27;password&#x27;] ?? &#x27;&#x27;;
+
+    if ($name === &#x27;&#x27;) $errors[] = &#x27;Name is required.&#x27;;
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = &#x27;Enter a valid email.&#x27;;
+    if (strlen($password) &lt; 10) $errors[] = &#x27;Password must be at least 10 characters.&#x27;;
+
+    if (!$errors) {
+        $stmt = db()-&gt;prepare(&#x27;SELECT 1 FROM users WHERE email = ?&#x27;);
+        $stmt-&gt;execute([$email]);
+        if ($stmt-&gt;fetch()) {
+            $errors[] = &#x27;An account with that email already exists.&#x27;;
+        }
+    }
+    if (!$errors) {
+        $stmt = db()-&gt;prepare(&#x27;INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)&#x27;);
+        $stmt-&gt;execute([$name, $email, password_hash($password, PASSWORD_DEFAULT)]);
+        header(&#x27;Location: login.php?registered=1&#x27;);
+        exit;
+    }
+}</code></pre></figure>
+<p>Password rules: favour <strong>length</strong> (10–12+ characters; passphrases are great) over complicated symbol rules, and consider rejecting very common passwords ("password123", "12345678").</p>
+<h2>Login</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+session_start();
+require __DIR__ . &#x27;/db.php&#x27;;
+
+$error = &#x27;&#x27;;
+if ($_SERVER[&#x27;REQUEST_METHOD&#x27;] === &#x27;POST&#x27;) {
+    $email = strtolower(trim($_POST[&#x27;email&#x27;] ?? &#x27;&#x27;));
+    $password = $_POST[&#x27;password&#x27;] ?? &#x27;&#x27;;
+
+    $stmt = db()-&gt;prepare(&#x27;SELECT id, name, password_hash, role, failed_logins, locked_until FROM users WHERE email = ?&#x27;);
+    $stmt-&gt;execute([$email]);
+    $user = $stmt-&gt;fetch();
+
+    if ($user &amp;&amp; $user[&#x27;locked_until&#x27;] &amp;&amp; strtotime($user[&#x27;locked_until&#x27;]) &gt; time()) {
+        $error = &#x27;Too many attempts. Try again in a few minutes.&#x27;;
+    } elseif ($user &amp;&amp; password_verify($password, $user[&#x27;password_hash&#x27;])) {
+        session_regenerate_id(true);                 // stop session fixation
+        $_SESSION[&#x27;user_id&#x27;] = $user[&#x27;id&#x27;];
+        $_SESSION[&#x27;name&#x27;] = $user[&#x27;name&#x27;];
+        $_SESSION[&#x27;role&#x27;] = $user[&#x27;role&#x27;];
+        db()-&gt;prepare(&#x27;UPDATE users SET failed_logins = 0, locked_until = NULL WHERE id = ?&#x27;)-&gt;execute([$user[&#x27;id&#x27;]]);
+        header(&#x27;Location: dashboard.php&#x27;);
+        exit;
+    } else {
+        if ($user) {
+            $fails = $user[&#x27;failed_logins&#x27;] + 1;
+            $lock = $fails &gt;= 5 ? date(&#x27;Y-m-d H:i:s&#x27;, time() + 15 * 60) : null;
+            db()-&gt;prepare(&#x27;UPDATE users SET failed_logins = ?, locked_until = ? WHERE id = ?&#x27;)
+                -&gt;execute([$fails &gt;= 5 ? 0 : $fails, $lock, $user[&#x27;id&#x27;]]);
+        }
+        $error = &#x27;Wrong email or password.&#x27;;         // same message whether the email exists or not
+    }
+}</code></pre></figure>
+<p>Key points:</p>
+<ul><li><code>password_verify</code> compares safely.</li><li><code>session_regenerate_id(true)</code> gives a fresh session ID at login, preventing <strong>session fixation</strong> (an attacker planting a known session ID).</li><li>The error message doesn't reveal whether the email exists (stops <strong>account enumeration</strong>).</li><li>Failed attempts lead to a temporary lock (<strong>brute-force protection</strong>). Rate limiting by IP address adds another layer.</li></ul>
+<h2>Protecting pages</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+// auth.php – include at the top of every protected page
 session_start();
 if (empty($_SESSION[&#x27;user_id&#x27;])) {
     header(&#x27;Location: login.php&#x27;);
     exit;
+}
+
+function require_admin(): void {
+    if (($_SESSION[&#x27;role&#x27;] ?? &#x27;&#x27;) !== &#x27;admin&#x27;) {
+        http_response_code(403);
+        exit(&#x27;Admins only.&#x27;);
+    }
 }</code></pre></figure>
-<h2>Log out</h2>
-<figure class="static-code"><pre><code>session_start();
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+require __DIR__ . &#x27;/auth.php&#x27;;
+require_admin();                 // on admin pages
+?&gt;
+&lt;h1&gt;Welcome, &lt;?= htmlspecialchars($_SESSION[&#x27;name&#x27;]) ?&gt;&lt;/h1&gt;</code></pre></figure>
+<p>Always call <code>exit</code> after a redirect header; otherwise the rest of the page still runs and may leak data.</p>
+<p><strong>Authorisation</strong> matters as much as login: when a logged-in user opens <code>invoice.php?id=57</code>, check that invoice 57 belongs to <strong>them</strong> (<code>WHERE id = ? AND user_id = ?</code>). Forgetting this (called IDOR) lets users view others' data by changing the number.</p>
+<h2>Logout</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+session_start();
 $_SESSION = [];
-session_destroy();</code></pre></figure>
-<h2>Make it stronger</h2>
-<ul><li>Limit login attempts (lock for a few minutes after 5 failures).</li><li>Offer sign-in with Google or one-time codes by email/SMS.</li><li>Set cookie options: <code>httponly</code>, <code>secure</code>, <code>samesite=Lax</code>.</li></ul>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which function checks a password against a stored hash?</p><details><summary>Show answer</summary><p>password_verify</p></details></li><li><p>Which function must be called before using $_SESSION?</p><details><summary>Show answer</summary><p>session_start</p></details></li><li><p>Which function should you call right after a successful login to prevent session fixation?</p><details><summary>Show answer</summary><p>session_regenerate_id</p></details></li></ol></section></div><p class="static-meta">Lesson 9 of 13 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/crud-app/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Build a CRUD app with PHP and MySQL (create, read, update, delete)</a><a class="btn btn-solid btn-sm" href="/learn/php/file-uploads/">Secure file uploads (images and documents) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+if (ini_get(&#x27;session.use_cookies&#x27;)) {
+    $p = session_get_cookie_params();
+    setcookie(session_name(), &#x27;&#x27;, time() - 42000, $p[&#x27;path&#x27;], $p[&#x27;domain&#x27;] ?? &#x27;&#x27;, $p[&#x27;secure&#x27;], $p[&#x27;httponly&#x27;]);
+}
+session_destroy();
+header(&#x27;Location: login.php&#x27;);
+exit;</code></pre></figure>
+<p>Use a POST form (with a CSRF token) for logout buttons so other sites can't log your users out.</p>
+<h2>Session timeout</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">$timeout = 30 * 60; // 30 minutes of inactivity
+if (isset($_SESSION[&#x27;last_seen&#x27;]) &amp;&amp; time() - $_SESSION[&#x27;last_seen&#x27;] &gt; $timeout) {
+    session_unset();
+    session_destroy();
+    header(&#x27;Location: login.php?expired=1&#x27;);
+    exit;
+}
+$_SESSION[&#x27;last_seen&#x27;] = time();</code></pre></figure>
+<h2>Password reset (the safe way)</h2>
+<ol><li>User enters their email; always show "If that account exists, we've sent a link" (no enumeration).</li><li>Generate a random token: <code>bin2hex(random_bytes(32))</code>; store only its <strong>hash</strong> with an expiry (e.g. 30–60 minutes).</li><li>Email a link containing the token.</li><li>When used: check the hash and expiry, let the user set a new password, delete the token, and end other sessions.</li></ol>
+<h2>"Remember me"</h2>
+<p>Don't store the user ID or password in a cookie. Store a long random token in an HttpOnly, Secure cookie and its <strong>hash</strong> in a <code>remember_tokens</code> table with an expiry; rotate it on use and delete it on logout.</p>
+<h2>Going further</h2>
+<ul><li><strong>Two-factor authentication (2FA)</strong>: a one-time code from an authenticator app (TOTP) or SMS/email codes for sensitive accounts.</li><li><strong>Sign in with Google</strong> (OAuth/OpenID Connect) using a well-maintained library; never put client secrets in front-end code.</li><li><strong>Frameworks</strong> like Laravel provide tested authentication (Breeze, Fortify) so you don't write it from scratch in big projects.</li></ul>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A site stores <code>user_id=7</code> in a normal cookie and uses it to decide who is logged in. What's the problem, and what should it do?</span><em>Show answer</em></summary><div class="callout-body"><p>Users can edit cookies: changing it to <code>user_id=1</code> would log them in as someone else (maybe the admin). Store only a random session ID in the cookie (PHP sessions) and keep <code>user_id</code> in <code>$_SESSION</code> on the server, set after verifying the password.</p></div></details>
+<h2>Summary</h2>
+<ul><li>HTTP is stateless; cookies live on the browser (editable), sessions live on the server with a random ID cookie.</li><li>Start sessions before output; use Secure, HttpOnly, SameSite cookies and strict mode.</li><li>Hash passwords with password_hash and check with password_verify; never store plain or MD5 passwords.</li><li>On login: regenerate the session ID, use generic error messages, limit failed attempts; on logout destroy the session.</li><li>Protect pages with an auth include, check roles and ownership (avoid IDOR); implement safe resets, remember-me tokens and 2FA.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which PHP function hashes a password securely?</p><details><summary>Show answer</summary><p>password_hash</p></details></li><li><p>Which function checks a password against its hash?</p><details><summary>Show answer</summary><p>password_verify</p></details></li><li><p>Which function should you call right after a successful login to prevent session fixation?</p><details><summary>Show answer</summary><p>session_regenerate_id</p></details></li><li><p>Where is session data stored: on the server or in the browser?</p><details><summary>Show answer</summary><p>server</p></details></li><li><p>Which cookie flag stops JavaScript from reading a cookie?</p><details><summary>Show answer</summary><p>HttpOnly</p></details></li><li><p>Is MD5 acceptable for storing passwords? (yes/no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section>
+<p><strong>Learn more:</strong> <a href="https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html" target="_blank" rel="noopener noreferrer">OWASP Authentication Cheat Sheet</a> · <a href="https://www.php.net/manual/en/function.password-hash.php" target="_blank" rel="noopener noreferrer">PHP manual: password_hash</a></p></div><p class="static-meta">Lesson 9 of 15 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/crud-app/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Build a CRUD app with PHP and MySQL (create, read, update, delete)</a><a class="btn btn-solid btn-sm" href="/learn/php/file-uploads/">Secure file uploads (images and documents) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Deploying a PHP and MySQL site to cPanel hosting:…</title>
+    <meta name="description" content="Your PHP site works on your laptop. Now the client wants it live at www.theirbusiness.co.ke . Most Kenyan small-business sites run on shared hosting…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/php/deploy-php-hosting/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Deploying a PHP and MySQL site to cPanel hosting:…" />
+    <meta property="og:description" content="Your PHP site works on your laptop. Now the client wants it live at www.theirbusiness.co.ke . Most Kenyan small-business sites run on shared hosting…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/php/deploy-php-hosting/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Deploying a PHP and MySQL site to cPanel hosting:…" />
+    <meta name="twitter:description" content="Your PHP site works on your laptop. Now the client wants it live at www.theirbusiness.co.ke . Most Kenyan small-business sites run on shared hosting…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/php/deploy-php-hosting/#lesson","name":"Deploying a PHP and MySQL site to cPanel hosting: upload, database, config, HTTPS, emails, backups and going live","description":"Your PHP site works on your laptop. Now the client wants it live at www.theirbusiness.co.ke . Most Kenyan small-business sites run on shared hosting…","url":"https://marzleytechsolutions.co.ke/learn/php/deploy-php-hosting/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/php/#course","name":"PHP & MySQL","url":"https://marzleytechsolutions.co.ke/learn/php/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"PHP & MySQL","item":"https://marzleytechsolutions.co.ke/learn/php/"},{"@type":"ListItem","position":4,"name":"Deploying a PHP and MySQL site to cPanel hosting: upload, database, config, HTTPS, emails, backups and going live","item":"https://marzleytechsolutions.co.ke/learn/php/deploy-php-hosting/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=19f64783be" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/php/">PHP &amp; MySQL</a> / <span>Deploying a PHP and MySQL site to cPanel hosting: upload, database, config, HTTPS, emails, backups and going live</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=php&amp;lesson=deploy-php-hosting"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Deploying a PHP and MySQL site to cPanel hosting: upload, database, config, HTTPS, emails, backups and going live</h1>
+<p>Your PHP site works on your laptop. Now the client wants it live at <code>www.theirbusiness.co.ke</code>. Most Kenyan small-business sites run on <strong>shared hosting with cPanel</strong>, so knowing how to deploy there (safely and repeatably) is a core freelance skill. This unit walks through a complete deployment: preparing your files, creating the database, keeping secrets outside the public folder, setting PHP options, HTTPS, email, cron jobs, backups and a go-live checklist.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Choosing hosting and pointing the domain</li><li>The cPanel folder layout and why some files must stay outside public_html</li><li>Preparing your project for production</li><li>Uploading with File Manager, FTP/SFTP or Git</li><li>Creating the MySQL database and importing data</li><li>Config files, environment settings and PHP version</li><li>HTTPS with free SSL and forcing redirects</li><li>Email accounts and SMTP</li><li>Cron jobs, logs, backups and security hardening</li><li>A go-live checklist and handing over to the client</li></ul></div></aside>
+<h2>Step 1: Hosting and domain</h2>
+<ol><li>Choose a reputable host (local Kenyan hosts are often convenient for <code>.co.ke</code> domains and M-Pesa billing; international hosts are fine too). Check: current PHP versions, MySQL, free SSL, daily backups, SSH access, support quality.</li><li>Register or transfer the domain (for <code>.co.ke</code>, through a KENIC-accredited registrar).</li><li>Point the domain's <strong>name servers</strong> to the host (or set A records to the server's IP). DNS changes can take minutes to hours.</li></ol>
+<h2>Step 2: Understand the folder layout</h2>
+<figure class="static-code"><pre><code>/home/clientacct/
+├── public_html/        ← the website&#x27;s public root: anything here can be requested by URL
+├── config/             ← create this: secrets and settings (NOT web-accessible)
+├── logs/               ← error logs
+├── backups/
+└── mail/, tmp/, etc.</code></pre></figure>
+<p><strong>Only files visitors should load go in public_html</strong>: <code>index.php</code>, CSS, JS, images, and PHP pages. Keep database credentials, M-Pesa keys, SMTP passwords, Composer's <code>vendor/</code> (optionally), and private uploads <strong>outside</strong> it. If PHP ever fails and serves source code as text, secrets outside public_html stay safe.</p>
+<h2>Step 3: Prepare the project for production</h2>
+<ul><li>Move secrets into a config file that lives outside public_html; reference it with a path like <code>require __DIR__ . &#x27;/../config/app.php&#x27;;</code>.</li><li>Turn off error display in production; log instead:</li></ul>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+// at the start of your bootstrap file in production
+ini_set(&#x27;display_errors&#x27;, &#x27;0&#x27;);
+ini_set(&#x27;log_errors&#x27;, &#x27;1&#x27;);
+ini_set(&#x27;error_log&#x27;, __DIR__ . &#x27;/../logs/php-errors.log&#x27;);
+error_reporting(E_ALL);</code></pre></figure>
+<ul><li>Remove test files, <code>phpinfo()</code> pages, database dumps and <code>.git</code> folders from what you upload.</li><li>Run <code>composer install --no-dev --optimize-autoloader</code> for production dependencies.</li><li>Make sure all links and paths are relative or use the real domain.</li></ul>
+<h2>Step 4: Upload the files</h2>
+<div class="static-table"><table><thead><tr><th>Method</th><th>When</th></tr></thead><tbody><tr><td><strong>cPanel File Manager</strong></td><td>Small sites: upload a ZIP, then Extract</td></tr><tr><td><strong>FTP/SFTP</strong> (FileZilla, WinSCP)</td><td>Regular updates; use SFTP or FTPS, not plain FTP</td></tr><tr><td><strong>Git Version Control</strong> (in many cPanels) or SSH + <code>git pull</code></td><td>Professional, repeatable deploys</td></tr><tr><td><strong>rsync over SSH</strong></td><td>Fast syncs of only changed files</td></tr></tbody></table></div>
+<p>After uploading, set permissions: folders <strong>755</strong>, files <strong>644</strong>, config files <strong>600</strong> or <strong>640</strong> (see the Linux permissions lesson).</p>
+<h2>Step 5: Create the database</h2>
+<ol><li>cPanel → <strong>MySQL Databases</strong> (or "Manage My Databases").</li><li>Create a database (it gets a prefix, e.g. <code>clientacct_shop</code>).</li><li>Create a user with a strong generated password.</li><li>Add the user to the database with only the needed privileges (SELECT, INSERT, UPDATE, DELETE; add CREATE/ALTER only if your app runs migrations).</li><li>Open <strong>phpMyAdmin</strong> → select the database → <strong>Import</strong> your <code>.sql</code> file (exported from your local phpMyAdmin or with <code>mysqldump</code>).</li></ol>
+<p>Update your config file:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+// /home/clientacct/config/app.php
+return [
+    &#x27;db_dsn&#x27;  =&gt; &#x27;mysql:host=localhost;dbname=clientacct_shop;charset=utf8mb4&#x27;,
+    &#x27;db_user&#x27; =&gt; &#x27;clientacct_shopapp&#x27;,
+    &#x27;db_pass&#x27; =&gt; &#x27;(the generated password)&#x27;,
+    &#x27;base_url&#x27; =&gt; &#x27;https://www.clientbusiness.co.ke&#x27;,
+];</code></pre></figure>
+<h2>Step 6: PHP version and settings</h2>
+<ul><li>cPanel → <strong>MultiPHP Manager</strong> (or "Select PHP Version"): choose a currently supported PHP version that your code works with.</li><li><strong>MultiPHP INI Editor</strong>: set <code>upload_max_filesize</code>, <code>post_max_size</code>, <code>memory_limit</code>, <code>max_execution_time</code> as your app needs; keep <code>display_errors</code> Off.</li><li>Enable required extensions (pdo_mysql, mbstring, curl, gd/intl if used).</li></ul>
+<h2>Step 7: HTTPS</h2>
+<ol><li>cPanel → <strong>SSL/TLS Status</strong> → run <strong>AutoSSL</strong> (free Let's Encrypt or Sectigo certificates on most hosts).</li><li>Force HTTPS with <code>.htaccess</code> in public_html (Apache/LiteSpeed hosts):</li></ol>
+<figure class="static-code"><pre><code>RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]</code></pre></figure>
+<ol><li>Choose one main address (with or without <code>www</code>) and redirect the other, for SEO and consistent cookies.</li><li>Update any hard-coded <code>http://</code> links; M-Pesa callbacks must use the HTTPS URL.</li></ol>
+<h2>Step 8: Protect sensitive files</h2>
+<p>In <code>.htaccess</code>:</p>
+<figure class="static-code"><pre><code># Block access to hidden files like .env and .git
+RewriteRule (^|/)\. - [F]
+# Stop directory listings
+Options -Indexes</code></pre></figure>
+<p>Also: an <code>uploads</code> folder shouldn't run PHP. Add an <code>.htaccess</code> inside it:</p>
+<figure class="static-code"><pre><code>&lt;FilesMatch &quot;\.(php|phtml|phar)$&quot;&gt;
+  Require all denied
+&lt;/FilesMatch&gt;</code></pre></figure>
+<h2>Step 9: Email</h2>
+<ul><li>Create addresses in cPanel → <strong>Email Accounts</strong> (e.g. <code>info@</code>, <code>noreply@</code>), or use Google Workspace/Microsoft 365 by setting their MX records.</li><li>Send website emails through <strong>SMTP</strong> (PHPMailer) with an account's credentials stored in the config file.</li><li>Check that <strong>SPF</strong>, <strong>DKIM</strong> and <strong>DMARC</strong> are set (cPanel → Email Deliverability) so messages don't go to spam.</li></ul>
+<h2>Step 10: Cron jobs</h2>
+<p>cPanel → <strong>Cron Jobs</strong> runs scripts on a schedule: sending reminders, checking pending M-Pesa payments, cleaning old sessions, nightly reports.</p>
+<figure class="static-code"><pre><code>*/10 * * * *  /usr/local/bin/php /home/clientacct/app/cron/check-payments.php &gt;/dev/null 2&gt;&amp;1
+0 2 * * *     /usr/local/bin/php /home/clientacct/app/cron/nightly-report.php</code></pre></figure>
+<p>Keep cron scripts outside public_html so nobody can trigger them by URL. Your host's PHP path may differ; their documentation or support will confirm it.</p>
+<h2>Step 11: Backups and monitoring</h2>
+<ul><li>Use the host's backups, but also keep your own: cPanel <strong>Backup</strong> (download full or database backups), or a scheduled script that exports the database and copies it off the server.</li><li>Keep the code in Git so you can redeploy anywhere.</li><li>Set up free <strong>uptime monitoring</strong> to alert you if the site goes down.</li><li>Watch <code>logs/php-errors.log</code> after launch.</li></ul>
+<h2>Go-live checklist</h2>
+<div class="static-table"><table><thead><tr><th>✓</th><th>Check</th></tr></thead><tbody><tr><td></td><td>Domain resolves; HTTPS works with a padlock; http and non-www redirect correctly</td></tr><tr><td></td><td>All pages, forms and links work; no PHP warnings or notices visible</td></tr><tr><td></td><td>Database connection uses a least-privilege user; secrets outside public_html</td></tr><tr><td></td><td>display_errors Off; errors logged</td></tr><tr><td></td><td>Contact forms deliver email (test inbox and spam folder)</td></tr><tr><td></td><td>M-Pesa (if any) switched to production credentials and tested with a small real payment</td></tr><tr><td></td><td>Admin passwords strong; default/test accounts removed</td></tr><tr><td></td><td>File permissions 644/755, config 600/640; uploads can't run PHP</td></tr><tr><td></td><td>Backups configured and a restore tested</td></tr><tr><td></td><td>Google Search Console set up, sitemap submitted, analytics added (with privacy notice)</td></tr><tr><td></td><td>Mobile and speed checked (PageSpeed Insights)</td></tr></tbody></table></div>
+<h2>Handing over to the client</h2>
+<p>Give the client (in a secure way, not in plain WhatsApp messages):</p>
+<ul><li>Hosting, domain registrar and cPanel logins (in their name and email: the client should own their accounts).</li><li>Admin panel login and a short user guide or video.</li><li>What's included in support/maintenance (updates, backups, fixes) and your rates for changes.</li><li>Renewal dates for domain and hosting.</li></ul>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> After uploading a site, the home page shows "SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost'". What happened, and what else is wrong with this situation?</span><em>Show answer</em></summary><div class="callout-body"><p>The site is still using the local XAMPP credentials (root with no password) instead of the hosting database user, so update the config with the cPanel database name, user and password. Also, the raw database error is displayed to visitors, which means display_errors is on in production: turn it off and log errors instead.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Point the domain to the host; keep only public files in public_html and secrets in a config folder outside it.</li><li>Prepare for production: secrets in config, display_errors off, logs on, no test files, composer install --no-dev.</li><li>Upload via File Manager, SFTP, Git or rsync; set permissions; create the database and least-privilege user; import data.</li><li>Choose the PHP version, enable HTTPS with AutoSSL and redirects, protect hidden files and uploads.</li><li>Configure SMTP email with SPF/DKIM/DMARC, cron jobs outside public_html, backups and monitoring; follow a go-live checklist and hand over accounts to the client.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which cPanel folder is the website's public root?</p><details><summary>Show answer</summary><p>public_html</p></details></li><li><p>Should database passwords be stored inside public_html? (yes/no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which cPanel feature issues free SSL certificates automatically?</p><details><summary>Show answer</summary><p>AutoSSL</p></details></li><li><p>What permission number should normal files usually have?</p><details><summary>Show answer</summary><p>644</p></details></li><li><p>Which three email DNS records help messages avoid spam? (list them)</p><details><summary>Show answer</summary><p>SPF, DKIM, DMARC</p></details></li><li><p>Should display_errors be on or off on a live site?</p><details><summary>Show answer</summary><p>off</p></details></li></ol></section></div><p class="static-meta">Lesson 15 of 15 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/project-booking-system/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Project: an appointment booking system</a><span></span></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

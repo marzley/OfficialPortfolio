@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>M-Pesa STK push with PHP (overview) | PHP &amp; MySQL</title>
-    <meta name="description" content="Safaricom&#x27;s Daraja API lets your website send an STK push (the PIN prompt) to a customer&#x27;s phone." />
+    <title>M-Pesa STK push with PHP: Daraja setup, access tokens,…</title>
+    <meta name="description" content="In Kenya, customers expect to pay with M-Pesa . Safaricom&#x27;s Daraja API lets your website send an STK push (the pop-up that asks the customer to enter…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/php/mpesa-integration/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="M-Pesa STK push with PHP (overview) | PHP &amp; MySQL" />
-    <meta property="og:description" content="Safaricom&#x27;s Daraja API lets your website send an STK push (the PIN prompt) to a customer&#x27;s phone." />
+    <meta property="og:title" content="M-Pesa STK push with PHP: Daraja setup, access tokens,…" />
+    <meta property="og:description" content="In Kenya, customers expect to pay with M-Pesa . Safaricom&#x27;s Daraja API lets your website send an STK push (the pop-up that asks the customer to enter…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/php/mpesa-integration/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="M-Pesa STK push with PHP (overview) | PHP &amp; MySQL" />
-    <meta name="twitter:description" content="Safaricom&#x27;s Daraja API lets your website send an STK push (the PIN prompt) to a customer&#x27;s phone." />
+    <meta name="twitter:title" content="M-Pesa STK push with PHP: Daraja setup, access tokens,…" />
+    <meta name="twitter:description" content="In Kenya, customers expect to pay with M-Pesa . Safaricom&#x27;s Daraja API lets your website send an STK push (the pop-up that asks the customer to enter…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/php/mpesa-integration/#lesson","name":"M-Pesa STK push with PHP (overview)","description":"Safaricom's Daraja API lets your website send an STK push (the PIN prompt) to a customer's phone.","url":"https://marzleytechsolutions.co.ke/learn/php/mpesa-integration/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/php/#course","name":"PHP & MySQL","url":"https://marzleytechsolutions.co.ke/learn/php/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"PHP & MySQL","item":"https://marzleytechsolutions.co.ke/learn/php/"},{"@type":"ListItem","position":4,"name":"M-Pesa STK push with PHP (overview)","item":"https://marzleytechsolutions.co.ke/learn/php/mpesa-integration/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/php/mpesa-integration/#lesson","name":"M-Pesa STK push with PHP: Daraja setup, access tokens, STK push, callbacks, verification and going live","description":"In Kenya, customers expect to pay with M-Pesa . Safaricom's Daraja API lets your website send an STK push (the pop-up that asks the customer to enter…","url":"https://marzleytechsolutions.co.ke/learn/php/mpesa-integration/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/php/#course","name":"PHP & MySQL","url":"https://marzleytechsolutions.co.ke/learn/php/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"PHP & MySQL","item":"https://marzleytechsolutions.co.ke/learn/php/"},{"@type":"ListItem","position":4,"name":"M-Pesa STK push with PHP: Daraja setup, access tokens, STK push, callbacks, verification and going live","item":"https://marzleytechsolutions.co.ke/learn/php/mpesa-integration/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,21 +36,206 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/php/">PHP &amp; MySQL</a> / <span>M-Pesa STK push with PHP (overview)</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=php&amp;lesson=mpesa-integration"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>M-Pesa integration overview</h1>
-<p>Safaricom's <strong>Daraja API</strong> lets your website send an <strong>STK push</strong> (the PIN prompt) to a customer's phone.</p>
-<h2>The flow</h2>
-<ol><li>Create an app on the <a href="https://developer.safaricom.co.ke/" target="_blank" rel="noopener noreferrer">Daraja portal</a> → get a <strong>consumer key and secret</strong>; test in the <strong>sandbox</strong> first.</li><li>Your server gets an <strong>OAuth access token</strong>.</li><li>Your server calls <strong>STK Push</strong> with: business short code, password (base64 of shortcode + passkey + timestamp), amount, phone (2547…), a <strong>callback URL</strong> and an account reference.</li><li>The customer enters their PIN.</li><li>Safaricom calls your <strong>callback URL</strong> with the result (paid or failed, receipt number, amount).</li><li>You <strong>verify</strong> the result (amount matches, receipt not used before; optionally query the transaction status) and mark the order paid.</li></ol>
-<h2>Getting the token (sketch)</h2>
-<figure class="static-code"><pre><code>&lt;?php
-$ch = curl_init(&#x27;https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials&#x27;);
-curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER =&gt; true, CURLOPT_USERPWD =&gt; $key . &#x27;:&#x27; . $secret]);
-$token = json_decode(curl_exec($ch), true)[&#x27;access_token&#x27;] ?? null;</code></pre></figure>
-<h2>Rules for a safe integration</h2>
-<ul><li>Keep keys and the passkey <strong>outside public_html</strong> and out of Git.</li><li>The callback URL must be <strong>HTTPS</strong> and publicly reachable; add a secret in the URL to reject fakes.</li><li><strong>Never trust the browser</strong> to say "paid"; trust only the verified callback or status query.</li><li>Record every checkout request ID; ignore duplicates.</li><li>Show the customer a clear "waiting for payment" screen and a fallback (pay to Till + send the code).</li></ul>
-<p>This website's own deposit and invoice payments work exactly this way. It's a very sellable skill for freelancers.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is Safaricom's developer API platform called?</p><details><summary>Show answer</summary><p>Daraja</p></details></li><li><p>Should you trust the browser to tell you a payment succeeded? (yes/no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>In which environment should you test first?</p><details><summary>Show answer</summary><p>sandbox</p></details></li></ol></section>
-<p><strong>Learn more:</strong> <a href="https://phptherightway.com/" target="_blank" rel="noopener noreferrer">PHP: The Right Way</a> · <a href="https://laracasts.com/series/php-for-beginners-2023-edition" target="_blank" rel="noopener noreferrer">Laracasts PHP for beginners (free)</a> · <a href="https://www.w3schools.com/php/" target="_blank" rel="noopener noreferrer">W3Schools PHP</a></p></div><p class="static-meta">Lesson 12 of 13 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/json-api/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Build a JSON API with PHP</a><a class="btn btn-solid btn-sm" href="/learn/php/project-booking-system/">Project: an appointment booking system <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/php/">PHP &amp; MySQL</a> / <span>M-Pesa STK push with PHP: Daraja setup, access tokens, STK push, callbacks, verification and going live</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=php&amp;lesson=mpesa-integration"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>M-Pesa STK push with PHP: Daraja setup, access tokens, STK push, callbacks, verification and going live</h1>
+<p>In Kenya, customers expect to pay with <strong>M-Pesa</strong>. Safaricom's <strong>Daraja API</strong> lets your website send an <strong>STK push</strong> (the pop-up that asks the customer to enter their M-Pesa PIN) directly to their phone, then tells your server whether they paid. Adding M-Pesa checkout to shops, school fee portals, booking sites, SACCO systems and event ticketing is one of the most in-demand skills for Kenyan web developers, and clients pay well for it.</p>
+<p>This unit walks through the whole integration in PHP, from sandbox testing to going live, with the security rules that protect your client's money.</p>
+<aside class="callout callout-warning"><p class="callout-title">Keep secrets secret</p><div class="callout-body"><p>Your consumer key, consumer secret and passkey are like bank passwords. Store them in a config file <strong>outside public_html</strong>, never in JavaScript, never in Git, never in screenshots or WhatsApp messages. Only your server talks to Daraja.</p></div></aside>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>How STK push works end to end</li><li>Creating a Daraja app and using the sandbox</li><li>Getting an OAuth access token</li><li>Building the STK push password and timestamp</li><li>Sending the STK push request</li><li>Receiving and verifying the callback</li><li>Querying transaction status</li><li>Database design for payments</li><li>The user experience while waiting</li><li>Going live with a real Paybill or Till</li><li>Common errors and how to fix them</li></ul></div></aside>
+<h2>How STK push works</h2>
+<figure class="static-code"><pre><code>Customer        Your website/server            Safaricom Daraja          Customer&#x27;s phone
+   | &quot;Pay&quot;  --&gt;  | 1. get access token  -----&gt;  |                           |
+   |             | 2. STK push request  -----&gt;  | 3. sends PIN prompt ---&gt;  |
+   |             | &lt;--- CheckoutRequestID ----  |                           |
+   | &quot;Check your phone...&quot;                      |     4. customer enters PIN |
+   |             | &lt;--- 5. callback (result) -- |                           |
+   |             | 6. verify, mark order paid   |                           |
+   | &quot;Paid!&quot; &lt;-- |                              |                           |</code></pre></figure>
+<ol><li>Your server requests an <strong>access token</strong> using your app's consumer key and secret.</li><li>It sends an <strong>STK push</strong> request: amount, phone, your shortcode, a password, a callback URL and a reference.</li><li>Safaricom sends the PIN prompt to the customer's phone and immediately returns a <strong>CheckoutRequestID</strong>.</li><li>The customer enters their PIN (or cancels, or ignores it).</li><li>Safaricom calls your <strong>callback URL</strong> with the result.</li><li>Your server verifies the result and marks the order paid.</li></ol>
+<h2>Step 1: Create a Daraja app (sandbox)</h2>
+<ol><li>Sign up at the Daraja portal (developer.safaricom.co.ke).</li><li>Create an app and enable the <strong>M-Pesa Express (STK push)</strong> API (product names in the portal may change; look for "M-Pesa Express" or "Lipa Na M-Pesa Online").</li><li>Note your <strong>Consumer Key</strong> and <strong>Consumer Secret</strong>.</li><li>The sandbox provides a <strong>test shortcode</strong> (commonly 174379) and a test <strong>passkey</strong>, shown in the portal's test credentials/simulator page.</li><li>Use the <strong>sandbox</strong> base URL <code>https://sandbox.safaricom.co.ke</code> until everything works.</li></ol>
+<h2>Step 2: Configuration (outside public_html)</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+// /home/youraccount/config/mpesa.php
+return [
+    &#x27;env&#x27;             =&gt; &#x27;sandbox&#x27;,   // &#x27;production&#x27; when live
+    &#x27;consumer_key&#x27;    =&gt; &#x27;xxxx&#x27;,
+    &#x27;consumer_secret&#x27; =&gt; &#x27;xxxx&#x27;,
+    &#x27;shortcode&#x27;       =&gt; &#x27;174379&#x27;,    // your Paybill or the Till&#x27;s store number when live
+    &#x27;passkey&#x27;         =&gt; &#x27;xxxx&#x27;,
+    &#x27;callback_url&#x27;    =&gt; &#x27;https://www.example.co.ke/mpesa/callback.php?key=LONG-RANDOM-SECRET&#x27;,
+];</code></pre></figure>
+<h2>Step 3: Get an access token</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+function mpesa_base(array $c): string {
+    return $c[&#x27;env&#x27;] === &#x27;production&#x27; ? &#x27;https://api.safaricom.co.ke&#x27; : &#x27;https://sandbox.safaricom.co.ke&#x27;;
+}
+
+function mpesa_token(array $c): string {
+    $ch = curl_init(mpesa_base($c) . &#x27;/oauth/v1/generate?grant_type=client_credentials&#x27;);
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER =&gt; true,
+        CURLOPT_USERPWD =&gt; $c[&#x27;consumer_key&#x27;] . &#x27;:&#x27; . $c[&#x27;consumer_secret&#x27;],
+        CURLOPT_TIMEOUT =&gt; 30,
+    ]);
+    $res = json_decode(curl_exec($ch), true);
+    curl_close($ch);
+    if (empty($res[&#x27;access_token&#x27;])) {
+        throw new RuntimeException(&#x27;Could not get M-Pesa token&#x27;);
+    }
+    return $res[&#x27;access_token&#x27;];      // valid for about an hour: cache it to avoid extra calls
+}</code></pre></figure>
+<h2>Step 4: The password and timestamp</h2>
+<p>The STK password is <strong>base64(shortcode + passkey + timestamp)</strong>, with the timestamp in <code>YmdHis</code> format (Kenyan time):</p>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+date_default_timezone_set(&#x27;Africa/Nairobi&#x27;);
+$shortcode = &#x27;174379&#x27;;
+$passkey = &#x27;example-passkey-from-the-portal&#x27;;
+$timestamp = date(&#x27;YmdHis&#x27;);                 // e.g. 20260915143005
+$password = base64_encode($shortcode . $passkey . $timestamp);
+echo &quot;Timestamp: $timestamp\n&quot;;
+echo &quot;Password:  $password\n&quot;;
+
+// Phone must be in 2547XXXXXXXX / 2541XXXXXXXX format
+function mpesa_phone(string $p): ?string {
+    $d = preg_replace(&#x27;/\D/&#x27;, &#x27;&#x27;, $p);
+    if (preg_match(&#x27;/^0([17]\d{8})$/&#x27;, $d, $m)) return &#x27;254&#x27; . $m[1];
+    if (preg_match(&#x27;/^254[17]\d{8}$/&#x27;, $d)) return $d;
+    if (preg_match(&#x27;/^[17]\d{8}$/&#x27;, $d)) return &#x27;254&#x27; . $d;
+    return null;
+}
+foreach ([&#x27;0712 345 678&#x27;, &#x27;+254 110 123 456&#x27;, &#x27;0812345678&#x27;] as $p) {
+    echo $p, &#x27; -&gt; &#x27;, mpesa_phone($p) ?? &#x27;invalid&#x27;, &quot;\n&quot;;
+}</code></pre></figure>
+<h2>Step 5: Send the STK push</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+function mpesa_stk_push(array $c, string $phone, int $amount, string $reference, string $description): array {
+    date_default_timezone_set(&#x27;Africa/Nairobi&#x27;);
+    $timestamp = date(&#x27;YmdHis&#x27;);
+    $body = [
+        &#x27;BusinessShortCode&#x27; =&gt; $c[&#x27;shortcode&#x27;],
+        &#x27;Password&#x27;          =&gt; base64_encode($c[&#x27;shortcode&#x27;] . $c[&#x27;passkey&#x27;] . $timestamp),
+        &#x27;Timestamp&#x27;         =&gt; $timestamp,
+        &#x27;TransactionType&#x27;   =&gt; &#x27;CustomerPayBillOnline&#x27;,   // &#x27;CustomerBuyGoodsOnline&#x27; for Till numbers
+        &#x27;Amount&#x27;            =&gt; $amount,                    // whole shillings
+        &#x27;PartyA&#x27;            =&gt; $phone,                     // customer 2547...
+        &#x27;PartyB&#x27;            =&gt; $c[&#x27;shortcode&#x27;],
+        &#x27;PhoneNumber&#x27;       =&gt; $phone,
+        &#x27;CallBackURL&#x27;       =&gt; $c[&#x27;callback_url&#x27;],
+        &#x27;AccountReference&#x27;  =&gt; substr($reference, 0, 12),  // shown to the customer, e.g. order number
+        &#x27;TransactionDesc&#x27;   =&gt; substr($description, 0, 13),
+    ];
+    $ch = curl_init(mpesa_base($c) . &#x27;/mpesa/stkpush/v1/processrequest&#x27;);
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER =&gt; true,
+        CURLOPT_POST =&gt; true,
+        CURLOPT_HTTPHEADER =&gt; [&#x27;Authorization: Bearer &#x27; . mpesa_token($c), &#x27;Content-Type: application/json&#x27;],
+        CURLOPT_POSTFIELDS =&gt; json_encode($body),
+        CURLOPT_TIMEOUT =&gt; 30,
+    ]);
+    $res = json_decode(curl_exec($ch), true) ?: [];
+    curl_close($ch);
+    return $res;   // success has ResponseCode &quot;0&quot;, MerchantRequestID and CheckoutRequestID
+}</code></pre></figure>
+<p>Before sending, <strong>create the order and payment record</strong> in your database with status <code>pending</code>, the amount, phone and order ID. After a successful response, save the <strong>CheckoutRequestID</strong> against it.</p>
+<h2>Step 6: Payment table design</h2>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">CREATE TABLE payments (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  order_id INT NOT NULL,
+  phone VARCHAR(12) NOT NULL,
+  amount INT NOT NULL,
+  checkout_request_id VARCHAR(64) UNIQUE,
+  status ENUM(&#x27;pending&#x27;,&#x27;paid&#x27;,&#x27;failed&#x27;,&#x27;cancelled&#x27;) NOT NULL DEFAULT &#x27;pending&#x27;,
+  mpesa_receipt VARCHAR(20) UNIQUE NULL,
+  result_code INT NULL,
+  result_desc VARCHAR(255) NULL,
+  raw_callback JSON NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);</code></pre></figure>
+<p>The UNIQUE receipt column stops the same M-Pesa receipt being used twice.</p>
+<h2>Step 7: Receive the callback</h2>
+<p>Safaricom POSTs JSON to your callback URL. A successful payment looks like this (simplified):</p>
+<figure class="static-code"><figcaption>JSON</figcaption><pre><code class="language-json">{&quot;Body&quot;: {&quot;stkCallback&quot;: {
+  &quot;MerchantRequestID&quot;: &quot;29115-34620561-1&quot;,
+  &quot;CheckoutRequestID&quot;: &quot;ws_CO_191220191020363925&quot;,
+  &quot;ResultCode&quot;: 0,
+  &quot;ResultDesc&quot;: &quot;The service request is processed successfully.&quot;,
+  &quot;CallbackMetadata&quot;: {&quot;Item&quot;: [
+    {&quot;Name&quot;: &quot;Amount&quot;, &quot;Value&quot;: 1500},
+    {&quot;Name&quot;: &quot;MpesaReceiptNumber&quot;, &quot;Value&quot;: &quot;NLJ7RT61SV&quot;},
+    {&quot;Name&quot;: &quot;TransactionDate&quot;, &quot;Value&quot;: 20191219102115},
+    {&quot;Name&quot;: &quot;PhoneNumber&quot;, &quot;Value&quot;: 254712345678}
+  ]}}}}</code></pre></figure>
+<p>A non-zero <code>ResultCode</code> means it failed (e.g. 1032 = cancelled by the user, 1 = insufficient balance, 1037 = the phone couldn't be reached).</p>
+<p>Parse it safely:</p>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$raw = &#x27;{&quot;Body&quot;:{&quot;stkCallback&quot;:{&quot;MerchantRequestID&quot;:&quot;29115-34620561-1&quot;,&quot;CheckoutRequestID&quot;:&quot;ws_CO_191220191020363925&quot;,&quot;ResultCode&quot;:0,&quot;ResultDesc&quot;:&quot;The service request is processed successfully.&quot;,&quot;CallbackMetadata&quot;:{&quot;Item&quot;:[{&quot;Name&quot;:&quot;Amount&quot;,&quot;Value&quot;:1500},{&quot;Name&quot;:&quot;MpesaReceiptNumber&quot;,&quot;Value&quot;:&quot;NLJ7RT61SV&quot;},{&quot;Name&quot;:&quot;TransactionDate&quot;,&quot;Value&quot;:20191219102115},{&quot;Name&quot;:&quot;PhoneNumber&quot;,&quot;Value&quot;:254712345678}]}}}}&#x27;;
+
+$data = json_decode($raw, true);
+$cb = $data[&#x27;Body&#x27;][&#x27;stkCallback&#x27;] ?? null;
+if (!$cb) { exit(&quot;Bad callback\n&quot;); }
+
+$meta = [];
+foreach ($cb[&#x27;CallbackMetadata&#x27;][&#x27;Item&#x27;] ?? [] as $item) {
+    $meta[$item[&#x27;Name&#x27;]] = $item[&#x27;Value&#x27;] ?? null;
+}
+echo &quot;Checkout: {$cb[&#x27;CheckoutRequestID&#x27;]}\n&quot;;
+echo &quot;Result:   {$cb[&#x27;ResultCode&#x27;]} ({$cb[&#x27;ResultDesc&#x27;]})\n&quot;;
+echo &quot;Receipt:  &quot; . ($meta[&#x27;MpesaReceiptNumber&#x27;] ?? &#x27;-&#x27;) . &quot;\n&quot;;
+echo &quot;Amount:   &quot; . ($meta[&#x27;Amount&#x27;] ?? &#x27;-&#x27;) . &quot;\n&quot;;</code></pre></figure>
+<p>The callback handler (<code>callback.php</code>):</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+require __DIR__ . &#x27;/../../config/bootstrap.php&#x27;;   // loads db() and $mpesaConfig from outside public_html
+
+// 1. Reject requests without our secret key in the URL
+parse_str(parse_url($mpesaConfig[&#x27;callback_url&#x27;], PHP_URL_QUERY), $q);
+if (!hash_equals($q[&#x27;key&#x27;], $_GET[&#x27;key&#x27;] ?? &#x27;&#x27;)) {
+    http_response_code(403);
+    exit;
+}
+
+$raw = file_get_contents(&#x27;php://input&#x27;);
+$cb = json_decode($raw, true)[&#x27;Body&#x27;][&#x27;stkCallback&#x27;] ?? null;
+if (!$cb) { http_response_code(400); exit; }
+
+$meta = [];
+foreach ($cb[&#x27;CallbackMetadata&#x27;][&#x27;Item&#x27;] ?? [] as $i) { $meta[$i[&#x27;Name&#x27;]] = $i[&#x27;Value&#x27;] ?? null; }
+
+$pdo = db();
+$stmt = $pdo-&gt;prepare(&#x27;SELECT * FROM payments WHERE checkout_request_id = ?&#x27;);
+$stmt-&gt;execute([$cb[&#x27;CheckoutRequestID&#x27;]]);
+$payment = $stmt-&gt;fetch();
+
+if ($payment &amp;&amp; $payment[&#x27;status&#x27;] === &#x27;pending&#x27;) {          // ignore unknown or already-processed
+    if ((int)$cb[&#x27;ResultCode&#x27;] === 0 &amp;&amp; (int)($meta[&#x27;Amount&#x27;] ?? 0) === (int)$payment[&#x27;amount&#x27;]) {
+        $pdo-&gt;prepare(&#x27;UPDATE payments SET status = &quot;paid&quot;, mpesa_receipt = ?, result_code = 0, result_desc = ?, raw_callback = ? WHERE id = ?&#x27;)
+            -&gt;execute([$meta[&#x27;MpesaReceiptNumber&#x27;], $cb[&#x27;ResultDesc&#x27;], $raw, $payment[&#x27;id&#x27;]]);
+        $pdo-&gt;prepare(&#x27;UPDATE orders SET status = &quot;paid&quot; WHERE id = ?&#x27;)-&gt;execute([$payment[&#x27;order_id&#x27;]]);
+    } else {
+        $pdo-&gt;prepare(&#x27;UPDATE payments SET status = &quot;failed&quot;, result_code = ?, result_desc = ?, raw_callback = ? WHERE id = ?&#x27;)
+            -&gt;execute([$cb[&#x27;ResultCode&#x27;], $cb[&#x27;ResultDesc&#x27;], $raw, $payment[&#x27;id&#x27;]]);
+    }
+}
+
+header(&#x27;Content-Type: application/json&#x27;);
+echo json_encode([&#x27;ResultCode&#x27; =&gt; 0, &#x27;ResultDesc&#x27; =&gt; &#x27;Accepted&#x27;]);</code></pre></figure>
+<p>Verification rules:</p>
+<ul><li>Accept only callbacks with your <strong>secret</strong> in the URL (and over HTTPS).</li><li>Match the <strong>CheckoutRequestID</strong> to a pending payment you created.</li><li>Check the <strong>amount</strong> matches what you expected.</li><li>Process each payment <strong>once</strong> (status check + UNIQUE receipt).</li><li>Never mark an order paid because the <strong>browser</strong> says so.</li></ul>
+<h2>Step 8: Query the status (if no callback arrives)</h2>
+<p>Callbacks can be delayed or lost (your server was down, network issues). Use the <strong>STK Push Query</strong> endpoint (<code>/mpesa/stkpushquery/v1/query</code>) with the shortcode, password, timestamp and CheckoutRequestID to ask Safaricom for the result, e.g. when the customer clicks "I've paid" or from a scheduled job checking payments still pending after a few minutes.</p>
+<h2>Step 9: The customer's experience</h2>
+<ol><li>After clicking "Pay with M-Pesa", show: "Check your phone and enter your M-Pesa PIN to pay KSh 1,500."</li><li>Poll your own server every few seconds (JavaScript <code>fetch(&#x27;/payment-status.php?id=...&#x27;)</code>) which reads the payment status from <strong>your database</strong>.</li><li>Show success ("Payment received. Receipt NLJ7RT61SV") or a clear failure message with a <strong>Try again</strong> button.</li><li>Offer a fallback: "Or pay to Paybill 123456, account ORDER-1042, then enter the M-Pesa code", which staff or an automatic C2B confirmation can verify.</li></ol>
+<h2>Step 10: Going live</h2>
+<ol><li>The business needs a <strong>Paybill</strong> or <strong>Till (Buy Goods)</strong> number registered with Safaricom, in the business's name.</li><li>Apply to <strong>go live</strong> in the Daraja portal; Safaricom verifies the business and the shortcode administrator.</li><li>You receive <strong>production credentials</strong> and the live <strong>passkey</strong>.</li><li>Switch <code>env</code> to production, update shortcode/passkey/keys, use a real HTTPS callback URL.</li><li>For <strong>Till numbers</strong>, use <code>CustomerBuyGoodsOnline</code>; the shortcode in the password is the store number and <code>PartyB</code> is the till number (check Safaricom's current documentation for your setup).</li><li>Test with a small real payment (e.g. KSh 1–10), then refund or account for it.</li></ol>
+<h2>Common errors</h2>
+<div class="static-table"><table><thead><tr><th>Problem</th><th>Likely cause</th></tr></thead><tbody><tr><td><code>Invalid Access Token</code></td><td>Expired token, or sandbox token used on production (or vice versa)</td></tr><tr><td><code>Bad Request - Invalid PhoneNumber</code></td><td>Phone not in 2547/2541 format</td></tr><tr><td><code>Bad Request - Invalid Timestamp</code> / wrong password</td><td>Timestamp format wrong, or password built with a different timestamp</td></tr><tr><td>Prompt never arrives</td><td>Wrong phone, phone off, SIM toolkit issue; check status query</td></tr><tr><td>Callback never received</td><td>Callback URL not public HTTPS, blocked by firewall/hosting, redirect (e.g. http→https), or an error in your script (check logs)</td></tr><tr><td>Paid twice / duplicate updates</td><td>No idempotency check: use status + UNIQUE receipt</td></tr></tbody></table></div>
+<p>Log every request and callback (without secrets) so you can investigate disputes.</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A developer's checkout page shows "Payment successful" as soon as the STK push request returns ResponseCode 0. What's wrong?</span><em>Show answer</em></summary><div class="callout-body"><p>ResponseCode 0 only means Safaricom <strong>accepted the request</strong> and sent the prompt; the customer hasn't paid yet (they may cancel or have insufficient funds). The order must be marked paid only after a verified callback (ResultCode 0, matching amount and CheckoutRequestID) or a status query confirms it.</p></div></details>
+<h2>Summary</h2>
+<ul><li>STK push: token → push request (CheckoutRequestID) → customer enters PIN → callback → verify → mark paid.</li><li>Test in the Daraja sandbox; keep keys and passkey in a config file outside public_html.</li><li>Password = base64(shortcode + passkey + timestamp); phones in 2547/2541 format.</li><li>Save a pending payment first; verify callbacks by secret, CheckoutRequestID, amount and single processing.</li><li>Use status queries as a backup, give customers clear waiting/fallback screens, and go live with a real Paybill/Till.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is Safaricom's developer API platform called?</p><details><summary>Show answer</summary><p>Daraja</p></details></li><li><p>Should you trust the browser to tell you a payment succeeded? (yes/no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>In which environment should you test first?</p><details><summary>Show answer</summary><p>sandbox</p></details></li><li><p>The STK password is base64 of shortcode + passkey + what?</p><details><summary>Show answer</summary><p>timestamp</p></details></li><li><p>Which ResultCode in the callback means success?</p><details><summary>Show answer</summary><p>0</p></details></li><li><p>Which ID returned by the STK push request links it to the callback?</p><details><summary>Show answer</summary><p>CheckoutRequestID</p></details></li></ol></section>
+<p><strong>Learn more:</strong> <a href="https://developer.safaricom.co.ke/" target="_blank" rel="noopener noreferrer">Safaricom Daraja developer portal</a> · <a href="https://www.php.net/manual/en/book.curl.php" target="_blank" rel="noopener noreferrer">PHP manual: cURL</a></p></div><p class="static-meta">Lesson 13 of 15 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/composer-frameworks/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Composer, packages and frameworks: from plain PHP to Laravel</a><a class="btn btn-solid btn-sm" href="/learn/php/project-booking-system/">Project: an appointment booking system <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

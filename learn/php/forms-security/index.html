@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Forms and security | PHP &amp; MySQL</title>
-    <meta name="description" content="Free PHP &amp; MySQL lesson: Forms and security." />
+    <title>Forms and security: GET and POST, validation, XSS, CSRF,…</title>
+    <meta name="description" content="Forms are how websites collect information: contact messages, sign-ups, orders, bookings, payments, job applications. Handling a form means receiving…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/php/forms-security/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Forms and security | PHP &amp; MySQL" />
-    <meta property="og:description" content="Free PHP &amp; MySQL lesson: Forms and security." />
+    <meta property="og:title" content="Forms and security: GET and POST, validation, XSS, CSRF,…" />
+    <meta property="og:description" content="Forms are how websites collect information: contact messages, sign-ups, orders, bookings, payments, job applications. Handling a form means receiving…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/php/forms-security/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Forms and security | PHP &amp; MySQL" />
-    <meta name="twitter:description" content="Free PHP &amp; MySQL lesson: Forms and security." />
+    <meta name="twitter:title" content="Forms and security: GET and POST, validation, XSS, CSRF,…" />
+    <meta name="twitter:description" content="Forms are how websites collect information: contact messages, sign-ups, orders, bookings, payments, job applications. Handling a form means receiving…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/php/forms-security/#lesson","name":"Forms and security","description":"Free PHP & MySQL lesson: Forms and security.","url":"https://marzleytechsolutions.co.ke/learn/php/forms-security/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/php/#course","name":"PHP & MySQL","url":"https://marzleytechsolutions.co.ke/learn/php/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"PHP & MySQL","item":"https://marzleytechsolutions.co.ke/learn/php/"},{"@type":"ListItem","position":4,"name":"Forms and security","item":"https://marzleytechsolutions.co.ke/learn/php/forms-security/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/php/forms-security/#lesson","name":"Forms and security: GET and POST, validation, XSS, CSRF, sending email and safe form handling","description":"Forms are how websites collect information: contact messages, sign-ups, orders, bookings, payments, job applications. Handling a form means receiving…","url":"https://marzleytechsolutions.co.ke/learn/php/forms-security/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/php/#course","name":"PHP & MySQL","url":"https://marzleytechsolutions.co.ke/learn/php/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"PHP & MySQL","item":"https://marzleytechsolutions.co.ke/learn/php/"},{"@type":"ListItem","position":4,"name":"Forms and security: GET and POST, validation, XSS, CSRF, sending email and safe form handling","item":"https://marzleytechsolutions.co.ke/learn/php/forms-security/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,30 +36,137 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/php/">PHP &amp; MySQL</a> / <span>Forms and security</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=php&amp;lesson=forms-security"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Handling forms safely</h1>
-<figure class="static-code"><pre><code>&lt;form method=&quot;post&quot; action=&quot;contact.php&quot;&gt;
-  &lt;input name=&quot;name&quot; required&gt;
-  &lt;input name=&quot;phone&quot; type=&quot;tel&quot;&gt;
-  &lt;textarea name=&quot;message&quot;&gt;&lt;/textarea&gt;
-  &lt;button&gt;Send&lt;/button&gt;
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/php/">PHP &amp; MySQL</a> / <span>Forms and security: GET and POST, validation, XSS, CSRF, sending email and safe form handling</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=php&amp;lesson=forms-security"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Forms and security: GET and POST, validation, XSS, CSRF, sending email and safe form handling</h1>
+<p>Forms are how websites collect information: contact messages, sign-ups, orders, bookings, payments, job applications. Handling a form means <strong>receiving</strong> the data, <strong>validating</strong> it, <strong>doing something</strong> with it (save, email, pay), and <strong>responding</strong>. It's also where most website attacks begin, because form data comes from strangers on the internet and can contain anything. This unit teaches the full process, with the security habits every PHP developer must follow.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>How HTML forms send data: GET vs POST</li><li>Reading form data with <code>$_GET</code>, <code>$_POST</code> and <code>$_SERVER</code></li><li>Validation and sanitisation (required fields, emails, phones, numbers)</li><li>Showing errors and keeping the user's input</li><li>Cross-site scripting (XSS) and output escaping</li><li>CSRF tokens</li><li>The Post/Redirect/Get pattern</li><li>Sending email safely</li><li>Spam protection: honeypots, rate limits, CAPTCHA</li><li>A complete secure contact form</li></ul></div></aside>
+<h2>How forms send data</h2>
+<figure class="static-code"><figcaption>HTML</figcaption><pre><code class="language-html">&lt;form action=&quot;contact.php&quot; method=&quot;post&quot;&gt;
+  &lt;label&gt;Name &lt;input type=&quot;text&quot; name=&quot;name&quot; required&gt;&lt;/label&gt;
+  &lt;label&gt;Email &lt;input type=&quot;email&quot; name=&quot;email&quot; required&gt;&lt;/label&gt;
+  &lt;label&gt;Message &lt;textarea name=&quot;message&quot; required&gt;&lt;/textarea&gt;&lt;/label&gt;
+  &lt;button type=&quot;submit&quot;&gt;Send&lt;/button&gt;
 &lt;/form&gt;</code></pre></figure>
-<figure class="static-code"><pre><code>&lt;?php
-// contact.php
-if ($_SERVER[&#x27;REQUEST_METHOD&#x27;] !== &#x27;POST&#x27;) { exit(&#x27;Use the form.&#x27;); }
-
-$name = trim($_POST[&#x27;name&#x27;] ?? &#x27;&#x27;);
-$phone = trim($_POST[&#x27;phone&#x27;] ?? &#x27;&#x27;);
-$message = trim($_POST[&#x27;message&#x27;] ?? &#x27;&#x27;);
-
-if ($name === &#x27;&#x27; || $message === &#x27;&#x27;) {
-    exit(&#x27;Please fill in your name and message.&#x27;);
+<ul><li><code>action</code>: the PHP file that receives the data.</li><li><code>method</code>: <code>get</code> or <code>post</code>.</li><li>Each input's <code>name</code> becomes the key in PHP: <code>$_POST[&quot;email&quot;]</code>.</li></ul>
+<div class="static-table"><table><thead><tr><th></th><th>GET</th><th>POST</th></tr></thead><tbody><tr><td>Where data goes</td><td>In the URL: <code>search.php?q=laptop&amp;page=2</code></td><td>In the request body</td></tr><tr><td>Visible/bookmarkable</td><td>Yes</td><td>No</td></tr><tr><td>Size</td><td>Limited</td><td>Large (files too)</td></tr><tr><td>Use for</td><td>Searches, filters, pagination</td><td>Anything that changes data: logins, orders, sign-ups, payments</td></tr></tbody></table></div>
+<p><strong>Never</strong> use GET for passwords or actions that change data.</p>
+<h2>Reading the data</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+if ($_SERVER[&quot;REQUEST_METHOD&quot;] === &quot;POST&quot;) {
+    $name = trim($_POST[&quot;name&quot;] ?? &quot;&quot;);
+    $email = trim($_POST[&quot;email&quot;] ?? &quot;&quot;);
+    $message = trim($_POST[&quot;message&quot;] ?? &quot;&quot;);
+    // validate, then act...
 }
-// ... save to the database or email it ...
-echo &#x27;Thank you, &#x27; . htmlspecialchars($name) . &#x27;!&#x27;;</code></pre></figure>
-<h2>The security rules every PHP developer must follow</h2>
-<ol><li><strong>Never trust input.</strong> Everything in <code>$_GET</code>, <code>$_POST</code>, <code>$_COOKIE</code> and uploaded files can be anything.</li><li><strong>Escape output</strong> with <code>htmlspecialchars()</code> whenever you show user input in HTML. This stops <strong>XSS</strong> (attackers injecting JavaScript).</li><li><strong>Use prepared statements</strong> for databases (next lesson). Never put <code>$_POST</code> directly into SQL; that's <strong>SQL injection</strong>.</li><li><strong>Hash passwords</strong> with <code>password_hash()</code> and check them with <code>password_verify()</code>. Never store plain passwords.</li><li><strong>CSRF tokens</strong> on forms that change data, so other sites can't submit them for your logged-in users.</li><li><strong>File uploads</strong>: check size and type, rename files, store them outside the public folder or block PHP execution in the upload folder.</li><li><strong>Keep secrets out of code</strong>: database passwords and API keys in a config file outside <code>public_html</code>, never on GitHub.</li><li><strong>HTTPS everywhere</strong> and keep PHP updated (8.2+).</li></ol>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which function should you use when printing user input into HTML?</p><details><summary>Show answer</summary><p>htmlspecialchars</p></details></li><li><p>What attack happens when user input goes straight into SQL?</p><details><summary>Show answer</summary><p>SQL injection</p></details></li><li><p>Which function hashes a password in PHP?</p><details><summary>Show answer</summary><p>password_hash</p></details></li><li><p>Which array holds data from a form sent with method="post"?</p><details><summary>Show answer</summary><p>$_POST</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 13 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/oop-classes/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Object-oriented PHP: classes, interfaces and namespaces</a><a class="btn btn-solid btn-sm" href="/learn/php/mysql-pdo/">MySQL with PDO <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+
+$query = trim($_GET[&quot;q&quot;] ?? &quot;&quot;);       // from search.php?q=...
+$page = max(1, (int)($_GET[&quot;page&quot;] ?? 1));</code></pre></figure>
+<p><code>?? &quot;&quot;</code> avoids warnings when a field is missing; <code>trim()</code> removes accidental spaces.</p>
+<h2>Validation: never trust user input</h2>
+<p>Browser checks (<code>required</code>, <code>type=&quot;email&quot;</code>) help honest users, but anyone can bypass them. <strong>Always validate on the server.</strong></p>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+function validateBooking(array $in): array {
+    $errors = [];
+    $name = trim($in[&quot;name&quot;] ?? &quot;&quot;);
+    if ($name === &quot;&quot; || mb_strlen($name) &gt; 100) {
+        $errors[&quot;name&quot;] = &quot;Please enter your name (up to 100 characters).&quot;;
+    }
+    $email = trim($in[&quot;email&quot;] ?? &quot;&quot;);
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[&quot;email&quot;] = &quot;Please enter a valid email address.&quot;;
+    }
+    $phone = preg_replace(&#x27;/\D/&#x27;, &#x27;&#x27;, $in[&quot;phone&quot;] ?? &quot;&quot;);
+    if (!preg_match(&#x27;/^(0[17]\d{8}|254[17]\d{8})$/&#x27;, $phone)) {
+        $errors[&quot;phone&quot;] = &quot;Enter a Kenyan number like 0712345678.&quot;;
+    }
+    $guests = filter_var($in[&quot;guests&quot;] ?? &quot;&quot;, FILTER_VALIDATE_INT, [&quot;options&quot; =&gt; [&quot;min_range&quot; =&gt; 1, &quot;max_range&quot; =&gt; 20]]);
+    if ($guests === false) {
+        $errors[&quot;guests&quot;] = &quot;Guests must be a number from 1 to 20.&quot;;
+    }
+    $date = $in[&quot;date&quot;] ?? &quot;&quot;;
+    $d = DateTime::createFromFormat(&quot;Y-m-d&quot;, $date);
+    if (!$d || $d-&gt;format(&quot;Y-m-d&quot;) !== $date) {
+        $errors[&quot;date&quot;] = &quot;Choose a valid date.&quot;;
+    }
+    return $errors;
+}
+
+$good = [&quot;name&quot; =&gt; &quot;Amina Hassan&quot;, &quot;email&quot; =&gt; &quot;amina@example.com&quot;, &quot;phone&quot; =&gt; &quot;0712 345 678&quot;, &quot;guests&quot; =&gt; &quot;4&quot;, &quot;date&quot; =&gt; &quot;2026-12-24&quot;];
+$bad  = [&quot;name&quot; =&gt; &quot;&quot;, &quot;email&quot; =&gt; &quot;amina@&quot;, &quot;phone&quot; =&gt; &quot;12345&quot;, &quot;guests&quot; =&gt; &quot;50&quot;, &quot;date&quot; =&gt; &quot;2026-02-30&quot;];
+print_r(validateBooking($good));
+print_r(validateBooking($bad));</code></pre></figure>
+<p>Validation checklist:</p>
+<ul><li><strong>Required</strong> fields present.</li><li><strong>Type/format</strong>: email, phone, number, date (<code>filter_var</code>, <code>preg_match</code>, <code>DateTime</code>).</li><li><strong>Length and range</strong> limits.</li><li><strong>Allowed values</strong> for dropdowns: check against a list (<code>in_array($in[&quot;plan&quot;], [&quot;basic&quot;, &quot;standard&quot;, &quot;premium&quot;], true)</code>).</li><li><strong>Business rules</strong>: date not in the past, quantity not above stock.</li></ul>
+<h2>Showing errors and keeping input</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;label&gt;Email
+  &lt;input type=&quot;email&quot; name=&quot;email&quot; value=&quot;&lt;?= htmlspecialchars($email ?? &#x27;&#x27;) ?&gt;&quot;&gt;
+&lt;/label&gt;
+&lt;?php if (isset($errors[&quot;email&quot;])): ?&gt;
+  &lt;p class=&quot;error&quot;&gt;&lt;?= htmlspecialchars($errors[&quot;email&quot;]) ?&gt;&lt;/p&gt;
+&lt;?php endif; ?&gt;</code></pre></figure>
+<p>Refill fields so users don't retype everything, and show each error next to its field.</p>
+<h2>XSS: Cross-Site Scripting</h2>
+<p>If you print user input directly, an attacker can submit <code>&lt;script&gt;...&lt;/script&gt;</code> and it runs in other visitors' browsers (stealing sessions, defacing pages, redirecting to scam sites).</p>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$comment = &#x27;&lt;script&gt;alert(&quot;hacked&quot;)&lt;/script&gt; Great shop!&#x27;;
+echo &quot;UNSAFE: &quot; . $comment . &quot;\n&quot;;
+echo &quot;SAFE:   &quot; . htmlspecialchars($comment, ENT_QUOTES, &#x27;UTF-8&#x27;) . &quot;\n&quot;;</code></pre></figure>
+<p><strong>Rule: escape every piece of user data when you output it into HTML</strong>, with <code>htmlspecialchars()</code>. A short helper keeps code tidy:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">function e(?string $s): string { return htmlspecialchars($s ?? &#x27;&#x27;, ENT_QUOTES, &#x27;UTF-8&#x27;); }
+// &lt;p&gt;Hello, &lt;?= e($name) ?&gt;&lt;/p&gt;</code></pre></figure>
+<p>Other contexts need other escaping: <code>json_encode()</code> for JavaScript, <code>urlencode()</code> for URL parts, prepared statements for SQL (next lesson).</p>
+<h2>CSRF: Cross-Site Request Forgery</h2>
+<p>A malicious site could trick a logged-in user's browser into submitting a form to your site (e.g. "change email" or "transfer"). Defend with a secret <strong>token</strong> in each form, stored in the session:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+session_start();
+if (empty($_SESSION[&quot;csrf&quot;])) {
+    $_SESSION[&quot;csrf&quot;] = bin2hex(random_bytes(32));
+}
+// In the form:
+// &lt;input type=&quot;hidden&quot; name=&quot;csrf&quot; value=&quot;&lt;?= $_SESSION[&#x27;csrf&#x27;] ?&gt;&quot;&gt;
+
+// When processing:
+if (!hash_equals($_SESSION[&quot;csrf&quot;], $_POST[&quot;csrf&quot;] ?? &quot;&quot;)) {
+    http_response_code(403);
+    exit(&quot;Invalid form submission.&quot;);
+}</code></pre></figure>
+<p>Also set session cookies with <code>SameSite=Lax</code> (or <code>Strict</code>), covered in the sessions lesson.</p>
+<h2>Post/Redirect/Get</h2>
+<p>After processing a POST successfully, <strong>redirect</strong>. Otherwise, refreshing the page resubmits the form (duplicate orders and emails):</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+// after saving successfully:
+header(&quot;Location: thank-you.php&quot;);
+exit;</code></pre></figure>
+<h2>Sending email</h2>
+<p>PHP's <code>mail()</code> works on many hosts but often lands in spam. Professionals use <strong>SMTP</strong> through a library like <strong>PHPMailer</strong> or <strong>Symfony Mailer</strong>, with the domain's SPF, DKIM and DMARC records set up:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+use PHPMailer\PHPMailer\PHPMailer;
+require &#x27;vendor/autoload.php&#x27;;
+
+$mail = new PHPMailer(true);
+$mail-&gt;isSMTP();
+$mail-&gt;Host = &#x27;mail.example.co.ke&#x27;;
+$mail-&gt;SMTPAuth = true;
+$mail-&gt;Username = &#x27;noreply@example.co.ke&#x27;;
+$mail-&gt;Password = getenv(&#x27;SMTP_PASS&#x27;);          // never hard-code passwords
+$mail-&gt;SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+$mail-&gt;Port = 465;
+$mail-&gt;setFrom(&#x27;noreply@example.co.ke&#x27;, &#x27;Example Website&#x27;);
+$mail-&gt;addAddress(&#x27;info@example.co.ke&#x27;);
+$mail-&gt;addReplyTo($email, $name);              // validated email from the form
+$mail-&gt;Subject = &#x27;New contact message&#x27;;
+$mail-&gt;Body = &quot;From: $name &lt;$email&gt;\n\n$message&quot;;
+$mail-&gt;send();</code></pre></figure>
+<p>Security: never put user input into email <strong>headers</strong> without validation (header injection); use the library's methods, which handle this.</p>
+<h2>Spam protection</h2>
+<div class="static-table"><table><thead><tr><th>Method</th><th>How</th></tr></thead><tbody><tr><td><strong>Honeypot field</strong></td><td>A hidden field humans don't fill; bots do. Reject if it has a value</td></tr><tr><td><strong>Time check</strong></td><td>Reject forms submitted within 2–3 seconds of loading</td></tr><tr><td><strong>Rate limiting</strong></td><td>Limit submissions per IP/session per hour</td></tr><tr><td><strong>CAPTCHA</strong></td><td>reCAPTCHA, hCaptcha or Cloudflare Turnstile for heavy spam</td></tr><tr><td><strong>Content checks</strong></td><td>Reject messages with many links</td></tr></tbody></table></div>
+<h2>A complete secure contact form (summary of the flow)</h2>
+<ol><li><code>session_start()</code>, generate a CSRF token.</li><li>On POST: check the CSRF token and honeypot.</li><li>Trim and validate every field; collect errors.</li><li>If errors: redisplay the form with escaped values and messages.</li><li>If valid: save to the database (prepared statement) and/or send email via SMTP.</li><li>Redirect to a thank-you page (Post/Redirect/Get).</li><li>Output everything with <code>htmlspecialchars()</code>.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A developer's search page shows "You searched for: " followed by $_GET['q'] directly. Someone shares a link like search.php?q=&lt;script&gt;...&lt;/script&gt;. What can happen and how do you fix it?</span><em>Show answer</em></summary><div class="callout-body"><p>Reflected XSS: the script runs in the browser of anyone who opens the link, possibly stealing their session or redirecting them to a scam page. Fix by escaping: <code>echo &quot;You searched for: &quot; . htmlspecialchars($q, ENT_QUOTES, &#x27;UTF-8&#x27;);</code>.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Forms send data by GET (in the URL; for searches) or POST (in the body; for changes); read with <code>$_GET</code>/<code>$_POST</code> and <code>??</code>.</li><li>Validate everything on the server: required, format (filter_var, preg_match), length, range, allowed values, business rules.</li><li>Escape all output with <code>htmlspecialchars()</code> to prevent XSS; use CSRF tokens; redirect after POST.</li><li>Send email through SMTP with PHPMailer, credentials from environment/config, and correct DNS records.</li><li>Fight spam with honeypots, time checks, rate limits and CAPTCHA.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which method should a login form use, GET or POST?</p><details><summary>Show answer</summary><p>POST</p></details></li><li><p>Which function makes text safe to print inside HTML?</p><details><summary>Show answer</summary><p>htmlspecialchars</p></details></li><li><p>Which filter_var filter checks an email address? (constant)</p><details><summary>Show answer</summary><p>FILTER_VALIDATE_EMAIL</p></details></li><li><p>What attack does a hidden random token in each form prevent? (abbreviation)</p><details><summary>Show answer</summary><p>CSRF</p></details></li><li><p>What pattern redirects after a successful POST to avoid duplicate submissions? (three words, with slashes)</p><details><summary>Show answer</summary><p>Post/Redirect/Get</p></details></li><li><p>Is browser-side validation (required, type=email) enough on its own? (yes/no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section>
+<p><strong>Learn more:</strong> <a href="https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html" target="_blank" rel="noopener noreferrer">OWASP Cheat Sheet: XSS prevention</a> · <a href="https://www.php.net/manual/en/function.filter-var.php" target="_blank" rel="noopener noreferrer">PHP manual: filter_var</a></p></div><p class="static-meta">Lesson 6 of 15 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/oop-classes/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Object-oriented PHP: classes, interfaces and namespaces</a><a class="btn btn-solid btn-sm" href="/learn/php/mysql-pdo/">MySQL with PDO: connecting safely, prepared statements, fetching rows, inserting, transactions and error handling <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Arrays, conditions and loops | PHP &amp; MySQL</title>
-    <meta name="description" content="Free PHP &amp; MySQL lesson: Arrays, conditions and loops." />
+    <title>Arrays, conditions and loops: lists, associative arrays,…</title>
+    <meta name="description" content="Real programs make decisions (is the payment complete? is the user an admin? is stock below 5?) and work with lists of things (products in a cart…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/php/arrays-loops/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Arrays, conditions and loops | PHP &amp; MySQL" />
-    <meta property="og:description" content="Free PHP &amp; MySQL lesson: Arrays, conditions and loops." />
+    <meta property="og:title" content="Arrays, conditions and loops: lists, associative arrays,…" />
+    <meta property="og:description" content="Real programs make decisions (is the payment complete? is the user an admin? is stock below 5?) and work with lists of things (products in a cart…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/php/arrays-loops/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Arrays, conditions and loops | PHP &amp; MySQL" />
-    <meta name="twitter:description" content="Free PHP &amp; MySQL lesson: Arrays, conditions and loops." />
+    <meta name="twitter:title" content="Arrays, conditions and loops: lists, associative arrays,…" />
+    <meta name="twitter:description" content="Real programs make decisions (is the payment complete? is the user an admin? is stock below 5?) and work with lists of things (products in a cart…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/php/arrays-loops/#lesson","name":"Arrays, conditions and loops","description":"Free PHP & MySQL lesson: Arrays, conditions and loops.","url":"https://marzleytechsolutions.co.ke/learn/php/arrays-loops/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/php/#course","name":"PHP & MySQL","url":"https://marzleytechsolutions.co.ke/learn/php/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"PHP & MySQL","item":"https://marzleytechsolutions.co.ke/learn/php/"},{"@type":"ListItem","position":4,"name":"Arrays, conditions and loops","item":"https://marzleytechsolutions.co.ke/learn/php/arrays-loops/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/php/arrays-loops/#lesson","name":"Arrays, conditions and loops: lists, associative arrays, if/else, match, for, foreach, while and array functions","description":"Real programs make decisions (is the payment complete? is the user an admin? is stock below 5?) and work with lists of things (products in a cart…","url":"https://marzleytechsolutions.co.ke/learn/php/arrays-loops/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/php/#course","name":"PHP & MySQL","url":"https://marzleytechsolutions.co.ke/learn/php/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"PHP & MySQL","item":"https://marzleytechsolutions.co.ke/learn/php/"},{"@type":"ListItem","position":4,"name":"Arrays, conditions and loops: lists, associative arrays, if/else, match, for, foreach, while and array functions","item":"https://marzleytechsolutions.co.ke/learn/php/arrays-loops/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,47 +36,248 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/php/">PHP &amp; MySQL</a> / <span>Arrays, conditions and loops</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=php&amp;lesson=arrays-loops"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Arrays, conditions and loops</h1>
-<h2>Arrays</h2>
-<figure class="static-code"><pre><code>&lt;?php
-$towns = [&quot;Nairobi&quot;, &quot;Mombasa&quot;, &quot;Kisumu&quot;];       // indexed
-echo $towns[0];                                   // Nairobi
-$towns[] = &quot;Nakuru&quot;;                              // add
-echo count($towns);                               // 4
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/php/">PHP &amp; MySQL</a> / <span>Arrays, conditions and loops: lists, associative arrays, if/else, match, for, foreach, while and array functions</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=php&amp;lesson=arrays-loops"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Arrays, conditions and loops: lists, associative arrays, if/else, match, for, foreach, while and array functions</h1>
+<p>Real programs make <strong>decisions</strong> (is the payment complete? is the user an admin? is stock below 5?) and work with <strong>lists</strong> of things (products in a cart, students in a class, rows from a database). This unit covers PHP's <strong>arrays</strong>, <strong>conditions</strong> and <strong>loops</strong> in depth: the tools you'll use on every page that shows a list, calculates a total or reacts to user input.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Indexed arrays and associative arrays</li><li>Nested (multidimensional) arrays, like database rows</li><li>Adding, removing and checking items</li><li>if, elseif, else and logical operators</li><li>The ternary and null coalescing operators</li><li>switch and match</li><li>for, foreach, while and do-while loops; break and continue</li><li>Essential array functions: count, sort, in_array, array_sum, array_map, array_filter, array_column</li><li>A practical shopping cart example</li></ul></div></aside>
+<h2>Indexed arrays</h2>
+<p>A list where each item has a number (index) starting at <strong>0</strong>:</p>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$towns = [&quot;Nairobi&quot;, &quot;Mombasa&quot;, &quot;Kisumu&quot;];
+echo $towns[0], &quot;\n&quot;;              // Nairobi
+echo count($towns), &quot;\n&quot;;          // 3
 
-$product = [&quot;name&quot; =&gt; &quot;Mouse&quot;, &quot;price&quot; =&gt; 1200]; // associative
-echo $product[&quot;name&quot;];</code></pre></figure>
-<h2>Conditions</h2>
-<figure class="static-code"><pre><code>$total = 1800;
-if ($total &gt;= 2000) {
-    $delivery = 0;
-} elseif ($total &gt;= 1000) {
-    $delivery = 100;
-} else {
-    $delivery = 200;
-}
-echo $total &gt;= 2000 ? &quot;Free delivery&quot; : &quot;Delivery KSh $delivery&quot;;</code></pre></figure>
-<p>Use <code>===</code> for comparisons (value and type).</p>
-<h2>Loops</h2>
-<figure class="static-code"><pre><code>foreach ($towns as $town) {
-    echo &quot;&lt;li&gt;$town&lt;/li&gt;&quot;;
-}
+$towns[] = &quot;Nakuru&quot;;               // add to the end
+array_unshift($towns, &quot;Eldoret&quot;);  // add to the start
+print_r($towns);
 
-$cart = [
-    [&quot;name&quot; =&gt; &quot;Mouse&quot;, &quot;price&quot; =&gt; 1200, &quot;qty&quot; =&gt; 2],
-    [&quot;name&quot; =&gt; &quot;Charger&quot;, &quot;price&quot; =&gt; 800, &quot;qty&quot; =&gt; 1],
+$last = array_pop($towns);         // remove from the end
+echo &quot;Removed: $last\n&quot;;
+print_r($towns);</code></pre></figure>
+<h2>Associative arrays</h2>
+<p>Use <strong>named keys</strong> instead of numbers: perfect for records like a product or a customer.</p>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$product = [
+    &quot;name&quot; =&gt; &quot;Bluetooth speaker&quot;,
+    &quot;category&quot; =&gt; &quot;Electronics&quot;,
+    &quot;price&quot; =&gt; 3500,
+    &quot;in_stock&quot; =&gt; true,
 ];
-$sum = 0;
-foreach ($cart as $item) {
-    $sum += $item[&quot;price&quot;] * $item[&quot;qty&quot;];
-}
-echo &quot;Total: KSh $sum&quot;;      // 3200
 
-for ($i = 1; $i &lt;= 5; $i++) echo $i;</code></pre></figure>
-<h2>Useful array functions</h2>
-<p><code>in_array</code>, <code>array_sum</code>, <code>array_map</code>, <code>array_filter</code>, <code>sort</code>, <code>usort</code>, <code>array_keys</code>, <code>json_encode</code> (array → JSON) and <code>json_decode</code> (JSON → array).</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which loop is best for going through every item in an array?</p><details><summary>Show answer</summary><p>foreach</p></details></li><li><p>Which function counts items in an array?</p><details><summary>Show answer</summary><p>count</p></details></li><li><p>Which function turns an array into JSON?</p><details><summary>Show answer</summary><p>json_encode</p></details></li><li><p>Which comparison operator checks value and type?</p><details><summary>Show answer</summary><p>===</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 13 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/variables-strings/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Variables, strings and numbers</a><a class="btn btn-solid btn-sm" href="/learn/php/functions-includes/">Functions, includes and organising a PHP site <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+echo $product[&quot;name&quot;] . &quot; costs KSh &quot; . number_format($product[&quot;price&quot;]) . &quot;\n&quot;;
+$product[&quot;price&quot;] = 3200;          // change
+$product[&quot;colour&quot;] = &quot;Black&quot;;      // add a new key
+unset($product[&quot;in_stock&quot;]);       // remove a key
+print_r($product);
+
+var_dump(isset($product[&quot;colour&quot;]));          // does the key exist (and isn&#x27;t null)?
+var_dump(array_key_exists(&quot;weight&quot;, $product));</code></pre></figure>
+<h2>Nested arrays</h2>
+<p>A list of associative arrays looks exactly like rows from a database table:</p>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$products = [
+    [&quot;id&quot; =&gt; 1, &quot;name&quot; =&gt; &quot;Laptop bag&quot;, &quot;category&quot; =&gt; &quot;Accessories&quot;, &quot;price&quot; =&gt; 2500],
+    [&quot;id&quot; =&gt; 2, &quot;name&quot; =&gt; &quot;USB flash 32GB&quot;, &quot;category&quot; =&gt; &quot;Storage&quot;, &quot;price&quot; =&gt; 900],
+    [&quot;id&quot; =&gt; 3, &quot;name&quot; =&gt; &quot;Wireless mouse&quot;, &quot;category&quot; =&gt; &quot;Accessories&quot;, &quot;price&quot; =&gt; 1200],
+    [&quot;id&quot; =&gt; 4, &quot;name&quot; =&gt; &quot;Phone charger&quot;, &quot;category&quot; =&gt; &quot;Electronics&quot;, &quot;price&quot; =&gt; 800],
+];
+
+echo $products[2][&quot;name&quot;], &quot;\n&quot;;   // Wireless mouse
+
+foreach ($products as $p) {
+    printf(&quot;%-3d %-16s %-12s KSh %6s\n&quot;, $p[&quot;id&quot;], $p[&quot;name&quot;], $p[&quot;category&quot;], number_format($p[&quot;price&quot;]));
+}</code></pre></figure>
+<h2>Conditions: if, elseif, else</h2>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$stock = 3;
+
+if ($stock === 0) {
+    echo &quot;Out of stock\n&quot;;
+} elseif ($stock &lt; 5) {
+    echo &quot;Only $stock left, order soon!\n&quot;;
+} else {
+    echo &quot;In stock\n&quot;;
+}</code></pre></figure>
+<h3>Comparison and logical operators</h3>
+<div class="static-table"><table><thead><tr><th>Operator</th><th>Meaning</th></tr></thead><tbody><tr><td><code>===</code> / <code>!==</code></td><td>Equal / not equal (value and type)</td></tr><tr><td><code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code></td><td>Less/greater than (or equal)</td></tr><tr><td><code>&amp;&amp;</code> (and)</td><td>Both true</td></tr><tr><td><code>||</code> (or)</td><td>At least one true</td></tr><tr><td><code>!</code></td><td>Not</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$age = 20;
+$hasId = true;
+$isAdmin = false;
+
+if ($age &gt;= 18 &amp;&amp; $hasId) {
+    echo &quot;Can register\n&quot;;
+}
+if ($isAdmin || $age &gt; 60) {
+    echo &quot;Gets special access\n&quot;;
+} else {
+    echo &quot;Standard access\n&quot;;
+}
+if (!$isAdmin) {
+    echo &quot;Not an admin\n&quot;;
+}</code></pre></figure>
+<h3>Ternary and null coalescing</h3>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$paid = true;
+echo $paid ? &quot;Paid\n&quot; : &quot;Pending\n&quot;;             // condition ? if true : if false
+
+$input = [];                                     // e.g. $_GET from a URL
+$page = $input[&quot;page&quot;] ?? 1;                     // use 1 if &quot;page&quot; is missing or null
+$town = $input[&quot;town&quot;] ?? &quot;Nairobi&quot;;
+echo &quot;Page $page, town $town\n&quot;;</code></pre></figure>
+<p><code>??</code> is used constantly with form and URL data to avoid "undefined index" warnings.</p>
+<h2>switch and match</h2>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$status = &quot;shipped&quot;;
+
+switch ($status) {
+    case &quot;pending&quot;:
+        echo &quot;Waiting for payment\n&quot;;
+        break;
+    case &quot;paid&quot;:
+    case &quot;processing&quot;:
+        echo &quot;We&#x27;re preparing your order\n&quot;;
+        break;
+    case &quot;shipped&quot;:
+        echo &quot;On the way\n&quot;;
+        break;
+    default:
+        echo &quot;Unknown status\n&quot;;
+}
+
+// PHP 8 match: shorter, returns a value, uses strict comparison, no break needed
+$label = match ($status) {
+    &quot;pending&quot; =&gt; &quot;Waiting for payment&quot;,
+    &quot;paid&quot;, &quot;processing&quot; =&gt; &quot;Preparing your order&quot;,
+    &quot;shipped&quot; =&gt; &quot;On the way&quot;,
+    &quot;delivered&quot; =&gt; &quot;Delivered&quot;,
+    default =&gt; &quot;Unknown&quot;,
+};
+echo $label, &quot;\n&quot;;</code></pre></figure>
+<h2>Loops</h2>
+<h3>for: when you know how many times</h3>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+for ($i = 1; $i &lt;= 5; $i++) {
+    echo &quot;Lesson $i\n&quot;;
+}
+
+// Multiplication table for 7
+for ($i = 1; $i &lt;= 10; $i++) {
+    echo &quot;7 x $i = &quot; . (7 * $i) . &quot;\n&quot;;
+}</code></pre></figure>
+<h3>foreach: for every item in an array (most used)</h3>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$fees = [&quot;Tuition&quot; =&gt; 25000, &quot;Lunch&quot; =&gt; 6000, &quot;Transport&quot; =&gt; 8000, &quot;Activity&quot; =&gt; 1500];
+
+$total = 0;
+foreach ($fees as $item =&gt; $amount) {
+    echo str_pad($item, 10) . &quot; KSh &quot; . number_format($amount) . &quot;\n&quot;;
+    $total += $amount;
+}
+echo str_pad(&quot;TOTAL&quot;, 10) . &quot; KSh &quot; . number_format($total) . &quot;\n&quot;;</code></pre></figure>
+<h3>while and do-while</h3>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+// Savings: how many months to reach KSh 50,000 saving 4,500 a month with 1% monthly interest?
+$balance = 0;
+$months = 0;
+while ($balance &lt; 50000) {
+    $balance = $balance * 1.01 + 4500;
+    $months++;
+}
+echo &quot;Months needed: $months (balance KSh &quot; . number_format($balance) . &quot;)\n&quot;;
+
+$tries = 0;
+do {
+    $tries++;               // runs at least once, then checks
+} while ($tries &lt; 3);
+echo &quot;Tries: $tries\n&quot;;</code></pre></figure>
+<h3>break and continue</h3>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$numbers = [4, 7, -1, 12, 0, 9];
+foreach ($numbers as $n) {
+    if ($n &lt; 0) {
+        continue;           // skip negatives
+    }
+    if ($n === 0) {
+        break;              // stop at zero
+    }
+    echo $n, &quot;\n&quot;;
+}</code></pre></figure>
+<h2>Essential array functions</h2>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$prices = [2500, 900, 1200, 800, 3500];
+echo &quot;Count: &quot;, count($prices), &quot;\n&quot;;
+echo &quot;Total: &quot;, array_sum($prices), &quot;\n&quot;;
+echo &quot;Highest: &quot;, max($prices), &quot;, lowest: &quot;, min($prices), &quot;\n&quot;;
+echo &quot;Average: &quot;, round(array_sum($prices) / count($prices)), &quot;\n&quot;;
+
+sort($prices);               // ascending (rsort for descending)
+echo implode(&quot;, &quot;, $prices), &quot;\n&quot;;
+
+var_dump(in_array(900, $prices));               // is a value present?
+echo array_search(1200, $prices), &quot;\n&quot;;         // its index
+
+$withVat = array_map(fn($p) =&gt; round($p * 1.16), $prices);   // transform each
+echo implode(&quot;, &quot;, $withVat), &quot;\n&quot;;
+
+$cheap = array_filter($prices, fn($p) =&gt; $p &lt; 1500);          // keep matching
+echo implode(&quot;, &quot;, $cheap), &quot;\n&quot;;
+
+print_r(array_slice($prices, 0, 2));            // first two
+print_r(array_unique([1, 2, 2, 3, 3, 3]));
+print_r(array_merge([&quot;a&quot;, &quot;b&quot;], [&quot;c&quot;]));</code></pre></figure>
+<p>Working with "rows":</p>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$products = [
+    [&quot;name&quot; =&gt; &quot;Laptop bag&quot;, &quot;category&quot; =&gt; &quot;Accessories&quot;, &quot;price&quot; =&gt; 2500],
+    [&quot;name&quot; =&gt; &quot;USB flash&quot;, &quot;category&quot; =&gt; &quot;Storage&quot;, &quot;price&quot; =&gt; 900],
+    [&quot;name&quot; =&gt; &quot;Mouse&quot;, &quot;category&quot; =&gt; &quot;Accessories&quot;, &quot;price&quot; =&gt; 1200],
+];
+
+print_r(array_column($products, &quot;name&quot;));        // just the names
+
+usort($products, fn($a, $b) =&gt; $a[&quot;price&quot;] &lt;=&gt; $b[&quot;price&quot;]);   // sort by price
+echo $products[0][&quot;name&quot;], &quot; is cheapest\n&quot;;
+
+$accessories = array_filter($products, fn($p) =&gt; $p[&quot;category&quot;] === &quot;Accessories&quot;);
+echo count($accessories), &quot; accessories\n&quot;;
+
+// Group totals by category
+$byCategory = [];
+foreach ($products as $p) {
+    $byCategory[$p[&quot;category&quot;]] = ($byCategory[$p[&quot;category&quot;]] ?? 0) + $p[&quot;price&quot;];
+}
+print_r($byCategory);</code></pre></figure>
+<p><code>&lt;=&gt;</code> (the "spaceship" operator) returns -1, 0 or 1, exactly what sorting functions need.</p>
+<h2>A practical example: a shopping cart</h2>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$catalogue = [
+    101 =&gt; [&quot;name&quot; =&gt; &quot;Laptop bag&quot;, &quot;price&quot; =&gt; 2500],
+    102 =&gt; [&quot;name&quot; =&gt; &quot;Wireless mouse&quot;, &quot;price&quot; =&gt; 1200],
+    103 =&gt; [&quot;name&quot; =&gt; &quot;Phone charger&quot;, &quot;price&quot; =&gt; 800],
+];
+$cart = [101 =&gt; 1, 103 =&gt; 3];     // product ID =&gt; quantity
+
+$subtotal = 0;
+foreach ($cart as $id =&gt; $qty) {
+    if (!isset($catalogue[$id])) {
+        continue;                 // ignore unknown products
+    }
+    $line = $catalogue[$id][&quot;price&quot;] * $qty;
+    $subtotal += $line;
+    printf(&quot;%-15s x%d  KSh %s\n&quot;, $catalogue[$id][&quot;name&quot;], $qty, number_format($line));
+}
+$delivery = $subtotal &gt;= 5000 ? 0 : 250;
+$total = $subtotal + $delivery;
+echo &quot;Subtotal: KSh &quot; . number_format($subtotal) . &quot;\n&quot;;
+echo &quot;Delivery: &quot; . ($delivery === 0 ? &quot;FREE&quot; : &quot;KSh $delivery&quot;) . &quot;\n&quot;;
+echo &quot;Total:    KSh &quot; . number_format($total) . &quot;\n&quot;;</code></pre></figure>
+<p>In a real shop, <code>$catalogue</code> comes from MySQL and <code>$cart</code> lives in the session (later lessons).</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> You have an array of students with "name" and "mark" (0–100). How would you print each student's grade (A: 80+, B: 65–79, C: 50–64, D: below 50) and the class average?</span><em>Show answer</em></summary><div class="callout-body"><p>Loop with <code>foreach</code>, use <code>match(true) { $s[&quot;mark&quot;] &gt;= 80 =&gt; &quot;A&quot;, $s[&quot;mark&quot;] &gt;= 65 =&gt; &quot;B&quot;, $s[&quot;mark&quot;] &gt;= 50 =&gt; &quot;C&quot;, default =&gt; &quot;D&quot; }</code> (or if/elseif) for the grade, and compute the average with <code>array_sum(array_column($students, &quot;mark&quot;)) / count($students)</code>.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Indexed arrays use numbers from 0; associative arrays use named keys; nested arrays look like database rows.</li><li>Add with <code>$arr[] =</code>, remove with <code>unset</code>/<code>array_pop</code>, check with <code>isset</code>, <code>in_array</code>, <code>array_key_exists</code>.</li><li>Conditions: if/elseif/else, <code>&amp;&amp;</code>, <code>||</code>, <code>!</code>, ternary <code>?:</code>, null coalescing <code>??</code>, switch and PHP 8 <code>match</code>.</li><li>Loops: for, foreach (most common), while, do-while, with break and continue.</li><li>Array functions: count, array_sum, sort/usort, array_map, array_filter, array_column, implode/explode.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What index does the first item of an indexed array have?</p><details><summary>Show answer</summary><p>0</p></details></li><li><p>Which loop is designed to go through every item of an array?</p><details><summary>Show answer</summary><p>foreach</p></details></li><li><p>Which operator returns a default when a key is missing or null?</p><details><summary>Show answer</summary><p>??</p></details></li><li><p>Which function counts items in an array?</p><details><summary>Show answer</summary><p>count</p></details></li><li><p>Which function keeps only items matching a condition?</p><details><summary>Show answer</summary><p>array_filter</p></details></li><li><p>Which PHP 8 expression is a stricter, shorter switch that returns a value?</p><details><summary>Show answer</summary><p>match</p></details></li></ol></section>
+<p><strong>Learn more:</strong> <a href="https://www.php.net/manual/en/language.types.array.php" target="_blank" rel="noopener noreferrer">PHP manual: arrays</a> · <a href="https://www.php.net/manual/en/ref.array.php" target="_blank" rel="noopener noreferrer">PHP manual: array functions</a></p></div><p class="static-meta">Lesson 3 of 15 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/variables-strings/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Variables, data types, strings and numbers: everything you need to store and format data in PHP</a><a class="btn btn-solid btn-sm" href="/learn/php/functions-includes/">Functions, includes and organising a PHP site <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MySQL with PDO | PHP &amp; MySQL</title>
-    <meta name="description" content="PDO is PHP&#x27;s safe way to talk to MySQL/MariaDB." />
+    <title>MySQL with PDO: connecting safely, prepared statements,…</title>
+    <meta name="description" content="Almost every dynamic website stores its data in a database: products, customers, orders, students, bookings, payments. MySQL (and its close relative…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/php/mysql-pdo/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="MySQL with PDO | PHP &amp; MySQL" />
-    <meta property="og:description" content="PDO is PHP&#x27;s safe way to talk to MySQL/MariaDB." />
+    <meta property="og:title" content="MySQL with PDO: connecting safely, prepared statements,…" />
+    <meta property="og:description" content="Almost every dynamic website stores its data in a database: products, customers, orders, students, bookings, payments. MySQL (and its close relative…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/php/mysql-pdo/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="MySQL with PDO | PHP &amp; MySQL" />
-    <meta name="twitter:description" content="PDO is PHP&#x27;s safe way to talk to MySQL/MariaDB." />
+    <meta name="twitter:title" content="MySQL with PDO: connecting safely, prepared statements,…" />
+    <meta name="twitter:description" content="Almost every dynamic website stores its data in a database: products, customers, orders, students, bookings, payments. MySQL (and its close relative…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/php/mysql-pdo/#lesson","name":"MySQL with PDO","description":"PDO is PHP's safe way to talk to MySQL/MariaDB.","url":"https://marzleytechsolutions.co.ke/learn/php/mysql-pdo/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/php/#course","name":"PHP & MySQL","url":"https://marzleytechsolutions.co.ke/learn/php/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"PHP & MySQL","item":"https://marzleytechsolutions.co.ke/learn/php/"},{"@type":"ListItem","position":4,"name":"MySQL with PDO","item":"https://marzleytechsolutions.co.ke/learn/php/mysql-pdo/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/php/mysql-pdo/#lesson","name":"MySQL with PDO: connecting safely, prepared statements, fetching rows, inserting, transactions and error handling","description":"Almost every dynamic website stores its data in a database: products, customers, orders, students, bookings, payments. MySQL (and its close relative…","url":"https://marzleytechsolutions.co.ke/learn/php/mysql-pdo/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/php/#course","name":"PHP & MySQL","url":"https://marzleytechsolutions.co.ke/learn/php/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"PHP & MySQL","item":"https://marzleytechsolutions.co.ke/learn/php/"},{"@type":"ListItem","position":4,"name":"MySQL with PDO: connecting safely, prepared statements, fetching rows, inserting, transactions and error handling","item":"https://marzleytechsolutions.co.ke/learn/php/mysql-pdo/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,42 +36,184 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/php/">PHP &amp; MySQL</a> / <span>MySQL with PDO</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=php&amp;lesson=mysql-pdo"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Databases with PDO</h1>
-<p><strong>PDO</strong> is PHP's safe way to talk to MySQL/MariaDB.</p>
-<h2>Connect</h2>
-<figure class="static-code"><pre><code>&lt;?php
-$pdo = new PDO(
-    &#x27;mysql:host=localhost;dbname=shop;charset=utf8mb4&#x27;,
-    &#x27;shop_user&#x27;,
-    &#x27;secret-password&#x27;,
-    [PDO::ATTR_ERRMODE =&gt; PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE =&gt; PDO::FETCH_ASSOC]
-);</code></pre></figure>
-<h2>Read with a prepared statement</h2>
-<figure class="static-code"><pre><code>$stmt = $pdo-&gt;prepare(&#x27;SELECT id, name, price FROM products WHERE category = ? AND price &lt;= ?&#x27;);
-$stmt-&gt;execute([$_GET[&#x27;cat&#x27;] ?? &#x27;Electronics&#x27;, 5000]);
-foreach ($stmt-&gt;fetchAll() as $row) {
-    echo htmlspecialchars($row[&#x27;name&#x27;]) . &#x27; – KSh &#x27; . $row[&#x27;price&#x27;] . &#x27;&lt;br&gt;&#x27;;
-}</code></pre></figure>
-<p>The <code>?</code> placeholders are filled <strong>safely</strong>: even if someone types <code>&#x27;; DROP TABLE products; --</code> it's treated as plain text.</p>
-<h2>Insert, update, delete</h2>
-<figure class="static-code"><pre><code>$pdo-&gt;prepare(&#x27;INSERT INTO orders (customer, phone, total, created_at) VALUES (?, ?, ?, NOW())&#x27;)
-    -&gt;execute([$name, $phone, $total]);
-$newId = $pdo-&gt;lastInsertId();
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/php/">PHP &amp; MySQL</a> / <span>MySQL with PDO: connecting safely, prepared statements, fetching rows, inserting, transactions and error handling</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=php&amp;lesson=mysql-pdo"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>MySQL with PDO: connecting safely, prepared statements, fetching rows, inserting, transactions and error handling</h1>
+<p>Almost every dynamic website stores its data in a database: products, customers, orders, students, bookings, payments. <strong>MySQL</strong> (and its close relative <strong>MariaDB</strong>) is the database that comes with nearly every PHP hosting plan, and <strong>PDO (PHP Data Objects)</strong> is the modern, secure way for PHP to talk to it. This unit shows how to connect, run queries safely with <strong>prepared statements</strong>, display results, insert and update data, use transactions, and handle errors, with the security practices that stop SQL injection, one of the most damaging web attacks.</p>
+<p>You'll need the SQL subject's basics (SELECT, INSERT, UPDATE, DELETE, JOIN). The examples here use a small shop database.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>MySQL, MariaDB and phpMyAdmin</li><li>Creating a database and a dedicated user</li><li>Connecting with PDO, the right options and charset</li><li>Keeping credentials out of your code</li><li>SQL injection and why prepared statements prevent it</li><li>Fetching one row, many rows, a single value</li><li>Inserting, updating and deleting with prepared statements</li><li>lastInsertId, rowCount and transactions</li><li>Displaying results safely in HTML, pagination and search</li><li>Common errors</li></ul></div></aside>
+<h2>MySQL, MariaDB and phpMyAdmin</h2>
+<ul><li><strong>MySQL</strong> is the popular open-source database; <strong>MariaDB</strong> is a compatible fork used by many hosts. PHP code is the same for both.</li><li><strong>phpMyAdmin</strong> (in XAMPP and cPanel) is a web interface to create databases and tables, run SQL and import/export backups.</li></ul>
+<h2>Step 1: Create the database and a user</h2>
+<p>In phpMyAdmin's SQL tab (or the MySQL command line):</p>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">CREATE DATABASE shop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER &#x27;shop_app&#x27;@&#x27;localhost&#x27; IDENTIFIED BY &#x27;a-long-random-password&#x27;;
+GRANT SELECT, INSERT, UPDATE, DELETE ON shop.* TO &#x27;shop_app&#x27;@&#x27;localhost&#x27;;
 
-$pdo-&gt;prepare(&#x27;UPDATE orders SET status = ? WHERE id = ?&#x27;)-&gt;execute([&#x27;paid&#x27;, $newId]);</code></pre></figure>
-<h2>Transactions (all or nothing)</h2>
-<figure class="static-code"><pre><code>$pdo-&gt;beginTransaction();
+USE shop;
+CREATE TABLE products (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(120) NOT NULL,
+  category VARCHAR(60) NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  stock INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+INSERT INTO products (name, category, price, stock) VALUES
+ (&#x27;Laptop bag&#x27;, &#x27;Accessories&#x27;, 2500, 12),
+ (&#x27;USB flash 32GB&#x27;, &#x27;Storage&#x27;, 900, 40),
+ (&#x27;Wireless mouse&#x27;, &#x27;Accessories&#x27;, 1200, 25),
+ (&#x27;Bluetooth speaker&#x27;, &#x27;Electronics&#x27;, 3500, 6);</code></pre></figure>
+<ul><li><strong>utf8mb4</strong> stores every character, including emojis and all languages.</li><li><strong>A dedicated user</strong> with only the permissions the app needs: if the site is hacked, the damage is limited. Never connect your app as <code>root</code>.</li><li>On cPanel, create databases and users in <strong>MySQL Databases</strong>; names get a prefix like <code>cpaneluser_shop</code>.</li></ul>
+<h2>Step 2: Keep credentials out of your code</h2>
+<p>Create <code>config.php</code> <strong>outside the public web folder</strong> (e.g. above <code>public_html</code>):</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+// /home/youraccount/config/shop.php  (NOT inside public_html, never committed to Git)
+return [
+    &#x27;dsn&#x27;  =&gt; &#x27;mysql:host=localhost;dbname=shop;charset=utf8mb4&#x27;,
+    &#x27;user&#x27; =&gt; &#x27;shop_app&#x27;,
+    &#x27;pass&#x27; =&gt; &#x27;a-long-random-password&#x27;,
+];</code></pre></figure>
+<h2>Step 3: Connect with PDO</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+// db.php
+function db(): PDO {
+    static $pdo = null;
+    if ($pdo === null) {
+        $cfg = require __DIR__ . &#x27;/../config/shop.php&#x27;;
+        $pdo = new PDO($cfg[&#x27;dsn&#x27;], $cfg[&#x27;user&#x27;], $cfg[&#x27;pass&#x27;], [
+            PDO::ATTR_ERRMODE            =&gt; PDO::ERRMODE_EXCEPTION, // throw errors instead of failing silently
+            PDO::ATTR_DEFAULT_FETCH_MODE =&gt; PDO::FETCH_ASSOC,      // rows as [&#x27;name&#x27; =&gt; ...] arrays
+            PDO::ATTR_EMULATE_PREPARES   =&gt; false,                 // real prepared statements
+        ]);
+    }
+    return $pdo;
+}</code></pre></figure>
+<p>Include it where needed: <code>require __DIR__ . &#x27;/db.php&#x27;;</code> then call <code>db()</code>.</p>
+<h2>SQL injection: the attack prepared statements stop</h2>
+<p>Never put user input directly into SQL:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">// DANGEROUS – never do this
+$sql = &quot;SELECT * FROM products WHERE category = &#x27;&quot; . $_GET[&#x27;cat&#x27;] . &quot;&#x27;&quot;;</code></pre></figure>
+<p>A visitor can send <code>?cat=&#x27; OR &#x27;1&#x27;=&#x27;1</code> to dump every row, or worse inputs to read other tables (customers, admin password hashes) or delete data.</p>
+<p><strong>Prepared statements</strong> send the SQL and the values separately, so input is always treated as data, never as SQL code:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">$stmt = db()-&gt;prepare(&#x27;SELECT * FROM products WHERE category = ?&#x27;);
+$stmt-&gt;execute([$_GET[&#x27;cat&#x27;] ?? &#x27;&#x27;]);</code></pre></figure>
+<p>Named placeholders are clearer with many values:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">$stmt = db()-&gt;prepare(&#x27;SELECT * FROM products WHERE category = :cat AND price &lt;= :max&#x27;);
+$stmt-&gt;execute([&#x27;cat&#x27; =&gt; $cat, &#x27;max&#x27; =&gt; $max]);</code></pre></figure>
+<aside class="callout callout-warning"><p class="callout-title">Placeholders are for values only</p><div class="callout-body"><p>Table names, column names and <code>ORDER BY</code> directions can't be placeholders. If users choose a sort column, check it against an allow-list: <code>$sort = in_array($_GET[&#x27;sort&#x27;] ?? &#x27;&#x27;, [&#x27;name&#x27;, &#x27;price&#x27;], true) ? $_GET[&#x27;sort&#x27;] : &#x27;name&#x27;;</code>.</p></div></aside>
+<h2>Fetching data</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+// Many rows
+$stmt = db()-&gt;prepare(&#x27;SELECT id, name, price FROM products WHERE category = ? ORDER BY price&#x27;);
+$stmt-&gt;execute([&#x27;Accessories&#x27;]);
+$rows = $stmt-&gt;fetchAll();           // array of rows
+foreach ($rows as $p) {
+    echo $p[&#x27;name&#x27;] . &#x27; – KSh &#x27; . number_format($p[&#x27;price&#x27;]) . &quot;\n&quot;;
+}
+
+// One row
+$stmt = db()-&gt;prepare(&#x27;SELECT * FROM products WHERE id = ?&#x27;);
+$stmt-&gt;execute([$id]);
+$product = $stmt-&gt;fetch();           // array, or false if not found
+if (!$product) {
+    http_response_code(404);
+    exit(&#x27;Product not found&#x27;);
+}
+
+// One value
+$count = db()-&gt;query(&#x27;SELECT COUNT(*) FROM products&#x27;)-&gt;fetchColumn();</code></pre></figure>
+<p><code>query()</code> without placeholders is fine only for fixed SQL with no user input.</p>
+<h2>Displaying results safely</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;table&gt;
+  &lt;tr&gt;&lt;th&gt;Product&lt;/th&gt;&lt;th&gt;Price&lt;/th&gt;&lt;/tr&gt;
+  &lt;?php foreach ($rows as $p): ?&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;?= htmlspecialchars($p[&#x27;name&#x27;]) ?&gt;&lt;/td&gt;
+      &lt;td&gt;KSh &lt;?= number_format($p[&#x27;price&#x27;]) ?&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;?php endforeach; ?&gt;
+&lt;/table&gt;</code></pre></figure>
+<p>Data from the database may originally have come from users, so <strong>escape it</strong> when printing (XSS protection).</p>
+<h2>Inserting, updating, deleting</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+// INSERT
+$stmt = db()-&gt;prepare(&#x27;INSERT INTO products (name, category, price, stock) VALUES (?, ?, ?, ?)&#x27;);
+$stmt-&gt;execute([$name, $category, $price, $stock]);
+$newId = db()-&gt;lastInsertId();
+
+// UPDATE
+$stmt = db()-&gt;prepare(&#x27;UPDATE products SET price = ?, stock = ? WHERE id = ?&#x27;);
+$stmt-&gt;execute([$price, $stock, $id]);
+echo $stmt-&gt;rowCount() . &quot; row(s) updated&quot;;
+
+// DELETE
+$stmt = db()-&gt;prepare(&#x27;DELETE FROM products WHERE id = ?&#x27;);
+$stmt-&gt;execute([$id]);</code></pre></figure>
+<p>Validate input before these (see the forms lesson), and protect admin actions with a login and CSRF tokens.</p>
+<h2>Search and pagination</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+$q = trim($_GET[&#x27;q&#x27;] ?? &#x27;&#x27;);
+$page = max(1, (int)($_GET[&#x27;page&#x27;] ?? 1));
+$perPage = 20;
+$offset = ($page - 1) * $perPage;
+
+$stmt = db()-&gt;prepare(&#x27;SELECT id, name, price FROM products
+                       WHERE name LIKE :q ORDER BY name LIMIT :lim OFFSET :off&#x27;);
+$stmt-&gt;bindValue(&#x27;:q&#x27;, &#x27;%&#x27; . $q . &#x27;%&#x27;);
+$stmt-&gt;bindValue(&#x27;:lim&#x27;, $perPage, PDO::PARAM_INT);
+$stmt-&gt;bindValue(&#x27;:off&#x27;, $offset, PDO::PARAM_INT);
+$stmt-&gt;execute();
+$results = $stmt-&gt;fetchAll();</code></pre></figure>
+<p><code>bindValue(..., PDO::PARAM_INT)</code> is needed for LIMIT/OFFSET values.</p>
+<h2>Transactions</h2>
+<p>When several changes must succeed or fail together (an order and its stock reduction, a payment and its receipt):</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+$pdo = db();
 try {
-    $pdo-&gt;prepare(&#x27;UPDATE stock SET qty = qty - ? WHERE product_id = ?&#x27;)-&gt;execute([2, 5]);
-    $pdo-&gt;prepare(&#x27;INSERT INTO sales (product_id, qty) VALUES (?, ?)&#x27;)-&gt;execute([5, 2]);
+    $pdo-&gt;beginTransaction();
+
+    $stmt = $pdo-&gt;prepare(&#x27;UPDATE products SET stock = stock - ? WHERE id = ? AND stock &gt;= ?&#x27;);
+    $stmt-&gt;execute([$qty, $productId, $qty]);
+    if ($stmt-&gt;rowCount() === 0) {
+        throw new RuntimeException(&#x27;Not enough stock&#x27;);
+    }
+
+    $stmt = $pdo-&gt;prepare(&#x27;INSERT INTO orders (product_id, qty, customer_phone) VALUES (?, ?, ?)&#x27;);
+    $stmt-&gt;execute([$productId, $qty, $phone]);
+
     $pdo-&gt;commit();
 } catch (Throwable $e) {
     $pdo-&gt;rollBack();
-    throw $e;
+    error_log($e-&gt;getMessage());
+    echo &#x27;Sorry, we could not place your order.&#x27;;
 }</code></pre></figure>
-<p>Practise your SQL in the <strong>SQL track</strong> of this hub; the queries are the same.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What placeholder symbol do simple PDO prepared statements use?</p><details><summary>Show answer</summary><p>?</p></details></li><li><p>Which PDO method gets the ID of the row you just inserted?</p><details><summary>Show answer</summary><p>lastInsertId</p></details></li><li><p>What do you call "all or nothing" database changes?</p><details><summary>Show answer</summary><p>transaction</p></details></li></ol></section></div><p class="static-meta">Lesson 7 of 13 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/forms-security/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Forms and security</a><a class="btn btn-solid btn-sm" href="/learn/php/crud-app/">Build a CRUD app with PHP and MySQL (create, read, update, delete) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<p>The <code>AND stock &gt;= ?</code> condition makes the stock check and update happen in one step, so two customers can't buy the last item at the same time.</p>
+<h2>Practise the PDO API with SQLite</h2>
+<p>The Run button can't reach a MySQL server, but PHP's built-in <strong>SQLite</strong> driver uses exactly the same PDO methods. Try it on your own computer with <code>php file.php</code> (SQLite support is included in most PHP installs):</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+$pdo = new PDO(&#x27;sqlite::memory:&#x27;, null, null, [
+    PDO::ATTR_ERRMODE =&gt; PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE =&gt; PDO::FETCH_ASSOC,
+]);
+$pdo-&gt;exec(&#x27;CREATE TABLE products (id INTEGER PRIMARY KEY, name TEXT, price INTEGER)&#x27;);
+$ins = $pdo-&gt;prepare(&#x27;INSERT INTO products (name, price) VALUES (?, ?)&#x27;);
+foreach ([[&#x27;Laptop bag&#x27;, 2500], [&#x27;USB flash&#x27;, 900], [&#x27;Mouse&#x27;, 1200]] as $p) {
+    $ins-&gt;execute($p);
+}
+$stmt = $pdo-&gt;prepare(&#x27;SELECT name, price FROM products WHERE price &lt; ? ORDER BY price&#x27;);
+$stmt-&gt;execute([2000]);
+foreach ($stmt as $row) {
+    echo $row[&#x27;name&#x27;] . &#x27;: KSh &#x27; . number_format($row[&#x27;price&#x27;]) . &quot;\n&quot;;
+}</code></pre></figure>
+<p>Only the DSN changes when you switch to MySQL.</p>
+<h2>Common errors</h2>
+<div class="static-table"><table><thead><tr><th>Error</th><th>Cause</th></tr></thead><tbody><tr><td><code>SQLSTATE[HY000] [1045] Access denied for user</code></td><td>Wrong username/password, or the user lacks access to that database</td></tr><tr><td><code>SQLSTATE[HY000] [2002] Connection refused / No such file</code></td><td>MySQL not running, or wrong host (try <code>127.0.0.1</code> vs <code>localhost</code>)</td></tr><tr><td><code>SQLSTATE[42S02] Base table or view not found</code></td><td>Table name typo or wrong database</td></tr><tr><td><code>SQLSTATE[42S22] Unknown column</code></td><td>Column name typo</td></tr><tr><td><code>SQLSTATE[23000] Integrity constraint violation: Duplicate entry</code></td><td>Inserting a duplicate value in a UNIQUE column</td></tr><tr><td><code>Invalid parameter number</code></td><td>Number of placeholders doesn't match the values given</td></tr></tbody></table></div>
+<p>On a live site, log errors (<code>error_log</code>) and show users a friendly message; never display raw database errors (they leak table names and paths).</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A product page uses <code>$id = $_GET[&#x27;id&#x27;]; $row = $pdo-&gt;query(&quot;SELECT * FROM products WHERE id = $id&quot;)-&gt;fetch();</code>. Name two problems and rewrite it safely.</span><em>Show answer</em></summary><div class="callout-body"><p>It's vulnerable to SQL injection (e.g. <code>id=1 OR 1=1</code>), and it doesn't handle a missing product. Safe version: <code>$stmt = $pdo-&gt;prepare(&#x27;SELECT * FROM products WHERE id = ?&#x27;); $stmt-&gt;execute([(int)($_GET[&#x27;id&#x27;] ?? 0)]); $row = $stmt-&gt;fetch(); if (!$row) { http_response_code(404); exit(&#x27;Not found&#x27;); }</code>.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Create a utf8mb4 database and a least-privilege user; keep credentials in a config file outside the web root.</li><li>Connect with PDO using ERRMODE_EXCEPTION, FETCH_ASSOC and real prepared statements.</li><li>Always use prepared statements (<code>?</code> or <code>:name</code>) for values; allow-list column names.</li><li>fetchAll, fetch and fetchColumn read data; execute with values to insert, update, delete; lastInsertId and rowCount report results.</li><li>Escape output with htmlspecialchars, use transactions for multi-step changes, and log errors instead of displaying them.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does PDO stand for?</p><details><summary>Show answer</summary><p>PHP Data Objects</p></details></li><li><p>What stops SQL injection in PDO? (two words)</p><details><summary>Show answer</summary><p>prepared statements</p></details></li><li><p>Which fetch method returns all rows?</p><details><summary>Show answer</summary><p>fetchAll</p></details></li><li><p>Which method returns the ID of the row just inserted?</p><details><summary>Show answer</summary><p>lastInsertId</p></details></li><li><p>Which character set should a modern MySQL database use?</p><details><summary>Show answer</summary><p>utf8mb4</p></details></li><li><p>Can a table name be a placeholder in a prepared statement? (yes/no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section>
+<p><strong>Learn more:</strong> <a href="https://phptherightway.com/#databases" target="_blank" rel="noopener noreferrer">PHP: The Right Way – databases</a> · <a href="https://www.php.net/manual/en/book.pdo.php" target="_blank" rel="noopener noreferrer">PHP manual: PDO</a></p></div><p class="static-meta">Lesson 7 of 15 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/forms-security/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Forms and security: GET and POST, validation, XSS, CSRF, sending email and safe form handling</a><a class="btn btn-solid btn-sm" href="/learn/php/crud-app/">Build a CRUD app with PHP and MySQL (create, read, update, delete) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

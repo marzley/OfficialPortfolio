@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Composer, packages and frameworks: from plain PHP to Laravel</title>
+    <meta name="description" content="As projects grow, writing everything from scratch becomes slow and risky: routing URLs, validating forms, sending emails, handling logins, protecting…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/php/composer-frameworks/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Composer, packages and frameworks: from plain PHP to Laravel" />
+    <meta property="og:description" content="As projects grow, writing everything from scratch becomes slow and risky: routing URLs, validating forms, sending emails, handling logins, protecting…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/php/composer-frameworks/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Composer, packages and frameworks: from plain PHP to Laravel" />
+    <meta name="twitter:description" content="As projects grow, writing everything from scratch becomes slow and risky: routing URLs, validating forms, sending emails, handling logins, protecting…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/php/composer-frameworks/#lesson","name":"Composer, packages and frameworks: from plain PHP to Laravel","description":"As projects grow, writing everything from scratch becomes slow and risky: routing URLs, validating forms, sending emails, handling logins, protecting…","url":"https://marzleytechsolutions.co.ke/learn/php/composer-frameworks/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/php/#course","name":"PHP & MySQL","url":"https://marzleytechsolutions.co.ke/learn/php/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"PHP & MySQL","item":"https://marzleytechsolutions.co.ke/learn/php/"},{"@type":"ListItem","position":4,"name":"Composer, packages and frameworks: from plain PHP to Laravel","item":"https://marzleytechsolutions.co.ke/learn/php/composer-frameworks/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=19f64783be" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/php/">PHP &amp; MySQL</a> / <span>Composer, packages and frameworks: from plain PHP to Laravel</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=php&amp;lesson=composer-frameworks"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Composer, packages and frameworks: from plain PHP to Laravel</h1>
+<p>As projects grow, writing everything from scratch becomes slow and risky: routing URLs, validating forms, sending emails, handling logins, protecting against CSRF, talking to the database. Professional PHP developers use <strong>Composer</strong> to install tested <strong>packages</strong> and often build on a <strong>framework</strong> such as <strong>Laravel</strong> or <strong>Symfony</strong>, which provides a solid structure and ready-made, secure features. Laravel in particular is very popular with Kenyan and international employers and freelance clients.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>What Composer is and why every modern PHP project uses it</li><li>composer.json, composer.lock and the vendor folder</li><li>Autoloading your own classes (PSR-4)</li><li>Useful packages: PHPMailer, Guzzle, Dotenv, Carbon</li><li>What a framework gives you, and MVC</li><li>Laravel's structure: routes, controllers, Blade views, Eloquent models, migrations</li><li>Building a tiny Laravel feature step by step</li><li>When to use plain PHP, WordPress or a framework</li></ul></div></aside>
+<h2>Composer</h2>
+<p><strong>Composer</strong> is PHP's dependency manager: you list the packages your project needs, and it downloads them (and the packages <em>they</em> need) into a <code>vendor/</code> folder, plus an autoloader so you can use them with one <code>require</code>.</p>
+<p>Install it from getcomposer.org (Windows installer, or the command-line installer on macOS/Linux). Then in your project folder:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">composer init                         # create composer.json interactively
+composer require phpmailer/phpmailer  # add a package
+composer require vlucas/phpdotenv
+composer install                      # install everything listed (e.g. after cloning a project)
+composer update                       # update packages within allowed versions</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>File/folder</th><th>Purpose</th><th>Commit to Git?</th></tr></thead><tbody><tr><td><code>composer.json</code></td><td>The packages you asked for and version ranges</td><td>Yes</td></tr><tr><td><code>composer.lock</code></td><td>The exact versions installed</td><td>Yes (so everyone gets the same versions)</td></tr><tr><td><code>vendor/</code></td><td>Downloaded code</td><td><strong>No</strong> (add to .gitignore; recreate with <code>composer install</code>)</td></tr></tbody></table></div>
+<p>Use packages at the top of your script:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+require __DIR__ . &#x27;/vendor/autoload.php&#x27;;
+
+use PHPMailer\PHPMailer\PHPMailer;
+$mail = new PHPMailer(true);</code></pre></figure>
+<p>Find packages on <strong>packagist.org</strong>. Prefer well-maintained ones with many downloads, recent releases and good documentation.</p>
+<h2>Autoloading your own classes</h2>
+<p>Tell Composer where your classes live (PSR-4 standard), then never write <code>require</code> for each class file again:</p>
+<figure class="static-code"><figcaption>JSON</figcaption><pre><code class="language-json">{
+    &quot;autoload&quot;: {
+        &quot;psr-4&quot;: { &quot;App\\&quot;: &quot;src/&quot; }
+    }
+}</code></pre></figure>
+<p>Run <code>composer dump-autoload</code>. Now <code>src/Services/Invoice.php</code> with <code>namespace App\Services; class Invoice {}</code> loads automatically when you write <code>new App\Services\Invoice()</code>.</p>
+<h2>Useful packages</h2>
+<div class="static-table"><table><thead><tr><th>Package</th><th>What it does</th></tr></thead><tbody><tr><td><code>phpmailer/phpmailer</code> or <code>symfony/mailer</code></td><td>Send email over SMTP</td></tr><tr><td><code>guzzlehttp/guzzle</code></td><td>Call APIs (e.g. M-Pesa, SMS gateways) more easily than raw cURL</td></tr><tr><td><code>vlucas/phpdotenv</code></td><td>Load secrets from a <code>.env</code> file into environment variables</td></tr><tr><td><code>nesbot/carbon</code></td><td>Friendly date handling ("3 days ago", adding months)</td></tr><tr><td><code>dompdf/dompdf</code></td><td>Generate PDF invoices and receipts from HTML</td></tr><tr><td><code>phpoffice/phpspreadsheet</code></td><td>Read and write Excel files</td></tr><tr><td><code>phpunit/phpunit</code></td><td>Automated tests</td></tr></tbody></table></div>
+<h2>What a framework gives you</h2>
+<p>A framework is a ready-made structure and toolkit:</p>
+<div class="static-table"><table><thead><tr><th>Feature</th><th>Plain PHP</th><th>Framework (e.g. Laravel)</th></tr></thead><tbody><tr><td>URL routing</td><td>Many separate .php files</td><td>Clean routes like <code>/products/42</code></td></tr><tr><td>Database</td><td>Write PDO code by hand</td><td>ORM (Eloquent), query builder, migrations</td></tr><tr><td>Security</td><td>You must remember CSRF, escaping, hashing</td><td>Built in by default</td></tr><tr><td>Validation</td><td>Write your own</td><td>One line of rules</td></tr><tr><td>Logins</td><td>Build from scratch</td><td>Starter kits</td></tr><tr><td>Email, queues, scheduling, caching, file storage</td><td>Build or find packages</td><td>Included</td></tr><tr><td>Structure</td><td>Whatever you invent</td><td>Conventions every Laravel developer knows</td></tr></tbody></table></div>
+<p>Most frameworks follow <strong>MVC</strong>:</p>
+<ul><li><strong>Model</strong>: data and business rules (a <code>Product</code> with its database table).</li><li><strong>View</strong>: what the user sees (HTML templates).</li><li><strong>Controller</strong>: receives the request, uses models, returns a view or JSON.</li></ul>
+<h2>Laravel in practice</h2>
+<p>Create a project (needs PHP and Composer):</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">composer create-project laravel/laravel shop
+cd shop
+php artisan serve          # http://127.0.0.1:8000</code></pre></figure>
+<p>Key folders:</p>
+<div class="static-table"><table><thead><tr><th>Path</th><th>Contains</th></tr></thead><tbody><tr><td><code>routes/web.php</code></td><td>URL routes for web pages</td></tr><tr><td><code>app/Http/Controllers/</code></td><td>Controllers</td></tr><tr><td><code>app/Models/</code></td><td>Eloquent models</td></tr><tr><td><code>resources/views/</code></td><td>Blade templates</td></tr><tr><td><code>database/migrations/</code></td><td>Table definitions as code</td></tr><tr><td><code>.env</code></td><td>Settings and secrets (never commit)</td></tr></tbody></table></div>
+<h3>A tiny feature: list and add products</h3>
+<p><strong>1. Migration</strong> (<code>php artisan make:model Product -mc</code> creates model, migration and controller):</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">// database/migrations/xxxx_create_products_table.php
+Schema::create(&#x27;products&#x27;, function (Blueprint $table) {
+    $table-&gt;id();
+    $table-&gt;string(&#x27;name&#x27;);
+    $table-&gt;string(&#x27;category&#x27;);
+    $table-&gt;unsignedInteger(&#x27;price&#x27;);
+    $table-&gt;timestamps();
+});</code></pre></figure>
+<p>Run <code>php artisan migrate</code> to create the table.</p>
+<p><strong>2. Model</strong>:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">// app/Models/Product.php
+class Product extends Model
+{
+    protected $fillable = [&#x27;name&#x27;, &#x27;category&#x27;, &#x27;price&#x27;];
+}</code></pre></figure>
+<p><strong>3. Routes</strong>:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">// routes/web.php
+use App\Http\Controllers\ProductController;
+Route::get(&#x27;/products&#x27;, [ProductController::class, &#x27;index&#x27;]);
+Route::post(&#x27;/products&#x27;, [ProductController::class, &#x27;store&#x27;]);</code></pre></figure>
+<p><strong>4. Controller</strong>:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">// app/Http/Controllers/ProductController.php
+class ProductController extends Controller
+{
+    public function index()
+    {
+        $products = Product::orderBy(&#x27;name&#x27;)-&gt;paginate(20);
+        return view(&#x27;products.index&#x27;, [&#x27;products&#x27; =&gt; $products]);
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request-&gt;validate([
+            &#x27;name&#x27; =&gt; &#x27;required|max:120&#x27;,
+            &#x27;category&#x27; =&gt; &#x27;required|in:Accessories,Storage,Electronics&#x27;,
+            &#x27;price&#x27; =&gt; &#x27;required|integer|min:1&#x27;,
+        ]);
+        Product::create($data);
+        return redirect(&#x27;/products&#x27;)-&gt;with(&#x27;status&#x27;, &#x27;Product added&#x27;);
+    }
+}</code></pre></figure>
+<p><strong>5. Blade view</strong>:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">{{-- resources/views/products/index.blade.php --}}
+@if (session(&#x27;status&#x27;)) &lt;p&gt;{{ session(&#x27;status&#x27;) }}&lt;/p&gt; @endif
+&lt;ul&gt;
+  @foreach ($products as $p)
+    &lt;li&gt;{{ $p-&gt;name }} – KSh {{ number_format($p-&gt;price) }}&lt;/li&gt;
+  @endforeach
+&lt;/ul&gt;
+{{ $products-&gt;links() }}
+&lt;form method=&quot;post&quot; action=&quot;/products&quot;&gt;
+  @csrf
+  &lt;input name=&quot;name&quot; value=&quot;{{ old(&#x27;name&#x27;) }}&quot;&gt;
+  &lt;select name=&quot;category&quot;&gt;&lt;option&gt;Accessories&lt;/option&gt;&lt;option&gt;Storage&lt;/option&gt;&lt;option&gt;Electronics&lt;/option&gt;&lt;/select&gt;
+  &lt;input name=&quot;price&quot; type=&quot;number&quot;&gt;
+  &lt;button&gt;Add&lt;/button&gt;
+&lt;/form&gt;</code></pre></figure>
+<p>Notice what Laravel did for you: <code>{{ }}</code> escapes output (XSS protection), <code>@csrf</code> adds a CSRF token, <code>validate()</code> checks input and returns errors, Eloquent uses prepared statements, and pagination is one method.</p>
+<h2>Plain PHP, WordPress or a framework?</h2>
+<div class="static-table"><table><thead><tr><th>Project</th><th>Good choice</th></tr></thead><tbody><tr><td>Learning PHP, tiny scripts, a contact form</td><td>Plain PHP</td></tr><tr><td>Brochure websites, blogs, simple shops, client edits content themselves</td><td><strong>WordPress</strong> (+ WooCommerce)</td></tr><tr><td>Custom systems: portals, booking, school/SACCO management, APIs, SaaS</td><td><strong>Laravel</strong> (or Symfony)</td></tr></tbody></table></div>
+<p>Learn plain PHP first (this subject) so you understand what frameworks do for you, then pick up Laravel with its official documentation and free video courses.</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A client wants a school fees portal with parent logins, M-Pesa payments, SMS reminders, PDF receipts and an admin dashboard. Why might Laravel be a better choice than writing everything in plain PHP files?</span><em>Show answer</em></summary><div class="callout-body"><p>Laravel provides secure authentication, validation, CSRF protection, an ORM with migrations, queues and scheduling for SMS reminders, mail and notification systems, and a clear structure; packages handle PDFs and HTTP calls to M-Pesa. The result is faster to build, safer, and easier for another developer to maintain.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Composer installs packages into <code>vendor/</code> from <code>composer.json</code>; commit composer.json and composer.lock, not vendor.</li><li>PSR-4 autoloading loads your own classes automatically.</li><li>Useful packages: PHPMailer, Guzzle, Dotenv, Carbon, Dompdf, PhpSpreadsheet, PHPUnit.</li><li>Frameworks provide routing, ORM, validation, security and structure (MVC).</li><li>Laravel: routes → controllers → Eloquent models → Blade views, with migrations and built-in protections.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is PHP's dependency manager called?</p><details><summary>Show answer</summary><p>Composer</p></details></li><li><p>Which folder holds downloaded packages (and should not be committed)?</p><details><summary>Show answer</summary><p>vendor</p></details></li><li><p>Which website lists PHP packages for Composer?</p><details><summary>Show answer</summary><p>packagist</p></details></li><li><p>What does the M in MVC stand for?</p><details><summary>Show answer</summary><p>Model</p></details></li><li><p>Which Laravel command creates database tables from migrations? (three words)</p><details><summary>Show answer</summary><p>php artisan migrate</p></details></li><li><p>Which Blade directive adds a CSRF token to a form?</p><details><summary>Show answer</summary><p>@csrf</p></details></li></ol></section>
+<p><strong>Learn more:</strong> <a href="https://getcomposer.org/doc/" target="_blank" rel="noopener noreferrer">Composer documentation</a> · <a href="https://laravel.com/docs" target="_blank" rel="noopener noreferrer">Laravel documentation</a></p></div><p class="static-meta">Lesson 12 of 15 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/json-api/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Build a JSON API with PHP</a><a class="btn btn-solid btn-sm" href="/learn/php/mpesa-integration/">M-Pesa STK push with PHP: Daraja setup, access tokens, STK push, callbacks, verification and going live <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>
