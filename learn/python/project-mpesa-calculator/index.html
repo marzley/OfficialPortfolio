@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Project: M-Pesa charges calculator | Python</title>
-    <meta name="description" content="Build a program that works out a fee from a tariff table, a pattern used in fintech and billing systems. The bands below are example numbers for…" />
+    <title>Project: a transaction charges calculator with tariff…</title>
+    <meta name="description" content="Fintech and billing systems constantly look up fees from tariff tables : mobile money charges, bank fees, delivery prices by distance, electricity…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/python/project-mpesa-calculator/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Project: M-Pesa charges calculator | Python" />
-    <meta property="og:description" content="Build a program that works out a fee from a tariff table, a pattern used in fintech and billing systems. The bands below are example numbers for…" />
+    <meta property="og:title" content="Project: a transaction charges calculator with tariff…" />
+    <meta property="og:description" content="Fintech and billing systems constantly look up fees from tariff tables : mobile money charges, bank fees, delivery prices by distance, electricity…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/python/project-mpesa-calculator/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Project: M-Pesa charges calculator | Python" />
-    <meta name="twitter:description" content="Build a program that works out a fee from a tariff table, a pattern used in fintech and billing systems. The bands below are example numbers for…" />
+    <meta name="twitter:title" content="Project: a transaction charges calculator with tariff…" />
+    <meta name="twitter:description" content="Fintech and billing systems constantly look up fees from tariff tables : mobile money charges, bank fees, delivery prices by distance, electricity…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/python/project-mpesa-calculator/#lesson","name":"Project: M-Pesa charges calculator","description":"Build a program that works out a fee from a tariff table, a pattern used in fintech and billing systems. The bands below are example numbers for…","url":"https://marzleytechsolutions.co.ke/learn/python/project-mpesa-calculator/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/python/#course","name":"Python","url":"https://marzleytechsolutions.co.ke/learn/python/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Python","item":"https://marzleytechsolutions.co.ke/learn/python/"},{"@type":"ListItem","position":4,"name":"Project: M-Pesa charges calculator","item":"https://marzleytechsolutions.co.ke/learn/python/project-mpesa-calculator/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/python/project-mpesa-calculator/#lesson","name":"Project: a transaction charges calculator with tariff bands, validation and reports","description":"Fintech and billing systems constantly look up fees from tariff tables : mobile money charges, bank fees, delivery prices by distance, electricity…","url":"https://marzleytechsolutions.co.ke/learn/python/project-mpesa-calculator/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/python/#course","name":"Python","url":"https://marzleytechsolutions.co.ke/learn/python/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Python","item":"https://marzleytechsolutions.co.ke/learn/python/"},{"@type":"ListItem","position":4,"name":"Project: a transaction charges calculator with tariff bands, validation and reports","item":"https://marzleytechsolutions.co.ke/learn/python/project-mpesa-calculator/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,11 +36,14 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/python/">Python</a> / <span>Project: M-Pesa charges calculator</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=project-mpesa-calculator"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Project: a transaction charges calculator</h1>
-<p>Build a program that works out a fee from a tariff table, a pattern used in fintech and billing systems.</p>
-<blockquote><p>The bands below are <strong>example numbers for practice</strong>, not Safaricom's current tariff. Check the official M-Pesa tariff before using real values.</p></blockquote>
-<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">BANDS = [          # (maximum amount, fee)
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/python/">Python</a> / <span>Project: a transaction charges calculator with tariff bands, validation and reports</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=project-mpesa-calculator"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Project: a transaction charges calculator with tariff bands, validation and reports</h1>
+<p>Fintech and billing systems constantly look up fees from <strong>tariff tables</strong>: mobile money charges, bank fees, delivery prices by distance, electricity tariffs, parking fees. In this project you'll build a complete charges calculator in stages: a tariff lookup, validation, a "total deducted" report, comparing ways to split a transfer, loading tariffs from JSON, and tests. It practises lists, tuples, functions, loops, dictionaries, exceptions and files.</p>
+<aside class="callout callout-warning"><p class="callout-title">Example numbers only</p><div class="callout-body"><p>The tariff bands in this project are <strong>example numbers for practice</strong>, not Safaricom's (or any provider's) current charges. Real tariffs change; always check the official, current tariff before using real values in an app.</p></div></aside>
+<aside class="callout callout-note"><p class="callout-title">What you will practise</p><div class="callout-body"><ul><li>Representing a tariff table as data</li><li>Looking up a band with a loop (and with <code>bisect</code>)</li><li>Validating amounts and raising exceptions</li><li>Formatting money and reports with f-strings</li><li>Comparing options (one transfer vs two)</li><li>Loading configuration from JSON</li><li>Writing simple tests with <code>assert</code></li></ul></div></aside>
+<h2>Step 1: The tariff as data</h2>
+<p>Each band has a <strong>maximum amount</strong> and a <strong>fee</strong>. Bands are sorted by maximum:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">BANDS = [          # (maximum amount, fee): EXAMPLE values for practice
     (100, 0),
     (500, 7),
     (1000, 13),
@@ -54,18 +57,156 @@
     (20000, 105),
     (250000, 108),
 ]
+MIN_AMOUNT, MAX_AMOUNT = 1, 250000
 
 def fee_for(amount):
-    if amount &lt; 1 or amount &gt; 250000:
-        raise ValueError(&quot;Amount must be between 1 and 250,000&quot;)
+    &quot;&quot;&quot;Return the fee for sending `amount` KSh, using the example BANDS.&quot;&quot;&quot;
+    if not isinstance(amount, int):
+        raise TypeError(&quot;Amount must be a whole number of shillings&quot;)
+    if amount &lt; MIN_AMOUNT or amount &gt; MAX_AMOUNT:
+        raise ValueError(f&quot;Amount must be between {MIN_AMOUNT:,} and {MAX_AMOUNT:,}&quot;)
     for maximum, fee in BANDS:
         if amount &lt;= maximum:
             return fee
 
-for amount in [50, 750, 2600, 12000, 70000]:
-    print(f&quot;Send KSh {amount:,} -&gt; fee KSh {fee_for(amount)}&quot;)</code></pre></figure>
-<h2>Extend it</h2>
-<ol><li>Ask for the amount with <code>input()</code> and handle bad input with try/except.</li><li>Show "total deducted" (amount + fee).</li><li>Find the cheapest way to send KSh 30,000 in two transactions.</li><li>Put the bands in a dictionary loaded from JSON.</li></ol></div><p class="static-meta">Lesson 18 of 19 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/classes-oop/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Classes and objects</a><a class="btn btn-solid btn-sm" href="/learn/python/project-grade-report/">Project: a school grade report system <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+for amount in [50, 100, 101, 750, 2600, 12000, 70000]:
+    print(f&quot;Send KSh {amount:&gt;7,} -&gt; fee KSh {fee_for(amount)}&quot;)</code></pre></figure>
+<p>Why store bands as <strong>data</strong> instead of a long chain of <code>if/elif</code>? When the tariff changes, you edit the table, not the logic. That's how real billing systems work (often with the table in a database).</p>
+<h2>Step 2: Boundary testing</h2>
+<p>Bugs hide at the edges of bands (100 vs 101). Test them:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">BANDS = [(100, 0), (500, 7), (1000, 13), (1500, 23), (2500, 33), (3500, 53), (5000, 57), (7500, 78), (10000, 90), (15000, 100), (20000, 105), (250000, 108)]
+
+def fee_for(amount):
+    if amount &lt; 1 or amount &gt; 250000:
+        raise ValueError(&quot;Amount out of range&quot;)
+    for maximum, fee in BANDS:
+        if amount &lt;= maximum:
+            return fee
+
+assert fee_for(1) == 0
+assert fee_for(100) == 0
+assert fee_for(101) == 7
+assert fee_for(500) == 7
+assert fee_for(501) == 13
+assert fee_for(250000) == 108
+for bad in (0, -5, 250001):
+    try:
+        fee_for(bad)
+        raise AssertionError(f&quot;{bad} should have failed&quot;)
+    except ValueError:
+        pass
+print(&quot;All boundary tests passed&quot;)</code></pre></figure>
+<p><code>assert condition</code> stops the program with an <code>AssertionError</code> if the condition is false: a simple way to test. (Professional projects use <code>pytest</code>.)</p>
+<h2>Step 3: A transaction report</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">BANDS = [(100, 0), (500, 7), (1000, 13), (1500, 23), (2500, 33), (3500, 53), (5000, 57), (7500, 78), (10000, 90), (15000, 100), (20000, 105), (250000, 108)]
+
+def fee_for(amount):
+    for maximum, fee in BANDS:
+        if amount &lt;= maximum:
+            return fee
+    raise ValueError(&quot;Amount out of range&quot;)
+
+def report(transactions):
+    print(f&quot;{&#x27;#&#x27;:&lt;3}{&#x27;Recipient&#x27;:&lt;14}{&#x27;Amount&#x27;:&gt;10}{&#x27;Fee&#x27;:&gt;7}{&#x27;Total&#x27;:&gt;10}&quot;)
+    print(&quot;-&quot; * 44)
+    totals = {&quot;amount&quot;: 0, &quot;fee&quot;: 0}
+    for i, (name, amount) in enumerate(transactions, start=1):
+        fee = fee_for(amount)
+        totals[&quot;amount&quot;] += amount
+        totals[&quot;fee&quot;] += fee
+        print(f&quot;{i:&lt;3}{name:&lt;14}{amount:&gt;10,}{fee:&gt;7,}{amount + fee:&gt;10,}&quot;)
+    print(&quot;-&quot; * 44)
+    grand = totals[&quot;amount&quot;] + totals[&quot;fee&quot;]
+    print(f&quot;{&#x27;TOTAL&#x27;:&lt;17}{totals[&#x27;amount&#x27;]:&gt;10,}{totals[&#x27;fee&#x27;]:&gt;7,}{grand:&gt;10,}&quot;)
+    print(f&quot;Fees were {totals[&#x27;fee&#x27;] / totals[&#x27;amount&#x27;]:.2%} of the money sent&quot;)
+
+report([(&quot;Mum&quot;, 3000), (&quot;Landlord&quot;, 15000), (&quot;Chama&quot;, 2500), (&quot;Juma&quot;, 450)])</code></pre></figure>
+<h2>Step 4: Is splitting a transfer cheaper?</h2>
+<p>Should you send KSh 30,000 in one go or split it? Compare every split in steps of 500:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">BANDS = [(100, 0), (500, 7), (1000, 13), (1500, 23), (2500, 33), (3500, 53), (5000, 57), (7500, 78), (10000, 90), (15000, 100), (20000, 105), (250000, 108)]
+
+def fee_for(amount):
+    for maximum, fee in BANDS:
+        if amount &lt;= maximum:
+            return fee
+    raise ValueError(&quot;Amount out of range&quot;)
+
+def best_split(total, step=500):
+    best = (fee_for(total), total, 0)          # (total fees, part1, part2)
+    for part1 in range(step, total, step):
+        part2 = total - part1
+        fees = fee_for(part1) + fee_for(part2)
+        if fees &lt; best[0]:
+            best = (fees, part1, part2)
+    return best
+
+for total in [3000, 8000, 30000]:
+    fees, a, b = best_split(total)
+    if b == 0:
+        print(f&quot;KSh {total:,}: send in one transaction (fee KSh {fees})&quot;)
+    else:
+        print(f&quot;KSh {total:,}: split {a:,} + {b:,} (fees KSh {fees}) vs one transfer (KSh {fee_for(total)})&quot;)</code></pre></figure>
+<p>Run it: with these example bands, splitting is cheaper for some amounts (like KSh 3,000 and 8,000) but not for KSh 30,000, where one transfer in the top band costs least. Results depend entirely on the tariff, which is exactly why writing code to check beats guessing. (Some providers also limit how much you can send per transaction or per day, which affects real decisions.)</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why does this program use a "best so far" variable while looping?</span><em>Show answer</em></summary><div class="callout-body"><p>It's the classic way to find a minimum (or maximum) among many options: start with one option (sending everything at once), then compare every alternative and keep the cheapest found so far. At the end, "best so far" is the best overall.</p></div></details>
+<h2>Step 5: Faster lookup with <code>bisect</code></h2>
+<p>With thousands of bands (e.g. a delivery price for every kilometre), looping each time is slow. <code>bisect</code> finds the band using <strong>binary search</strong>:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">from bisect import bisect_left
+
+BANDS = [(100, 0), (500, 7), (1000, 13), (1500, 23), (2500, 33), (3500, 53), (5000, 57), (7500, 78), (10000, 90), (15000, 100), (20000, 105), (250000, 108)]
+MAXIMA = [m for m, _ in BANDS]
+
+def fee_fast(amount):
+    i = bisect_left(MAXIMA, amount)          # first band whose maximum &gt;= amount
+    if amount &lt; 1 or i == len(MAXIMA):
+        raise ValueError(&quot;Amount out of range&quot;)
+    return BANDS[i][1]
+
+print([fee_fast(a) for a in (1, 100, 101, 2600, 250000)])</code></pre></figure>
+<h2>Step 6: Loading the tariff from JSON</h2>
+<p>Store the tariff in a file so it can be updated without changing code:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import json
+from pathlib import Path
+
+tariff = {
+    &quot;name&quot;: &quot;Example send-money tariff (practice only)&quot;,
+    &quot;currency&quot;: &quot;KES&quot;,
+    &quot;bands&quot;: [[100, 0], [500, 7], [1000, 13], [2500, 33], [5000, 57], [10000, 90], [250000, 108]],
+}
+Path(&quot;tariff.json&quot;).write_text(json.dumps(tariff, indent=2), encoding=&quot;utf-8&quot;)
+
+def load_bands(path):
+    data = json.loads(Path(path).read_text(encoding=&quot;utf-8&quot;))
+    bands = [tuple(b) for b in data[&quot;bands&quot;]]
+    if bands != sorted(bands):
+        raise ValueError(&quot;Bands must be sorted by maximum amount&quot;)
+    return data[&quot;name&quot;], bands
+
+name, bands = load_bands(&quot;tariff.json&quot;)
+print(name)
+print(bands[:3], &quot;...&quot;)</code></pre></figure>
+<h2>Step 7: Putting it together (interactive version for your computer)</h2>
+<figure class="static-code"><pre><code>def main():
+    name, bands = load_bands(&quot;tariff.json&quot;)
+    print(name)
+    while True:
+        text = input(&quot;Amount to send (or q to quit): &quot;).strip().replace(&quot;,&quot;, &quot;&quot;)
+        if text.lower() == &quot;q&quot;:
+            break
+        try:
+            amount = int(text)
+            fee = fee_for(amount)          # using the loaded bands
+        except ValueError as e:
+            print(&quot;Error:&quot;, e)
+            continue
+        print(f&quot;Fee: KSh {fee}. Total deducted: KSh {amount + fee:,}&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    main()</code></pre></figure>
+<h2>Extension challenges</h2>
+<ol><li>Add <strong>withdrawal</strong> fees with a second tariff table, and calculate send + withdraw costs together.</li><li>Read a CSV of transactions and produce the report (Step 3) from it.</li><li>Make it a small <strong>web app</strong> with Flask (form → fee) or a command-line tool with <code>argparse</code>.</li><li>Build the same calculator in JavaScript for a website, using the same JSON file.</li><li>Add a monthly summary: total fees, most expensive transaction, average fee.</li></ol>
+<h2>Summary</h2>
+<ul><li>Represent tariffs as <strong>data</strong> (sorted bands), not long <code>if</code> chains.</li><li>Validate inputs, raise clear exceptions, and test <strong>boundaries</strong> with <code>assert</code>.</li><li>Format reports with f-string alignment and thousands separators.</li><li>Use "best so far" loops to compare options; use <code>bisect</code> for fast lookups in large tables.</li><li>Load configuration from JSON so updates don't need code changes.</li><li>Always use official, current tariffs in real applications.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Why store the tariff bands as data instead of many if statements? (one word: easier to ...)</p><details><summary>Show answer</summary><p>update</p></details></li><li><p>Which statement stops the program if a condition is false (used for simple tests)?</p><details><summary>Show answer</summary><p>assert</p></details></li><li><p>Which module does binary search on a sorted list?</p><details><summary>Show answer</summary><p>bisect</p></details></li><li><p>Which amounts should you always test in band tables? (one word)</p><details><summary>Show answer</summary><p>boundaries</p></details></li><li><p>Which file format is used to store the tariff for easy updates?</p><details><summary>Show answer</summary><p>JSON</p></details></li></ol></section></div><p class="static-meta">Lesson 19 of 20 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/classes-oop/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Classes and objects: object-oriented programming in Python</a><a class="btn btn-solid btn-sm" href="/learn/python/project-grade-report/">Project: a school grade report system <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

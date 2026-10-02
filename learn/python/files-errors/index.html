@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Errors and exceptions | Python</title>
-    <meta name="description" content="Programs meet bad input: letters instead of numbers, division by zero, missing files. try/except handles problems gracefully instead of crashing." />
+    <title>Errors and exceptions: try, except, else, finally,…</title>
+    <meta name="description" content="Things go wrong in real programs: users type &quot;abc&quot; where a number belongs, files are missing, networks drop, a division by zero sneaks in. A program…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/python/files-errors/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Errors and exceptions | Python" />
-    <meta property="og:description" content="Programs meet bad input: letters instead of numbers, division by zero, missing files. try/except handles problems gracefully instead of crashing." />
+    <meta property="og:title" content="Errors and exceptions: try, except, else, finally,…" />
+    <meta property="og:description" content="Things go wrong in real programs: users type &quot;abc&quot; where a number belongs, files are missing, networks drop, a division by zero sneaks in. A program…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/python/files-errors/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Errors and exceptions | Python" />
-    <meta name="twitter:description" content="Programs meet bad input: letters instead of numbers, division by zero, missing files. try/except handles problems gracefully instead of crashing." />
+    <meta name="twitter:title" content="Errors and exceptions: try, except, else, finally,…" />
+    <meta name="twitter:description" content="Things go wrong in real programs: users type &quot;abc&quot; where a number belongs, files are missing, networks drop, a division by zero sneaks in. A program…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/python/files-errors/#lesson","name":"Errors and exceptions","description":"Programs meet bad input: letters instead of numbers, division by zero, missing files. try/except handles problems gracefully instead of crashing.","url":"https://marzleytechsolutions.co.ke/learn/python/files-errors/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/python/#course","name":"Python","url":"https://marzleytechsolutions.co.ke/learn/python/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Python","item":"https://marzleytechsolutions.co.ke/learn/python/"},{"@type":"ListItem","position":4,"name":"Errors and exceptions","item":"https://marzleytechsolutions.co.ke/learn/python/files-errors/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/python/files-errors/#lesson","name":"Errors and exceptions: try, except, else, finally, raising errors and working with files","description":"Things go wrong in real programs: users type \"abc\" where a number belongs, files are missing, networks drop, a division by zero sneaks in. A program…","url":"https://marzleytechsolutions.co.ke/learn/python/files-errors/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/python/#course","name":"Python","url":"https://marzleytechsolutions.co.ke/learn/python/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Python","item":"https://marzleytechsolutions.co.ke/learn/python/"},{"@type":"ListItem","position":4,"name":"Errors and exceptions: try, except, else, finally, raising errors and working with files","item":"https://marzleytechsolutions.co.ke/learn/python/files-errors/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,36 +36,188 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/python/">Python</a> / <span>Errors and exceptions</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=files-errors"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Errors and exceptions</h1>
-<p>Programs meet bad input: letters instead of numbers, division by zero, missing files. <strong>try/except</strong> handles problems gracefully instead of crashing.</p>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/python/">Python</a> / <span>Errors and exceptions: try, except, else, finally, raising errors and working with files</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=files-errors"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Errors and exceptions: try, except, else, finally, raising errors and working with files</h1>
+<p>Things go wrong in real programs: users type "abc" where a number belongs, files are missing, networks drop, a division by zero sneaks in. A program that crashes on the first problem is useless. Python handles problems with <strong>exceptions</strong>: you can catch them, explain them to users, recover, and clean up. This unit covers exceptions thoroughly, plus reading and writing files safely (where many errors happen).</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Syntax errors vs exceptions; reading tracebacks</li><li>Common built-in exceptions</li><li><code>try</code>, <code>except</code>, <code>else</code>, <code>finally</code></li><li>Catching specific exceptions and getting the error message</li><li>Raising your own exceptions and custom exception classes</li><li>Validating user input in a loop</li><li>Reading and writing text files with <code>with open(...)</code></li><li>Paths, encodings and handling missing files</li></ul></div></aside>
+<h2>Syntax errors vs exceptions</h2>
+<ul><li><strong>Syntax errors</strong> happen before the program runs: Python can't understand the code (missing colon, bracket or quote). You must fix the code.</li><li><strong>Exceptions</strong> happen while the program runs: the code is valid, but something goes wrong (dividing by zero, a missing file, bad input). These can be <strong>handled</strong>.</li></ul>
+<h3>Reading a traceback</h3>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python"># This example fails on purpose so you can read the traceback
+def average(marks):
+    return sum(marks) / len(marks)
+
+print(average([70, 80]))
+print(average([]))          # empty list: division by zero</code></pre></figure>
+<p>Read from the <strong>bottom</strong>: the last line names the exception (<code>ZeroDivisionError: division by zero</code>); the lines above show where it happened (which function, which line), most recent call last.</p>
+<h2>Common exceptions</h2>
+<div class="static-table"><table><thead><tr><th>Exception</th><th>Typical cause</th></tr></thead><tbody><tr><td><code>ValueError</code></td><td>Right type, wrong value: <code>int(&quot;abc&quot;)</code></td></tr><tr><td><code>TypeError</code></td><td>Wrong type: <code>&quot;5&quot; + 5</code></td></tr><tr><td><code>ZeroDivisionError</code></td><td>Dividing by zero</td></tr><tr><td><code>IndexError</code></td><td>List index out of range</td></tr><tr><td><code>KeyError</code></td><td>Dictionary key doesn't exist</td></tr><tr><td><code>NameError</code></td><td>Variable not defined</td></tr><tr><td><code>AttributeError</code></td><td>Object doesn't have that method/attribute: <code>None.upper()</code></td></tr><tr><td><code>FileNotFoundError</code></td><td>File doesn't exist</td></tr><tr><td><code>PermissionError</code></td><td>Not allowed to read/write the file</td></tr></tbody></table></div>
+<h2><code>try</code> and <code>except</code></h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">text = &quot;abc&quot;
+try:
+    qty = int(text)
+    print(&quot;Quantity:&quot;, qty)
+except ValueError:
+    print(&quot;Please enter a whole number, like 3&quot;)
+print(&quot;The program keeps running&quot;)</code></pre></figure>
+<p>Python runs the <code>try</code> block; if a <code>ValueError</code> happens, it jumps to the matching <code>except</code> instead of crashing.</p>
+<h3>Catch specific exceptions</h3>
 <figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def safe_divide(a, b):
     try:
         return a / b
     except ZeroDivisionError:
-        return &quot;Can&#x27;t divide by zero&quot;
+        return None
+    except TypeError:
+        return &quot;Both values must be numbers&quot;
 
 print(safe_divide(10, 2))
-print(safe_divide(5, 0))</code></pre></figure>
-<h2>Validating input</h2>
-<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">entries = [&quot;250&quot;, &quot;abc&quot;, &quot;-5&quot;, &quot;1200&quot;]
-for text in entries:
+print(safe_divide(10, 0))
+print(safe_divide(&quot;10&quot;, 2))</code></pre></figure>
+<aside class="callout callout-warning"><p class="callout-title">Avoid bare except</p><div class="callout-body"><p><code>except:</code> (or <code>except Exception:</code> used carelessly) catches <strong>everything</strong>, including bugs you should see, like typos (<code>NameError</code>). Catch the specific exceptions you expect, so real bugs still show up.</p></div></aside>
+<h3>Getting the error message</h3>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">try:
+    {&quot;unga&quot;: 180}[&quot;rice&quot;]
+except KeyError as e:
+    print(&quot;Missing key:&quot;, e)
+
+try:
+    int(&quot;12.5&quot;)
+except ValueError as e:
+    print(&quot;Error details:&quot;, e)</code></pre></figure>
+<h3><code>else</code> and <code>finally</code></h3>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def read_amount(text):
     try:
-        amount = int(text)
-        if amount &lt;= 0:
-            raise ValueError(&quot;amount must be positive&quot;)
-        print(&quot;OK:&quot;, amount)
+        amount = float(text)
+    except ValueError:
+        print(f&quot;&#x27;{text}&#x27; is not a number&quot;)
+    else:
+        print(f&quot;Valid amount: KSh {amount:,.2f}&quot;)   # runs only if no exception
+    finally:
+        print(&quot;Finished checking&quot;, repr(text))       # always runs (cleanup)
+
+read_amount(&quot;1500&quot;)
+read_amount(&quot;abc&quot;)</code></pre></figure>
+<ul><li><code>else</code>: code that should run <strong>only when no exception</strong> happened.</li><li><code>finally</code>: code that <strong>always</strong> runs (closing files, releasing resources, hiding a loading message).</li></ul>
+<h2>Validating input in a loop</h2>
+<p>A common pattern: keep asking until the input is valid. (This editor simulates input, so run it on your computer to type values.)</p>
+<figure class="static-code"><pre><code>while True:
+    text = input(&quot;How many kilos? &quot;)
+    try:
+        kilos = float(text)
+        if kilos &lt;= 0:
+            raise ValueError(&quot;must be more than zero&quot;)
+        break                         # valid: leave the loop
     except ValueError as e:
-        print(f&quot;Bad input {text!r}: {e}&quot;)</code></pre></figure>
-<h2>Common errors</h2>
-<div class="static-table"><table><thead><tr><th>Error</th><th>Meaning</th></tr></thead><tbody><tr><td><code>SyntaxError</code></td><td>Code is written wrongly (missing colon, bracket)</td></tr><tr><td><code>IndentationError</code></td><td>Wrong spaces at the start of a line</td></tr><tr><td><code>NameError</code></td><td>Using a variable that doesn't exist (typo?)</td></tr><tr><td><code>TypeError</code></td><td>Wrong type, e.g. <code>&quot;5&quot; + 3</code></td></tr><tr><td><code>ValueError</code></td><td>Right type, bad value, e.g. <code>int(&quot;abc&quot;)</code></td></tr><tr><td><code>KeyError</code> / <code>IndexError</code></td><td>Missing dictionary key / list position</td></tr><tr><td><code>ZeroDivisionError</code></td><td>Dividing by zero</td></tr></tbody></table></div>
-<h2>Files (in your own projects)</h2>
-<figure class="static-code"><figcaption>Python</figcaption><pre><code class="language-python">with open(&quot;sales.txt&quot;, &quot;w&quot;) as f:
-    f.write(&quot;Mouse,1200\n&quot;)
-with open(&quot;sales.txt&quot;) as f:
-    for line in f:
-        name, price = line.strip().split(&quot;,&quot;)</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which error does int("abc") raise?</p><details><summary>Show answer</summary><p>ValueError</p></details></li><li><p>Which error does "5" + 3 raise?</p><details><summary>Show answer</summary><p>TypeError</p></details></li><li><p>Which keyword starts a block that handles an error?</p><details><summary>Show answer</summary><p>except</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Use try/except so that dividing 10 by 0 prints <strong>Cannot divide</strong> instead of crashing.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=files-errors#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 13 of 19 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/dictionaries-in-depth/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Dictionaries in depth: nested data and counting</a><a class="btn btn-solid btn-sm" href="/learn/python/csv-json-files/">Working with CSV and JSON data <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+        print(&quot;Invalid:&quot;, e)
+print(&quot;You ordered&quot;, kilos, &quot;kg&quot;)</code></pre></figure>
+<p>Here is the same logic in a function you can run with test values:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def parse_kilos(text):
+    try:
+        kilos = float(text)
+    except ValueError:
+        return None, &quot;Please type a number, like 2.5&quot;
+    if kilos &lt;= 0:
+        return None, &quot;Kilos must be more than zero&quot;
+    if kilos &gt; 100:
+        return None, &quot;For orders above 100 kg, call us&quot;
+    return kilos, &quot;OK&quot;
+
+for attempt in [&quot;two&quot;, &quot;-1&quot;, &quot;250&quot;, &quot;2.5&quot;]:
+    print(attempt, &quot;-&gt;&quot;, parse_kilos(attempt))</code></pre></figure>
+<h2>Raising exceptions</h2>
+<p>Your own functions should <strong>raise</strong> exceptions when given impossible values, instead of returning nonsense:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def withdraw(balance, amount):
+    if amount &lt;= 0:
+        raise ValueError(&quot;Amount must be positive&quot;)
+    if amount &gt; balance:
+        raise ValueError(f&quot;Insufficient balance: you have KSh {balance}&quot;)
+    return balance - amount
+
+for amt in [500, -20, 9000]:
+    try:
+        print(&quot;New balance:&quot;, withdraw(2000, amt))
+    except ValueError as e:
+        print(&quot;Error:&quot;, e)</code></pre></figure>
+<h3>Custom exceptions</h3>
+<p>For bigger programs, define your own exception types:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">class PaymentError(Exception):
+    &quot;&quot;&quot;Raised when an M-Pesa payment fails.&quot;&quot;&quot;
+
+class InsufficientFunds(PaymentError):
+    pass
+
+def pay(balance, amount):
+    if amount &gt; balance:
+        raise InsufficientFunds(f&quot;Need KSh {amount - balance} more&quot;)
+    return &quot;Paid&quot;
+
+try:
+    pay(100, 250)
+except InsufficientFunds as e:
+    print(&quot;Top up M-Pesa:&quot;, e)
+except PaymentError:
+    print(&quot;Payment failed for another reason&quot;)</code></pre></figure>
+<h2>Working with files</h2>
+<h3>Writing a file</h3>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">with open(&quot;notes.txt&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+    f.write(&quot;Shopping list\n&quot;)
+    f.write(&quot;Unga 2kg\n&quot;)
+    f.write(&quot;Sukuma wiki\n&quot;)
+print(&quot;Saved notes.txt&quot;)</code></pre></figure>
+<h3>Reading a file</h3>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">with open(&quot;notes.txt&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:     # create the file first (each example runs on its own)
+    f.write(&quot;Shopping list\nUnga 2kg\nSukuma wiki\n&quot;)
+
+with open(&quot;notes.txt&quot;, &quot;r&quot;, encoding=&quot;utf-8&quot;) as f:
+    content = f.read()
+print(content)
+
+with open(&quot;notes.txt&quot;, encoding=&quot;utf-8&quot;) as f:
+    for line_number, line in enumerate(f, start=1):
+        print(line_number, line.strip())</code></pre></figure>
+<h3>Appending</h3>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">with open(&quot;notes.txt&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+    f.write(&quot;Shopping list\nUnga 2kg\n&quot;)
+
+with open(&quot;notes.txt&quot;, &quot;a&quot;, encoding=&quot;utf-8&quot;) as f:     # &quot;a&quot; adds to the end
+    f.write(&quot;Milk 500ml\n&quot;)
+print(open(&quot;notes.txt&quot;, encoding=&quot;utf-8&quot;).read())</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Mode</th><th>Meaning</th></tr></thead><tbody><tr><td><code>&quot;r&quot;</code></td><td>Read (default); error if the file doesn't exist</td></tr><tr><td><code>&quot;w&quot;</code></td><td>Write: creates the file or <strong>erases</strong> existing content</td></tr><tr><td><code>&quot;a&quot;</code></td><td>Append to the end</td></tr><tr><td><code>&quot;x&quot;</code></td><td>Create; error if it already exists</td></tr><tr><td><code>&quot;rb&quot;</code> / <code>&quot;wb&quot;</code></td><td>Binary (images, PDFs)</td></tr></tbody></table></div>
+<h3>Why <code>with</code>?</h3>
+<p><code>with open(...) as f:</code> automatically <strong>closes</strong> the file when the block ends, even if an error happens. Forgetting to close files can lose data or lock files.</p>
+<h3>Encoding</h3>
+<p>Always pass <code>encoding=&quot;utf-8&quot;</code> for text files, so Kiswahili accents, emojis and symbols like "KSh" or "€" read and write correctly on every computer (Windows doesn't always default to UTF-8).</p>
+<h3>Handling missing files</h3>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def load_settings(path):
+    try:
+        with open(path, encoding=&quot;utf-8&quot;) as f:
+            return f.read()
+    except FileNotFoundError:
+        print(f&quot;{path} not found, using default settings&quot;)
+        return &quot;theme=light&quot;
+
+print(load_settings(&quot;settings.txt&quot;))</code></pre></figure>
+<h3>Paths with <code>pathlib</code></h3>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">from pathlib import Path
+
+folder = Path(&quot;reports&quot;)
+folder.mkdir(exist_ok=True)                 # create the folder if missing
+file = folder / &quot;sales-2026-10.txt&quot;         # join paths safely on any OS
+file.write_text(&quot;Total sales: KSh 125,400\n&quot;, encoding=&quot;utf-8&quot;)
+print(file, &quot;exists:&quot;, file.exists())
+print(file.read_text(encoding=&quot;utf-8&quot;))
+print([p.name for p in folder.iterdir()])</code></pre></figure>
+<p><code>pathlib</code> works the same on Windows, Mac and Linux (no worrying about <code>\</code> vs <code>/</code>).</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A program opens "sales.csv" with mode "w" to add today's sales, and yesterday's data disappears. Why?</span><em>Show answer</em></summary><div class="callout-body"><p>Mode <code>&quot;w&quot;</code> <strong>erases</strong> the file before writing. To add to the end, use mode <code>&quot;a&quot;</code> (append). For important data, also keep backups and consider a database.</p></div></details>
+<h2>Good practices</h2>
+<ul><li>Catch <strong>specific</strong> exceptions; let unexpected bugs show (and log them).</li><li>Give users <strong>helpful</strong> messages; log technical details for developers.</li><li>Validate input early; raise exceptions for impossible values in your functions.</li><li>Use <code>with</code> for files; always set <code>encoding=&quot;utf-8&quot;</code>.</li><li>Don't use exceptions for normal flow when a simple <code>if</code> is clearer.</li></ul>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Bare <code>except:</code> hiding bugs</td><td>Catch specific exceptions</td></tr><tr><td>Putting too much code in <code>try</code></td><td>Only the lines that may fail</td></tr><tr><td>Ignoring errors silently (<code>except: pass</code>)</td><td>At least log or tell the user</td></tr><tr><td>Opening files without <code>with</code></td><td>Use <code>with open(...)</code></td></tr><tr><td>Mode <code>&quot;w&quot;</code> when you meant <code>&quot;a&quot;</code></td><td>Append with <code>&quot;a&quot;</code></td></tr><tr><td>No <code>encoding</code></td><td><code>encoding=&quot;utf-8&quot;</code></td></tr></tbody></table></div>
+<h2>Practice tasks</h2>
+<ol><li>Ask for an age; handle non-numbers and negative values with helpful messages.</li><li>Write <code>safe_average(marks)</code> that returns <code>None</code> for an empty list instead of crashing.</li><li>Raise a <code>ValueError</code> in a function when a phone number isn't 10 digits.</li><li>Write 5 lines to a file, then read it back and print the line count.</li><li>Load a file that may not exist and fall back to defaults.</li></ol>
+<h2>Summary</h2>
+<ul><li>Syntax errors must be fixed; exceptions happen at runtime and can be handled.</li><li>Read tracebacks from the bottom; know common exceptions (<code>ValueError</code>, <code>TypeError</code>, <code>KeyError</code>, <code>IndexError</code>, <code>ZeroDivisionError</code>, <code>FileNotFoundError</code>).</li><li><code>try/except</code> (specific exceptions, <code>as e</code>), <code>else</code> (no error), <code>finally</code> (always).</li><li><code>raise</code> exceptions for invalid values; create custom exception classes for bigger programs.</li><li>Files: <code>with open(path, mode, encoding=&quot;utf-8&quot;)</code>; modes <code>r</code>, <code>w</code> (erases), <code>a</code>, <code>x</code>; <code>pathlib</code> for paths.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which block runs only if no exception happened?</p><details><summary>Show answer</summary><p>else</p></details></li><li><p>Which block always runs, error or not?</p><details><summary>Show answer</summary><p>finally</p></details></li><li><p>Which exception does int("abc") raise?</p><details><summary>Show answer</summary><p>ValueError</p></details></li><li><p>Which exception happens when a dictionary key is missing?</p><details><summary>Show answer</summary><p>KeyError</p></details></li><li><p>Which keyword creates your own error?</p><details><summary>Show answer</summary><p>raise</p></details></li><li><p>Which file mode adds to the end without erasing?</p><details><summary>Show answer</summary><p>a</p></details></li><li><p>Which statement closes files automatically?</p><details><summary>Show answer</summary><p>with</p></details></li><li><p>Which encoding should you use for text files?</p><details><summary>Show answer</summary><p>utf-8</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Use try/except so that dividing 10 by 0 prints <strong>Cannot divide</strong> instead of crashing.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=files-errors#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 13 of 20 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/dictionaries-in-depth/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Dictionaries in depth: nested data and counting</a><a class="btn btn-solid btn-sm" href="/learn/python/csv-json-files/">Working with CSV and JSON data <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

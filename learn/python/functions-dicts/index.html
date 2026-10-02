@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Functions and dictionaries | Python</title>
-    <meta name="description" content="Free Python lesson: Functions and dictionaries." />
+    <title>Functions and dictionaries: reusable code and key-value data</title>
+    <meta name="description" content="Functions let you name a piece of logic and reuse it: calculate vat() , format phone() , grade() . Dictionaries store data by name instead of position…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/python/functions-dicts/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Functions and dictionaries | Python" />
-    <meta property="og:description" content="Free Python lesson: Functions and dictionaries." />
+    <meta property="og:title" content="Functions and dictionaries: reusable code and key-value data" />
+    <meta property="og:description" content="Functions let you name a piece of logic and reuse it: calculate vat() , format phone() , grade() . Dictionaries store data by name instead of position…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/python/functions-dicts/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Functions and dictionaries | Python" />
-    <meta name="twitter:description" content="Free Python lesson: Functions and dictionaries." />
+    <meta name="twitter:title" content="Functions and dictionaries: reusable code and key-value data" />
+    <meta name="twitter:description" content="Functions let you name a piece of logic and reuse it: calculate vat() , format phone() , grade() . Dictionaries store data by name instead of position…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/python/functions-dicts/#lesson","name":"Functions and dictionaries","description":"Free Python lesson: Functions and dictionaries.","url":"https://marzleytechsolutions.co.ke/learn/python/functions-dicts/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/python/#course","name":"Python","url":"https://marzleytechsolutions.co.ke/learn/python/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Python","item":"https://marzleytechsolutions.co.ke/learn/python/"},{"@type":"ListItem","position":4,"name":"Functions and dictionaries","item":"https://marzleytechsolutions.co.ke/learn/python/functions-dicts/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/python/functions-dicts/#lesson","name":"Functions and dictionaries: reusable code and key-value data","description":"Functions let you name a piece of logic and reuse it: calculate vat() , format phone() , grade() . Dictionaries store data by name instead of position…","url":"https://marzleytechsolutions.co.ke/learn/python/functions-dicts/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/python/#course","name":"Python","url":"https://marzleytechsolutions.co.ke/learn/python/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Python","item":"https://marzleytechsolutions.co.ke/learn/python/"},{"@type":"ListItem","position":4,"name":"Functions and dictionaries: reusable code and key-value data","item":"https://marzleytechsolutions.co.ke/learn/python/functions-dicts/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,39 +36,171 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/python/">Python</a> / <span>Functions and dictionaries</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=functions-dicts"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Functions and dictionaries</h1>
-<h2>Functions</h2>
-<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def vat(amount):
-    return amount * 0.16
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/python/">Python</a> / <span>Functions and dictionaries: reusable code and key-value data</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=functions-dicts"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Functions and dictionaries: reusable code and key-value data</h1>
+<p><strong>Functions</strong> let you name a piece of logic and reuse it: <code>calculate_vat()</code>, <code>format_phone()</code>, <code>grade()</code>. <strong>Dictionaries</strong> store data by name instead of position: a student's name, class and marks; a product's price and stock; county codes. Combined with lists, these two tools let you model almost any real-world data and process it cleanly. This unit covers both from first principles.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Defining and calling functions with <code>def</code></li><li>Parameters, arguments, default values, keyword arguments</li><li><code>return</code> vs <code>print</code>, returning several values</li><li>Local vs global scope</li><li>Docstrings and good function design</li><li>Dictionaries: creating, reading, <code>get()</code>, adding, updating, deleting</li><li>Looping with <code>.keys()</code>, <code>.values()</code>, <code>.items()</code></li><li>Counting and grouping with dictionaries; lists of dictionaries</li></ul></div></aside>
+<h2>Part 1: Functions</h2>
+<h3>Why functions?</h3>
+<ul><li><strong>Don't repeat yourself (DRY):</strong> write logic once, use it everywhere.</li><li><strong>Organise:</strong> break a big problem into small named steps.</li><li><strong>Test:</strong> check each piece separately.</li><li><strong>Read:</strong> <code>send_receipt(customer)</code> is clearer than 20 lines of details.</li></ul>
+<aside class="callout callout-define"><p class="callout-title">Function</p><div class="callout-body"><p>A named block of reusable code defined with <code>def</code>. It can take inputs (<strong>parameters</strong>), and give back a result with **<code>return</code>**.</p></div></aside>
+<h3>Defining and calling</h3>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def greet(name):
+    return f&quot;Habari, {name}!&quot;
 
-def with_vat(amount):
-    return amount + vat(amount)
+print(greet(&quot;Wanjiku&quot;))
+print(greet(&quot;Otieno&quot;))</code></pre></figure>
+<ul><li><code>def</code> starts the definition, then the name, brackets with parameters, and a colon.</li><li>The body is indented.</li><li>Nothing happens until you <strong>call</strong> it: <code>greet(&quot;Wanjiku&quot;)</code>.</li></ul>
+<h3><code>return</code> vs <code>print</code></h3>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def add_vat(amount):
+    return amount * 1.16          # gives the value back
 
-print(vat(1000))
-print(with_vat(1000))
+def show_vat(amount):
+    print(amount * 1.16)          # only displays it
 
-def greet(name, greeting=&quot;Habari&quot;):
-    return f&quot;{greeting}, {name}!&quot;
+price = add_vat(1000)             # 1160.0 stored in price
+print(price + 50)                 # can be used further
 
-print(greet(&quot;Njeri&quot;))
-print(greet(&quot;Otieno&quot;, &quot;Hello&quot;))</code></pre></figure>
-<h2>Dictionaries</h2>
-<p>A dictionary stores <code>key: value</code> pairs.</p>
-<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">product = {&quot;name&quot;: &quot;Mouse&quot;, &quot;price&quot;: 1200, &quot;stock&quot;: 15}
-print(product[&quot;name&quot;])
-product[&quot;price&quot;] = 1000
-print(product)
+result = show_vat(1000)           # prints 1160.0
+print(result)                     # None: show_vat returns nothing</code></pre></figure>
+<p>Functions that <strong>return</strong> values are far more useful: you can store, combine and test their results.</p>
+<h3>Parameters: defaults and keywords</h3>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def line_total(price, qty=1, discount=0):
+    return price * qty * (1 - discount)
 
-cart = [
-    {&quot;name&quot;: &quot;Mouse&quot;, &quot;price&quot;: 1200, &quot;qty&quot;: 2},
-    {&quot;name&quot;: &quot;Charger&quot;, &quot;price&quot;: 800, &quot;qty&quot;: 1},
+print(line_total(180))                     # 180: qty and discount use defaults
+print(line_total(180, 3))                  # 540
+print(line_total(180, qty=3, discount=0.1))  # keyword arguments: clear and any order
+print(line_total(discount=0.5, price=1000))</code></pre></figure>
+<aside class="callout callout-warning"><p class="callout-title">Never use a list or dict as a default value</p><div class="callout-body"><p><code>def add_item(item, cart=[])</code> shares <strong>one</strong> list between all calls, so items pile up unexpectedly. Use <code>cart=None</code> and inside: <code>if cart is None: cart = []</code>.</p></div></aside>
+<h3>Returning several values</h3>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def summary(marks):
+    return min(marks), max(marks), sum(marks) / len(marks)
+
+lowest, highest, average = summary([78, 45, 90, 66])
+print(lowest, highest, round(average, 1))</code></pre></figure>
+<p>(Python returns a <strong>tuple</strong> that you unpack into variables.)</p>
+<h3>Scope</h3>
+<p>Variables created inside a function are <strong>local</strong> to it:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">shop = &quot;Mama Mboga&quot;          # global
+
+def receipt(total):
+    vat = total * 0.16       # local
+    return f&quot;{shop}: total {total}, VAT {vat:.0f}&quot;
+
+print(receipt(500))
+try:
+    print(vat)
+except NameError as e:
+    print(&quot;Outside the function:&quot;, e)</code></pre></figure>
+<p>Prefer passing values in and returning results out, instead of changing global variables inside functions.</p>
+<h3>Docstrings and good design</h3>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def loan_repayment(principal, annual_rate, months):
+    &quot;&quot;&quot;Return the fixed monthly repayment for a reducing-balance loan.
+
+    principal: amount borrowed in KSh
+    annual_rate: yearly interest rate as a decimal (0.14 for 14%)
+    months: number of monthly repayments
+    &quot;&quot;&quot;
+    r = annual_rate / 12
+    if r == 0:
+        return principal / months
+    return principal * r / (1 - (1 + r) ** -months)
+
+print(round(loan_repayment(100000, 0.14, 12)))
+help(loan_repayment)</code></pre></figure>
+<p>Good functions: <strong>one job</strong>, a <strong>verb name</strong> (<code>calculate_total</code>, <code>is_valid_phone</code>), short, and documented when not obvious.</p>
+<h3>Functions are values</h3>
+<p>You can pass functions around, e.g. as a sort key:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">products = [(&quot;Speaker&quot;, 3500), (&quot;Charger&quot;, 800), (&quot;Earphones&quot;, 1200)]
+
+def by_price(item):
+    return item[1]
+
+print(sorted(products, key=by_price))
+print(sorted(products, key=lambda item: item[1], reverse=True))   # lambda: a tiny unnamed function</code></pre></figure>
+<h2>Part 2: Dictionaries</h2>
+<h3>Why dictionaries?</h3>
+<p>With lists you find items by <strong>position</strong> (<code>student[2]</code>, but what was 2?). Dictionaries store values under <strong>keys</strong> (names), so data is self-describing:</p>
+<aside class="callout callout-define"><p class="callout-title">Dictionary</p><div class="callout-body"><p>A collection of <strong>key: value</strong> pairs in curly braces, e.g. <code>{&quot;name&quot;: &quot;Amina&quot;, &quot;class&quot;: &quot;Grade 9&quot;}</code>. Keys are unique; you look values up by key, very fast.</p></div></aside>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">student = {
+    &quot;name&quot;: &quot;Amina Hassan&quot;,
+    &quot;class&quot;: &quot;Grade 9&quot;,
+    &quot;marks&quot;: [78, 85, 69],
+    &quot;boarder&quot;: False,
+}
+print(student[&quot;name&quot;])
+print(student[&quot;marks&quot;][1])
+print(len(student))            # 4 keys
+print(&quot;class&quot; in student)      # True: checks keys</code></pre></figure>
+<h3><code>get()</code>: safe lookup</h3>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">prices = {&quot;unga&quot;: 180, &quot;sugar&quot;: 150}
+print(prices.get(&quot;unga&quot;))           # 180
+print(prices.get(&quot;rice&quot;))           # None (no error)
+print(prices.get(&quot;rice&quot;, 0))        # 0 default
+try:
+    prices[&quot;rice&quot;]
+except KeyError as e:
+    print(&quot;KeyError:&quot;, e)            # square brackets raise an error for missing keys</code></pre></figure>
+<h3>Adding, updating and deleting</h3>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">stock = {&quot;unga&quot;: 12, &quot;sugar&quot;: 0}
+stock[&quot;milk&quot;] = 30          # add
+stock[&quot;unga&quot;] -= 2          # update
+stock.update({&quot;sugar&quot;: 20, &quot;bread&quot;: 15})
+del stock[&quot;bread&quot;]          # delete
+removed = stock.pop(&quot;milk&quot;) # delete and return
+print(stock, removed)</code></pre></figure>
+<h3>Looping</h3>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">prices = {&quot;unga&quot;: 180, &quot;sugar&quot;: 150, &quot;milk&quot;: 60}
+for item in prices:                      # keys
+    print(item)
+for price in prices.values():
+    print(price)
+for item, price in prices.items():       # both (most common)
+    print(f&quot;{item}: KSh {price}&quot;)</code></pre></figure>
+<h3>Counting with a dictionary</h3>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">votes = [&quot;Yes&quot;, &quot;No&quot;, &quot;Yes&quot;, &quot;Abstain&quot;, &quot;Yes&quot;, &quot;No&quot;]
+counts = {}
+for v in votes:
+    counts[v] = counts.get(v, 0) + 1
+print(counts)
+
+from collections import Counter          # the built-in shortcut
+print(Counter(votes).most_common(2))</code></pre></figure>
+<h3>Grouping</h3>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">students = [(&quot;Amina&quot;, &quot;Grade 9&quot;), (&quot;Brian&quot;, &quot;Grade 8&quot;), (&quot;Chebet&quot;, &quot;Grade 9&quot;), (&quot;David&quot;, &quot;Grade 8&quot;)]
+by_class = {}
+for name, cls in students:
+    by_class.setdefault(cls, []).append(name)
+print(by_class)</code></pre></figure>
+<h3>Lists of dictionaries: records</h3>
+<p>This is how data from databases, APIs and CSV files usually looks:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">products = [
+    {&quot;name&quot;: &quot;Unga 2kg&quot;, &quot;price&quot;: 180, &quot;stock&quot;: 12},
+    {&quot;name&quot;: &quot;Sugar 1kg&quot;, &quot;price&quot;: 150, &quot;stock&quot;: 0},
+    {&quot;name&quot;: &quot;Milk 500ml&quot;, &quot;price&quot;: 60, &quot;stock&quot;: 30},
 ]
-total = sum(item[&quot;price&quot;] * item[&quot;qty&quot;] for item in cart)
-print(&quot;Cart total:&quot;, total)
 
-for key, value in product.items():
-    print(key, &quot;=&quot;, value)</code></pre></figure></div><section class="static-exercise"><h2>Exercise</h2><p>Write a function <code>square(n)</code> that returns <code>n * n</code>, then print <code>square(9)</code>. The output should be <strong>81</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=functions-dicts#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 10 of 19 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/tuples-sets-comprehensions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Tuples, sets and comprehensions</a><a class="btn btn-solid btn-sm" href="/learn/python/functions-in-depth/">Functions in depth: defaults, *args, **kwargs and lambda <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+def in_stock(items):
+    return [p[&quot;name&quot;] for p in items if p[&quot;stock&quot;] &gt; 0]
+
+def stock_value(items):
+    return sum(p[&quot;price&quot;] * p[&quot;stock&quot;] for p in items)
+
+print(in_stock(products))
+print(&quot;Stock value: KSh&quot;, stock_value(products))
+cheapest = min(products, key=lambda p: p[&quot;price&quot;])
+print(&quot;Cheapest:&quot;, cheapest[&quot;name&quot;])</code></pre></figure>
+<h3>Dictionary rules</h3>
+<ul><li>Keys must be <strong>immutable</strong> (strings, numbers, tuples), and unique.</li><li>Values can be anything, including lists and other dictionaries.</li><li>Dictionaries keep <strong>insertion order</strong> (Python 3.7+).</li></ul>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why is a dictionary better than two separate lists (names and phones) for a contact book?</span><em>Show answer</em></summary><div class="callout-body"><p>With two lists you must keep positions perfectly in sync; deleting or sorting one breaks the pairing. A dictionary (<code>{&quot;Wanjiku&quot;: &quot;0712...&quot;, ...}</code>) or a list of contact dictionaries keeps each name with its phone, and lookups by name are instant instead of searching through a list.</p></div></details>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Forgetting to call: <code>greet</code> instead of <code>greet()</code></td><td>Add brackets</td></tr><tr><td>Printing inside instead of returning</td><td><code>return</code> the result</td></tr><tr><td>Mutable default arguments (<code>cart=[]</code>)</td><td><code>cart=None</code></td></tr><tr><td><code>dict[&quot;missing&quot;]</code> crashing</td><td><code>.get(&quot;missing&quot;, default)</code></td></tr><tr><td>Looping a dict and expecting values</td><td>Use <code>.values()</code> or <code>.items()</code></td></tr><tr><td>Using lists as dictionary keys</td><td>Use strings/tuples</td></tr></tbody></table></div>
+<h2>Practice tasks</h2>
+<ol><li>Write <code>celsius_to_fahrenheit(c)</code> and <code>is_adult(age)</code>; test them.</li><li>Write <code>grade(marks)</code> returning A–E, and use it on a list of marks.</li><li>Create a dictionary of 5 products and prices; print them sorted by price.</li><li>Count how many times each word appears in a sentence.</li><li>Store 4 students as dictionaries with marks; print each student's average and the class average.</li></ol>
+<h2>Summary</h2>
+<ul><li>Define functions with <code>def name(params):</code>; call with <code>name(args)</code>; <code>return</code> gives back values (otherwise <code>None</code>).</li><li>Parameters can have defaults and be passed by keyword; return several values as a tuple.</li><li>Variables inside functions are local; write small, single-purpose, documented functions; <code>lambda</code> for tiny functions.</li><li>Dictionaries store <code>key: value</code> pairs; read with <code>[]</code> or <code>.get()</code>; add/update/delete; loop with <code>.items()</code>.</li><li>Use dictionaries for counting, grouping and records (lists of dictionaries).</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword defines a function in Python?</p><details><summary>Show answer</summary><p>def</p></details></li><li><p>What does a function return if it has no return statement?</p><details><summary>Show answer</summary><p>None</p></details></li><li><p>Which dictionary method returns None (or a default) instead of an error for a missing key?</p><details><summary>Show answer</summary><p>get</p></details></li><li><p>Which dictionary method gives key-value pairs for a loop?</p><details><summary>Show answer</summary><p>items</p></details></li><li><p>Can a list be a dictionary key? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>What is a tiny unnamed function in Python called?</p><details><summary>Show answer</summary><p>lambda</p></details></li><li><p>Which collections class counts items quickly?</p><details><summary>Show answer</summary><p>Counter</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Write a function <code>square(n)</code> that returns <code>n * n</code>, then print <code>square(9)</code>. The output should be <strong>81</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=functions-dicts#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 10 of 20 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/tuples-sets-comprehensions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Tuples, sets and comprehensions</a><a class="btn btn-solid btn-sm" href="/learn/python/functions-in-depth/">Functions in depth: defaults, *args, **kwargs and lambda <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

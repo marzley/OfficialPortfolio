@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Automation with Python: files, Excel reports, web APIs…</title>
+    <meta name="description" content="One of the most practical uses of Python is automation : making the computer do repetitive work for you. Renaming 500 photos, merging monthly sales…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/python/automation-web-requests/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Automation with Python: files, Excel reports, web APIs…" />
+    <meta property="og:description" content="One of the most practical uses of Python is automation : making the computer do repetitive work for you. Renaming 500 photos, merging monthly sales…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/python/automation-web-requests/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Automation with Python: files, Excel reports, web APIs…" />
+    <meta name="twitter:description" content="One of the most practical uses of Python is automation : making the computer do repetitive work for you. Renaming 500 photos, merging monthly sales…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/python/automation-web-requests/#lesson","name":"Automation with Python: files, Excel reports, web APIs and scheduled tasks","description":"One of the most practical uses of Python is automation : making the computer do repetitive work for you. Renaming 500 photos, merging monthly sales…","url":"https://marzleytechsolutions.co.ke/learn/python/automation-web-requests/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/python/#course","name":"Python","url":"https://marzleytechsolutions.co.ke/learn/python/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Python","item":"https://marzleytechsolutions.co.ke/learn/python/"},{"@type":"ListItem","position":4,"name":"Automation with Python: files, Excel reports, web APIs and scheduled tasks","item":"https://marzleytechsolutions.co.ke/learn/python/automation-web-requests/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=19f64783be" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/python/">Python</a> / <span>Automation with Python: files, Excel reports, web APIs and scheduled tasks</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=automation-web-requests"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Automation with Python: files, Excel reports, web APIs and scheduled tasks</h1>
+<p>One of the most practical uses of Python is <strong>automation</strong>: making the computer do repetitive work for you. Renaming 500 photos, merging monthly sales files, producing an Excel report every Monday, checking exchange rates from an API, sending reminder emails. Office workers, analysts and freelancers save hours every week with small Python scripts, and "automate my spreadsheet" is a common paid freelance job. This unit shows the main automation patterns with runnable examples.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>What to automate (and what not to)</li><li>Batch file operations with <code>pathlib</code></li><li>Processing CSV data and producing summaries</li><li>Creating Excel files (openpyxl) and charts (overview)</li><li>Calling web APIs with <code>requests</code> and handling JSON</li><li>Sending emails and scheduling scripts</li><li>Safety: backups, dry runs, secrets and rate limits</li></ul></div></aside>
+<h2>What should you automate?</h2>
+<p>Good candidates are tasks that are <strong>repetitive</strong>, <strong>rule-based</strong> and <strong>frequent</strong>:</p>
+<div class="static-table"><table><thead><tr><th>Task</th><th>Python approach</th></tr></thead><tbody><tr><td>Renaming/organising many files</td><td><code>pathlib</code>, <code>shutil</code></td></tr><tr><td>Merging many CSV/Excel files</td><td><code>csv</code>, <code>pandas</code>, <code>openpyxl</code></td></tr><tr><td>Weekly sales/attendance reports</td><td>Scripts that read data and write Excel/PDF</td></tr><tr><td>Checking prices or rates</td><td>Web APIs with <code>requests</code></td></tr><tr><td>Reminders and notifications</td><td>Email (<code>smtplib</code>) or SMS/WhatsApp APIs</td></tr><tr><td>Cleaning messy data</td><td>String methods, regex, pandas</td></tr></tbody></table></div>
+<p>Rule of thumb: if you do a task more than a few times and it takes more than a few minutes, consider automating it.</p>
+<h2>Batch file operations</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">from pathlib import Path
+
+# Set up some sample files (in real life these would already exist)
+folder = Path(&quot;photos&quot;)
+folder.mkdir(exist_ok=True)
+for name in [&quot;IMG_001.JPG&quot;, &quot;IMG_002.JPG&quot;, &quot;IMG_003.jpg&quot;, &quot;notes.txt&quot;]:
+    (folder / name).write_text(&quot;x&quot;)
+
+# Rename all photos to a clean pattern, with a DRY RUN first
+def rename_photos(folder, prefix, dry_run=True):
+    photos = sorted(p for p in folder.iterdir() if p.suffix.lower() == &quot;.jpg&quot;)
+    for i, p in enumerate(photos, start=1):
+        new = folder / f&quot;{prefix}-{i:03d}{p.suffix.lower()}&quot;
+        print((&quot;Would rename&quot; if dry_run else &quot;Renaming&quot;), p.name, &quot;-&gt;&quot;, new.name)
+        if not dry_run:
+            p.rename(new)
+
+rename_photos(folder, &quot;wedding-kamau&quot;)             # dry run: just shows what will happen
+rename_photos(folder, &quot;wedding-kamau&quot;, dry_run=False)
+print(sorted(p.name for p in folder.iterdir()))</code></pre></figure>
+<aside class="callout callout-warning"><p class="callout-title">Always do a dry run and keep backups</p><div class="callout-body"><p>Automation can make 500 mistakes in one second. Print what the script <strong>would</strong> do first (a "dry run"), test on copies of your files, and keep backups before running scripts that rename, move or delete.</p></div></aside>
+<h2>Processing CSV data</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import csv, io
+from collections import defaultdict
+
+# Imagine this came from an exported M-Pesa statement or sales system
+data = &quot;&quot;&quot;date,branch,product,amount
+2026-10-01,Thika,Unga,5400
+2026-10-01,Ruiru,Sugar,3000
+2026-10-02,Thika,Sugar,4500
+2026-10-02,Ruiru,Unga,7200
+2026-10-03,Thika,Milk,2600
+&quot;&quot;&quot;
+
+by_branch = defaultdict(int)
+by_product = defaultdict(int)
+for row in csv.DictReader(io.StringIO(data)):
+    amount = int(row[&quot;amount&quot;])
+    by_branch[row[&quot;branch&quot;]] += amount
+    by_product[row[&quot;product&quot;]] += amount
+
+print(&quot;Sales by branch:&quot;)
+for branch, total in sorted(by_branch.items(), key=lambda x: -x[1]):
+    print(f&quot;  {branch:&lt;8} KSh {total:&gt;8,}&quot;)
+print(&quot;Best product:&quot;, max(by_product, key=by_product.get))
+
+# Write the summary to a new CSV file
+with open(&quot;summary.csv&quot;, &quot;w&quot;, newline=&quot;&quot;, encoding=&quot;utf-8&quot;) as f:
+    w = csv.writer(f)
+    w.writerow([&quot;branch&quot;, &quot;total&quot;])
+    w.writerows(sorted(by_branch.items()))
+print(open(&quot;summary.csv&quot;, encoding=&quot;utf-8&quot;).read())</code></pre></figure>
+<p>For bigger data, <strong>pandas</strong> does this in a few lines: <code>df.groupby(&quot;branch&quot;)[&quot;amount&quot;].sum()</code>.</p>
+<h2>Creating Excel reports (on your computer)</h2>
+<p>Install with <code>pip install openpyxl</code>, then:</p>
+<figure class="static-code"><pre><code>from openpyxl import Workbook
+from openpyxl.styles import Font
+from openpyxl.chart import BarChart, Reference
+
+wb = Workbook()
+ws = wb.active
+ws.title = &quot;Sales&quot;
+ws.append([&quot;Branch&quot;, &quot;Total (KSh)&quot;])
+for branch, total in [(&quot;Thika&quot;, 12500), (&quot;Ruiru&quot;, 10200)]:
+    ws.append([branch, total])
+ws[&quot;A1&quot;].font = ws[&quot;B1&quot;].font = Font(bold=True)
+
+chart = BarChart()
+chart.title = &quot;Sales by branch&quot;
+chart.add_data(Reference(ws, min_col=2, min_row=1, max_row=3), titles_from_data=True)
+chart.set_categories(Reference(ws, min_col=1, min_row=2, max_row=3))
+ws.add_chart(chart, &quot;D2&quot;)
+
+wb.save(&quot;weekly-report.xlsx&quot;)</code></pre></figure>
+<p>You can also <strong>read</strong> existing Excel files (<code>openpyxl.load_workbook</code>) and fill templates, which is great for invoices and report cards.</p>
+<h2>Calling web APIs</h2>
+<p>The <strong>requests</strong> package (<code>pip install requests</code>) makes HTTP calls simple:</p>
+<figure class="static-code"><pre><code>import requests
+
+response = requests.get(&quot;https://api.example.com/rates&quot;, params={&quot;base&quot;: &quot;USD&quot;}, timeout=10)
+response.raise_for_status()           # raises an error for 4xx/5xx responses
+rates = response.json()
+print(rates[&quot;KES&quot;])</code></pre></figure>
+<p>Key habits:</p>
+<ul><li>Always set a <strong>timeout</strong> so scripts don't hang forever.</li><li>Check the status (<code>raise_for_status()</code>), and handle network errors with <code>try/except requests.RequestException</code>.</li><li>Respect <strong>rate limits</strong> and terms of use; cache results when you can.</li><li>Keep <strong>API keys</strong> in environment variables or a <code>.env</code> file (with <code>python-dotenv</code>), never in code you share or commit to GitHub.</li></ul>
+<p>Here's the pattern simulated so it runs here:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import json, time
+
+def fake_get(url, params=None, timeout=10):
+    &quot;&quot;&quot;Pretend API: returns JSON text like a real web service would.&quot;&quot;&quot;
+    time.sleep(0.1)
+    return json.dumps({&quot;base&quot;: &quot;USD&quot;, &quot;rates&quot;: {&quot;KES&quot;: 129.25, &quot;UGX&quot;: 3700.5, &quot;TZS&quot;: 2650.0}})
+
+def get_rate(currency):
+    try:
+        data = json.loads(fake_get(&quot;https://api.example.com/latest&quot;, params={&quot;base&quot;: &quot;USD&quot;}))
+        return data[&quot;rates&quot;][currency]
+    except KeyError:
+        return None
+
+for cur in [&quot;KES&quot;, &quot;UGX&quot;, &quot;XYZ&quot;]:
+    rate = get_rate(cur)
+    print(cur, &quot;-&gt;&quot;, rate if rate is not None else &quot;not available&quot;)</code></pre></figure>
+<p>(The rate numbers above are made up for the example.)</p>
+<h2>Sending emails</h2>
+<p>Python's built-in <code>smtplib</code> can send email through an email provider (for Gmail you'd use an <strong>App Password</strong>, never your main password):</p>
+<figure class="static-code"><pre><code>import smtplib, os
+from email.message import EmailMessage
+
+msg = EmailMessage()
+msg[&quot;Subject&quot;] = &quot;Weekly sales report&quot;
+msg[&quot;From&quot;] = &quot;reports@example.co.ke&quot;
+msg[&quot;To&quot;] = &quot;manager@example.co.ke&quot;
+msg.set_content(&quot;Hello, the weekly report is attached.&quot;)
+msg.add_attachment(open(&quot;weekly-report.xlsx&quot;, &quot;rb&quot;).read(), maintype=&quot;application&quot;, subtype=&quot;octet-stream&quot;, filename=&quot;weekly-report.xlsx&quot;)
+
+with smtplib.SMTP_SSL(&quot;smtp.example.co.ke&quot;, 465) as server:
+    server.login(os.environ[&quot;SMTP_USER&quot;], os.environ[&quot;SMTP_PASSWORD&quot;])
+    server.send_message(msg)</code></pre></figure>
+<p>For SMS and WhatsApp, providers offer APIs (e.g. SMS gateways used in Kenya, and the official WhatsApp Business Platform), called with <code>requests</code>. Only message people who agreed to receive messages.</p>
+<h2>Scheduling scripts</h2>
+<p>Make scripts run automatically:</p>
+<div class="static-table"><table><thead><tr><th>System</th><th>Tool</th></tr></thead><tbody><tr><td>Windows</td><td><strong>Task Scheduler</strong> (run <code>python report.py</code> every Monday at 8:00)</td></tr><tr><td>Linux/Mac/servers</td><td><strong>cron</strong>: <code>0 8 * * 1 /usr/bin/python3 /home/user/report.py</code></td></tr><tr><td>cPanel hosting</td><td><strong>Cron Jobs</strong> section</td></tr><tr><td>Cloud</td><td>GitHub Actions schedules, cloud functions</td></tr></tbody></table></div>
+<p>Log what scripts do (the <code>logging</code> module) so you can check they ran.</p>
+<h2>Web scraping (with care)</h2>
+<p><strong>Scraping</strong> means extracting data from web pages (<code>requests</code> + <code>BeautifulSoup</code>). Before scraping, check if there's an official API, read the site's terms and <code>robots.txt</code>, don't overload servers, and respect copyright and personal data laws (Kenya's Data Protection Act applies to personal data you collect).</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A freelancer is asked to "automatically download all customer phone numbers from a competitor's website every day". Should they do it?</span><em>Show answer</em></summary><div class="callout-body"><p>No. Collecting personal data from another company's site without consent likely breaches the Data Protection Act and the site's terms, and could be illegal. Automation must be legal and ethical: use your own data, official APIs and publicly allowed information, with consent where personal data is involved.</p></div></details>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>No dry run or backup</td><td>Print planned actions first; work on copies</td></tr><tr><td>Hard-coded passwords/API keys</td><td>Environment variables or <code>.env</code> (not committed)</td></tr><tr><td>No timeouts on requests</td><td><code>timeout=10</code></td></tr><tr><td>Scripts that silently fail</td><td>Logging and clear error messages</td></tr><tr><td>Ignoring terms and privacy laws</td><td>Use APIs; get consent; respect robots.txt</td></tr><tr><td>Over-automating rare tasks</td><td>Automate frequent, repetitive work</td></tr></tbody></table></div>
+<h2>Practice tasks</h2>
+<ol><li>Write a script that organises files in a folder into subfolders by extension (dry run first).</li><li>Summarise a CSV of sales by month and write the summary to a new CSV.</li><li>On your computer, create an Excel report with openpyxl including a bar chart.</li><li>Use <code>requests</code> with a free public API (many need no key) and print one value, with a timeout and error handling.</li><li>Schedule a simple script with Task Scheduler or cron that writes the date to a log file.</li></ol>
+<h2>Summary</h2>
+<ul><li>Automate repetitive, rule-based, frequent tasks; always do dry runs and keep backups.</li><li><code>pathlib</code>/<code>shutil</code> for files; <code>csv</code>/<code>pandas</code> for data; <code>openpyxl</code> for Excel reports and charts.</li><li><code>requests</code> for APIs: timeouts, status checks, error handling, rate limits; keep keys in environment variables.</li><li><code>smtplib</code> for email (app passwords); official APIs for SMS/WhatsApp with consent.</li><li>Schedule with Task Scheduler, cron or cPanel cron jobs; log results.</li><li>Scrape responsibly and legally.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What should you run first before a script that renames many files? (two words)</p><details><summary>Show answer</summary><p>dry run</p></details></li><li><p>Which Python package is popular for calling web APIs?</p><details><summary>Show answer</summary><p>requests</p></details></li><li><p>Which package creates Excel .xlsx files?</p><details><summary>Show answer</summary><p>openpyxl</p></details></li><li><p>Where should API keys be stored instead of in code? (two words)</p><details><summary>Show answer</summary><p>environment variables</p></details></li><li><p>Which Linux tool schedules scripts to run automatically?</p><details><summary>Show answer</summary><p>cron</p></details></li><li><p>What should you always set on web requests so scripts don't hang?</p><details><summary>Show answer</summary><p>timeout</p></details></li></ol></section></div><p class="static-meta">Lesson 17 of 20 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/dates-random-math/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Dates, times, random numbers and maths</a><a class="btn btn-solid btn-sm" href="/learn/python/classes-oop/">Classes and objects: object-oriented programming in Python <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>
