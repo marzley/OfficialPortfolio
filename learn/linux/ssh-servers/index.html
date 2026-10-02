@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SSH and managing a server | Linux command line</title>
-    <meta name="description" content="SSH (Secure Shell) gives you an encrypted terminal on another computer, usually a web server or VPS." />
+    <title>SSH and managing a server: connecting, keys, copying…</title>
+    <meta name="description" content="SSH (Secure Shell) lets you control a remote computer securely over the internet, as if you were typing on its keyboard. It&#x27;s how developers deploy…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/linux/ssh-servers/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="SSH and managing a server | Linux command line" />
-    <meta property="og:description" content="SSH (Secure Shell) gives you an encrypted terminal on another computer, usually a web server or VPS." />
+    <meta property="og:title" content="SSH and managing a server: connecting, keys, copying…" />
+    <meta property="og:description" content="SSH (Secure Shell) lets you control a remote computer securely over the internet, as if you were typing on its keyboard. It&#x27;s how developers deploy…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/linux/ssh-servers/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="SSH and managing a server | Linux command line" />
-    <meta name="twitter:description" content="SSH (Secure Shell) gives you an encrypted terminal on another computer, usually a web server or VPS." />
+    <meta name="twitter:title" content="SSH and managing a server: connecting, keys, copying…" />
+    <meta name="twitter:description" content="SSH (Secure Shell) lets you control a remote computer securely over the internet, as if you were typing on its keyboard. It&#x27;s how developers deploy…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/linux/ssh-servers/#lesson","name":"SSH and managing a server","description":"SSH (Secure Shell) gives you an encrypted terminal on another computer, usually a web server or VPS.","url":"https://marzleytechsolutions.co.ke/learn/linux/ssh-servers/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/linux/#course","name":"Linux command line","url":"https://marzleytechsolutions.co.ke/learn/linux/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Linux command line","item":"https://marzleytechsolutions.co.ke/learn/linux/"},{"@type":"ListItem","position":4,"name":"SSH and managing a server","item":"https://marzleytechsolutions.co.ke/learn/linux/ssh-servers/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/linux/ssh-servers/#lesson","name":"SSH and managing a server: connecting, keys, copying files, config, hardening and firewalls","description":"SSH (Secure Shell) lets you control a remote computer securely over the internet, as if you were typing on its keyboard. It's how developers deploy…","url":"https://marzleytechsolutions.co.ke/learn/linux/ssh-servers/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/linux/#course","name":"Linux command line","url":"https://marzleytechsolutions.co.ke/learn/linux/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Linux command line","item":"https://marzleytechsolutions.co.ke/learn/linux/"},{"@type":"ListItem","position":4,"name":"SSH and managing a server: connecting, keys, copying files, config, hardening and firewalls","item":"https://marzleytechsolutions.co.ke/learn/linux/ssh-servers/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,23 +36,99 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/linux/">Linux command line</a> / <span>SSH and managing a server</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=linux&amp;lesson=ssh-servers"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>SSH: working on remote servers</h1>
-<p><strong>SSH</strong> (Secure Shell) gives you an encrypted terminal on another computer, usually a web server or VPS.</p>
-<figure class="static-code"><pre><code>ssh kelvin@203.0.113.10          # connect (port 22)
-ssh -p 2222 kelvin@server.co.ke  # different port
-exit                             # leave</code></pre></figure>
-<h2>Use SSH keys, not passwords</h2>
-<figure class="static-code"><pre><code>ssh-keygen -t ed25519 -C &quot;kelvin@laptop&quot;   # make a key pair (once)
-ssh-copy-id kelvin@203.0.113.10             # put your public key on the server</code></pre></figure>
-<p>The <strong>private key</strong> (<code>~/.ssh/id_ed25519</code>) stays secret on your computer; the <strong>public key</strong> (<code>.pub</code>) goes on servers.</p>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/linux/">Linux command line</a> / <span>SSH and managing a server: connecting, keys, copying files, config, hardening and firewalls</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=linux&amp;lesson=ssh-servers"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>SSH and managing a server: connecting, keys, copying files, config, hardening and firewalls</h1>
+<p><strong>SSH (Secure Shell)</strong> lets you control a remote computer securely over the internet, as if you were typing on its keyboard. It's how developers deploy websites, how administrators manage cloud servers, and how network engineers reach Linux devices. Everything you type is encrypted, so passwords and data can't be read by anyone in between, even on public Wi-Fi.</p>
+<p>This unit takes you from your first connection to a properly secured server.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>How SSH works (client, server, port 22, encryption)</li><li>Connecting with a password and with keys</li><li>Generating keys and copying them to a server</li><li>The SSH config file for shortcuts</li><li>Copying files: scp, rsync and SFTP</li><li>Running remote commands and tunnels</li><li>Hardening a new server: users, sudo, disable root and password logins</li><li>Firewalls with UFW and protecting SSH with Fail2ban</li><li>A first-day checklist for a new VPS</li></ul></div></aside>
+<h2>How SSH works</h2>
+<ul><li>The <strong>SSH server</strong> (<code>sshd</code>) runs on the remote machine, listening on <strong>port 22</strong> by default.</li><li>The <strong>SSH client</strong> (<code>ssh</code>) runs on your computer: built into Linux, macOS and Windows 10/11 (PowerShell or Windows Terminal). PuTTY and MobaXterm are graphical alternatives on Windows.</li><li>When you first connect, the server shows its <strong>host key fingerprint</strong>. Accepting it stores it in <code>~/.ssh/known_hosts</code>; if it changes later, SSH warns you (possible impersonation, or the server was rebuilt).</li></ul>
+<h2>Connecting</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">ssh username@server-ip
+ssh deploy@203.0.113.10
+ssh -p 2222 deploy@203.0.113.10     # a non-standard port
+exit                                 # disconnect (or Ctrl+D)</code></pre></figure>
+<p>Cloud providers give you an IP address and either a password or a key at creation.</p>
+<h2>SSH keys: better than passwords</h2>
+<p>A <strong>key pair</strong> has a <strong>private key</strong> (stays on your computer, secret) and a <strong>public key</strong> (copied to servers). Keys are far stronger than passwords and can't be guessed by bots.</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">ssh-keygen -t ed25519 -C &quot;wanjiku laptop&quot;
+# saves ~/.ssh/id_ed25519 (private) and ~/.ssh/id_ed25519.pub (public)
+# set a passphrase to protect the private key if the laptop is stolen</code></pre></figure>
+<p>Copy the public key to the server:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">ssh-copy-id deploy@203.0.113.10</code></pre></figure>
+<p>This appends your public key to <code>~/.ssh/authorized_keys</code> on the server. Without <code>ssh-copy-id</code> (e.g. on Windows), paste the contents of <code>id_ed25519.pub</code> into that file manually and set permissions (<code>chmod 700 ~/.ssh</code>, <code>chmod 600 ~/.ssh/authorized_keys</code>).</p>
+<p>Use <code>ssh-agent</code> so you type the passphrase once per session: <code>eval &quot;$(ssh-agent -s)&quot;</code> then <code>ssh-add</code>.</p>
+<h2>The SSH config file</h2>
+<p>Create <code>~/.ssh/config</code> on your computer:</p>
+<figure class="static-code"><pre><code>Host shop
+    HostName 203.0.113.10
+    User deploy
+    Port 22
+    IdentityFile ~/.ssh/id_ed25519
+
+Host school-portal
+    HostName portal.example.co.ke
+    User admin</code></pre></figure>
+<p>Now just type <code>ssh shop</code>. The aliases work with scp, rsync and Git too.</p>
 <h2>Copying files</h2>
-<figure class="static-code"><pre><code>scp site.zip kelvin@203.0.113.10:/var/www/          # upload
-scp kelvin@203.0.113.10:/var/log/nginx/error.log .  # download
-rsync -avz ./site/ kelvin@203.0.113.10:/var/www/site/   # sync a folder efficiently</code></pre></figure>
-<h2>Secure a new server (checklist)</h2>
-<ol><li><code>sudo apt update &amp;&amp; sudo apt upgrade</code></li><li>Create a normal user with sudo; log in with keys.</li><li>Disable root login and password login in <code>/etc/ssh/sshd_config</code> (<code>PermitRootLogin no</code>, <code>PasswordAuthentication no</code>), then <code>sudo systemctl restart ssh</code>.</li><li>Firewall: <code>sudo ufw allow OpenSSH</code>, <code>sudo ufw allow &#x27;Nginx Full&#x27;</code>, <code>sudo ufw enable</code>.</li><li>Install <strong>fail2ban</strong> to block password guessers.</li><li>Turn on automatic security updates (<code>unattended-upgrades</code>).</li></ol>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which port does SSH use by default?</p><details><summary>Show answer</summary><p>22</p></details></li><li><p>Which command creates an SSH key pair?</p><details><summary>Show answer</summary><p>ssh-keygen</p></details></li><li><p>Which key stays secret on your computer: public or private?</p><details><summary>Show answer</summary><p>private</p></details></li><li><p>Which tool blocks IPs that keep guessing passwords?</p><details><summary>Show answer</summary><p>fail2ban</p></details></li></ol></section></div><p class="static-meta">Lesson 9 of 10 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/services-cron-logs/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Services, scheduled jobs (cron) and logs</a><a class="btn btn-solid btn-sm" href="/learn/linux/bash-scripts/">Bash scripting basics <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">scp index.html shop:/var/www/site/                 # upload a file
+scp shop:/var/log/nginx/error.log .                # download
+scp -r website/ shop:/var/www/                     # a folder
+
+rsync -avz website/ shop:/var/www/site/            # sync only changes (fast, resumable)
+rsync -avz --delete website/ shop:/var/www/site/   # also delete files removed locally (careful)
+rsync -avzn website/ shop:/var/www/site/           # -n: dry run, show what would happen</code></pre></figure>
+<p><code>rsync</code> is the professional choice for deployments and backups. <strong>SFTP</strong> (in FileZilla or WinSCP) gives a drag-and-drop view over the same SSH connection.</p>
+<h2>Remote commands and tunnels</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">ssh shop &quot;df -h &amp;&amp; uptime&quot;                     # run a command and return
+ssh -L 8080:localhost:3306 shop                # local port 8080 -&gt; server&#x27;s MySQL (3306) securely</code></pre></figure>
+<p>Tunnels let you reach services (like a database admin tool) that aren't exposed to the internet.</p>
+<h2>Hardening a new server</h2>
+<p>Bots try to log in to every public server within minutes of it going online. Do this on day one:</p>
+<h3>1. Update and create a normal user</h3>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">ssh root@203.0.113.10
+apt update &amp;&amp; apt upgrade -y
+adduser deploy
+usermod -aG sudo deploy          # allow admin commands with sudo</code></pre></figure>
+<h3>2. Add your key for the new user</h3>
+<p>From your computer: <code>ssh-copy-id deploy@203.0.113.10</code>, then test <code>ssh deploy@203.0.113.10</code> <strong>in a new terminal</strong> before going further.</p>
+<h3>3. Disable root login and passwords</h3>
+<p>Edit the SSH server configuration:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo nano /etc/ssh/sshd_config</code></pre></figure>
+<p>Set:</p>
+<figure class="static-code"><pre><code>PermitRootLogin no
+PasswordAuthentication no
+PubkeyAuthentication yes</code></pre></figure>
+<p>Check and apply:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo sshd -t                     # test the config for errors
+sudo systemctl restart ssh       # the service is &quot;ssh&quot; on Ubuntu (&quot;sshd&quot; on some distros)</code></pre></figure>
+<aside class="callout callout-warning"><p class="callout-title">Don't lock yourself out</p><div class="callout-body"><p>Keep your current session open while you test logging in from a <strong>second</strong> terminal. If key login fails, fix it from the open session. Many cloud providers also offer a web console for emergencies.</p></div></aside>
+<h3>4. Firewall with UFW</h3>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo ufw allow OpenSSH           # allow SSH BEFORE enabling!
+sudo ufw allow 80/tcp            # HTTP
+sudo ufw allow 443/tcp           # HTTPS
+sudo ufw enable
+sudo ufw status verbose</code></pre></figure>
+<p>Only open the ports you need. Databases (3306 MySQL, 5432 PostgreSQL) should normally <strong>not</strong> be open to the internet.</p>
+<h3>5. Fail2ban</h3>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo apt install fail2ban
+sudo systemctl enable --now fail2ban
+sudo fail2ban-client status sshd</code></pre></figure>
+<p>Fail2ban watches logs and temporarily bans IP addresses with repeated failed logins.</p>
+<h3>6. Automatic security updates</h3>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo apt install unattended-upgrades
+sudo dpkg-reconfigure --priority=low unattended-upgrades</code></pre></figure>
+<h2>Checking who's logged in and login attempts</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">who                          # who&#x27;s logged in now
+last                         # recent logins
+sudo journalctl -u ssh --since today      # SSH service logs
+sudo grep &quot;Failed password&quot; /var/log/auth.log | tail</code></pre></figure>
+<h2>First-day VPS checklist</h2>
+<ol><li>Update packages.</li><li>Create a sudo user; add your SSH key.</li><li>Disable root login and password authentication.</li><li>Enable UFW (SSH, 80, 443 only).</li><li>Install Fail2ban and unattended-upgrades.</li><li>Set the timezone: <code>sudo timedatectl set-timezone Africa/Nairobi</code>.</li><li>Set up backups (provider snapshots + off-server copies).</li><li>Install your stack (Nginx/Apache, PHP, database) and configure HTTPS (the hosting subject covers this).</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> You disabled password login, restarted SSH, closed your only session, and now <code>ssh deploy@server</code> says "Permission denied (publickey)". What probably went wrong, and how do you recover?</span><em>Show answer</em></summary><div class="callout-body"><p>Your public key wasn't correctly in <code>/home/deploy/.ssh/authorized_keys</code> (or the permissions on <code>.ssh</code> were wrong). Recover through the cloud provider's web/recovery console, fix the key file and permissions (700/600, owned by deploy), then test from a second terminal before closing the console.</p></div></details>
+<h2>Summary</h2>
+<ul><li>SSH gives encrypted remote access on port 22; the client is built into Linux, macOS and Windows.</li><li>Use key pairs: <code>ssh-keygen -t ed25519</code>, <code>ssh-copy-id</code>; keep the private key secret with a passphrase.</li><li><code>~/.ssh/config</code> creates shortcuts; scp, rsync and SFTP copy files; tunnels reach private services.</li><li>Harden servers: sudo user, keys only, <code>PermitRootLogin no</code>, <code>PasswordAuthentication no</code>, UFW, Fail2ban, automatic updates.</li><li>Test new SSH settings from a second session before closing the first.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the default SSH port number?</p><details><summary>Show answer</summary><p>22</p></details></li><li><p>Which command creates an SSH key pair?</p><details><summary>Show answer</summary><p>ssh-keygen</p></details></li><li><p>Which command copies your public key to a server?</p><details><summary>Show answer</summary><p>ssh-copy-id</p></details></li><li><p>Which file on the server lists public keys allowed to log in?</p><details><summary>Show answer</summary><p>authorized_keys</p></details></li><li><p>Which sshd_config setting stops root from logging in? (three words)</p><details><summary>Show answer</summary><p>PermitRootLogin no</p></details></li><li><p>Which tool bans IP addresses after repeated failed logins?</p><details><summary>Show answer</summary><p>Fail2ban</p></details></li></ol></section></div><p class="static-meta">Lesson 10 of 12 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/archives-disks-network/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Archives, disks and network tools: tar, zip, df, du, mount, curl, wget, ip and ss</a><a class="btn btn-solid btn-sm" href="/learn/linux/bash-scripts/">Bash scripting: variables, input, conditions, loops, functions, error handling and real automation scripts <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

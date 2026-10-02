@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Navigating and managing files | Linux command line</title>
-    <meta name="description" content="Free Linux command line lesson: Navigating and managing files." />
+    <title>Navigating and managing files: the Linux file system,…</title>
+    <meta name="description" content="Everything on a Linux system lives in one big tree of folders (called directories ), starting at / . Before you can manage a web server, edit configs…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/linux/navigating-files/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Navigating and managing files | Linux command line" />
-    <meta property="og:description" content="Free Linux command line lesson: Navigating and managing files." />
+    <meta property="og:title" content="Navigating and managing files: the Linux file system,…" />
+    <meta property="og:description" content="Everything on a Linux system lives in one big tree of folders (called directories ), starting at / . Before you can manage a web server, edit configs…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/linux/navigating-files/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Navigating and managing files | Linux command line" />
-    <meta name="twitter:description" content="Free Linux command line lesson: Navigating and managing files." />
+    <meta name="twitter:title" content="Navigating and managing files: the Linux file system,…" />
+    <meta name="twitter:description" content="Everything on a Linux system lives in one big tree of folders (called directories ), starting at / . Before you can manage a web server, edit configs…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/linux/navigating-files/#lesson","name":"Navigating and managing files","description":"Free Linux command line lesson: Navigating and managing files.","url":"https://marzleytechsolutions.co.ke/learn/linux/navigating-files/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/linux/#course","name":"Linux command line","url":"https://marzleytechsolutions.co.ke/learn/linux/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Linux command line","item":"https://marzleytechsolutions.co.ke/learn/linux/"},{"@type":"ListItem","position":4,"name":"Navigating and managing files","item":"https://marzleytechsolutions.co.ke/learn/linux/navigating-files/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/linux/navigating-files/#lesson","name":"Navigating and managing files: the Linux file system, paths, ls, cd, mkdir, cp, mv, rm, find and wildcards","description":"Everything on a Linux system lives in one big tree of folders (called directories ), starting at / . Before you can manage a web server, edit configs…","url":"https://marzleytechsolutions.co.ke/learn/linux/navigating-files/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/linux/#course","name":"Linux command line","url":"https://marzleytechsolutions.co.ke/learn/linux/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Linux command line","item":"https://marzleytechsolutions.co.ke/learn/linux/"},{"@type":"ListItem","position":4,"name":"Navigating and managing files: the Linux file system, paths, ls, cd, mkdir, cp, mv, rm, find and wildcards","item":"https://marzleytechsolutions.co.ke/learn/linux/navigating-files/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,35 +36,95 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/linux/">Linux command line</a> / <span>Navigating and managing files</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=linux&amp;lesson=navigating-files"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Files and folders</h1>
-<h2>Moving around</h2>
-<div class="static-table"><table><thead><tr><th>Command</th><th>Meaning</th></tr></thead><tbody><tr><td><code>cd /var/www</code></td><td>Go to an absolute path (starts with <code>/</code>)</td></tr><tr><td><code>cd projects</code></td><td>Go into a folder inside the current one</td></tr><tr><td><code>cd ..</code></td><td>Up one level</td></tr><tr><td><code>cd ~</code> or <code>cd</code></td><td>Your home folder</td></tr><tr><td><code>cd -</code></td><td>Back to the previous folder</td></tr><tr><td><code>ls -la</code></td><td>List all files (including hidden <code>.files</code>) with details</td></tr></tbody></table></div>
-<h2>Creating, copying, moving, deleting</h2>
-<figure class="static-code"><pre><code>mkdir -p site/css site/js      # make folders (-p: parents too)
-touch index.html               # create an empty file
-cp index.html about.html       # copy
-cp -r site site-backup         # copy a folder (-r recursive)
-mv about.html pages/           # move
-mv old.txt new.txt             # rename
-rm file.txt                    # delete a file (no recycle bin!)
-rm -r old-folder               # delete a folder</code></pre></figure>
-<blockquote><p><code>rm -rf</code> deletes without asking. Double-check the path. There is no undo.</p></blockquote>
-<h2>Looking inside files</h2>
-<figure class="static-code"><pre><code>cat notes.txt          # print a whole file
-less big.log           # scroll a big file (q to quit)
-head -n 20 file        # first 20 lines
-tail -n 50 error.log   # last 50 lines
-tail -f access.log     # watch a log live
-nano index.html        # simple editor (Ctrl+O save, Ctrl+X exit)</code></pre></figure>
-<h2>Finding things</h2>
-<figure class="static-code"><pre><code>find /var/www -name &quot;*.php&quot;        # find files by name
-grep -r &quot;DB_PASSWORD&quot; /var/www     # search inside files
-grep -i &quot;error&quot; error.log | tail   # combine with a pipe
-du -sh *                           # size of each item here
-df -h                              # free disk space</code></pre></figure>
-<p>The <strong>pipe</strong> <code>|</code> sends one command's output into the next. <code>&gt;</code> writes output to a file (overwrite), <code>&gt;&gt;</code> appends.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command goes up one folder?</p><details><summary>Show answer</summary><p>cd ..</p></details></li><li><p>Which command creates a folder?</p><details><summary>Show answer</summary><p>mkdir</p></details></li><li><p>Which command shows the last lines of a file?</p><details><summary>Show answer</summary><p>tail</p></details></li><li><p>Which command searches for text inside files?</p><details><summary>Show answer</summary><p>grep</p></details></li><li><p>What is the symbol that sends one command's output into another command called?</p><details><summary>Show answer</summary><p>pipe</p></details></li><li><p>Which command shows free disk space in human-readable form?</p><details><summary>Show answer</summary><p>df -h</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 10 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/why-linux/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Why Linux and the terminal</a><a class="btn btn-solid btn-sm" href="/learn/linux/viewing-editing-files/">Viewing, searching and editing text files (cat, less, grep, nano) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/linux/">Linux command line</a> / <span>Navigating and managing files: the Linux file system, paths, ls, cd, mkdir, cp, mv, rm, find and wildcards</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=linux&amp;lesson=navigating-files"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Navigating and managing files: the Linux file system, paths, ls, cd, mkdir, cp, mv, rm, find and wildcards</h1>
+<p>Everything on a Linux system lives in one big tree of folders (called <strong>directories</strong>), starting at <code>/</code>. Before you can manage a web server, edit configs or write scripts, you need to move around this tree confidently and create, copy, move and delete files without a mouse. This unit covers the file system layout and every essential file command, with the mistakes to avoid.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>The Linux directory tree and what each main folder is for</li><li>Absolute vs relative paths, <code>~</code>, <code>.</code> and <code>..</code></li><li>Listing files with <code>ls</code> and reading the output</li><li>Moving around with <code>cd</code></li><li>Creating files and folders</li><li>Copying, moving, renaming and deleting</li><li>Wildcards (globbing) for many files at once</li><li>Finding files with <code>find</code> and <code>locate</code></li><li>Hidden files, file types and links</li></ul></div></aside>
+<h2>The directory tree</h2>
+<figure class="static-code"><pre><code>/
+├── bin, usr/bin   programs (ls, cp, python3...)
+├── etc            system configuration files (nginx, ssh, users)
+├── home           users&#x27; personal folders (/home/wanjiku)
+├── root           the root user&#x27;s home
+├── var            changing data: logs (/var/log), websites (/var/www), databases
+├── tmp            temporary files (cleared on reboot)
+├── opt            optional/third-party software
+├── dev            devices (disks, terminals)
+├── proc, sys      live kernel and process information
+├── mnt, media     mounted drives and USB sticks
+└── boot           the kernel and boot loader</code></pre></figure>
+<p>Unlike Windows, there are no drive letters (C:, D:). Extra disks and USB drives are <strong>mounted</strong> into the tree, e.g. <code>/media/wanjiku/USB</code>.</p>
+<h2>Paths</h2>
+<div class="static-table"><table><thead><tr><th>Path type</th><th>Example</th><th>Meaning</th></tr></thead><tbody><tr><td><strong>Absolute</strong></td><td><code>/home/wanjiku/projects/site</code></td><td>Starts from <code>/</code>; works from anywhere</td></tr><tr><td><strong>Relative</strong></td><td><code>projects/site</code></td><td>Starts from where you are now</td></tr><tr><td><code>~</code></td><td><code>~/projects</code></td><td>Your home folder (<code>/home/wanjiku</code>)</td></tr><tr><td><code>.</code></td><td><code>./script.sh</code></td><td>The current folder</td></tr><tr><td><code>..</code></td><td><code>../images</code></td><td>The parent folder (one level up)</td></tr></tbody></table></div>
+<h2>Listing: ls</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">ls                 # names in the current folder
+ls -l              # long format: permissions, owner, size, date
+ls -a              # include hidden files (names starting with .)
+ls -lh             # human-readable sizes (K, M, G)
+ls -lt             # newest first
+ls -R              # include sub-folders
+ls /var/log        # list another folder</code></pre></figure>
+<p>Reading <code>ls -l</code>:</p>
+<figure class="static-code"><pre><code>-rw-r--r-- 1 wanjiku wanjiku 2048 Sep  7 10:15 index.html
+drwxr-xr-x 2 wanjiku wanjiku 4096 Sep  7 10:16 images</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Part</th><th>Meaning</th></tr></thead><tbody><tr><td><code>-</code> / <code>d</code> / <code>l</code></td><td>Regular file / directory / symbolic link</td></tr><tr><td><code>rw-r--r--</code></td><td>Permissions (owner, group, others): next lessons</td></tr><tr><td><code>wanjiku wanjiku</code></td><td>Owner and group</td></tr><tr><td><code>2048</code></td><td>Size in bytes</td></tr><tr><td><code>Sep 7 10:15</code></td><td>Last modified</td></tr></tbody></table></div>
+<h2>Moving around: cd</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">cd /var/log        # absolute path
+cd projects        # relative path
+cd ..              # up one level
+cd ../..           # up two levels
+cd ~  (or just cd) # home
+cd -               # back to the previous folder</code></pre></figure>
+<p>Use <strong>Tab</strong> to complete folder names. Names with spaces need quotes or a backslash: <code>cd &quot;My Documents&quot;</code> or <code>cd My\ Documents</code>. Better yet, avoid spaces in names; use <code>my-documents</code>.</p>
+<h2>Creating files and folders</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">mkdir website                       # one folder
+mkdir -p website/css website/js     # -p creates parents and doesn&#x27;t complain if they exist
+touch website/index.html            # create an empty file (or update its timestamp)
+echo &quot;Hello&quot; &gt; notes.txt            # create a file with content</code></pre></figure>
+<h2>Copying: cp</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">cp index.html index-backup.html         # copy a file
+cp index.html website/                  # copy into a folder
+cp -r website website-backup            # copy a folder (-r = recursive)
+cp -i a.txt b.txt                       # ask before overwriting
+cp -v *.jpg images/                     # verbose: show each file copied</code></pre></figure>
+<h2>Moving and renaming: mv</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">mv old-name.html new-name.html          # rename
+mv report.pdf ~/Documents/              # move
+mv *.png images/                        # move many files
+mv -i a.txt folder/                     # ask before overwriting</code></pre></figure>
+<p>There's no separate rename command for single files: renaming is moving to a new name.</p>
+<h2>Deleting: rm and rmdir</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">rm file.txt              # delete a file
+rm -i *.log              # ask for each file
+rmdir empty-folder       # delete an empty folder
+rm -r old-site           # delete a folder and everything inside</code></pre></figure>
+<aside class="callout callout-warning"><p class="callout-title">There is no Recycle Bin in the terminal</p><div class="callout-body"><p><code>rm</code> deletes permanently. Be especially careful with <code>rm -rf</code> (recursive, force): a typo like <code>rm -rf / tmp/x</code> (note the space) would try to delete the entire system. Run <code>ls</code> with the same pattern first to see what will be deleted, and never run <code>rm -rf</code> with <code>sudo</code> unless you're certain.</p></div></aside>
+<h2>Wildcards (globbing)</h2>
+<div class="static-table"><table><thead><tr><th>Pattern</th><th>Matches</th></tr></thead><tbody><tr><td><code>*</code></td><td>Any characters: <code>*.jpg</code> = all JPG files</td></tr><tr><td><code>?</code></td><td>Exactly one character: <code>file?.txt</code> = file1.txt, fileA.txt</td></tr><tr><td><code>[abc]</code></td><td>One of these: <code>[0-9]*.csv</code> starts with a digit</td></tr><tr><td><code>{a,b}</code></td><td>Each alternative (brace expansion): <code>mkdir {css,js,img}</code></td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">ls *.html
+cp report-2026-0?.pdf archive/
+mkdir -p project/{src,docs,tests}
+rm -i *.tmp</code></pre></figure>
+<h2>Finding files</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">find ~ -name &quot;*.pdf&quot;                       # by name under home
+find /var/www -type f -name &quot;*.php&quot;        # files only
+find . -type d -name &quot;node_modules&quot;        # folders
+find /var/log -mtime -1                    # modified in the last day
+find . -size +100M                         # larger than 100 MB
+find . -name &quot;*.tmp&quot; -delete               # find and delete (check without -delete first!)</code></pre></figure>
+<p><code>locate</code> is faster (it searches a database updated daily): <code>sudo apt install plocate</code>, then <code>locate nginx.conf</code>.</p>
+<h2>Hidden files, types and links</h2>
+<ul><li>Files starting with <code>.</code> are hidden: <code>.bashrc</code> (shell settings), <code>.ssh/</code> (keys), <code>.git/</code>, <code>.env</code>.</li><li><code>file photo.jpg</code> tells you what a file really is, regardless of its extension.</li><li>A <strong>symbolic link</strong> is a shortcut: <code>ln -s /var/www/site/current ~/site</code> creates <code>~/site</code> pointing to the real folder.</li></ul>
+<h2>Disk usage quick checks</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">du -sh website/          # size of a folder
+du -sh * | sort -h       # sizes of everything here, smallest to largest
+df -h                    # free space on each disk</code></pre></figure>
+<h2>Practice task</h2>
+<ol><li>In your home folder, create <code>practice/{docs,images,backup}</code> in one command.</li><li>Create <code>docs/notes.txt</code> and <code>docs/todo.txt</code>.</li><li>Copy all <code>.txt</code> files to <code>backup/</code>.</li><li>Rename <code>docs/todo.txt</code> to <code>docs/tasks.txt</code>.</li><li>Use <code>find</code> to list every <code>.txt</code> file under <code>practice</code>.</li><li>Delete the <code>backup</code> folder (check with <code>ls</code> first).</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> You're in /home/wanjiku/projects/site/css. Write two different commands to go to /home/wanjiku/projects/site/images.</span><em>Show answer</em></summary><div class="callout-body"><p>Relative: <code>cd ../images</code>. Absolute: <code>cd /home/wanjiku/projects/site/images</code> (or <code>cd ~/projects/site/images</code>).</p></div></details>
+<h2>Summary</h2>
+<ul><li>Linux has one directory tree from <code>/</code>: <code>/etc</code> configs, <code>/home</code> users, <code>/var/log</code> logs, <code>/var/www</code> websites.</li><li>Absolute paths start with <code>/</code>; relative paths start from the current folder; <code>~</code>, <code>.</code>, <code>..</code> are shortcuts.</li><li><code>ls -lah</code>, <code>cd</code>, <code>mkdir -p</code>, <code>touch</code>, <code>cp -r</code>, <code>mv</code>, <code>rm -r</code> manage files; <code>rm</code> is permanent.</li><li>Wildcards (<code>*</code>, <code>?</code>, <code>[ ]</code>, <code>{ }</code>) act on many files; preview with <code>ls</code> first.</li><li><code>find</code> searches by name, type, size and age; <code>du</code> and <code>df</code> check space.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which folder holds most system configuration files?</p><details><summary>Show answer</summary><p>/etc</p></details></li><li><p>Which symbol means the parent folder?</p><details><summary>Show answer</summary><p>..</p></details></li><li><p>Which option makes cp copy a whole folder?</p><details><summary>Show answer</summary><p>-r</p></details></li><li><p>Which mkdir option creates parent folders as needed?</p><details><summary>Show answer</summary><p>-p</p></details></li><li><p>Which wildcard matches exactly one character?</p><details><summary>Show answer</summary><p>?</p></details></li><li><p>Does rm move files to a Recycle Bin? (yes/no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 12 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/why-linux/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Why Linux and the terminal: what Linux is, who uses it, distributions and how to start practising</a><a class="btn btn-solid btn-sm" href="/learn/linux/viewing-editing-files/">Viewing, searching and editing text files (cat, less, grep, nano) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

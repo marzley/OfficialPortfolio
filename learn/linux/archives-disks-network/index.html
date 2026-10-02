@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Archives, disks and network tools: tar, zip, df, du,…</title>
+    <meta name="description" content="Three everyday admin jobs fill this unit: packing files (backups, uploads, downloads come as .tar.gz or .zip ), managing disk space (a full disk is one…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/linux/archives-disks-network/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Archives, disks and network tools: tar, zip, df, du,…" />
+    <meta property="og:description" content="Three everyday admin jobs fill this unit: packing files (backups, uploads, downloads come as .tar.gz or .zip ), managing disk space (a full disk is one…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/linux/archives-disks-network/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Archives, disks and network tools: tar, zip, df, du,…" />
+    <meta name="twitter:description" content="Three everyday admin jobs fill this unit: packing files (backups, uploads, downloads come as .tar.gz or .zip ), managing disk space (a full disk is one…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/linux/archives-disks-network/#lesson","name":"Archives, disks and network tools: tar, zip, df, du, mount, curl, wget, ip and ss","description":"Three everyday admin jobs fill this unit: packing files (backups, uploads, downloads come as .tar.gz or .zip ), managing disk space (a full disk is one…","url":"https://marzleytechsolutions.co.ke/learn/linux/archives-disks-network/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/linux/#course","name":"Linux command line","url":"https://marzleytechsolutions.co.ke/learn/linux/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Linux command line","item":"https://marzleytechsolutions.co.ke/learn/linux/"},{"@type":"ListItem","position":4,"name":"Archives, disks and network tools: tar, zip, df, du, mount, curl, wget, ip and ss","item":"https://marzleytechsolutions.co.ke/learn/linux/archives-disks-network/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=19f64783be" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/linux/">Linux command line</a> / <span>Archives, disks and network tools: tar, zip, df, du, mount, curl, wget, ip and ss</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=linux&amp;lesson=archives-disks-network"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Archives, disks and network tools: tar, zip, df, du, mount, curl, wget, ip and ss</h1>
+<p>Three everyday admin jobs fill this unit: <strong>packing files</strong> (backups, uploads, downloads come as <code>.tar.gz</code> or <code>.zip</code>), <strong>managing disk space</strong> (a full disk is one of the most common reasons websites and databases suddenly stop working), and <strong>checking the network</strong> (is the server online, which ports are listening, can it reach an API?). These commands are used by developers, sysadmins, network engineers and support staff daily.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Creating and extracting tar, gzip and zip archives</li><li>Checking disk space and finding what's using it</li><li>Disks, partitions and mounting a USB or extra disk</li><li>Downloading and testing web requests with curl and wget</li><li>Network information: ip, ping, ss, dig, traceroute</li><li>A "disk full" and a "site unreachable" troubleshooting routine</li></ul></div></aside>
+<h2>Archives and compression</h2>
+<p>An <strong>archive</strong> bundles many files into one; <strong>compression</strong> makes it smaller. On Linux the classic is <code>tar</code> (tape archive) plus <code>gzip</code>.</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">tar -czf site-backup.tar.gz /var/www/site     # create (c), gzip (z), file name (f)
+tar -tzf site-backup.tar.gz                   # list contents (t)
+tar -xzf site-backup.tar.gz                   # extract (x) here
+tar -xzf site-backup.tar.gz -C /tmp/restore   # extract into a folder
+tar -cJf logs.tar.xz /var/log/nginx           # xz: smaller, slower</code></pre></figure>
+<p>Remember the letters: <strong>c</strong>reate, e<strong>x</strong>tract, lis<strong>t</strong>, <strong>z</strong> gzip, <strong>J</strong> xz, <strong>v</strong> verbose, <strong>f</strong> file.</p>
+<div class="static-table"><table><thead><tr><th>Extension</th><th>Tool</th><th>Notes</th></tr></thead><tbody><tr><td><code>.tar.gz</code> / <code>.tgz</code></td><td><code>tar -z</code></td><td>Most common on Linux</td></tr><tr><td><code>.tar.xz</code></td><td><code>tar -J</code></td><td>Better compression</td></tr><tr><td><code>.zip</code></td><td><code>zip</code> / <code>unzip</code></td><td>Best for sharing with Windows users</td></tr><tr><td><code>.gz</code> (single file)</td><td><code>gzip</code> / <code>gunzip</code></td><td>Compresses one file, e.g. logs</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo apt install zip unzip
+zip -r photos.zip photos/
+unzip photos.zip -d extracted/
+unzip -l photos.zip              # list contents
+gzip big.log                     # becomes big.log.gz
+zcat big.log.gz | less           # read without extracting</code></pre></figure>
+<aside class="callout callout-tip"><p class="callout-title">Test your backups</p><div class="callout-body"><p>A backup you've never restored is a hope, not a backup. Regularly extract an archive into <code>/tmp</code> and check the files open.</p></div></aside>
+<h2>Disk space</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">df -h                    # free space per file system (human-readable)
+df -i                    # inodes: running out of these also stops new files
+du -sh /var/www          # size of one folder
+du -h --max-depth=1 /var | sort -h      # what&#x27;s big inside /var
+sudo du -xh / --max-depth=2 2&gt;/dev/null | sort -h | tail -20   # biggest folders on the system disk</code></pre></figure>
+<p>Interactive and friendlier: <code>sudo apt install ncdu</code>, then <code>sudo ncdu /</code>.</p>
+<p>Common space eaters on servers:</p>
+<div class="static-table"><table><thead><tr><th>Culprit</th><th>Where</th><th>Fix</th></tr></thead><tbody><tr><td>Logs</td><td><code>/var/log</code>, app log files</td><td>Rotate with logrotate; <code>sudo journalctl --vacuum-size=200M</code></td></tr><tr><td>Old backups</td><td>Backup folders</td><td>Keep a set number of days; move off-server</td></tr><tr><td>Package cache</td><td><code>/var/cache/apt</code></td><td><code>sudo apt clean</code> and <code>sudo apt autoremove</code></td></tr><tr><td>Uploads</td><td>Website upload folders</td><td>Optimise images, set limits</td></tr><tr><td>Old kernels</td><td><code>/boot</code></td><td><code>sudo apt autoremove</code></td></tr><tr><td>Docker</td><td><code>/var/lib/docker</code></td><td><code>docker system prune</code> (careful)</td></tr></tbody></table></div>
+<h2>Disks, partitions and mounting</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">lsblk                     # disks and partitions as a tree (sda, sdb, nvme0n1...)
+sudo fdisk -l             # detailed partition info
+mount | column -t         # what&#x27;s mounted where</code></pre></figure>
+<p>Mount a USB drive or extra disk:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo mkdir -p /mnt/usb
+sudo mount /dev/sdb1 /mnt/usb
+ls /mnt/usb
+sudo umount /mnt/usb      # always unmount before removing</code></pre></figure>
+<p>To mount a disk automatically at boot, add it to <code>/etc/fstab</code> (using its UUID from <code>sudo blkid</code>). A mistake in fstab can stop a server from booting, so test with <code>sudo mount -a</code> before rebooting.</p>
+<p>Formatting erases data: <code>sudo mkfs.ext4 /dev/sdb1</code> (double-check the device name with <code>lsblk</code> first!).</p>
+<h2>curl and wget: talking to the web</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">wget https://example.com/file.zip              # download a file
+wget -c https://example.com/big.iso            # continue an interrupted download
+curl https://example.com                       # print a page
+curl -o page.html https://example.com          # save to a file
+curl -I https://example.com                    # headers only: status code, server, redirects
+curl -L http://example.com                     # follow redirects
+curl -s https://api.github.com/repos/torvalds/linux | head -20    # call an API
+curl -X POST -H &quot;Content-Type: application/json&quot; \
+     -d &#x27;{&quot;name&quot;:&quot;Amina&quot;}&#x27; https://httpbin.org/post               # send JSON
+curl -w &quot;%{http_code} %{time_total}s\n&quot; -o /dev/null -s https://example.com   # status and timing</code></pre></figure>
+<p><code>curl -I</code> is a quick way to check if a site is up and whether HTTPS redirects work:</p>
+<figure class="static-code"><pre><code>HTTP/2 200
+server: nginx
+content-type: text/html</code></pre></figure>
+<h2>Network information</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">ip a                      # IP addresses of each interface (ip addr)
+ip r                      # routing table, including the default gateway
+ping -c 4 8.8.8.8         # can we reach the internet by IP?
+ping -c 4 google.com      # does DNS work too?
+dig example.com +short    # DNS lookup (sudo apt install dnsutils)
+traceroute example.com    # path packets take (sudo apt install traceroute)
+ss -tulpn                 # listening ports and which program owns them (sudo for all names)
+hostname -I               # this machine&#x27;s IP addresses
+cat /etc/resolv.conf      # DNS servers in use</code></pre></figure>
+<p>Reading <code>ss -tulpn</code>:</p>
+<figure class="static-code"><pre><code>tcp  LISTEN 0 511  0.0.0.0:80    0.0.0.0:*  users:((&quot;nginx&quot;,pid=812))
+tcp  LISTEN 0 151  127.0.0.1:3306 0.0.0.0:* users:((&quot;mysqld&quot;,pid=640))</code></pre></figure>
+<p>Nginx listens on port 80 on all addresses (<code>0.0.0.0</code>): reachable from outside. MySQL listens only on <code>127.0.0.1</code> (localhost): good, it isn't exposed to the internet.</p>
+<p>The networking subject explains IP addresses, DNS and ports in depth.</p>
+<h2>Troubleshooting routines</h2>
+<h3>"The website stopped working, and errors say no space left on device"</h3>
+<ol><li><code>df -h</code>: which file system is at 100%?</li><li><code>sudo du -xh / --max-depth=2 | sort -h | tail</code>: find the biggest folders.</li><li>Clean safely: rotate/compress logs, delete old backups, <code>apt clean</code>.</li><li>Restart affected services (<code>sudo systemctl restart mysql nginx php8.3-fpm</code>, adjusting names to your versions).</li><li>Prevent it: logrotate, backup retention, a disk-usage alert script (see bash scripting).</li></ol>
+<h3>"The site is unreachable"</h3>
+<ol><li>From your computer: <code>ping</code> the domain and <code>curl -I https://domain</code>.</li><li>DNS: <code>dig domain +short</code>: does it return the server's IP?</li><li>On the server: <code>systemctl status nginx</code>: is the web server running?</li><li><code>ss -tulpn | grep -E &#x27;:80|:443&#x27;</code>: is it listening?</li><li>Firewall: <code>sudo ufw status</code>: are 80/443 allowed?</li><li>Logs: <code>sudo tail -50 /var/log/nginx/error.log</code>.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> <code>df -h</code> shows / at 100%. <code>du</code> shows /var/log is 18 GB, mostly one file: /var/log/app/debug.log. What do you do immediately, and what do you change so it doesn't happen again?</span><em>Show answer</em></summary><div class="callout-body"><p>Immediately: compress or truncate the log (<code>sudo truncate -s 0 /var/log/app/debug.log</code> if you don't need it, or archive it elsewhere first), then restart affected services. Long term: turn off debug logging in production and configure logrotate for that log (daily/size-based rotation, compression, keep N files).</p></div></details>
+<h2>Summary</h2>
+<ul><li><code>tar -czf</code> creates and <code>tar -xzf</code> extracts <code>.tar.gz</code>; <code>zip</code>/<code>unzip</code> for Windows users; test restores.</li><li><code>df -h</code> shows free space; <code>du -sh</code> and <code>ncdu</code> find big folders; logs and backups are common culprits.</li><li><code>lsblk</code>, <code>mount</code>, <code>umount</code> and <code>/etc/fstab</code> manage disks; formatting erases data.</li><li><code>curl</code> and <code>wget</code> download and test web requests (<code>curl -I</code> for status/headers).</li><li><code>ip a</code>, <code>ip r</code>, <code>ping</code>, <code>dig</code>, <code>traceroute</code> and <code>ss -tulpn</code> check network setup and listening ports.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which tar letter means extract?</p><details><summary>Show answer</summary><p>x</p></details></li><li><p>Which command shows free disk space in human-readable form? (two words)</p><details><summary>Show answer</summary><p>df -h</p></details></li><li><p>Which curl option shows only the response headers?</p><details><summary>Show answer</summary><p>-I</p></details></li><li><p>Which command lists listening ports and their programs? (two words)</p><details><summary>Show answer</summary><p>ss -tulpn</p></details></li><li><p>Which command lists disks and partitions as a tree?</p><details><summary>Show answer</summary><p>lsblk</p></details></li><li><p>What address means a service only listens locally? (IPv4)</p><details><summary>Show answer</summary><p>127.0.0.1</p></details></li></ol></section></div><p class="static-meta">Lesson 9 of 12 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/services-cron-logs/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Services, scheduled jobs (cron) and logs</a><a class="btn btn-solid btn-sm" href="/learn/linux/ssh-servers/">SSH and managing a server: connecting, keys, copying files, config, hardening and firewalls <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

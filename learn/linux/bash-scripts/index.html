@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Bash scripting basics | Linux command line</title>
-    <meta name="description" content="A script is a file of commands you can run again and again: backups, deployments, reports. Run it:" />
+    <title>Bash scripting: variables, input, conditions, loops,…</title>
+    <meta name="description" content="A Bash script is a text file full of commands that runs from top to bottom, like a recipe. Anything you type in the terminal can go in a script, and…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/linux/bash-scripts/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Bash scripting basics | Linux command line" />
-    <meta property="og:description" content="A script is a file of commands you can run again and again: backups, deployments, reports. Run it:" />
+    <meta property="og:title" content="Bash scripting: variables, input, conditions, loops,…" />
+    <meta property="og:description" content="A Bash script is a text file full of commands that runs from top to bottom, like a recipe. Anything you type in the terminal can go in a script, and…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/linux/bash-scripts/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Bash scripting basics | Linux command line" />
-    <meta name="twitter:description" content="A script is a file of commands you can run again and again: backups, deployments, reports. Run it:" />
+    <meta name="twitter:title" content="Bash scripting: variables, input, conditions, loops,…" />
+    <meta name="twitter:description" content="A Bash script is a text file full of commands that runs from top to bottom, like a recipe. Anything you type in the terminal can go in a script, and…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/linux/bash-scripts/#lesson","name":"Bash scripting basics","description":"A script is a file of commands you can run again and again: backups, deployments, reports. Run it:","url":"https://marzleytechsolutions.co.ke/learn/linux/bash-scripts/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/linux/#course","name":"Linux command line","url":"https://marzleytechsolutions.co.ke/learn/linux/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Linux command line","item":"https://marzleytechsolutions.co.ke/learn/linux/"},{"@type":"ListItem","position":4,"name":"Bash scripting basics","item":"https://marzleytechsolutions.co.ke/learn/linux/bash-scripts/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/linux/bash-scripts/#lesson","name":"Bash scripting: variables, input, conditions, loops, functions, error handling and real automation scripts","description":"A Bash script is a text file full of commands that runs from top to bottom, like a recipe. Anything you type in the terminal can go in a script, and…","url":"https://marzleytechsolutions.co.ke/learn/linux/bash-scripts/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/linux/#course","name":"Linux command line","url":"https://marzleytechsolutions.co.ke/learn/linux/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Linux command line","item":"https://marzleytechsolutions.co.ke/learn/linux/"},{"@type":"ListItem","position":4,"name":"Bash scripting: variables, input, conditions, loops, functions, error handling and real automation scripts","item":"https://marzleytechsolutions.co.ke/learn/linux/bash-scripts/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,43 +36,193 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/linux/">Linux command line</a> / <span>Bash scripting basics</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=linux&amp;lesson=bash-scripts"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Bash scripts</h1>
-<p>A <strong>script</strong> is a file of commands you can run again and again: backups, deployments, reports.</p>
-<figure class="static-code"><pre><code>#!/bin/bash
-# backup.sh: back up a website and its database
-DATE=$(date +%F)
-SITE=/var/www/site
-DEST=/home/kelvin/backups
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/linux/">Linux command line</a> / <span>Bash scripting: variables, input, conditions, loops, functions, error handling and real automation scripts</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=linux&amp;lesson=bash-scripts"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Bash scripting: variables, input, conditions, loops, functions, error handling and real automation scripts</h1>
+<p>A <strong>Bash script</strong> is a text file full of commands that runs from top to bottom, like a recipe. Anything you type in the terminal can go in a script, and then it can run again and again: nightly backups, deploying a website, creating user accounts for a whole class, checking disk space and emailing an alert, renaming hundreds of photos. Scripting is what turns a Linux user into a Linux administrator.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Creating and running a script (shebang, chmod +x)</li><li>Variables, quoting and command substitution</li><li>Reading input and script arguments</li><li>Exit codes, <code>&amp;&amp;</code> and <code>||</code></li><li>if/elif/else and test conditions for files, numbers and text</li><li>for, while and until loops</li><li>case statements and simple menus</li><li>Functions</li><li>Safer scripts: <code>set -euo pipefail</code>, quoting and shellcheck</li><li>Real scripts: backup, disk alert, bulk rename, log report</li><li>Scheduling scripts with cron</li></ul></div></aside>
+<h2>Your first script</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">nano hello.sh</code></pre></figure>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">#!/bin/bash
+# hello.sh: my first script
+echo &quot;Hello, $USER!&quot;
+echo &quot;Today is $(date +%A), $(date +%d-%m-%Y)&quot;
+echo &quot;You are in: $(pwd)&quot;</code></pre></figure>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">chmod +x hello.sh      # make it executable
+./hello.sh             # run it (./ means &quot;in this folder&quot;)
+bash hello.sh          # or run it with bash directly</code></pre></figure>
+<p>The first line <code>#!/bin/bash</code> is the <strong>shebang</strong>: it tells the system which interpreter runs the file. Lines starting with <code>#</code> are comments.</p>
+<h2>Variables</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">NAME=&quot;Wanjiku&quot;           # no spaces around =
+COUNT=5
+echo &quot;Hello $NAME, you have $COUNT messages&quot;
+echo &quot;File: ${NAME}_report.txt&quot;     # braces separate the name from text after it</code></pre></figure>
+<ul><li><strong>Double quotes</strong> expand variables: <code>&quot;Hi $NAME&quot;</code> → Hi Wanjiku.</li><li><strong>Single quotes</strong> don't: <code>&#x27;Hi $NAME&#x27;</code> → Hi $NAME.</li><li><strong>Command substitution</strong> stores a command's output: <code>TODAY=$(date +%F)</code>.</li><li><strong>Arithmetic</strong>: <code>TOTAL=$((PRICE * QTY))</code>.</li></ul>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">PRICE=250
+QTY=4
+echo &quot;Total: KSh $((PRICE * QTY))&quot;
+FILES=$(ls | wc -l)
+echo &quot;There are $FILES items here&quot;</code></pre></figure>
+<p>Environment variables (<code>$HOME</code>, <code>$USER</code>, <code>$PATH</code>) are available in every script. Export your own for child processes: <code>export API_URL=&quot;https://...&quot;</code>.</p>
+<h2>Input and arguments</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">read -p &quot;Enter your name: &quot; NAME
+read -sp &quot;Password: &quot; PASS; echo     # -s hides typing
+echo &quot;Welcome, $NAME&quot;</code></pre></figure>
+<p>Arguments passed on the command line (<code>./greet.sh Amina Mombasa</code>):</p>
+<div class="static-table"><table><thead><tr><th>Variable</th><th>Meaning</th></tr></thead><tbody><tr><td><code>$0</code></td><td>Script name</td></tr><tr><td><code>$1</code>, <code>$2</code>...</td><td>First, second argument</td></tr><tr><td><code>$#</code></td><td>Number of arguments</td></tr><tr><td><code>$@</code></td><td>All arguments (use <code>&quot;$@&quot;</code> in quotes)</td></tr><tr><td><code>$?</code></td><td>Exit code of the last command</td></tr><tr><td><code>$$</code></td><td>The script's PID</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">#!/bin/bash
+if [ $# -lt 2 ]; then
+  echo &quot;Usage: $0 NAME TOWN&quot;
+  exit 1
+fi
+echo &quot;Hello $1 from $2&quot;</code></pre></figure>
+<h2>Exit codes</h2>
+<p>Every command returns an <strong>exit code</strong>: <strong>0 means success</strong>, anything else means failure.</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">ls /etc &gt; /dev/null; echo $?        # 0
+ls /nope 2&gt; /dev/null; echo $?      # 2 (error)
 
-mkdir -p &quot;$DEST&quot;
-tar -czf &quot;$DEST/site-$DATE.tar.gz&quot; &quot;$SITE&quot;
-mysqldump -u backup -p&quot;$DB_PASS&quot; shopdb &gt; &quot;$DEST/db-$DATE.sql&quot;
-
-# keep only the last 14 days
-find &quot;$DEST&quot; -type f -mtime +14 -delete
-echo &quot;Backup done: $DATE&quot;</code></pre></figure>
-<p>Run it:</p>
-<figure class="static-code"><pre><code>chmod +x backup.sh
-./backup.sh</code></pre></figure>
-<h2>Building blocks</h2>
-<figure class="static-code"><pre><code>NAME=&quot;Kenya&quot;                 # variable (no spaces around =)
-echo &quot;Hello $NAME&quot;
-
-if [ -f /etc/nginx/nginx.conf ]; then
-  echo &quot;nginx is installed&quot;
+mkdir backup &amp;&amp; echo &quot;created&quot;      # &amp;&amp; runs only on success
+ping -c1 google.com &gt; /dev/null || echo &quot;No internet!&quot;   # || runs only on failure</code></pre></figure>
+<p>Scripts should end with <code>exit 0</code> on success and a non-zero code on errors, so other tools (cron, CI) know what happened.</p>
+<h2>Conditions</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">if [ condition ]; then
+  ...
+elif [ other ]; then
+  ...
 else
-  echo &quot;nginx missing&quot;
+  ...
+fi</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Test</th><th>True if</th></tr></thead><tbody><tr><td><code>-f file</code></td><td>file exists and is a regular file</td></tr><tr><td><code>-d dir</code></td><td>directory exists</td></tr><tr><td><code>-e path</code></td><td>anything exists</td></tr><tr><td><code>-r / -w / -x file</code></td><td>readable / writable / executable</td></tr><tr><td><code>-z &quot;$s&quot;</code></td><td>string is empty</td></tr><tr><td><code>&quot;$a&quot; = &quot;$b&quot;</code> / <code>!=</code></td><td>strings equal / different</td></tr><tr><td><code>$a -eq $b</code></td><td>numbers equal (<code>-ne</code>, <code>-lt</code>, <code>-le</code>, <code>-gt</code>, <code>-ge</code>)</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">#!/bin/bash
+FILE=&quot;/etc/nginx/nginx.conf&quot;
+if [ -f &quot;$FILE&quot; ]; then
+  echo &quot;Nginx config found&quot;
+else
+  echo &quot;Nginx not installed&quot;
 fi
 
-for f in *.jpg; do
-  echo &quot;Found $f&quot;
+USAGE=$(df / --output=pcent | tail -1 | tr -dc &#x27;0-9&#x27;)
+if [ &quot;$USAGE&quot; -ge 90 ]; then
+  echo &quot;CRITICAL: disk ${USAGE}% full&quot;
+elif [ &quot;$USAGE&quot; -ge 75 ]; then
+  echo &quot;Warning: disk ${USAGE}% full&quot;
+else
+  echo &quot;Disk OK (${USAGE}%)&quot;
+fi</code></pre></figure>
+<p>Bash also has <code>[[ ... ]]</code>, which is more forgiving (supports <code>&amp;&amp;</code>, <code>||</code> and patterns): <code>if [[ $NAME == W* &amp;&amp; -d &quot;$HOME&quot; ]]; then ...</code>.</p>
+<h2>Loops</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash"># for over a list
+for TOWN in Nairobi Mombasa Kisumu Nakuru; do
+  echo &quot;Branch: $TOWN&quot;
 done
 
-read -p &quot;Your name: &quot; USER_NAME     # ask for input</code></pre></figure>
-<ul><li><code>$1</code>, <code>$2</code>: arguments given to the script.</li><li><code>$?</code>: exit code of the last command (0 = success).</li><li><code>&amp;&amp;</code> runs the next command only if the first succeeded; <code>||</code> only if it failed.</li></ul>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What must the first line of a bash script be?</p><details><summary>Show answer</summary><p>#!/bin/bash</p></details></li><li><p>Which command makes a script executable?</p><details><summary>Show answer</summary><p>chmod +x</p></details></li><li><p>What exit code means success?</p><details><summary>Show answer</summary><p>0</p></details></li><li><p>Which variable holds the first argument to a script?</p><details><summary>Show answer</summary><p>$1</p></details></li></ol></section>
-<p><strong>Learn more:</strong> <a href="https://linuxjourney.com/" target="_blank" rel="noopener noreferrer">Linux Journey (free, beginner friendly)</a> · <a href="https://linuxcommand.org/tlcl.php" target="_blank" rel="noopener noreferrer">The Linux Command Line (free book)</a> · <a href="https://overthewire.org/wargames/bandit/" target="_blank" rel="noopener noreferrer">OverTheWire Bandit (practice game)</a></p></div><p class="static-meta">Lesson 10 of 10 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/ssh-servers/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> SSH and managing a server</a><span></span></nav></article>
+# for over files
+for f in *.jpg; do
+  echo &quot;Processing $f&quot;
+done
+
+# numeric range
+for i in {1..5}; do
+  echo &quot;Attempt $i&quot;
+done
+
+# C-style
+for ((i = 1; i &lt;= 3; i++)); do
+  echo &quot;Round $i&quot;
+done
+
+# while: read a file line by line
+while IFS= read -r line; do
+  echo &quot;User: $line&quot;
+done &lt; users.txt
+
+# until: keep trying until success
+until ping -c1 8.8.8.8 &gt; /dev/null; do
+  echo &quot;Waiting for network...&quot;
+  sleep 5
+done</code></pre></figure>
+<p><code>break</code> exits a loop; <code>continue</code> skips to the next round.</p>
+<h2>case: menus and choices</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">read -p &quot;Choose: [s]tart, [t]op, [r]estart: &quot; CHOICE
+case &quot;$CHOICE&quot; in
+  s|start)   sudo systemctl start nginx ;;
+  t|stop)    sudo systemctl stop nginx ;;
+  r|restart) sudo systemctl restart nginx ;;
+  *)         echo &quot;Unknown option&quot; ;;
+esac</code></pre></figure>
+<h2>Functions</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">log() {
+  echo &quot;$(date &#x27;+%F %T&#x27;) $*&quot; &gt;&gt; /var/log/myscript.log
+}
+
+backup_folder() {
+  local SRC=&quot;$1&quot;            # local keeps the variable inside the function
+  local DEST=&quot;$2&quot;
+  tar -czf &quot;$DEST/$(basename &quot;$SRC&quot;)-$(date +%F).tar.gz&quot; &quot;$SRC&quot; &amp;&amp; log &quot;Backed up $SRC&quot;
+}
+
+backup_folder /var/www/site /home/deploy/backups</code></pre></figure>
+<h2>Writing safer scripts</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">#!/bin/bash
+set -euo pipefail</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Option</th><th>Effect</th></tr></thead><tbody><tr><td><code>-e</code></td><td>Stop on the first failing command</td></tr><tr><td><code>-u</code></td><td>Error on undefined variables (catches typos like <code>$DESTT</code>)</td></tr><tr><td><code>-o pipefail</code></td><td>A pipeline fails if any command in it fails</td></tr></tbody></table></div>
+<p>Other habits:</p>
+<ul><li><strong>Quote variables</strong>: <code>rm -r &quot;$DIR&quot;</code>, not <code>rm -r $DIR</code>. An empty or space-containing variable without quotes can delete the wrong things.</li><li>Check required variables: <code>: &quot;${BACKUP_DIR:?BACKUP_DIR not set}&quot;</code>.</li><li>Run <strong>shellcheck</strong> (<code>sudo apt install shellcheck</code>, then <code>shellcheck script.sh</code>); it finds common bugs.</li><li>Never store passwords in scripts; read them from a protected file or environment variable.</li></ul>
+<h2>Real script 1: website and database backup</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">#!/bin/bash
+set -euo pipefail
+DATE=$(date +%F)
+SITE=/var/www/site
+DEST=/home/deploy/backups
+mkdir -p &quot;$DEST&quot;
+
+tar -czf &quot;$DEST/site-$DATE.tar.gz&quot; -C &quot;$(dirname &quot;$SITE&quot;)&quot; &quot;$(basename &quot;$SITE&quot;)&quot;
+# credentials come from ~/.my.cnf (chmod 600), not from this script
+mysqldump --single-transaction shopdb | gzip &gt; &quot;$DEST/db-$DATE.sql.gz&quot;
+
+find &quot;$DEST&quot; -type f -mtime +14 -delete      # keep 14 days
+echo &quot;Backup done: $DATE&quot;</code></pre></figure>
+<p>Copy backups off the server too (rsync to another machine or cloud storage): a backup on the same disk dies with the disk.</p>
+<h2>Real script 2: bulk rename photos</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">#!/bin/bash
+# rename IMG_1234.jpg -&gt; wedding-001.jpg, wedding-002.jpg ...
+n=1
+for f in IMG_*.jpg; do
+  new=$(printf &quot;wedding-%03d.jpg&quot; &quot;$n&quot;)
+  mv -i -- &quot;$f&quot; &quot;$new&quot;
+  n=$((n + 1))
+done</code></pre></figure>
+<h2>Real script 3: create accounts for a class</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">#!/bin/bash
+set -euo pipefail
+# students.txt has one username per line
+while IFS= read -r user; do
+  [ -z &quot;$user&quot; ] &amp;&amp; continue
+  if id &quot;$user&quot; &amp;&gt;/dev/null; then
+    echo &quot;$user exists, skipping&quot;
+  else
+    sudo useradd -m -s /bin/bash &quot;$user&quot;
+    echo &quot;$user:ChangeMe-$RANDOM&quot; | sudo chpasswd
+    sudo chage -d 0 &quot;$user&quot;          # force a password change at first login
+    echo &quot;Created $user&quot;
+  fi
+done &lt; students.txt</code></pre></figure>
+<h2>Real script 4: top visitors from a web log</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">#!/bin/bash
+LOG=${1:-/var/log/nginx/access.log}
+echo &quot;Top 10 IP addresses:&quot;
+awk &#x27;{print $1}&#x27; &quot;$LOG&quot; | sort | uniq -c | sort -rn | head -10
+echo &quot;Top 10 pages:&quot;
+awk &#x27;{print $7}&#x27; &quot;$LOG&quot; | sort | uniq -c | sort -rn | head -10</code></pre></figure>
+<h2>Scheduling with cron</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">crontab -e</code></pre></figure>
+<figure class="static-code"><pre><code># min hour day month weekday  command
+30 2 * * * /home/deploy/backup.sh &gt;&gt; /home/deploy/backup.log 2&gt;&amp;1
+*/15 * * * * /home/deploy/disk-check.sh</code></pre></figure>
+<p>The first runs the backup at 02:30 every day; the second checks disk space every 15 minutes. Use full paths in cron jobs, because cron runs with a minimal environment. The services/cron lesson covers cron in depth.</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Your script has <code>rm -rf $BUILD_DIR/*</code> and someone runs it where BUILD_DIR isn't set. What happens, and how do you prevent it?</span><em>Show answer</em></summary><div class="callout-body"><p>The command becomes <code>rm -rf /*</code>, which tries to delete the whole system. Prevent it with <code>set -u</code> (error on unset variables), quoting, and a guard: <code>rm -rf &quot;${BUILD_DIR:?not set}&quot;/*</code>, which stops the script if the variable is empty.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Scripts start with <code>#!/bin/bash</code>, need <code>chmod +x</code>, and run with <code>./script.sh</code>.</li><li>Variables (<code>NAME=value</code>), quotes, <code>$(command)</code> and <code>$((math))</code> are the basics; <code>$1</code>, <code>$#</code>, <code>&quot;$@&quot;</code> read arguments.</li><li>Exit code 0 = success; <code>&amp;&amp;</code>/<code>||</code> chain on success/failure.</li><li><code>if [ ... ]</code>, <code>case</code>, <code>for</code>, <code>while</code>, <code>until</code> and functions structure logic.</li><li>Write safe scripts: <code>set -euo pipefail</code>, quote variables, use shellcheck, keep secrets out; schedule with cron.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the first line #!/bin/bash called?</p><details><summary>Show answer</summary><p>shebang</p></details></li><li><p>Which exit code means success?</p><details><summary>Show answer</summary><p>0</p></details></li><li><p>Which variable holds the number of arguments?</p><details><summary>Show answer</summary><p>$#</p></details></li><li><p>Which test checks that a directory exists?</p><details><summary>Show answer</summary><p>-d</p></details></li><li><p>Which keyword keeps a variable inside a function?</p><details><summary>Show answer</summary><p>local</p></details></li><li><p>Which tool checks shell scripts for common bugs?</p><details><summary>Show answer</summary><p>shellcheck</p></details></li></ol></section></div><p class="static-meta">Lesson 11 of 12 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/ssh-servers/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> SSH and managing a server: connecting, keys, copying files, config, hardening and firewalls</a><a class="btn btn-solid btn-sm" href="/learn/linux/project-web-server/">Project: set up a Linux web server from scratch (Nginx, PHP, MySQL, HTTPS, backups) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Processes, services and installing software | Marzley Learn</title>
-    <meta name="description" content="Free Linux command line lesson: Processes, services and installing software." />
+    <title>Processes and installing software: ps, top, kill, jobs,…</title>
+    <meta name="description" content="Every running program on Linux is a process : your web server, the database, your SSH session, even the ls command while it runs. Administrators…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/linux/processes-packages/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Processes, services and installing software | Marzley Learn" />
-    <meta property="og:description" content="Free Linux command line lesson: Processes, services and installing software." />
+    <meta property="og:title" content="Processes and installing software: ps, top, kill, jobs,…" />
+    <meta property="og:description" content="Every running program on Linux is a process : your web server, the database, your SSH session, even the ls command while it runs. Administrators…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/linux/processes-packages/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Processes, services and installing software | Marzley Learn" />
-    <meta name="twitter:description" content="Free Linux command line lesson: Processes, services and installing software." />
+    <meta name="twitter:title" content="Processes and installing software: ps, top, kill, jobs,…" />
+    <meta name="twitter:description" content="Every running program on Linux is a process : your web server, the database, your SSH session, even the ls command while it runs. Administrators…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/linux/processes-packages/#lesson","name":"Processes, services and installing software","description":"Free Linux command line lesson: Processes, services and installing software.","url":"https://marzleytechsolutions.co.ke/learn/linux/processes-packages/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/linux/#course","name":"Linux command line","url":"https://marzleytechsolutions.co.ke/learn/linux/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Linux command line","item":"https://marzleytechsolutions.co.ke/learn/linux/"},{"@type":"ListItem","position":4,"name":"Processes, services and installing software","item":"https://marzleytechsolutions.co.ke/learn/linux/processes-packages/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/linux/processes-packages/#lesson","name":"Processes and installing software: ps, top, kill, jobs, apt, snap and keeping a system updated","description":"Every running program on Linux is a process : your web server, the database, your SSH session, even the ls command while it runs. Administrators…","url":"https://marzleytechsolutions.co.ke/learn/linux/processes-packages/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/linux/#course","name":"Linux command line","url":"https://marzleytechsolutions.co.ke/learn/linux/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Linux command line","item":"https://marzleytechsolutions.co.ke/learn/linux/"},{"@type":"ListItem","position":4,"name":"Processes and installing software: ps, top, kill, jobs, apt, snap and keeping a system updated","item":"https://marzleytechsolutions.co.ke/learn/linux/processes-packages/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,32 +36,89 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/linux/">Linux command line</a> / <span>Processes, services and installing software</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=linux&amp;lesson=processes-packages"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Processes, services and packages</h1>
-<h2>Installing software (Ubuntu/Debian)</h2>
-<figure class="static-code"><pre><code>sudo apt update                 # refresh the list of available packages
-sudo apt upgrade                # install updates
-sudo apt install nginx php mysql-server
-sudo apt remove package-name</code></pre></figure>
-<p>Other systems: Fedora/RHEL use <code>dnf</code>, Alpine uses <code>apk</code>, Arch uses <code>pacman</code>.</p>
-<h2>Processes</h2>
-<figure class="static-code"><pre><code>ps aux | grep php      # find running processes
-top                    # live view (q to quit); htop is nicer if installed
-kill 1234              # stop process with ID 1234
-kill -9 1234           # force stop
-free -h                # memory use
-uptime                 # how long running + load</code></pre></figure>
-<h2>Services (systemd)</h2>
-<p>Web servers, databases and SSH run as <strong>services</strong>:</p>
-<figure class="static-code"><pre><code>sudo systemctl status nginx
-sudo systemctl restart nginx
-sudo systemctl enable nginx     # start automatically on boot
-journalctl -u nginx --since &quot;1 hour ago&quot;   # logs</code></pre></figure>
-<h2>Scheduled jobs (cron)</h2>
-<p><code>crontab -e</code> opens your scheduled tasks. Format: minute hour day month weekday command.</p>
-<figure class="static-code"><pre><code>0 2 * * *  /home/kelvin/backup.sh          # every day at 02:00
-*/5 * * * * php /var/www/portal/cron.php   # every 5 minutes</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command refreshes the list of packages on Ubuntu?</p><details><summary>Show answer</summary><p>sudo apt update</p></details></li><li><p>Which command restarts the nginx service?</p><details><summary>Show answer</summary><p>sudo systemctl restart nginx</p></details></li><li><p>In a crontab line, what does "0 2 * * *" mean? (time)</p><details><summary>Show answer</summary><p>2am</p></details></li><li><p>Which command shows memory use in human-readable form?</p><details><summary>Show answer</summary><p>free -h</p></details></li></ol></section></div><p class="static-meta">Lesson 7 of 10 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/users-groups-sudo/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Users, groups and sudo</a><a class="btn btn-solid btn-sm" href="/learn/linux/services-cron-logs/">Services, scheduled jobs (cron) and logs <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/linux/">Linux command line</a> / <span>Processes and installing software: ps, top, kill, jobs, apt, snap and keeping a system updated</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=linux&amp;lesson=processes-packages"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Processes and installing software: ps, top, kill, jobs, apt, snap and keeping a system updated</h1>
+<p>Every running program on Linux is a <strong>process</strong>: your web server, the database, your SSH session, even the <code>ls</code> command while it runs. Administrators constantly check what's running, what's using the CPU and memory, and stop programs that misbehave. They also install, update and remove software using <strong>package managers</strong>, which download trusted software and handle dependencies automatically.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>What processes, PIDs and parent processes are</li><li>Listing processes with ps, top and htop</li><li>Reading CPU, memory and load average</li><li>Stopping processes: kill, killall, pkill and signals</li><li>Foreground and background jobs, nohup</li><li>Package managers: apt (Ubuntu/Debian), dnf (Fedora/RHEL), snap</li><li>Installing, updating, removing and searching for software</li><li>Repositories, PPAs and installing .deb files safely</li><li>Keeping a server patched</li></ul></div></aside>
+<h2>Processes and PIDs</h2>
+<p>Each process has a <strong>PID</strong> (process ID), an owner, and a <strong>parent</strong> process (PPID) that started it. The first process at boot is PID 1 (<code>systemd</code> on modern distros), the ancestor of everything else.</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">ps                 # processes in this terminal
+ps aux             # all processes on the system
+ps aux | grep nginx    # find a specific program
+pgrep -a python    # PIDs and command lines matching &quot;python&quot;
+pstree             # processes as a tree</code></pre></figure>
+<p><code>ps aux</code> columns:</p>
+<div class="static-table"><table><thead><tr><th>Column</th><th>Meaning</th></tr></thead><tbody><tr><td>USER</td><td>Owner</td></tr><tr><td>PID</td><td>Process ID</td></tr><tr><td>%CPU / %MEM</td><td>Share of CPU and memory</td></tr><tr><td>VSZ / RSS</td><td>Virtual / actual memory used</td></tr><tr><td>STAT</td><td>State: R running, S sleeping, Z zombie, T stopped</td></tr><tr><td>COMMAND</td><td>The program and its arguments</td></tr></tbody></table></div>
+<h2>Live monitoring: top and htop</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">top          # q to quit, P sort by CPU, M sort by memory, k to kill
+sudo apt install htop
+htop         # colourful, scrollable, easier (F9 kill, F6 sort)</code></pre></figure>
+<p>The top lines show:</p>
+<ul><li><strong>Load average</strong> (e.g. <code>0.45, 0.60, 0.70</code>): average number of processes wanting CPU over 1, 5 and 15 minutes. Compare with the number of CPU cores (<code>nproc</code>): consistently above it means the system is overloaded.</li><li><strong>Memory and swap</strong>: if swap usage keeps growing, the server needs more RAM or a process is leaking memory.</li></ul>
+<p>Other quick checks:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">free -h       # memory
+uptime        # how long running + load average
+nproc         # number of CPU cores</code></pre></figure>
+<h2>Stopping processes: signals</h2>
+<p><code>kill</code> sends a <strong>signal</strong> to a process:</p>
+<div class="static-table"><table><thead><tr><th>Signal</th><th>Number</th><th>Meaning</th></tr></thead><tbody><tr><td>SIGTERM</td><td>15</td><td>"Please stop" (default): the program can clean up</td></tr><tr><td>SIGKILL</td><td>9</td><td>Force stop immediately (can't be ignored; no clean-up)</td></tr><tr><td>SIGHUP</td><td>1</td><td>Hang up; many servers reload their configuration on it</td></tr><tr><td>SIGINT</td><td>2</td><td>Interrupt (what Ctrl+C sends)</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">kill 4321            # polite stop (SIGTERM)
+kill -9 4321         # force (use only if SIGTERM doesn&#x27;t work)
+pkill -f &quot;python app.py&quot;   # by matching the command line
+killall firefox      # all processes with that name</code></pre></figure>
+<p>Always try plain <code>kill</code> first; <code>-9</code> can leave temporary files or corrupt data.</p>
+<h2>Foreground and background jobs</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">python3 long_task.py        # runs in the foreground; the terminal waits
+# press Ctrl+Z to pause it
+bg                          # continue it in the background
+jobs                        # list background jobs
+fg %1                       # bring job 1 back to the foreground
+python3 long_task.py &amp;      # start directly in the background</code></pre></figure>
+<p>Background jobs stop when you log out. To keep something running after you disconnect from a server:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">nohup python3 long_task.py &gt; task.log 2&gt;&amp;1 &amp;</code></pre></figure>
+<p>Better options for long-running work: <code>tmux</code> or <code>screen</code> (terminal sessions you can detach from and reattach later), or a proper <strong>systemd service</strong> (see the services lesson).</p>
+<h2>Process priority</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">nice -n 10 ./backup.sh      # start with lower priority (higher nice = nicer to others)
+sudo renice -n 5 -p 4321    # change priority of a running process</code></pre></figure>
+<h2>Package managers</h2>
+<p>A <strong>package manager</strong> installs software from trusted <strong>repositories</strong>, verifies it, and installs any <strong>dependencies</strong> (other packages it needs).</p>
+<div class="static-table"><table><thead><tr><th>Distro family</th><th>Tool</th><th>Package format</th></tr></thead><tbody><tr><td>Ubuntu, Debian, Mint, Kali</td><td><code>apt</code></td><td><code>.deb</code></td></tr><tr><td>Fedora, RHEL, Rocky, AlmaLinux</td><td><code>dnf</code></td><td><code>.rpm</code></td></tr><tr><td>Arch</td><td><code>pacman</code></td><td></td></tr><tr><td>Alpine</td><td><code>apk</code></td><td></td></tr><tr><td>Cross-distro</td><td><code>snap</code>, <code>flatpak</code></td><td>sandboxed apps</td></tr></tbody></table></div>
+<h2>Using apt (Ubuntu/Debian)</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo apt update                 # refresh the list of available packages (do this first)
+sudo apt upgrade                # install updates for everything
+sudo apt install nginx          # install
+sudo apt install git curl unzip # several at once
+sudo apt remove nginx           # remove (keeps config files)
+sudo apt purge nginx            # remove including config
+sudo apt autoremove             # remove dependencies no longer needed
+apt search image editor         # search
+apt show nginx                  # details: version, size, description
+apt list --installed | grep php # what&#x27;s installed</code></pre></figure>
+<p><code>apt update</code> only refreshes the catalogue; <code>apt upgrade</code> actually updates software. A common beginner mistake is to run <code>install</code> without <code>update</code> on a fresh server and get "package not found".</p>
+<h2>dnf (Fedora/RHEL) in brief</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo dnf check-update
+sudo dnf upgrade
+sudo dnf install nginx
+sudo dnf remove nginx
+dnf search nginx</code></pre></figure>
+<h2>Snap and flatpak</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo snap install code --classic   # VS Code
+snap list
+sudo snap refresh</code></pre></figure>
+<p>Snaps bundle their dependencies and update automatically; they're convenient for desktop apps.</p>
+<h2>Other ways to install software (and the risks)</h2>
+<div class="static-table"><table><thead><tr><th>Method</th><th>Example</th><th>Caution</th></tr></thead><tbody><tr><td>A <code>.deb</code> file</td><td><code>sudo apt install ./package.deb</code></td><td>Only from the official vendor site</td></tr><tr><td>Vendor repository</td><td>Adding Docker's or Node's official repo</td><td>Follow the vendor's official instructions</td></tr><tr><td>PPA (Ubuntu)</td><td><code>sudo add-apt-repository ppa:...</code></td><td>Third-party; trust matters</td></tr><tr><td>Language package managers</td><td><code>pip</code>, <code>npm</code>, <code>composer</code></td><td>Use virtual environments/project folders</td></tr><tr><td>Piping a downloaded script into bash</td><td>Install scripts</td><td>Read the script first; you're running it as you (or root)</td></tr></tbody></table></div>
+<h2>Keeping servers patched</h2>
+<p>Unpatched software is one of the main ways servers get hacked.</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo apt update &amp;&amp; sudo apt upgrade -y
+sudo apt install unattended-upgrades
+sudo dpkg-reconfigure --priority=low unattended-upgrades   # enable automatic security updates
+cat /var/run/reboot-required 2&gt;/dev/null                    # does a kernel update need a reboot?</code></pre></figure>
+<p>Plan reboots for quiet hours (e.g. late night in Kenya for local-audience sites), and test major upgrades on a staging server first.</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A server feels very slow. <code>uptime</code> shows a load average of 7.8 on a 2-core machine, and <code>top</code> shows a <code>php</code> process at 190% CPU. What steps would you take?</span><em>Show answer</em></summary><div class="callout-body"><p>Note its PID and investigate (which site/script, recent changes, logs). If it's stuck or runaway, stop it with <code>kill PID</code>, then <code>kill -9</code> only if needed. Fix the cause (a bad script, a loop, a bot attack, missing cache) and consider limits or more CPU. Load 7.8 on 2 cores means heavy overload.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Every running program is a process with a PID and parent; PID 1 is systemd.</li><li><code>ps aux</code>, <code>pgrep</code>, <code>top</code>/<code>htop</code>, <code>free -h</code> and <code>uptime</code> show what's running and resource use; compare load with <code>nproc</code>.</li><li><code>kill</code> sends signals: TERM (15) to stop politely, KILL (9) to force.</li><li>Ctrl+Z, <code>bg</code>, <code>fg</code>, <code>&amp;</code> and <code>nohup</code>/<code>tmux</code> manage jobs.</li><li><code>apt update</code> then <code>apt install/upgrade/remove</code>; dnf on Fedora/RHEL; snap for apps; keep servers patched with unattended-upgrades.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is a running program's unique number called? (abbreviation)</p><details><summary>Show answer</summary><p>PID</p></details></li><li><p>Which signal number forcefully kills a process?</p><details><summary>Show answer</summary><p>9</p></details></li><li><p>Which apt command refreshes the list of available packages? (three words)</p><details><summary>Show answer</summary><p>sudo apt update</p></details></li><li><p>Which command lists all processes on the system? (two words)</p><details><summary>Show answer</summary><p>ps aux</p></details></li><li><p>Which key combination pauses a foreground process?</p><details><summary>Show answer</summary><p>Ctrl+Z</p></details></li><li><p>Which package manager does Fedora use?</p><details><summary>Show answer</summary><p>dnf</p></details></li></ol></section></div><p class="static-meta">Lesson 7 of 12 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/users-groups-sudo/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Users, groups and sudo</a><a class="btn btn-solid btn-sm" href="/learn/linux/services-cron-logs/">Services, scheduled jobs (cron) and logs <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Project: set up a Linux web server from scratch (Nginx,…</title>
+    <meta name="description" content="This capstone project puts every Linux skill together. You&#x27;ll take a fresh Ubuntu server (a cloud VPS, a virtual machine or WSL for practice) and turn…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/linux/project-web-server/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Project: set up a Linux web server from scratch (Nginx,…" />
+    <meta property="og:description" content="This capstone project puts every Linux skill together. You&#x27;ll take a fresh Ubuntu server (a cloud VPS, a virtual machine or WSL for practice) and turn…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/linux/project-web-server/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Project: set up a Linux web server from scratch (Nginx,…" />
+    <meta name="twitter:description" content="This capstone project puts every Linux skill together. You&#x27;ll take a fresh Ubuntu server (a cloud VPS, a virtual machine or WSL for practice) and turn…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/linux/project-web-server/#lesson","name":"Project: set up a Linux web server from scratch (Nginx, PHP, MySQL, HTTPS, backups)","description":"This capstone project puts every Linux skill together. You'll take a fresh Ubuntu server (a cloud VPS, a virtual machine or WSL for practice) and turn…","url":"https://marzleytechsolutions.co.ke/learn/linux/project-web-server/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/linux/#course","name":"Linux command line","url":"https://marzleytechsolutions.co.ke/learn/linux/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Linux command line","item":"https://marzleytechsolutions.co.ke/learn/linux/"},{"@type":"ListItem","position":4,"name":"Project: set up a Linux web server from scratch (Nginx, PHP, MySQL, HTTPS, backups)","item":"https://marzleytechsolutions.co.ke/learn/linux/project-web-server/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=19f64783be" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/linux/">Linux command line</a> / <span>Project: set up a Linux web server from scratch (Nginx, PHP, MySQL, HTTPS, backups)</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=linux&amp;lesson=project-web-server"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Project: set up a Linux web server from scratch (Nginx, PHP, MySQL, HTTPS, backups)</h1>
+<p>This capstone project puts every Linux skill together. You'll take a fresh Ubuntu server (a cloud VPS, a virtual machine or WSL for practice) and turn it into a secure, production-style web server hosting a PHP website with a MySQL database and free HTTPS, with automatic backups and monitoring. This is real work that hosting companies, agencies and freelancers get paid for, and a great portfolio piece if you document it.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will build</p><div class="callout-body"><ul><li>A hardened Ubuntu server with a sudo user, SSH keys and a firewall</li><li>Nginx serving a website</li><li>PHP-FPM running PHP code</li><li>MySQL/MariaDB with a dedicated database user</li><li>A domain with free Let's Encrypt HTTPS</li><li>Automatic daily backups and a disk-space alert</li><li>A short write-up for your portfolio</li></ul></div></aside>
+<h2>What you need</h2>
+<div class="static-table"><table><thead><tr><th>Item</th><th>Options</th></tr></thead><tbody><tr><td>Server</td><td>A small cloud VPS (1 vCPU, 1–2 GB RAM is plenty), or a local VM for practice</td></tr><tr><td>OS</td><td>Ubuntu Server LTS (24.04 or the current LTS)</td></tr><tr><td>Domain (optional for practice)</td><td>Any domain or subdomain you control, e.g. <code>demo.yourname.co.ke</code></td></tr><tr><td>Your computer</td><td>A terminal with SSH (Windows Terminal, macOS/Linux Terminal)</td></tr></tbody></table></div>
+<p>Commands below assume Ubuntu 24.04; package names (e.g. <code>php8.3-fpm</code>) change between versions, so use Tab completion or <code>apt search</code> to find yours.</p>
+<h2>Stage 1: Secure the server (30 minutes)</h2>
+<p>Follow the SSH lesson's hardening steps:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">ssh root@SERVER_IP
+apt update &amp;&amp; apt upgrade -y
+adduser deploy &amp;&amp; usermod -aG sudo deploy
+timedatectl set-timezone Africa/Nairobi</code></pre></figure>
+<p>From your computer: <code>ssh-copy-id deploy@SERVER_IP</code>, then test login in a new terminal. Then:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo nano /etc/ssh/sshd_config        # PermitRootLogin no, PasswordAuthentication no
+sudo sshd -t &amp;&amp; sudo systemctl restart ssh
+sudo ufw allow OpenSSH &amp;&amp; sudo ufw enable
+sudo apt install -y fail2ban unattended-upgrades</code></pre></figure>
+<p><strong>Checkpoint</strong>: you can log in as deploy with your key; root and password logins are refused.</p>
+<h2>Stage 2: Nginx</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo apt install -y nginx
+sudo ufw allow &#x27;Nginx Full&#x27;          # ports 80 and 443
+systemctl status nginx
+curl -I http://localhost</code></pre></figure>
+<p>Visit <code>http://SERVER_IP</code> in a browser: you should see "Welcome to nginx!".</p>
+<p>Create your site folder:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo mkdir -p /var/www/demo
+sudo chown -R deploy:www-data /var/www/demo
+echo &#x27;&lt;h1&gt;It works!&lt;/h1&gt;&#x27; &gt; /var/www/demo/index.html</code></pre></figure>
+<h2>Stage 3: PHP</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo apt install -y php-fpm php-mysql php-mbstring php-xml php-curl
+php -v
+systemctl status php8.3-fpm          # use your version number</code></pre></figure>
+<p>Create the Nginx site configuration:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo nano /etc/nginx/sites-available/demo</code></pre></figure>
+<figure class="static-code"><figcaption>NGINX</figcaption><pre><code class="language-nginx">server {
+    listen 80;
+    server_name demo.yourname.co.ke;     # or the server IP for practice
+    root /var/www/demo;
+    index index.php index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+    }
+
+    location ~ /\.(?!well-known) {
+        deny all;                         # hide .env, .git and other dot files
+    }
+}</code></pre></figure>
+<p>Enable it and test:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo ln -s /etc/nginx/sites-available/demo /etc/nginx/sites-enabled/
+sudo rm /etc/nginx/sites-enabled/default
+sudo nginx -t                        # always test before reloading
+sudo systemctl reload nginx</code></pre></figure>
+<p>Test PHP with a small page:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">cat &gt; /var/www/demo/index.php &lt;&lt;&#x27;EOF&#x27;
+&lt;?php
+echo &quot;&lt;h1&gt;Hello from PHP &quot; . PHP_VERSION . &quot;&lt;/h1&gt;&quot;;
+echo &quot;&lt;p&gt;Server time: &quot; . date(&#x27;Y-m-d H:i&#x27;) . &quot;&lt;/p&gt;&quot;;
+EOF</code></pre></figure>
+<p><strong>Checkpoint</strong>: the browser shows "Hello from PHP 8.x" and the time.</p>
+<h2>Stage 4: Database</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo apt install -y mysql-server     # or mariadb-server
+sudo mysql_secure_installation
+sudo mysql</code></pre></figure>
+<p>Inside MySQL, create a database and a user with access only to it:</p>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">CREATE DATABASE demo_shop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER &#x27;demo_app&#x27;@&#x27;localhost&#x27; IDENTIFIED BY &#x27;a-long-random-password&#x27;;
+GRANT SELECT, INSERT, UPDATE, DELETE ON demo_shop.* TO &#x27;demo_app&#x27;@&#x27;localhost&#x27;;
+FLUSH PRIVILEGES;
+USE demo_shop;
+CREATE TABLE products (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), price INT);
+INSERT INTO products (name, price) VALUES (&#x27;Laptop bag&#x27;, 2500), (&#x27;Wireless mouse&#x27;, 1200);
+EXIT;</code></pre></figure>
+<p>Store the credentials <strong>outside</strong> the web root:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo mkdir -p /etc/demo
+sudo nano /etc/demo/config.php</code></pre></figure>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+return [&#x27;dsn&#x27; =&gt; &#x27;mysql:host=localhost;dbname=demo_shop;charset=utf8mb4&#x27;,
+        &#x27;user&#x27; =&gt; &#x27;demo_app&#x27;, &#x27;pass&#x27; =&gt; &#x27;a-long-random-password&#x27;];</code></pre></figure>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo chown root:www-data /etc/demo/config.php
+sudo chmod 640 /etc/demo/config.php</code></pre></figure>
+<p>Use it from PHP with a prepared statement:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+$cfg = require &#x27;/etc/demo/config.php&#x27;;
+$pdo = new PDO($cfg[&#x27;dsn&#x27;], $cfg[&#x27;user&#x27;], $cfg[&#x27;pass&#x27;], [PDO::ATTR_ERRMODE =&gt; PDO::ERRMODE_EXCEPTION]);
+$stmt = $pdo-&gt;prepare(&#x27;SELECT name, price FROM products WHERE price &lt; ?&#x27;);
+$stmt-&gt;execute([5000]);
+foreach ($stmt as $row) {
+    echo htmlspecialchars($row[&#x27;name&#x27;]) . &#x27; – KSh &#x27; . number_format($row[&#x27;price&#x27;]) . &#x27;&lt;br&gt;&#x27;;
+}</code></pre></figure>
+<p><strong>Checkpoint</strong>: the page lists the products from the database. <code>ss -tulpn</code> shows MySQL on 127.0.0.1 only.</p>
+<h2>Stage 5: Domain and HTTPS</h2>
+<ol><li>At your DNS provider, create an <strong>A record</strong>: <code>demo.yourname.co.ke → SERVER_IP</code>. Check with <code>dig demo.yourname.co.ke +short</code>.</li><li>Install Certbot and get a free Let's Encrypt certificate:</li></ol>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo apt install -y certbot python3-certbot-nginx
+sudo certbot --nginx -d demo.yourname.co.ke
+sudo certbot renew --dry-run          # confirm automatic renewal works</code></pre></figure>
+<p>Certbot edits the Nginx config to serve HTTPS and redirect HTTP to HTTPS. Certificates renew automatically.</p>
+<p><strong>Checkpoint</strong>: <code>https://demo.yourname.co.ke</code> shows a padlock; <code>curl -I http://...</code> returns a 301 redirect to https.</p>
+<h2>Stage 6: Backups and monitoring</h2>
+<p>Database credentials for backups go in <code>/home/deploy/.my.cnf</code> (chmod 600):</p>
+<figure class="static-code"><pre><code>[mysqldump]
+user=backup_user
+password=another-long-password</code></pre></figure>
+<p>(Create <code>backup_user</code> in MySQL with <code>SELECT, LOCK TABLES, SHOW VIEW, TRIGGER</code> on <code>demo_shop</code>.)</p>
+<p>Backup script <code>/home/deploy/backup.sh</code>:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">#!/bin/bash
+set -euo pipefail
+DATE=$(date +%F)
+DEST=/home/deploy/backups
+mkdir -p &quot;$DEST&quot;
+tar -czf &quot;$DEST/site-$DATE.tar.gz&quot; -C /var/www demo
+mysqldump --single-transaction demo_shop | gzip &gt; &quot;$DEST/db-$DATE.sql.gz&quot;
+find &quot;$DEST&quot; -type f -mtime +14 -delete</code></pre></figure>
+<p>Disk alert script <code>/home/deploy/disk-check.sh</code>:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">#!/bin/bash
+USAGE=$(df / --output=pcent | tail -1 | tr -dc &#x27;0-9&#x27;)
+if [ &quot;$USAGE&quot; -ge 85 ]; then
+  echo &quot;$(date &#x27;+%F %T&#x27;) Disk at ${USAGE}% on $(hostname)&quot; &gt;&gt; /home/deploy/alerts.log
+fi</code></pre></figure>
+<p>Schedule both:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">chmod +x ~/backup.sh ~/disk-check.sh
+crontab -e</code></pre></figure>
+<figure class="static-code"><pre><code>15 2 * * * /home/deploy/backup.sh &gt;&gt; /home/deploy/backup.log 2&gt;&amp;1
+*/30 * * * * /home/deploy/disk-check.sh</code></pre></figure>
+<p>Copy backups off the server regularly (e.g. <code>rsync</code> to another machine, or your provider's object storage), and enable the provider's snapshot feature if available.</p>
+<p><strong>Checkpoint</strong>: run <code>~/backup.sh</code> manually, then restore the database into a test database to prove the backup works.</p>
+<h2>Stage 7: Verify and document</h2>
+<p>Final checks:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo ufw status                    # only SSH, 80, 443
+sudo ss -tulpn                     # MySQL on 127.0.0.1 only
+sudo nginx -t                      # config OK
+systemctl --failed                 # no failed services
+sudo tail /var/log/nginx/error.log</code></pre></figure>
+<p>Write a short README for your portfolio (no passwords or IP addresses!):</p>
+<ul><li>What you built and why</li><li>Architecture: Ubuntu + Nginx + PHP-FPM + MySQL + Let's Encrypt</li><li>Security measures: keys only, firewall, Fail2ban, least-privilege DB user, secrets outside web root, automatic updates</li><li>Backups and monitoring</li><li>Screenshots and what you learned</li></ul>
+<h2>Going further</h2>
+<ul><li>Add a second site with its own server block and database.</li><li>Install a real app (WordPress, Laravel or your own project) and deploy with Git and rsync.</li><li>Add uptime monitoring with a free external service, and email alerts.</li><li>Containerise the stack with Docker Compose (see the DevOps topics).</li></ul>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> After Stage 3 your PHP page downloads as a file instead of running. What are the likely causes?</span><em>Show answer</em></summary><div class="callout-body"><p>Nginx isn't passing <code>.php</code> files to PHP-FPM: the <code>location ~ \.php$</code> block is missing or wrong, the <code>fastcgi_pass</code> socket path doesn't match your PHP version (check <code>ls /run/php/</code>), PHP-FPM isn't running, or Nginx wasn't reloaded after the change. Run <code>sudo nginx -t</code>, check <code>systemctl status php8.3-fpm</code>, and reload.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Harden first: sudo user, SSH keys, no root/password logins, UFW, Fail2ban, automatic updates.</li><li>Nginx serves files; PHP-FPM runs PHP through a socket configured in the server block; always <code>nginx -t</code> before reloading.</li><li>MySQL gets a dedicated least-privilege user; credentials live outside the web root with 640 permissions; PHP uses prepared statements.</li><li>Point an A record at the server and use Certbot for free, auto-renewing HTTPS.</li><li>Automate backups and disk checks with scripts and cron, test restores, and document the project for your portfolio.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command tests the Nginx configuration for errors? (two words)</p><details><summary>Show answer</summary><p>nginx -t</p></details></li><li><p>Which tool gets free HTTPS certificates from Let's Encrypt?</p><details><summary>Show answer</summary><p>Certbot</p></details></li><li><p>Which DNS record type points a domain name to an IPv4 address?</p><details><summary>Show answer</summary><p>A</p></details></li><li><p>Should the database config file be inside /var/www? (yes/no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which PHP feature protects queries from SQL injection? (two words)</p><details><summary>Show answer</summary><p>prepared statements</p></details></li></ol></section></div><p class="static-meta">Lesson 12 of 12 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/bash-scripts/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Bash scripting: variables, input, conditions, loops, functions, error handling and real automation scripts</a><span></span></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

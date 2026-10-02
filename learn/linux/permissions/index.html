@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Users and permissions (chmod, chown) | Linux command line</title>
-    <meta name="description" content="Every file has an owner , a group , and permissions for three kinds of people: owner (u) , group (g) , others (o) . Each can have read (r) , write (w)…" />
+    <title>File permissions: reading rwx, chmod (symbolic and…</title>
+    <meta name="description" content="Linux is a multi-user system: a server may run a web server, a database and several people&#x27;s accounts at the same time. Permissions decide who can…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/linux/permissions/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Users and permissions (chmod, chown) | Linux command line" />
-    <meta property="og:description" content="Every file has an owner , a group , and permissions for three kinds of people: owner (u) , group (g) , others (o) . Each can have read (r) , write (w)…" />
+    <meta property="og:title" content="File permissions: reading rwx, chmod (symbolic and…" />
+    <meta property="og:description" content="Linux is a multi-user system: a server may run a web server, a database and several people&#x27;s accounts at the same time. Permissions decide who can…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/linux/permissions/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Users and permissions (chmod, chown) | Linux command line" />
-    <meta name="twitter:description" content="Every file has an owner , a group , and permissions for three kinds of people: owner (u) , group (g) , others (o) . Each can have read (r) , write (w)…" />
+    <meta name="twitter:title" content="File permissions: reading rwx, chmod (symbolic and…" />
+    <meta name="twitter:description" content="Linux is a multi-user system: a server may run a web server, a database and several people&#x27;s accounts at the same time. Permissions decide who can…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/linux/permissions/#lesson","name":"Users and permissions (chmod, chown)","description":"Every file has an owner , a group , and permissions for three kinds of people: owner (u) , group (g) , others (o) . Each can have read (r) , write (w)…","url":"https://marzleytechsolutions.co.ke/learn/linux/permissions/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/linux/#course","name":"Linux command line","url":"https://marzleytechsolutions.co.ke/learn/linux/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Linux command line","item":"https://marzleytechsolutions.co.ke/learn/linux/"},{"@type":"ListItem","position":4,"name":"Users and permissions (chmod, chown)","item":"https://marzleytechsolutions.co.ke/learn/linux/permissions/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/linux/permissions/#lesson","name":"File permissions: reading rwx, chmod (symbolic and numeric), chown, umask and special permissions","description":"Linux is a multi-user system: a server may run a web server, a database and several people's accounts at the same time. Permissions decide who can…","url":"https://marzleytechsolutions.co.ke/learn/linux/permissions/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/linux/#course","name":"Linux command line","url":"https://marzleytechsolutions.co.ke/learn/linux/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Linux command line","item":"https://marzleytechsolutions.co.ke/learn/linux/"},{"@type":"ListItem","position":4,"name":"File permissions: reading rwx, chmod (symbolic and numeric), chown, umask and special permissions","item":"https://marzleytechsolutions.co.ke/learn/linux/permissions/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,30 +36,81 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/linux/">Linux command line</a> / <span>Users and permissions (chmod, chown)</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=linux&amp;lesson=permissions"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Permissions</h1>
-<p>Every file has an <strong>owner</strong>, a <strong>group</strong>, and permissions for three kinds of people: <strong>owner (u)</strong>, <strong>group (g)</strong>, <strong>others (o)</strong>. Each can have <strong>read (r)</strong>, <strong>write (w)</strong> and <strong>execute (x)</strong>.</p>
-<p><code>ls -l</code> shows them:</p>
-<figure class="static-code"><pre><code>-rwxr-xr-- 1 kelvin www-data 1204 Sep 28 10:00 deploy.sh
-│└┬┘└┬┘└┬┘   owner  group
-│ │  │  └── others: r--  (read only)
-│ │  └───── group:  r-x  (read, execute)
-│ └──────── owner:  rwx  (everything)
-└── - file, d directory, l link</code></pre></figure>
-<h2>Numbers (octal)</h2>
-<p>r = <strong>4</strong>, w = <strong>2</strong>, x = <strong>1</strong>; add them for each group:</p>
-<div class="static-table"><table><thead><tr><th>Number</th><th>Permissions</th><th>Common use</th></tr></thead><tbody><tr><td><strong>755</strong></td><td>rwx r-x r-x</td><td>Folders and scripts on web servers</td></tr><tr><td><strong>644</strong></td><td>rw- r-- r--</td><td>Normal web files (HTML, PHP, images)</td></tr><tr><td><strong>600</strong></td><td>rw- --- ---</td><td>Private files: config with passwords, SSH keys</td></tr><tr><td><strong>700</strong></td><td>rwx --- ---</td><td>Private folders</td></tr><tr><td><strong>777</strong></td><td>rwx rwx rwx</td><td><strong>Never on a server</strong>: anyone can change the file</td></tr></tbody></table></div>
-<figure class="static-code"><pre><code>chmod 644 index.php
-chmod 755 uploads/
-chmod -R 755 public_html/     # -R: everything inside
-chmod u+x deploy.sh           # add execute for the owner
-chown kelvin:www-data file    # change owner and group</code></pre></figure>
-<h2>Try the calculator</h2>
-<p>Tick boxes or type a number:</p>
-<p class="static-note">This part of the lesson has an interactive tool. Open the live lesson to use it.</p>
-<h2>sudo and root</h2>
-<p><strong>root</strong> is the all-powerful admin user. Normal users run admin commands with <strong>sudo</strong>: <code>sudo apt update</code>. Use it only when needed.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What number means rw-r--r--?</p><details><summary>Show answer</summary><p>644</p></details></li><li><p>What number means rwxr-xr-x?</p><details><summary>Show answer</summary><p>755</p></details></li><li><p>What number should a private config file with passwords have (owner read/write only)?</p><details><summary>Show answer</summary><p>600</p></details></li><li><p>Which permission number should never be used on a web server?</p><details><summary>Show answer</summary><p>777</p></details></li><li><p>Which command changes a file's owner?</p><details><summary>Show answer</summary><p>chown</p></details></li><li><p>What is the value of "write" in permission numbers?</p><details><summary>Show answer</summary><p>2</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 10 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/pipes-redirection/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Pipes and redirection: combining commands</a><a class="btn btn-solid btn-sm" href="/learn/linux/users-groups-sudo/">Users, groups and sudo <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/linux/">Linux command line</a> / <span>File permissions: reading rwx, chmod (symbolic and numeric), chown, umask and special permissions</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=linux&amp;lesson=permissions"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>File permissions: reading rwx, chmod (symbolic and numeric), chown, umask and special permissions</h1>
+<p>Linux is a <strong>multi-user</strong> system: a server may run a web server, a database and several people's accounts at the same time. <strong>Permissions</strong> decide who can read, change or run each file. Wrong permissions are one of the most common causes of "403 Forbidden" website errors, "Permission denied" messages, and serious security holes (like a configuration file with database passwords readable by everyone).</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Owners, groups and others</li><li>Read, write and execute for files vs directories</li><li>Reading permission strings like <code>-rwxr-xr--</code></li><li>chmod with symbols (u+x) and numbers (755, 644, 600)</li><li>chown and chgrp to change ownership</li><li>Safe permissions for websites and SSH keys</li><li>umask: default permissions</li><li>Special bits: setuid, setgid, sticky bit</li><li>Troubleshooting "Permission denied"</li></ul></div></aside>
+<h2>Three kinds of users</h2>
+<p>Every file has:</p>
+<ul><li>an <strong>owner</strong> (user, <code>u</code>): usually whoever created it</li><li>a <strong>group</strong> (<code>g</code>): a set of users who share access</li><li><strong>others</strong> (<code>o</code>): everyone else</li></ul>
+<h2>Three permissions</h2>
+<div class="static-table"><table><thead><tr><th>Permission</th><th>On a file</th><th>On a directory</th></tr></thead><tbody><tr><td><strong>r</strong> (read)</td><td>View contents</td><td>List the names inside (<code>ls</code>)</td></tr><tr><td><strong>w</strong> (write)</td><td>Change contents</td><td>Create, delete and rename files inside</td></tr><tr><td><strong>x</strong> (execute)</td><td>Run it as a program/script</td><td>Enter it (<code>cd</code>) and access files inside</td></tr></tbody></table></div>
+<p>Note: deleting a file depends on <strong>write permission on the folder</strong>, not on the file itself.</p>
+<h2>Reading permission strings</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">ls -l</code></pre></figure>
+<figure class="static-code"><pre><code>-rwxr-xr-- 1 wanjiku developers 512 Sep 7 10:15 deploy.sh</code></pre></figure>
+<figure class="static-code"><pre><code>-   rwx   r-x   r--
+│    │     │     └── others: read only
+│    │     └──────── group: read + execute
+│    └────────────── owner: read + write + execute
+└─────────────────── type (- file, d directory, l link)</code></pre></figure>
+<p>So: wanjiku can do everything; members of <code>developers</code> can read and run it; everyone else can only read it.</p>
+<h2>chmod with symbols</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">chmod u+x deploy.sh        # give the owner execute
+chmod g+w notes.txt        # give the group write
+chmod o-r secret.txt       # remove read from others
+chmod a+r public.html      # a = all (u, g and o)
+chmod u=rw,go=r page.html  # set exactly
+chmod -R g+w shared/       # recursive</code></pre></figure>
+<p><code>+</code> adds, <code>-</code> removes, <code>=</code> sets exactly.</p>
+<h2>chmod with numbers (octal)</h2>
+<p>Each permission has a value: <strong>r = 4, w = 2, x = 1</strong>. Add them for each of owner, group, others:</p>
+<div class="static-table"><table><thead><tr><th>Number</th><th>Permissions</th></tr></thead><tbody><tr><td>7</td><td>rwx (4+2+1)</td></tr><tr><td>6</td><td>rw- (4+2)</td></tr><tr><td>5</td><td>r-x (4+1)</td></tr><tr><td>4</td><td>r--</td></tr><tr><td>0</td><td>---</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">chmod 755 deploy.sh     # rwxr-xr-x: owner all, others read and run
+chmod 644 index.html    # rw-r--r--: owner edits, everyone reads
+chmod 600 ~/.ssh/id_ed25519   # rw-------: private key, owner only
+chmod 700 ~/private     # rwx------: private folder</code></pre></figure>
+<p>Common values:</p>
+<div class="static-table"><table><thead><tr><th>Value</th><th>Typical use</th></tr></thead><tbody><tr><td><strong>644</strong></td><td>Normal files, web pages, images</td></tr><tr><td><strong>755</strong></td><td>Directories, scripts and programs</td></tr><tr><td><strong>600</strong></td><td>Private keys, files with passwords (<code>.env</code>, config with DB passwords)</td></tr><tr><td><strong>700</strong></td><td>Private directories (<code>~/.ssh</code>)</td></tr><tr><td><strong>777</strong></td><td>Everyone can do everything: <strong>avoid</strong>; it's a security risk</td></tr></tbody></table></div>
+<p>You can calculate permissions in Python to check your understanding:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def octal(perm):
+    vals = {&quot;r&quot;: 4, &quot;w&quot;: 2, &quot;x&quot;: 1, &quot;-&quot;: 0}
+    return &quot;&quot;.join(str(sum(vals[c] for c in perm[i:i+3])) for i in (0, 3, 6))
+
+for p in [&quot;rwxr-xr-x&quot;, &quot;rw-r--r--&quot;, &quot;rw-------&quot;, &quot;rwxrwxrwx&quot;]:
+    print(p, &quot;=&quot;, octal(p))</code></pre></figure>
+<h2>chown and chgrp: changing ownership</h2>
+<p>Usually needs <code>sudo</code>:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo chown wanjiku report.txt              # change owner
+sudo chown wanjiku:developers report.txt   # owner and group
+sudo chgrp developers report.txt           # group only
+sudo chown -R www-data:www-data /var/www/site   # recursive</code></pre></figure>
+<h2>Safe permissions for a website</h2>
+<p>On Ubuntu with Apache or Nginx, the web server runs as the user <strong>www-data</strong>. A typical safe setup:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo chown -R deploy:www-data /var/www/site        # you own it, web server&#x27;s group
+sudo find /var/www/site -type d -exec chmod 755 {} \;   # folders
+sudo find /var/www/site -type f -exec chmod 644 {} \;   # files
+sudo chmod 640 /var/www/site/config.php            # secrets: owner rw, group read, others nothing
+sudo chmod -R 775 /var/www/site/uploads            # only where the app must write</code></pre></figure>
+<aside class="callout callout-warning"><p class="callout-title">Never "fix" errors with chmod 777</p><div class="callout-body"><p><code>chmod -R 777</code> makes files writable by every user and process on the server. If the site is hacked, attackers can change any file. Find out which user needs access and grant only that.</p></div></aside>
+<h2>SSH key permissions</h2>
+<p>SSH refuses to use keys that others can read:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">chmod 700 ~/.ssh
+chmod 600 ~/.ssh/id_ed25519 ~/.ssh/authorized_keys
+chmod 644 ~/.ssh/id_ed25519.pub</code></pre></figure>
+<h2>umask: default permissions</h2>
+<p>New files and folders get default permissions based on the <strong>umask</strong>:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">umask        # often 0022 (or 0002)</code></pre></figure>
+<p>With umask 022, new files get 644 and new folders get 755 (the umask "removes" write for group and others). Set a stricter default for your session with <code>umask 077</code> (files 600, folders 700).</p>
+<h2>Special permissions</h2>
+<div class="static-table"><table><thead><tr><th>Bit</th><th>Example</th><th>Effect</th></tr></thead><tbody><tr><td><strong>setuid</strong> (<code>s</code> in owner x)</td><td><code>/usr/bin/passwd</code> (<code>-rwsr-xr-x</code>)</td><td>Program runs with the <strong>owner's</strong> privileges (lets users change their own password)</td></tr><tr><td><strong>setgid</strong> on a directory</td><td><code>chmod g+s shared/</code></td><td>New files inherit the folder's group: great for team folders</td></tr><tr><td><strong>sticky bit</strong> (<code>t</code>)</td><td><code>/tmp</code> (<code>drwxrwxrwt</code>)</td><td>Everyone can create files, but only owners can delete their own</td></tr></tbody></table></div>
+<p>Attackers look for unusual setuid programs, so security audits check them: <code>find / -perm -4000 -type f 2&gt;/dev/null</code>.</p>
+<h2>Troubleshooting "Permission denied"</h2>
+<ol><li>Who am I? <code>whoami</code> and <code>id</code> (shows your groups).</li><li>Who owns it and what are the permissions? <code>ls -l file</code> and <code>ls -ld folder</code>.</li><li>Check <strong>every folder in the path</strong> needs <code>x</code> for you: <code>namei -l /var/www/site/index.html</code> shows them all.</li><li>Running a script? It needs <code>x</code> (<code>chmod +x script.sh</code>) or run it with <code>bash script.sh</code>.</li><li>Fix with the least access needed (add to a group, chown, or chmod a specific file), not 777.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A website shows "403 Forbidden" for images in /var/www/site/images. <code>ls -l</code> shows the images as <code>-rw-------  deploy deploy</code>. What's wrong and how do you fix it?</span><em>Show answer</em></summary><div class="callout-body"><p>Only the owner (deploy) can read the images; the web server (www-data) is "others" and has no read permission. Fix: <code>chmod 644</code> the image files (and make sure folders are 755), or set the group to www-data with group read.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Every file has an owner, a group and others, each with read, write and execute.</li><li>On directories, r lists, w creates/deletes inside, x lets you enter.</li><li>chmod uses symbols (<code>u+x</code>, <code>go-w</code>) or numbers (r=4, w=2, x=1): 644 files, 755 folders/scripts, 600 secrets.</li><li>chown/chgrp change ownership; web servers on Ubuntu run as www-data.</li><li>Avoid 777; understand umask and special bits; troubleshoot with whoami, id, ls -l and namei -l.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What number represents rwx?</p><details><summary>Show answer</summary><p>7</p></details></li><li><p>What chmod number gives rw-r--r--?</p><details><summary>Show answer</summary><p>644</p></details></li><li><p>What permission number should a private SSH key have?</p><details><summary>Show answer</summary><p>600</p></details></li><li><p>Which user does the web server run as on Ubuntu?</p><details><summary>Show answer</summary><p>www-data</p></details></li><li><p>Which command changes a file's owner?</p><details><summary>Show answer</summary><p>chown</p></details></li><li><p>On a directory, which permission lets you cd into it? (one letter)</p><details><summary>Show answer</summary><p>x</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 12 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/pipes-redirection/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Pipes and redirection: combining commands</a><a class="btn btn-solid btn-sm" href="/learn/linux/users-groups-sudo/">Users, groups and sudo <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
