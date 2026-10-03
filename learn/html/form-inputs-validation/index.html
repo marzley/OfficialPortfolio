@@ -104,7 +104,89 @@
 <p>Built-in validation helps honest users. Anyone can switch it off in their browser, so your server code (PHP, Python...) must <strong>check everything again</strong> before saving or charging money. You'll see this in the PHP lessons.</p>
 <h2>Good form habits</h2>
 <ul><li>Every input needs a visible <code>&lt;label&gt;</code>. Placeholders disappear when you type.</li><li>Ask only for what you need. Every extra field loses customers.</li><li>Use the right <code>type</code> so phones show the right keyboard.</li><li>Put helpful formats in the label or <code>title</code> ("10 digits starting with 07").</li></ul>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which input type shows a number pad for phone numbers on mobile?</p><details><summary>Show answer</summary><p>tel</p></details></li><li><p>Which attribute makes a field compulsory?</p><details><summary>Show answer</summary><p>required</p></details></li><li><p>Radio buttons in the same group must share the same value for which attribute?</p><details><summary>Show answer</summary><p>name</p></details></li><li><p>Which element gives a group of inputs a caption, inside a fieldset?</p><details><summary>Show answer</summary><p>legend</p></details></li><li><p>Is browser validation enough on its own, or must the server check again too?</p><details><summary>Show answer</summary><p>server</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Make an input for a Kenyan phone number: <code>type=&quot;tel&quot;</code>, <code>required</code> and the pattern <code>0[17][0-9]{8}</code>, with a label.</p><p><a class="btn btn-solid" href="/learn/?track=html&amp;lesson=form-inputs-validation#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 14 of 19 in <a href="/learn/html/">HTML</a> · <a href="/learn/?book=html">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/html/forms/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Forms: collecting information from users, step by step</a><a class="btn btn-solid btn-sm" href="/learn/html/semantic/">Semantic HTML: header, nav, main, section, article, aside and footer <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Who depends on good forms</h2>
+<p>Every business website collects something: enquiries, bookings, orders, job applications, school admissions, newsletter sign-ups, M-Pesa payment numbers. The right input types and validation attributes make forms faster to fill on phones, reduce mistakes and cut down on fake or broken submissions, all before writing any JavaScript.</p>
+<h2>Every input type you should know</h2>
+<div class="static-table"><table><thead><tr><th>Type</th><th>Phone keyboard / control</th><th>Use</th></tr></thead><tbody><tr><td><code>text</code></td><td>Normal keyboard</td><td>Names, short answers</td></tr><tr><td><code>email</code></td><td>Keyboard with @ and .</td><td>Email addresses (checks the format)</td></tr><tr><td><code>tel</code></td><td>Number pad</td><td>Phone numbers</td></tr><tr><td><code>number</code></td><td>Number pad with arrows</td><td>Quantities, ages (not phone numbers or IDs)</td></tr><tr><td><code>url</code></td><td>Keyboard with / and .com</td><td>Website links</td></tr><tr><td><code>password</code></td><td>Hidden characters</td><td>Passwords</td></tr><tr><td><code>search</code></td><td>Keyboard with a "search" key</td><td>Search boxes</td></tr><tr><td><code>date</code>, <code>time</code>, <code>datetime-local</code>, <code>month</code>, <code>week</code></td><td>Date/time pickers</td><td>Bookings, deadlines</td></tr><tr><td><code>range</code></td><td>Slider</td><td>Budgets, ratings</td></tr><tr><td><code>color</code></td><td>Colour picker</td><td>Design tools</td></tr><tr><td><code>file</code></td><td>File chooser / camera</td><td>Uploads (CV, ID photo)</td></tr><tr><td><code>checkbox</code>, <code>radio</code></td><td>Tick boxes / choose one</td><td>Options</td></tr><tr><td><code>hidden</code></td><td>Not shown</td><td>Extra data sent with the form</td></tr></tbody></table></div>
+<p>Use <code>type=&quot;tel&quot;</code> (not <code>number</code>) for phone numbers and ID numbers: <code>number</code> removes leading zeros, adds arrows and may show "e" for exponents.</p>
+<h2>Helpful attributes beyond validation</h2>
+<figure class="static-code"><figcaption>HTML</figcaption><pre><code class="language-html">&lt;input type=&quot;text&quot; name=&quot;fullname&quot; autocomplete=&quot;name&quot; autocapitalize=&quot;words&quot; required&gt;
+&lt;input type=&quot;email&quot; name=&quot;email&quot; autocomplete=&quot;email&quot; required&gt;
+&lt;input type=&quot;tel&quot; name=&quot;phone&quot; autocomplete=&quot;tel&quot; inputmode=&quot;tel&quot; pattern=&quot;0[17][0-9]{8}&quot; required&gt;
+&lt;input type=&quot;text&quot; name=&quot;otp&quot; autocomplete=&quot;one-time-code&quot; inputmode=&quot;numeric&quot; maxlength=&quot;6&quot;&gt;
+&lt;input type=&quot;password&quot; name=&quot;new-password&quot; autocomplete=&quot;new-password&quot; minlength=&quot;8&quot;&gt;
+&lt;input type=&quot;text&quot; name=&quot;town&quot; list=&quot;towns&quot;&gt;
+&lt;datalist id=&quot;towns&quot;&gt;&lt;option value=&quot;Nairobi&quot;&gt;&lt;option value=&quot;Mombasa&quot;&gt;&lt;option value=&quot;Kisumu&quot;&gt;&lt;option value=&quot;Nakuru&quot;&gt;&lt;option value=&quot;Eldoret&quot;&gt;&lt;/datalist&gt;</code></pre></figure>
+<ul><li><code>autocomplete</code> lets phones fill names, emails, phones and addresses in one tap and lets password managers work. <code>one-time-code</code> lets phones suggest SMS verification codes.</li><li><code>datalist</code> gives suggestions while still allowing any value.</li><li><code>inputmode</code> chooses the keyboard without changing validation.</li></ul>
+<h2>Try it: a booking form</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  form { font: 14px system-ui; max-width: 340px; }
+  label { display: block; margin-top: 10px; font-weight: 600; }
+  input, select, textarea { width: 100%; box-sizing: border-box; padding: 8px; border: 2px solid #cbd5e1; border-radius: 8px; font: inherit; margin-top: 4px; }
+  input:user-invalid, select:user-invalid { border-color: #dc2626; }
+  fieldset { border: 1px solid #e2e8f0; border-radius: 8px; margin-top: 12px; }
+  fieldset label { display: inline; font-weight: 400; }
+  button { margin-top: 14px; padding: 10px 16px; background: #0b1b35; color: #fff; border: 0; border-radius: 8px; font-weight: 700; }
+  output { display: block; margin-top: 8px; }
+&lt;/style&gt;
+&lt;form id=&quot;book&quot;&gt;
+  &lt;label for=&quot;n&quot;&gt;Full name&lt;/label&gt;
+  &lt;input id=&quot;n&quot; name=&quot;name&quot; autocomplete=&quot;name&quot; required minlength=&quot;3&quot;&gt;
+  &lt;label for=&quot;p&quot;&gt;Phone&lt;/label&gt;
+  &lt;input id=&quot;p&quot; name=&quot;phone&quot; type=&quot;tel&quot; autocomplete=&quot;tel&quot; required pattern=&quot;0[17][0-9]{8}&quot; title=&quot;10 digits starting with 07 or 01&quot; placeholder=&quot;0712345678&quot;&gt;
+  &lt;label for=&quot;s&quot;&gt;Service&lt;/label&gt;
+  &lt;select id=&quot;s&quot; name=&quot;service&quot; required&gt;
+    &lt;option value=&quot;&quot;&gt;Choose a service&lt;/option&gt;
+    &lt;option&gt;Website design&lt;/option&gt;&lt;option&gt;Computer repair&lt;/option&gt;&lt;option&gt;Training&lt;/option&gt;
+  &lt;/select&gt;
+  &lt;label for=&quot;d&quot;&gt;Preferred date&lt;/label&gt;
+  &lt;input id=&quot;d&quot; name=&quot;date&quot; type=&quot;date&quot; required&gt;
+  &lt;label for=&quot;b&quot;&gt;Budget: &lt;output id=&quot;bo&quot;&gt;20000&lt;/output&gt;&lt;/label&gt;
+  &lt;input id=&quot;b&quot; name=&quot;budget&quot; type=&quot;range&quot; min=&quot;5000&quot; max=&quot;100000&quot; step=&quot;5000&quot; value=&quot;20000&quot;&gt;
+  &lt;fieldset&gt;
+    &lt;legend&gt;Contact me by&lt;/legend&gt;
+    &lt;input type=&quot;radio&quot; id=&quot;c1&quot; name=&quot;contact&quot; value=&quot;call&quot; required&gt;&lt;label for=&quot;c1&quot;&gt;Call&lt;/label&gt;
+    &lt;input type=&quot;radio&quot; id=&quot;c2&quot; name=&quot;contact&quot; value=&quot;whatsapp&quot;&gt;&lt;label for=&quot;c2&quot;&gt;WhatsApp&lt;/label&gt;
+  &lt;/fieldset&gt;
+  &lt;label for=&quot;m&quot;&gt;Details (optional)&lt;/label&gt;
+  &lt;textarea id=&quot;m&quot; name=&quot;details&quot; rows=&quot;3&quot; maxlength=&quot;300&quot;&gt;&lt;/textarea&gt;
+  &lt;label&gt;&lt;input type=&quot;checkbox&quot; name=&quot;consent&quot; required style=&quot;width:auto&quot;&gt; I agree to be contacted about this booking&lt;/label&gt;
+  &lt;button&gt;Book now&lt;/button&gt;
+  &lt;output id=&quot;res&quot;&gt;&lt;/output&gt;
+&lt;/form&gt;
+&lt;script&gt;
+  const d = document.getElementById(&quot;d&quot;);
+  d.min = new Date().toISOString().slice(0, 10);          // no past dates
+  const b = document.getElementById(&quot;b&quot;);
+  b.addEventListener(&quot;input&quot;, () =&gt; document.getElementById(&quot;bo&quot;).textContent = Number(b.value).toLocaleString());
+  document.getElementById(&quot;book&quot;).addEventListener(&quot;submit&quot;, e =&gt; {
+    e.preventDefault();
+    document.getElementById(&quot;res&quot;).textContent = &quot;Booked: &quot; + JSON.stringify(Object.fromEntries(new FormData(e.target)));
+  });
+&lt;/script&gt;</code></pre></figure>
+<p>Try submitting with missing fields, a wrong phone number or a past date (the date picker won't allow it).</p>
+<h2>Custom messages with setCustomValidity</h2>
+<figure class="static-code"><figcaption>JavaScript</figcaption><pre><code class="language-javascript">const phone = document.querySelector(&quot;#p&quot;);
+phone.addEventListener(&quot;input&quot;, () =&gt; {
+  phone.setCustomValidity(&quot;&quot;);
+  if (phone.validity.patternMismatch) {
+    phone.setCustomValidity(&quot;Enter a Kenyan mobile number like 0712345678&quot;);
+  }
+});</code></pre></figure>
+<p>The browser's default messages can be vague ("Please match the requested format"). Custom messages tell users exactly what to do.</p>
+<h2>Accessible forms checklist</h2>
+<ul><li>Every input has a visible <code>&lt;label&gt;</code> connected with <code>for</code>/<code>id</code> (placeholders are not labels).</li><li>Group radio buttons and checkboxes in <code>&lt;fieldset&gt;</code> with a <code>&lt;legend&gt;</code>.</li><li>Mark required fields clearly (text such as "required", not only a red star).</li><li>Put help text near the field and connect it with <code>aria-describedby</code>.</li><li>Error messages say what went wrong and how to fix it.</li><li>The form works with the keyboard alone (Tab, Space, Enter).</li></ul>
+<h2>Where form data goes</h2>
+<figure class="static-code"><figcaption>HTML</figcaption><pre><code class="language-html">&lt;form action=&quot;/contact.php&quot; method=&quot;post&quot;&gt;           &lt;!-- your own server script --&gt;
+&lt;form action=&quot;https://formspree.io/f/xxxx&quot; method=&quot;post&quot;&gt;  &lt;!-- a form service --&gt;
+&lt;form action=&quot;/search&quot; method=&quot;get&quot;&gt;                  &lt;!-- data appears in the URL: good for search --&gt;</code></pre></figure>
+<ul><li>Use <code>method=&quot;post&quot;</code> for personal data, messages and anything that changes data.</li><li>Use <code>get</code> for searches and filters, so results can be bookmarked and shared.</li><li>Add <code>enctype=&quot;multipart/form-data&quot;</code> when uploading files.</li><li>Protect forms from spam with a hidden honeypot field, rate limiting or a CAPTCHA, and always validate on the server.</li></ul>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td><code>type=&quot;number&quot;</code> for phone numbers</td><td><code>type=&quot;tel&quot;</code></td></tr><tr><td>Placeholder instead of a label</td><td>Visible <code>&lt;label&gt;</code></td></tr><tr><td>Asking for unnecessary data</td><td>Ask only what you need (Data Protection Act)</td></tr><tr><td>Long single-page forms with no grouping</td><td>Use fieldsets or steps</td></tr><tr><td>No message after submitting</td><td>Show a clear success message or thank-you page</td></tr><tr><td>Sending personal data with <code>get</code></td><td><code>post</code></td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Build a school admission form with student details, parent phone, class (select) and a file upload for a birth certificate.</li><li>Add <code>autocomplete</code> values to every field of a checkout form.</li><li>Create a job application form that only accepts PDF uploads (<code>accept=&quot;.pdf&quot;</code>).</li><li>Write custom error messages for an email and a phone field.</li><li>Make a search form that uses <code>get</code> and check how the URL changes.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why is <code>type=&quot;tel&quot;</code> better than <code>type=&quot;number&quot;</code> for a phone field like 0712345678?</span><em>Show answer</em></summary><div class="callout-body"><p><code>number</code> treats the value as a quantity: it can drop the leading zero, show increment arrows, accept "e" for exponents and reject spaces or "+254". <code>tel</code> keeps the value as text exactly as typed while still showing a number keypad on phones; combine it with <code>pattern</code> for validation.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which input type shows a number pad for phone numbers on mobile?</p><details><summary>Show answer</summary><p>tel</p></details></li><li><p>Which attribute makes a field compulsory?</p><details><summary>Show answer</summary><p>required</p></details></li><li><p>Radio buttons in the same group must share the same value for which attribute?</p><details><summary>Show answer</summary><p>name</p></details></li><li><p>Which element gives a group of inputs a caption, inside a fieldset?</p><details><summary>Show answer</summary><p>legend</p></details></li><li><p>Is browser validation enough on its own, or must the server check again too?</p><details><summary>Show answer</summary><p>server</p></details></li><li><p>Which attribute value lets phones auto-fill SMS verification codes?</p><details><summary>Show answer</summary><p>one-time-code</p></details></li><li><p>Which element provides suggestions for a text input while allowing any value?</p><details><summary>Show answer</summary><p>datalist</p></details></li><li><p>Which form method should you use for search forms so results can be bookmarked?</p><details><summary>Show answer</summary><p>get</p></details></li><li><p>Which enctype is required for file uploads?</p><details><summary>Show answer</summary><p>multipart/form-data</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Make an input for a Kenyan phone number: <code>type=&quot;tel&quot;</code>, <code>required</code> and the pattern <code>0[17][0-9]{8}</code>, with a label.</p><p><a class="btn btn-solid" href="/learn/?track=html&amp;lesson=form-inputs-validation#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 14 of 19 in <a href="/learn/html/">HTML</a> · <a href="/learn/?book=html">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/html/forms/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Forms: collecting information from users, step by step</a><a class="btn btn-solid btn-sm" href="/learn/html/semantic/">Semantic HTML: header, nav, main, section, article, aside and footer <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

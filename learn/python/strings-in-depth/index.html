@@ -115,7 +115,50 @@ print(&quot;Vowels:&quot;, vowels)</code></pre></figure>
 
 for p in [&quot;0712 345 678&quot;, &quot;+254 712-345-678&quot;, &quot;12345&quot;, &quot;0110 123 456&quot;]:
     print(f&quot;{p:&lt;20} -&gt; {clean_phone(p)}&quot;)</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is "Nairobi"[0]?</p><details><summary>Show answer</summary><p>N</p></details></li><li><p>What is "Nairobi"[-1]?</p><details><summary>Show answer</summary><p>i</p></details></li><li><p>What does "Kenya"[1:3] give?</p><details><summary>Show answer</summary><p>en</p></details></li><li><p>Which method turns "a,b,c" into a list?</p><details><summary>Show answer</summary><p>split</p></details></li><li><p>How do you show 2 decimal places in an f-string? Write the format code after the colon.</p><details><summary>Show answer</summary><p>.2f</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Given <code>phone = &quot;0712345678&quot;</code>, print the masked number <strong>0712</strong><em>678</em>* using slicing.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=strings-in-depth#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 5 of 20 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/operators-booleans/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Operators, booleans and making decisions</a><a class="btn btn-solid btn-sm" href="/learn/python/conditions/">If statements: making decisions with if, elif, else, and, or, not and match <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Strings are immutable</h2>
+<p>You can't change a character inside a string; you create a new string instead:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">town = &quot;nairobi&quot;
+# town[0] = &quot;N&quot;          # TypeError: &#x27;str&#x27; object does not support item assignment
+town = &quot;N&quot; + town[1:]     # build a new string
+print(town)
+print(&quot;nairobi&quot;.capitalize(), &quot;NAIROBI&quot;.lower(), &quot;nairobi city&quot;.title())</code></pre></figure>
+<h2>Searching and checking text</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">message = &quot;Confirmed. KSh1,500.00 sent to JOHN KAMAU 0712345678 on 15/9/26&quot;
+print(&quot;sent&quot; in message)                         # membership
+print(message.find(&quot;KSh&quot;), message.find(&quot;USD&quot;))  # index, or -1 if missing
+print(message.count(&quot;0&quot;))
+print(message.startswith(&quot;Confirmed&quot;), message.endswith(&quot;26&quot;))
+print(&quot;0712345678&quot;.isdigit(), &quot;Kamau&quot;.isalpha(), &quot;ADM001&quot;.isalnum())</code></pre></figure>
+<h2>Extracting data from text</h2>
+<p>Combine <code>split</code>, <code>find</code> and slicing to pull out values, a common real-world task (reading SMS confirmations, CSV lines, log files):</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">message = &quot;Confirmed. KSh1,500.00 sent to JOHN KAMAU 0712345678 on 15/9/26&quot;
+start = message.find(&quot;KSh&quot;) + 3
+end = message.find(&quot; &quot;, start)
+amount = float(message[start:end].replace(&quot;,&quot;, &quot;&quot;))
+phone = [word for word in message.split() if word.isdigit() and len(word) == 10][0]
+print(&quot;Amount:&quot;, amount, &quot;Phone:&quot;, phone)</code></pre></figure>
+<p>For more complex patterns, Python's <code>re</code> module (regular expressions) helps:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import re
+message = &quot;Confirmed. KSh1,500.00 sent to JOHN KAMAU 0712345678 on 15/9/26&quot;
+match = re.search(r&quot;KSh([\d,]+\.\d{2})&quot;, message)
+print(match.group(1) if match else &quot;no amount&quot;)
+print(re.findall(r&quot;\b0\d{9}\b&quot;, &quot;Call 0712345678 or 0722000111&quot;))</code></pre></figure>
+<h2>Joining and formatting tables</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">items = [(&quot;Unga 2kg&quot;, 195), (&quot;Sugar 1kg&quot;, 180), (&quot;Cooking oil 1L&quot;, 380)]
+print(f&quot;{&#x27;Item&#x27;:&lt;16}{&#x27;Price&#x27;:&gt;8}&quot;)
+print(&quot;-&quot; * 24)
+for name, price in items:
+    print(f&quot;{name:&lt;16}{price:&gt;8,.2f}&quot;)
+print(&quot;-&quot; * 24)
+print(f&quot;{&#x27;Total&#x27;:&lt;16}{sum(p for _, p in items):&gt;8,.2f}&quot;)
+print(&quot;, &quot;.join(name for name, _ in items))</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Format spec</th><th>Meaning</th></tr></thead><tbody><tr><td><code>:&lt;16</code> / <code>:&gt;8</code> / <code>:^10</code></td><td>Left / right / centre align in a width</td></tr><tr><td><code>:,</code></td><td>Thousands separators</td></tr><tr><td><code>:.2f</code></td><td>2 decimal places</td></tr><tr><td><code>:05d</code></td><td>Zero-pad to width 5</td></tr><tr><td><code>:.1%</code></td><td>Percentage with 1 decimal</td></tr></tbody></table></div>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Joining text and numbers with <code>+</code> (<code>&quot;Age &quot; + 21</code>)</td><td><code>f&quot;Age {21}&quot;</code> or <code>&quot;Age &quot; + str(21)</code></td></tr><tr><td>Forgetting methods return new strings (<code>name.upper()</code> alone does nothing)</td><td><code>name = name.upper()</code></td></tr><tr><td>Off-by-one slices (<code>s[0:3]</code> gives 3 characters, indexes 0–2)</td><td>Remember the end index is excluded</td></tr><tr><td>Comparing case-sensitive text (<code>&quot;Yes&quot; == &quot;yes&quot;</code> is False)</td><td>Compare <code>.lower()</code> versions</td></tr><tr><td>Using backslashes in Windows paths (<code>&quot;C:\new&quot;</code> contains a newline)</td><td>Raw strings <code>r&quot;C:\new&quot;</code> or forward slashes</td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>From <code>&quot;KCSE-2025-ADM0042&quot;</code>, extract the year and the admission number.</li><li>Write <code>initials(&quot;Wanjiku Mary Kamau&quot;)</code> returning <code>&quot;W.M.K.&quot;</code>.</li><li>Check if a word is a palindrome, ignoring case and spaces ("Never odd or even").</li><li>Print a receipt table of 4 items with aligned columns and a total.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> You have <code>name = &quot;  amina HASSAN &quot;</code>. Write one expression that produces "Amina Hassan".</span><em>Show answer</em></summary><div class="callout-body"><p><code>name.strip().title()</code>: <code>strip()</code> removes the spaces at both ends, and <code>title()</code> capitalises each word.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is "Nairobi"[0]?</p><details><summary>Show answer</summary><p>N</p></details></li><li><p>What is "Nairobi"[-1]?</p><details><summary>Show answer</summary><p>i</p></details></li><li><p>What does "Kenya"[1:3] give?</p><details><summary>Show answer</summary><p>en</p></details></li><li><p>Which method turns "a,b,c" into a list?</p><details><summary>Show answer</summary><p>split</p></details></li><li><p>How do you show 2 decimal places in an f-string? Write the format code after the colon.</p><details><summary>Show answer</summary><p>.2f</p></details></li><li><p>Can you change one character of a Python string in place? (yes/no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>What does "nairobi".find("x") return when not found?</p><details><summary>Show answer</summary><p>-1</p></details></li><li><p>Which module provides regular expressions?</p><details><summary>Show answer</summary><p>re</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Given <code>phone = &quot;0712345678&quot;</code>, print the masked number <strong>0712</strong><em>678</em>* using slicing.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=strings-in-depth#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 5 of 20 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/operators-booleans/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Operators, booleans and making decisions</a><a class="btn btn-solid btn-sm" href="/learn/python/conditions/">If statements: making decisions with if, elif, else, and, or, not and match <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

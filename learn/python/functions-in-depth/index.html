@@ -132,7 +132,88 @@ print(loan_repayment(50000, 12, 6))</code></pre></figure>
 
 countdown(3)</code></pre></figure>
 <p>See the Algorithms tutorial for more on recursion.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does a function return if it has no return statement?</p><details><summary>Show answer</summary><p>None</p></details></li><li><p>Which parameter form collects any number of positional arguments?</p><details><summary>Show answer</summary><p>*args</p></details></li><li><p>Which parameter form collects any number of keyword arguments?</p><details><summary>Show answer</summary><p>**kwargs</p></details></li><li><p>Which keyword makes a small one-line nameless function?</p><details><summary>Show answer</summary><p>lambda</p></details></li><li><p>What is the triple-quoted text right under def called?</p><details><summary>Show answer</summary><p>docstring</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Write a function <code>total(*amounts)</code> that returns the sum of all its arguments, and print <code>total(100, 250, 75)</code>: <strong>425</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=functions-in-depth#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 11 of 20 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/functions-dicts/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Functions and dictionaries: reusable code and key-value data</a><a class="btn btn-solid btn-sm" href="/learn/python/dictionaries-in-depth/">Dictionaries in depth: nested data and counting <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Pure functions and side effects</h2>
+<p>A <strong>pure function</strong> returns a result based only on its inputs and doesn't change anything outside itself. Pure functions are easy to test and reuse:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def with_vat(amount, rate=0.16):          # pure: same input, same output, no side effects
+    return round(amount * (1 + rate), 2)
+
+cart_total = 0
+def add_to_cart(price):                   # impure: changes a global variable
+    global cart_total
+    cart_total += price
+
+print(with_vat(1000))
+add_to_cart(500); add_to_cart(250)
+print(cart_total)</code></pre></figure>
+<p>Prefer pure functions and pass data in/out explicitly; use globals sparingly.</p>
+<h2>The mutable default argument trap</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def add_item_bad(item, basket=[]):        # the same list is reused on every call!
+    basket.append(item)
+    return basket
+
+print(add_item_bad(&quot;tea&quot;))
+print(add_item_bad(&quot;sugar&quot;))              # [&#x27;tea&#x27;, &#x27;sugar&#x27;]: surprise!
+
+def add_item(item, basket=None):          # the correct pattern
+    if basket is None:
+        basket = []
+    basket.append(item)
+    return basket
+
+print(add_item(&quot;tea&quot;))
+print(add_item(&quot;sugar&quot;))</code></pre></figure>
+<p>Default values are created <strong>once</strong>, when the function is defined. Never use a list or dict as a default; use <code>None</code>.</p>
+<h2>Docstrings and documentation</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def loan_instalment(principal, monthly_rate, months):
+    &quot;&quot;&quot;Return the fixed monthly instalment for an amortised loan.
+
+    principal: amount borrowed (KSh)
+    monthly_rate: interest per month as a decimal (0.015 = 1.5%)
+    months: number of monthly payments
+    &quot;&quot;&quot;
+    if monthly_rate == 0:
+        return principal / months
+    r = monthly_rate
+    return principal * r * (1 + r) ** months / ((1 + r) ** months - 1)
+
+print(f&quot;KSh {loan_instalment(100_000, 0.015, 12):,.2f} per month&quot;)
+help(loan_instalment)</code></pre></figure>
+<h2>Functions as values: sorting with key</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">students = [(&quot;Brian&quot;, 72), (&quot;Faith&quot;, 88), (&quot;Juma&quot;, 45), (&quot;Halima&quot;, 91)]
+print(sorted(students, key=lambda s: s[1], reverse=True))    # by mark
+print(max(students, key=lambda s: s[1])[0])                   # top student
+
+def by_name_length(s):
+    return len(s[0])
+print(sorted(students, key=by_name_length))
+
+rules = [lambda p: p * 0.9, lambda p: p + 250]               # list of functions
+price = 5000
+for rule in rules:
+    price = rule(price)
+print(price)</code></pre></figure>
+<h2>Testing functions with assert</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def grade(mark):
+    if not 0 &lt;= mark &lt;= 100:
+        raise ValueError(&quot;mark must be 0-100&quot;)
+    return &quot;A&quot; if mark &gt;= 80 else &quot;B&quot; if mark &gt;= 65 else &quot;C&quot; if mark &gt;= 50 else &quot;D&quot;
+
+assert grade(80) == &quot;A&quot;
+assert grade(79) == &quot;B&quot;
+assert grade(50) == &quot;C&quot;
+assert grade(0) == &quot;D&quot;
+try:
+    grade(101)
+except ValueError as e:
+    print(&quot;Correctly rejected:&quot;, e)
+print(&quot;All tests passed&quot;)</code></pre></figure>
+<p>Professional projects use <strong>pytest</strong> with test files, but <code>assert</code> is a great start.</p>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Forgetting <code>return</code> (the function returns <code>None</code>)</td><td>Return the result explicitly</td></tr><tr><td>Calling without parentheses (<code>print(total)</code> shows <code>&lt;function ...&gt;</code>)</td><td><code>total()</code></td></tr><tr><td>Mutable default arguments</td><td>Default to <code>None</code>, create inside</td></tr><tr><td>Functions that do too many things</td><td>One job per function; split them</td></tr><tr><td>Changing globals from many functions</td><td>Pass parameters and return values</td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Write <code>bmi(weight_kg, height_m)</code> returning BMI rounded to 1 decimal, and test it with assert.</li><li>Write <code>describe(*marks)</code> that returns the count, average and highest of any number of marks.</li><li>Sort a list of products (name, price, stock) by stock, then by price.</li><li>Write a function with a docstring that converts KSh to USD at a given rate (default rate parameter).</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why does <code>add_item_bad(&quot;sugar&quot;)</code> return <code>[&#x27;tea&#x27;, &#x27;sugar&#x27;]</code> the second time it's called?</span><em>Show answer</em></summary><div class="callout-body"><p>The default list <code>basket=[]</code> is created once when the function is defined and reused on every call that doesn't pass a basket, so items accumulate. Use <code>basket=None</code> and create a new list inside the function.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does a function return if it has no return statement?</p><details><summary>Show answer</summary><p>None</p></details></li><li><p>Which parameter form collects any number of positional arguments?</p><details><summary>Show answer</summary><p>*args</p></details></li><li><p>Which parameter form collects any number of keyword arguments?</p><details><summary>Show answer</summary><p>**kwargs</p></details></li><li><p>Which keyword makes a small one-line nameless function?</p><details><summary>Show answer</summary><p>lambda</p></details></li><li><p>What is the triple-quoted text right under def called?</p><details><summary>Show answer</summary><p>docstring</p></details></li><li><p>What does a function return if it has no return statement?</p><details><summary>Show answer</summary><p>None</p></details></li><li><p>What should you use as a default instead of an empty list?</p><details><summary>Show answer</summary><p>None</p></details></li><li><p>Which keyword checks a condition in tests and raises an error if it's false?</p><details><summary>Show answer</summary><p>assert</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Write a function <code>total(*amounts)</code> that returns the sum of all its arguments, and print <code>total(100, 250, 75)</code>: <strong>425</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=functions-in-depth#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 11 of 20 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/functions-dicts/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Functions and dictionaries: reusable code and key-value data</a><a class="btn btn-solid btn-sm" href="/learn/python/dictionaries-in-depth/">Dictionaries in depth: nested data and counting <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

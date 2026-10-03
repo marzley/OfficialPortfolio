@@ -98,7 +98,97 @@ app.listen(3000, () =&gt; console.log(&quot;API on http://localhost:3000&quot;))
 <p>Your front-end can now <code>fetch(&quot;/api/products&quot;)</code>. This is the core of full-stack JavaScript.</p>
 <h2>Choosing packages wisely</h2>
 <ul><li>Check weekly downloads, last update date and open issues on npmjs.com.</li><li>Fewer packages means fewer security risks and a smaller app. Don't install a package for something a few lines of code can do.</li><li>Run <code>npm audit</code> to check for known security problems.</li></ul>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword shares a function from a module file?</p><details><summary>Show answer</summary><p>export</p></details></li><li><p>What must the script tag's type be to use import in the browser?</p><details><summary>Show answer</summary><p>module</p></details></li><li><p>Which command creates a package.json file quickly?</p><details><summary>Show answer</summary><p>npm init -y</p></details></li><li><p>Which folder should never be committed to Git?</p><details><summary>Show answer</summary><p>node_modules</p></details></li><li><p>What runs JavaScript outside the browser, on servers?</p><details><summary>Show answer</summary><p>node</p></details></li></ol></section></div><p class="static-meta">Lesson 19 of 21 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/classes-oop/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Classes and object-oriented JavaScript</a><a class="btn btn-solid btn-sm" href="/learn/javascript/project-todo/">Project: build a complete to-do list app, step by step <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why modules and tooling exist</h2>
+<p>Small scripts can live in one file, but real projects have thousands of lines: cart logic, API calls, validation, UI components. <strong>Modules</strong> split code into files with clear imports and exports, so each part can be understood, tested and reused. <strong>Tooling</strong> (npm, bundlers, linters, formatters, test runners) automates the boring and error-prone work: installing libraries, shrinking files for fast loading, catching mistakes and checking that features still work after changes. Every JavaScript job advert assumes you know these basics.</p>
+<h2>Organising a project</h2>
+<p>A typical small front-end project:</p>
+<figure class="static-code"><figcaption>TEXT</figcaption><pre><code class="language-text">my-shop/
+├── index.html
+├── package.json
+├── src/
+│   ├── main.js          # starts the app
+│   ├── api.js           # fetch calls to the server
+│   ├── cart.js          # cart logic (no DOM code)
+│   ├── format.js        # money/date helpers
+│   └── ui/
+│       └── render.js    # DOM updates
+└── tests/
+    └── cart.test.js</code></pre></figure>
+<p>Keeping logic (cart, format) separate from DOM code makes it testable in Node without a browser.</p>
+<h2>Named vs default exports</h2>
+<div class="static-table"><table><thead><tr><th></th><th>Named export</th><th>Default export</th></tr></thead><tbody><tr><td>Write</td><td><code>export function total() {}</code></td><td><code>export default function Cart() {}</code></td></tr><tr><td>Import</td><td><code>import { total } from &quot;./cart.js&quot;</code></td><td><code>import Cart from &quot;./cart.js&quot;</code> (any name)</td></tr><tr><td>Many per file?</td><td>Yes</td><td>One</td></tr><tr><td>Good for</td><td>Utility collections</td><td>A file that has one main thing (a component)</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>JavaScript</figcaption><pre><code class="language-javascript">// format.js
+export const ksh = n =&gt; `KSh ${n.toLocaleString(&quot;en-KE&quot;)}`;
+export function percent(x) { return `${(x * 100).toFixed(1)}%`; }
+
+// main.js
+import { ksh, percent as pct } from &quot;./format.js&quot;;   // rename on import
+import * as fmt from &quot;./format.js&quot;;                   // everything as an object
+console.log(ksh(2500), pct(0.16), fmt.ksh(100));</code></pre></figure>
+<h2>Dynamic import: load code only when needed</h2>
+<figure class="static-code"><figcaption>JavaScript</figcaption><pre><code class="language-javascript">document.querySelector(&quot;#show-chart&quot;).addEventListener(&quot;click&quot;, async () =&gt; {
+  const { drawChart } = await import(&quot;./chart.js&quot;);   // downloaded on first click
+  drawChart(salesData);
+});</code></pre></figure>
+<p>This keeps the first page load small, which matters for users on slow mobile data.</p>
+<h2>package.json scripts</h2>
+<figure class="static-code"><figcaption>JSON</figcaption><pre><code class="language-json">{
+  &quot;name&quot;: &quot;my-shop&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;type&quot;: &quot;module&quot;,
+  &quot;scripts&quot;: {
+    &quot;dev&quot;: &quot;vite&quot;,
+    &quot;build&quot;: &quot;vite build&quot;,
+    &quot;test&quot;: &quot;node --test&quot;,
+    &quot;lint&quot;: &quot;eslint src&quot;
+  },
+  &quot;dependencies&quot;: { &quot;chart.js&quot;: &quot;^4.4.0&quot; },
+  &quot;devDependencies&quot;: { &quot;vite&quot;: &quot;^5.0.0&quot;, &quot;eslint&quot;: &quot;^9.0.0&quot; }
+}</code></pre></figure>
+<p>Run them with <code>npm run dev</code>, <code>npm run build</code>, <code>npm test</code>. The versions shown are examples; <code>npm install</code> records the real current versions.</p>
+<div class="static-table"><table><thead><tr><th>Term</th><th>Meaning</th></tr></thead><tbody><tr><td><code>dependencies</code></td><td>Needed when the app runs (chart library, date library)</td></tr><tr><td><code>devDependencies</code></td><td>Only for development (bundler, linter, test runner)</td></tr><tr><td><code>^4.4.0</code></td><td>Allow minor and patch updates (4.x.x), not 5.0.0</td></tr><tr><td><code>package-lock.json</code></td><td>Records exact installed versions; commit it so everyone gets the same versions</td></tr><tr><td><code>npx</code></td><td>Run a package's command without installing it globally</td></tr></tbody></table></div>
+<h2>Testing with Node's built-in test runner</h2>
+<figure class="static-code"><figcaption>JavaScript</figcaption><pre><code class="language-javascript">// cart.js
+export function cartTotal(items, vat = 0.16) {
+  const sub = items.reduce((s, i) =&gt; s + i.price * i.qty, 0);
+  return Math.round(sub * (1 + vat));
+}
+
+// tests/cart.test.js
+import { test } from &quot;node:test&quot;;
+import assert from &quot;node:assert/strict&quot;;
+import { cartTotal } from &quot;../src/cart.js&quot;;
+
+test(&quot;adds VAT&quot;, () =&gt; {
+  assert.equal(cartTotal([{ price: 100, qty: 2 }]), 232);
+});
+test(&quot;empty cart is zero&quot;, () =&gt; {
+  assert.equal(cartTotal([]), 0);
+});</code></pre></figure>
+<p>Run <code>npm test</code>. Tests let you change code confidently: if something breaks, a test fails before your users notice. Popular alternatives are Vitest and Jest.</p>
+<h2>Environment variables and secrets</h2>
+<p>Configuration that differs between your laptop and the live server (API URLs, database passwords, payment keys) goes in environment variables, not in code:</p>
+<figure class="static-code"><figcaption>JavaScript</figcaption><pre><code class="language-javascript">// server-side Node only
+const port = process.env.PORT ?? 3000;
+const apiKey = process.env.PAYMENT_API_KEY;   // set on the server, never committed
+if (!apiKey) console.warn(&quot;PAYMENT_API_KEY is not set&quot;);</code></pre></figure>
+<p>Important: anything bundled into front-end JavaScript is visible to every visitor. Secret keys (M-Pesa consumer secret, database passwords) must stay on the server and never be put into browser code or committed to Git. Add <code>.env</code> to <code>.gitignore</code>.</p>
+<h2>Building for production</h2>
+<p>A bundler (Vite, esbuild, webpack) takes your modules and:</p>
+<ul><li><strong>Bundles</strong> many files into a few for fewer requests.</li><li><strong>Minifies</strong> (removes spaces, shortens names) for smaller downloads.</li><li><strong>Tree-shakes</strong>: drops exported code that nothing imports.</li><li>Adds <strong>content hashes</strong> to file names (<code>main.3f9a1c.js</code>) so browsers cache safely.</li><li>Transforms modern syntax and TypeScript/JSX.</li></ul>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">npm create vite@latest my-shop    # choose &quot;Vanilla&quot; or &quot;React&quot;
+cd my-shop &amp;&amp; npm install
+npm run dev                       # local server with instant reload
+npm run build                     # optimised files in dist/ ready to upload</code></pre></figure>
+<p>Upload the <code>dist/</code> folder to any static host or cPanel <code>public_html</code>.</p>
+<h2>Code quality tools</h2>
+<div class="static-table"><table><thead><tr><th>Tool</th><th>Job</th></tr></thead><tbody><tr><td><strong>ESLint</strong></td><td>Finds likely bugs and bad patterns (unused variables, <code>==</code>, missing awaits)</td></tr><tr><td><strong>Prettier</strong></td><td>Formats code consistently so teams don't argue about style</td></tr><tr><td><strong>TypeScript</strong></td><td>Adds types that catch mistakes before running</td></tr><tr><td><strong>Husky / lint-staged</strong></td><td>Run lint and tests automatically before each commit</td></tr><tr><td><strong>GitHub Actions</strong></td><td>Run tests on every push and pull request</td></tr></tbody></table></div>
+<h2>Security habits with npm</h2>
+<ul><li>Install only well-maintained packages; check the package name carefully (typosquatting: <code>expresss</code> instead of <code>express</code>).</li><li>Run <code>npm audit</code> and update regularly with <code>npm outdated</code> / <code>npm update</code>.</li><li>Use <code>npm ci</code> on servers and in CI: it installs exactly what's in the lockfile.</li><li>Never run unknown install scripts as an administrator.</li></ul>
+<h2>Practice</h2>
+<ol><li>Split a single-file calculator into <code>math.js</code> (logic) and <code>main.js</code> (output) with named exports.</li><li>Create a project with <code>npm init -y</code>, add a <code>start</code> script, and run it.</li><li>Write two tests for a <code>formatPhone</code> function using <code>node:test</code>.</li><li>Use a dynamic <code>import()</code> to load a module only when a button is clicked.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why should <code>node_modules/</code> be left out of Git but <code>package-lock.json</code> be committed?</span><em>Show answer</em></summary><div class="callout-body"><p><code>node_modules</code> is large and can be rebuilt exactly from <code>package.json</code> and the lockfile, so committing it wastes space and causes conflicts. The lockfile records the exact versions that worked, so teammates and servers install identical dependencies with <code>npm ci</code>.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword shares a function from a module file?</p><details><summary>Show answer</summary><p>export</p></details></li><li><p>What must the script tag's type be to use import in the browser?</p><details><summary>Show answer</summary><p>module</p></details></li><li><p>Which command creates a package.json file quickly?</p><details><summary>Show answer</summary><p>npm init -y</p></details></li><li><p>Which folder should never be committed to Git?</p><details><summary>Show answer</summary><p>node_modules</p></details></li><li><p>What runs JavaScript outside the browser, on servers?</p><details><summary>Show answer</summary><p>node</p></details></li><li><p>Which file records the exact installed dependency versions?</p><details><summary>Show answer</summary><p>package-lock.json</p></details></li><li><p>Which npm command installs exactly what the lockfile says, for servers and CI?</p><details><summary>Show answer</summary><p>npm ci</p></details></li><li><p>What is it called when a bundler removes unused exported code? (two words)</p><details><summary>Show answer</summary><p>tree shaking</p></details></li><li><p>Should secret API keys be bundled into front-end JavaScript? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 19 of 21 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/classes-oop/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Classes and object-oriented JavaScript</a><a class="btn btn-solid btn-sm" href="/learn/javascript/project-todo/">Project: build a complete to-do list app, step by step <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

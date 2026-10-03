@@ -108,7 +108,95 @@ border-left: 4px solid #16a34a;   /* great for &quot;note&quot; boxes */</code><
     &lt;a class=&quot;buy&quot; href=&quot;#&quot;&gt;Order on WhatsApp&lt;/a&gt;
   &lt;/div&gt;
 &lt;/div&gt;</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which background-size value fills the whole box, cropping if needed?</p><details><summary>Show answer</summary><p>cover</p></details></li><li><p>What border-radius turns a square image into a circle?</p><details><summary>Show answer</summary><p>50%</p></details></li><li><p>Which property adds a shadow to a box?</p><details><summary>Show answer</summary><p>box-shadow</p></details></li><li><p>Which keyword makes a box-shadow appear inside the element?</p><details><summary>Show answer</summary><p>inset</p></details></li><li><p>What is the order of the border shorthand: width style colour, or colour style width?</p><details><summary>Show answer</summary><p>width style colour</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Give <code>.card</code> a <strong>border-radius of 12px</strong> and a <strong>box-shadow</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=backgrounds-borders-shadows#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 5 of 21 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/units-sizing/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> CSS units: px, %, em, rem, vw, vh and ch</a><a class="btn btn-solid btn-sm" href="/learn/css/box-model/">The box model: content, padding, border, margin and box-sizing <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Where you use these properties</h2>
+<p>Backgrounds, borders, corners and shadows create the visual personality of a site: hero banners, buttons, cards, pricing tables, badges and profile pictures. Used well, they create <strong>depth and hierarchy</strong> (what's important, what's clickable). Used badly, they make a site look dated or cluttered. These properties are also cheap: a gradient or shadow in CSS loads instantly, unlike an image.</p>
+<h2>Gradients in depth</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .g { height: 70px; border-radius: 12px; margin: 8px 0; color: #fff; font: 600 14px system-ui; display: grid; place-items: center; }
+  .linear { background: linear-gradient(135deg, #0b1b35, #1d4ed8); }
+  .stops  { background: linear-gradient(90deg, #16a34a 0 33%, #000 33% 66%, #dc2626 66%); }
+  .radial { background: radial-gradient(circle at 30% 30%, #fbbf24, #b45309); }
+  .conic  { background: conic-gradient(#0b1b35 0 70%, #e2e8f0 0); width: 70px; border-radius: 50%; color: #0b1b35; }
+  .overlay { background: linear-gradient(rgba(11,27,53,.75), rgba(11,27,53,.75)), url(&quot;https://picsum.photos/600/200&quot;) center/cover; }
+&lt;/style&gt;
+&lt;div class=&quot;g linear&quot;&gt;Linear gradient (135deg)&lt;/div&gt;
+&lt;div class=&quot;g stops&quot;&gt;Hard colour stops&lt;/div&gt;
+&lt;div class=&quot;g radial&quot;&gt;Radial gradient&lt;/div&gt;
+&lt;div class=&quot;g conic&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;g overlay&quot;&gt;Dark overlay on a photo keeps text readable&lt;/div&gt;</code></pre></figure>
+<p>The conic gradient makes a simple "70% complete" pie chart with no images. The overlay technique is essential: white text directly on a busy photo often fails contrast checks.</p>
+<h2>Multiple backgrounds and background shorthand</h2>
+<figure class="static-code"><figcaption>CSS</figcaption><pre><code class="language-css">.hero {
+  background:
+    url(&quot;/img/pattern.svg&quot;) repeat top left / 40px,      /* top layer */
+    linear-gradient(#0b1b35, #13284d);                    /* bottom layer */
+}
+/* shorthand order: image position / size repeat attachment colour */
+.banner { background: url(banner.webp) center / cover no-repeat #0b1b35; }</code></pre></figure>
+<p>Always include a background <strong>colour</strong> as a fallback in case the image fails to load (common on slow connections).</p>
+<h2>Background images vs <code>&lt;img&gt;</code></h2>
+<div class="static-table"><table><thead><tr><th>Use <code>&lt;img&gt;</code> when...</th><th>Use <code>background-image</code> when...</th></tr></thead><tbody><tr><td>The image is content (product photo, team photo)</td><td>The image is decoration (patterns, textures)</td></tr><tr><td>It needs alt text for screen readers and SEO</td><td>It has no meaning to convey</td></tr><tr><td>It should be printed and lazy-loaded</td><td>It's part of the design only</td></tr></tbody></table></div>
+<p>Search engines index <code>&lt;img&gt;</code> with alt text; background images are mostly ignored.</p>
+<h2>Border tricks</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .row { display: flex; gap: 12px; flex-wrap: wrap; font: 14px system-ui; }
+  .row &gt; div { padding: 14px; background: #fff; }
+  .accent { border-left: 5px solid #f59e0b; background: #fffbeb !important; }
+  .dashed { border: 2px dashed #94a3b8; border-radius: 10px; }
+  .outline { outline: 3px solid #1d4ed8; outline-offset: 4px; }
+  .pill { border-radius: 999px; background: #dcfce7 !important; color: #166534; font-weight: 600; }
+  .gradient-border { border: 3px solid transparent; border-radius: 12px; background: linear-gradient(#fff, #fff) padding-box, linear-gradient(135deg, #f59e0b, #1d4ed8) border-box !important; }
+&lt;/style&gt;
+&lt;div class=&quot;row&quot;&gt;
+  &lt;div class=&quot;accent&quot;&gt;Callout with an accent border&lt;/div&gt;
+  &lt;div class=&quot;dashed&quot;&gt;Upload area (dashed)&lt;/div&gt;
+  &lt;div class=&quot;outline&quot;&gt;Outline with offset&lt;/div&gt;
+  &lt;div class=&quot;pill&quot;&gt;Pill badge&lt;/div&gt;
+  &lt;div class=&quot;gradient-border&quot;&gt;Gradient border&lt;/div&gt;
+&lt;/div&gt;</code></pre></figure>
+<p><code>outline</code> doesn't take up space or change layout, which is why browsers use it for focus rings. Never remove focus outlines without providing a visible replacement.</p>
+<h2>Layered, realistic shadows</h2>
+<p>Real shadows are soft and come from one light direction. Layering two or three shadows looks more natural than one heavy shadow:</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  body { background: #f1f5f9; font: 14px system-ui; }
+  .cards { display: flex; gap: 20px; flex-wrap: wrap; padding: 16px; }
+  .c { width: 150px; height: 90px; background: #fff; border-radius: 12px; display: grid; place-items: center; }
+  .heavy { box-shadow: 0 0 20px #000; }
+  .soft { box-shadow: 0 1px 2px rgba(15,23,42,.06), 0 4px 12px rgba(15,23,42,.08); }
+  .lifted { box-shadow: 0 2px 4px rgba(15,23,42,.06), 0 12px 32px rgba(15,23,42,.14); transform: translateY(-2px); }
+  .glow { box-shadow: 0 0 0 4px rgba(29,78,216,.25); }
+&lt;/style&gt;
+&lt;div class=&quot;cards&quot;&gt;
+  &lt;div class=&quot;c heavy&quot;&gt;Too heavy&lt;/div&gt;
+  &lt;div class=&quot;c soft&quot;&gt;Soft (resting)&lt;/div&gt;
+  &lt;div class=&quot;c lifted&quot;&gt;Lifted (hover)&lt;/div&gt;
+  &lt;div class=&quot;c glow&quot;&gt;Focus ring&lt;/div&gt;
+&lt;/div&gt;</code></pre></figure>
+<p>Use stronger shadows for elements that are "higher" (dropdowns, modals) and lighter ones for cards resting on the page.</p>
+<h2>Design consistency with variables</h2>
+<figure class="static-code"><figcaption>CSS</figcaption><pre><code class="language-css">:root {
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --shadow-1: 0 1px 2px rgba(15,23,42,.06), 0 4px 12px rgba(15,23,42,.08);
+  --shadow-2: 0 2px 4px rgba(15,23,42,.06), 0 12px 32px rgba(15,23,42,.14);
+  --border: 1px solid #e2e8f0;
+}
+.card { border: var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-1); }
+.card:hover { box-shadow: var(--shadow-2); }
+.modal { border-radius: var(--radius-lg); box-shadow: var(--shadow-2); }</code></pre></figure>
+<p>A small set of radii and shadows used everywhere is what makes professional sites feel consistent.</p>
+<h2>Dark mode considerations</h2>
+<p>Shadows are almost invisible on dark backgrounds. In dark mode, show depth with lighter surface colours and subtle borders instead:</p>
+<figure class="static-code"><figcaption>CSS</figcaption><pre><code class="language-css">@media (prefers-color-scheme: dark) {
+  .card { background: #1e293b; border: 1px solid #334155; box-shadow: none; }
+}</code></pre></figure>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Text on photos without an overlay</td><td>Add a dark gradient overlay or text background</td></tr><tr><td>Background image with no colour fallback</td><td>Add a background-color</td></tr><tr><td>Very dark, large shadows</td><td>Use low-opacity, layered shadows</td></tr><tr><td>Different border radius on every component</td><td>Use 2 or 3 radius variables</td></tr><tr><td><code>outline: none</code> on buttons and links</td><td>Keep a visible <code>:focus-visible</code> style</td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Make a hero section with a photo, a dark overlay gradient and white heading text.</li><li>Build three pricing cards with consistent radius and shadow variables, the middle one "lifted".</li><li>Create a circular progress indicator showing 65% with a conic gradient.</li><li>Design an "upload your CV" box with a dashed border that turns solid blue on hover.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why is it better to put a semi-transparent gradient over a hero photo than to choose a photo that "looks dark enough"?</span><em>Show answer</em></summary><div class="callout-body"><p>Photos change: a client replaces the image, or different screen sizes crop different areas, so a light patch may end up behind the text. An overlay guarantees enough contrast for the text regardless of which part of the image shows, keeping it readable and accessible.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which background-size value fills the whole box, cropping if needed?</p><details><summary>Show answer</summary><p>cover</p></details></li><li><p>What border-radius turns a square image into a circle?</p><details><summary>Show answer</summary><p>50%</p></details></li><li><p>Which property adds a shadow to a box?</p><details><summary>Show answer</summary><p>box-shadow</p></details></li><li><p>Which keyword makes a box-shadow appear inside the element?</p><details><summary>Show answer</summary><p>inset</p></details></li><li><p>What is the order of the border shorthand: width style colour, or colour style width?</p><details><summary>Show answer</summary><p>width style colour</p></details></li><li><p>Which gradient type can draw a simple pie chart?</p><details><summary>Show answer</summary><p>conic</p></details></li><li><p>Which property draws a ring that doesn't affect layout and is used for focus styles?</p><details><summary>Show answer</summary><p>outline</p></details></li><li><p>Should content images like product photos use img or background-image?</p><details><summary>Show answer</summary><p>img</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Give <code>.card</code> a <strong>border-radius of 12px</strong> and a <strong>box-shadow</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=backgrounds-borders-shadows#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 5 of 21 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/units-sizing/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> CSS units: px, %, em, rem, vw, vh and ch</a><a class="btn btn-solid btn-sm" href="/learn/css/box-model/">The box model: content, padding, border, margin and box-sizing <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

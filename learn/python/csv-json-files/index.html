@@ -129,7 +129,110 @@ for s in samples:
     except (ValueError, KeyError) as e:
         print(&quot;Bad value:&quot;, s, &quot;-&gt;&quot;, type(e).__name__)</code></pre></figure>
 <blockquote><p>Going further: the <code>pandas</code> library reads CSV and Excel files into tables and can summarise thousands of rows in one line. It's the most popular tool for data analysis in Python.</p></blockquote>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which csv class lets you read columns by their header names?</p><details><summary>Show answer</summary><p>DictReader</p></details></li><li><p>What type are values read from a CSV file?</p><details><summary>Show answer</summary><p>str</p></details></li><li><p>Which json function turns a JSON string into a Python dict?</p><details><summary>Show answer</summary><p>loads</p></details></li><li><p>Which json function writes Python data into a file?</p><details><summary>Show answer</summary><p>dump</p></details></li><li><p>What does JSON null become in Python?</p><details><summary>Show answer</summary><p>None</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Parse the JSON text <code>&#x27;{&quot;amount&quot;: 1500}&#x27;</code> with <code>json.loads</code> and print the amount: <strong>1500</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=csv-json-files#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 14 of 20 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/files-errors/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Errors and exceptions: try, except, else, finally, raising errors and working with files</a><a class="btn btn-solid btn-sm" href="/learn/python/modules-stdlib/">Modules and the standard library: import, math, random, datetime, statistics, os and pip <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why CSV and JSON matter in real jobs</h2>
+<div class="static-table"><table><thead><tr><th>Who</th><th>What they do with CSV/JSON</th></tr></thead><tbody><tr><td>Accountants and SACCO clerks</td><td>Export M-Pesa statements, bank statements and member lists as CSV, then total and reconcile them</td></tr><tr><td>Data analysts</td><td>Clean survey exports (Google Forms, KoboToolbox) saved as CSV before charting</td></tr><tr><td>Web and app developers</td><td>Send and receive JSON between a website, a mobile app and the server</td></tr><tr><td>Integrators</td><td>Read JSON callbacks from payment systems (Daraja, card gateways) and save them</td></tr><tr><td>Teachers and admins</td><td>Export marks or attendance from a school system to CSV and produce reports</td></tr></tbody></table></div>
+<p>Knowing both formats means you can move data between Excel, websites and databases without retyping anything.</p>
+<h2>Cleaning messy CSV data</h2>
+<p>Real CSV files are rarely perfect: extra spaces, empty rows, commas inside amounts, missing values. Clean as you read:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import csv, io
+
+raw = &quot;&quot;&quot;name, town ,amount
+ Amina ,Mombasa,&quot;1,200&quot;
+Brian,Nakuru,850
+
+Chebet,,2300
+Dennis,Kisumu,
+&quot;&quot;&quot;
+clean = []
+for row in csv.DictReader(io.StringIO(raw)):
+    row = {k.strip(): (v or &quot;&quot;).strip() for k, v in row.items()}
+    if not row[&quot;name&quot;]:
+        continue                                   # skip blank lines
+    amount_text = row[&quot;amount&quot;].replace(&quot;,&quot;, &quot;&quot;)
+    row[&quot;amount&quot;] = int(amount_text) if amount_text else 0
+    row[&quot;town&quot;] = row[&quot;town&quot;] or &quot;Unknown&quot;
+    clean.append(row)
+
+for r in clean:
+    print(r)
+print(&quot;Total:&quot;, sum(r[&quot;amount&quot;] for r in clean))</code></pre></figure>
+<p><code>io.StringIO</code> lets you treat a string like a file: handy for testing CSV code without creating files. Note the quoted <code>&quot;1,200&quot;</code>: the csv module understands quotes, so the comma inside does not split the column. Never split CSV lines yourself with <code>line.split(&quot;,&quot;)</code> for this reason.</p>
+<h2>Summarising a CSV: totals by group</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import csv, io
+from collections import defaultdict
+
+data = &quot;&quot;&quot;date,town,product,qty,price
+2026-09-01,Nakuru,Unga,10,180
+2026-09-01,Thika,Sugar,5,210
+2026-09-02,Nakuru,Sugar,8,210
+2026-09-02,Thika,Unga,12,180
+2026-09-03,Nakuru,Oil,4,350
+&quot;&quot;&quot;
+by_town = defaultdict(float)
+by_product = defaultdict(int)
+for row in csv.DictReader(io.StringIO(data)):
+    revenue = int(row[&quot;qty&quot;]) * float(row[&quot;price&quot;])
+    by_town[row[&quot;town&quot;]] += revenue
+    by_product[row[&quot;product&quot;]] += int(row[&quot;qty&quot;])
+
+print(&quot;Revenue by town&quot;)
+for town, total in sorted(by_town.items(), key=lambda kv: kv[1], reverse=True):
+    print(f&quot;  {town:&lt;8} KSh {total:&gt;8,.0f}&quot;)
+print(&quot;Units by product:&quot;, dict(by_product))</code></pre></figure>
+<p>This is exactly what a pivot table does in Excel, written in a few lines that you can rerun on next month's file.</p>
+<h2>Delimiters and encodings</h2>
+<div class="static-table"><table><thead><tr><th>Situation</th><th>Solution</th></tr></thead><tbody><tr><td>File uses semicolons (common in European Excel exports)</td><td><code>csv.reader(f, delimiter=&quot;;&quot;)</code></td></tr><tr><td>Tab-separated file (.tsv)</td><td><code>delimiter=&quot;\t&quot;</code></td></tr><tr><td>Strange characters like <code>Ã©</code></td><td>Open with the correct encoding: <code>open(path, encoding=&quot;utf-8&quot;)</code> or <code>&quot;utf-8-sig&quot;</code> for Excel files that start with a hidden BOM</td></tr><tr><td>Excel shows everything in one column</td><td>Your delimiter doesn't match the user's regional settings; use commas and UTF-8, or save as .xlsx with a library like openpyxl</td></tr></tbody></table></div>
+<h2>Nested JSON from APIs</h2>
+<p>API responses often nest data several levels deep. Walk down step by step and use <code>.get()</code> for keys that may be missing:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import json
+
+response = &#x27;&#x27;&#x27;{
+  &quot;Body&quot;: {&quot;stkCallback&quot;: {
+    &quot;ResultCode&quot;: 0,
+    &quot;ResultDesc&quot;: &quot;The service request is processed successfully.&quot;,
+    &quot;CallbackMetadata&quot;: {&quot;Item&quot;: [
+      {&quot;Name&quot;: &quot;Amount&quot;, &quot;Value&quot;: 1500},
+      {&quot;Name&quot;: &quot;MpesaReceiptNumber&quot;, &quot;Value&quot;: &quot;SJK4H2L9XA&quot;},
+      {&quot;Name&quot;: &quot;PhoneNumber&quot;, &quot;Value&quot;: 254712345678}
+    ]}
+  }}
+}&#x27;&#x27;&#x27;
+data = json.loads(response)
+cb = data[&quot;Body&quot;][&quot;stkCallback&quot;]
+if cb[&quot;ResultCode&quot;] == 0:
+    items = {i[&quot;Name&quot;]: i.get(&quot;Value&quot;) for i in cb.get(&quot;CallbackMetadata&quot;, {}).get(&quot;Item&quot;, [])}
+    print(&quot;Paid:&quot;, items[&quot;Amount&quot;], &quot;Receipt:&quot;, items[&quot;MpesaReceiptNumber&quot;])
+else:
+    print(&quot;Payment failed:&quot;, cb[&quot;ResultDesc&quot;])</code></pre></figure>
+<p>This mirrors the shape of a typical STK Push callback (simplified and with made-up values). Turning the <code>Item</code> list into a dict makes the values easy to read by name.</p>
+<h2>Converting between CSV and JSON</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import csv, io, json
+
+csv_text = &quot;name,phone,balance\nAmina,0712000001,1500\nBrian,0722000002,0\n&quot;
+rows = list(csv.DictReader(io.StringIO(csv_text)))
+for r in rows:
+    r[&quot;balance&quot;] = int(r[&quot;balance&quot;])
+json_text = json.dumps(rows, indent=2)
+print(json_text)
+
+# and back again
+back = json.loads(json_text)
+out = io.StringIO()
+w = csv.DictWriter(out, fieldnames=back[0].keys())
+w.writeheader()
+w.writerows(back)
+print(out.getvalue())</code></pre></figure>
+<h2>JSON pitfalls</h2>
+<div class="static-table"><table><thead><tr><th>Pitfall</th><th>Example</th><th>Fix</th></tr></thead><tbody><tr><td>Single quotes</td><td><code>{&#x27;a&#x27;: 1}</code> is not valid JSON</td><td>JSON needs double quotes; use <code>json.dumps</code> to produce it</td></tr><tr><td>Trailing commas</td><td><code>[1, 2,]</code> fails</td><td>Remove the last comma</td></tr><tr><td>Dates</td><td><code>json.dumps(date.today())</code> raises TypeError</td><td>Convert first: <code>d.isoformat()</code>, or <code>json.dumps(x, default=str)</code></td></tr><tr><td>Kiswahili or emoji shown as <code>é</code></td><td><code>json.dumps(&quot;café&quot;)</code></td><td><code>json.dumps(x, ensure_ascii=False)</code></td></tr><tr><td>Numbers as text</td><td><code>&quot;1500.00&quot;</code></td><td>Convert with <code>float()</code> before maths</td></tr><tr><td>Keys become strings</td><td><code>{1: &quot;a&quot;}</code> dumps as <code>{&quot;1&quot;: &quot;a&quot;}</code></td><td>Convert keys back with <code>int()</code> after loading</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import json
+from datetime import date
+
+order = {&quot;id&quot;: 7, &quot;customer&quot;: &quot;Wanjirũ&quot;, &quot;date&quot;: date(2026, 9, 30)}
+print(json.dumps(order, default=str, ensure_ascii=False))</code></pre></figure>
+<h2>Practice</h2>
+<ol><li>Read a CSV of expenses (date, category, amount) from a string and print the total per category, largest first.</li><li>Write a function <code>load_json(text)</code> that returns the parsed data, or <code>None</code> if the text is not valid JSON.</li><li>Convert a list of product dicts to a CSV with columns name, price and in_stock.</li><li>From the STK callback example, write a function that returns <code>(amount, receipt, phone)</code> or <code>None</code> when ResultCode isn't 0.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why is <code>csv.DictReader</code> safer than <code>line.split(&quot;,&quot;)</code> for reading a bank statement?</span><em>Show answer</em></summary><div class="callout-body"><p>Because descriptions and amounts can contain commas inside quotes (<code>&quot;Payment, school fees&quot;</code>, <code>&quot;1,200&quot;</code>). <code>split(&quot;,&quot;)</code> breaks those into extra columns; the csv module understands quoting and keeps each field intact, and DictReader also lets you use column names instead of fragile position numbers.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which csv class lets you read columns by their header names?</p><details><summary>Show answer</summary><p>DictReader</p></details></li><li><p>What type are values read from a CSV file?</p><details><summary>Show answer</summary><p>str</p></details></li><li><p>Which json function turns a JSON string into a Python dict?</p><details><summary>Show answer</summary><p>loads</p></details></li><li><p>Which json function writes Python data into a file?</p><details><summary>Show answer</summary><p>dump</p></details></li><li><p>What does JSON null become in Python?</p><details><summary>Show answer</summary><p>None</p></details></li><li><p>Which io class lets you treat a string like a file?</p><details><summary>Show answer</summary><p>StringIO</p></details></li><li><p>Which json.dumps argument keeps characters like é and ũ readable instead of escaped?</p><details><summary>Show answer</summary><p>ensure_ascii=False</p></details></li><li><p>Which csv.reader argument changes the separator, e.g. to a semicolon?</p><details><summary>Show answer</summary><p>delimiter</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Parse the JSON text <code>&#x27;{&quot;amount&quot;: 1500}&#x27;</code> with <code>json.loads</code> and print the amount: <strong>1500</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=csv-json-files#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 14 of 20 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/files-errors/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Errors and exceptions: try, except, else, finally, raising errors and working with files</a><a class="btn btn-solid btn-sm" href="/learn/python/modules-stdlib/">Modules and the standard library: import, math, random, datetime, statistics, os and pip <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

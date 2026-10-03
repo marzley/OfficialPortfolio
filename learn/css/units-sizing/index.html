@@ -76,7 +76,77 @@ font-size: clamp(1rem, 2.5vw, 1.5rem);
 height: calc(100vh - 64px);         /* full screen minus a 64px header */</code></pre></figure>
 <h2>Which unit when?</h2>
 <div class="static-table"><table><thead><tr><th>Job</th><th>Best unit</th></tr></thead><tbody><tr><td>Font sizes</td><td><code>rem</code> (or <code>clamp()</code> with <code>rem</code> and <code>vw</code>)</td></tr><tr><td>Spacing (margin, padding, gap)</td><td><code>rem</code></td></tr><tr><td>Button padding</td><td><code>em</code></td></tr><tr><td>Borders</td><td><code>px</code></td></tr><tr><td>Layout widths</td><td><code>%</code>, <code>fr</code> (grid), <code>min()</code></td></tr><tr><td>Full-screen sections</td><td><code>vh</code> / <code>dvh</code></td></tr><tr><td>Text column width</td><td><code>ch</code></td></tr></tbody></table></div>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which unit is relative to the root html font size?</p><details><summary>Show answer</summary><p>rem</p></details></li><li><p>If the root font size is 16px, how many pixels is 2rem?</p><details><summary>Show answer</summary><p>32</p></details></li><li><p>Which unit equals 1% of the screen width?</p><details><summary>Show answer</summary><p>vw</p></details></li><li><p>Which unit is good for a readable text width, based on characters?</p><details><summary>Show answer</summary><p>ch</p></details></li><li><p>Which CSS function can subtract a header height from 100vh?</p><details><summary>Show answer</summary><p>calc</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Make the <code>.box</code> <strong>50%</strong> wide with padding of <strong>1rem</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=units-sizing#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 4 of 21 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/fonts-text/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Fonts and text styling</a><a class="btn btn-solid btn-sm" href="/learn/css/backgrounds-borders-shadows/">Backgrounds, borders, rounded corners and shadows <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why units matter</h2>
+<p>Units decide how your layout reacts to different screens and user settings. A site built only in fixed pixels looks fine on the designer's laptop but breaks on a small phone or when a visitor increases their text size. Choosing the right unit for each job is what makes a layout <strong>responsive</strong> and <strong>accessible</strong> without endless media queries.</p>
+<h2>em vs rem in practice</h2>
+<p><code>em</code> is relative to the element's own font size (or its parent's, for font-size itself), so it compounds when nested. <code>rem</code> always refers to the root, so it's predictable:</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  html { font-size: 16px; }
+  .em-box { font-size: 1.2em; border-left: 4px solid #f59e0b; padding-left: .5em; margin: 4px 0; }
+  .rem-box { font-size: 1.2rem; border-left: 4px solid #3b82f6; padding-left: .5rem; margin: 4px 0; }
+&lt;/style&gt;
+&lt;div class=&quot;em-box&quot;&gt;em level 1
+  &lt;div class=&quot;em-box&quot;&gt;em level 2 (bigger)
+    &lt;div class=&quot;em-box&quot;&gt;em level 3 (bigger again)&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;rem-box&quot;&gt;rem level 1
+  &lt;div class=&quot;rem-box&quot;&gt;rem level 2 (same)
+    &lt;div class=&quot;rem-box&quot;&gt;rem level 3 (same)&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></figure>
+<p>A good rule: <strong>rem for font sizes</strong>, <strong>em for spacing that should grow with the text of that component</strong> (button padding, icon size next to text).</p>
+<h2>Buttons that scale with their text</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .btn { font: 600 1rem system-ui; padding: .6em 1.2em; border-radius: .5em; border: 0; background: #0b1b35; color: #fff; margin: 4px; }
+  .small { font-size: .8rem; }
+  .large { font-size: 1.3rem; }
+&lt;/style&gt;
+&lt;button class=&quot;btn small&quot;&gt;Small&lt;/button&gt;
+&lt;button class=&quot;btn&quot;&gt;Normal&lt;/button&gt;
+&lt;button class=&quot;btn large&quot;&gt;Large&lt;/button&gt;</code></pre></figure>
+<p>Because padding and radius use <code>em</code>, changing only <code>font-size</code> resizes the whole button proportionally.</p>
+<h2>The mobile 100vh problem and new viewport units</h2>
+<p>On phones, <code>100vh</code> can be taller than the visible area because the browser's address bar appears and disappears. Newer units fix this:</p>
+<div class="static-table"><table><thead><tr><th>Unit</th><th>Meaning</th></tr></thead><tbody><tr><td><code>svh</code></td><td>Small viewport height (address bar shown)</td></tr><tr><td><code>lvh</code></td><td>Large viewport height (address bar hidden)</td></tr><tr><td><code>dvh</code></td><td>Dynamic: updates as the bar shows and hides</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>CSS</figcaption><pre><code class="language-css">.hero {
+  min-height: 100vh;      /* fallback for older browsers */
+  min-height: 100svh;     /* fits the visible screen on phones */
+}</code></pre></figure>
+<p>Use <code>min-height</code> rather than <code>height</code> so content can still grow if it doesn't fit.</p>
+<h2>min(), max() and clamp() together</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .wrap { width: min(100% - 32px, 960px); margin-inline: auto; background: #e0f2fe; padding: 12px; }
+  .card { padding: clamp(12px, 3vw, 32px); background: #fff; border-radius: 12px; }
+  .side { width: max(200px, 25%); background: #fef3c7; padding: 8px; margin-top: 8px; }
+&lt;/style&gt;
+&lt;div class=&quot;wrap&quot;&gt;
+  &lt;div class=&quot;card&quot;&gt;The container is 960px wide on desktop and keeps a 16px gap each side on phones, with no media query. The padding grows with the screen from 12px to 32px.&lt;/div&gt;
+  &lt;div class=&quot;side&quot;&gt;At least 200px, or 25% when that&#x27;s bigger.&lt;/div&gt;
+&lt;/div&gt;</code></pre></figure>
+<p><code>width: min(100% - 32px, 960px)</code> is a popular one-line responsive container.</p>
+<h2>Container query units</h2>
+<p>When a component should respond to its <strong>container's</strong> size rather than the whole screen, use container queries and <code>cqi</code> (1% of the container's inline size):</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .holder { container-type: inline-size; border: 1px dashed #94a3b8; margin: 8px 0; padding: 8px; }
+  .holder h3 { font-size: clamp(1rem, 6cqi, 2rem); margin: 0; }
+  .narrow { width: 220px; }
+&lt;/style&gt;
+&lt;div class=&quot;holder&quot;&gt;&lt;h3&gt;Wide container heading&lt;/h3&gt;&lt;/div&gt;
+&lt;div class=&quot;holder narrow&quot;&gt;&lt;h3&gt;Narrow container heading&lt;/h3&gt;&lt;/div&gt;</code></pre></figure>
+<p>The same card can sit in a wide main column or a narrow sidebar and size its text appropriately.</p>
+<h2>Unitless line-height</h2>
+<figure class="static-code"><figcaption>CSS</figcaption><pre><code class="language-css">p { line-height: 1.6; }      /* good: 1.6 × each element&#x27;s own font size */
+p { line-height: 1.6em; }    /* risky: children inherit a fixed computed value */</code></pre></figure>
+<p>Unitless values scale correctly for nested elements with different font sizes.</p>
+<h2>Other units you'll meet</h2>
+<div class="static-table"><table><thead><tr><th>Unit</th><th>Meaning</th><th>Use</th></tr></thead><tbody><tr><td><code>fr</code></td><td>Fraction of free space (Grid only)</td><td><code>grid-template-columns: 1fr 2fr</code></td></tr><tr><td><code>deg</code>, <code>turn</code></td><td>Angles</td><td><code>rotate(45deg)</code>, <code>rotate(.5turn)</code></td></tr><tr><td><code>s</code>, <code>ms</code></td><td>Time</td><td><code>transition: .3s</code></td></tr><tr><td><code>lh</code></td><td>Current line height</td><td>Spacing that matches lines of text</td></tr><tr><td><code>pt</code>, <code>cm</code>, <code>mm</code></td><td>Print units</td><td>Print stylesheets only</td></tr></tbody></table></div>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Problem</th><th>Fix</th></tr></thead><tbody><tr><td><code>width: 100vw</code> on a full-width section</td><td>Causes horizontal scroll (includes the scrollbar)</td><td><code>width: 100%</code></td></tr><tr><td>Fixed <code>height</code> on text boxes</td><td>Text overflows when it wraps or zooms</td><td><code>min-height</code> or no height</td></tr><tr><td>Font sizes in <code>vw</code> only</td><td>Too tiny on phones, huge on TVs, ignores zoom</td><td><code>clamp(1rem, ..., 2rem)</code></td></tr><tr><td>Nested <code>em</code> font sizes</td><td>Text keeps growing or shrinking</td><td><code>rem</code> for font sizes</td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Build a container that's 1100px max, with 20px side gaps on phones, using <code>min()</code>.</li><li>Make a button set (small, normal, large) that only changes <code>font-size</code>.</li><li>Create a hero that fills the visible phone screen with <code>svh</code> and a fallback.</li><li>Make a card heading that adapts to its container with <code>cqi</code>.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A section uses <code>width: 100vw</code> and the page scrolls sideways on Windows laptops but not on phones. Why?</span><em>Show answer</em></summary><div class="callout-body"><p>On desktop, <code>100vw</code> includes the width of the vertical scrollbar, so the section is wider than the visible area by the scrollbar's width. Phones usually have overlay scrollbars that take no space. Use <code>width: 100%</code> (or no width on a block element) instead.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which unit is relative to the root html font size?</p><details><summary>Show answer</summary><p>rem</p></details></li><li><p>If the root font size is 16px, how many pixels is 2rem?</p><details><summary>Show answer</summary><p>32</p></details></li><li><p>Which unit equals 1% of the screen width?</p><details><summary>Show answer</summary><p>vw</p></details></li><li><p>Which unit is good for a readable text width, based on characters?</p><details><summary>Show answer</summary><p>ch</p></details></li><li><p>Which CSS function can subtract a header height from 100vh?</p><details><summary>Show answer</summary><p>calc</p></details></li><li><p>Which unit is 1% of a container's inline size in container queries?</p><details><summary>Show answer</summary><p>cqi</p></details></li><li><p>Which viewport height unit updates as the mobile address bar shows and hides?</p><details><summary>Show answer</summary><p>dvh</p></details></li><li><p>Should line-height usually be unitless? (yes or no)</p><details><summary>Show answer</summary><p>yes</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Make the <code>.box</code> <strong>50%</strong> wide with padding of <strong>1rem</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=units-sizing#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 4 of 21 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/fonts-text/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Fonts and text styling</a><a class="btn btn-solid btn-sm" href="/learn/css/backgrounds-borders-shadows/">Backgrounds, borders, rounded corners and shadows <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

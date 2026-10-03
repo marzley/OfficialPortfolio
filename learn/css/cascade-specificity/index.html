@@ -71,7 +71,68 @@
 <ol><li>Right-click the element → <strong>Inspect</strong>.</li><li>In the <strong>Styles</strong> panel, rules are listed from most to least specific.</li><li>Crossed-out properties are losing. Hover to see which rule wins.</li></ol>
 <h2>Habits that prevent specificity wars</h2>
 <ul><li>Style mostly with <strong>single classes</strong> (<code>.card-title</code>), not long chains or IDs.</li><li>Keep specificity low and flat, so later rules can override easily.</li><li>Avoid <code>!important</code>.</li><li>Load your CSS in a sensible order: reset → base → components → utilities.</li></ul>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which wins: #total or .price .amount .value?</p><details><summary>Show answer</summary><p>#total</p></details></li><li><p>If two rules have the same specificity, which wins: the first or the last?</p><details><summary>Show answer</summary><p>last</p></details></li><li><p>Does padding inherit from a parent? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Does color inherit from a parent? (yes or no)</p><details><summary>Show answer</summary><p>yes</p></details></li><li><p>What is the specificity score of .card .price? Write it like 0-2-0.</p><details><summary>Show answer</summary><p>0-2-0</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>The paragraph is red because <code>p.intro</code> is more specific. Add a rule using the <strong>id</strong> <code>#lead</code> to make it <strong>green</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=cascade-specificity#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 9 of 21 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/pseudo-classes-elements/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Pseudo-classes and pseudo-elements (:hover, ::before)</a><a class="btn btn-solid btn-sm" href="/learn/css/css-debugging-devtools/">Debugging CSS with browser DevTools: find and fix any layout problem <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why the cascade matters</h2>
+<p>"Why isn't my CSS working?" is the most common question in web design, and the answer is nearly always the cascade: another rule is winning. On real projects you combine your styles with a theme, a framework like Bootstrap, WordPress plugin styles and browser defaults. Knowing exactly how the browser decides which rule wins lets you fix problems in minutes instead of piling on <code>!important</code>.</p>
+<h2>The full order the browser uses</h2>
+<p>When several rules set the same property on the same element, the browser compares them in this order, stopping at the first difference:</p>
+<ol><li><strong>Origin and importance</strong>: user-agent (browser defaults) &lt; your styles &lt; <code>!important</code> styles (and inline styles beat normal stylesheet rules).</li><li><strong>Cascade layers</strong> (<code>@layer</code>): later layers win over earlier ones; unlayered styles beat layered ones.</li><li><strong>Specificity</strong>: IDs &gt; classes/attributes/pseudo-classes &gt; elements/pseudo-elements.</li><li><strong>Order of appearance</strong>: the last rule wins.</li></ol>
+<p>Inheritance only applies when <strong>no rule</strong> sets the property on the element itself.</p>
+<h2>Calculating specificity</h2>
+<div class="static-table"><table><thead><tr><th>Selector</th><th>IDs</th><th>Classes, attributes, pseudo-classes</th><th>Elements, pseudo-elements</th><th>Score</th></tr></thead><tbody><tr><td><code>p</code></td><td>0</td><td>0</td><td>1</td><td>0-0-1</td></tr><tr><td><code>.price</code></td><td>0</td><td>1</td><td>0</td><td>0-1-0</td></tr><tr><td><code>nav a:hover</code></td><td>0</td><td>1</td><td>2</td><td>0-1-2</td></tr><tr><td><code>input[type=&quot;email&quot;]</code></td><td>0</td><td>1</td><td>1</td><td>0-1-1</td></tr><tr><td><code>#cart .item p</code></td><td>1</td><td>1</td><td>1</td><td>1-1-1</td></tr><tr><td><code>:where(.card) p</code></td><td>0</td><td>0</td><td>1</td><td>0-0-1 (<code>:where</code> counts zero)</td></tr><tr><td><code>:is(#a, .b) p</code></td><td>1</td><td>0</td><td>1</td><td>1-0-1 (<code>:is</code> takes its most specific argument)</td></tr><tr><td><code>*</code></td><td>0</td><td>0</td><td>0</td><td>0-0-0</td></tr></tbody></table></div>
+<p>Compare from left to right: one ID beats any number of classes.</p>
+<h2>Cascade layers: organising big stylesheets</h2>
+<p><code>@layer</code> lets you decide which groups of styles win, regardless of specificity:</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  @layer reset, framework, components, utilities;
+
+  @layer framework {
+    #main .btn { background: gray; color: #fff; padding: 10px 16px; border: 0; border-radius: 6px; }
+  }
+  @layer components {
+    .btn { background: #0b1b35; }
+  }
+  @layer utilities {
+    .bg-gold { background: #f59e0b; color: #0b1b35; }
+  }
+&lt;/style&gt;
+&lt;div id=&quot;main&quot;&gt;
+  &lt;button class=&quot;btn&quot;&gt;Components layer wins over a more specific framework rule&lt;/button&gt;
+  &lt;button class=&quot;btn bg-gold&quot;&gt;Utilities layer wins over both&lt;/button&gt;
+&lt;/div&gt;</code></pre></figure>
+<p>Even though <code>#main .btn</code> is more specific, the <code>components</code> layer is declared later, so it wins. This is how modern teams keep third-party CSS from overpowering their own.</p>
+<h2>Inheritance in detail</h2>
+<div class="static-table"><table><thead><tr><th>Usually inherited</th><th>Not inherited</th></tr></thead><tbody><tr><td><code>color</code>, <code>font-*</code>, <code>line-height</code>, <code>text-align</code>, <code>letter-spacing</code>, <code>visibility</code>, <code>cursor</code>, <code>list-style</code></td><td><code>margin</code>, <code>padding</code>, <code>border</code>, <code>background</code>, <code>width</code>, <code>height</code>, <code>display</code>, <code>position</code></td></tr></tbody></table></div>
+<p>You can control inheritance explicitly:</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .box { color: #1d4ed8; border: 2px solid #f59e0b; padding: 8px; font: 14px system-ui; margin: 6px 0; }
+  .box button { color: inherit; font: inherit; border: inherit; }   /* buttons don&#x27;t inherit fonts by default */
+  .reset { all: unset; cursor: pointer; text-decoration: underline; }
+&lt;/style&gt;
+&lt;div class=&quot;box&quot;&gt;Parent text &lt;button&gt;Inherits colour, font and border&lt;/button&gt;&lt;/div&gt;
+&lt;div class=&quot;box&quot;&gt;&lt;button class=&quot;reset&quot;&gt;all: unset removes default button styling&lt;/button&gt;&lt;/div&gt;</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Keyword</th><th>Meaning</th></tr></thead><tbody><tr><td><code>inherit</code></td><td>Take the parent's value</td></tr><tr><td><code>initial</code></td><td>Use the CSS specification's default</td></tr><tr><td><code>unset</code></td><td><code>inherit</code> if the property inherits, otherwise <code>initial</code></td></tr><tr><td><code>revert</code></td><td>Go back to the browser's default style</td></tr></tbody></table></div>
+<p>Form elements (<code>button</code>, <code>input</code>, <code>select</code>) don't inherit fonts by default, which is why many resets include <code>button, input { font: inherit; }</code>.</p>
+<h2>!important: when (rarely) to use it</h2>
+<figure class="static-code"><figcaption>CSS</figcaption><pre><code class="language-css">/* Acceptable: utility classes that must always win */
+.hidden { display: none !important; }
+
+/* Acceptable: overriding a third-party style you can&#x27;t edit */
+.plugin-widget .title { color: #0b1b35 !important; }
+
+/* Bad habit: using it to win every argument */
+.price { color: red !important; }   /* the next developer now needs !important too */</code></pre></figure>
+<p>Each <code>!important</code> makes the next change harder. Prefer fixing specificity, using a layer, or adding one class.</p>
+<h2>Debugging step by step</h2>
+<ol><li>Right-click the element → <strong>Inspect</strong>.</li><li>In the <strong>Styles</strong> panel, crossed-out declarations lost to another rule; the winning rule is listed above.</li><li>The <strong>Computed</strong> tab shows the final value and, when expanded, which rule set it.</li><li>Check for typos (a misspelled property shows a warning icon), invalid values and the wrong selector.</li><li>Toggle checkboxes next to declarations to test changes live, then copy the fix into your CSS file.</li></ol>
+<h2>Strategies teams use</h2>
+<div class="static-table"><table><thead><tr><th>Strategy</th><th>Idea</th></tr></thead><tbody><tr><td><strong>BEM naming</strong> (<code>.card__title--large</code>)</td><td>One class per element; flat, low specificity</td></tr><tr><td><strong>Utility-first</strong> (Tailwind)</td><td>Small single-purpose classes in HTML</td></tr><tr><td><strong>CSS Modules / scoped styles</strong></td><td>Tools make class names unique per component</td></tr><tr><td><strong>Layers</strong></td><td>Control priority between reset, framework, components and utilities</td></tr></tbody></table></div>
+<p>All of them aim for the same thing: low, predictable specificity.</p>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Styling with IDs (<code>#header</code>)</td><td>Use classes; save IDs for links and JavaScript</td></tr><tr><td>Long selectors (<code>body div.main ul li a</code>)</td><td>One or two classes</td></tr><tr><td>Fighting a framework with <code>!important</code></td><td>Load your CSS after it, use a layer, or one more class</td></tr><tr><td>Expecting padding/border to inherit</td><td>Set them directly or use <code>inherit</code></td></tr><tr><td>Forgetting buttons don't inherit fonts</td><td><code>button { font: inherit; }</code></td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Write the specificity of <code>ul#menu li.active &gt; a:hover</code>.</li><li>Create three layers (base, components, utilities) and show a utility overriding a component.</li><li>Restyle a button so it looks like a link using <code>all: unset</code> plus a few properties.</li><li>Take a stylesheet that uses <code>!important</code> five times and rewrite it without any.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Bootstrap sets <code>.btn-primary { background-color: #0d6efd }</code> and your <code>.btn { background: #0b1b35 }</code> doesn't apply. Name two clean fixes.</span><em>Show answer</em></summary><div class="callout-body"><p>Your <code>.btn</code> has the same specificity but may load earlier, or is less specific than Bootstrap's combined selectors. Fixes: give your rule equal or greater specificity and load it after Bootstrap (for example <code>.btn.btn-primary</code>), override Bootstrap's CSS variables (like <code>--bs-btn-bg</code>), or put Bootstrap in an earlier <code>@layer</code> so your unlayered styles win.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which wins: #total or .price .amount .value?</p><details><summary>Show answer</summary><p>#total</p></details></li><li><p>If two rules have the same specificity, which wins: the first or the last?</p><details><summary>Show answer</summary><p>last</p></details></li><li><p>Does padding inherit from a parent? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Does color inherit from a parent? (yes or no)</p><details><summary>Show answer</summary><p>yes</p></details></li><li><p>What is the specificity score of .card .price? Write it like 0-2-0.</p><details><summary>Show answer</summary><p>0-2-0</p></details></li><li><p>Which CSS at-rule groups styles into priority levels independent of specificity?</p><details><summary>Show answer</summary><p>@layer</p></details></li><li><p>Which keyword returns a property to the browser's default style?</p><details><summary>Show answer</summary><p>revert</p></details></li><li><p>Do form buttons inherit font styles by default? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>The paragraph is red because <code>p.intro</code> is more specific. Add a rule using the <strong>id</strong> <code>#lead</code> to make it <strong>green</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=cascade-specificity#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 9 of 21 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/pseudo-classes-elements/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Pseudo-classes and pseudo-elements (:hover, ::before)</a><a class="btn btn-solid btn-sm" href="/learn/css/css-debugging-devtools/">Debugging CSS with browser DevTools: find and fix any layout problem <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

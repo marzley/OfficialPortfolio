@@ -120,7 +120,68 @@ print(find(&quot;Amina Hassan&quot;))
 print(find(&quot;Zawadi&quot;))
 for name in sorted(book):
     print(f&quot;{name:&lt;15} {book[name]}&quot;)</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which method reads a key without an error if it is missing?</p><details><summary>Show answer</summary><p>get</p></details></li><li><p>Which method loops over keys and values together?</p><details><summary>Show answer</summary><p>items</p></details></li><li><p>Can a list be a dictionary key? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>What does {"a": 1} | {"a": 2} give for "a"?</p><details><summary>Show answer</summary><p>2</p></details></li><li><p>Which class from collections counts items quickly?</p><details><summary>Show answer</summary><p>Counter</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Count the items in <code>sales = [&quot;unga&quot;, &quot;oil&quot;, &quot;unga&quot;]</code> into a dictionary and print it: <strong>{'unga': 2, 'oil': 1}</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=dictionaries-in-depth#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 12 of 20 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/functions-in-depth/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Functions in depth: defaults, *args, **kwargs and lambda</a><a class="btn btn-solid btn-sm" href="/learn/python/files-errors/">Errors and exceptions: try, except, else, finally, raising errors and working with files <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>get, setdefault and defaultdict</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">stock = {&quot;unga&quot;: 40, &quot;sugar&quot;: 25}
+print(stock.get(&quot;salt&quot;, 0))                 # default when missing, no KeyError
+
+orders = [(&quot;Nairobi&quot;, 1500), (&quot;Kisumu&quot;, 800), (&quot;Nairobi&quot;, 2200), (&quot;Mombasa&quot;, 950)]
+
+by_town = {}
+for town, amount in orders:
+    by_town.setdefault(town, []).append(amount)
+print(by_town)
+
+from collections import defaultdict, Counter
+totals = defaultdict(int)                    # missing keys start at 0
+for town, amount in orders:
+    totals[town] += amount
+print(dict(totals))
+
+words = &quot;the farmer sells maize and the farmer buys seeds&quot;.split()
+print(Counter(words).most_common(2))</code></pre></figure>
+<h2>Working with nested data (like JSON from an API)</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">school = {
+    &quot;name&quot;: &quot;Bidii Academy&quot;,
+    &quot;classes&quot;: [
+        {&quot;name&quot;: &quot;Form 3&quot;, &quot;students&quot;: [{&quot;name&quot;: &quot;Brian&quot;, &quot;fees_due&quot;: 12500}, {&quot;name&quot;: &quot;Faith&quot;, &quot;fees_due&quot;: 0}]},
+        {&quot;name&quot;: &quot;Form 4&quot;, &quot;students&quot;: [{&quot;name&quot;: &quot;Juma&quot;, &quot;fees_due&quot;: 4300}]},
+    ],
+}
+
+for cls in school[&quot;classes&quot;]:
+    owing = [s[&quot;name&quot;] for s in cls[&quot;students&quot;] if s[&quot;fees_due&quot;] &gt; 0]
+    total = sum(s[&quot;fees_due&quot;] for s in cls[&quot;students&quot;])
+    print(f&quot;{cls[&#x27;name&#x27;]}: owing {owing}, total KSh {total:,}&quot;)
+
+# Safely reach deep values that may be missing
+contact = {&quot;name&quot;: &quot;Amina&quot;}
+email = contact.get(&quot;details&quot;, {}).get(&quot;email&quot;, &quot;no email on file&quot;)
+print(email)</code></pre></figure>
+<h2>Sorting dictionaries</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">sales = {&quot;Nairobi&quot;: 5200, &quot;Mombasa&quot;: 3400, &quot;Kisumu&quot;: 6100, &quot;Nakuru&quot;: 2800}
+for town, amount in sorted(sales.items(), key=lambda kv: kv[1], reverse=True):
+    print(f&quot;{town:&lt;8} KSh {amount:&gt;6,}&quot;)
+print(&quot;Best:&quot;, max(sales, key=sales.get))
+top2 = dict(sorted(sales.items(), key=lambda kv: kv[1], reverse=True)[:2])
+print(top2)</code></pre></figure>
+<h2>Dictionaries as lookup tables</h2>
+<p>Replace long <code>if/elif</code> chains with a dictionary:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">county_codes = {&quot;001&quot;: &quot;Mombasa&quot;, &quot;047&quot;: &quot;Nairobi&quot;, &quot;042&quot;: &quot;Kisumu&quot;, &quot;032&quot;: &quot;Nakuru&quot;}
+for code in [&quot;047&quot;, &quot;042&quot;, &quot;999&quot;]:
+    print(code, &quot;-&gt;&quot;, county_codes.get(code, &quot;Unknown county code&quot;))
+
+actions = {
+    &quot;balance&quot;: lambda: &quot;Balance: KSh 3,450&quot;,
+    &quot;statement&quot;: lambda: &quot;Statement sent by SMS&quot;,
+}
+for choice in [&quot;balance&quot;, &quot;loan&quot;]:
+    print(actions.get(choice, lambda: &quot;Invalid option&quot;)())</code></pre></figure>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td><code>d[&quot;missing&quot;]</code> raises KeyError</td><td><code>d.get(&quot;missing&quot;, default)</code> or check <code>in</code> first</td></tr><tr><td>Changing a dict while looping over it</td><td>Loop over <code>list(d.items())</code> or build a new dict</td></tr><tr><td>Using a list as a key</td><td>Use a tuple</td></tr><tr><td>Expecting <code>d.keys()[0]</code> to work</td><td><code>list(d)[0]</code> or <code>next(iter(d))</code></td></tr><tr><td>Overwriting data with duplicate keys in a literal</td><td>Keys must be unique; the last one wins</td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Count how many students got each grade from a list of grades using Counter.</li><li>Group a list of (product, category) pairs into {category: [products]}.</li><li>From nested student data, print each student who owes more than KSh 5,000 with their class.</li><li>Invert a dict of {phone: name} into {name: phone}.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why use <code>defaultdict(int)</code> when totalling sales by town?</span><em>Show answer</em></summary><div class="callout-body"><p>Each new town key automatically starts at 0, so <code>totals[town] += amount</code> works without first checking whether the key exists, making the code shorter and avoiding KeyError.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which method reads a key without an error if it is missing?</p><details><summary>Show answer</summary><p>get</p></details></li><li><p>Which method loops over keys and values together?</p><details><summary>Show answer</summary><p>items</p></details></li><li><p>Can a list be a dictionary key? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>What does {"a": 1} | {"a": 2} give for "a"?</p><details><summary>Show answer</summary><p>2</p></details></li><li><p>Which class from collections counts items quickly?</p><details><summary>Show answer</summary><p>Counter</p></details></li><li><p>Which dict method returns a default instead of raising KeyError?</p><details><summary>Show answer</summary><p>get</p></details></li><li><p>Which collections class counts items and has most_common()?</p><details><summary>Show answer</summary><p>Counter</p></details></li><li><p>Which collections class gives missing keys a default value automatically?</p><details><summary>Show answer</summary><p>defaultdict</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Count the items in <code>sales = [&quot;unga&quot;, &quot;oil&quot;, &quot;unga&quot;]</code> into a dictionary and print it: <strong>{'unga': 2, 'oil': 1}</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=dictionaries-in-depth#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 12 of 20 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/functions-in-depth/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Functions in depth: defaults, *args, **kwargs and lambda</a><a class="btn btn-solid btn-sm" href="/learn/python/files-errors/">Errors and exceptions: try, except, else, finally, raising errors and working with files <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

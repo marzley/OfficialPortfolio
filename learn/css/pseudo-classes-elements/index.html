@@ -91,7 +91,71 @@ input:required { background: #fffbeb; }</code></pre></figure>
 &lt;p&gt;Once upon a time in Nyeri, a young developer built her first website. (Select this text too.)&lt;/p&gt;</code></pre></figure>
 <div class="static-table"><table><thead><tr><th>Pseudo-element</th><th>Styles</th></tr></thead><tbody><tr><td><code>::before</code> / <code>::after</code></td><td>Added content before/after</td></tr><tr><td><code>::first-letter</code></td><td>The first letter (drop caps)</td></tr><tr><td><code>::first-line</code></td><td>The first line</td></tr><tr><td><code>::placeholder</code></td><td>Placeholder text in inputs</td></tr><tr><td><code>::selection</code></td><td>Text the user highlights</td></tr></tbody></table></div>
 <blockquote><p>Content added with <code>::before</code> is decoration. Screen readers may not read it, so never put important information there.</p></blockquote>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which pseudo-class applies when the mouse is over an element?</p><details><summary>Show answer</summary><p>:hover</p></details></li><li><p>Which pseudo-class shows focus only for keyboard users?</p><details><summary>Show answer</summary><p>:focus-visible</p></details></li><li><p>Which selector targets every even list item? Write it as li:...</p><details><summary>Show answer</summary><p>li:nth-child(even)</p></details></li><li><p>Which property is required for ::before to show anything?</p><details><summary>Show answer</summary><p>content</p></details></li><li><p>How many colons do pseudo-elements like ::after use?</p><details><summary>Show answer</summary><p>2</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Make <code>.btn:hover</code> change the <strong>background</strong> to <code>#1e3a8a</code>.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=pseudo-classes-elements#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 8 of 21 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/display-overflow/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> display, visibility and overflow</a><a class="btn btn-solid btn-sm" href="/learn/css/cascade-specificity/">The cascade, specificity and inheritance <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why pseudo-classes and pseudo-elements matter</h2>
+<p>They let CSS react to <strong>state</strong> (hovered, focused, checked, invalid, first, last) and add decorative pieces (icons, quotes, badges) without extra HTML or JavaScript. That keeps HTML clean and makes interfaces feel responsive: buttons that respond to taps, form fields that turn red when wrong, striped tables that are easy to read, and keyboard focus that's visible for accessibility.</p>
+<h2>Modern selectors: :is(), :where(), :not() and :has()</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  body { font: 14px system-ui; }
+  :is(h2, h3):hover { color: #1d4ed8; }                      /* shorter than h2:hover, h3:hover */
+  li:not(:last-child) { border-bottom: 1px solid #e2e8f0; }   /* dividers between items only */
+  li { padding: 6px 0; list-style: none; }
+  .card:has(img) { display: grid; grid-template-columns: 80px 1fr; gap: 10px; }
+  .card { border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; margin: 8px 0; }
+  .card img { width: 80px; height: 60px; object-fit: cover; border-radius: 6px; }
+  label:has(input:checked) { background: #dcfce7; border-color: #16a34a; }
+  label { display: block; border: 2px solid #e2e8f0; border-radius: 8px; padding: 8px; margin: 6px 0; cursor: pointer; }
+&lt;/style&gt;
+&lt;h3&gt;Hover this heading&lt;/h3&gt;
+&lt;ul&gt;&lt;li&gt;Item one&lt;/li&gt;&lt;li&gt;Item two&lt;/li&gt;&lt;li&gt;Item three (no line below)&lt;/li&gt;&lt;/ul&gt;
+&lt;div class=&quot;card&quot;&gt;&lt;img src=&quot;https://picsum.photos/160/120&quot; alt=&quot;&quot;&gt;&lt;div&gt;Card with an image becomes a two-column layout&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;card&quot;&gt;&lt;div&gt;Card without an image stays simple&lt;/div&gt;&lt;/div&gt;
+&lt;label&gt;&lt;input type=&quot;radio&quot; name=&quot;plan&quot;&gt; Basic plan&lt;/label&gt;
+&lt;label&gt;&lt;input type=&quot;radio&quot; name=&quot;plan&quot;&gt; Business plan&lt;/label&gt;</code></pre></figure>
+<p><code>:has()</code> is often called the "parent selector": it styles an element based on what it contains, something that used to need JavaScript. <code>:where()</code> works like <code>:is()</code> but adds <strong>zero specificity</strong>, which is ideal for base styles that are easy to override.</p>
+<h2>Styling forms by state</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  form { font: 14px system-ui; max-width: 300px; }
+  input { display: block; width: 100%; padding: 8px; margin: 4px 0 12px; border: 2px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; }
+  input:focus-visible { outline: 3px solid #93c5fd; border-color: #1d4ed8; }
+  input:user-invalid { border-color: #dc2626; background: #fef2f2; }
+  input:valid:not(:placeholder-shown) { border-color: #16a34a; }
+  input:disabled { background: #f1f5f9; color: #94a3b8; cursor: not-allowed; }
+  input::placeholder { color: #94a3b8; font-style: italic; }
+  input:required + small::before { content: &quot;* &quot;; color: #dc2626; }
+&lt;/style&gt;
+&lt;form&gt;
+  Email &lt;input type=&quot;email&quot; required placeholder=&quot;you@example.co.ke&quot;&gt;&lt;small&gt;Required&lt;/small&gt;&lt;br&gt;
+  Phone &lt;input pattern=&quot;0[17][0-9]{8}&quot; placeholder=&quot;0712345678&quot;&gt;&lt;br&gt;
+  Account &lt;input value=&quot;Locked field&quot; disabled&gt;
+&lt;/form&gt;</code></pre></figure>
+<p><code>:user-invalid</code> only applies after the user has interacted with the field, so the form doesn't show red errors before they've even typed. <code>:placeholder-shown</code> lets you avoid styling empty fields as valid.</p>
+<h2>Useful pseudo-elements</h2>
+<div class="static-table"><table><thead><tr><th>Pseudo-element</th><th>Targets</th><th>Example use</th></tr></thead><tbody><tr><td><code>::before</code> / <code>::after</code></td><td>Generated content before/after the element's content</td><td>Icons, quotes, badges, decorative lines</td></tr><tr><td><code>::placeholder</code></td><td>Input placeholder text</td><td>Lighter colour</td></tr><tr><td><code>::selection</code></td><td>Text the user highlights</td><td>Brand-coloured selection</td></tr><tr><td><code>::marker</code></td><td>List bullets and numbers</td><td>Coloured bullets</td></tr><tr><td><code>::first-letter</code></td><td>First letter of a block</td><td>Magazine-style drop caps</td></tr><tr><td><code>::first-line</code></td><td>First line of a block</td><td>Emphasised intro line</td></tr><tr><td><code>::file-selector-button</code></td><td>The button of a file input</td><td>Styled upload button</td></tr><tr><td><code>::backdrop</code></td><td>Background behind a <code>&lt;dialog&gt;</code></td><td>Dimmed overlay</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  body { font: 15px/1.6 system-ui; }
+  ::selection { background: #fde68a; color: #0b1b35; }
+  ul.ticks { list-style: none; padding: 0; }
+  ul.ticks li::before { content: &quot;✔&quot;; color: #16a34a; font-weight: 700; margin-right: 8px; }
+  ol li::marker { color: #1d4ed8; font-weight: 700; }
+  .lead::first-letter { font-size: 2.6em; float: left; line-height: 1; margin-right: 6px; color: #b45309; font-family: Georgia, serif; }
+  input[type=file]::file-selector-button { border: 0; background: #0b1b35; color: #fff; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
+  .new { position: relative; display: inline-block; padding: 8px 14px; background: #f1f5f9; border-radius: 8px; }
+  .new::after { content: &quot;NEW&quot;; position: absolute; top: -8px; right: -10px; background: #dc2626; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 999px; }
+&lt;/style&gt;
+&lt;ul class=&quot;ticks&quot;&gt;&lt;li&gt;Free SSL certificate&lt;/li&gt;&lt;li&gt;Daily backups&lt;/li&gt;&lt;li&gt;Mobile-friendly design&lt;/li&gt;&lt;/ul&gt;
+&lt;ol&gt;&lt;li&gt;Choose a plan&lt;/li&gt;&lt;li&gt;Pay with M-Pesa&lt;/li&gt;&lt;/ol&gt;
+&lt;p class=&quot;lead&quot;&gt;Once upon a time, a small shop in Nyeri started selling online and doubled its customers within a year.&lt;/p&gt;
+&lt;input type=&quot;file&quot;&gt;&lt;br&gt;&lt;br&gt;
+&lt;span class=&quot;new&quot;&gt;Online courses&lt;/span&gt;</code></pre></figure>
+<p>Select some text above to see the custom selection colour.</p>
+<h2>Accessibility notes</h2>
+<ul><li>Content in <code>::before</code>/<code>::after</code> may be read by some screen readers and can't be selected or copied. Don't put important information there (like prices); use it for decoration.</li><li>Always style <code>:focus-visible</code> clearly. Keyboard users and many people with motor disabilities rely on it.</li><li><code>:hover</code> doesn't exist on touch screens in the same way; never hide essential actions behind hover only.</li></ul>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td><code>::before</code> shows nothing</td><td>Add <code>content: &quot;&quot;</code></td></tr><tr><td>Hover styles stuck on phones after a tap</td><td>Wrap in <code>@media (hover: hover) { ... }</code></td></tr><tr><td><code>a:hover</code> before <code>a:visited</code> in the wrong order</td><td>Use the LVHA order: <code>:link</code>, <code>:visited</code>, <code>:hover</code>, <code>:active</code></td></tr><tr><td>Error styles showing on page load</td><td>Use <code>:user-invalid</code> or add a class after submit</td></tr><tr><td>Removing focus outlines</td><td>Replace with a visible <code>:focus-visible</code> style</td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Make a pricing table where the row under the mouse is highlighted and every other row is striped.</li><li>Style a checklist with custom ✔ icons using <code>::before</code>.</li><li>Create selectable plan cards that highlight when their radio button is checked using <code>:has()</code>.</li><li>Add a "Popular" ribbon to one card with <code>::after</code>.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why use <code>@media (hover: hover)</code> around hover effects on a site visited mostly from phones?</span><em>Show answer</em></summary><div class="callout-body"><p>Touch devices emulate hover on tap, so hover styles can get "stuck" after tapping until the user taps elsewhere, which looks like a bug. Limiting hover effects to devices that truly support hovering (mouse or trackpad) avoids this while keeping the effect on desktops.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which pseudo-class applies when the mouse is over an element?</p><details><summary>Show answer</summary><p>:hover</p></details></li><li><p>Which pseudo-class shows focus only for keyboard users?</p><details><summary>Show answer</summary><p>:focus-visible</p></details></li><li><p>Which selector targets every even list item? Write it as li:...</p><details><summary>Show answer</summary><p>li:nth-child(even)</p></details></li><li><p>Which property is required for ::before to show anything?</p><details><summary>Show answer</summary><p>content</p></details></li><li><p>How many colons do pseudo-elements like ::after use?</p><details><summary>Show answer</summary><p>2</p></details></li><li><p>Which pseudo-class styles an element based on what it contains?</p><details><summary>Show answer</summary><p>:has</p></details></li><li><p>Which pseudo-class works like :is() but adds zero specificity?</p><details><summary>Show answer</summary><p>:where</p></details></li><li><p>Which pseudo-element styles the bullets or numbers of a list?</p><details><summary>Show answer</summary><p>::marker</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Make <code>.btn:hover</code> change the <strong>background</strong> to <code>#1e3a8a</code>.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=pseudo-classes-elements#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 8 of 21 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/display-overflow/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> display, visibility and overflow</a><a class="btn btn-solid btn-sm" href="/learn/css/cascade-specificity/">The cascade, specificity and inheritance <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

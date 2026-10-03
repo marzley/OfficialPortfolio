@@ -112,7 +112,127 @@ console.log(/^0[17]\d{8}$/.test(&quot;0712345678&quot;), /^0[17]\d{8}$/.test(&qu
 <figure class="static-code"><figcaption>JavaScript</figcaption><pre><code class="language-javascript">button.disabled = true;
 button.textContent = &quot;Sending...&quot;;</code></pre></figure>
 <ul><li>Always validate again on the <strong>server</strong>. Browser checks can be bypassed.</li></ul>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which event fires when a form is sent (button click or Enter)?</p><details><summary>Show answer</summary><p>submit</p></details></li><li><p>Which method stops the page from reloading when the form is submitted?</p><details><summary>Show answer</summary><p>preventDefault</p></details></li><li><p>Which object reads all fields of a form by their name attribute?</p><details><summary>Show answer</summary><p>FormData</p></details></li><li><p>Which form attribute turns off the browser's own validation pop-ups?</p><details><summary>Show answer</summary><p>novalidate</p></details></li><li><p>Convert 0712345678 to the international format used by M-Pesa APIs.</p><details><summary>Show answer</summary><p>254712345678</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Write a function <code>isKenyanPhone(p)</code> that returns <code>true</code> for <code>0712345678</code> using the pattern <code>/^0[17]\d{8}$/</code>, then log <code>isKenyanPhone(&quot;0712345678&quot;)</code>.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=forms-validation#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 13 of 21 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/dom-events/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> The DOM and events: changing the page and responding to clicks, typing and more</a><a class="btn btn-solid btn-sm" href="/learn/javascript/regular-expressions/">Regular expressions: validating phone numbers, emails, KRA PINs and searching text <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why forms matter so much</h2>
+<p>Forms are where visitors become customers: contact forms, sign-ups, logins, checkout, M-Pesa payment requests, bookings, school applications. A confusing or broken form loses sales; a form with no validation lets bad data (or attacks) into your system. Front-end validation gives instant, friendly feedback; <strong>server-side validation is still required</strong>, because anyone can bypass the browser and send data directly to your server.</p>
+<div class="static-table"><table><thead><tr><th>Layer</th><th>Purpose</th><th>Can it be bypassed?</th></tr></thead><tbody><tr><td>HTML attributes (<code>required</code>, <code>type=&quot;email&quot;</code>, <code>min</code>, <code>pattern</code>)</td><td>Basic checks with no code</td><td>Yes</td></tr><tr><td>JavaScript validation</td><td>Friendly custom messages, live feedback</td><td>Yes</td></tr><tr><td>Server validation (PHP, Node, Python)</td><td>The real gatekeeper: checks everything again</td><td>No (if done properly)</td></tr><tr><td>Database constraints</td><td>Last line of defence (NOT NULL, UNIQUE)</td><td>No</td></tr></tbody></table></div>
+<h2>Built-in HTML validation</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;form id=&quot;reg&quot;&gt;
+  &lt;label&gt;Full name &lt;input name=&quot;name&quot; required minlength=&quot;3&quot;&gt;&lt;/label&gt;&lt;br&gt;
+  &lt;label&gt;Email &lt;input name=&quot;email&quot; type=&quot;email&quot; required&gt;&lt;/label&gt;&lt;br&gt;
+  &lt;label&gt;Phone &lt;input name=&quot;phone&quot; required pattern=&quot;0[17][0-9]{8}&quot; title=&quot;10 digits starting 07 or 01&quot;&gt;&lt;/label&gt;&lt;br&gt;
+  &lt;label&gt;Age &lt;input name=&quot;age&quot; type=&quot;number&quot; min=&quot;16&quot; max=&quot;80&quot;&gt;&lt;/label&gt;&lt;br&gt;
+  &lt;button&gt;Register&lt;/button&gt;
+&lt;/form&gt;
+&lt;p id=&quot;out&quot;&gt;&lt;/p&gt;
+&lt;script&gt;
+  document.getElementById(&quot;reg&quot;).addEventListener(&quot;submit&quot;, e =&gt; {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target));
+    document.getElementById(&quot;out&quot;).textContent = &quot;Valid! &quot; + JSON.stringify(data);
+  });
+&lt;/script&gt;</code></pre></figure>
+<p>Try submitting empty or wrong values: the browser blocks the form and shows messages. The <strong>Constraint Validation API</strong> lets JavaScript read these checks: <code>input.validity.valueMissing</code>, <code>input.checkValidity()</code>, <code>input.setCustomValidity(&quot;message&quot;)</code>.</p>
+<h2>Validation logic as plain functions</h2>
+<p>Keep rules in pure functions so you can test them and reuse them on the server (Node) too:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const rules = {
+  name: v =&gt; v.trim().length &gt;= 3 || &quot;Enter your full name (at least 3 letters)&quot;,
+  email: v =&gt; /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) || &quot;Enter a valid email address&quot;,
+  phone: v =&gt; /^(?:254|0)[17]\d{8}$/.test(v.replace(/\s+/g, &quot;&quot;)) || &quot;Enter a valid phone, e.g. 0712 345 678&quot;,
+  password: v =&gt;
+    (v.length &gt;= 8 &amp;&amp; /\d/.test(v) &amp;&amp; /[A-Z]/.test(v)) || &quot;At least 8 characters with a number and a capital letter&quot;,
+};
+
+function validate(data) {
+  const errors = {};
+  for (const [field, check] of Object.entries(rules)) {
+    const result = check(data[field] ?? &quot;&quot;);
+    if (result !== true) errors[field] = result;
+  }
+  return errors;
+}
+
+console.log(validate({ name: &quot;Jo&quot;, email: &quot;jo@site&quot;, phone: &quot;0712 345 678&quot;, password: &quot;abc&quot; }));
+console.log(validate({ name: &quot;Joy Achieng&quot;, email: &quot;joy@example.co.ke&quot;, phone: &quot;254712345678&quot;, password: &quot;Secure123&quot; }));</code></pre></figure>
+<p>An empty errors object means the form is valid.</p>
+<h2>Live validation as the user types</h2>
+<p>Show errors after the user leaves a field (<code>blur</code>) or submits, not on the very first keystroke, which feels aggressive:</p>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .field { margin-bottom: 12px; font-family: system-ui; }
+  .field input { padding: 8px; border: 2px solid #cbd5e1; border-radius: 8px; width: 240px; }
+  .field.invalid input { border-color: #dc2626; }
+  .field.valid input { border-color: #16a34a; }
+  .msg { color: #dc2626; font-size: 13px; min-height: 16px; }
+&lt;/style&gt;
+&lt;form id=&quot;f&quot; novalidate&gt;
+  &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Phone&lt;br&gt;&lt;input name=&quot;phone&quot; inputmode=&quot;tel&quot; autocomplete=&quot;tel&quot;&gt;&lt;/label&gt;&lt;div class=&quot;msg&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Amount (KSh)&lt;br&gt;&lt;input name=&quot;amount&quot; inputmode=&quot;numeric&quot;&gt;&lt;/label&gt;&lt;div class=&quot;msg&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;button&gt;Pay&lt;/button&gt;
+&lt;/form&gt;
+&lt;p id=&quot;res&quot;&gt;&lt;/p&gt;
+&lt;script&gt;
+  const checks = {
+    phone: v =&gt; /^(?:254|0)[17]\d{8}$/.test(v.replace(/\s+/g, &quot;&quot;)) || &quot;Use a number like 0712 345 678&quot;,
+    amount: v =&gt; (Number(v) &gt;= 10 &amp;&amp; Number(v) &lt;= 150000) || &quot;Enter an amount between 10 and 150,000&quot;,
+  };
+  const form = document.getElementById(&quot;f&quot;);
+  function checkField(input) {
+    const result = checks[input.name](input.value);
+    const box = input.closest(&quot;.field&quot;);
+    box.classList.toggle(&quot;invalid&quot;, result !== true);
+    box.classList.toggle(&quot;valid&quot;, result === true);
+    box.querySelector(&quot;.msg&quot;).textContent = result === true ? &quot;&quot; : result;
+    input.setAttribute(&quot;aria-invalid&quot;, result !== true);
+    return result === true;
+  }
+  form.querySelectorAll(&quot;input&quot;).forEach(i =&gt; {
+    i.addEventListener(&quot;blur&quot;, () =&gt; checkField(i));
+    i.addEventListener(&quot;input&quot;, () =&gt; { if (i.closest(&quot;.field&quot;).classList.contains(&quot;invalid&quot;)) checkField(i); });
+  });
+  form.addEventListener(&quot;submit&quot;, e =&gt; {
+    e.preventDefault();
+    const ok = [...form.querySelectorAll(&quot;input&quot;)].map(checkField).every(Boolean);
+    if (!ok) { form.querySelector(&quot;.invalid input&quot;).focus(); return; }
+    document.getElementById(&quot;res&quot;).textContent = &quot;Sending request... (demo)&quot;;
+  });
+&lt;/script&gt;</code></pre></figure>
+<p>The amount limits here are just for the demo. Note <code>aria-live</code> so screen readers announce errors, and focusing the first invalid field on submit.</p>
+<h2>Sending form data to a server</h2>
+<figure class="static-code"><figcaption>JavaScript</figcaption><pre><code class="language-javascript">form.addEventListener(&quot;submit&quot;, async e =&gt; {
+  e.preventDefault();
+  const button = form.querySelector(&quot;button&quot;);
+  button.disabled = true;                       // prevent double submissions
+  button.textContent = &quot;Sending...&quot;;
+  try {
+    const res = await fetch(&quot;/api/contact&quot;, {
+      method: &quot;POST&quot;,
+      headers: { &quot;Content-Type&quot;: &quot;application/json&quot; },
+      body: JSON.stringify(Object.fromEntries(new FormData(form))),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || &quot;Something went wrong&quot;);
+    form.reset();
+    showMessage(&quot;Thank you! We&#x27;ll reply within 24 hours.&quot;);
+  } catch (err) {
+    showMessage(&quot;Sorry, we couldn&#x27;t send your message. Please try again or WhatsApp us.&quot;);
+  } finally {
+    button.disabled = false;
+    button.textContent = &quot;Send&quot;;
+  }
+});</code></pre></figure>
+<p>Disable the button while sending: on slow connections, people tap twice and create duplicate orders or payment prompts.</p>
+<h2>Security essentials for forms</h2>
+<ul><li><strong>Validate again on the server</strong>; never trust anything from the browser.</li><li><strong>Escape output</strong>: when showing user input on a page, use <code>textContent</code>, not <code>innerHTML</code>, to prevent cross-site scripting (XSS).</li><li><strong>Never store passwords in localStorage</strong> or send them over plain HTTP. Use HTTPS always.</li><li>Add <strong>spam protection</strong>: a hidden honeypot field, rate limiting or a CAPTCHA.</li><li>Use <strong>CSRF tokens</strong> for forms that change data on sites with logins.</li><li>Collect only the data you need, and explain why (Kenya's Data Protection Act).</li></ul>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const userInput = &#x27;&lt;img src=x onerror=&quot;alert(1)&quot;&gt;Nice shop!&#x27;;
+// Unsafe: element.innerHTML = userInput   -&gt; the onerror code would run
+// Safe:   element.textContent = userInput -&gt; shown as plain text
+const escapeHtml = s =&gt; s.replace(/[&amp;&lt;&gt;&quot;&#x27;]/g, c =&gt; ({ &quot;&amp;&quot;: &quot;&amp;amp;&quot;, &quot;&lt;&quot;: &quot;&amp;lt;&quot;, &quot;&gt;&quot;: &quot;&amp;gt;&quot;, &#x27;&quot;&#x27;: &quot;&amp;quot;&quot;, &quot;&#x27;&quot;: &quot;&amp;#39;&quot; }[c]));
+console.log(escapeHtml(userInput));</code></pre></figure>
+<h2>Mobile-friendly form tips</h2>
+<div class="static-table"><table><thead><tr><th>Tip</th><th>Why</th></tr></thead><tbody><tr><td><code>inputmode=&quot;numeric&quot;</code> or <code>type=&quot;tel&quot;</code> for phone and amounts</td><td>Opens the number keypad</td></tr><tr><td><code>autocomplete=&quot;name&quot;</code>, <code>&quot;email&quot;</code>, <code>&quot;tel&quot;</code></td><td>Phones fill details automatically</td></tr><tr><td>Large tap targets (at least 44px tall)</td><td>Easier on small screens</td></tr><tr><td>Labels above fields, not placeholder-only</td><td>Placeholders disappear when typing</td></tr><tr><td>One column layout</td><td>Easier to scan on a phone</td></tr><tr><td>Clear error messages next to the field</td><td>Users know exactly what to fix</td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Build a booking form (name, phone, date, service) that refuses dates in the past.</li><li>Add a "confirm password" field that must match the password.</li><li>Show a live character counter on a 160-character message field.</li><li>Write <code>validateMpesaForm({ phone, amount })</code> as a pure function and test it with five inputs.</li><li>Add a honeypot field and ignore submissions where it is filled.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> If the JavaScript validation already blocks invalid phone numbers, why must the PHP or Node server validate them again?</span><em>Show answer</em></summary><div class="callout-body"><p>Because the browser is under the user's control: JavaScript can be turned off, edited in DevTools, or skipped entirely by sending a request with a tool like curl or Postman. Only checks on the server, which you control, can be trusted to protect your data and payment requests.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which event fires when a form is sent (button click or Enter)?</p><details><summary>Show answer</summary><p>submit</p></details></li><li><p>Which method stops the page from reloading when the form is submitted?</p><details><summary>Show answer</summary><p>preventDefault</p></details></li><li><p>Which object reads all fields of a form by their name attribute?</p><details><summary>Show answer</summary><p>FormData</p></details></li><li><p>Which form attribute turns off the browser's own validation pop-ups?</p><details><summary>Show answer</summary><p>novalidate</p></details></li><li><p>Convert 0712345678 to the international format used by M-Pesa APIs.</p><details><summary>Show answer</summary><p>254712345678</p></details></li><li><p>Which property should you use to show user input safely instead of innerHTML?</p><details><summary>Show answer</summary><p>textContent</p></details></li><li><p>Which input attribute opens the number keypad on phones?</p><details><summary>Show answer</summary><p>inputmode</p></details></li><li><p>Must you validate again on the server even with JavaScript validation? (yes or no)</p><details><summary>Show answer</summary><p>yes</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Write a function <code>isKenyanPhone(p)</code> that returns <code>true</code> for <code>0712345678</code> using the pattern <code>/^0[17]\d{8}$/</code>, then log <code>isKenyanPhone(&quot;0712345678&quot;)</code>.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=forms-validation#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 13 of 21 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/dom-events/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> The DOM and events: changing the page and responding to clicks, typing and more</a><a class="btn btn-solid btn-sm" href="/learn/javascript/regular-expressions/">Regular expressions: validating phone numbers, emails, KRA PINs and searching text <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

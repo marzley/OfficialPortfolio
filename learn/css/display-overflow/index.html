@@ -83,7 +83,78 @@
 <figure class="static-code"><figcaption>CSS</figcaption><pre><code class="language-css">img, video { max-width: 100%; height: auto; }
 .long-links { overflow-wrap: anywhere; }
 .box { width: min(100%, 500px); }</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which display value ignores width and height?</p><details><summary>Show answer</summary><p>inline</p></details></li><li><p>Which display value sits in the line but lets width and height work?</p><details><summary>Show answer</summary><p>inline-block</p></details></li><li><p>Which hides an element and leaves no gap: display none or visibility hidden?</p><details><summary>Show answer</summary><p>display none</p></details></li><li><p>Which overflow value shows scrollbars only when needed?</p><details><summary>Show answer</summary><p>auto</p></details></li><li><p>What overflow-x value lets a wide table scroll on phones?</p><details><summary>Show answer</summary><p>auto</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Make <code>.menu a</code> links <strong>inline-block</strong> with <strong>padding: 10px</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=display-overflow#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 7 of 21 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/box-model/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> The box model: content, padding, border, margin and box-sizing</a><a class="btn btn-solid btn-sm" href="/learn/css/pseudo-classes-elements/">Pseudo-classes and pseudo-elements (:hover, ::before) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why display and overflow matter</h2>
+<p>Every element has a display type that decides how it sits on the page: on its own line, inside text, as a flex row or as a grid. Many layout bugs ("my width doesn't work", "the page scrolls sideways on phones", "the dropdown is cut off") are really display or overflow problems. Understanding them saves hours of trial and error.</p>
+<h2>The full list you'll use</h2>
+<div class="static-table"><table><thead><tr><th>Value</th><th>Behaviour</th><th>Typical use</th></tr></thead><tbody><tr><td><code>block</code></td><td>New line, full width, width/height work</td><td>Sections, paragraphs, divs</td></tr><tr><td><code>inline</code></td><td>Sits in text, width/height ignored, vertical padding doesn't push lines</td><td>Links, <code>&lt;strong&gt;</code>, <code>&lt;span&gt;</code></td></tr><tr><td><code>inline-block</code></td><td>Sits in text, but width/height/padding work</td><td>Badges, buttons in text</td></tr><tr><td><code>flex</code></td><td>Children in a row or column with alignment control</td><td>Navbars, cards in a row, centring</td></tr><tr><td><code>inline-flex</code></td><td>Flex container that sits inline</td><td>Icon + text buttons</td></tr><tr><td><code>grid</code></td><td>Two-dimensional rows and columns</td><td>Page layouts, galleries</td></tr><tr><td><code>none</code></td><td>Removed completely</td><td>Hidden menus, tabs</td></tr><tr><td><code>contents</code></td><td>The element's box disappears; children act as its parent's children</td><td>Advanced layout cases</td></tr><tr><td><code>flow-root</code></td><td>Block that contains floated children</td><td>Fixing float layouts</td></tr></tbody></table></div>
+<h2>Accessible hiding: three different needs</h2>
+<figure class="static-code"><figcaption>CSS</figcaption><pre><code class="language-css">/* 1. Hidden from everyone (visually and screen readers) */
+.hidden { display: none; }
+
+/* 2. Visible only to screen readers (e.g. &quot;Open menu&quot; label for an icon button) */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* 3. Hidden visually but keeps its space (rarely what you want) */
+.invisible { visibility: hidden; }</code></pre></figure>
+<p>The HTML <code>hidden</code> attribute (<code>&lt;div hidden&gt;</code>) works like <code>display: none</code> and is handy when toggling with JavaScript: <code>panel.hidden = !panel.hidden</code>.</p>
+<h2>Toggling content with JavaScript and display</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .faq button { width: 100%; text-align: left; padding: 12px; font: 600 15px system-ui; border: 1px solid #e2e8f0; background: #f8fafc; border-radius: 8px; cursor: pointer; }
+  .faq .answer { padding: 10px 12px; font: 14px/1.5 system-ui; }
+&lt;/style&gt;
+&lt;div class=&quot;faq&quot;&gt;
+  &lt;button aria-expanded=&quot;false&quot; aria-controls=&quot;a1&quot;&gt;How long does a website take? ▾&lt;/button&gt;
+  &lt;div class=&quot;answer&quot; id=&quot;a1&quot; hidden&gt;A simple business site usually takes one to three weeks, depending on content.&lt;/div&gt;
+&lt;/div&gt;
+&lt;script&gt;
+  const btn = document.querySelector(&quot;.faq button&quot;);
+  const ans = document.getElementById(&quot;a1&quot;);
+  btn.addEventListener(&quot;click&quot;, () =&gt; {
+    ans.hidden = !ans.hidden;
+    btn.setAttribute(&quot;aria-expanded&quot;, String(!ans.hidden));
+  });
+&lt;/script&gt;</code></pre></figure>
+<p><code>aria-expanded</code> tells screen reader users whether the section is open. The native <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code> elements do this with no JavaScript at all.</p>
+<h2>Overflow and text</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .box { width: 220px; border: 1px solid #cbd5e1; padding: 8px; margin: 8px 0; font: 14px system-ui; }
+  .ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .breakword { overflow-wrap: anywhere; }
+  .scrollx { overflow-x: auto; white-space: nowrap; }
+  .scrolly { max-height: 70px; overflow-y: auto; }
+&lt;/style&gt;
+&lt;div class=&quot;box ellipsis&quot;&gt;A very long product name that will be cut off with three dots at the end&lt;/div&gt;
+&lt;div class=&quot;box breakword&quot;&gt;https://www.example.co.ke/a/very/long/link/without/any/spaces/that/would/overflow&lt;/div&gt;
+&lt;div class=&quot;box scrollx&quot;&gt;Swipe → Nairobi · Mombasa · Kisumu · Nakuru · Eldoret · Thika · Malindi · Nyeri&lt;/div&gt;
+&lt;div class=&quot;box scrolly&quot;&gt;Terms line 1&lt;br&gt;Terms line 2&lt;br&gt;Terms line 3&lt;br&gt;Terms line 4&lt;br&gt;Terms line 5&lt;br&gt;Terms line 6&lt;/div&gt;</code></pre></figure>
+<p>Long links and email addresses are the most common cause of sideways scrolling on phones; <code>overflow-wrap: anywhere</code> fixes them.</p>
+<h2>overflow: hidden vs clip</h2>
+<p><code>overflow: hidden</code> still lets the box scroll with JavaScript and creates a new formatting context; <code>overflow: clip</code> simply cuts content and does not create a scroll container, which means <code>position: sticky</code> children keep working. When a sticky header "stops sticking", check whether a parent has <code>overflow: hidden</code>.</p>
+<h2>Horizontal scroll carousels with scroll snap</h2>
+<figure class="static-code"><figcaption>HTML · runs live in the interactive lesson</figcaption><pre><code class="language-html">&lt;style&gt;
+  .carousel { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; }
+  .carousel &gt; div { flex: 0 0 75%; scroll-snap-align: start; height: 120px; border-radius: 12px; background: #1d4ed8; color: #fff; display: grid; place-items: center; font: 600 18px system-ui; }
+  .carousel &gt; div:nth-child(even) { background: #0b1b35; }
+&lt;/style&gt;
+&lt;div class=&quot;carousel&quot;&gt;
+  &lt;div&gt;Web design&lt;/div&gt;&lt;div&gt;Hosting&lt;/div&gt;&lt;div&gt;SEO&lt;/div&gt;&lt;div&gt;Branding&lt;/div&gt;
+&lt;/div&gt;</code></pre></figure>
+<p>Swipe on a phone (or scroll sideways): each card snaps into place. No JavaScript needed.</p>
+<h2>Finding the element that causes sideways scroll</h2>
+<ol><li>Open DevTools and switch to a phone size.</li><li>Paste in the Console:</li></ol>
+<figure class="static-code"><figcaption>JavaScript</figcaption><pre><code class="language-javascript">document.querySelectorAll(&quot;*&quot;).forEach(el =&gt; {
+  if (el.offsetWidth &gt; document.documentElement.clientWidth) console.log(el);
+});</code></pre></figure>
+<ol><li>Fix the culprit (usually a fixed width, <code>100vw</code>, a long word, a wide table or an image without <code>max-width: 100%</code>).</li><li>Avoid hiding the problem with <code>body { overflow-x: hidden }</code>, which can break <code>position: sticky</code>.</li></ol>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Setting width on an inline <code>&lt;a&gt;</code></td><td><code>display: inline-block</code> or <code>block</code></td></tr><tr><td><code>display: none</code> on content that screen readers need</td><td>Use <code>.sr-only</code></td></tr><tr><td>Images wider than the screen</td><td><code>img { max-width: 100%; height: auto; }</code></td></tr><tr><td>Fixed-height boxes with growing text</td><td><code>min-height</code> or <code>overflow-y: auto</code></td></tr><tr><td>Wide tables on phones</td><td>Wrap in a div with <code>overflow-x: auto</code></td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Build an FAQ with three questions using <code>&lt;details&gt;</code> and <code>&lt;summary&gt;</code>, then style the open state.</li><li>Make an icon-only menu button with a screen-reader-only label.</li><li>Create a snapping horizontal list of testimonials.</li><li>Make product names in a card grid end with an ellipsis after one line.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A sticky header stopped sticking after you added <code>overflow: hidden</code> to a wrapper to fix sideways scrolling. Why?</span><em>Show answer</em></summary><div class="callout-body"><p><code>position: sticky</code> sticks relative to its nearest scrolling ancestor. <code>overflow: hidden</code> makes the wrapper a scroll container, so the header sticks inside that wrapper (which doesn't scroll) instead of the page. Fix the element causing the overflow, or use <code>overflow: clip</code>, which doesn't create a scroll container.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which display value ignores width and height?</p><details><summary>Show answer</summary><p>inline</p></details></li><li><p>Which display value sits in the line but lets width and height work?</p><details><summary>Show answer</summary><p>inline-block</p></details></li><li><p>Which hides an element and leaves no gap: display none or visibility hidden?</p><details><summary>Show answer</summary><p>display none</p></details></li><li><p>Which overflow value shows scrollbars only when needed?</p><details><summary>Show answer</summary><p>auto</p></details></li><li><p>What overflow-x value lets a wide table scroll on phones?</p><details><summary>Show answer</summary><p>auto</p></details></li><li><p>Which HTML attribute hides an element like display none and is easy to toggle in JavaScript?</p><details><summary>Show answer</summary><p>hidden</p></details></li><li><p>Which property makes horizontal scrolling lists snap card by card?</p><details><summary>Show answer</summary><p>scroll-snap-type</p></details></li><li><p>Which class name is commonly used for text visible only to screen readers?</p><details><summary>Show answer</summary><p>sr-only</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Make <code>.menu a</code> links <strong>inline-block</strong> with <strong>padding: 10px</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=css&amp;lesson=display-overflow#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 7 of 21 in <a href="/learn/css/">CSS</a> · <a href="/learn/?book=css">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/css/box-model/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> The box model: content, padding, border, margin and box-sizing</a><a class="btn btn-solid btn-sm" href="/learn/css/pseudo-classes-elements/">Pseudo-classes and pseudo-elements (:hover, ::before) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

@@ -110,7 +110,70 @@ print(f&quot;Loan limit: KSh {limit:,}&quot;)</code></pre></figure>
 <figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">print(2 + 3 * 4)       # 14
 print((2 + 3) * 4)     # 20
 print(True or False and False)   # True: &quot;and&quot; runs before &quot;or&quot;</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does 17 // 5 give?</p><details><summary>Show answer</summary><p>3</p></details></li><li><p>What does 17 % 5 give?</p><details><summary>Show answer</summary><p>2</p></details></li><li><p>What does 2 ** 3 give?</p><details><summary>Show answer</summary><p>8</p></details></li><li><p>What is the result of True and False?</p><details><summary>Show answer</summary><p>False</p></details></li><li><p>Which keyword checks whether a value is in a list?</p><details><summary>Show answer</summary><p>in</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Given <code>minutes = 135</code>, print the hours and remaining minutes as <strong>2 h 15 min</strong> using <code>//</code> and <code>%</code>.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=operators-booleans#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 4 of 20 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/numbers-strings/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Numbers and strings: data types, conversion, text basics and formatting</a><a class="btn btn-solid btn-sm" href="/learn/python/strings-in-depth/">Strings in depth: slicing, methods and f-strings <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Short-circuit evaluation</h2>
+<p><code>and</code> and <code>or</code> stop as soon as the answer is known. Python uses this to avoid errors and to provide defaults:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">items = []
+# Without short-circuiting, items[0] would crash on an empty list:
+if items and items[0] &gt; 100:
+    print(&quot;First item is expensive&quot;)
+else:
+    print(&quot;No items, or the first is cheap&quot;)
+
+nickname = &quot;&quot;
+display = nickname or &quot;Guest&quot;      # or returns the first truthy value
+print(&quot;Welcome,&quot;, display)
+
+count = 0
+print(count != 0 and 100 / count)  # safe: division never happens when count is 0</code></pre></figure>
+<h2>Chained comparisons and conditional expressions</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">mark = 72
+print(50 &lt;= mark &lt; 80)                       # same as 50 &lt;= mark and mark &lt; 80
+age = 17
+status = &quot;adult&quot; if age &gt;= 18 else &quot;minor&quot;   # one-line if/else (conditional expression)
+print(status)
+
+temperature = 31
+advice = &quot;Hot: drink water&quot; if temperature &gt; 30 else &quot;Cool&quot; if temperature &lt; 18 else &quot;Pleasant&quot;
+print(advice)</code></pre></figure>
+<p>Keep conditional expressions short; use a normal <code>if/elif/else</code> when logic gets longer.</p>
+<h2>match: pattern matching (Python 3.10+)</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def handle(command):
+    match command.split():
+        case [&quot;balance&quot;]:
+            return &quot;Your balance is KSh 3,450&quot;
+        case [&quot;send&quot;, amount, phone]:
+            return f&quot;Sending KSh {amount} to {phone}&quot;
+        case [&quot;help&quot; | &quot;menu&quot;]:
+            return &quot;Options: balance, send &lt;amount&gt; &lt;phone&gt;&quot;
+        case _:
+            return &quot;Unknown command&quot;
+
+for c in [&quot;balance&quot;, &quot;send 500 0712345678&quot;, &quot;menu&quot;, &quot;withdraw&quot;]:
+    print(c, &quot;-&gt;&quot;, handle(c))</code></pre></figure>
+<h2>Worked example: M-Pesa-style fee bands</h2>
+<p>Decisions often check ranges. Here are example bands for practice (not real tariffs):</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def fee(amount):
+    if amount &lt; 1:
+        raise ValueError(&quot;Amount must be at least KSh 1&quot;)
+    elif amount &lt;= 100:
+        return 0
+    elif amount &lt;= 1_500:
+        return 15
+    elif amount &lt;= 5_000:
+        return 30
+    elif amount &lt;= 20_000:
+        return 50
+    return 100
+
+for a in [50, 100, 101, 1500, 1501, 25000]:
+    print(f&quot;KSh {a:&gt;6,}: fee KSh {fee(a)}&quot;)</code></pre></figure>
+<p>Test <strong>boundary values</strong> (100, 101, 1,500, 1,501): that's where most bugs hide.</p>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Problem</th><th>Fix</th></tr></thead><tbody><tr><td><code>if x = 5:</code></td><td><code>=</code> assigns; SyntaxError</td><td>Use <code>==</code> to compare</td></tr><tr><td><code>if mark &gt; 50 or &lt; 80:</code></td><td>Invalid syntax</td><td><code>if 50 &lt; mark &lt; 80:</code></td></tr><tr><td><code>if answer == &quot;yes&quot; or &quot;y&quot;:</code></td><td>Always True ("y" is truthy)</td><td><code>if answer in (&quot;yes&quot;, &quot;y&quot;):</code></td></tr><tr><td>Checking <code>&gt; 80</code> after <code>&gt; 50</code></td><td>First match wins; wrong branch</td><td>Order from most to least strict</td></tr><tr><td><code>is</code> to compare numbers/strings</td><td>Compares identity, not value</td><td>Use <code>==</code> (use <code>is</code> only for <code>None</code>)</td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Write <code>can_vote(age, has_id)</code> returning True only if age ≥ 18 and has_id is True.</li><li>Write a grade function with A (80+), B (65–79), C (50–64), D (40–49), E (below 40), and test boundaries.</li><li>Given hours worked, pay KSh 300/hour, with overtime (over 40 hours) at 1.5×. Print the pay for 35, 40 and 46 hours.</li><li>Rewrite <code>if x &gt; 0: sign = &quot;positive&quot; else: sign = &quot;not positive&quot;</code> as a conditional expression.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why does <code>if answer == &quot;yes&quot; or &quot;y&quot;:</code> always run, even when answer is "no"?</span><em>Show answer</em></summary><div class="callout-body"><p>Python reads it as <code>(answer == &quot;yes&quot;) or (&quot;y&quot;)</code>. The second part, the non-empty string "y", is always truthy, so the whole condition is True. Write <code>if answer in (&quot;yes&quot;, &quot;y&quot;):</code> or <code>if answer == &quot;yes&quot; or answer == &quot;y&quot;:</code>.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does 17 // 5 give?</p><details><summary>Show answer</summary><p>3</p></details></li><li><p>What does 17 % 5 give?</p><details><summary>Show answer</summary><p>2</p></details></li><li><p>What does 2 ** 3 give?</p><details><summary>Show answer</summary><p>8</p></details></li><li><p>What is the result of True and False?</p><details><summary>Show answer</summary><p>False</p></details></li><li><p>Which keyword checks whether a value is in a list?</p><details><summary>Show answer</summary><p>in</p></details></li><li><p>What does "" or "Guest" return?</p><details><summary>Show answer</summary><p>Guest</p></details></li><li><p>Which keyword starts structural pattern matching in Python 3.10+?</p><details><summary>Show answer</summary><p>match</p></details></li><li><p>Is 50 &lt;= 72 &lt; 80 True or False?</p><details><summary>Show answer</summary><p>True</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Given <code>minutes = 135</code>, print the hours and remaining minutes as <strong>2 h 15 min</strong> using <code>//</code> and <code>%</code>.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=operators-booleans#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 4 of 20 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/numbers-strings/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Numbers and strings: data types, conversion, text basics and formatting</a><a class="btn btn-solid btn-sm" href="/learn/python/strings-in-depth/">Strings in depth: slicing, methods and f-strings <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

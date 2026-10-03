@@ -119,7 +119,119 @@ print(open(&quot;results.csv&quot;).read())</code></pre></figure>
 <div class="static-table"><table><thead><tr><th>Skill</th><th>Where</th></tr></thead><tbody><tr><td>Functions with docstrings</td><td><code>grade()</code>, <code>comment()</code></td></tr><tr><td>Lists of dictionaries</td><td><code>students</code></td></tr><tr><td>Loops, <code>zip</code>, <code>enumerate</code></td><td>report cards and ranking</td></tr><tr><td>Sorting with <code>key=lambda</code></td><td><code>ranked</code></td></tr><tr><td>f-string alignment</td><td>the neat columns</td></tr><tr><td>List comprehensions</td><td>subject means</td></tr><tr><td>Writing CSV files</td><td><code>results.csv</code></td></tr></tbody></table></div>
 <h2>Challenges</h2>
 <ol><li>Add a fifth subject. What do you need to change? (If you wrote it well, only the lists.)</li><li>Handle <strong>ties</strong>: students with the same total should share a position.</li><li>Read the marks from a CSV file instead of the list.</li><li>Add input validation: marks must be 0–100.</li><li>Print the top 3 students with 🥇🥈🥉.</li></ol>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which built-in function pairs each subject with its mark?</p><details><summary>Show answer</summary><p>zip</p></details></li><li><p>Which function gives positions starting from 1 while looping?</p><details><summary>Show answer</summary><p>enumerate</p></details></li><li><p>Which argument makes sorted() put the highest first?</p><details><summary>Show answer</summary><p>reverse=True</p></details></li><li><p>What grade does a mark of 72 get in this program?</p><details><summary>Show answer</summary><p>B+</p></details></li></ol></section></div><p class="static-meta">Lesson 20 of 20 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/project-mpesa-calculator/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Project: a transaction charges calculator with tariff bands, validation and reports</a><span></span></nav></article>
+<h2>How real school systems work</h2>
+<p>Schools in Kenya use spreadsheets, school management systems and portals to compute results. The logic underneath is what you just built: read marks, validate, compute totals and means, assign grades, rank, and export. Understanding it lets you build tools for schools, tuition centres and colleges, or automate reports a teacher would otherwise type by hand for hours.</p>
+<div class="static-table"><table><thead><tr><th>Stage</th><th>What happens</th><th>Python tools</th></tr></thead><tbody><tr><td>Collect</td><td>Teachers enter marks per subject</td><td>input forms, CSV from Excel/Google Sheets</td></tr><tr><td>Validate</td><td>Reject marks below 0 or above 100, missing entries</td><td><code>if</code> checks, <code>try</code>/<code>except</code></td></tr><tr><td>Compute</td><td>Totals, means, grades</td><td><code>sum</code>, <code>round</code>, functions</td></tr><tr><td>Rank</td><td>Positions, with ties sharing a position</td><td><code>sorted</code>, <code>enumerate</code></td></tr><tr><td>Report</td><td>Report cards, class lists, subject analysis</td><td>f-strings, files</td></tr><tr><td>Export</td><td>CSV for Excel, JSON for a website</td><td><code>csv</code>, <code>json</code></td></tr></tbody></table></div>
+<h2>Step 3: reading marks from a CSV</h2>
+<p>In practice the marks come from a spreadsheet. Here is the same data as CSV, read and validated:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import csv, io
+
+marks_csv = &quot;&quot;&quot;name,Maths,English,Kiswahili,Science
+Amina Hassan,78,84,90,71
+Brian Otieno,92,71,65,88
+Chebet Kiprop,55,62,abc,49
+Dennis Mwangi,38,45,52,141
+Esther Wanjiku,88,90,85,93
+&quot;&quot;&quot;
+reader = csv.DictReader(io.StringIO(marks_csv))
+subjects = reader.fieldnames[1:]
+students, errors = [], []
+for line_no, row in enumerate(reader, start=2):
+    marks = []
+    for subj in subjects:
+        try:
+            m = int(row[subj])
+        except ValueError:
+            errors.append(f&quot;Line {line_no}: {row[&#x27;name&#x27;]} {subj} &#x27;{row[subj]}&#x27; is not a number&quot;)
+            m = None
+        else:
+            if not 0 &lt;= m &lt;= 100:
+                errors.append(f&quot;Line {line_no}: {row[&#x27;name&#x27;]} {subj} {m} is out of range&quot;)
+                m = None
+        marks.append(m)
+    students.append({&quot;name&quot;: row[&quot;name&quot;], &quot;marks&quot;: marks})
+
+print(&quot;Subjects:&quot;, subjects)
+for e in errors:
+    print(&quot;ERROR&quot;, e)
+print(&quot;Students loaded:&quot;, len(students))</code></pre></figure>
+<p>Reporting the <strong>line number</strong> and the exact problem lets the teacher fix the spreadsheet quickly instead of guessing.</p>
+<h2>Step 4: handling ties fairly</h2>
+<p>If two students have the same total they should share a position, and the next student skips a number (1, 2, 2, 4). This is sometimes called "competition ranking":</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">results = [(&quot;Amina&quot;, 323), (&quot;Brian&quot;, 316), (&quot;Chebet&quot;, 316), (&quot;Dennis&quot;, 176), (&quot;Esther&quot;, 356)]
+ranked = sorted(results, key=lambda r: r[1], reverse=True)
+
+position = 0
+previous_total = None
+for i, (name, total) in enumerate(ranked, start=1):
+    if total != previous_total:
+        position = i
+        previous_total = total
+    print(f&quot;{position:&gt;2}. {name:&lt;8} {total}&quot;)</code></pre></figure>
+<h2>Step 5: subject analysis</h2>
+<p>Teachers and heads of department want to know how each subject performed:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import statistics as st
+
+SUBJECTS = [&quot;Maths&quot;, &quot;English&quot;, &quot;Kiswahili&quot;, &quot;Science&quot;]
+marks = {
+    &quot;Amina&quot;: [78, 84, 90, 71], &quot;Brian&quot;: [92, 71, 65, 88], &quot;Chebet&quot;: [55, 62, 70, 49],
+    &quot;Dennis&quot;: [38, 45, 52, 41], &quot;Esther&quot;: [88, 90, 85, 93],
+}
+print(f&quot;{&#x27;Subject&#x27;:&lt;10}{&#x27;Mean&#x27;:&gt;6}{&#x27;Median&#x27;:&gt;8}{&#x27;Max&#x27;:&gt;5}{&#x27;Min&#x27;:&gt;5}{&#x27;Pass%&#x27;:&gt;7}&quot;)
+for i, subj in enumerate(SUBJECTS):
+    col = [m[i] for m in marks.values()]
+    pass_rate = 100 * sum(1 for x in col if x &gt;= 50) / len(col)
+    print(f&quot;{subj:&lt;10}{st.mean(col):&gt;6.1f}{st.median(col):&gt;8}{max(col):&gt;5}{min(col):&gt;5}{pass_rate:&gt;6.0f}%&quot;)
+
+# a simple text bar chart of the class means
+for name, m in marks.items():
+    avg = sum(m) / len(m)
+    print(f&quot;{name:&lt;7} {&#x27;#&#x27; * int(avg // 5):&lt;20} {avg:.1f}&quot;)</code></pre></figure>
+<h2>Step 6: grade distribution</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">from collections import Counter
+
+def grade(mark):
+    bands = [(80, &quot;A&quot;), (75, &quot;A-&quot;), (70, &quot;B+&quot;), (65, &quot;B&quot;), (60, &quot;B-&quot;),
+             (55, &quot;C+&quot;), (50, &quot;C&quot;), (45, &quot;C-&quot;), (40, &quot;D+&quot;), (35, &quot;D&quot;), (30, &quot;D-&quot;)]
+    for cutoff, letter in bands:
+        if mark &gt;= cutoff:
+            return letter
+    return &quot;E&quot;
+
+averages = [80.8, 79.0, 59.0, 44.0, 89.0, 66.5, 72.3, 51.0]
+dist = Counter(grade(a) for a in averages)
+order = [&quot;A&quot;, &quot;A-&quot;, &quot;B+&quot;, &quot;B&quot;, &quot;B-&quot;, &quot;C+&quot;, &quot;C&quot;, &quot;C-&quot;, &quot;D+&quot;, &quot;D&quot;, &quot;D-&quot;, &quot;E&quot;]
+for g in order:
+    if dist[g]:
+        print(f&quot;{g:&lt;3} {dist[g]}&quot;)</code></pre></figure>
+<h2>Step 7: exporting JSON for a website</h2>
+<p>If the school has a parent portal, the same results can be saved as JSON for the website to display:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import json
+
+results = [
+    {&quot;position&quot;: 1, &quot;name&quot;: &quot;Esther Wanjiku&quot;, &quot;average&quot;: 89.0, &quot;grade&quot;: &quot;A&quot;},
+    {&quot;position&quot;: 2, &quot;name&quot;: &quot;Amina Hassan&quot;, &quot;average&quot;: 80.8, &quot;grade&quot;: &quot;A&quot;},
+]
+payload = {&quot;term&quot;: &quot;Term 3 2026&quot;, &quot;class&quot;: &quot;Form 2 East&quot;, &quot;results&quot;: results}
+print(json.dumps(payload, indent=2))</code></pre></figure>
+<p>Real portals must protect this data: results are personal information under Kenya's Data Protection Act, so access must be limited to the learner, their parents and authorised staff.</p>
+<h2>Designing the program well</h2>
+<ul><li><strong>Keep data separate from code</strong>: subjects and grade bands in lists (or a settings file), so changes don't require rewriting logic.</li><li><strong>One job per function</strong>: <code>load_marks()</code>, <code>validate()</code>, <code>compute()</code>, <code>rank()</code>, <code>print_report()</code>, <code>export_csv()</code>. Each is easy to test.</li><li><strong>Test with tricky data</strong>: ties, a missing mark, a student absent from one exam, an empty class.</li><li><strong>Don't overwrite raw marks</strong>: keep the original data and compute results from it, so mistakes can be traced.</li></ul>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def compute(student, n_subjects):
+    valid = [m for m in student[&quot;marks&quot;] if m is not None]
+    total = sum(valid)
+    average = round(total / n_subjects, 1)
+    return {**student, &quot;total&quot;: total, &quot;average&quot;: average, &quot;missing&quot;: n_subjects - len(valid)}
+
+print(compute({&quot;name&quot;: &quot;Chebet&quot;, &quot;marks&quot;: [55, 62, None, 49]}, 4))
+assert compute({&quot;name&quot;: &quot;T&quot;, &quot;marks&quot;: [100, 100]}, 2)[&quot;average&quot;] == 100
+print(&quot;tests passed&quot;)</code></pre></figure>
+<p><code>assert</code> stops the program if a condition is false: a quick way to check your functions still behave correctly after changes.</p>
+<h2>Extension ideas for a portfolio</h2>
+<ol><li>Turn it into a small <strong>Flask</strong> web app where a teacher uploads a CSV and downloads report cards.</li><li>Generate <strong>PDF report cards</strong> with a library such as reportlab or fpdf2.</li><li>Store marks in <strong>SQLite</strong> and keep results for several terms, then show each student's improvement.</li><li>Send each parent an SMS summary through an SMS API (with consent).</li><li>Plot subject means with <strong>matplotlib</strong>.</li></ol>
+<p>A finished version of any of these is a strong portfolio piece when looking for internships or freelance work with schools.</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A student was absent for Science, so their mark is missing. Should their average divide by 4 subjects or 3?</span><em>Show answer</em></summary><div class="callout-body"><p>It depends on the school's policy, and the program should make that rule explicit. Dividing by 3 rewards the student for missing an exam; dividing by 4 (treating missing as 0) penalises them. Many schools mark the result as incomplete ("X") until the exam is sat. Good software shows the missing mark clearly instead of hiding it.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which built-in function pairs each subject with its mark?</p><details><summary>Show answer</summary><p>zip</p></details></li><li><p>Which function gives positions starting from 1 while looping?</p><details><summary>Show answer</summary><p>enumerate</p></details></li><li><p>Which argument makes sorted() put the highest first?</p><details><summary>Show answer</summary><p>reverse=True</p></details></li><li><p>What grade does a mark of 72 get in this program?</p><details><summary>Show answer</summary><p>B+</p></details></li><li><p>In competition ranking, if two students tie for 2nd, what position does the next student get?</p><details><summary>Show answer</summary><p>4</p></details></li><li><p>Which statement stops a program when a condition you expect to be true is false?</p><details><summary>Show answer</summary><p>assert</p></details></li><li><p>Which statistics function gives the middle value of a list of marks?</p><details><summary>Show answer</summary><p>median</p></details></li></ol></section></div><p class="static-meta">Lesson 20 of 20 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/project-mpesa-calculator/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Project: a transaction charges calculator with tariff bands, validation and reports</a><span></span></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

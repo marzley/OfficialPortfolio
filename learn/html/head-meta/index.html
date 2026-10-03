@@ -98,7 +98,96 @@
 <p><code>&lt;html lang=&quot;en&quot;&gt;</code> tells browsers and screen readers the page language. For a Kiswahili page use <code>lang=&quot;sw&quot;</code>. It helps pronunciation for screen readers and helps Google show the right page to the right people.</p>
 <h2>Checklist for every page</h2>
 <ol><li><code>&lt;!DOCTYPE html&gt;</code> and <code>&lt;html lang=&quot;...&quot;&gt;</code></li><li><code>charset</code> then <code>viewport</code></li><li>A unique <code>&lt;title&gt;</code> and <code>description</code></li><li>Favicon</li><li>Share tags (<code>og:</code>) for pages people will share</li></ol>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which meta tag makes a page display properly on phones? (one word, the name value)</p><details><summary>Show answer</summary><p>viewport</p></details></li><li><p>Which element's text becomes the blue link in Google results?</p><details><summary>Show answer</summary><p>title</p></details></li><li><p>About how many characters should a meta description be? Give a number between 120 and 160.</p><details><summary>Show answer</summary><p>120</p></details></li><li><p>Which attribute on script makes it run after the page has been read?</p><details><summary>Show answer</summary><p>defer</p></details></li><li><p>Which prefix do share-preview tags like og:image use? (two letters)</p><details><summary>Show answer</summary><p>og</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Complete the head: add a <code>&lt;title&gt;</code> with the text <strong>Otieno Plumbing</strong> and a viewport meta tag.</p><p><a class="btn btn-solid" href="/learn/?track=html&amp;lesson=head-meta#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 6 of 19 in <a href="/learn/html/">HTML</a> · <a href="/learn/?book=html">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/html/attributes-classes-ids/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Attributes, classes and IDs</a><a class="btn btn-solid btn-sm" href="/learn/html/links-images/">Links and images: connecting pages and showing pictures <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why the head matters</h2>
+<p>Visitors never see the <code>&lt;head&gt;</code>, but it controls things that decide whether your site succeeds: how it looks in Google results, how links appear when shared on WhatsApp, Facebook or LinkedIn, whether it displays correctly on phones, how fast it loads, and the icon on the browser tab or phone home screen. Business owners judge a site partly by these details ("why does my link show no picture on WhatsApp?"), so web designers must get them right on every page.</p>
+<h2>Search engine tags in detail</h2>
+<figure class="static-code"><figcaption>HTML</figcaption><pre><code class="language-html">&lt;title&gt;Web Design in Nakuru | Affordable Business Websites | Duka Digital&lt;/title&gt;
+&lt;meta name=&quot;description&quot; content=&quot;Mobile-friendly websites for Nakuru businesses from KSh 15,000. M-Pesa payments, hosting and SEO included. Get a free quote today.&quot;&gt;
+&lt;link rel=&quot;canonical&quot; href=&quot;https://www.example.co.ke/web-design-nakuru/&quot;&gt;
+&lt;meta name=&quot;robots&quot; content=&quot;index, follow&quot;&gt;</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Tag</th><th>Purpose</th><th>Tips</th></tr></thead><tbody><tr><td><code>&lt;title&gt;</code></td><td>Blue link in search results, browser tab text</td><td>About 50 to 60 characters; main keyword first; unique per page</td></tr><tr><td><code>meta description</code></td><td>The grey snippet under the link (Google may rewrite it)</td><td>About 150 characters; a reason to click; unique per page</td></tr><tr><td><code>canonical</code></td><td>Tells search engines the preferred URL when the same content has several URLs</td><td>Use the full https URL</td></tr><tr><td><code>robots</code></td><td><code>noindex</code> keeps a page out of search results</td><td>Use for login, thank-you and admin pages</td></tr></tbody></table></div>
+<p>There's no "keywords" meta tag that helps: Google ignores it. Write titles and descriptions for <strong>people</strong>; a clear, honest snippet earns more clicks.</p>
+<h2>Social share previews in full</h2>
+<figure class="static-code"><figcaption>HTML</figcaption><pre><code class="language-html">&lt;meta property=&quot;og:type&quot; content=&quot;website&quot;&gt;
+&lt;meta property=&quot;og:title&quot; content=&quot;Web Design in Nakuru | Duka Digital&quot;&gt;
+&lt;meta property=&quot;og:description&quot; content=&quot;Mobile-friendly websites with M-Pesa payments.&quot;&gt;
+&lt;meta property=&quot;og:image&quot; content=&quot;https://www.example.co.ke/img/og-web-design.jpg&quot;&gt;
+&lt;meta property=&quot;og:image:width&quot; content=&quot;1200&quot;&gt;
+&lt;meta property=&quot;og:image:height&quot; content=&quot;630&quot;&gt;
+&lt;meta property=&quot;og:url&quot; content=&quot;https://www.example.co.ke/web-design-nakuru/&quot;&gt;
+&lt;meta property=&quot;og:site_name&quot; content=&quot;Duka Digital&quot;&gt;
+&lt;meta name=&quot;twitter:card&quot; content=&quot;summary_large_image&quot;&gt;</code></pre></figure>
+<ul><li>The share image should be <strong>1200 × 630 pixels</strong>, under about 300 KB, with large readable text.</li><li>Use <strong>absolute URLs</strong> (starting with <code>https://</code>); relative paths often fail in previews.</li><li>WhatsApp and Facebook cache previews. After changing them, use Facebook's Sharing Debugger to refresh, and test by sharing in a WhatsApp chat with yourself.</li></ul>
+<h2>Icons for every device</h2>
+<figure class="static-code"><figcaption>HTML</figcaption><pre><code class="language-html">&lt;link rel=&quot;icon&quot; href=&quot;/favicon.ico&quot; sizes=&quot;32x32&quot;&gt;
+&lt;link rel=&quot;icon&quot; href=&quot;/icon.svg&quot; type=&quot;image/svg+xml&quot;&gt;
+&lt;link rel=&quot;apple-touch-icon&quot; href=&quot;/apple-touch-icon.png&quot;&gt;   &lt;!-- 180 × 180 --&gt;
+&lt;link rel=&quot;manifest&quot; href=&quot;/site.webmanifest&quot;&gt;
+&lt;meta name=&quot;theme-color&quot; content=&quot;#0b1b35&quot;&gt;</code></pre></figure>
+<p><code>theme-color</code> colours the browser's address bar on Android. The manifest file lets visitors "install" the site to their home screen as a Progressive Web App.</p>
+<h2>Performance hints</h2>
+<figure class="static-code"><figcaption>HTML</figcaption><pre><code class="language-html">&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
+&lt;link rel=&quot;preload&quot; href=&quot;/fonts/inter-700.woff2&quot; as=&quot;font&quot; type=&quot;font/woff2&quot; crossorigin&gt;
+&lt;link rel=&quot;preload&quot; href=&quot;/img/hero.webp&quot; as=&quot;image&quot; fetchpriority=&quot;high&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;/css/styles.css&quot;&gt;
+&lt;script src=&quot;/js/app.js&quot; defer&gt;&lt;/script&gt;
+&lt;script src=&quot;https://www.googletagmanager.com/gtag/js?id=G-XXXX&quot; async&gt;&lt;/script&gt;</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Hint</th><th>Meaning</th></tr></thead><tbody><tr><td><code>preconnect</code></td><td>Open the connection to another server early</td></tr><tr><td><code>preload</code></td><td>Download a critical file (hero image, main font) immediately</td></tr><tr><td><code>defer</code></td><td>Download in parallel, run after the HTML is parsed, in order</td></tr><tr><td><code>async</code></td><td>Download in parallel, run as soon as ready (order not guaranteed): good for analytics</td></tr><tr><td><code>type=&quot;module&quot;</code></td><td>ES modules; deferred automatically</td></tr></tbody></table></div>
+<p>Put CSS in the head (so the page doesn't flash unstyled) and scripts with <code>defer</code>, so they don't block the page from appearing.</p>
+<h2>Structured data (rich results)</h2>
+<p>Structured data in JSON-LD tells search engines facts about your business, products, articles, FAQs or events:</p>
+<figure class="static-code"><figcaption>HTML</figcaption><pre><code class="language-html">&lt;script type=&quot;application/ld+json&quot;&gt;
+{
+  &quot;@context&quot;: &quot;https://schema.org&quot;,
+  &quot;@type&quot;: &quot;LocalBusiness&quot;,
+  &quot;name&quot;: &quot;Duka Digital&quot;,
+  &quot;url&quot;: &quot;https://www.example.co.ke/&quot;,
+  &quot;telephone&quot;: &quot;+254700000000&quot;,
+  &quot;address&quot;: {
+    &quot;@type&quot;: &quot;PostalAddress&quot;,
+    &quot;addressLocality&quot;: &quot;Nakuru&quot;,
+    &quot;addressCountry&quot;: &quot;KE&quot;
+  },
+  &quot;openingHours&quot;: &quot;Mo-Sa 08:00-18:00&quot;
+}
+&lt;/script&gt;</code></pre></figure>
+<p>Test it with Google's Rich Results Test. Only describe what's truly on the page; misleading structured data can be ignored or penalised.</p>
+<h2>Security and privacy-related head tags</h2>
+<figure class="static-code"><figcaption>HTML</figcaption><pre><code class="language-html">&lt;meta name=&quot;referrer&quot; content=&quot;strict-origin-when-cross-origin&quot;&gt;
+&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;self&#x27;; img-src &#x27;self&#x27; https:&quot;&gt;</code></pre></figure>
+<p>A Content-Security-Policy restricts where scripts, images and styles may load from, which reduces the damage from cross-site scripting. It is usually best set as a server header (for example in <code>.htaccess</code>) rather than a meta tag.</p>
+<h2>Multilingual pages</h2>
+<figure class="static-code"><figcaption>HTML</figcaption><pre><code class="language-html">&lt;html lang=&quot;en&quot;&gt;
+&lt;link rel=&quot;alternate&quot; hreflang=&quot;en&quot; href=&quot;https://www.example.co.ke/en/&quot;&gt;
+&lt;link rel=&quot;alternate&quot; hreflang=&quot;sw&quot; href=&quot;https://www.example.co.ke/sw/&quot;&gt;
+&lt;link rel=&quot;alternate&quot; hreflang=&quot;x-default&quot; href=&quot;https://www.example.co.ke/&quot;&gt;</code></pre></figure>
+<p><code>hreflang</code> tells search engines which language version to show to which users.</p>
+<h2>A head template you can reuse</h2>
+<figure class="static-code"><figcaption>HTML</figcaption><pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;utf-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+  &lt;title&gt;Page topic | Brand&lt;/title&gt;
+  &lt;meta name=&quot;description&quot; content=&quot;One or two sentences that make people want to click.&quot;&gt;
+  &lt;link rel=&quot;canonical&quot; href=&quot;https://www.example.co.ke/page/&quot;&gt;
+  &lt;meta property=&quot;og:title&quot; content=&quot;Page topic | Brand&quot;&gt;
+  &lt;meta property=&quot;og:description&quot; content=&quot;Short description for social shares.&quot;&gt;
+  &lt;meta property=&quot;og:image&quot; content=&quot;https://www.example.co.ke/img/og-page.jpg&quot;&gt;
+  &lt;meta property=&quot;og:url&quot; content=&quot;https://www.example.co.ke/page/&quot;&gt;
+  &lt;meta name=&quot;twitter:card&quot; content=&quot;summary_large_image&quot;&gt;
+  &lt;link rel=&quot;icon&quot; href=&quot;/icon.svg&quot; type=&quot;image/svg+xml&quot;&gt;
+  &lt;link rel=&quot;apple-touch-icon&quot; href=&quot;/apple-touch-icon.png&quot;&gt;
+  &lt;meta name=&quot;theme-color&quot; content=&quot;#0b1b35&quot;&gt;
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;/css/styles.css&quot;&gt;
+  &lt;script src=&quot;/js/app.js&quot; defer&gt;&lt;/script&gt;
+&lt;/head&gt;</code></pre></figure>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Effect</th><th>Fix</th></tr></thead><tbody><tr><td>Same title on every page ("Home")</td><td>Pages compete with each other; poor click rates</td><td>Unique, descriptive titles</td></tr><tr><td>Missing viewport tag</td><td>Tiny desktop layout on phones</td><td>Always include it</td></tr><tr><td>Relative og:image URL</td><td>No image in WhatsApp previews</td><td>Absolute https URL</td></tr><tr><td>Scripts in the head without defer</td><td>Slow, blank page while loading</td><td><code>defer</code></td></tr><tr><td><code>noindex</code> left on after launch</td><td>Site never appears in Google</td><td>Remove it when going live</td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Write unique titles and descriptions for a business's Home, Services, About and Contact pages.</li><li>Add complete Open Graph tags to a page and test the preview by sharing the link to yourself.</li><li>Add LocalBusiness structured data for a shop in your town and validate it.</li><li>Audit a real website's head with View Source (Ctrl+U) and list what's missing.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A client complains their website link shows no picture and the wrong text when shared on WhatsApp, even after you added og tags. What could be wrong?</span><em>Show answer</em></summary><div class="callout-body"><p>Common causes: the og:image URL is relative instead of absolute https, the image is too big or blocked, the tags are added by JavaScript (crawlers read the raw HTML), or WhatsApp/Facebook cached the old preview. Use absolute URLs in the HTML itself, a properly sized image (1200×630), and refresh the cache with Facebook's Sharing Debugger.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which meta tag makes a page display properly on phones? (one word, the name value)</p><details><summary>Show answer</summary><p>viewport</p></details></li><li><p>Which element's text becomes the blue link in Google results?</p><details><summary>Show answer</summary><p>title</p></details></li><li><p>About how many characters should a meta description be? Give a number between 120 and 160.</p><details><summary>Show answer</summary><p>120</p></details></li><li><p>Which attribute on script makes it run after the page has been read?</p><details><summary>Show answer</summary><p>defer</p></details></li><li><p>Which prefix do share-preview tags like og:image use? (two letters)</p><details><summary>Show answer</summary><p>og</p></details></li><li><p>Which link tag tells search engines the preferred URL for a page?</p><details><summary>Show answer</summary><p>canonical</p></details></li><li><p>What size in pixels is recommended for an og:image? (width x height)</p><details><summary>Show answer</summary><p>1200x630</p></details></li><li><p>Which script attribute is best for independent scripts like analytics that can run in any order?</p><details><summary>Show answer</summary><p>async</p></details></li><li><p>What format is recommended for structured data? (abbreviation)</p><details><summary>Show answer</summary><p>JSON-LD</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Complete the head: add a <code>&lt;title&gt;</code> with the text <strong>Otieno Plumbing</strong> and a viewport meta tag.</p><p><a class="btn btn-solid" href="/learn/?track=html&amp;lesson=head-meta#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 6 of 19 in <a href="/learn/html/">HTML</a> · <a href="/learn/?book=html">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/html/attributes-classes-ids/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Attributes, classes and IDs</a><a class="btn btn-solid btn-sm" href="/learn/html/links-images/">Links and images: connecting pages and showing pictures <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

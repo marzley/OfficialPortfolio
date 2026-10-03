@@ -91,7 +91,82 @@ if (name) {
 console.log(5 === &quot;5&quot;);  // false (different types)
 console.log(0 == &quot;&quot;);    // true  (surprise)
 console.log(0 === &quot;&quot;);   // false</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword should be your default for variables that won't be reassigned?</p><details><summary>Show answer</summary><p>const</p></details></li><li><p>What does typeof "Mombasa" return?</p><details><summary>Show answer</summary><p>string</p></details></li><li><p>What is "10" + 5 in JavaScript?</p><details><summary>Show answer</summary><p>105</p></details></li><li><p>Which comparison operator checks value AND type?</p><details><summary>Show answer</summary><p>===</p></details></li><li><p>Is an empty string "" truthy or falsy?</p><details><summary>Show answer</summary><p>falsy</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Create a <code>const</code> called <code>price</code> with the value <strong>1500</strong> and a <code>let</code> called <code>qty</code> with <strong>3</strong>. Log their product so the output is <strong>4500</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=variables-types#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 2 of 21 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/introduction/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> JavaScript introduction: what it is, why we need it, who uses it and your first programs</a><a class="btn btn-solid btn-sm" href="/learn/javascript/strings-numbers-operators/">Strings, numbers and operators <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why variables and types matter</h2>
+<p>Every program stores information while it runs: the items in a shopping cart, the logged-in user's name, the M-Pesa amount typed in a form, whether a menu is open. Variables are the named places where that information lives, and <strong>types</strong> decide what you can do with it (add numbers, join text, check true/false). Most beginner bugs in JavaScript come from a value having a different type from what you expected, for example a form field giving you <code>&quot;500&quot;</code> (text) instead of <code>500</code> (a number).</p>
+<div class="static-table"><table><thead><tr><th>Who</th><th>How they use this</th></tr></thead><tbody><tr><td>Front-end developers</td><td>Store form input, toggle UI state, keep cart totals</td></tr><tr><td>Back-end (Node.js) developers</td><td>Hold request data, database results, configuration</td></tr><tr><td>Testers</td><td>Check that values have the right type and range</td></tr><tr><td>Data and analytics people</td><td>Clean values from spreadsheets and APIs before charting</td></tr></tbody></table></div>
+<h2>const with objects and arrays</h2>
+<p><code>const</code> stops you <strong>reassigning</strong> the variable, but the object or array it points to can still change:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const cart = [&quot;Unga&quot;];
+cart.push(&quot;Sugar&quot;);          // allowed: changing the array&#x27;s contents
+console.log(cart);
+
+const user = { name: &quot;Akinyi&quot;, town: &quot;Kisumu&quot; };
+user.town = &quot;Nairobi&quot;;       // allowed: changing a property
+console.log(user);
+
+function emptyCart() {
+  cart = [];                 // not allowed: reassigning a const
+}
+try {
+  emptyCart();
+} catch (e) {
+  console.log(&quot;Error:&quot;, e.message);
+}</code></pre></figure>
+<p>Use <code>Object.freeze(obj)</code> if you really need an object that can't be changed.</p>
+<h2>Numbers in detail</h2>
+<p>JavaScript has one <code>number</code> type for both whole numbers and decimals, plus <code>BigInt</code> for very large integers:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">console.log(7 / 2);                    // 3.5 (no integer division)
+console.log(Math.floor(7 / 2));        // 3
+console.log(7 % 2);                    // 1 (remainder)
+console.log(0.1 + 0.2);                // 0.30000000000000004
+console.log((0.1 + 0.2).toFixed(2));   // &quot;0.30&quot; (a string)
+console.log(Number.MAX_SAFE_INTEGER);  // 9007199254740991
+console.log(10 / 0, -10 / 0);          // Infinity -Infinity
+console.log(0 / 0, Number.isNaN(0 / 0)); // NaN true
+console.log(9007199254740993n + 2n);   // BigInt</code></pre></figure>
+<p>For money, many apps store amounts in the smallest unit (cents) as whole numbers, and format only when displaying.</p>
+<h2>null vs undefined</h2>
+<div class="static-table"><table><thead><tr><th>Value</th><th>Meaning</th><th>Typical source</th></tr></thead><tbody><tr><td><code>undefined</code></td><td>"No value was ever given"</td><td>A declared but unassigned variable, a missing object property, a function with no <code>return</code></td></tr><tr><td><code>null</code></td><td>"Deliberately empty"</td><td>You set it on purpose, e.g. <code>selectedProduct = null</code> after clearing</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">let phone;
+console.log(phone);                       // undefined
+const profile = { name: &quot;Juma&quot;, email: null };
+console.log(profile.email, profile.age);  // null undefined
+console.log(typeof null);                 // &quot;object&quot; (a famous old quirk)
+console.log(profile.age ?? &quot;age not set&quot;);  // ?? gives a default for null/undefined
+console.log(profile.address?.town);       // optional chaining: undefined, no crash</code></pre></figure>
+<h2>Template literals</h2>
+<p>Backticks let you insert values and write multi-line text:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const name = &quot;Wanjiru&quot;;
+const total = 2350;
+const message = `Habari ${name},
+Your order total is KSh ${total.toLocaleString(&quot;en-KE&quot;)}.
+VAT included: KSh ${(total * 0.16 / 1.16).toFixed(2)}`;
+console.log(message);</code></pre></figure>
+<h2>Checking types safely</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const values = [42, &quot;42&quot;, true, null, undefined, [1, 2], { a: 1 }, () =&gt; 1, NaN];
+for (const v of values) {
+  const label = Array.isArray(v) ? &quot;array&quot; : v === null ? &quot;null&quot; : typeof v;
+  console.log(String(v).padEnd(12), label);
+}
+console.log(Number.isInteger(5.0), Number.isInteger(5.5));</code></pre></figure>
+<p>Remember: <code>typeof []</code> is <code>&quot;object&quot;</code>, so use <code>Array.isArray()</code> for arrays, and <code>typeof NaN</code> is <code>&quot;number&quot;</code>, so use <code>Number.isNaN()</code>.</p>
+<h2>Converting form input correctly</h2>
+<p>Everything typed into an HTML input arrives as a string. Convert and validate before maths:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">function toAmount(text) {
+  const n = Number(String(text).replace(/,/g, &quot;&quot;).trim());
+  return Number.isFinite(n) &amp;&amp; n &gt; 0 ? n : null;
+}
+for (const typed of [&quot;1500&quot;, &quot; 2,500 &quot;, &quot;abc&quot;, &quot;&quot;, &quot;-20&quot;, &quot;12.5&quot;]) {
+  console.log(JSON.stringify(typed), &quot;-&gt;&quot;, toAmount(typed));
+}
+console.log(parseInt(&quot;250kg&quot;), Number(&quot;250kg&quot;));   // 250 NaN</code></pre></figure>
+<p><code>parseInt</code> reads digits until it hits something else; <code>Number</code> requires the whole string to be a number. Choose deliberately.</p>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Result</th><th>Fix</th></tr></thead><tbody><tr><td><code>input.value + 10</code></td><td><code>&quot;5010&quot;</code> (joined text)</td><td><code>Number(input.value) + 10</code></td></tr><tr><td>Using <code>var</code> in new code</td><td>Function scope and hoisting surprises</td><td>Use <code>const</code>, then <code>let</code></td></tr><tr><td><code>if (x == null)</code> vs <code>===</code> confusion</td><td>Unexpected matches</td><td>Use <code>===</code>, and <code>??</code> for defaults</td></tr><tr><td><code>total.toFixed(2) + 5</code></td><td>Text joining, because toFixed returns a string</td><td>Do maths first, format last</td></tr><tr><td>Forgetting <code>let</code>/<code>const</code></td><td>Creates an accidental global (or an error in strict mode)</td><td>Always declare</td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Create <code>const</code> variables for a product name, price and quantity, and print a receipt line with a template literal.</li><li>Write <code>isValidPhone(text)</code> that returns true for 10-digit numbers starting with <code>07</code> or <code>01</code>.</li><li>Show the difference between <code>parseFloat(&quot;12.5kg&quot;)</code> and <code>Number(&quot;12.5kg&quot;)</code>.</li><li>Given <code>const settings = { theme: null }</code>, print <code>&quot;light&quot;</code> when theme is null or missing, using <code>??</code>.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why does <code>const cart = []</code> still let you call <code>cart.push(&quot;Rice&quot;)</code>?</span><em>Show answer</em></summary><div class="callout-body"><p><code>const</code> fixes the variable binding (the label), not the contents of the value. <code>cart</code> must keep pointing at the same array, but that array is mutable, so its items can change. Reassigning <code>cart = []</code> is what's forbidden.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword should be your default for variables that won't be reassigned?</p><details><summary>Show answer</summary><p>const</p></details></li><li><p>What does typeof "Mombasa" return?</p><details><summary>Show answer</summary><p>string</p></details></li><li><p>What is "10" + 5 in JavaScript?</p><details><summary>Show answer</summary><p>105</p></details></li><li><p>Which comparison operator checks value AND type?</p><details><summary>Show answer</summary><p>===</p></details></li><li><p>Is an empty string "" truthy or falsy?</p><details><summary>Show answer</summary><p>falsy</p></details></li><li><p>What does typeof null return?</p><details><summary>Show answer</summary><p>object</p></details></li><li><p>Which operator gives a default only when a value is null or undefined?</p><details><summary>Show answer</summary><p>??</p></details></li><li><p>Which method correctly checks whether a value is an array?</p><details><summary>Show answer</summary><p>Array.isArray</p></details></li><li><p>What type does toFixed() return?</p><details><summary>Show answer</summary><p>string</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Create a <code>const</code> called <code>price</code> with the value <strong>1500</strong> and a <code>let</code> called <code>qty</code> with <strong>3</strong>. Log their product so the output is <strong>4500</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=variables-types#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 2 of 21 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/introduction/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> JavaScript introduction: what it is, why we need it, who uses it and your first programs</a><a class="btn btn-solid btn-sm" href="/learn/javascript/strings-numbers-operators/">Strings, numbers and operators <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

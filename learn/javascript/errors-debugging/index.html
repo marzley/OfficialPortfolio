@@ -92,7 +92,120 @@ console.log(typeof cart[0].price);   // check types when maths looks wrong</code
 <h2>A debugging routine that works</h2>
 <ol><li><strong>Read</strong> the whole error message. Note the line number.</li><li><strong>Reproduce</strong> it: what exact steps cause it?</li><li><strong>Check your assumptions</strong> with <code>console.log</code>: is the variable what you think? Is it a string instead of a number?</li><li><strong>Shrink</strong> the problem: comment out code until the bug disappears, then add back.</li><li><strong>Explain</strong> the code line by line to someone (or a rubber duck). You'll often spot the mistake while talking.</li><li><strong>Search</strong> the exact error text online; someone has had it before.</li></ol>
 <blockquote><p>Tip: our practice editor explains many errors in plain language and suggests a fix. Try making a mistake on purpose to see it.</p></blockquote>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which error type do you usually get from a typo in a variable name?</p><details><summary>Show answer</summary><p>ReferenceError</p></details></li><li><p>Which block runs whether or not an error happened?</p><details><summary>Show answer</summary><p>finally</p></details></li><li><p>Which keyword creates your own error?</p><details><summary>Show answer</summary><p>throw</p></details></li><li><p>Which console method shows an array of objects as a table?</p><details><summary>Show answer</summary><p>console.table</p></details></li><li><p>Which word in your code pauses it when DevTools is open?</p><details><summary>Show answer</summary><p>debugger</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Wrap <code>JSON.parse(&quot;{bad json&quot;)</code> in <code>try/catch</code> and log <strong>Invalid data</strong> in the catch block.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=errors-debugging#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 11 of 21 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/scope-closures/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Scope, hoisting and closures</a><a class="btn btn-solid btn-sm" href="/learn/javascript/dom-events/">The DOM and events: changing the page and responding to clicks, typing and more <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why error handling and debugging matter</h2>
+<p>Every developer spends a large share of their time finding and fixing bugs. Users don't see your code; they see a button that does nothing, a blank page or a payment that "hangs". Good error handling turns those failures into clear messages ("Network problem, please try again") and keeps the rest of the page working. Good debugging skills are what employers test for in interviews and what makes freelance clients trust you.</p>
+<div class="static-table"><table><thead><tr><th>Kind of problem</th><th>Example</th><th>How you notice</th></tr></thead><tbody><tr><td><strong>Syntax error</strong></td><td>Missing <code>)</code> or <code>}</code></td><td>The script doesn't run at all; the console shows SyntaxError with a line number</td></tr><tr><td><strong>Runtime error</strong></td><td>Calling a method on <code>undefined</code></td><td>Code stops at that line with TypeError/ReferenceError</td></tr><tr><td><strong>Logic error</strong></td><td>Total adds VAT twice</td><td>No error message; the result is just wrong</td></tr><tr><td><strong>Network/async error</strong></td><td>API down, slow 3G</td><td>A rejected promise, a failed fetch, or nothing happens</td></tr></tbody></table></div>
+<p>Logic errors are the hardest because nothing crashes; testing with known answers is how you catch them.</p>
+<h2>Errors in asynchronous code</h2>
+<p><code>try/catch</code> only catches errors in code it is waiting for. With promises, use <code>await</code> inside <code>try</code>, or <code>.catch()</code>:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">function fakeFetchBalance(phone) {
+  return new Promise((resolve, reject) =&gt; {
+    setTimeout(() =&gt; {
+      if (!/^07\d{8}$/.test(phone)) reject(new Error(&quot;Invalid phone number&quot;));
+      else resolve({ phone, balance: 1520 });
+    }, 50);
+  });
+}
+
+async function showBalance(phone) {
+  try {
+    const data = await fakeFetchBalance(phone);
+    console.log(`Balance for ${data.phone}: KSh ${data.balance}`);
+  } catch (err) {
+    console.log(&quot;Could not load balance:&quot;, err.message);
+  } finally {
+    console.log(&quot;(hide loading spinner)&quot;);
+  }
+}
+showBalance(&quot;0712345678&quot;).then(() =&gt; showBalance(&quot;12345&quot;));</code></pre></figure>
+<p>A common bug is forgetting <code>await</code>: the <code>try</code> finishes immediately and the rejection becomes an "Uncaught (in promise)" error.</p>
+<h2>Custom error classes</h2>
+<p>Naming your errors lets you handle each kind differently:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">class ValidationError extends Error {
+  constructor(field, message) {
+    super(message);
+    this.name = &quot;ValidationError&quot;;
+    this.field = field;
+  }
+}
+class PaymentError extends Error {
+  constructor(message, code) {
+    super(message);
+    this.name = &quot;PaymentError&quot;;
+    this.code = code;
+  }
+}
+
+function pay(amount, phone) {
+  if (!(amount &gt; 0)) throw new ValidationError(&quot;amount&quot;, &quot;Enter an amount above 0&quot;);
+  if (!/^(07|01)\d{8}$/.test(phone)) throw new ValidationError(&quot;phone&quot;, &quot;Enter a valid Safaricom/Airtel number&quot;);
+  if (amount &gt; 150000) throw new PaymentError(&quot;Amount above the transaction limit&quot;, &quot;LIMIT&quot;);
+  return &quot;Request sent&quot;;
+}
+
+for (const [amount, phone] of [[500, &quot;0712345678&quot;], [0, &quot;0712345678&quot;], [200000, &quot;0112345678&quot;], [50, &quot;999&quot;]]) {
+  try {
+    console.log(pay(amount, phone));
+  } catch (err) {
+    if (err instanceof ValidationError) console.log(`Fix the ${err.field} field: ${err.message}`);
+    else if (err instanceof PaymentError) console.log(`Payment problem (${err.code}): ${err.message}`);
+    else throw err;   // unknown errors: don&#x27;t hide them
+  }
+}</code></pre></figure>
+<p>The limit value above is an example; real limits come from the payment provider's current rules.</p>
+<h2>Don't swallow errors</h2>
+<figure class="static-code"><figcaption>JavaScript</figcaption><pre><code class="language-javascript">// Bad: the error disappears and nobody knows why the feature broke
+try { saveOrder(order); } catch (e) {}
+
+// Better: tell the user, and record details for developers
+try {
+  saveOrder(order);
+} catch (e) {
+  showMessage(&quot;We couldn&#x27;t save your order. Please try again.&quot;);
+  console.error(&quot;saveOrder failed&quot;, e);
+}</code></pre></figure>
+<p>Show friendly messages to users; keep technical details (stack traces, server responses) for logs. Never show passwords, tokens or other secrets in error messages.</p>
+<h2>Global error handlers</h2>
+<p>As a safety net, browsers let you catch anything you missed, for example to report it to a logging service:</p>
+<figure class="static-code"><figcaption>JavaScript</figcaption><pre><code class="language-javascript">window.addEventListener(&quot;error&quot;, e =&gt; {
+  console.error(&quot;Unhandled error:&quot;, e.message, e.filename, e.lineno);
+});
+window.addEventListener(&quot;unhandledrejection&quot;, e =&gt; {
+  console.error(&quot;Unhandled promise rejection:&quot;, e.reason);
+});</code></pre></figure>
+<p>Services like Sentry collect these from real users' browsers so you learn about bugs before customers complain.</p>
+<h2>More console tools</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">const orders = [{ id: 1, total: 530 }, { id: 2, total: 1200 }];
+console.group(&quot;Order check&quot;);
+console.log(&quot;Orders loaded:&quot;, orders.length);
+console.warn(&quot;Order 2 is above KSh 1,000: needs approval&quot;);
+console.groupEnd();
+
+console.time(&quot;sum&quot;);
+let s = 0;
+for (let i = 0; i &lt; 1e6; i++) s += i;
+console.timeEnd(&quot;sum&quot;);
+
+console.assert(orders.every(o =&gt; o.total &gt; 0), &quot;Found an order with zero total&quot;);
+console.count(&quot;render&quot;); console.count(&quot;render&quot;);</code></pre></figure>
+<h2>Reading a stack trace</h2>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">function calculateVat(order) { return order.total * 0.16; }
+function checkout(order) { return calculateVat(order); }
+try {
+  checkout(undefined);
+} catch (e) {
+  console.log(e.stack.split(&quot;\n&quot;).slice(0, 3).join(&quot;\n&quot;));
+}</code></pre></figure>
+<p>Read from the top: the first line says <strong>what</strong> went wrong, the next lines show <strong>where</strong>, from the innermost function outwards. Start with the first line that points to your own file, not a library.</p>
+<h2>Debugging in DevTools step by step</h2>
+<ol><li>Open DevTools (F12 or Ctrl+Shift+I), go to <strong>Sources</strong>, and open your script.</li><li>Click a line number to set a <strong>breakpoint</strong>, then trigger the action (click the button).</li><li>When execution pauses, hover over variables or look at the <strong>Scope</strong> panel.</li><li>Use <strong>Step over</strong> (F10) to run line by line, <strong>Step into</strong> (F11) to enter a function.</li><li>Add <strong>watch expressions</strong> such as <code>cart.length</code> or <code>total * 1.16</code>.</li><li>Use <strong>conditional breakpoints</strong> (right-click a line number) like <code>item.price === undefined</code> to stop only on the bad case.</li><li>Check the <strong>Network</strong> tab for failed requests (red rows, status 404/500) and the response body.</li></ol>
+<p>On a phone, use remote debugging: connect an Android phone by USB and open <code>chrome://inspect</code> on your computer.</p>
+<h2>Defensive coding habits</h2>
+<ul><li>Validate input at the edges (forms, API responses) before using it.</li><li>Use optional chaining (<code>data?.customer?.name</code>) and defaults (<code>?? &quot;Guest&quot;</code>) for data that may be missing.</li><li>Prefer <code>===</code> and explicit conversions.</li><li>Write small functions you can test with known inputs and outputs.</li><li>Use a linter (ESLint) to catch mistakes like unused variables or typos before running.</li></ul>
+<h2>Practice</h2>
+<ol><li>Write <code>parseAge(text)</code> that throws a <code>ValidationError</code> for non-numbers or ages outside 0–120, and test it with five inputs.</li><li>Make an async function that "fetches" a product and retries up to 3 times when it fails.</li><li>Add <code>console.time</code> around two ways of building a 10,000-item string and compare them.</li><li>Find the bug: <code>const total = items.reduce((s, i) =&gt; s + i.price)</code> gives <code>&quot;[object Object]180210&quot;</code>. (Hint: the starting value.)</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A form's Submit button does nothing and there's no visible error. What do you check first?</span><em>Show answer</em></summary><div class="callout-body"><p>Open the Console for errors (maybe a TypeError stopped the handler), then check that the event listener is attached (wrong selector returns null), and the Network tab to see whether a request was sent and what status came back. Adding a <code>console.log</code> at the start of the handler quickly shows whether it runs at all.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which error type do you usually get from a typo in a variable name?</p><details><summary>Show answer</summary><p>ReferenceError</p></details></li><li><p>Which block runs whether or not an error happened?</p><details><summary>Show answer</summary><p>finally</p></details></li><li><p>Which keyword creates your own error?</p><details><summary>Show answer</summary><p>throw</p></details></li><li><p>Which console method shows an array of objects as a table?</p><details><summary>Show answer</summary><p>console.table</p></details></li><li><p>Which word in your code pauses it when DevTools is open?</p><details><summary>Show answer</summary><p>debugger</p></details></li><li><p>Which keyword must you use inside try so that a promise rejection is caught?</p><details><summary>Show answer</summary><p>await</p></details></li><li><p>Which operator checks whether an error is a particular class?</p><details><summary>Show answer</summary><p>instanceof</p></details></li><li><p>Which browser event catches unhandled promise rejections?</p><details><summary>Show answer</summary><p>unhandledrejection</p></details></li><li><p>Which console methods measure how long code takes? (give the first)</p><details><summary>Show answer</summary><p>console.time</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Wrap <code>JSON.parse(&quot;{bad json&quot;)</code> in <code>try/catch</code> and log <strong>Invalid data</strong> in the catch block.</p><p><a class="btn btn-solid" href="/learn/?track=javascript&amp;lesson=errors-debugging#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 11 of 21 in <a href="/learn/javascript/">JavaScript</a> · <a href="/learn/?book=javascript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/javascript/scope-closures/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Scope, hoisting and closures</a><a class="btn btn-solid btn-sm" href="/learn/javascript/dom-events/">The DOM and events: changing the page and responding to clicks, typing and more <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

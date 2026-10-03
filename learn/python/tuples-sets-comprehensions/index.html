@@ -118,7 +118,62 @@ students = [(&quot;Amina&quot;, 78), (&quot;Brian&quot;, 92), (&quot;Chebet&quot
 print(sorted(students, key=lambda s: s[1], reverse=True))   # sort by mark
 print(max(students, key=lambda s: s[1]))                     # top student</code></pre></figure>
 <blockquote><p>Keep comprehensions short. If one needs two lines or several <code>if</code>s, a normal loop is clearer.</p></blockquote>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which collection cannot be changed after it is created?</p><details><summary>Show answer</summary><p>tuple</p></details></li><li><p>Which collection automatically removes duplicates?</p><details><summary>Show answer</summary><p>set</p></details></li><li><p>What does [n * 2 for n in [1, 2, 3]] give?</p><details><summary>Show answer</summary><p>[2, 4, 6]</p></details></li><li><p>Which set operator gives items that are in both sets?</p><details><summary>Show answer</summary><p>&amp;</p></details></li><li><p>Which function returns True if at least one item passes a test?</p><details><summary>Show answer</summary><p>any</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Use a list comprehension to make a list of the squares of 1 to 5 and print it: <strong>[1, 4, 9, 16, 25]</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=tuples-sets-comprehensions#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 9 of 20 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/while-loops-control/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> while loops, break, continue and loop patterns</a><a class="btn btn-solid btn-sm" href="/learn/python/functions-dicts/">Functions and dictionaries: reusable code and key-value data <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Unpacking tuples (and other sequences)</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">point = (-1.2921, 36.8219)
+lat, lon = point                          # unpacking
+print(f&quot;Lat {lat}, Lon {lon}&quot;)
+
+first, *middle, last = [72, 88, 55, 91, 64]   # * collects the rest
+print(first, middle, last)
+
+records = [(&quot;ADM001&quot;, &quot;Brian&quot;, 12500), (&quot;ADM002&quot;, &quot;Faith&quot;, 0)]
+for adm, name, balance in records:
+    print(adm, name, balance)
+
+def min_max(values):
+    return min(values), max(values)      # returns a tuple
+lo, hi = min_max([67, 82, 45, 90])
+print(lo, hi)</code></pre></figure>
+<h3>Named tuples for readable records</h3>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">from collections import namedtuple
+Payment = namedtuple(&quot;Payment&quot;, [&quot;receipt&quot;, &quot;phone&quot;, &quot;amount&quot;])
+p = Payment(&quot;QJK7RT61SV&quot;, &quot;254712345678&quot;, 1500)
+print(p.receipt, p.amount)
+print(p)</code></pre></figure>
+<h2>Set operations in practice</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">paid = {&quot;ADM001&quot;, &quot;ADM003&quot;, &quot;ADM004&quot;}
+registered = {&quot;ADM001&quot;, &quot;ADM002&quot;, &quot;ADM003&quot;, &quot;ADM004&quot;, &quot;ADM005&quot;}
+print(&quot;Not yet paid:&quot;, sorted(registered - paid))
+print(&quot;Paid:&quot;, len(paid &amp; registered))
+
+seen = set()
+receipts = [&quot;QJK1&quot;, &quot;QJK2&quot;, &quot;QJK1&quot;, &quot;QJK3&quot;]
+duplicates = [r for r in receipts if r in seen or seen.add(r)]
+print(&quot;Duplicate receipts:&quot;, duplicates)</code></pre></figure>
+<p>Checking <code>x in some_set</code> is very fast even for millions of items, much faster than searching a list.</p>
+<h2>More comprehension patterns</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">marks = {&quot;Brian&quot;: 72, &quot;Faith&quot;: 88, &quot;Juma&quot;: 45, &quot;Halima&quot;: 91}
+
+passed = [name for name, m in marks.items() if m &gt;= 50]
+grades = {name: (&quot;Pass&quot; if m &gt;= 50 else &quot;Fail&quot;) for name, m in marks.items()}
+curved = {name: min(m + 5, 100) for name, m in marks.items()}
+table = [(r, c, r * c) for r in range(1, 4) for c in range(1, 4) if r &lt;= c]
+print(passed)
+print(grades)
+print(curved)
+print(table)
+
+total = sum(m for m in marks.values())    # generator expression: no list built in memory
+print(&quot;Average:&quot;, total / len(marks))</code></pre></figure>
+<p>Rule of thumb: if a comprehension needs more than one condition and a nested loop, or doesn't fit on about one line, a normal <code>for</code> loop is clearer.</p>
+<h2>Choosing quickly</h2>
+<div class="static-table"><table><thead><tr><th>Need</th><th>Use</th></tr></thead><tbody><tr><td>Ordered and changeable</td><td><code>list</code></td></tr><tr><td>Fixed record or dict key</td><td><code>tuple</code> (or namedtuple / dataclass)</td></tr><tr><td>Unique items, fast membership</td><td><code>set</code></td></tr><tr><td>Look up by key</td><td><code>dict</code></td></tr></tbody></table></div>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td><code>t = (5)</code> is just the number 5</td><td>One-item tuple needs a comma: <code>(5,)</code></td></tr><tr><td><code>{}</code> creates an empty dict, not a set</td><td><code>set()</code> for an empty set</td></tr><tr><td>Expecting sets to keep order</td><td>Sets are unordered; sort if needed</td></tr><tr><td>Putting lists in sets or as dict keys</td><td>Use tuples (immutable) instead</td></tr><tr><td>Huge, unreadable comprehensions</td><td>Use a normal loop</td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>From a list of phone numbers with duplicates, print the unique numbers sorted.</li><li>Make a dict mapping each word in a sentence to its length using a comprehension.</li><li>Given two lists of club members, find who's in both and who's only in the first.</li><li>Unpack <code>(&quot;Mombasa&quot;, 1_208_333, &quot;Coast&quot;)</code> into three named variables and print a sentence.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why would you store GPS coordinates as a tuple rather than a list?</span><em>Show answer</em></summary><div class="callout-body"><p>A location is a fixed record (latitude, longitude) that shouldn't change by accident; tuples are immutable, slightly lighter, and can be used as dictionary keys or set members (e.g. a set of visited locations), which lists can't.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which collection cannot be changed after it is created?</p><details><summary>Show answer</summary><p>tuple</p></details></li><li><p>Which collection automatically removes duplicates?</p><details><summary>Show answer</summary><p>set</p></details></li><li><p>What does [n * 2 for n in [1, 2, 3]] give?</p><details><summary>Show answer</summary><p>[2, 4, 6]</p></details></li><li><p>Which set operator gives items that are in both sets?</p><details><summary>Show answer</summary><p>&amp;</p></details></li><li><p>Which function returns True if at least one item passes a test?</p><details><summary>Show answer</summary><p>any</p></details></li><li><p>How do you write a tuple with one item, 5?</p><details><summary>Show answer</summary><p>(5,)</p></details></li><li><p>What does {} create: an empty set or an empty dict?</p><details><summary>Show answer</summary><p>dict</p></details></li><li><p>Which collections class creates tuples with named fields?</p><details><summary>Show answer</summary><p>namedtuple</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Use a list comprehension to make a list of the squares of 1 to 5 and print it: <strong>[1, 4, 9, 16, 25]</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=python&amp;lesson=tuples-sets-comprehensions#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 9 of 20 in <a href="/learn/python/">Python</a> · <a href="/learn/?book=python">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/python/while-loops-control/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> while loops, break, continue and loop patterns</a><a class="btn btn-solid btn-sm" href="/learn/python/functions-dicts/">Functions and dictionaries: reusable code and key-value data <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
