@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Structs and a web server | Go (Golang)</title>
-    <meta name="description" content="Free Go (Golang) lesson: Structs and a web server." />
+    <title>Structs and a web server in Go: structs, methods, JSON,…</title>
+    <meta name="description" content="Go shines at building web services : its standard library includes a production-quality HTTP server, JSON support and concurrency, so you can build…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/go/structs-web/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Structs and a web server | Go (Golang)" />
-    <meta property="og:description" content="Free Go (Golang) lesson: Structs and a web server." />
+    <meta property="og:title" content="Structs and a web server in Go: structs, methods, JSON,…" />
+    <meta property="og:description" content="Go shines at building web services : its standard library includes a production-quality HTTP server, JSON support and concurrency, so you can build…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/go/structs-web/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Structs and a web server | Go (Golang)" />
-    <meta name="twitter:description" content="Free Go (Golang) lesson: Structs and a web server." />
+    <meta name="twitter:title" content="Structs and a web server in Go: structs, methods, JSON,…" />
+    <meta name="twitter:description" content="Go shines at building web services : its standard library includes a production-quality HTTP server, JSON support and concurrency, so you can build…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/go/structs-web/#lesson","name":"Structs and a web server","description":"Free Go (Golang) lesson: Structs and a web server.","url":"https://marzleytechsolutions.co.ke/learn/go/structs-web/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/go/#course","name":"Go (Golang)","url":"https://marzleytechsolutions.co.ke/learn/go/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Go (Golang)","item":"https://marzleytechsolutions.co.ke/learn/go/"},{"@type":"ListItem","position":4,"name":"Structs and a web server","item":"https://marzleytechsolutions.co.ke/learn/go/structs-web/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/go/structs-web/#lesson","name":"Structs and a web server in Go: structs, methods, JSON, net/http handlers, routing, a REST API, databases and deployment","description":"Go shines at building web services : its standard library includes a production-quality HTTP server, JSON support and concurrency, so you can build…","url":"https://marzleytechsolutions.co.ke/learn/go/structs-web/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/go/#course","name":"Go (Golang)","url":"https://marzleytechsolutions.co.ke/learn/go/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Go (Golang)","item":"https://marzleytechsolutions.co.ke/learn/go/"},{"@type":"ListItem","position":4,"name":"Structs and a web server in Go: structs, methods, JSON, net/http handlers, routing, a REST API, databases and deployment","item":"https://marzleytechsolutions.co.ke/learn/go/structs-web/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,49 +36,298 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/go/">Go (Golang)</a> / <span>Structs and a web server</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=go&amp;lesson=structs-web"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Structs and a web server</h1>
-<h2>Structs and methods</h2>
-<figure class="static-code"><figcaption>Go</figcaption><pre><code class="language-go">type Order struct {
-    ID     int
-    Item   string
-    Amount float64
-    Paid   bool
-}
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/go/">Go (Golang)</a> / <span>Structs and a web server in Go: structs, methods, JSON, net/http handlers, routing, a REST API, databases and deployment</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=go&amp;lesson=structs-web"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Structs and a web server in Go: structs, methods, JSON, net/http handlers, routing, a REST API, databases and deployment</h1>
+<p>Go shines at building <strong>web services</strong>: its standard library includes a production-quality HTTP server, JSON support and concurrency, so you can build fast APIs without heavy frameworks. This unit introduces <strong>structs</strong> (Go's way of grouping data) and <strong>methods</strong>, then builds a small JSON REST API step by step with <code>net/http</code>: routing, handling requests, validating input, returning proper status codes, and safely sharing data between concurrent requests. It finishes with databases, configuration, testing and deployment.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Structs, fields and struct literals</li><li>Methods with value and pointer receivers</li><li>Slices and maps of structs</li><li>JSON encoding and decoding with struct tags</li><li>The net/http package: handlers, ServeMux routing (with methods and path parameters)</li><li>Building a REST API: list, get, create</li><li>Validation and HTTP status codes</li><li>Protecting shared data with sync.Mutex</li><li>Middleware for logging</li><li>Databases with database/sql</li><li>Configuration, testing handlers, and deploying a single binary</li></ul></div></aside>
+<h2>Structs</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
 
-func (o Order) Summary() string {
-    status := &quot;unpaid&quot;
-    if o.Paid {
-        status = &quot;paid&quot;
-    }
-    return fmt.Sprintf(&quot;#%d %s KSh %.0f (%s)&quot;, o.ID, o.Item, o.Amount, status)
-}</code></pre></figure>
-<h2>A JSON API with only the standard library</h2>
-<figure class="static-code"><figcaption>Go</figcaption><pre><code class="language-go">package main
+import &quot;fmt&quot;
 
-import (
-    &quot;encoding/json&quot;
-    &quot;net/http&quot;
-)
-
-type Product struct {
-    Name  string  `json:&quot;name&quot;`
-    Price float64 `json:&quot;price&quot;`
+type Student struct {
+	AdmissionNo string
+	Name        string
+	Form        int
+	Balance     float64
 }
 
 func main() {
-    http.HandleFunc(&quot;/products&quot;, func(w http.ResponseWriter, r *http.Request) {
-        products := []Product{{&quot;Charger&quot;, 800}, {&quot;Earphones&quot;, 650}}
-        w.Header().Set(&quot;Content-Type&quot;, &quot;application/json&quot;)
-        json.NewEncoder(w).Encode(products)
-    })
-    http.ListenAndServe(&quot;:8080&quot;, nil)
+	s1 := Student{AdmissionNo: &quot;ADM001&quot;, Name: &quot;Brian&quot;, Form: 3, Balance: 12500}
+	s2 := Student{&quot;ADM002&quot;, &quot;Faith&quot;, 4, 0}     // positional (less clear; avoid for big structs)
+	var s3 Student                              // zero value: empty strings, 0
+	s3.Name = &quot;Juma&quot;
+
+	s1.Balance -= 5000
+	fmt.Println(s1.Name, s1.Balance)
+	fmt.Printf(&quot;%+v\n&quot;, s2)
+	fmt.Printf(&quot;%+v\n&quot;, s3)
 }</code></pre></figure>
-<p>Open <code>http://localhost:8080/products</code> to see the JSON.</p>
-<h2>Goroutines: doing things at the same time</h2>
-<figure class="static-code"><figcaption>Go</figcaption><pre><code class="language-go">go sendSMS(&quot;0712345678&quot;)     // runs in the background</code></pre></figure>
-<p>Goroutines and <strong>channels</strong> make it easy to handle thousands of requests at once, which is why Go is popular for payment and messaging systems.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which package in the standard library builds web servers? (net/…)</p><details><summary>Show answer</summary><p>net/http</p></details></li><li><p>Which keyword starts a function running in the background?</p><details><summary>Show answer</summary><p>go</p></details></li><li><p>What are goroutines used to communicate through?</p><details><summary>Show answer</summary><p>channels</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 6 in <a href="/learn/go/">Go (Golang)</a> · <a href="/learn/?book=go">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/go/slices-maps/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Slices, maps and strings in Go</a><a class="btn btn-solid btn-sm" href="/learn/go/methods-interfaces/">Methods, interfaces and error handling in Go <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<p>Fields starting with a <strong>capital letter</strong> are <strong>exported</strong> (visible outside the package and to the JSON encoder); lowercase fields are private to the package.</p>
+<h2>Methods</h2>
+<p>A <strong>method</strong> is a function with a <strong>receiver</strong>:</p>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;errors&quot;
+	&quot;fmt&quot;
+)
+
+type Account struct {
+	Owner   string
+	balance float64
+}
+
+func (a Account) Balance() float64 {           // value receiver: works on a copy (reading)
+	return a.balance
+}
+
+func (a *Account) Deposit(amount float64) error {   // pointer receiver: can modify the original
+	if amount &lt;= 0 {
+		return errors.New(&quot;deposit must be positive&quot;)
+	}
+	a.balance += amount
+	return nil
+}
+
+func (a *Account) Withdraw(amount float64) error {
+	if amount &lt;= 0 || amount &gt; a.balance {
+		return fmt.Errorf(&quot;cannot withdraw %.2f (balance %.2f)&quot;, amount, a.balance)
+	}
+	a.balance -= amount
+	return nil
+}
+
+func main() {
+	acc := &amp;Account{Owner: &quot;Wanjiku&quot;}
+	acc.Deposit(3500)
+	if err := acc.Withdraw(5000); err != nil {
+		fmt.Println(&quot;Error:&quot;, err)
+	}
+	acc.Withdraw(1500)
+	fmt.Printf(&quot;%s: KSh %.2f\n&quot;, acc.Owner, acc.Balance())
+}</code></pre></figure>
+<p>Use <strong>pointer receivers</strong> when a method changes the struct (or the struct is large); be consistent within a type.</p>
+<h2>Slices and maps of structs</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;sort&quot;
+)
+
+type Product struct {
+	Name  string
+	Price float64
+	Stock int
+}
+
+func main() {
+	products := []Product{
+		{&quot;Laptop bag&quot;, 2500, 12},
+		{&quot;USB flash&quot;, 900, 3},
+		{&quot;Mouse&quot;, 1200, 25},
+	}
+	products = append(products, Product{&quot;Charger&quot;, 800, 2})
+
+	sort.Slice(products, func(i, j int) bool { return products[i].Price &lt; products[j].Price })
+	for _, p := range products {
+		flag := &quot;&quot;
+		if p.Stock &lt; 5 {
+			flag = &quot; &lt;- reorder&quot;
+		}
+		fmt.Printf(&quot;%-10s KSh %6.0f stock %2d%s\n&quot;, p.Name, p.Price, p.Stock, flag)
+	}
+
+	byName := map[string]Product{}
+	for _, p := range products {
+		byName[p.Name] = p
+	}
+	if p, ok := byName[&quot;Mouse&quot;]; ok {
+		fmt.Println(&quot;Found:&quot;, p.Name, p.Price)
+	}
+}</code></pre></figure>
+<h2>JSON with struct tags</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;encoding/json&quot;
+	&quot;fmt&quot;
+)
+
+type Payment struct {
+	Receipt string  `json:&quot;receipt&quot;`
+	Phone   string  `json:&quot;phone&quot;`
+	Amount  float64 `json:&quot;amount&quot;`
+	Note    string  `json:&quot;note,omitempty&quot;`   // left out when empty
+}
+
+func main() {
+	p := Payment{Receipt: &quot;QJK7RT61SV&quot;, Phone: &quot;254712345678&quot;, Amount: 1500}
+	data, _ := json.Marshal(p)
+	fmt.Println(string(data))
+
+	var incoming Payment
+	body := `{&quot;receipt&quot;:&quot;QJK8PL22AB&quot;,&quot;phone&quot;:&quot;254722000111&quot;,&quot;amount&quot;:2500,&quot;note&quot;:&quot;Term 3 fees&quot;}`
+	if err := json.Unmarshal([]byte(body), &amp;incoming); err != nil {
+		fmt.Println(&quot;bad JSON:&quot;, err)
+		return
+	}
+	fmt.Printf(&quot;%+v\n&quot;, incoming)
+}</code></pre></figure>
+<p>Struct tags control JSON field names; only exported fields are encoded.</p>
+<h2>A web server with net/http</h2>
+<p>The Go standard library can serve HTTP directly (run this on your computer, then visit http://localhost:8080):</p>
+<figure class="static-code"><figcaption>Go</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;log&quot;
+	&quot;net/http&quot;
+)
+
+func main() {
+	http.HandleFunc(&quot;/&quot;, func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w, &quot;Habari! The Go server is running.&quot;)
+	})
+	log.Println(&quot;Listening on :8080&quot;)
+	log.Fatal(http.ListenAndServe(&quot;:8080&quot;, nil))
+}</code></pre></figure>
+<p>Each request is handled in its own <strong>goroutine</strong> automatically, so the server handles many clients at once.</p>
+<h2>A small REST API</h2>
+<p>Since Go 1.22, <code>http.ServeMux</code> supports <strong>HTTP methods</strong> and <strong>path parameters</strong> in patterns:</p>
+<figure class="static-code"><figcaption>Go</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;encoding/json&quot;
+	&quot;log&quot;
+	&quot;net/http&quot;
+	&quot;sync&quot;
+)
+
+type Student struct {
+	AdmissionNo string  `json:&quot;admissionNo&quot;`
+	Name        string  `json:&quot;name&quot;`
+	Balance     float64 `json:&quot;balance&quot;`
+}
+
+type Store struct {
+	mu       sync.Mutex                 // protects the map: requests run concurrently
+	students map[string]Student
+}
+
+func writeJSON(w http.ResponseWriter, status int, v any) {
+	w.Header().Set(&quot;Content-Type&quot;, &quot;application/json&quot;)
+	w.WriteHeader(status)
+	json.NewEncoder(w).Encode(v)
+}
+
+func (s *Store) list(w http.ResponseWriter, r *http.Request) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	out := make([]Student, 0, len(s.students))
+	for _, st := range s.students {
+		out = append(out, st)
+	}
+	writeJSON(w, http.StatusOK, out)
+}
+
+func (s *Store) get(w http.ResponseWriter, r *http.Request) {
+	adm := r.PathValue(&quot;adm&quot;)
+	s.mu.Lock()
+	st, ok := s.students[adm]
+	s.mu.Unlock()
+	if !ok {
+		writeJSON(w, http.StatusNotFound, map[string]string{&quot;error&quot;: &quot;student not found&quot;})
+		return
+	}
+	writeJSON(w, http.StatusOK, st)
+}
+
+func (s *Store) create(w http.ResponseWriter, r *http.Request) {
+	var st Student
+	if err := json.NewDecoder(r.Body).Decode(&amp;st); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{&quot;error&quot;: &quot;invalid JSON&quot;})
+		return
+	}
+	if st.AdmissionNo == &quot;&quot; || st.Name == &quot;&quot; || st.Balance &lt; 0 {
+		writeJSON(w, http.StatusBadRequest, map[string]string{&quot;error&quot;: &quot;admissionNo and name are required; balance can&#x27;t be negative&quot;})
+		return
+	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if _, exists := s.students[st.AdmissionNo]; exists {
+		writeJSON(w, http.StatusConflict, map[string]string{&quot;error&quot;: &quot;student already exists&quot;})
+		return
+	}
+	s.students[st.AdmissionNo] = st
+	writeJSON(w, http.StatusCreated, st)
+}
+
+func logging(next http.Handler) http.Handler {      // middleware
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Println(r.Method, r.URL.Path)
+		next.ServeHTTP(w, r)
+	})
+}
+
+func main() {
+	store := &amp;Store{students: map[string]Student{
+		&quot;ADM001&quot;: {&quot;ADM001&quot;, &quot;Brian&quot;, 12500},
+	}}
+	mux := http.NewServeMux()
+	mux.HandleFunc(&quot;GET /students&quot;, store.list)
+	mux.HandleFunc(&quot;GET /students/{adm}&quot;, store.get)
+	mux.HandleFunc(&quot;POST /students&quot;, store.create)
+
+	log.Println(&quot;API on http://localhost:8080&quot;)
+	log.Fatal(http.ListenAndServe(&quot;:8080&quot;, logging(mux)))
+}</code></pre></figure>
+<p>Test it:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">curl http://localhost:8080/students
+curl http://localhost:8080/students/ADM001
+curl -X POST -H &quot;Content-Type: application/json&quot; \
+     -d &#x27;{&quot;admissionNo&quot;:&quot;ADM002&quot;,&quot;name&quot;:&quot;Faith&quot;,&quot;balance&quot;:0}&#x27; http://localhost:8080/students</code></pre></figure>
+<p>Key ideas:</p>
+<ul><li><strong>Handlers</strong> receive a <code>ResponseWriter</code> (to write the response) and a <code>*Request</code> (method, URL, headers, body).</li><li>Return correct <strong>status codes</strong>: 200, 201 Created, 400 Bad Request, 404 Not Found, 409 Conflict, 500.</li><li><strong>sync.Mutex</strong> prevents data races when concurrent requests modify shared data (run <code>go run -race .</code> to detect races).</li><li><strong>Middleware</strong> wraps handlers to add logging, authentication, CORS or rate limiting.</li></ul>
+<p>Popular routers/frameworks (chi, Gin, Echo, Fiber) add conveniences, but the standard library is enough for many APIs.</p>
+<h2>Databases</h2>
+<p>Use <code>database/sql</code> with a driver (PostgreSQL: pgx; MySQL: go-sql-driver/mysql; SQLite: modernc.org/sqlite):</p>
+<figure class="static-code"><figcaption>Go</figcaption><pre><code class="language-go">db, err := sql.Open(&quot;pgx&quot;, os.Getenv(&quot;DATABASE_URL&quot;))
+if err != nil { log.Fatal(err) }
+defer db.Close()
+
+var name string
+var balance float64
+err = db.QueryRowContext(ctx,
+    &quot;SELECT name, balance FROM students WHERE admission_no = $1&quot;, adm).Scan(&amp;name, &amp;balance)
+if errors.Is(err, sql.ErrNoRows) {
+    // not found
+}</code></pre></figure>
+<p>Always use <strong>placeholders</strong> (<code>$1</code> or <code>?</code>) to prevent SQL injection. Tools like sqlc generate type-safe Go code from SQL queries.</p>
+<h2>Configuration and secrets</h2>
+<p>Read settings from environment variables (<code>os.Getenv(&quot;PORT&quot;)</code>, <code>DATABASE_URL</code>, API keys), never hard-code secrets, and provide sensible defaults for local development.</p>
+<h2>Testing handlers</h2>
+<p>Go's <code>net/http/httptest</code> package tests handlers without starting a real server:</p>
+<figure class="static-code"><figcaption>Go</figcaption><pre><code class="language-go">func TestGetNotFound(t *testing.T) {
+	store := &amp;Store{students: map[string]Student{}}
+	req := httptest.NewRequest(&quot;GET&quot;, &quot;/students/NOPE&quot;, nil)
+	req.SetPathValue(&quot;adm&quot;, &quot;NOPE&quot;)
+	rec := httptest.NewRecorder()
+	store.get(rec, req)
+	if rec.Code != http.StatusNotFound {
+		t.Fatalf(&quot;want 404, got %d&quot;, rec.Code)
+	}
+}</code></pre></figure>
+<p>Run with <code>go test ./...</code>.</p>
+<h2>Deployment</h2>
+<ol><li>Build a binary: <code>GOOS=linux GOARCH=amd64 go build -o schoolapi</code>.</li><li>Copy it to a Linux server and run it as a <strong>systemd</strong> service behind <strong>Nginx</strong> with HTTPS (see the hosting deployment lesson), or</li><li>Package it in a tiny <strong>Docker</strong> image (multi-stage build, often under 20 MB), or deploy to platforms like Google Cloud Run or Fly.io.</li></ol>
+<h2>Next steps</h2>
+<ul><li>Concurrency: goroutines, channels, context and worker pools (next lesson).</li><li>Interfaces and generics for clean, reusable code.</li><li>Build a portfolio API: an M-Pesa callback receiver (sandbox) that stores payments in PostgreSQL, a URL shortener, or an SMS reminder worker.</li><li>Practise with the official Go Tour (go.dev/tour) and "Go by Example".</li></ul>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Two customers pay at the same moment and your Go API updates a shared map of balances in both handlers. Sometimes the server crashes with "concurrent map writes". Why, and how do you fix it?</span><em>Show answer</em></summary><div class="callout-body"><p>Each request runs in its own goroutine, and Go maps aren't safe for concurrent writes. Protect the map with a sync.Mutex (Lock/Unlock around reads and writes), use sync.Map for specific cases, or better, store balances in a database and use transactions. Run with <code>-race</code> during testing to catch such bugs.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Structs group fields; capitalised fields are exported; struct literals create values.</li><li>Methods use value receivers (read) or pointer receivers (modify); slices and maps hold collections of structs.</li><li>encoding/json converts structs to and from JSON using struct tags.</li><li>net/http serves HTTP with handlers; Go 1.22+ ServeMux supports methods and path parameters; return proper status codes and validate input.</li><li>Protect shared data with sync.Mutex, add middleware, use database/sql with placeholders, test with httptest, and deploy a single binary or container.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>In Go, which fields are exported (visible outside the package)?</p><details><summary>Show answer</summary><p>capitalised</p></details></li><li><p>Which receiver type lets a method modify the original struct?</p><details><summary>Show answer</summary><p>pointer</p></details></li><li><p>Which package encodes and decodes JSON?</p><details><summary>Show answer</summary><p>encoding/json</p></details></li><li><p>Which standard library package provides an HTTP server?</p><details><summary>Show answer</summary><p>net/http</p></details></li><li><p>Which type protects shared data from concurrent access?</p><details><summary>Show answer</summary><p>sync.Mutex</p></details></li><li><p>Which HTTP status code means a resource was created?</p><details><summary>Show answer</summary><p>201</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 6 in <a href="/learn/go/">Go (Golang)</a> · <a href="/learn/?book=go">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/go/slices-maps/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Slices, maps and strings in Go</a><a class="btn btn-solid btn-sm" href="/learn/go/methods-interfaces/">Methods, interfaces and error handling in Go <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

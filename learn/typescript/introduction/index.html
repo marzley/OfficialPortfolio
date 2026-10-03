@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>TypeScript introduction | TypeScript</title>
-    <meta name="description" content="TypeScript is JavaScript plus types . You write .ts files, and the TypeScript compiler checks them and turns them into normal JavaScript that browsers…" />
+    <title>TypeScript introduction: what it is, why teams use it,…</title>
+    <meta name="description" content="TypeScript is JavaScript with types . You write the same JavaScript you know, plus optional type annotations that say what kind of data each variable…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/typescript/introduction/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="TypeScript introduction | TypeScript" />
-    <meta property="og:description" content="TypeScript is JavaScript plus types . You write .ts files, and the TypeScript compiler checks them and turns them into normal JavaScript that browsers…" />
+    <meta property="og:title" content="TypeScript introduction: what it is, why teams use it,…" />
+    <meta property="og:description" content="TypeScript is JavaScript with types . You write the same JavaScript you know, plus optional type annotations that say what kind of data each variable…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/typescript/introduction/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="TypeScript introduction | TypeScript" />
-    <meta name="twitter:description" content="TypeScript is JavaScript plus types . You write .ts files, and the TypeScript compiler checks them and turns them into normal JavaScript that browsers…" />
+    <meta name="twitter:title" content="TypeScript introduction: what it is, why teams use it,…" />
+    <meta name="twitter:description" content="TypeScript is JavaScript with types . You write the same JavaScript you know, plus optional type annotations that say what kind of data each variable…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/typescript/introduction/#lesson","name":"TypeScript introduction","description":"TypeScript is JavaScript plus types . You write .ts files, and the TypeScript compiler checks them and turns them into normal JavaScript that browsers…","url":"https://marzleytechsolutions.co.ke/learn/typescript/introduction/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/typescript/#course","name":"TypeScript","url":"https://marzleytechsolutions.co.ke/learn/typescript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"TypeScript","item":"https://marzleytechsolutions.co.ke/learn/typescript/"},{"@type":"ListItem","position":4,"name":"TypeScript introduction","item":"https://marzleytechsolutions.co.ke/learn/typescript/introduction/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/typescript/introduction/#lesson","name":"TypeScript introduction: what it is, why teams use it, setup, basic types, type inference and compiling","description":"TypeScript is JavaScript with types . You write the same JavaScript you know, plus optional type annotations that say what kind of data each variable…","url":"https://marzleytechsolutions.co.ke/learn/typescript/introduction/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/typescript/#course","name":"TypeScript","url":"https://marzleytechsolutions.co.ke/learn/typescript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"TypeScript","item":"https://marzleytechsolutions.co.ke/learn/typescript/"},{"@type":"ListItem","position":4,"name":"TypeScript introduction: what it is, why teams use it, setup, basic types, type inference and compiling","item":"https://marzleytechsolutions.co.ke/learn/typescript/introduction/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,26 +36,118 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/typescript/">TypeScript</a> / <span>TypeScript introduction</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=typescript&amp;lesson=introduction"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>TypeScript introduction</h1>
-<p><strong>TypeScript</strong> is JavaScript plus <strong>types</strong>. You write <code>.ts</code> files, and the TypeScript compiler checks them and turns them into normal JavaScript that browsers and Node.js run.</p>
-<p>Why teams use it:</p>
-<ul><li>Catches mistakes <strong>before</strong> the code runs (typos, wrong arguments, missing fields).</li><li>Better autocomplete in editors like VS Code.</li><li>Makes big projects easier to change safely.</li></ul>
-<figure class="static-code"><pre><code>let shop: string = &quot;Mama Mboga&quot;;
-let price: number = 150;
-let open: boolean = true;
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/typescript/">TypeScript</a> / <span>TypeScript introduction: what it is, why teams use it, setup, basic types, type inference and compiling</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=typescript&amp;lesson=introduction"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>TypeScript introduction: what it is, why teams use it, setup, basic types, type inference and compiling</h1>
+<p><strong>TypeScript</strong> is JavaScript with <strong>types</strong>. You write the same JavaScript you know, plus optional type annotations that say what kind of data each variable, parameter and return value should hold. A tool called the <strong>TypeScript compiler</strong> checks your code before it runs and catches mistakes like passing a string where a number is expected, misspelling a property name, or forgetting that a value might be <code>undefined</code>. Then it removes the types and outputs plain JavaScript that runs anywhere: browsers, Node.js, React Native apps.</p>
+<p>TypeScript is used by most modern web teams: React, Angular, Vue and Next.js projects, Node.js back ends, and companies large and small. Many job adverts for front-end and full-stack developers list it as required.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>What TypeScript is and how it relates to JavaScript</li><li>Why teams use it: catching bugs early, better editor help, safer refactoring</li><li>Who uses it and where</li><li>Setting up: Node.js, tsc, tsconfig.json, VS Code, running TS directly</li><li>Basic types: string, number, boolean, arrays, tuples, any, unknown, null/undefined</li><li>Type inference</li><li>Functions with typed parameters and return values</li><li>Reading compiler errors</li><li>How TypeScript compiles to JavaScript</li></ul></div></aside>
+<h2>JavaScript vs TypeScript</h2>
+<figure class="static-code"><figcaption>JavaScript</figcaption><pre><code class="language-javascript">// JavaScript: this bug only shows up when the code runs (maybe in front of a customer)
+function totalPrice(price, qty) {
+  return price * qty;
+}
+totalPrice(&quot;1500&quot;, 2);   // works by accident: &quot;1500&quot; * 2 = 3000
+totalPrice(&quot;1,500&quot;, 2);  // NaN at runtime</code></pre></figure>
+<figure class="static-code"><figcaption>TypeScript</figcaption><pre><code class="language-typescript">// TypeScript: the editor underlines the mistake before you run anything
+function totalPrice(price: number, qty: number): number {
+  return price * qty;
+}
+totalPrice(&quot;1,500&quot;, 2);  // Error: Argument of type &#x27;string&#x27; is not assignable to parameter of type &#x27;number&#x27;.</code></pre></figure>
+<p>TypeScript is a <strong>superset</strong> of JavaScript: every valid JavaScript program is (almost always) valid TypeScript. You can adopt it gradually.</p>
+<h2>Why teams use TypeScript</h2>
+<div class="static-table"><table><thead><tr><th>Benefit</th><th>Example</th></tr></thead><tbody><tr><td><strong>Catch bugs before running</strong></td><td>Typos in property names, wrong argument types, missing return values</td></tr><tr><td><strong>Better editor support</strong></td><td>Auto-complete shows exactly which properties an object has; hover shows types</td></tr><tr><td><strong>Self-documenting code</strong></td><td><code>function sendSms(phone: string, message: string): Promise&lt;boolean&gt;</code> explains itself</td></tr><tr><td><strong>Safer refactoring</strong></td><td>Rename a property and the compiler shows every place that must change</td></tr><tr><td><strong>Fewer runtime errors</strong></td><td>Especially "cannot read properties of undefined"</td></tr><tr><td><strong>Scales to big teams</strong></td><td>Clear contracts between parts of a large codebase</td></tr></tbody></table></div>
+<p>Costs: a build step, learning the type system, and some extra typing. For anything beyond small scripts, most teams find it worth it.</p>
+<h2>Who uses it and where</h2>
+<ul><li><strong>Front-end</strong>: React, Angular (TypeScript by default), Vue, Svelte, Next.js apps.</li><li><strong>Back-end</strong>: Node.js APIs with Express, NestJS, Fastify; serverless functions.</li><li><strong>Mobile</strong>: React Native and Ionic apps.</li><li><strong>Tools</strong>: VS Code itself is written in TypeScript.</li></ul>
+<h2>Setting up</h2>
+<ol><li>Install <strong>Node.js</strong> (LTS) from nodejs.org.</li><li>Install TypeScript in a project:</li></ol>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">mkdir ts-practice &amp;&amp; cd ts-practice
+npm init -y
+npm install --save-dev typescript
+npx tsc --init          # creates tsconfig.json</code></pre></figure>
+<ol><li>Write <code>hello.ts</code>, then compile and run:</li></ol>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">npx tsc hello.ts        # creates hello.js
+node hello.js</code></pre></figure>
+<p>Recent Node.js versions can also run many <code>.ts</code> files directly (type annotations are stripped, not checked), and tools like <code>tsx</code> run TypeScript quickly during development. Always run <code>tsc</code> (or your editor) to actually <strong>check</strong> types.</p>
+<p><strong>VS Code</strong> has TypeScript support built in: errors appear as red underlines as you type.</p>
+<p>In this hub, the <strong>Run</strong> button runs TypeScript examples for you.</p>
+<h2>Basic types</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">let shopName: string = &quot;Mama Mboga&quot;;
+let stock: number = 42;
+let isOpen: boolean = true;
+let prices: number[] = [120, 450, 80];
+let towns: Array&lt;string&gt; = [&quot;Nairobi&quot;, &quot;Kisumu&quot;];
+let coords: [number, number] = [-1.2921, 36.8219];   // tuple: fixed length and types
 
-price = &quot;cheap&quot;;   // Error: Type &#x27;string&#x27; is not assignable to type &#x27;number&#x27;.</code></pre></figure>
-<p>TypeScript can also <strong>infer</strong> types, so you don't have to write them everywhere:</p>
-<figure class="static-code"><pre><code>let total = 450;         // TypeScript knows this is a number
-total.toUpperCase();     // Error: Property &#x27;toUpperCase&#x27; does not exist on type &#x27;number&#x27;.</code></pre></figure>
-<h2>Setting it up</h2>
-<figure class="static-code"><pre><code>npm install -g typescript     # install the compiler
-tsc --init                    # create tsconfig.json
-tsc app.ts                    # compile app.ts to app.js
-node app.js</code></pre></figure>
-<blockquote><p>The code boxes here are for reading and copying. Run them free online at <strong>typescriptlang.org/play</strong>, or install the tools on your computer.</p></blockquote>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does the TypeScript compiler turn .ts files into?</p><details><summary>Show answer</summary><p>JavaScript</p></details></li><li><p>What is the command-line name of the TypeScript compiler?</p><details><summary>Show answer</summary><p>tsc</p></details></li><li><p>When TypeScript works out a type without you writing it, this is called type…</p><details><summary>Show answer</summary><p>inference</p></details></li></ol></section></div><p class="static-meta">Lesson 1 of 7 in <a href="/learn/typescript/">TypeScript</a> · <a href="/learn/?book=typescript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><span></span><a class="btn btn-solid btn-sm" href="/learn/typescript/types-interfaces/">Types, interfaces and functions <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+console.log(shopName, stock, isOpen);
+console.log(&quot;Total of prices:&quot;, prices.reduce((a, b) =&gt; a + b, 0));
+console.log(&quot;Lat/Lon:&quot;, coords[0], coords[1]);</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Type</th><th>Example</th></tr></thead><tbody><tr><td><code>string</code></td><td><code>&quot;Nairobi&quot;</code></td></tr><tr><td><code>number</code></td><td><code>42</code>, <code>3.14</code> (integers and decimals)</td></tr><tr><td><code>boolean</code></td><td><code>true</code>, <code>false</code></td></tr><tr><td><code>number[]</code> / <code>Array&lt;number&gt;</code></td><td><code>[1, 2, 3]</code></td></tr><tr><td>Tuple <code>[string, number]</code></td><td><code>[&quot;Unga&quot;, 195]</code></td></tr><tr><td><code>null</code>, <code>undefined</code></td><td>Absence of a value</td></tr><tr><td><code>any</code></td><td>Turns off checking (avoid)</td></tr><tr><td><code>unknown</code></td><td>A safe "could be anything": you must check before using</td></tr><tr><td><code>void</code></td><td>A function returns nothing</td></tr><tr><td><code>never</code></td><td>Something that never happens (e.g. a function that always throws)</td></tr></tbody></table></div>
+<h2>Type inference</h2>
+<p>You don't have to annotate everything. TypeScript <strong>infers</strong> types from values:</p>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">let count = 10;          // inferred as number
+let greeting = &quot;Habari&quot;; // inferred as string
+// count = &quot;ten&quot;;        // would be an error: Type &#x27;string&#x27; is not assignable to type &#x27;number&#x27;
+
+const items = [&quot;tea&quot;, &quot;mandazi&quot;];       // string[]
+const total = items.length * 50;        // number
+console.log(typeof count, typeof greeting, total);</code></pre></figure>
+<p>A good rule: let TypeScript infer local variables, and add explicit types to <strong>function parameters</strong>, <strong>return values</strong> and <strong>object shapes</strong> (next lesson).</p>
+<h2>Functions</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">function vat(amount: number, rate: number = 0.16): number {
+  return Math.round(amount * rate * 100) / 100;
+}
+
+function greet(name: string, title?: string): string {     // ? = optional parameter
+  return title ? `Hello, ${title} ${name}` : `Hello, ${name}`;
+}
+
+const formatKsh = (n: number): string =&gt; &quot;KSh &quot; + n.toLocaleString(&quot;en-KE&quot;);
+
+console.log(vat(1000));
+console.log(greet(&quot;Wanjiku&quot;), &quot;|&quot;, greet(&quot;Otieno&quot;, &quot;Dr.&quot;));
+console.log(formatKsh(2500000));</code></pre></figure>
+<h2>any vs unknown</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">function parseAmount(input: unknown): number {
+  if (typeof input === &quot;number&quot;) return input;
+  if (typeof input === &quot;string&quot;) {
+    const n = Number(input.replace(/,/g, &quot;&quot;));
+    if (!Number.isNaN(n)) return n;
+  }
+  throw new Error(&quot;Not a valid amount&quot;);
+}
+
+console.log(parseAmount(1500), parseAmount(&quot;2,500&quot;));
+try {
+  parseAmount({ value: 10 });
+} catch (e) {
+  console.log((e as Error).message);
+}</code></pre></figure>
+<p>With <code>unknown</code>, TypeScript forces you to check the type first (narrowing), which is safer than <code>any</code> (which allows anything and hides bugs).</p>
+<h2>Null and undefined (strict mode)</h2>
+<p>With <code>&quot;strict&quot;: true</code> in <code>tsconfig.json</code> (recommended), TypeScript makes you handle missing values:</p>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">function findPrice(product: string): number | undefined {
+  const prices: Record&lt;string, number&gt; = { unga: 195, sugar: 180 };
+  return prices[product];
+}
+
+const p = findPrice(&quot;rice&quot;);
+// console.log(p.toFixed(2));   // error: &#x27;p&#x27; is possibly &#x27;undefined&#x27;
+console.log(p !== undefined ? p.toFixed(2) : &quot;Price not found&quot;);
+console.log(findPrice(&quot;unga&quot;) ?? 0);</code></pre></figure>
+<p><code>number | undefined</code> is a <strong>union type</strong>: the value is one of those types.</p>
+<h2>Reading compiler errors</h2>
+<div class="static-table"><table><thead><tr><th>Error message (shortened)</th><th>Meaning</th></tr></thead><tbody><tr><td><code>Type &#x27;string&#x27; is not assignable to type &#x27;number&#x27;</code></td><td>Wrong type of value</td></tr><tr><td><code>Property &#x27;nmae&#x27; does not exist on type &#x27;Customer&#x27;</code></td><td>Typo or missing property</td></tr><tr><td><code>Argument of type ... is not assignable to parameter of type ...</code></td><td>Wrong argument passed</td></tr><tr><td><code>Object is possibly &#x27;undefined&#x27;</code></td><td>Handle the missing case first</td></tr><tr><td><code>Cannot find name &#x27;x&#x27;</code></td><td>Undeclared variable or missing import</td></tr></tbody></table></div>
+<p>Errors include the file and line; hover in VS Code for details.</p>
+<h2>How compilation works</h2>
+<figure class="static-code"><pre><code>app.ts  ──tsc──►  app.js   (types removed, modern syntax optionally converted for older browsers)</code></pre></figure>
+<p>Types exist <strong>only at development/compile time</strong>. At runtime, it's plain JavaScript, so data from outside (forms, APIs) still needs validation (libraries like Zod help).</p>
+<p>Key <code>tsconfig.json</code> options:</p>
+<div class="static-table"><table><thead><tr><th>Option</th><th>Purpose</th></tr></thead><tbody><tr><td><code>&quot;strict&quot;: true</code></td><td>Turn on the strongest checks (recommended)</td></tr><tr><td><code>&quot;target&quot;</code></td><td>Which JavaScript version to output (e.g. ES2020)</td></tr><tr><td><code>&quot;module&quot;</code></td><td>Module system (e.g. ESNext, NodeNext)</td></tr><tr><td><code>&quot;outDir&quot;</code></td><td>Where compiled JS goes</td></tr><tr><td><code>&quot;rootDir&quot;</code></td><td>Where your TS source lives</td></tr></tbody></table></div>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A colleague says, "TypeScript checked my code, so I don't need to validate data from the API." Why is that wrong?</span><em>Show answer</em></summary><div class="callout-body"><p>TypeScript types are removed at runtime and can't check data that arrives while the program runs. If the API returns a different shape (missing fields, strings instead of numbers), your code can still crash. Validate external data at runtime (manual checks or a library like Zod) and then trust the types inside your code.</p></div></details>
+<h2>Summary</h2>
+<ul><li>TypeScript is JavaScript plus types, checked before running and compiled to plain JavaScript.</li><li>It catches bugs early, improves editor help and makes large codebases safer; it's standard in modern web development.</li><li>Set up with Node.js, <code>npm install -D typescript</code>, <code>npx tsc --init</code>, and VS Code; run <code>tsc</code> to check types.</li><li>Basic types: string, number, boolean, arrays, tuples, unions, null/undefined, unknown (prefer over any), void, never.</li><li>Rely on inference for locals, annotate function parameters/returns, use strict mode, and still validate runtime data.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>TypeScript code is compiled into which language?</p><details><summary>Show answer</summary><p>JavaScript</p></details></li><li><p>Which type should you prefer over any for values of unknown type?</p><details><summary>Show answer</summary><p>unknown</p></details></li><li><p>Which symbol marks a function parameter as optional?</p><details><summary>Show answer</summary><p>?</p></details></li><li><p>What tsconfig option turns on the strongest checks? (write it like "strict": true)</p><details><summary>Show answer</summary><p>"strict": true</p></details></li><li><p>What do you call a type like number | undefined? (two words)</p><details><summary>Show answer</summary><p>union type</p></details></li><li><p>Do TypeScript types exist at runtime? (yes/no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 1 of 7 in <a href="/learn/typescript/">TypeScript</a> · <a href="/learn/?book=typescript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><span></span><a class="btn btn-solid btn-sm" href="/learn/typescript/types-interfaces/">Types, interfaces and functions: object types, optional and readonly properties, unions, narrowing, generics and utility types <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

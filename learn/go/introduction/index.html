@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Go introduction | Go (Golang)</title>
-    <meta name="description" content="Go (Golang) was made at Google for simple, fast, reliable software. Docker, Kubernetes and many cloud and fintech back ends are written in Go. Run with…" />
+    <title>Go introduction: why Go, where it&#x27;s used, setup,…</title>
+    <meta name="description" content="Go (often called Golang) was created at Google by Robert Griesemer, Rob Pike and Ken Thompson, and released in 2009. It was designed to be simple, fast…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/go/introduction/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Go introduction | Go (Golang)" />
-    <meta property="og:description" content="Go (Golang) was made at Google for simple, fast, reliable software. Docker, Kubernetes and many cloud and fintech back ends are written in Go. Run with…" />
+    <meta property="og:title" content="Go introduction: why Go, where it&#x27;s used, setup,…" />
+    <meta property="og:description" content="Go (often called Golang) was created at Google by Robert Griesemer, Rob Pike and Ken Thompson, and released in 2009. It was designed to be simple, fast…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/go/introduction/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Go introduction | Go (Golang)" />
-    <meta name="twitter:description" content="Go (Golang) was made at Google for simple, fast, reliable software. Docker, Kubernetes and many cloud and fintech back ends are written in Go. Run with…" />
+    <meta name="twitter:title" content="Go introduction: why Go, where it&#x27;s used, setup,…" />
+    <meta name="twitter:description" content="Go (often called Golang) was created at Google by Robert Griesemer, Rob Pike and Ken Thompson, and released in 2009. It was designed to be simple, fast…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/go/introduction/#lesson","name":"Go introduction","description":"Go (Golang) was made at Google for simple, fast, reliable software. Docker, Kubernetes and many cloud and fintech back ends are written in Go. Run with…","url":"https://marzleytechsolutions.co.ke/learn/go/introduction/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/go/#course","name":"Go (Golang)","url":"https://marzleytechsolutions.co.ke/learn/go/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Go (Golang)","item":"https://marzleytechsolutions.co.ke/learn/go/"},{"@type":"ListItem","position":4,"name":"Go introduction","item":"https://marzleytechsolutions.co.ke/learn/go/introduction/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/go/introduction/#lesson","name":"Go introduction: why Go, where it's used, setup, packages, variables and types, control flow, functions, errors and the go tool","description":"Go (often called Golang) was created at Google by Robert Griesemer, Rob Pike and Ken Thompson, and released in 2009. It was designed to be simple, fast…","url":"https://marzleytechsolutions.co.ke/learn/go/introduction/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/go/#course","name":"Go (Golang)","url":"https://marzleytechsolutions.co.ke/learn/go/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Go (Golang)","item":"https://marzleytechsolutions.co.ke/learn/go/"},{"@type":"ListItem","position":4,"name":"Go introduction: why Go, where it's used, setup, packages, variables and types, control flow, functions, errors and the go tool","item":"https://marzleytechsolutions.co.ke/learn/go/introduction/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,46 +36,208 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/go/">Go (Golang)</a> / <span>Go introduction</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=go&amp;lesson=introduction"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Go introduction</h1>
-<p><strong>Go</strong> (Golang) was made at Google for simple, fast, reliable software. Docker, Kubernetes and many cloud and fintech back ends are written in Go.</p>
-<figure class="static-code"><figcaption>Go</figcaption><pre><code class="language-go">package main
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/go/">Go (Golang)</a> / <span>Go introduction: why Go, where it&#x27;s used, setup, packages, variables and types, control flow, functions, errors and the go tool</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=go&amp;lesson=introduction"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Go introduction: why Go, where it's used, setup, packages, variables and types, control flow, functions, errors and the go tool</h1>
+<p><strong>Go</strong> (often called Golang) was created at Google by Robert Griesemer, Rob Pike and Ken Thompson, and released in 2009. It was designed to be <strong>simple, fast to compile, fast to run, and easy for teams to maintain</strong>, especially for networked servers and cloud software. Docker, Kubernetes, Terraform, Prometheus and many cloud tools are written in Go, and companies use it for APIs, microservices, payment systems, command-line tools and DevOps automation. Go has a small set of features, excellent built-in tooling, and great support for <strong>concurrency</strong> (doing many things at once), which makes it a strong choice for back-end developers.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Why Go exists and where it's used</li><li>Installing Go and the go command</li><li>Packages, imports and the main function</li><li>Variables, constants, zero values and basic types</li><li>Strings, formatting with fmt and string conversion</li><li>if, switch and the one loop: for</li><li>Functions with multiple return values</li><li>Error handling the Go way</li><li>defer</li><li>Go modules, formatting and testing tools</li></ul></div></aside>
+<h2>Why Go?</h2>
+<div class="static-table"><table><thead><tr><th>Strength</th><th>Meaning</th></tr></thead><tbody><tr><td><strong>Simple</strong></td><td>Few keywords, one way to do most things; easy to read others' code</td></tr><tr><td><strong>Fast</strong></td><td>Compiled to native code; quick start-up and low memory use</td></tr><tr><td><strong>Fast compilation</strong></td><td>Large projects build in seconds</td></tr><tr><td><strong>Concurrency</strong></td><td>Goroutines and channels make concurrent programs easier (see the goroutines lesson)</td></tr><tr><td><strong>Single binary</strong></td><td>Deploy one file with no runtime to install</td></tr><tr><td><strong>Great tooling</strong></td><td>Formatting, testing, dependency management built in</td></tr></tbody></table></div>
+<h2>Where Go is used</h2>
+<div class="static-table"><table><thead><tr><th>Area</th><th>Examples</th></tr></thead><tbody><tr><td>Cloud infrastructure</td><td>Docker, Kubernetes, Terraform</td></tr><tr><td>Web APIs and microservices</td><td>Fast JSON APIs, payment and fintech services</td></tr><tr><td>DevOps tools</td><td>CLIs, monitoring (Prometheus), automation</td></tr><tr><td>Networking</td><td>Proxies, load balancers, DNS servers</td></tr><tr><td>Data pipelines</td><td>High-throughput processing services</td></tr></tbody></table></div>
+<h2>Setup</h2>
+<ol><li>Download and install Go from go.dev/dl.</li><li>Check: <code>go version</code>.</li><li>Editor: VS Code with the Go extension, or GoLand.</li><li>Create and run a program:</li></ol>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">mkdir hello &amp;&amp; cd hello
+go mod init example.com/hello      # creates go.mod (module definition)
+go run .                           # compile and run
+go build                           # create an executable</code></pre></figure>
+<p>In this hub, the <strong>Run</strong> button compiles and runs Go online, and the Go Playground (go.dev/play) is great for quick experiments.</p>
+<h2>Your first program</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
 
 import &quot;fmt&quot;
 
 func main() {
-    name := &quot;Achieng&quot;          // := declares and infers the type
-    var age int = 25
-    balance := 1200.50
-
-    fmt.Println(&quot;Habari,&quot;, name)
-    fmt.Printf(&quot;%s is %d and has KSh %.2f\n&quot;, name, age, balance)
+	fmt.Println(&quot;Habari, Kenya!&quot;)
+	fmt.Println(&quot;Learning Go on the Marzley learning hub.&quot;)
 }</code></pre></figure>
-<p>Run with <code>go run main.go</code>, or build a single program file with <code>go build</code>.</p>
-<h2>Only one loop: for</h2>
-<figure class="static-code"><figcaption>Go</figcaption><pre><code class="language-go">for i := 1; i &lt;= 3; i++ {
-    fmt.Println(i)
+<ul><li>Every Go file belongs to a <strong>package</strong>; executables use <code>package main</code>.</li><li><code>import &quot;fmt&quot;</code> brings in the formatting package.</li><li><code>func main()</code> is where the program starts.</li><li>No semicolons needed at line ends; the opening brace <code>{</code> must be on the same line.</li><li>Go code is formatted with tabs by the standard tool <code>gofmt</code>.</li></ul>
+<h2>Variables, constants and zero values</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func main() {
+	var school string = &quot;Moi Forces Academy&quot;
+	var students int = 45
+	fee := 12500.50        // short declaration: type inferred (float64), only inside functions
+	paid := true
+	const vat = 0.16
+
+	fmt.Println(school, &quot;has&quot;, students, &quot;students&quot;)
+	fmt.Printf(&quot;Fee: KSh %.2f, paid: %t, VAT: %.0f%%\n&quot;, fee, paid, vat*100)
+
+	var count int          // zero value: 0
+	var name string        // zero value: &quot;&quot;
+	var ok bool            // zero value: false
+	fmt.Printf(&quot;count=%d name=%q ok=%t\n&quot;, count, name, ok)
+
+	a, b := 10, 3
+	fmt.Println(a/b, a%b, float64(a)/float64(b))   // integer division, remainder, float division
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Type</th><th>Examples</th></tr></thead><tbody><tr><td><code>int</code>, <code>int64</code>, <code>uint</code></td><td>Whole numbers</td></tr><tr><td><code>float64</code></td><td>Decimals</td></tr><tr><td><code>string</code></td><td>Text (UTF-8)</td></tr><tr><td><code>bool</code></td><td>true/false</td></tr><tr><td><code>byte</code>, <code>rune</code></td><td>A byte; a Unicode character</td></tr></tbody></table></div>
+<p>Go has <strong>no implicit conversions</strong>: convert explicitly with <code>float64(a)</code>, <code>int(x)</code>. Unused variables and imports are <strong>compile errors</strong>, which keeps code clean.</p>
+<h2>Strings and fmt</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;strconv&quot;
+	&quot;strings&quot;
+)
+
+func main() {
+	name := &quot;Wanjiku Kamau&quot;
+	fmt.Println(strings.ToUpper(name))
+	fmt.Println(strings.Contains(name, &quot;Kamau&quot;), len(name))
+	fmt.Println(strings.Split(&quot;Nairobi,Mombasa,Kisumu&quot;, &quot;,&quot;))
+	fmt.Println(strings.Replace(&quot;0712345678&quot;, &quot;0&quot;, &quot;254&quot;, 1))
+
+	n, err := strconv.Atoi(&quot;1500&quot;)      // string -&gt; int, with an error
+	fmt.Println(n+500, err)
+	_, err = strconv.Atoi(&quot;abc&quot;)
+	fmt.Println(&quot;Converting &#x27;abc&#x27;:&quot;, err)
+
+	msg := fmt.Sprintf(&quot;%-10s|%8.2f&quot;, &quot;Unga&quot;, 195.0)
+	fmt.Println(msg)
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Verb</th><th>Meaning</th></tr></thead><tbody><tr><td><code>%v</code></td><td>Default format (any value)</td></tr><tr><td><code>%+v</code></td><td>Struct with field names</td></tr><tr><td><code>%d</code></td><td>Integer</td></tr><tr><td><code>%.2f</code></td><td>Float with 2 decimals</td></tr><tr><td><code>%s</code>, <code>%q</code></td><td>String, quoted string</td></tr><tr><td><code>%t</code></td><td>Boolean</td></tr><tr><td><code>%T</code></td><td>Type of the value</td></tr></tbody></table></div>
+<h2>Control flow</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func grade(mark int) string {
+	if mark &gt;= 80 {
+		return &quot;A&quot;
+	} else if mark &gt;= 65 {
+		return &quot;B&quot;
+	} else if mark &gt;= 50 {
+		return &quot;C&quot;
+	}
+	return &quot;D/E&quot;
 }
 
-towns := []string{&quot;Nairobi&quot;, &quot;Kisumu&quot;, &quot;Mombasa&quot;}
-for index, town := range towns {
-    fmt.Println(index, town)
+func main() {
+	fmt.Println(&quot;72 -&gt;&quot;, grade(72))
+
+	if balance := 0.0; balance &lt;= 0 {      // if with a short statement
+		fmt.Println(&quot;Fees cleared&quot;)
+	}
+
+	status := &quot;shipped&quot;
+	switch status {                         // no break needed
+	case &quot;pending&quot;:
+		fmt.Println(&quot;Waiting for payment&quot;)
+	case &quot;paid&quot;, &quot;processing&quot;:
+		fmt.Println(&quot;Preparing order&quot;)
+	case &quot;shipped&quot;:
+		fmt.Println(&quot;On the way&quot;)
+	default:
+		fmt.Println(&quot;Unknown&quot;)
+	}
+
+	for i := 1; i &lt;= 3; i++ {               // classic for
+		fmt.Println(&quot;7 x&quot;, i, &quot;=&quot;, 7*i)
+	}
+
+	balance, months := 0.0, 0
+	for balance &lt; 50000 {                   // for as a while loop
+		balance = balance*1.01 + 4500
+		months++
+	}
+	fmt.Println(&quot;Months to save 50,000:&quot;, months)
+
+	towns := []string{&quot;Nairobi&quot;, &quot;Mombasa&quot;, &quot;Kisumu&quot;}
+	for i, t := range towns {               // range over a slice
+		fmt.Println(i, t)
+	}
 }</code></pre></figure>
-<h2>Functions can return several values</h2>
-<p>Go handles errors by returning them, not with exceptions:</p>
-<figure class="static-code"><figcaption>Go</figcaption><pre><code class="language-go">func divide(a, b float64) (float64, error) {
-    if b == 0 {
-        return 0, fmt.Errorf(&quot;cannot divide by zero&quot;)
-    }
-    return a / b, nil
+<p>Go has only one loop keyword, <code>for</code>, used in three forms: classic, while-style, and <code>range</code>.</p>
+<h2>Functions and multiple return values</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;errors&quot;
+	&quot;fmt&quot;
+)
+
+func vat(amount float64) float64 {
+	return amount * 0.16
 }
 
-result, err := divide(10, 0)
+func divide(a, b float64) (float64, error) {      // returns a result AND an error
+	if b == 0 {
+		return 0, errors.New(&quot;cannot divide by zero&quot;)
+	}
+	return a / b, nil
+}
+
+func minMax(values []int) (min, max int) {          // named results
+	min, max = values[0], values[0]
+	for _, v := range values {
+		if v &lt; min {
+			min = v
+		}
+		if v &gt; max {
+			max = v
+		}
+	}
+	return
+}
+
+func main() {
+	fmt.Println(vat(1000))
+
+	if result, err := divide(10, 4); err == nil {
+		fmt.Println(&quot;Result:&quot;, result)
+	}
+	if _, err := divide(1, 0); err != nil {
+		fmt.Println(&quot;Error:&quot;, err)
+	}
+
+	lo, hi := minMax([]int{67, 82, 45, 90})
+	fmt.Println(&quot;Lowest&quot;, lo, &quot;highest&quot;, hi)
+}</code></pre></figure>
+<h2>Errors the Go way</h2>
+<p>Go doesn't use exceptions for normal errors. Functions return an <code>error</code> value, and callers check it immediately:</p>
+<figure class="static-code"><figcaption>Go</figcaption><pre><code class="language-go">data, err := os.ReadFile(&quot;students.csv&quot;)
 if err != nil {
-    fmt.Println(&quot;Error:&quot;, err)
+    log.Fatalf(&quot;could not read file: %v&quot;, err)
 }</code></pre></figure>
-<blockquote><p>The code boxes here are for reading and copying. Run them free online at <strong>go.dev/play</strong>, or install the tools on your computer.</p></blockquote>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which operator declares a variable and infers its type in Go?</p><details><summary>Show answer</summary><p>:=</p></details></li><li><p>How many kinds of loop keyword does Go have?</p><details><summary>Show answer</summary><p>one</p></details></li><li><p>What does a Go function return when there's no error?</p><details><summary>Show answer</summary><p>nil</p></details></li><li><p>Name one famous tool written in Go.</p><details><summary>Show answer</summary><p>Docker</p></details></li></ol></section></div><p class="static-meta">Lesson 1 of 6 in <a href="/learn/go/">Go (Golang)</a> · <a href="/learn/?book=go">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><span></span><a class="btn btn-solid btn-sm" href="/learn/go/variables-control-functions/">Variables, control flow and functions in Go <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<p>You can wrap errors with context: <code>fmt.Errorf(&quot;loading students: %w&quot;, err)</code>, and check them with <code>errors.Is</code>. <code>panic</code> exists for truly unexpected situations, not routine errors.</p>
+<h2>defer</h2>
+<p><code>defer</code> schedules a call to run when the function returns, usually for cleanup:</p>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func process() {
+	fmt.Println(&quot;Open connection&quot;)
+	defer fmt.Println(&quot;Close connection&quot;)     // runs last, even if we return early
+	fmt.Println(&quot;Process payments&quot;)
+}
+
+func main() {
+	process()
+}</code></pre></figure>
+<p>Typical use: <code>f, err := os.Open(name); if err != nil {...}; defer f.Close()</code>.</p>
+<h2>The go tool</h2>
+<div class="static-table"><table><thead><tr><th>Command</th><th>Purpose</th></tr></thead><tbody><tr><td><code>go run .</code></td><td>Compile and run</td></tr><tr><td><code>go build</code></td><td>Build an executable</td></tr><tr><td><code>go mod init name</code></td><td>Start a module</td></tr><tr><td><code>go get pkg@version</code></td><td>Add a dependency</td></tr><tr><td><code>go mod tidy</code></td><td>Clean up dependencies</td></tr><tr><td><code>go fmt ./...</code></td><td>Format code</td></tr><tr><td><code>go vet ./...</code></td><td>Find suspicious code</td></tr><tr><td><code>go test ./...</code></td><td>Run tests</td></tr></tbody></table></div>
+<p>Cross-compiling is easy: <code>GOOS=linux GOARCH=amd64 go build</code> builds a Linux binary from any OS.</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A Go program won't compile because of "declared and not used: total". Why is Go strict about this?</span><em>Show answer</em></summary><div class="callout-body"><p>Unused variables (and imports) often signal bugs or leftover code, so Go treats them as compile errors to keep code clean and correct. Use the variable, remove it, or assign to <code>_</code> if you must ignore a value.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Go (Google, 2009) is simple, fast and built for servers, cloud tools and concurrency; Docker and Kubernetes are written in it.</li><li>Programs use <code>package main</code>, <code>import</code>, and <code>func main()</code>; modules start with <code>go mod init</code>.</li><li>Declare with <code>var</code> or <code>:=</code>; values have zero defaults; conversions are explicit; unused variables are errors.</li><li>Control flow: if (with short statements), switch (no break), and one <code>for</code> loop in three forms including <code>range</code>.</li><li>Functions return multiple values, especially <code>(result, error)</code>; check errors immediately; <code>defer</code> cleans up; use go fmt, vet and test.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which company created Go?</p><details><summary>Show answer</summary><p>Google</p></details></li><li><p>Which operator declares and initialises a variable with type inference inside functions?</p><details><summary>Show answer</summary><p>:=</p></details></li><li><p>How many loop keywords does Go have?</p><details><summary>Show answer</summary><p>1</p></details></li><li><p>What value is returned for "no error" in Go?</p><details><summary>Show answer</summary><p>nil</p></details></li><li><p>Which keyword schedules a call to run when the function returns?</p><details><summary>Show answer</summary><p>defer</p></details></li><li><p>Name a famous tool written in Go.</p><details><summary>Show answer</summary><p>Docker</p></details></li></ol></section></div><p class="static-meta">Lesson 1 of 6 in <a href="/learn/go/">Go (Golang)</a> · <a href="/learn/?book=go">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><span></span><a class="btn btn-solid btn-sm" href="/learn/go/variables-control-functions/">Variables, control flow and functions in Go <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

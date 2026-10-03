@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Classes and LINQ | C#</title>
-    <meta name="description" content="Free C# lesson: Classes and LINQ." />
+    <title>Classes and LINQ in C#: properties, constructors,…</title>
+    <meta name="description" content="C is object-oriented: you build applications from classes that model your domain (students, products, orders, payments) and interfaces that define…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/csharp/classes-linq/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Classes and LINQ | C#" />
-    <meta property="og:description" content="Free C# lesson: Classes and LINQ." />
+    <meta property="og:title" content="Classes and LINQ in C#: properties, constructors,…" />
+    <meta property="og:description" content="C is object-oriented: you build applications from classes that model your domain (students, products, orders, payments) and interfaces that define…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/csharp/classes-linq/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Classes and LINQ | C#" />
-    <meta name="twitter:description" content="Free C# lesson: Classes and LINQ." />
+    <meta name="twitter:title" content="Classes and LINQ in C#: properties, constructors,…" />
+    <meta name="twitter:description" content="C is object-oriented: you build applications from classes that model your domain (students, products, orders, payments) and interfaces that define…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/csharp/classes-linq/#lesson","name":"Classes and LINQ","description":"Free C# lesson: Classes and LINQ.","url":"https://marzleytechsolutions.co.ke/learn/csharp/classes-linq/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/csharp/#course","name":"C#","url":"https://marzleytechsolutions.co.ke/learn/csharp/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"C#","item":"https://marzleytechsolutions.co.ke/learn/csharp/"},{"@type":"ListItem","position":4,"name":"Classes and LINQ","item":"https://marzleytechsolutions.co.ke/learn/csharp/classes-linq/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/csharp/classes-linq/#lesson","name":"Classes and LINQ in C#: properties, constructors, records, inheritance, interfaces, collections and querying data with LINQ","description":"C is object-oriented: you build applications from classes that model your domain (students, products, orders, payments) and interfaces that define…","url":"https://marzleytechsolutions.co.ke/learn/csharp/classes-linq/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/csharp/#course","name":"C#","url":"https://marzleytechsolutions.co.ke/learn/csharp/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"C#","item":"https://marzleytechsolutions.co.ke/learn/csharp/"},{"@type":"ListItem","position":4,"name":"Classes and LINQ in C#: properties, constructors, records, inheritance, interfaces, collections and querying data with LINQ","item":"https://marzleytechsolutions.co.ke/learn/csharp/classes-linq/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,39 +36,253 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/csharp/">C#</a> / <span>Classes and LINQ</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=csharp&amp;lesson=classes-linq"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Classes and LINQ</h1>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/csharp/">C#</a> / <span>Classes and LINQ in C#: properties, constructors, records, inheritance, interfaces, collections and querying data with LINQ</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=csharp&amp;lesson=classes-linq"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Classes and LINQ in C#: properties, constructors, records, inheritance, interfaces, collections and querying data with LINQ</h1>
+<p>C# is object-oriented: you build applications from <strong>classes</strong> that model your domain (students, products, orders, payments) and <strong>interfaces</strong> that define contracts. C# adds very productive features on top: <strong>properties</strong>, <strong>records</strong> for data, and <strong>LINQ</strong> (Language Integrated Query), which lets you filter, sort, group and summarise collections with clear, SQL-like code. LINQ is one of the most loved C# features and is used constantly in ASP.NET, data processing and reporting code.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Classes, fields, properties and constructors</li><li>Auto-properties, init-only properties and validation</li><li>Records for data objects</li><li>Static members</li><li>Inheritance, virtual/override and abstract classes</li><li>Interfaces and polymorphism</li><li>Collections: List&lt;T&gt;, Dictionary&lt;TKey, TValue&gt;</li><li>LINQ: Where, Select, OrderBy, GroupBy, Sum, Average, Any, First...</li><li>Query syntax vs method syntax</li><li>A worked sales report with LINQ</li></ul></div></aside>
 <h2>Classes and properties</h2>
-<figure class="static-code"><figcaption>C#</figcaption><pre><code class="language-csharp">public class Product
-{
-    public string Name { get; set; } = &quot;&quot;;
-    public decimal Price { get; set; }
-    public int Stock { get; set; }
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
 
-    public bool InStock =&gt; Stock &gt; 0;
+class Account
+{
+    public string Owner { get; }                  // read-only auto-property (set in constructor)
+    public decimal Balance { get; private set; }  // anyone can read, only this class can change
+
+    public Account(string owner, decimal opening)
+    {
+        if (opening &lt; 0) throw new ArgumentException(&quot;Opening balance can&#x27;t be negative&quot;);
+        Owner = owner;
+        Balance = opening;
+    }
+
+    public void Deposit(decimal amount)
+    {
+        if (amount &lt;= 0) throw new ArgumentException(&quot;Deposit must be positive&quot;);
+        Balance += amount;
+    }
+
+    public bool Withdraw(decimal amount)
+    {
+        if (amount &lt;= 0 || amount &gt; Balance) return false;
+        Balance -= amount;
+        return true;
+    }
+
+    public override string ToString() =&gt; $&quot;{Owner}: KSh {Balance:N2}&quot;;
 }
 
-var items = new List&lt;Product&gt;
+class Program
 {
-    new() { Name = &quot;Unga 2kg&quot;, Price = 180, Stock = 12 },
-    new() { Name = &quot;Sugar 1kg&quot;, Price = 150, Stock = 0 },
-    new() { Name = &quot;Milk 500ml&quot;, Price = 60, Stock = 40 },
-};</code></pre></figure>
-<h2>LINQ: query lists like a database</h2>
-<figure class="static-code"><figcaption>C#</figcaption><pre><code class="language-csharp">var available = items
-    .Where(p =&gt; p.InStock)
-    .OrderBy(p =&gt; p.Price)
-    .Select(p =&gt; $&quot;{p.Name}: KSh {p.Price}&quot;);
+    static void Main()
+    {
+        var acc = new Account(&quot;Wanjiku&quot;, 1000m);
+        acc.Deposit(2500m);
+        Console.WriteLine($&quot;Withdraw 5000: {acc.Withdraw(5000m)}&quot;);
+        Console.WriteLine($&quot;Withdraw 1500: {acc.Withdraw(1500m)}&quot;);
+        Console.WriteLine(acc);
+        // acc.Balance = 1_000_000m;   // compile error: the setter is private
+    }
+}</code></pre></figure>
+<p><strong>Properties</strong> look like fields but run code (get/set), so you can validate and control access. Use them instead of public fields.</p>
+<h2>Object initialisers and init-only properties</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
 
-foreach (var line in available) Console.WriteLine(line);
+class Product
+{
+    public string Name { get; init; } = &quot;&quot;;
+    public string Category { get; init; } = &quot;&quot;;
+    public decimal Price { get; init; }
+    public int Stock { get; set; }
+}
 
-decimal stockValue = items.Sum(p =&gt; p.Price * p.Stock);
-Console.WriteLine($&quot;Stock value: KSh {stockValue:N0}&quot;);</code></pre></figure>
-<h2>Records (quick data types)</h2>
-<figure class="static-code"><figcaption>C#</figcaption><pre><code class="language-csharp">public record Payment(string Phone, decimal Amount, string Receipt);
-var p = new Payment(&quot;0712345678&quot;, 500m, &quot;SGH7XK2L9P&quot;);
-Console.WriteLine(p);</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which LINQ method filters items?</p><details><summary>Show answer</summary><p>Where</p></details></li><li><p>Which LINQ method sorts from smallest to largest?</p><details><summary>Show answer</summary><p>OrderBy</p></details></li><li><p>Which keyword quickly declares an immutable data type with a short syntax?</p><details><summary>Show answer</summary><p>record</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 7 in <a href="/learn/csharp/">C#</a> · <a href="/learn/?book=csharp">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/csharp/lists-dictionaries-linq/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Lists, dictionaries and LINQ queries</a><a class="btn btn-solid btn-sm" href="/learn/csharp/oop-inheritance-interfaces/">Classes, inheritance and interfaces in C# <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+class Program
+{
+    static void Main()
+    {
+        var bag = new Product { Name = &quot;Laptop bag&quot;, Category = &quot;Accessories&quot;, Price = 2500m, Stock = 12 };
+        bag.Stock -= 2;                       // allowed: Stock has set
+        // bag.Price = 100m;                  // error: init-only after creation
+        Console.WriteLine($&quot;{bag.Name} ({bag.Category}) KSh {bag.Price:N0}, stock {bag.Stock}&quot;);
+    }
+}</code></pre></figure>
+<h2>Records</h2>
+<p><strong>Records</strong> are concise types for data, with value-based equality and a readable ToString:</p>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+
+record Payment(string Receipt, string Phone, decimal Amount);
+
+class Program
+{
+    static void Main()
+    {
+        var p1 = new Payment(&quot;QJK7RT61SV&quot;, &quot;254712345678&quot;, 1500m);
+        var p2 = new Payment(&quot;QJK7RT61SV&quot;, &quot;254712345678&quot;, 1500m);
+        Console.WriteLine(p1);
+        Console.WriteLine($&quot;Same payment? {p1 == p2}&quot;);    // true: compares values
+        var corrected = p1 with { Amount = 1550m };       // copy with a change
+        Console.WriteLine(corrected);
+    }
+}</code></pre></figure>
+<h2>Inheritance and polymorphism</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+using System.Collections.Generic;
+
+abstract class Employee
+{
+    public string Name { get; }
+    protected Employee(string name) =&gt; Name = name;
+    public abstract decimal MonthlyPay();                         // must be implemented
+    public virtual string Describe() =&gt; $&quot;{Name}: KSh {MonthlyPay():N0}&quot;;
+}
+
+class Salaried : Employee
+{
+    private readonly decimal salary;
+    public Salaried(string name, decimal salary) : base(name) =&gt; this.salary = salary;
+    public override decimal MonthlyPay() =&gt; salary;
+}
+
+class SalesAgent : Employee
+{
+    private readonly decimal basePay, sales;
+    public SalesAgent(string name, decimal basePay, decimal sales) : base(name)
+    {
+        this.basePay = basePay;
+        this.sales = sales;
+    }
+    public override decimal MonthlyPay() =&gt; basePay + sales * 0.05m;
+    public override string Describe() =&gt; base.Describe() + &quot; (incl. commission)&quot;;
+}
+
+class Program
+{
+    static void Main()
+    {
+        var staff = new List&lt;Employee&gt;
+        {
+            new Salaried(&quot;Achieng&quot;, 65000m),
+            new SalesAgent(&quot;Kamau&quot;, 30000m, 800000m)
+        };
+        foreach (var e in staff) Console.WriteLine(e.Describe());   // each type&#x27;s own version runs
+    }
+}</code></pre></figure>
+<ul><li><code>abstract</code> classes can't be created directly and may have abstract members subclasses must implement.</li><li><code>virtual</code> members can be overridden with <code>override</code>; <code>base</code> calls the parent's version.</li><li><strong>Polymorphism</strong>: code works with <code>Employee</code> while each object behaves according to its real type.</li></ul>
+<h2>Interfaces</h2>
+<p>An <strong>interface</strong> is a contract: any class implementing it promises to provide those members.</p>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+using System.Collections.Generic;
+
+interface IPaymentMethod
+{
+    string Name { get; }
+    bool Pay(decimal amount);
+}
+
+class MpesaPayment : IPaymentMethod
+{
+    public string Name =&gt; &quot;M-Pesa&quot;;
+    public bool Pay(decimal amount) { Console.WriteLine($&quot;STK push sent for KSh {amount:N0}&quot;); return true; }
+}
+
+class CashPayment : IPaymentMethod
+{
+    public string Name =&gt; &quot;Cash&quot;;
+    public bool Pay(decimal amount) { Console.WriteLine($&quot;Collect KSh {amount:N0} at the counter&quot;); return true; }
+}
+
+class Program
+{
+    static void Checkout(IPaymentMethod method, decimal total)
+    {
+        Console.WriteLine($&quot;Paying with {method.Name}...&quot;);
+        method.Pay(total);
+    }
+
+    static void Main()
+    {
+        var methods = new List&lt;IPaymentMethod&gt; { new MpesaPayment(), new CashPayment() };
+        foreach (var m in methods) Checkout(m, 4250m);
+    }
+}</code></pre></figure>
+<p>Interfaces make code flexible and testable (you can swap a real payment provider for a fake one in tests). ASP.NET Core relies on them heavily through <strong>dependency injection</strong>.</p>
+<h2>Collections</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        var towns = new List&lt;string&gt; { &quot;Nairobi&quot;, &quot;Mombasa&quot; };
+        towns.Add(&quot;Kisumu&quot;);
+        towns.Remove(&quot;Mombasa&quot;);
+        Console.WriteLine(string.Join(&quot;, &quot;, towns) + $&quot; ({towns.Count})&quot;);
+
+        var stock = new Dictionary&lt;string, int&gt; { [&quot;unga&quot;] = 40, [&quot;sugar&quot;] = 25 };
+        stock[&quot;unga&quot;] -= 5;
+        stock[&quot;rice&quot;] = 30;
+        if (stock.TryGetValue(&quot;salt&quot;, out int salt)) Console.WriteLine(salt);
+        else Console.WriteLine(&quot;No salt in stock list&quot;);
+        foreach (var (item, qty) in stock) Console.WriteLine($&quot;{item}: {qty}&quot;);
+    }
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Collection</th><th>Use</th></tr></thead><tbody><tr><td><code>List&lt;T&gt;</code></td><td>Ordered, growable list</td></tr><tr><td><code>Dictionary&lt;TKey, TValue&gt;</code></td><td>Fast lookup by key</td></tr><tr><td><code>HashSet&lt;T&gt;</code></td><td>Unique values, fast membership</td></tr><tr><td><code>Queue&lt;T&gt;</code> / <code>Stack&lt;T&gt;</code></td><td>FIFO / LIFO</td></tr></tbody></table></div>
+<h2>LINQ: querying collections</h2>
+<p>LINQ adds query methods to any collection:</p>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+using System.Linq;
+using System.Collections.Generic;
+
+record Sale(string Branch, string Product, int Qty, decimal Price, DateTime Date)
+{
+    public decimal Total =&gt; Qty * Price;
+}
+
+class Program
+{
+    static void Main()
+    {
+        var sales = new List&lt;Sale&gt;
+        {
+            new(&quot;Nairobi&quot;, &quot;Charger&quot;, 3, 800m, new DateTime(2026, 9, 1)),
+            new(&quot;Mombasa&quot;, &quot;Speaker&quot;, 1, 3500m, new DateTime(2026, 9, 2)),
+            new(&quot;Nairobi&quot;, &quot;Mouse&quot;, 2, 1200m, new DateTime(2026, 9, 2)),
+            new(&quot;Kisumu&quot;, &quot;Charger&quot;, 5, 800m, new DateTime(2026, 9, 3)),
+            new(&quot;Mombasa&quot;, &quot;Mouse&quot;, 1, 1200m, new DateTime(2026, 9, 4)),
+        };
+
+        decimal revenue = sales.Sum(s =&gt; s.Total);
+        Console.WriteLine($&quot;Total revenue: KSh {revenue:N0}&quot;);
+
+        var bigSales = sales.Where(s =&gt; s.Total &gt;= 2400m).Select(s =&gt; $&quot;{s.Branch} {s.Product} {s.Total:N0}&quot;);
+        Console.WriteLine(&quot;Sales &gt;= 2,400: &quot; + string.Join(&quot;; &quot;, bigSales));
+
+        var byBranch = sales
+            .GroupBy(s =&gt; s.Branch)
+            .Select(g =&gt; new { Branch = g.Key, Revenue = g.Sum(s =&gt; s.Total), Orders = g.Count() })
+            .OrderByDescending(x =&gt; x.Revenue);
+        foreach (var b in byBranch) Console.WriteLine($&quot;{b.Branch,-8} KSh {b.Revenue,7:N0} ({b.Orders} orders)&quot;);
+
+        Console.WriteLine($&quot;Any sale over 5,000? {sales.Any(s =&gt; s.Total &gt; 5000m)}&quot;);
+        Console.WriteLine($&quot;Average order: KSh {sales.Average(s =&gt; s.Total):N0}&quot;);
+        var top = sales.OrderByDescending(s =&gt; s.Total).First();
+        Console.WriteLine($&quot;Biggest sale: {top.Product} in {top.Branch}&quot;);
+    }
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Method</th><th>Does</th></tr></thead><tbody><tr><td><code>Where</code></td><td>Filter</td></tr><tr><td><code>Select</code></td><td>Transform/project</td></tr><tr><td><code>OrderBy</code> / <code>OrderByDescending</code> / <code>ThenBy</code></td><td>Sort</td></tr><tr><td><code>GroupBy</code></td><td>Group by a key</td></tr><tr><td><code>Sum</code>, <code>Average</code>, <code>Min</code>, <code>Max</code>, <code>Count</code></td><td>Aggregates</td></tr><tr><td><code>Any</code>, <code>All</code></td><td>Test conditions</td></tr><tr><td><code>First</code>, <code>FirstOrDefault</code>, <code>Single</code></td><td>Get one item</td></tr><tr><td><code>Take</code>, <code>Skip</code></td><td>Paging</td></tr><tr><td><code>Distinct</code></td><td>Remove duplicates</td></tr><tr><td><code>ToList</code>, <code>ToDictionary</code></td><td>Materialise results</td></tr></tbody></table></div>
+<h3>Query syntax</h3>
+<p>The same queries can be written in SQL-like syntax:</p>
+<figure class="static-code"><figcaption>C#</figcaption><pre><code class="language-csharp">var nairobi = from s in sales
+              where s.Branch == &quot;Nairobi&quot;
+              orderby s.Total descending
+              select s.Product;</code></pre></figure>
+<p>Method syntax is more common in modern code; both compile the same way.</p>
+<h3>Deferred execution</h3>
+<p>LINQ queries run when you <strong>enumerate</strong> them (foreach, ToList, Count). Call <code>.ToList()</code> to capture results once if you'll use them several times. With <strong>Entity Framework Core</strong>, LINQ queries are translated into SQL and run in the database (see the ASP.NET lesson).</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Using LINQ, how would you list the names of students (with properties Name, Form and Balance) in Form 4 who owe more than KSh 5,000, highest balance first?</span><em>Show answer</em></summary><div class="callout-body"><p><code>students.Where(s =&gt; s.Form == 4 &amp;&amp; s.Balance &gt; 5000m).OrderByDescending(s =&gt; s.Balance).Select(s =&gt; s.Name).ToList();</code></p></div></details>
+<h2>Summary</h2>
+<ul><li>Classes use properties (with private setters, init-only) and constructors to keep objects valid; override ToString for display.</li><li>Records are concise data types with value equality and <code>with</code> copies.</li><li>Inheritance uses abstract/virtual/override and <code>base</code>; interfaces define contracts for flexible, testable code.</li><li>Collections: List&lt;T&gt;, Dictionary&lt;TKey, TValue&gt;, HashSet&lt;T&gt;, Queue/Stack.</li><li>LINQ filters, transforms, sorts, groups and aggregates collections (Where, Select, OrderBy, GroupBy, Sum...) with deferred execution.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which C# feature lets you read a value publicly but set it only inside the class? (example: public decimal Balance { get; private set; })</p><details><summary>Show answer</summary><p>property</p></details></li><li><p>Which keyword creates a concise data type with value-based equality?</p><details><summary>Show answer</summary><p>record</p></details></li><li><p>Which keyword allows a method to be overridden in a subclass?</p><details><summary>Show answer</summary><p>virtual</p></details></li><li><p>Which LINQ method filters a collection?</p><details><summary>Show answer</summary><p>Where</p></details></li><li><p>Which LINQ method groups items by a key?</p><details><summary>Show answer</summary><p>GroupBy</p></details></li><li><p>What does LINQ stand for? (three words)</p><details><summary>Show answer</summary><p>Language Integrated Query</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 7 in <a href="/learn/csharp/">C#</a> · <a href="/learn/?book=csharp">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/csharp/lists-dictionaries-linq/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Lists, dictionaries and LINQ queries</a><a class="btn btn-solid btn-sm" href="/learn/csharp/oop-inheritance-interfaces/">Classes, inheritance and interfaces in C# <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

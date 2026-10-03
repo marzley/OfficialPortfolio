@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Conditions, loops and functions | C programming</title>
-    <meta name="description" content="Free C programming lesson: Conditions, loops and functions." />
+    <title>Conditions, loops and functions in C: if/else, switch,…</title>
+    <meta name="description" content="Control flow lets programs make decisions and repeat work; functions let you organise code into reusable, testable pieces. In C, these are the tools…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/c-programming/control-functions/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Conditions, loops and functions | C programming" />
-    <meta property="og:description" content="Free C programming lesson: Conditions, loops and functions." />
+    <meta property="og:title" content="Conditions, loops and functions in C: if/else, switch,…" />
+    <meta property="og:description" content="Control flow lets programs make decisions and repeat work; functions let you organise code into reusable, testable pieces. In C, these are the tools…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/c-programming/control-functions/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Conditions, loops and functions | C programming" />
-    <meta name="twitter:description" content="Free C programming lesson: Conditions, loops and functions." />
+    <meta name="twitter:title" content="Conditions, loops and functions in C: if/else, switch,…" />
+    <meta name="twitter:description" content="Control flow lets programs make decisions and repeat work; functions let you organise code into reusable, testable pieces. In C, these are the tools…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/c-programming/control-functions/#lesson","name":"Conditions, loops and functions","description":"Free C programming lesson: Conditions, loops and functions.","url":"https://marzleytechsolutions.co.ke/learn/c-programming/control-functions/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/c-programming/#course","name":"C programming","url":"https://marzleytechsolutions.co.ke/learn/c-programming/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"C programming","item":"https://marzleytechsolutions.co.ke/learn/c-programming/"},{"@type":"ListItem","position":4,"name":"Conditions, loops and functions","item":"https://marzleytechsolutions.co.ke/learn/c-programming/control-functions/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/c-programming/control-functions/#lesson","name":"Conditions, loops and functions in C: if/else, switch, for, while, do-while, writing functions, scope and header files","description":"Control flow lets programs make decisions and repeat work; functions let you organise code into reusable, testable pieces. In C, these are the tools…","url":"https://marzleytechsolutions.co.ke/learn/c-programming/control-functions/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/c-programming/#course","name":"C programming","url":"https://marzleytechsolutions.co.ke/learn/c-programming/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"C programming","item":"https://marzleytechsolutions.co.ke/learn/c-programming/"},{"@type":"ListItem","position":4,"name":"Conditions, loops and functions in C: if/else, switch, for, while, do-while, writing functions, scope and header files","item":"https://marzleytechsolutions.co.ke/learn/c-programming/control-functions/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,46 +36,225 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/c-programming/">C programming</a> / <span>Conditions, loops and functions</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=c-programming&amp;lesson=control-functions"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Conditions, loops and functions</h1>
-<figure class="static-code"><figcaption>C</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/c-programming/">C programming</a> / <span>Conditions, loops and functions in C: if/else, switch, for, while, do-while, writing functions, scope and header files</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=c-programming&amp;lesson=control-functions"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Conditions, loops and functions in C: if/else, switch, for, while, do-while, writing functions, scope and header files</h1>
+<p>Control flow lets programs make decisions and repeat work; <strong>functions</strong> let you organise code into reusable, testable pieces. In C, these are the tools you'll use in every program: from calculating fees and grades to reading sensors on a microcontroller every second. This unit covers conditions, switch, all loop types, writing and calling functions, parameters and return values, scope, recursion basics, and splitting programs into multiple files with headers.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Relational and logical operators; truth in C (0 and non-zero)</li><li>if, else if, else and the conditional operator</li><li>switch with break and default</li><li>for, while and do-while loops; break and continue; nested loops</li><li>Writing functions: declaration (prototype), definition, call</li><li>Parameters, return values and void functions</li><li>Pass by value</li><li>Local, global and static variables</li><li>Recursion in C</li><li>Organising code with header files</li></ul></div></aside>
+<h2>Truth in C</h2>
+<p>C traditionally has no boolean type: <strong>0 means false, any non-zero value means true</strong>. Comparisons return 1 (true) or 0 (false). <code>&lt;stdbool.h&gt;</code> (C99) adds <code>bool</code>, <code>true</code> and <code>false</code>.</p>
+<div class="static-table"><table><thead><tr><th>Operator</th><th>Meaning</th></tr></thead><tbody><tr><td><code>==</code>, <code>!=</code></td><td>Equal, not equal</td></tr><tr><td><code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code></td><td>Comparisons</td></tr><tr><td><code>&amp;&amp;</code>, <code>\|\|</code>, <code>!</code></td><td>AND, OR, NOT</td></tr></tbody></table></div>
+<aside class="callout callout-warning"><p class="callout-title">= vs ==</p><div class="callout-body"><p><code>if (x = 5)</code> <strong>assigns</strong> 5 to x and is always true. Use <code>==</code> to compare. Compiler warnings (<code>-Wall</code>) help catch this.</p></div></aside>
+<h2>if, else if, else</h2>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
 
-// A function that returns the larger of two numbers
-int max(int a, int b) {
-    return a &gt; b ? a : b;
+int main(void) {
+    int mark = 72;
+    char grade;
+
+    if (mark &gt;= 80) {
+        grade = &#x27;A&#x27;;
+    } else if (mark &gt;= 65) {
+        grade = &#x27;B&#x27;;
+    } else if (mark &gt;= 50) {
+        grade = &#x27;C&#x27;;
+    } else if (mark &gt;= 40) {
+        grade = &#x27;D&#x27;;
+    } else {
+        grade = &#x27;E&#x27;;
+    }
+    printf(&quot;Mark %d -&gt; grade %c\n&quot;, mark, grade);
+
+    double balance = 0.0;
+    int boarding = 1;
+    if (balance &lt;= 0.0 &amp;&amp; boarding) {
+        printf(&quot;Cleared to report\n&quot;);
+    }
+
+    int stock = 3;
+    printf(&quot;%s\n&quot;, stock &lt; 5 ? &quot;Reorder soon&quot; : &quot;Stock OK&quot;);   /* conditional operator */
+    return 0;
+}</code></pre></figure>
+<h2>switch</h2>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void) {
+    int choice = 2;
+    switch (choice) {
+        case 1:
+            printf(&quot;Check balance\n&quot;);
+            break;
+        case 2:
+            printf(&quot;Send money\n&quot;);
+            break;
+        case 3:
+        case 4:
+            printf(&quot;Buy airtime or bundles\n&quot;);   /* 3 and 4 share code */
+            break;
+        default:
+            printf(&quot;Invalid option\n&quot;);
+    }
+    return 0;
+}</code></pre></figure>
+<p><code>switch</code> works with integer and <code>char</code> values. Without <code>break</code>, execution "falls through" into the next case.</p>
+<h2>Loops</h2>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void) {
+    int i;
+
+    /* for: known number of repetitions */
+    for (i = 1; i &lt;= 5; i++) {
+        printf(&quot;7 x %d = %d\n&quot;, i, 7 * i);
+    }
+
+    /* while: repeat while a condition is true */
+    double balance = 0.0;
+    int months = 0;
+    while (balance &lt; 50000.0) {
+        balance = balance * 1.01 + 4500.0;
+        months++;
+    }
+    printf(&quot;Months to save 50,000: %d\n&quot;, months);
+
+    /* do-while: runs at least once */
+    int tries = 0;
+    do {
+        tries++;
+    } while (tries &lt; 3);
+    printf(&quot;Tries: %d\n&quot;, tries);
+    return 0;
+}</code></pre></figure>
+<h3>break, continue and nested loops</h3>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void) {
+    int readings[6] = {4, 7, -1, 12, 0, 9};
+    int i, row, col;
+
+    for (i = 0; i &lt; 6; i++) {
+        if (readings[i] &lt; 0) continue;   /* skip invalid */
+        if (readings[i] == 0) break;     /* stop at zero */
+        printf(&quot;Reading: %d\n&quot;, readings[i]);
+    }
+
+    for (row = 1; row &lt;= 3; row++) {     /* a small multiplication table */
+        for (col = 1; col &lt;= 4; col++) {
+            printf(&quot;%4d&quot;, row * col);
+        }
+        printf(&quot;\n&quot;);
+    }
+    return 0;
+}</code></pre></figure>
+<h2>Functions</h2>
+<p>A function is a named block of code that does one job. Functions make programs shorter, clearer and easier to test.</p>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+/* Prototypes (declarations): tell the compiler the function&#x27;s name, return type and parameters */
+double vat(double amount);
+char grade_for(int mark);
+void print_receipt(char *item, int qty, double price);
+
+int main(void) {
+    printf(&quot;VAT on 1000: %.2f\n&quot;, vat(1000.0));
+    printf(&quot;Grade for 67: %c\n&quot;, grade_for(67));
+    print_receipt(&quot;Phone charger&quot;, 2, 800.0);
+    return 0;
+}
+
+/* Definitions */
+double vat(double amount) {
+    return amount * 0.16;
+}
+
+char grade_for(int mark) {
+    if (mark &gt;= 80) return &#x27;A&#x27;;
+    if (mark &gt;= 65) return &#x27;B&#x27;;
+    if (mark &gt;= 50) return &#x27;C&#x27;;
+    if (mark &gt;= 40) return &#x27;D&#x27;;
+    return &#x27;E&#x27;;
+}
+
+void print_receipt(char *item, int qty, double price) {
+    double total = qty * price;
+    printf(&quot;%-15s x%d  KSh %.2f\n&quot;, item, qty, total);
+    printf(&quot;VAT included: KSh %.2f\n&quot;, total - total / 1.16);
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Part</th><th>Example</th></tr></thead><tbody><tr><td>Return type</td><td><code>double</code>, <code>char</code>, <code>int</code>, or <code>void</code> (returns nothing)</td></tr><tr><td>Name</td><td><code>vat</code></td></tr><tr><td>Parameters</td><td><code>(double amount)</code></td></tr><tr><td>Body</td><td><code>{ return amount * 0.16; }</code></td></tr></tbody></table></div>
+<p>Declare a <strong>prototype</strong> before <code>main</code> (or define the function before it's used), so the compiler knows how to call it.</p>
+<h2>Pass by value</h2>
+<p>C passes <strong>copies</strong> of arguments to functions. Changing a parameter doesn't change the caller's variable:</p>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+void try_to_double(int x) {
+    x = x * 2;
+    printf(&quot;Inside function: %d\n&quot;, x);
 }
 
 int main(void) {
-    int marks = 58;
-
-    if (marks &gt;= 50) {
-        printf(&quot;Pass\n&quot;);
-    } else {
-        printf(&quot;Fail\n&quot;);
-    }
-
-    for (int i = 1; i &lt;= 5; i++) {
-        printf(&quot;%d x 7 = %d\n&quot;, i, i * 7);
-    }
-
     int n = 10;
-    while (n &gt; 0) {
-        n -= 3;
-    }
-
-    printf(&quot;Bigger: %d\n&quot;, max(12, 40));
+    try_to_double(n);
+    printf(&quot;After call: %d\n&quot;, n);   /* still 10 */
     return 0;
 }</code></pre></figure>
-<h2>Arrays and strings</h2>
-<figure class="static-code"><figcaption>C</figcaption><pre><code class="language-c">int scores[5] = {45, 78, 92, 60, 71};
-int total = 0;
-for (int i = 0; i &lt; 5; i++) total += scores[i];
-printf(&quot;Average: %.1f\n&quot;, total / 5.0);
+<p>To let a function change the caller's variable, pass its <strong>address</strong> with a pointer (see the pointers lesson).</p>
+<h2>Scope and storage</h2>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
 
-char name[20] = &quot;Wanjiru&quot;;          // a string is an array of characters ending in &#x27;\0&#x27;
-printf(&quot;%s has %zu letters\n&quot;, name, strlen(name));   // needs #include &lt;string.h&gt;</code></pre></figure>
-<p>C doesn't check array limits: writing to <code>scores[10]</code> corrupts memory instead of giving a nice error. This is the cause of many security bugs, so always check your indexes.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What character ends every C string? (write it as in code)</p><details><summary>Show answer</summary><p>'\0'</p></details></li><li><p>Which format specifier prints a string?</p><details><summary>Show answer</summary><p>%s</p></details></li><li><p>Does C stop you from writing past the end of an array? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 8 in <a href="/learn/c-programming/">C programming</a> · <a href="/learn/?book=c-programming">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/c-programming/variables-types-io/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Variables, data types, printf and scanf</a><a class="btn btn-solid btn-sm" href="/learn/c-programming/arrays-strings/">Arrays and strings in C <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+int total_visits = 0;            /* global: visible to all functions (use sparingly) */
+
+void record_visit(void) {
+    static int calls = 0;        /* static local: keeps its value between calls */
+    int temp = 5;                /* local: created fresh on every call */
+    calls++;
+    total_visits++;
+    printf(&quot;Call %d (temp %d)\n&quot;, calls, temp);
+}
+
+int main(void) {
+    record_visit();
+    record_visit();
+    record_visit();
+    printf(&quot;Total visits: %d\n&quot;, total_visits);
+    return 0;
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Variable</th><th>Lives</th><th>Visible</th></tr></thead><tbody><tr><td>Local</td><td>While the function runs</td><td>Inside its block</td></tr><tr><td>Static local</td><td>Whole program</td><td>Inside its function</td></tr><tr><td>Global</td><td>Whole program</td><td>Everywhere in the file (and other files with <code>extern</code>)</td></tr></tbody></table></div>
+<p>Prefer local variables and parameters; globals make programs harder to understand and test.</p>
+<h2>Recursion</h2>
+<p>Functions can call themselves (see the algorithms recursion lesson):</p>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+long factorial(int n) {
+    if (n &lt;= 1) return 1;          /* base case */
+    return n * factorial(n - 1);   /* recursive case */
+}
+
+int main(void) {
+    int i;
+    for (i = 0; i &lt;= 10; i++) {
+        printf(&quot;%d! = %ld\n&quot;, i, factorial(i));
+    }
+    return 0;
+}</code></pre></figure>
+<h2>Organising code with header files</h2>
+<p>Larger programs split code into files:</p>
+<figure class="static-code"><figcaption>C</figcaption><pre><code class="language-c">/* fees.h: declarations */
+#ifndef FEES_H
+#define FEES_H
+double balance_due(double fee, double paid);
+#endif</code></pre></figure>
+<figure class="static-code"><figcaption>C</figcaption><pre><code class="language-c">/* fees.c: definitions */
+#include &quot;fees.h&quot;
+double balance_due(double fee, double paid) { return fee - paid; }</code></pre></figure>
+<figure class="static-code"><figcaption>C</figcaption><pre><code class="language-c">/* main.c */
+#include &lt;stdio.h&gt;
+#include &quot;fees.h&quot;
+int main(void) { printf(&quot;%.2f\n&quot;, balance_due(25000, 18000)); return 0; }</code></pre></figure>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">gcc main.c fees.c -o fees -Wall</code></pre></figure>
+<p><code>#ifndef/#define/#endif</code> are <strong>include guards</strong> that prevent the header being included twice. Use <code>&lt;...&gt;</code> for system headers and <code>&quot;...&quot;</code> for your own.</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Write a function <code>int is_leap(int year)</code> that returns 1 for leap years and 0 otherwise. What's the rule?</span><em>Show answer</em></summary><div class="callout-body"><p>A year is a leap year if it's divisible by 4 and not by 100, unless it's also divisible by 400: <code>return (year % 4 == 0 &amp;&amp; year % 100 != 0) || (year % 400 == 0);</code>. So 2024 and 2000 are leap years; 1900 isn't.</p></div></details>
+<h2>Summary</h2>
+<ul><li>In C, 0 is false and non-zero is true; comparisons give 1 or 0; don't confuse <code>=</code> with <code>==</code>.</li><li>Use if/else if/else, the conditional operator and switch (with break and default).</li><li>Loops: for, while, do-while; break and continue; nested loops for tables.</li><li>Functions have prototypes, definitions, parameters and return values; C passes arguments by value.</li><li>Know local, static and global scope; recursion needs a base case; split code into .c and .h files with include guards.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>In C, which value means false?</p><details><summary>Show answer</summary><p>0</p></details></li><li><p>Which keyword stops a case in a switch from falling through?</p><details><summary>Show answer</summary><p>break</p></details></li><li><p>Which loop always runs at least once?</p><details><summary>Show answer</summary><p>do-while</p></details></li><li><p>What is a function declaration before main called?</p><details><summary>Show answer</summary><p>prototype</p></details></li><li><p>Does C pass function arguments by value or by reference by default?</p><details><summary>Show answer</summary><p>value</p></details></li><li><p>Which keyword makes a local variable keep its value between calls?</p><details><summary>Show answer</summary><p>static</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 8 in <a href="/learn/c-programming/">C programming</a> · <a href="/learn/?book=c-programming">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/c-programming/variables-types-io/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Variables, data types, printf and scanf</a><a class="btn btn-solid btn-sm" href="/learn/c-programming/arrays-strings/">Arrays and strings in C <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

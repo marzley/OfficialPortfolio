@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Classes and objects in C++ | C++</title>
-    <meta name="description" content="Free C++ lesson: Classes and objects in C++." />
+    <title>Classes and objects in C++: members, constructors,…</title>
+    <meta name="description" content="Classes let you model real things (a bank account, a product, a player in a game, a sensor) as types that combine data and behaviour , with rules that…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/cpp/classes/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Classes and objects in C++ | C++" />
-    <meta property="og:description" content="Free C++ lesson: Classes and objects in C++." />
+    <meta property="og:title" content="Classes and objects in C++: members, constructors,…" />
+    <meta property="og:description" content="Classes let you model real things (a bank account, a product, a player in a game, a sensor) as types that combine data and behaviour , with rules that…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/cpp/classes/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Classes and objects in C++ | C++" />
-    <meta name="twitter:description" content="Free C++ lesson: Classes and objects in C++." />
+    <meta name="twitter:title" content="Classes and objects in C++: members, constructors,…" />
+    <meta name="twitter:description" content="Classes let you model real things (a bank account, a product, a player in a game, a sensor) as types that combine data and behaviour , with rules that…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/cpp/classes/#lesson","name":"Classes and objects in C++","description":"Free C++ lesson: Classes and objects in C++.","url":"https://marzleytechsolutions.co.ke/learn/cpp/classes/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/cpp/#course","name":"C++","url":"https://marzleytechsolutions.co.ke/learn/cpp/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"C++","item":"https://marzleytechsolutions.co.ke/learn/cpp/"},{"@type":"ListItem","position":4,"name":"Classes and objects in C++","item":"https://marzleytechsolutions.co.ke/learn/cpp/classes/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/cpp/classes/#lesson","name":"Classes and objects in C++: members, constructors, access control, const methods, operator overloading, RAII and smart pointers","description":"Classes let you model real things (a bank account, a product, a player in a game, a sensor) as types that combine data and behaviour , with rules that…","url":"https://marzleytechsolutions.co.ke/learn/cpp/classes/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/cpp/#course","name":"C++","url":"https://marzleytechsolutions.co.ke/learn/cpp/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"C++","item":"https://marzleytechsolutions.co.ke/learn/cpp/"},{"@type":"ListItem","position":4,"name":"Classes and objects in C++: members, constructors, access control, const methods, operator overloading, RAII and smart pointers","item":"https://marzleytechsolutions.co.ke/learn/cpp/classes/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,53 +36,206 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/cpp/">C++</a> / <span>Classes and objects in C++</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=cpp&amp;lesson=classes"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Classes and objects in C++</h1>
-<figure class="static-code"><figcaption>C++</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/cpp/">C++</a> / <span>Classes and objects in C++: members, constructors, access control, const methods, operator overloading, RAII and smart pointers</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=cpp&amp;lesson=classes"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Classes and objects in C++: members, constructors, access control, const methods, operator overloading, RAII and smart pointers</h1>
+<p>Classes let you model real things (a bank account, a product, a player in a game, a sensor) as types that combine <strong>data</strong> and <strong>behaviour</strong>, with rules that keep the data valid. C++ classes are also how the language manages resources safely: memory, files and network connections are acquired in constructors and released automatically in destructors (a technique called <strong>RAII</strong>). This unit covers classes from first principles to the modern practices professional C++ developers use.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Defining classes: data members and member functions</li><li>public and private access; encapsulation</li><li>Constructors, initialiser lists and default values</li><li>Destructors and object lifetime</li><li>const member functions</li><li>Static members</li><li>Operator overloading (e.g. &lt;&lt;, +, ==)</li><li>Splitting classes into header and source files</li><li>RAII: automatic resource management</li><li>Smart pointers: unique_ptr and shared_ptr</li><li>Structs vs classes</li></ul></div></aside>
+<h2>A first class</h2>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Account {
+private:
+    string owner;
+    double balance;
+
+public:
+    Account(string o, double opening) : owner(o), balance(opening) {}   // constructor with initialiser list
+
+    void deposit(double amount) {
+        if (amount &gt; 0) balance += amount;
+    }
+
+    bool withdraw(double amount) {
+        if (amount &lt;= 0 || amount &gt; balance) return false;
+        balance -= amount;
+        return true;
+    }
+
+    double getBalance() const { return balance; }      // const: doesn&#x27;t change the object
+    string getOwner() const { return owner; }
+};
+
+int main() {
+    Account acc(&quot;Wanjiku&quot;, 1000);
+    acc.deposit(2500);
+    cout &lt;&lt; &quot;Withdraw 5000: &quot; &lt;&lt; (acc.withdraw(5000) ? &quot;OK&quot; : &quot;declined&quot;) &lt;&lt; endl;
+    cout &lt;&lt; &quot;Withdraw 1500: &quot; &lt;&lt; (acc.withdraw(1500) ? &quot;OK&quot; : &quot;declined&quot;) &lt;&lt; endl;
+    cout &lt;&lt; acc.getOwner() &lt;&lt; &quot; balance: &quot; &lt;&lt; acc.getBalance() &lt;&lt; endl;
+    // acc.balance = 1000000;   // error: &#x27;balance&#x27; is private
+    return 0;
+}</code></pre></figure>
+<ul><li><strong>Data members</strong> (<code>owner</code>, <code>balance</code>) store state; <strong>member functions</strong> define behaviour.</li><li><code>private</code> members are hidden; <code>public</code> members form the class's interface.</li><li>Encapsulation guarantees the rules (no negative deposits, no overdrafts) can't be bypassed.</li><li>Classes end with <code>};</code> (a common forgotten semicolon).</li></ul>
+<h2>Constructors</h2>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
 #include &lt;string&gt;
 using namespace std;
 
 class Product {
-private:
     string name;
     double price;
+    int stock;
 public:
-    Product(string n, double p) : name(n), price(p) {}
-
-    double priceWithVat() const { return price * 1.16; }
-    string getName() const { return name; }
+    Product() : name(&quot;Unnamed&quot;), price(0), stock(0) {}                    // default constructor
+    Product(string n, double p, int s = 0) : name(n), price(p), stock(s) {
+        if (price &lt; 0) price = 0;                                         // validate
+    }
+    void print() const {
+        cout &lt;&lt; name &lt;&lt; &quot; - KSh &quot; &lt;&lt; price &lt;&lt; &quot; (&quot; &lt;&lt; stock &lt;&lt; &quot; in stock)&quot; &lt;&lt; endl;
+    }
 };
 
 int main() {
-    Product p(&quot;Phone charger&quot;, 800);
-    cout &lt;&lt; p.getName() &lt;&lt; &quot;: KSh &quot; &lt;&lt; p.priceWithVat() &lt;&lt; endl;
+    Product a;
+    Product b(&quot;Laptop bag&quot;, 2500, 12);
+    Product c(&quot;Mouse&quot;, 1200);            // stock uses the default 0
+    a.print();
+    b.print();
+    c.print();
+    return 0;
 }</code></pre></figure>
-<h2>Inheritance and virtual functions</h2>
-<figure class="static-code"><figcaption>C++</figcaption><pre><code class="language-cpp">class Shape {
+<p><strong>Initialiser lists</strong> (<code>: name(n), price(p)</code>) initialise members directly: more efficient, and required for <code>const</code> and reference members.</p>
+<h2>Destructors and lifetime</h2>
+<p>A <strong>destructor</strong> (<code>~ClassName()</code>) runs automatically when an object is destroyed, for example when it goes out of scope:</p>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Session {
+    string user;
 public:
-    virtual double area() const = 0;   // pure virtual: every shape must define it
-    virtual ~Shape() = default;
+    Session(string u) : user(u) { cout &lt;&lt; &quot;Login: &quot; &lt;&lt; user &lt;&lt; endl; }
+    ~Session() { cout &lt;&lt; &quot;Logout: &quot; &lt;&lt; user &lt;&lt; endl; }
 };
 
-class Rectangle : public Shape {
-    double w, h;
+int main() {
+    Session admin(&quot;admin&quot;);
+    {
+        Session teacher(&quot;teacher&quot;);
+        cout &lt;&lt; &quot;Inside block&quot; &lt;&lt; endl;
+    }                                   // teacher&#x27;s destructor runs here
+    cout &lt;&lt; &quot;Back in main&quot; &lt;&lt; endl;
+    return 0;                           // admin&#x27;s destructor runs here
+}</code></pre></figure>
+<p>This predictable cleanup is the basis of <strong>RAII</strong>.</p>
+<h2>Static members</h2>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Member {
+    static int count;          // shared by all Member objects
+    int number;
+    string name;
 public:
-    Rectangle(double w, double h) : w(w), h(h) {}
-    double area() const override { return w * h; }
+    Member(string n) : name(n) { number = ++count; }
+    static int total() { return count; }
+    void show() const { cout &lt;&lt; &quot;#&quot; &lt;&lt; number &lt;&lt; &quot; &quot; &lt;&lt; name &lt;&lt; endl; }
 };
 
-class Circle : public Shape {
-    double r;
+int Member::count = 0;         // define the static member once
+
+int main() {
+    Member a(&quot;Otieno&quot;), b(&quot;Achieng&quot;), c(&quot;Juma&quot;);
+    a.show(); b.show(); c.show();
+    cout &lt;&lt; &quot;Members: &quot; &lt;&lt; Member::total() &lt;&lt; endl;
+    return 0;
+}</code></pre></figure>
+<h2>Operator overloading</h2>
+<p>Make your types work naturally with operators:</p>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+class Money {
+    long long cents;                          // store money as whole cents to avoid rounding errors
 public:
-    Circle(double r) : r(r) {}
-    double area() const override { return 3.14159 * r * r; }
+    Money(long long c = 0) : cents(c) {}
+    static Money ksh(double amount) { return Money((long long)(amount * 100 + 0.5)); }
+    Money operator+(const Money &amp;other) const { return Money(cents + other.cents); }
+    bool operator==(const Money &amp;other) const { return cents == other.cents; }
+    friend ostream &amp;operator&lt;&lt;(ostream &amp;out, const Money &amp;m) {
+        out &lt;&lt; &quot;KSh &quot; &lt;&lt; m.cents / 100 &lt;&lt; &quot;.&quot; &lt;&lt; (m.cents % 100 &lt; 10 ? &quot;0&quot; : &quot;&quot;) &lt;&lt; m.cents % 100;
+        return out;
+    }
+};
+
+int main() {
+    Money a = Money::ksh(1500.50);
+    Money b = Money::ksh(249.75);
+    Money total = a + b;
+    cout &lt;&lt; a &lt;&lt; &quot; + &quot; &lt;&lt; b &lt;&lt; &quot; = &quot; &lt;&lt; total &lt;&lt; endl;
+    cout &lt;&lt; (total == Money::ksh(1750.25) ? &quot;Totals match&quot; : &quot;Mismatch&quot;) &lt;&lt; endl;
+    return 0;
+}</code></pre></figure>
+<p>Overload operators only when the meaning is obvious (adding money makes sense; adding two students doesn't).</p>
+<h2>Header and source files</h2>
+<p>Professional projects split classes:</p>
+<figure class="static-code"><figcaption>C++</figcaption><pre><code class="language-cpp">// account.h
+#pragma once
+#include &lt;string&gt;
+class Account {
+    std::string owner;
+    double balance;
+public:
+    Account(std::string owner, double opening);
+    void deposit(double amount);
+    double getBalance() const;
 };</code></pre></figure>
-<h2>Modern C++ memory safety</h2>
-<p>Use <strong>smart pointers</strong> instead of raw <code>new</code>/<code>delete</code>:</p>
-<figure class="static-code"><figcaption>C++</figcaption><pre><code class="language-cpp">#include &lt;memory&gt;
-auto shape = make_unique&lt;Circle&gt;(2.0);   // freed automatically
-cout &lt;&lt; shape-&gt;area() &lt;&lt; endl;</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword lets a derived class change a base class method at run time?</p><details><summary>Show answer</summary><p>virtual</p></details></li><li><p>Which smart-pointer helper creates a unique_ptr?</p><details><summary>Show answer</summary><p>make_unique</p></details></li><li><p>In C++, which access keyword hides class members from outside code?</p><details><summary>Show answer</summary><p>private</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 7 in <a href="/learn/cpp/">C++</a> · <a href="/learn/?book=cpp">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/cpp/vectors-strings-stl/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> vector, string, map and the STL algorithms</a><a class="btn btn-solid btn-sm" href="/learn/cpp/inheritance-polymorphism/">Inheritance, virtual functions and polymorphism <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<figure class="static-code"><figcaption>C++</figcaption><pre><code class="language-cpp">// account.cpp
+#include &quot;account.h&quot;
+Account::Account(std::string o, double opening) : owner(o), balance(opening) {}
+void Account::deposit(double amount) { if (amount &gt; 0) balance += amount; }
+double Account::getBalance() const { return balance; }</code></pre></figure>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">g++ -std=c++17 main.cpp account.cpp -o bank</code></pre></figure>
+<p><code>Account::deposit</code> means "the deposit function belonging to Account"; <code>#pragma once</code> prevents double inclusion. In headers, write <code>std::</code> rather than <code>using namespace std;</code>.</p>
+<h2>RAII and smart pointers</h2>
+<p>In C, you must remember to <code>free</code> memory and <code>fclose</code> files. In modern C++, objects <strong>own</strong> resources and release them in their destructors, automatically, even if an error occurs. Standard library types (<code>string</code>, <code>vector</code>, <code>ifstream</code>) already work this way.</p>
+<p>For dynamically allocated objects, use <strong>smart pointers</strong> instead of raw <code>new</code>/<code>delete</code>:</p>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;memory&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Report {
+    string title;
+public:
+    Report(string t) : title(t) { cout &lt;&lt; &quot;Created &quot; &lt;&lt; title &lt;&lt; endl; }
+    ~Report() { cout &lt;&lt; &quot;Deleted &quot; &lt;&lt; title &lt;&lt; endl; }
+    void print() const { cout &lt;&lt; &quot;Report: &quot; &lt;&lt; title &lt;&lt; endl; }
+};
+
+int main() {
+    unique_ptr&lt;Report&gt; r = make_unique&lt;Report&gt;(&quot;September sales&quot;);   // single owner
+    r-&gt;print();
+
+    shared_ptr&lt;Report&gt; s1 = make_shared&lt;Report&gt;(&quot;Fees summary&quot;);       // shared ownership
+    {
+        shared_ptr&lt;Report&gt; s2 = s1;
+        cout &lt;&lt; &quot;Owners: &quot; &lt;&lt; s1.use_count() &lt;&lt; endl;
+    }
+    cout &lt;&lt; &quot;Owners now: &quot; &lt;&lt; s1.use_count() &lt;&lt; endl;
+    return 0;                       // both reports deleted automatically
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Smart pointer</th><th>Ownership</th></tr></thead><tbody><tr><td><code>unique_ptr</code></td><td>Exactly one owner; cannot be copied (can be moved)</td></tr><tr><td><code>shared_ptr</code></td><td>Shared; the object is deleted when the last owner goes away</td></tr><tr><td><code>weak_ptr</code></td><td>Observes a shared_ptr without owning (breaks cycles)</td></tr></tbody></table></div>
+<p>Rule: avoid raw <code>new</code> and <code>delete</code> in application code.</p>
+<h2>struct vs class</h2>
+<p>In C++, <code>struct</code> and <code>class</code> are almost identical; the only difference is the default access: <code>struct</code> members are <strong>public</strong> by default, <code>class</code> members <strong>private</strong>. Convention: use <code>struct</code> for simple data bundles, <code>class</code> for types with rules and behaviour.</p>
+<figure class="static-code"><figcaption>C++</figcaption><pre><code class="language-cpp">struct Point { double lat; double lon; };</code></pre></figure>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Design a C++ class for a matatu: what private data, constructor checks and public methods would it have?</span><em>Show answer</em></summary><div class="callout-body"><p>Private: plate number, capacity, passengers on board, route, fare. Constructor: validate capacity &gt; 0 and fare ≥ 0. Public methods: board(n) (reject if it would exceed capacity), alight(n), fareCollected() const, isFull() const, getPlate() const, and an overloaded &lt;&lt; to print a summary. Use const methods for anything that doesn't change the object.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Classes combine private data with public member functions; encapsulation enforces rules.</li><li>Constructors (with initialiser lists) set up objects; destructors clean up automatically when objects go out of scope.</li><li>Mark non-modifying methods <code>const</code>; static members are shared across objects; overload operators when meaning is clear.</li><li>Split classes into .h and .cpp files with <code>ClassName::method</code> definitions.</li><li>RAII and smart pointers (unique_ptr, shared_ptr) manage resources automatically; avoid raw new/delete; struct = public by default.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the default access for class members in C++?</p><details><summary>Show answer</summary><p>private</p></details></li><li><p>What is the special function called that runs when an object is destroyed?</p><details><summary>Show answer</summary><p>destructor</p></details></li><li><p>Which smart pointer allows exactly one owner?</p><details><summary>Show answer</summary><p>unique_ptr</p></details></li><li><p>What do you call managing resources through object lifetime (acquire in constructor, release in destructor)? (abbreviation)</p><details><summary>Show answer</summary><p>RAII</p></details></li><li><p>Which keyword after a member function says it won't modify the object?</p><details><summary>Show answer</summary><p>const</p></details></li><li><p>What is the default access for struct members?</p><details><summary>Show answer</summary><p>public</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 7 in <a href="/learn/cpp/">C++</a> · <a href="/learn/?book=cpp">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/cpp/vectors-strings-stl/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> vector, string, map and the STL algorithms</a><a class="btn btn-solid btn-sm" href="/learn/cpp/inheritance-polymorphism/">Inheritance, virtual functions and polymorphism <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

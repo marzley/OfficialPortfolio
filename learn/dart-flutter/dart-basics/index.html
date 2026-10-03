@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Dart basics | Dart &amp; Flutter (mobile apps)</title>
-    <meta name="description" content="Flutter is Google&#x27;s toolkit for building apps for Android, iPhone, web and desktop from one codebase . Apps are written in Dart , a friendly language…" />
+    <title>Dart basics: why Dart and Flutter, setup, variables and…</title>
+    <meta name="description" content="Flutter is Google&#x27;s toolkit for building beautiful, fast apps for Android, iPhone, web and desktop from one codebase , and Dart is the language Flutter…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-basics/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Dart basics | Dart &amp; Flutter (mobile apps)" />
-    <meta property="og:description" content="Flutter is Google&#x27;s toolkit for building apps for Android, iPhone, web and desktop from one codebase . Apps are written in Dart , a friendly language…" />
+    <meta property="og:title" content="Dart basics: why Dart and Flutter, setup, variables and…" />
+    <meta property="og:description" content="Flutter is Google&#x27;s toolkit for building beautiful, fast apps for Android, iPhone, web and desktop from one codebase , and Dart is the language Flutter…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-basics/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Dart basics | Dart &amp; Flutter (mobile apps)" />
-    <meta name="twitter:description" content="Flutter is Google&#x27;s toolkit for building apps for Android, iPhone, web and desktop from one codebase . Apps are written in Dart , a friendly language…" />
+    <meta name="twitter:title" content="Dart basics: why Dart and Flutter, setup, variables and…" />
+    <meta name="twitter:description" content="Flutter is Google&#x27;s toolkit for building beautiful, fast apps for Android, iPhone, web and desktop from one codebase , and Dart is the language Flutter…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-basics/#lesson","name":"Dart basics","description":"Flutter is Google's toolkit for building apps for Android, iPhone, web and desktop from one codebase . Apps are written in Dart , a friendly language…","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-basics/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/#course","name":"Dart & Flutter (mobile apps)","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Dart & Flutter (mobile apps)","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},{"@type":"ListItem","position":4,"name":"Dart basics","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-basics/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-basics/#lesson","name":"Dart basics: why Dart and Flutter, setup, variables and null safety, strings, control flow, functions and collections","description":"Flutter is Google's toolkit for building beautiful, fast apps for Android, iPhone, web and desktop from one codebase , and Dart is the language Flutter…","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-basics/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/#course","name":"Dart & Flutter (mobile apps)","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Dart & Flutter (mobile apps)","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},{"@type":"ListItem","position":4,"name":"Dart basics: why Dart and Flutter, setup, variables and null safety, strings, control flow, functions and collections","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/dart-basics/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,36 +36,184 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> / <span>Dart basics</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=dart-flutter&amp;lesson=dart-basics"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Dart basics</h1>
-<p><strong>Flutter</strong> is Google's toolkit for building apps for Android, iPhone, web and desktop from <strong>one codebase</strong>. Apps are written in <strong>Dart</strong>, a friendly language that looks like a mix of JavaScript and Java.</p>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> / <span>Dart basics: why Dart and Flutter, setup, variables and null safety, strings, control flow, functions and collections</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=dart-flutter&amp;lesson=dart-basics"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Dart basics: why Dart and Flutter, setup, variables and null safety, strings, control flow, functions and collections</h1>
+<p><strong>Flutter</strong> is Google's toolkit for building beautiful, fast apps for <strong>Android, iPhone, web and desktop from one codebase</strong>, and <strong>Dart</strong> is the language Flutter apps are written in. Many startups, banks and agencies use Flutter to ship to both Android and iOS without maintaining two separate apps, which makes it a very practical skill for Kenyan developers, where Android dominates but clients often want iPhone versions too. Before building screens, you need solid Dart fundamentals: this unit covers them step by step with runnable examples.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Why Dart and Flutter, who uses them, and how Flutter works</li><li>Installing Flutter (which includes Dart) and checking your setup</li><li>Your first Dart program and running it</li><li>Variables: var, final, const and types</li><li>Null safety: nullable types, ?, !, ?? and late</li><li>Strings, interpolation and useful methods</li><li>Operators, conditions, switch and loops</li><li>Functions: parameters (positional, named, optional), arrow functions, functions as values</li><li>Collections: List, Set, Map and their key methods</li></ul></div></aside>
+<h2>Why Dart and Flutter?</h2>
+<div class="static-table"><table><thead><tr><th>Benefit</th><th>Meaning</th></tr></thead><tbody><tr><td><strong>One codebase</strong></td><td>Android, iOS, web, Windows, macOS, Linux</td></tr><tr><td><strong>Fast development</strong></td><td>Hot reload shows code changes in about a second</td></tr><tr><td><strong>Native performance</strong></td><td>Dart compiles to native machine code for mobile</td></tr><tr><td><strong>Beautiful UI</strong></td><td>Everything is a widget; full control over design; Material and Cupertino styles</td></tr><tr><td><strong>Growing jobs</strong></td><td>Agencies, fintechs and startups use Flutter for cross-platform apps</td></tr></tbody></table></div>
+<p>Apps built with Flutter include products from Google, BMW, Alibaba and many fintech and e-commerce companies.</p>
+<h2>Setup</h2>
+<ol><li>Install Flutter from flutter.dev (Windows, macOS or Linux); it includes the Dart SDK.</li><li>Run <code>flutter doctor</code> and follow its suggestions (Android Studio + Android SDK, accept licences, an emulator or a phone with USB debugging; Xcode on macOS for iOS).</li><li>Use <strong>VS Code</strong> (Flutter and Dart extensions) or <strong>Android Studio</strong> (Flutter plugin).</li><li>For Dart-only practice: DartPad (dartpad.dev) runs Dart in the browser, and the Run button here runs Dart examples.</li></ol>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">flutter doctor
+dart create hello_dart   # a console Dart project
+cd hello_dart &amp;&amp; dart run</code></pre></figure>
+<h2>Your first Dart program</h2>
 <figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">void main() {
-  String name = &#x27;Mwangi&#x27;;
-  int age = 23;
-  double balance = 1200.50;
-  bool active = true;
-  var town = &#x27;Nyeri&#x27;;          // type inferred
-  final joined = 2024;         // can&#x27;t be changed after set
-
-  print(&#x27;$name from $town is $age&#x27;);
-  print(&#x27;Balance: KSh ${balance.toStringAsFixed(2)}&#x27;);
+  print(&#x27;Habari, Kenya!&#x27;);
+  print(&#x27;Learning Dart for Flutter apps.&#x27;);
 }</code></pre></figure>
+<ul><li><code>main()</code> is the entry point; <code>void</code> means it returns nothing.</li><li><code>print</code> writes to the console.</li><li>Statements end with <code>;</code>; strings use single or double quotes.</li></ul>
+<h2>Variables: var, final and const</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">void main() {
+  var school = &#x27;Alliance High&#x27;;     // type inferred: String
+  String town = &#x27;Kikuyu&#x27;;           // explicit type
+  int students = 45;
+  double fee = 12500.50;
+  bool paid = true;
+
+  final createdAt = DateTime.now();       // set once at runtime, can&#x27;t change
+  const vat = 0.16;                       // compile-time constant
+
+  students = students + 1;                // var/typed variables can change
+  print(&#x27;$school in $town has $students students, fee KSh $fee, paid: $paid&#x27;);
+  print(&#x27;VAT on 1000 is ${1000 * vat}&#x27;);
+  print(&#x27;Record created at ${createdAt.year}&#x27;);
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Keyword</th><th>Meaning</th></tr></thead><tbody><tr><td><code>var</code></td><td>Variable with an inferred type (the type can't change later)</td></tr><tr><td><code>String</code>, <code>int</code>, <code>double</code>, <code>bool</code>, <code>num</code></td><td>Explicit types</td></tr><tr><td><code>final</code></td><td>Assigned once (value known at runtime)</td></tr><tr><td><code>const</code></td><td>Compile-time constant (also used for constant widgets in Flutter)</td></tr><tr><td><code>dynamic</code></td><td>Turns off type checking (avoid)</td></tr></tbody></table></div>
 <h2>Null safety</h2>
-<p>Dart won't let a variable be <code>null</code> unless you allow it with <code>?</code>:</p>
-<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">String? email;           // may be null
-print(email ?? &#x27;No email&#x27;);   // ?? gives a default</code></pre></figure>
-<h2>Lists, maps and functions</h2>
-<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">var prices = [120, 450, 80];
-prices.add(300);
-var total = prices.reduce((a, b) =&gt; a + b);
+<p>Dart has <strong>sound null safety</strong>: a variable can't be <code>null</code> unless its type says so with <code>?</code>. This prevents a huge class of crashes.</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">void main() {
+  String name = &#x27;Achieng&#x27;;
+  String? nickname;                       // may be null
+  print(nickname ?? &#x27;No nickname&#x27;);       // ?? gives a default when null
 
-var stock = {&#x27;sugar&#x27;: 40, &#x27;unga&#x27;: 25};
-stock[&#x27;sugar&#x27;] = stock[&#x27;sugar&#x27;]! - 5;
+  int? discount = getDiscount(&#x27;VIP&#x27;);
+  if (discount != null) {
+    print(&#x27;Discount: $discount%&#x27;);        // inside the check, discount is treated as int
+  }
 
-int vat(int amount) =&gt; (amount * 0.16).round();
-print(vat(1000));   // 160</code></pre></figure>
-<blockquote><p>The code boxes here are for reading and copying. Run them free online at <strong>dartpad.dev</strong> (it runs Flutter apps too), or install the tools on your computer.</p></blockquote>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which language are Flutter apps written in?</p><details><summary>Show answer</summary><p>Dart</p></details></li><li><p>Which symbol after a type allows a variable to be null?</p><details><summary>Show answer</summary><p>?</p></details></li><li><p>Which operator gives a default value when something is null?</p><details><summary>Show answer</summary><p>??</p></details></li><li><p>Which keyword makes a variable that can only be set once?</p><details><summary>Show answer</summary><p>final</p></details></li></ol></section></div><p class="static-meta">Lesson 1 of 10 in <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> · <a href="/learn/?book=dart-flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><span></span><a class="btn btn-solid btn-sm" href="/learn/dart-flutter/dart-functions-collections/">Dart functions, lists, maps and null safety <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+  print(nickname?.length);                // ?. returns null instead of crashing
+  nickname = &#x27;Chichi&#x27;;
+  print(nickname!.toUpperCase());         // ! asserts it&#x27;s not null (crashes if it is: use carefully)
+  print(name.length);
+}
+
+int? getDiscount(String customerType) =&gt; customerType == &#x27;VIP&#x27; ? 10 : null;</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Syntax</th><th>Meaning</th></tr></thead><tbody><tr><td><code>String?</code></td><td>Nullable String</td></tr><tr><td><code>a ?? b</code></td><td><code>a</code> if not null, else <code>b</code></td></tr><tr><td><code>a?.b</code></td><td>Access <code>b</code> only if <code>a</code> isn't null</td></tr><tr><td><code>a!</code></td><td>"I'm sure a isn't null"</td></tr><tr><td><code>late</code></td><td>Will be initialised before use (e.g. in Flutter <code>initState</code>)</td></tr></tbody></table></div>
+<h2>Strings</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">void main() {
+  var first = &#x27;Wanjiku&#x27;;
+  var last = &#x27;Kamau&#x27;;
+  var full = &#x27;$first $last&#x27;;                      // interpolation
+  print(&#x27;Name: $full (${full.length} characters)&#x27;);
+  print(full.toUpperCase());
+  print(full.contains(&#x27;Kamau&#x27;));
+  print(full.split(&#x27; &#x27;).first);
+  print(&#x27;0712345678&#x27;.replaceFirst(&#x27;0&#x27;, &#x27;254&#x27;));
+  print(&#x27;KSh ${1500.5.toStringAsFixed(2)}&#x27;);
+  print(int.parse(&#x27;1500&#x27;) + 500);
+  print(int.tryParse(&#x27;abc&#x27;) ?? 0);                // safe conversion
+  var multi = &#x27;&#x27;&#x27;
+Line one
+Line two&#x27;&#x27;&#x27;;
+  print(multi);
+}</code></pre></figure>
+<h2>Operators, conditions and loops</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">void main() {
+  var a = 17, b = 5;
+  print(&#x27;${a + b} ${a - b} ${a * b} ${a / b} ${a ~/ b} ${a % b}&#x27;);   // / gives double, ~/ integer division
+
+  var mark = 72;
+  String grade;
+  if (mark &gt;= 80) {
+    grade = &#x27;A&#x27;;
+  } else if (mark &gt;= 65) {
+    grade = &#x27;B&#x27;;
+  } else if (mark &gt;= 50) {
+    grade = &#x27;C&#x27;;
+  } else {
+    grade = &#x27;D/E&#x27;;
+  }
+  print(&#x27;Mark $mark -&gt; $grade&#x27;);
+
+  var status = &#x27;shipped&#x27;;
+  var label = switch (status) {             // switch expression (Dart 3)
+    &#x27;pending&#x27; =&gt; &#x27;Waiting for payment&#x27;,
+    &#x27;paid&#x27; || &#x27;processing&#x27; =&gt; &#x27;Preparing your order&#x27;,
+    &#x27;shipped&#x27; =&gt; &#x27;On the way&#x27;,
+    _ =&gt; &#x27;Unknown&#x27;,
+  };
+  print(label);
+
+  for (var i = 1; i &lt;= 3; i++) {
+    print(&#x27;7 x $i = ${7 * i}&#x27;);
+  }
+
+  var towns = [&#x27;Nairobi&#x27;, &#x27;Mombasa&#x27;, &#x27;Kisumu&#x27;];
+  for (var town in towns) {
+    print(town);
+  }
+
+  var balance = 0.0;
+  var months = 0;
+  while (balance &lt; 50000) {
+    balance = balance * 1.01 + 4500;
+    months++;
+  }
+  print(&#x27;Months to save 50,000: $months&#x27;);
+}</code></pre></figure>
+<h2>Functions</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">double vat(double amount, [double rate = 0.16]) =&gt; amount * rate;   // optional positional parameter
+
+String greet({required String name, String title = &#x27;&#x27;}) {           // named parameters
+  return title.isEmpty ? &#x27;Hello, $name&#x27; : &#x27;Hello, $title $name&#x27;;
+}
+
+double applyAll(double price, List&lt;double Function(double)&gt; rules) {
+  var result = price;
+  for (final rule in rules) {
+    result = rule(result);
+  }
+  return result;
+}
+
+void main() {
+  print(vat(1000));
+  print(vat(1000, 0.08));
+  print(greet(name: &#x27;Otieno&#x27;));
+  print(greet(name: &#x27;Akinyi&#x27;, title: &#x27;Dr.&#x27;));
+
+  double tenPercentOff(double p) =&gt; p * 0.9;
+  final addDelivery = (double p) =&gt; p + 250;        // anonymous function
+  print(applyAll(5000, [tenPercentOff, addDelivery]));
+}</code></pre></figure>
+<p>Named parameters (<code>{required String name}</code>) are everywhere in Flutter: <code>Text(&#x27;Hi&#x27;, style: ...)</code>, <code>Padding(padding: ..., child: ...)</code>.</p>
+<h2>Collections</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">void main() {
+  // List: ordered
+  var marks = &lt;int&gt;[67, 82, 45, 90];
+  marks.add(58);
+  print(&#x27;Count ${marks.length}, first ${marks.first}, last ${marks.last}&#x27;);
+  print(&#x27;Passed: ${marks.where((m) =&gt; m &gt;= 50).toList()}&#x27;);
+  print(&#x27;With bonus: ${marks.map((m) =&gt; m + 5).toList()}&#x27;);
+  print(&#x27;Total: ${marks.reduce((a, b) =&gt; a + b)}&#x27;);
+  marks.sort();
+  print(&#x27;Sorted: $marks&#x27;);
+
+  // Set: unique values
+  var receipts = &lt;String&gt;{&#x27;QJK1&#x27;, &#x27;QJK2&#x27;};
+  print(&#x27;Added QJK1 again? ${receipts.add(&#x27;QJK1&#x27;)}&#x27;);   // false: already present
+
+  // Map: key -&gt; value
+  var stock = &lt;String, int&gt;{&#x27;unga&#x27;: 40, &#x27;sugar&#x27;: 25};
+  stock[&#x27;rice&#x27;] = 30;
+  stock[&#x27;unga&#x27;] = stock[&#x27;unga&#x27;]! - 5;
+  stock.forEach((item, qty) =&gt; print(&#x27;$item: $qty&#x27;));
+  print(&#x27;Has salt? ${stock.containsKey(&#x27;salt&#x27;)}&#x27;);
+
+  // Collection if/for and spread (used a lot in Flutter widget lists)
+  var isAdmin = true;
+  var menu = [&#x27;Home&#x27;, &#x27;Courses&#x27;, if (isAdmin) &#x27;Admin&#x27;, for (var t in [&#x27;Help&#x27;, &#x27;Logout&#x27;]) t];
+  print(menu);
+  var all = [...marks, 100];
+  print(all);
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Collection</th><th>Use</th><th>Key methods</th></tr></thead><tbody><tr><td><code>List</code></td><td>Ordered items</td><td>add, remove, where, map, sort, reduce, contains</td></tr><tr><td><code>Set</code></td><td>Unique items</td><td>add, contains, union, intersection</td></tr><tr><td><code>Map</code></td><td>Key–value pairs</td><td>[], containsKey, forEach, keys, values, entries</td></tr></tbody></table></div>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> What's the difference between <code>final</code> and <code>const</code> in Dart, and why does Flutter code use <code>const</code> so often?</span><em>Show answer</em></summary><div class="callout-body"><p><code>final</code> is set once at runtime (e.g. <code>final now = DateTime.now()</code>); <code>const</code> must be known at compile time and creates a canonical, immutable value. Flutter uses <code>const</code> constructors for widgets that never change (like <code>const Text(&#x27;Hello&#x27;)</code>), so the framework can reuse them instead of rebuilding, which improves performance.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Flutter builds apps for Android, iOS, web and desktop from one Dart codebase, with hot reload and native performance.</li><li>Install Flutter (includes Dart), run <code>flutter doctor</code>, and use VS Code or Android Studio; DartPad and the Run button help practise.</li><li>Variables use var, explicit types, final (runtime once) and const (compile time); null safety uses <code>?</code>, <code>??</code>, <code>?.</code>, <code>!</code> and <code>late</code>.</li><li>Strings support interpolation (<code>$name</code>, <code>${expr}</code>) and methods; control flow includes if, switch expressions, for, for-in and while.</li><li>Functions support optional positional and named parameters, arrow syntax and functions as values; collections are List, Set and Map with where, map, reduce and collection if/for.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which language are Flutter apps written in?</p><details><summary>Show answer</summary><p>Dart</p></details></li><li><p>Which symbol makes a Dart type nullable?</p><details><summary>Show answer</summary><p>?</p></details></li><li><p>Which operator gives a default value when something is null?</p><details><summary>Show answer</summary><p>??</p></details></li><li><p>Which keyword declares a compile-time constant?</p><details><summary>Show answer</summary><p>const</p></details></li><li><p>Which operator performs integer division in Dart?</p><details><summary>Show answer</summary><p>~/</p></details></li><li><p>Which command checks your Flutter installation? (two words)</p><details><summary>Show answer</summary><p>flutter doctor</p></details></li></ol></section></div><p class="static-meta">Lesson 1 of 10 in <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> · <a href="/learn/?book=dart-flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><span></span><a class="btn btn-solid btn-sm" href="/learn/dart-flutter/dart-functions-collections/">Dart functions, lists, maps and null safety <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

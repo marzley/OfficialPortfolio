@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Pointers and memory | C programming</title>
-    <meta name="description" content="Every variable lives at an address in memory. A pointer is a variable that stores an address. - &amp;x = &quot;address of x&quot; - p = &quot;the value p points to&quot;" />
+    <title>Pointers and memory in C: addresses, dereferencing,…</title>
+    <meta name="description" content="Pointers are what make C both powerful and famous for being tricky. A pointer is a variable that stores a memory address : the location of another…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/c-programming/pointers-memory/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Pointers and memory | C programming" />
-    <meta property="og:description" content="Every variable lives at an address in memory. A pointer is a variable that stores an address. - &amp;x = &quot;address of x&quot; - p = &quot;the value p points to&quot;" />
+    <meta property="og:title" content="Pointers and memory in C: addresses, dereferencing,…" />
+    <meta property="og:description" content="Pointers are what make C both powerful and famous for being tricky. A pointer is a variable that stores a memory address : the location of another…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/c-programming/pointers-memory/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Pointers and memory | C programming" />
-    <meta name="twitter:description" content="Every variable lives at an address in memory. A pointer is a variable that stores an address. - &amp;x = &quot;address of x&quot; - p = &quot;the value p points to&quot;" />
+    <meta name="twitter:title" content="Pointers and memory in C: addresses, dereferencing,…" />
+    <meta name="twitter:description" content="Pointers are what make C both powerful and famous for being tricky. A pointer is a variable that stores a memory address : the location of another…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/c-programming/pointers-memory/#lesson","name":"Pointers and memory","description":"Every variable lives at an address in memory. A pointer is a variable that stores an address. - &x = \"address of x\" - p = \"the value p points to\"","url":"https://marzleytechsolutions.co.ke/learn/c-programming/pointers-memory/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/c-programming/#course","name":"C programming","url":"https://marzleytechsolutions.co.ke/learn/c-programming/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"C programming","item":"https://marzleytechsolutions.co.ke/learn/c-programming/"},{"@type":"ListItem","position":4,"name":"Pointers and memory","item":"https://marzleytechsolutions.co.ke/learn/c-programming/pointers-memory/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/c-programming/pointers-memory/#lesson","name":"Pointers and memory in C: addresses, dereferencing, pointers and functions, arrays, pointer arithmetic, malloc/free and common bugs","description":"Pointers are what make C both powerful and famous for being tricky. A pointer is a variable that stores a memory address : the location of another…","url":"https://marzleytechsolutions.co.ke/learn/c-programming/pointers-memory/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/c-programming/#course","name":"C programming","url":"https://marzleytechsolutions.co.ke/learn/c-programming/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"C programming","item":"https://marzleytechsolutions.co.ke/learn/c-programming/"},{"@type":"ListItem","position":4,"name":"Pointers and memory in C: addresses, dereferencing, pointers and functions, arrays, pointer arithmetic, malloc/free and common bugs","item":"https://marzleytechsolutions.co.ke/learn/c-programming/pointers-memory/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,39 +36,193 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/c-programming/">C programming</a> / <span>Pointers and memory</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=c-programming&amp;lesson=pointers-memory"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Pointers and memory</h1>
-<p>Every variable lives at an <strong>address</strong> in memory. A <strong>pointer</strong> is a variable that stores an address.</p>
-<figure class="static-code"><figcaption>C</figcaption><pre><code class="language-c">int balance = 500;
-int *p = &amp;balance;      // p holds the address of balance
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/c-programming/">C programming</a> / <span>Pointers and memory in C: addresses, dereferencing, pointers and functions, arrays, pointer arithmetic, malloc/free and common bugs</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=c-programming&amp;lesson=pointers-memory"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Pointers and memory in C: addresses, dereferencing, pointers and functions, arrays, pointer arithmetic, malloc/free and common bugs</h1>
+<p><strong>Pointers</strong> are what make C both powerful and famous for being tricky. A pointer is a variable that stores a <strong>memory address</strong>: the location of another value. Pointers let functions change variables passed to them, let you work efficiently with arrays and strings, build dynamic data structures (linked lists, trees), allocate memory at runtime, and talk directly to hardware registers on microcontrollers. Understanding them explains how every computer manages memory, and it's what separates people who "know some C" from people who really understand it.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>How memory works: bytes, addresses, the stack and the heap</li><li>The address-of operator <code>&amp;</code> and printing addresses</li><li>Declaring pointers and dereferencing with <code>*</code></li><li>Pointers and functions: changing the caller's variables (swap)</li><li>Returning several results through pointers</li><li>Arrays and pointers: the array name, indexing and pointer arithmetic</li><li>Strings as char arrays and char pointers</li><li>Dynamic memory: malloc, calloc, realloc, free</li><li>NULL pointers and checking allocations</li><li>Common bugs: uninitialised and dangling pointers, leaks, buffer overflows</li><li>Tools: compiler warnings, Valgrind and AddressSanitizer</li></ul></div></aside>
+<h2>How memory works</h2>
+<p>Memory is a long row of numbered <strong>bytes</strong>. Each byte has an <strong>address</strong> (shown in hexadecimal like <code>0x7ffd5e8c</code>). A variable occupies one or more bytes: an <code>int</code> usually 4, a <code>double</code> 8, a <code>char</code> 1.</p>
+<div class="static-table"><table><thead><tr><th>Region</th><th>Holds</th><th>Managed by</th></tr></thead><tbody><tr><td><strong>Stack</strong></td><td>Local variables and function call information</td><td>Automatically: freed when the function returns</td></tr><tr><td><strong>Heap</strong></td><td>Memory you request at runtime with malloc</td><td>You: must be freed with free</td></tr><tr><td><strong>Static/global area</strong></td><td>Global and static variables</td><td>Whole program lifetime</td></tr><tr><td><strong>Code</strong></td><td>The program's instructions</td><td>Read-only</td></tr></tbody></table></div>
+<h2>Addresses with &amp;</h2>
+<figure class="static-code"><figcaption>C</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
 
-printf(&quot;%d\n&quot;, balance);   // 500
-printf(&quot;%p\n&quot;, (void*)p);  // an address like 0x7ffd...
-printf(&quot;%d\n&quot;, *p);        // 500  (* reads the value at the address)
+int main(void) {
+    int students = 45;
+    double fee = 12500.0;
+    printf(&quot;students = %d, stored at address %p\n&quot;, students, (void *)&amp;students);
+    printf(&quot;fee = %.1f, stored at address %p\n&quot;, fee, (void *)&amp;fee);
+    printf(&quot;An int uses %d bytes, a double uses %d bytes\n&quot;, (int)sizeof(students), (int)sizeof(fee));
+    return 0;
+}</code></pre></figure>
+<p>Run this with GCC on your computer: <code>&amp;students</code> means "the address of students", and <code>%p</code> prints it in hexadecimal. Addresses change from run to run, so your output will differ.</p>
+<h2>Declaring and dereferencing pointers</h2>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
 
-*p = 800;                  // change balance through the pointer
-printf(&quot;%d\n&quot;, balance);   // 800</code></pre></figure>
-<ul><li><code>&amp;x</code> = "address of x"</li><li><code>*p</code> = "the value p points to"</li></ul>
-<h2>Why pointers matter: changing a variable inside a function</h2>
-<figure class="static-code"><figcaption>C</figcaption><pre><code class="language-c">void add_bonus(int *salary) {
-    *salary += 2000;
+int main(void) {
+    int balance = 1000;
+    int *p = &amp;balance;            /* p is a pointer to int, holding balance&#x27;s address */
+
+    printf(&quot;balance = %d\n&quot;, balance);
+    printf(&quot;p points to the value %d\n&quot;, *p);   /* *p = the value at the address (dereference) */
+
+    *p = 1500;                    /* change balance THROUGH the pointer */
+    printf(&quot;balance is now %d\n&quot;, balance);
+
+    *p = *p + 250;
+    printf(&quot;after deposit: %d\n&quot;, balance);
+    return 0;
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Expression</th><th>Meaning</th></tr></thead><tbody><tr><td><code>int *p;</code></td><td>Declare p as a pointer to an int</td></tr><tr><td><code>p = &amp;x;</code></td><td>Store x's address in p</td></tr><tr><td><code>*p</code></td><td>The value at the address p holds (dereference)</td></tr><tr><td><code>*p = 5;</code></td><td>Write 5 to that location</td></tr><tr><td><code>p</code></td><td>The address itself</td></tr></tbody></table></div>
+<p>The <code>*</code> has two jobs: in a <strong>declaration</strong> it means "pointer to"; in an <strong>expression</strong> it means "the value at".</p>
+<h2>Pointers and functions</h2>
+<p>C passes arguments <strong>by value</strong> (copies). To let a function change the caller's variables, pass their <strong>addresses</strong>:</p>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void apply_payment(double *balance, double amount) {
+    if (amount &gt; 0) {
+        *balance = *balance - amount;
+    }
 }
 
 int main(void) {
-    int pay = 30000;
-    add_bonus(&amp;pay);
-    printf(&quot;%d\n&quot;, pay);   // 32000
-}</code></pre></figure>
-<h2>Dynamic memory</h2>
-<figure class="static-code"><figcaption>C</figcaption><pre><code class="language-c">#include &lt;stdlib.h&gt;
+    int x = 3, y = 8;
+    swap(&amp;x, &amp;y);
+    printf(&quot;x = %d, y = %d\n&quot;, x, y);
 
-int n = 100;
-int *list = malloc(n * sizeof(int));   // ask for memory
-if (list == NULL) return 1;            // always check
-list[0] = 42;
-free(list);                            // give it back when done</code></pre></figure>
-<p>Forgetting <code>free</code> causes <strong>memory leaks</strong>; using memory after freeing it causes crashes and security holes. Languages like Python and Java manage memory for you; in C, you do it yourself.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which operator gives the address of a variable?</p><details><summary>Show answer</summary><p>&amp;</p></details></li><li><p>Which function requests memory at run time?</p><details><summary>Show answer</summary><p>malloc</p></details></li><li><p>Which function returns memory you no longer need?</p><details><summary>Show answer</summary><p>free</p></details></li><li><p>What is it called when a program never frees memory it no longer uses? (two words)</p><details><summary>Show answer</summary><p>memory leak</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 8 in <a href="/learn/c-programming/">C programming</a> · <a href="/learn/?book=c-programming">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/c-programming/arrays-strings/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Arrays and strings in C</a><a class="btn btn-solid btn-sm" href="/learn/c-programming/dynamic-memory/">Dynamic memory: malloc, realloc and free <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    double fees = 25000.0;
+    apply_payment(&amp;fees, 7500.0);
+    printf(&quot;Fee balance: %.2f\n&quot;, fees);
+    return 0;
+}</code></pre></figure>
+<p>This is why <code>scanf(&quot;%d&quot;, &amp;age)</code> needs <code>&amp;</code>: scanf must write into your variable.</p>
+<h3>Returning several results</h3>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+void stats(int marks[], int n, int *min, int *max, double *avg) {
+    int i, total = 0;
+    *min = marks[0];
+    *max = marks[0];
+    for (i = 0; i &lt; n; i++) {
+        if (marks[i] &lt; *min) *min = marks[i];
+        if (marks[i] &gt; *max) *max = marks[i];
+        total += marks[i];
+    }
+    *avg = (double)total / n;
+}
+
+int main(void) {
+    int marks[5] = {67, 82, 45, 90, 58};
+    int lo, hi;
+    double average;
+    stats(marks, 5, &amp;lo, &amp;hi, &amp;average);
+    printf(&quot;Lowest %d, highest %d, average %.1f\n&quot;, lo, hi, average);
+    return 0;
+}</code></pre></figure>
+<h2>Arrays and pointers</h2>
+<p>An array's name acts like a pointer to its first element. <code>marks[i]</code> is the same as <code>*(marks + i)</code>:</p>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void) {
+    int marks[4] = {67, 82, 45, 90};
+    int *p = marks;              /* same as &amp;marks[0] */
+    int i;
+
+    for (i = 0; i &lt; 4; i++) {
+        printf(&quot;marks[%d] = %d, *(p + %d) = %d\n&quot;, i, marks[i], i, *(p + i));
+    }
+
+    p = p + 2;                   /* pointer arithmetic: moves by 2 ints, not 2 bytes */
+    printf(&quot;After p + 2, *p = %d\n&quot;, *p);
+    return 0;
+}</code></pre></figure>
+<p>Pointer arithmetic moves by the <strong>size of the type</strong>: adding 1 to an <code>int *</code> moves 4 bytes (on typical systems).</p>
+<p>When you pass an array to a function, C passes a pointer to its first element, so the function <strong>can change</strong> the original array, and it <strong>doesn't know the length</strong>: always pass the size too (as <code>stats</code> above did).</p>
+<h2>Strings and pointers</h2>
+<p>A C string is an array of <code>char</code> ending with the <strong>null character</strong> <code>&#x27;\0&#x27;</code>:</p>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+int count_vowels(char *s) {
+    int count = 0;
+    while (*s != &#x27;\0&#x27;) {                     /* walk the string with a pointer */
+        char c = *s;
+        if (c == &#x27;a&#x27; || c == &#x27;e&#x27; || c == &#x27;i&#x27; || c == &#x27;o&#x27; || c == &#x27;u&#x27;) count++;
+        s++;
+    }
+    return count;
+}
+
+int main(void) {
+    char town[20] = &quot;Nakuru&quot;;               /* array: 7 bytes used including &#x27;\0&#x27; */
+    printf(&quot;%s has %d letters and %d vowels\n&quot;, town, (int)strlen(town), count_vowels(town));
+    town[0] = &#x27;M&#x27;;                          /* arrays can be modified */
+    printf(&quot;Changed: %s\n&quot;, town);
+    return 0;
+}</code></pre></figure>
+<p>The arrays and strings lesson covers <code>strcpy</code>, <code>strcat</code>, <code>strcmp</code> and safe string handling.</p>
+<h2>Dynamic memory: malloc and free</h2>
+<p>When you don't know how much memory you need until the program runs (e.g. the number of students entered), allocate it on the <strong>heap</strong>:</p>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main(void) {
+    int n = 5, i;
+    int *marks = malloc(n * sizeof(int));     /* request space for 5 ints */
+    if (marks == NULL) {                      /* always check */
+        printf(&quot;Out of memory\n&quot;);
+        return 1;
+    }
+    for (i = 0; i &lt; n; i++) {
+        marks[i] = 50 + i * 10;
+    }
+
+    n = 8;                                    /* need more space: grow the block */
+    int *bigger = realloc(marks, n * sizeof(int));
+    if (bigger == NULL) {
+        free(marks);
+        return 1;
+    }
+    marks = bigger;
+    for (i = 5; i &lt; n; i++) {
+        marks[i] = 0;
+    }
+
+    for (i = 0; i &lt; n; i++) {
+        printf(&quot;%d &quot;, marks[i]);
+    }
+    printf(&quot;\n&quot;);
+
+    free(marks);                              /* give the memory back */
+    marks = NULL;                             /* avoid a dangling pointer */
+    return 0;
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Function</th><th>Purpose</th></tr></thead><tbody><tr><td><code>malloc(bytes)</code></td><td>Allocate uninitialised memory; returns a pointer or NULL</td></tr><tr><td><code>calloc(count, size)</code></td><td>Allocate and set to zero</td></tr><tr><td><code>realloc(ptr, bytes)</code></td><td>Resize an allocation (may move it)</td></tr><tr><td><code>free(ptr)</code></td><td>Release memory</td></tr></tbody></table></div>
+<p>Every <code>malloc</code>/<code>calloc</code> must eventually be matched by exactly one <code>free</code>.</p>
+<h2>NULL pointers</h2>
+<p><code>NULL</code> means "points to nothing". Initialise pointers to NULL if they don't point anywhere yet, and check before dereferencing:</p>
+<figure class="static-code"><figcaption>C</figcaption><pre><code class="language-c">int *p = NULL;
+if (p != NULL) {
+    printf(&quot;%d\n&quot;, *p);
+}</code></pre></figure>
+<p>Dereferencing NULL crashes the program (a "segmentation fault").</p>
+<h2>Common pointer bugs</h2>
+<div class="static-table"><table><thead><tr><th>Bug</th><th>Example</th><th>Result</th><th>Prevention</th></tr></thead><tbody><tr><td><strong>Uninitialised pointer</strong></td><td><code>int *p; *p = 5;</code></td><td>Writes to a random address: crash or corruption</td><td>Initialise to NULL or a valid address</td></tr><tr><td><strong>NULL dereference</strong></td><td><code>*p</code> when p is NULL</td><td>Segmentation fault</td><td>Check for NULL</td></tr><tr><td><strong>Dangling pointer</strong></td><td>Using memory after <code>free</code>, or returning the address of a local variable</td><td>Unpredictable behaviour</td><td>Set to NULL after free; never return addresses of locals</td></tr><tr><td><strong>Memory leak</strong></td><td>Forgetting to free</td><td>Program uses more and more memory</td><td>Free everything you allocate</td></tr><tr><td><strong>Double free</strong></td><td><code>free(p); free(p);</code></td><td>Crash or corruption</td><td>Set to NULL after free</td></tr><tr><td><strong>Buffer overflow</strong></td><td>Writing past the end of an array</td><td>Corrupts memory; major security hole</td><td>Check bounds; use sizes; safe functions (<code>snprintf</code>, <code>fgets</code>)</td></tr></tbody></table></div>
+<p>Buffer overflows in C code have caused many famous security vulnerabilities, which is why careful bounds checking matters.</p>
+<h2>Tools that catch memory bugs</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">gcc -Wall -Wextra -g program.c -o program                 # warnings and debug info
+gcc -fsanitize=address -g program.c -o program &amp;&amp; ./program   # AddressSanitizer: reports overflows and use-after-free
+valgrind --leak-check=full ./program                       # Valgrind (Linux): finds leaks and invalid accesses</code></pre></figure>
+<p>Use a debugger (<code>gdb</code>, or the debugger in VS Code/Code::Blocks) to step through code and inspect pointers.</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> What's wrong with this function, and how would you fix it? <code>int *make_counter(void) { int count = 0; return &amp;count; }</code></span><em>Show answer</em></summary><div class="callout-body"><p><code>count</code> is a local variable on the stack; it's destroyed when the function returns, so the returned pointer is dangling. Fix: allocate on the heap (<code>int *c = malloc(sizeof(int)); if (c) *c = 0; return c;</code> and free it later), or use a static variable, or have the caller provide the storage.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Memory is numbered bytes; local variables live on the stack, malloc'd memory on the heap.</li><li><code>&amp;x</code> gives an address; <code>int *p = &amp;x;</code> stores it; <code>*p</code> reads or writes the value there.</li><li>Pass pointers to let functions change caller variables or return several results.</li><li>Array names act as pointers to the first element; <code>a[i]</code> equals <code>*(a + i)</code>; pass array sizes to functions; strings end with <code>&#x27;\0&#x27;</code>.</li><li>Use malloc/calloc/realloc and free carefully: check for NULL, free exactly once, avoid dangling pointers, leaks and overflows; use sanitizers and Valgrind.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which operator gives the address of a variable?</p><details><summary>Show answer</summary><p>&amp;</p></details></li><li><p>Which operator gets the value a pointer points to?</p><details><summary>Show answer</summary><p>*</p></details></li><li><p>Which function allocates memory on the heap?</p><details><summary>Show answer</summary><p>malloc</p></details></li><li><p>Which function releases memory allocated with malloc?</p><details><summary>Show answer</summary><p>free</p></details></li><li><p>Which character ends every C string? (write it as in code)</p><details><summary>Show answer</summary><p>'\0'</p></details></li><li><p>What do you call a pointer that points to memory that has been freed? (one word)</p><details><summary>Show answer</summary><p>dangling</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 8 in <a href="/learn/c-programming/">C programming</a> · <a href="/learn/?book=c-programming">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/c-programming/arrays-strings/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Arrays and strings in C</a><a class="btn btn-solid btn-sm" href="/learn/c-programming/dynamic-memory/">Dynamic memory: malloc, realloc and free <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

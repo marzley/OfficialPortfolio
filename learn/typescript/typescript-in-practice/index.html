@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>TypeScript in real projects | TypeScript</title>
-    <meta name="description" content="Free TypeScript lesson: TypeScript in real projects." />
+    <title>TypeScript in real projects: classes, modules, async…</title>
+    <meta name="description" content="Knowing types is the start; using TypeScript well in real projects is the goal. This unit covers what you&#x27;ll do daily in a TypeScript codebase…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/typescript/typescript-in-practice/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="TypeScript in real projects | TypeScript" />
-    <meta property="og:description" content="Free TypeScript lesson: TypeScript in real projects." />
+    <meta property="og:title" content="TypeScript in real projects: classes, modules, async…" />
+    <meta property="og:description" content="Knowing types is the start; using TypeScript well in real projects is the goal. This unit covers what you&#x27;ll do daily in a TypeScript codebase…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/typescript/typescript-in-practice/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="TypeScript in real projects | TypeScript" />
-    <meta name="twitter:description" content="Free TypeScript lesson: TypeScript in real projects." />
+    <meta name="twitter:title" content="TypeScript in real projects: classes, modules, async…" />
+    <meta name="twitter:description" content="Knowing types is the start; using TypeScript well in real projects is the goal. This unit covers what you&#x27;ll do daily in a TypeScript codebase…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/typescript/typescript-in-practice/#lesson","name":"TypeScript in real projects","description":"Free TypeScript lesson: TypeScript in real projects.","url":"https://marzleytechsolutions.co.ke/learn/typescript/typescript-in-practice/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/typescript/#course","name":"TypeScript","url":"https://marzleytechsolutions.co.ke/learn/typescript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"TypeScript","item":"https://marzleytechsolutions.co.ke/learn/typescript/"},{"@type":"ListItem","position":4,"name":"TypeScript in real projects","item":"https://marzleytechsolutions.co.ke/learn/typescript/typescript-in-practice/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/typescript/typescript-in-practice/#lesson","name":"TypeScript in real projects: classes, modules, async APIs, runtime validation, React and Node.js, tsconfig and migrating JavaScript","description":"Knowing types is the start; using TypeScript well in real projects is the goal. This unit covers what you'll do daily in a TypeScript codebase…","url":"https://marzleytechsolutions.co.ke/learn/typescript/typescript-in-practice/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/typescript/#course","name":"TypeScript","url":"https://marzleytechsolutions.co.ke/learn/typescript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"TypeScript","item":"https://marzleytechsolutions.co.ke/learn/typescript/"},{"@type":"ListItem","position":4,"name":"TypeScript in real projects: classes, modules, async APIs, runtime validation, React and Node.js, tsconfig and migrating JavaScript","item":"https://marzleytechsolutions.co.ke/learn/typescript/typescript-in-practice/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,27 +36,209 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/typescript/">TypeScript</a> / <span>TypeScript in real projects</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=typescript&amp;lesson=typescript-in-practice"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>TypeScript in real projects</h1>
-<h2>Typing data from an API</h2>
-<figure class="static-code"><pre><code>interface Product { id: number; name: string; price: number; }
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/typescript/">TypeScript</a> / <span>TypeScript in real projects: classes, modules, async APIs, runtime validation, React and Node.js, tsconfig and migrating JavaScript</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=typescript&amp;lesson=typescript-in-practice"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>TypeScript in real projects: classes, modules, async APIs, runtime validation, React and Node.js, tsconfig and migrating JavaScript</h1>
+<p>Knowing types is the start; using TypeScript well in real projects is the goal. This unit covers what you'll do daily in a TypeScript codebase: organising code with modules, writing classes, calling APIs with async/await and typed responses, validating data that arrives at runtime, typing React components and Node.js/Express APIs, configuring <code>tsconfig.json</code>, using third-party libraries, and migrating an existing JavaScript project gradually.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Modules: import/export and project structure</li><li>Classes, access modifiers and implementing interfaces</li><li>Async/await, Promises and typed fetch calls</li><li>Runtime validation with type guards and Zod</li><li>Error handling patterns</li><li>Typing React components, props, state and events</li><li>Typing a Node.js/Express API</li><li>tsconfig essentials and strict mode</li><li>Using libraries and @types packages</li><li>Migrating JavaScript to TypeScript step by step</li><li>Tooling: ESLint, Prettier, tests and CI</li></ul></div></aside>
+<h2>Modules and project structure</h2>
+<p>Split code into files and share with <code>export</code>/<code>import</code>:</p>
+<figure class="static-code"><figcaption>TypeScript</figcaption><pre><code class="language-typescript">// src/types.ts
+export interface Product { id: number; name: string; price: number }
 
-async function loadProducts(): Promise&lt;Product[]&gt; {
-  const res = await fetch(&quot;/api/products&quot;);
-  if (!res.ok) throw new Error(&quot;Could not load products&quot;);
-  return res.json() as Promise&lt;Product[]&gt;;
+// src/utils/money.ts
+export function formatKsh(n: number): string {
+  return &quot;KSh &quot; + n.toLocaleString(&quot;en-KE&quot;);
 }
 
-loadProducts().then(list =&gt; {
-  list.forEach(p =&gt; console.log(p.name, p.price.toFixed(2)));
-});</code></pre></figure>
-<h2>Where TypeScript is used</h2>
-<ul><li><strong>React</strong> with Vite or Next.js: <code>npm create vite@latest my-app -- --template react-ts</code></li><li><strong>Angular</strong> (TypeScript by default)</li><li><strong>Node.js</strong> back ends with Express or NestJS</li><li><strong>React Native</strong> mobile apps</li></ul>
-<h2>Useful built-in helper types</h2>
-<div class="static-table"><table><thead><tr><th>Type</th><th>What it does</th></tr></thead><tbody><tr><td><code>Partial&lt;T&gt;</code></td><td>All fields optional (good for update forms)</td></tr><tr><td><code>Required&lt;T&gt;</code></td><td>All fields required</td></tr><tr><td><code>Pick&lt;T, &quot;a&quot; | &quot;b&quot;&gt;</code></td><td>Only some fields</td></tr><tr><td><code>Omit&lt;T, &quot;id&quot;&gt;</code></td><td>All fields except some</td></tr><tr><td><code>Record&lt;string, number&gt;</code></td><td>An object map, e.g. prices by product name</td></tr></tbody></table></div>
-<h2>Tips</h2>
-<ul><li>Turn on <code>&quot;strict&quot;: true</code> in <code>tsconfig.json</code>: it catches the most bugs.</li><li>Avoid <code>any</code>: it switches type checking off. Use <code>unknown</code> and check the value instead.</li><li>Learn JavaScript first; TypeScript is easy once JavaScript makes sense.</li></ul>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which tsconfig setting turns on the strictest, most helpful checks?</p><details><summary>Show answer</summary><p>strict</p></details></li><li><p>Which helper type makes every field optional?</p><details><summary>Show answer</summary><p>Partial</p></details></li><li><p>Which type switches off type checking and should be avoided?</p><details><summary>Show answer</summary><p>any</p></details></li></ol></section></div><p class="static-meta">Lesson 7 of 7 in <a href="/learn/typescript/">TypeScript</a> · <a href="/learn/?book=typescript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/typescript/classes-enums-modules/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Classes, enums and organising a TypeScript project</a><span></span></nav></article>
+// src/index.ts
+import type { Product } from &quot;./types&quot;;
+import { formatKsh } from &quot;./utils/money&quot;;
+const p: Product = { id: 1, name: &quot;Laptop bag&quot;, price: 2500 };
+console.log(p.name, formatKsh(p.price));</code></pre></figure>
+<p><code>import type</code> imports only types (removed at compile time). A typical structure:</p>
+<figure class="static-code"><pre><code>src/
+  types/       shared interfaces and types
+  services/    API calls, payments, database access
+  utils/       helpers (formatting, validation)
+  components/  React components (front end)
+  routes/      API routes (back end)
+tests/
+tsconfig.json
+package.json</code></pre></figure>
+<h2>Classes</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">interface Payable {
+  pay(amount: number): string;
+}
+
+class Wallet implements Payable {
+  private balance: number;              // only accessible inside the class
+  constructor(public owner: string, opening = 0) {   // &#x27;public owner&#x27; creates a property
+    this.balance = opening;
+  }
+  deposit(amount: number): void {
+    if (amount &lt;= 0) throw new Error(&quot;Amount must be positive&quot;);
+    this.balance += amount;
+  }
+  pay(amount: number): string {
+    if (amount &gt; this.balance) return `${this.owner}: insufficient balance`;
+    this.balance -= amount;
+    return `${this.owner} paid KSh ${amount}. Balance KSh ${this.balance}`;
+  }
+  get currentBalance(): number { return this.balance; }
+}
+
+const w = new Wallet(&quot;Wanjiku&quot;, 1000);
+w.deposit(500);
+console.log(w.pay(1200));
+console.log(w.pay(800));
+console.log(w.currentBalance);
+// w.balance = 999999;   // error: &#x27;balance&#x27; is private</code></pre></figure>
+<p>Access modifiers: <code>public</code> (default), <code>private</code>, <code>protected</code> (class and subclasses), <code>readonly</code>.</p>
+<h2>Async code and typed API calls</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type Student = { admissionNo: string; name: string; balance: number };
+
+// A fake API so the example runs anywhere
+function fakeFetchStudents(): Promise&lt;Student[]&gt; {
+  return new Promise((resolve) =&gt;
+    setTimeout(() =&gt; resolve([
+      { admissionNo: &quot;ADM001&quot;, name: &quot;Brian&quot;, balance: 12500 },
+      { admissionNo: &quot;ADM002&quot;, name: &quot;Faith&quot;, balance: 0 },
+    ]), 100));
+}
+
+async function studentsWithArrears(): Promise&lt;string[]&gt; {
+  const students = await fakeFetchStudents();
+  return students.filter((s) =&gt; s.balance &gt; 0).map((s) =&gt; `${s.name} owes KSh ${s.balance}`);
+}
+
+studentsWithArrears().then((list) =&gt; console.log(list));</code></pre></figure>
+<p>With real <code>fetch</code>, the response JSON is untyped (<code>any</code>), so <strong>validate</strong> before trusting it:</p>
+<figure class="static-code"><figcaption>TypeScript</figcaption><pre><code class="language-typescript">async function getStudents(): Promise&lt;Student[]&gt; {
+  const res = await fetch(&quot;/api/students&quot;);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data: unknown = await res.json();
+  return parseStudents(data);      // runtime validation (below)
+}</code></pre></figure>
+<h2>Runtime validation</h2>
+<h3>Type guards</h3>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type Student = { admissionNo: string; name: string; balance: number };
+
+function isStudent(x: unknown): x is Student {
+  return typeof x === &quot;object&quot; &amp;&amp; x !== null &amp;&amp;
+    typeof (x as Student).admissionNo === &quot;string&quot; &amp;&amp;
+    typeof (x as Student).name === &quot;string&quot; &amp;&amp;
+    typeof (x as Student).balance === &quot;number&quot;;
+}
+
+const fromApi: unknown[] = [
+  { admissionNo: &quot;ADM001&quot;, name: &quot;Brian&quot;, balance: 12500 },
+  { admissionNo: &quot;ADM003&quot;, name: &quot;Juma&quot;, balance: &quot;unknown&quot; },   // bad data
+];
+for (const item of fromApi) {
+  console.log(isStudent(item) ? `OK: ${item.name}` : &quot;Rejected invalid record&quot;);
+}</code></pre></figure>
+<p><code>x is Student</code> tells TypeScript that if the function returns true, <code>x</code> is a <code>Student</code>.</p>
+<h3>Zod (popular validation library)</h3>
+<figure class="static-code"><figcaption>TypeScript</figcaption><pre><code class="language-typescript">import { z } from &quot;zod&quot;;
+
+const StudentSchema = z.object({
+  admissionNo: z.string(),
+  name: z.string().min(1),
+  balance: z.number().nonnegative(),
+});
+type Student = z.infer&lt;typeof StudentSchema&gt;;     // the type comes from the schema
+
+const result = StudentSchema.safeParse(dataFromApi);
+if (!result.success) console.error(result.error.issues);</code></pre></figure>
+<p>One schema gives both runtime validation and the TypeScript type: great for API inputs, forms and environment variables.</p>
+<h2>Error handling</h2>
+<p>In <code>catch</code>, the error is <code>unknown</code> (in strict mode), so check it:</p>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">function risky(n: number): number {
+  if (n &lt; 0) throw new Error(&quot;Negative values not allowed&quot;);
+  return Math.sqrt(n);
+}
+
+try {
+  console.log(risky(16));
+  console.log(risky(-1));
+} catch (err: unknown) {
+  const message = err instanceof Error ? err.message : String(err);
+  console.log(&quot;Caught:&quot;, message);
+}
+
+// A Result type avoids exceptions for expected failures
+type Result&lt;T&gt; = { ok: true; value: T } | { ok: false; error: string };
+function safeDivide(a: number, b: number): Result&lt;number&gt; {
+  return b === 0 ? { ok: false, error: &quot;Division by zero&quot; } : { ok: true, value: a / b };
+}
+const r = safeDivide(10, 0);
+console.log(r.ok ? r.value : r.error);</code></pre></figure>
+<h2>TypeScript with React</h2>
+<figure class="static-code"><figcaption>TSX</figcaption><pre><code class="language-tsx">type ProductCardProps = {
+  name: string;
+  price: number;
+  onAdd: (name: string) =&gt; void;
+  badge?: string;
+};
+
+export function ProductCard({ name, price, onAdd, badge }: ProductCardProps) {
+  const [qty, setQty] = useState&lt;number&gt;(1);
+  return (
+    &lt;div className=&quot;card&quot;&gt;
+      {badge &amp;&amp; &lt;span className=&quot;badge&quot;&gt;{badge}&lt;/span&gt;}
+      &lt;h3&gt;{name}&lt;/h3&gt;
+      &lt;p&gt;KSh {price.toLocaleString()}&lt;/p&gt;
+      &lt;input type=&quot;number&quot; value={qty}
+        onChange={(e: React.ChangeEvent&lt;HTMLInputElement&gt;) =&gt; setQty(Number(e.target.value))} /&gt;
+      &lt;button onClick={() =&gt; onAdd(name)}&gt;Add to cart&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre></figure>
+<p>Props types catch missing or wrong props wherever the component is used. Create projects with Vite's React + TypeScript template (<code>npm create vite@latest</code>) or Next.js (TypeScript by default). See the React subject.</p>
+<h2>TypeScript with Node.js and Express</h2>
+<figure class="static-code"><figcaption>TypeScript</figcaption><pre><code class="language-typescript">import express, { Request, Response } from &quot;express&quot;;
+
+type CreateOrder = { productId: number; qty: number; phone: string };
+
+const app = express();
+app.use(express.json());
+
+app.post(&quot;/orders&quot;, (req: Request&lt;{}, {}, CreateOrder&gt;, res: Response) =&gt; {
+  const { productId, qty, phone } = req.body;      // typed, but still validate (e.g. Zod)
+  if (!Number.isInteger(qty) || qty &lt; 1) {
+    return res.status(400).json({ error: &quot;qty must be a positive integer&quot; });
+  }
+  res.status(201).json({ ok: true, productId, qty, phone });
+});
+
+app.listen(3000);</code></pre></figure>
+<p>Install types for libraries that don't include them: <code>npm install -D @types/express @types/node</code>.</p>
+<h2>tsconfig essentials</h2>
+<figure class="static-code"><figcaption>JSON</figcaption><pre><code class="language-json">{
+  &quot;compilerOptions&quot;: {
+    &quot;target&quot;: &quot;ES2022&quot;,
+    &quot;module&quot;: &quot;NodeNext&quot;,
+    &quot;moduleResolution&quot;: &quot;NodeNext&quot;,
+    &quot;strict&quot;: true,
+    &quot;noUncheckedIndexedAccess&quot;: true,
+    &quot;esModuleInterop&quot;: true,
+    &quot;skipLibCheck&quot;: true,
+    &quot;outDir&quot;: &quot;dist&quot;,
+    &quot;rootDir&quot;: &quot;src&quot;
+  },
+  &quot;include&quot;: [&quot;src&quot;]
+}</code></pre></figure>
+<p>Front-end frameworks generate a suitable tsconfig for you; mainly ensure <code>strict</code> is on.</p>
+<h2>Libraries and @types</h2>
+<ul><li>Many packages ship their own types (look for a "TS" badge on npm).</li><li>Others have community types in <strong>DefinitelyTyped</strong>: <code>npm install -D @types/packagename</code>.</li><li>If no types exist, declare a minimal module (<code>declare module &quot;old-lib&quot;;</code>) and add types gradually.</li></ul>
+<h2>Migrating JavaScript to TypeScript</h2>
+<ol><li>Add TypeScript and a tsconfig with <code>&quot;allowJs&quot;: true</code> and <code>&quot;checkJs&quot;: false</code>.</li><li>Rename files one at a time from <code>.js</code> to <code>.ts</code> (or <code>.jsx</code> to <code>.tsx</code>), starting with shared utilities.</li><li>Fix errors; use <code>unknown</code> and narrowing rather than <code>any</code> where possible.</li><li>Add types for core data (API responses, database models).</li><li>Turn on <code>strict</code> (or its individual flags) once most files are converted.</li><li>Add type checking (<code>tsc --noEmit</code>) to CI so errors can't be merged.</li></ol>
+<h2>Tooling</h2>
+<div class="static-table"><table><thead><tr><th>Tool</th><th>Purpose</th></tr></thead><tbody><tr><td><strong>ESLint</strong> with typescript-eslint</td><td>Catch bad patterns</td></tr><tr><td><strong>Prettier</strong></td><td>Consistent formatting</td></tr><tr><td><strong>Vitest / Jest</strong></td><td>Unit tests (types don't replace tests)</td></tr><tr><td><strong>tsc --noEmit</strong> in CI</td><td>Fail builds on type errors (see the GitHub Actions lesson)</td></tr></tbody></table></div>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Your team's Express API receives JSON orders. A developer typed <code>req.body</code> as <code>CreateOrder</code> and assumes qty is always a positive number. Why can this still crash, and what's the best fix?</span><em>Show answer</em></summary><div class="callout-body"><p>Typing <code>req.body</code> only tells the compiler what you expect; clients can send anything (missing fields, strings, negatives). Validate at runtime with a schema (e.g. Zod <code>safeParse</code>), return 400 on invalid input, and use the inferred type afterwards so the rest of the code is genuinely safe.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Organise code with modules (<code>export</code>/<code>import</code>, <code>import type</code>) and a clear folder structure.</li><li>Classes support access modifiers and <code>implements</code> interfaces; async functions return typed Promises.</li><li>Validate external data at runtime with type guards or Zod; handle <code>unknown</code> errors safely.</li><li>Type React props, state and events, and Express requests/responses; install @types for untyped libraries.</li><li>Keep <code>strict</code> on, migrate JS gradually, and add ESLint, tests and <code>tsc --noEmit</code> to CI.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword imports only types, removed at compile time? (two words)</p><details><summary>Show answer</summary><p>import type</p></details></li><li><p>Which access modifier makes a class property usable only inside the class?</p><details><summary>Show answer</summary><p>private</p></details></li><li><p>What does a function returning "x is Student" act as? (two words)</p><details><summary>Show answer</summary><p>type guard</p></details></li><li><p>Which library lets one schema provide both runtime validation and a TypeScript type?</p><details><summary>Show answer</summary><p>Zod</p></details></li><li><p>Which npm scope provides community type definitions for libraries?</p><details><summary>Show answer</summary><p>@types</p></details></li><li><p>What command checks types without producing output files?</p><details><summary>Show answer</summary><p>tsc --noEmit</p></details></li></ol></section></div><p class="static-meta">Lesson 7 of 7 in <a href="/learn/typescript/">TypeScript</a> · <a href="/learn/?book=typescript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/typescript/classes-enums-modules/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Classes, enums and organising a TypeScript project</a><span></span></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

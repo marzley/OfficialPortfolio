@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Flutter widgets and layouts | Dart &amp; Flutter (mobile apps)</title>
-    <meta name="description" content="In Flutter, everything is a widget : text, buttons, padding, rows, whole screens." />
+    <title>Flutter widgets and layouts: the widget tree, Stateless…</title>
+    <meta name="description" content="In Flutter, everything is a widget : text, buttons, padding, rows, whole screens, even the app itself. You build interfaces by combining small widgets…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/dart-flutter/flutter-widgets/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Flutter widgets and layouts | Dart &amp; Flutter (mobile apps)" />
-    <meta property="og:description" content="In Flutter, everything is a widget : text, buttons, padding, rows, whole screens." />
+    <meta property="og:title" content="Flutter widgets and layouts: the widget tree, Stateless…" />
+    <meta property="og:description" content="In Flutter, everything is a widget : text, buttons, padding, rows, whole screens, even the app itself. You build interfaces by combining small widgets…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/dart-flutter/flutter-widgets/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Flutter widgets and layouts | Dart &amp; Flutter (mobile apps)" />
-    <meta name="twitter:description" content="In Flutter, everything is a widget : text, buttons, padding, rows, whole screens." />
+    <meta name="twitter:title" content="Flutter widgets and layouts: the widget tree, Stateless…" />
+    <meta name="twitter:description" content="In Flutter, everything is a widget : text, buttons, padding, rows, whole screens, even the app itself. You build interfaces by combining small widgets…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/flutter-widgets/#lesson","name":"Flutter widgets and layouts","description":"In Flutter, everything is a widget : text, buttons, padding, rows, whole screens.","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/flutter-widgets/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/#course","name":"Dart & Flutter (mobile apps)","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Dart & Flutter (mobile apps)","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},{"@type":"ListItem","position":4,"name":"Flutter widgets and layouts","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/flutter-widgets/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/flutter-widgets/#lesson","name":"Flutter widgets and layouts: the widget tree, Stateless vs Stateful, Material basics, Row/Column/Stack, lists, theming and responsive design","description":"In Flutter, everything is a widget : text, buttons, padding, rows, whole screens, even the app itself. You build interfaces by combining small widgets…","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/flutter-widgets/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/dart-flutter/#course","name":"Dart & Flutter (mobile apps)","url":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Dart & Flutter (mobile apps)","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/"},{"@type":"ListItem","position":4,"name":"Flutter widgets and layouts: the widget tree, Stateless vs Stateful, Material basics, Row/Column/Stack, lists, theming and responsive design","item":"https://marzleytechsolutions.co.ke/learn/dart-flutter/flutter-widgets/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,53 +36,211 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> / <span>Flutter widgets and layouts</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=dart-flutter&amp;lesson=flutter-widgets"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Flutter widgets and layouts</h1>
-<p>In Flutter, <strong>everything is a widget</strong>: text, buttons, padding, rows, whole screens.</p>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> / <span>Flutter widgets and layouts: the widget tree, Stateless vs Stateful, Material basics, Row/Column/Stack, lists, theming and responsive design</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=dart-flutter&amp;lesson=flutter-widgets"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Flutter widgets and layouts: the widget tree, Stateless vs Stateful, Material basics, Row/Column/Stack, lists, theming and responsive design</h1>
+<p>In Flutter, <strong>everything is a widget</strong>: text, buttons, padding, rows, whole screens, even the app itself. You build interfaces by combining small widgets into a <strong>widget tree</strong>, and Flutter redraws the parts that change when your data changes. This unit explains how Flutter apps are structured, the difference between stateless and stateful widgets, the core layout widgets, building scrolling lists, theming your app with brand colours, and making layouts adapt to different screen sizes.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Creating a Flutter project and its structure</li><li>main(), runApp, MaterialApp and Scaffold</li><li>The widget tree and composition</li><li>StatelessWidget vs StatefulWidget and setState</li><li>Common widgets: Text, Icon, Image, buttons, Container, Card</li><li>Layout: Padding, Center, Row, Column, Expanded, SizedBox, Stack</li><li>Scrolling lists with ListView.builder</li><li>Navigation between screens (intro)</li><li>Theming: colours, fonts, Material 3</li><li>Responsive layouts with MediaQuery and LayoutBuilder</li><li>Hot reload and debugging layout problems</li></ul></div></aside>
+<h2>Create a project</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">flutter create mama_mboga
+cd mama_mboga
+flutter run            # runs on a connected phone, emulator, Chrome or desktop</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Path</th><th>Contents</th></tr></thead><tbody><tr><td><code>lib/main.dart</code></td><td>App code starts here</td></tr><tr><td><code>pubspec.yaml</code></td><td>App name, version, dependencies (packages), assets (images, fonts)</td></tr><tr><td><code>android/</code>, <code>ios/</code>, <code>web/</code>...</td><td>Platform-specific project files</td></tr><tr><td><code>test/</code></td><td>Tests</td></tr></tbody></table></div>
+<h2>The app skeleton</h2>
 <figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
 
-void main() =&gt; runApp(const ShopApp());
+void main() {
+  runApp(const MyApp());
+}
 
-class ShopApp extends StatelessWidget {
-  const ShopApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: &#x27;Duka&#x27;,
-      theme: ThemeData(colorSchemeSeed: Colors.amber),
-      home: Scaffold(
-        appBar: AppBar(title: const Text(&#x27;Duka Online&#x27;)),
-        body: ListView(
-          padding: const EdgeInsets.all(16),
-          children: const [
-            ListTile(leading: Icon(Icons.shopping_bag), title: Text(&#x27;Unga 2kg&#x27;), trailing: Text(&#x27;KSh 180&#x27;)),
-            ListTile(leading: Icon(Icons.local_drink), title: Text(&#x27;Milk 500ml&#x27;), trailing: Text(&#x27;KSh 60&#x27;)),
+      title: &#x27;Mama Mboga&#x27;,
+      theme: ThemeData(colorSchemeSeed: Colors.green, useMaterial3: true),
+      home: const HomeScreen(),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;Mama Mboga&#x27;)),
+      body: const Center(child: Text(&#x27;Fresh vegetables delivered in Nakuru&#x27;)),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.shopping_cart),
+      ),
+    );
+  }
+}</code></pre></figure>
+<ul><li><code>runApp</code> starts the app with the root widget.</li><li><code>MaterialApp</code> provides Material Design, theming and navigation.</li><li><code>Scaffold</code> gives a screen structure: app bar, body, floating action button, drawer, bottom navigation.</li><li><code>build</code> returns the widget tree; Flutter calls it whenever the UI needs to be drawn.</li></ul>
+<h2>Stateless vs Stateful widgets</h2>
+<div class="static-table"><table><thead><tr><th>StatelessWidget</th><th>StatefulWidget</th></tr></thead><tbody><tr><td>Doesn't change after it's built (given the same inputs)</td><td>Holds <strong>state</strong> that changes over time</td></tr><tr><td>Examples: a logo, a product card showing fixed data</td><td>Examples: a counter, a form, a cart quantity, a toggle</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+class QuantityPicker extends StatefulWidget {
+  const QuantityPicker({super.key, required this.price});
+  final double price;
+
+  @override
+  State&lt;QuantityPicker&gt; createState() =&gt; _QuantityPickerState();
+}
+
+class _QuantityPickerState extends State&lt;QuantityPicker&gt; {
+  int qty = 1;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: const Icon(Icons.remove),
+          onPressed: qty &gt; 1 ? () =&gt; setState(() =&gt; qty--) : null,   // disabled at 1
+        ),
+        Text(&#x27;$qty&#x27;, style: const TextStyle(fontSize: 18)),
+        IconButton(
+          icon: const Icon(Icons.add),
+          onPressed: () =&gt; setState(() =&gt; qty++),
+        ),
+        const SizedBox(width: 12),
+        Text(&#x27;KSh ${(qty * widget.price).toStringAsFixed(0)}&#x27;),
+      ],
+    );
+  }
+}</code></pre></figure>
+<p><strong>setState</strong> tells Flutter the state changed so it rebuilds this widget. Data passed in from the parent (<code>price</code>) is read with <code>widget.price</code>.</p>
+<h2>Common widgets</h2>
+<div class="static-table"><table><thead><tr><th>Widget</th><th>Purpose</th></tr></thead><tbody><tr><td><code>Text</code></td><td>Display text with <code>TextStyle</code></td></tr><tr><td><code>Icon</code></td><td>Material icons (<code>Icons.phone</code>)</td></tr><tr><td><code>Image.asset</code>, <code>Image.network</code></td><td>Images from the app bundle or the internet</td></tr><tr><td><code>ElevatedButton</code>, <code>FilledButton</code>, <code>OutlinedButton</code>, <code>TextButton</code>, <code>IconButton</code></td><td>Buttons</td></tr><tr><td><code>Container</code></td><td>Padding, margin, colour, border, size in one widget</td></tr><tr><td><code>Card</code></td><td>Elevated surface for grouped content</td></tr><tr><td><code>ListTile</code></td><td>A standard list row: leading icon, title, subtitle, trailing</td></tr><tr><td><code>TextField</code> / <code>TextFormField</code></td><td>Text input (see the forms lesson)</td></tr><tr><td><code>CircularProgressIndicator</code></td><td>Loading</td></tr></tbody></table></div>
+<h2>Layout widgets</h2>
+<div class="static-table"><table><thead><tr><th>Widget</th><th>Use</th></tr></thead><tbody><tr><td><code>Padding</code></td><td>Space around a child</td></tr><tr><td><code>Center</code>, <code>Align</code></td><td>Position a child</td></tr><tr><td><code>SizedBox</code></td><td>Fixed size or spacing (<code>SizedBox(height: 16)</code>)</td></tr><tr><td><code>Row</code> / <code>Column</code></td><td>Arrange children horizontally / vertically</td></tr><tr><td><code>Expanded</code> / <code>Flexible</code></td><td>Make children share available space in a Row/Column</td></tr><tr><td><code>Stack</code> + <code>Positioned</code></td><td>Overlap widgets (a badge on an image)</td></tr><tr><td><code>Wrap</code></td><td>Flow items onto new lines (tags, chips)</td></tr><tr><td><code>GridView</code></td><td>Grids of cards or images</td></tr></tbody></table></div>
+<p>A product card combining several:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+class ProductCard extends StatelessWidget {
+  const ProductCard({super.key, required this.name, required this.price, this.onAdd});
+  final String name;
+  final double price;
+  final VoidCallback? onAdd;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            const CircleAvatar(child: Icon(Icons.local_grocery_store)),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(name, style: Theme.of(context).textTheme.titleMedium),
+                  Text(&#x27;KSh ${price.toStringAsFixed(0)}&#x27;,
+                      style: TextStyle(color: Theme.of(context).colorScheme.primary)),
+                ],
+              ),
+            ),
+            FilledButton(onPressed: onAdd, child: const Text(&#x27;Add&#x27;)),
           ],
         ),
       ),
     );
   }
 }</code></pre></figure>
-<h2>Common layout widgets</h2>
-<div class="static-table"><table><thead><tr><th>Widget</th><th>Does</th></tr></thead><tbody><tr><td><code>Column</code> / <code>Row</code></td><td>Stack children vertically / horizontally</td></tr><tr><td><code>Padding</code>, <code>SizedBox</code></td><td>Space around / between things</td></tr><tr><td><code>Container</code></td><td>Box with colour, border, size</td></tr><tr><td><code>ListView</code></td><td>Scrolling list</td></tr><tr><td><code>Expanded</code></td><td>Take the remaining space</td></tr><tr><td><code>Stack</code></td><td>Place widgets on top of each other</td></tr></tbody></table></div>
-<h2>Stateful widgets</h2>
-<p>When something changes (a counter, a form), use a <code>StatefulWidget</code> and call <code>setState()</code>:</p>
-<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">class Counter extends StatefulWidget {
-  const Counter({super.key});
-  @override
-  State&lt;Counter&gt; createState() =&gt; _CounterState();
-}
+<p><strong>Row/Column alignment</strong>: <code>mainAxisAlignment</code> controls spacing along the direction (start, center, spaceBetween); <code>crossAxisAlignment</code> controls the other direction.</p>
+<h2>Scrolling lists</h2>
+<p>For long or dynamic lists, use <code>ListView.builder</code>, which only builds the rows on screen:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
 
-class _CounterState extends State&lt;Counter&gt; {
-  int items = 0;
+class ProductList extends StatelessWidget {
+  const ProductList({super.key});
+
+  static const products = [
+    (&#x27;Sukuma wiki&#x27;, 30.0),
+    (&#x27;Tomatoes (1kg)&#x27;, 100.0),
+    (&#x27;Onions (1kg)&#x27;, 120.0),
+    (&#x27;Avocado&#x27;, 25.0),
+  ];
+
   @override
-  Widget build(BuildContext context) =&gt; ElevatedButton(
-        onPressed: () =&gt; setState(() =&gt; items++),
-        child: Text(&#x27;Items in cart: $items&#x27;),
-      );
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: products.length,
+      itemBuilder: (context, i) {
+        final (name, price) = products[i];
+        return ListTile(
+          leading: const Icon(Icons.eco),
+          title: Text(name),
+          trailing: Text(&#x27;KSh ${price.toStringAsFixed(0)}&#x27;),
+          onTap: () =&gt; ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(&#x27;$name added to cart&#x27;))),
+        );
+      },
+    );
+  }
 }</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>In Flutter, everything on screen is a…</p><details><summary>Show answer</summary><p>widget</p></details></li><li><p>Which widget stacks children vertically?</p><details><summary>Show answer</summary><p>Column</p></details></li><li><p>Which method tells Flutter to redraw after data changes?</p><details><summary>Show answer</summary><p>setState</p></details></li></ol></section></div><p class="static-meta">Lesson 7 of 10 in <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> · <a href="/learn/?book=dart-flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/dart-flutter/dart-testing-clean-code/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Testing and structuring Dart &amp; Flutter apps: unit tests, widget tests, repositories</a><a class="btn btn-solid btn-sm" href="/learn/dart-flutter/flutter-layouts/">Flutter layouts: Row, Column, Stack, ListView and responsive screens <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Navigation (intro)</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">Navigator.push(context, MaterialPageRoute(builder: (_) =&gt; const CartScreen()));
+Navigator.pop(context);   // go back</code></pre></figure>
+<p>Larger apps use named routes or packages like <strong>go_router</strong> for deep links and web URLs.</p>
+<h2>Theming</h2>
+<p>Define colours and text styles once in <code>ThemeData</code>:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">MaterialApp(
+  theme: ThemeData(
+    useMaterial3: true,
+    colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0B1B35)),
+    textTheme: const TextTheme(bodyMedium: TextStyle(fontSize: 16)),
+  ),
+  darkTheme: ThemeData(
+    useMaterial3: true,
+    colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0B1B35), brightness: Brightness.dark),
+  ),
+  themeMode: ThemeMode.system,
+  home: const HomeScreen(),
+)</code></pre></figure>
+<p>Then use <code>Theme.of(context).colorScheme.primary</code> and <code>textTheme</code> in widgets instead of hard-coded colours, so light/dark mode and rebranding work everywhere.</p>
+<h2>Responsive layouts</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter/material.dart&#x27;;
+
+class ResponsiveCatalogue extends StatelessWidget {
+  const ResponsiveCatalogue({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final columns = constraints.maxWidth &gt; 900 ? 4 : constraints.maxWidth &gt; 600 ? 3 : 2;
+        return GridView.count(
+          crossAxisCount: columns,
+          padding: const EdgeInsets.all(12),
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
+          children: List.generate(
+            8,
+            (i) =&gt; Card(child: Center(child: Text(&#x27;Product ${i + 1}&#x27;))),
+          ),
+        );
+      },
+    );
+  }
+}</code></pre></figure>
+<p><code>LayoutBuilder</code> gives the available width; <code>MediaQuery.sizeOf(context)</code> gives the screen size. Use them to switch between phone, tablet and desktop layouts.</p>
+<h2>Hot reload and layout debugging</h2>
+<ul><li><strong>Hot reload</strong> (<code>r</code> in the terminal or the lightning icon) applies code changes in about a second while keeping state; <strong>hot restart</strong> (<code>R</code>) resets state.</li><li><strong>Flutter DevTools</strong> has a Widget Inspector to see the tree and layout bounds.</li><li>Common errors:</li><li>"RenderFlex overflowed by N pixels": a Row/Column's content is too big; wrap children in <code>Expanded</code>/<code>Flexible</code>, use <code>SingleChildScrollView</code>, or reduce sizes.</li><li>"Vertical viewport was given unbounded height": a ListView inside a Column; wrap the ListView in <code>Expanded</code>.</li></ul>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A Row containing a long product name Text and an Add button shows a yellow-and-black overflow stripe on small phones. How do you fix it?</span><em>Show answer</em></summary><div class="callout-body"><p>Wrap the Text in <code>Expanded</code> (or <code>Flexible</code>) so it takes only the remaining space, and set <code>overflow: TextOverflow.ellipsis</code> or allow wrapping with <code>maxLines</code>. The button keeps its natural size and the text adapts.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Flutter apps are trees of widgets; <code>runApp</code>, <code>MaterialApp</code> and <code>Scaffold</code> form the skeleton; <code>build</code> describes the UI.</li><li>StatelessWidgets don't change; StatefulWidgets hold state and call <code>setState</code> to rebuild.</li><li>Layout with Padding, Row, Column, Expanded, SizedBox, Stack, Wrap and GridView; show long lists with ListView.builder.</li><li>Navigate with Navigator (or go_router); theme with ColorScheme and TextTheme, supporting dark mode.</li><li>Make layouts responsive with LayoutBuilder/MediaQuery; use hot reload and DevTools to fix overflow errors.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>In Flutter, what is almost everything built from?</p><details><summary>Show answer</summary><p>widgets</p></details></li><li><p>Which method tells Flutter to rebuild a StatefulWidget after data changes?</p><details><summary>Show answer</summary><p>setState</p></details></li><li><p>Which widget provides the basic screen structure with an app bar and body?</p><details><summary>Show answer</summary><p>Scaffold</p></details></li><li><p>Which widget makes a child fill the remaining space in a Row or Column?</p><details><summary>Show answer</summary><p>Expanded</p></details></li><li><p>Which ListView constructor efficiently builds only visible rows?</p><details><summary>Show answer</summary><p>ListView.builder</p></details></li><li><p>Which Flutter feature shows code changes in about a second while keeping state? (two words)</p><details><summary>Show answer</summary><p>hot reload</p></details></li></ol></section></div><p class="static-meta">Lesson 7 of 10 in <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> · <a href="/learn/?book=dart-flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/dart-flutter/dart-testing-clean-code/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Testing and structuring Dart &amp; Flutter apps: unit tests, widget tests, repositories</a><a class="btn btn-solid btn-sm" href="/learn/dart-flutter/flutter-layouts/">Flutter layouts: Row, Column, Stack, ListView and responsive screens <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

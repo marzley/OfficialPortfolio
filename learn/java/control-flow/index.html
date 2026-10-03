@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Conditions, loops and arrays | Java</title>
-    <meta name="description" content="Free Java lesson: Conditions, loops and arrays." />
+    <title>Conditions, loops and arrays in Java: if/else, switch,…</title>
+    <meta name="description" content="Programs become useful when they decide (is the fee fully paid? is stock low?) and repeat (print every student&#x27;s report, total every sale). Java&#x27;s…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/java/control-flow/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Conditions, loops and arrays | Java" />
-    <meta property="og:description" content="Free Java lesson: Conditions, loops and arrays." />
+    <meta property="og:title" content="Conditions, loops and arrays in Java: if/else, switch,…" />
+    <meta property="og:description" content="Programs become useful when they decide (is the fee fully paid? is stock low?) and repeat (print every student&#x27;s report, total every sale). Java&#x27;s…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/java/control-flow/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Conditions, loops and arrays | Java" />
-    <meta name="twitter:description" content="Free Java lesson: Conditions, loops and arrays." />
+    <meta name="twitter:title" content="Conditions, loops and arrays in Java: if/else, switch,…" />
+    <meta name="twitter:description" content="Programs become useful when they decide (is the fee fully paid? is stock low?) and repeat (print every student&#x27;s report, total every sale). Java&#x27;s…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/java/control-flow/#lesson","name":"Conditions, loops and arrays","description":"Free Java lesson: Conditions, loops and arrays.","url":"https://marzleytechsolutions.co.ke/learn/java/control-flow/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/java/#course","name":"Java","url":"https://marzleytechsolutions.co.ke/learn/java/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Java","item":"https://marzleytechsolutions.co.ke/learn/java/"},{"@type":"ListItem","position":4,"name":"Conditions, loops and arrays","item":"https://marzleytechsolutions.co.ke/learn/java/control-flow/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/java/control-flow/#lesson","name":"Conditions, loops and arrays in Java: if/else, switch, for, while, do-while, break/continue, arrays and 2D arrays","description":"Programs become useful when they decide (is the fee fully paid? is stock low?) and repeat (print every student's report, total every sale). Java's…","url":"https://marzleytechsolutions.co.ke/learn/java/control-flow/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/java/#course","name":"Java","url":"https://marzleytechsolutions.co.ke/learn/java/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Java","item":"https://marzleytechsolutions.co.ke/learn/java/"},{"@type":"ListItem","position":4,"name":"Conditions, loops and arrays in Java: if/else, switch, for, while, do-while, break/continue, arrays and 2D arrays","item":"https://marzleytechsolutions.co.ke/learn/java/control-flow/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,47 +36,178 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/java/">Java</a> / <span>Conditions, loops and arrays</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=java&amp;lesson=control-flow"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Conditions, loops and arrays</h1>
-<h2>if / else</h2>
-<figure class="static-code"><figcaption>Java</figcaption><pre><code class="language-java">int marks = 67;
-if (marks &gt;= 70) {
-    System.out.println(&quot;A&quot;);
-} else if (marks &gt;= 60) {
-    System.out.println(&quot;B&quot;);
-} else {
-    System.out.println(&quot;Keep going!&quot;);
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/java/">Java</a> / <span>Conditions, loops and arrays in Java: if/else, switch, for, while, do-while, break/continue, arrays and 2D arrays</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=java&amp;lesson=control-flow"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Conditions, loops and arrays in Java: if/else, switch, for, while, do-while, break/continue, arrays and 2D arrays</h1>
+<p>Programs become useful when they <strong>decide</strong> (is the fee fully paid? is stock low?) and <strong>repeat</strong> (print every student's report, total every sale). Java's control flow statements and arrays let you do both. This unit covers conditions, the modern switch, all loop types, and arrays (including 2D arrays for tables like class mark sheets), with runnable examples based on school and business tasks.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Comparison and logical operators</li><li>if, else if, else and nested conditions</li><li>The ternary operator</li><li>switch statements and switch expressions (modern Java)</li><li>for, enhanced for, while and do-while loops</li><li>break, continue and loop patterns (sum, count, max, search)</li><li>Arrays: creating, accessing, looping, length, default values</li><li>Useful Arrays methods: sort, toString, fill, copyOf</li><li>2D arrays for tables</li><li>Common mistakes: off-by-one, ArrayIndexOutOfBounds, == with Strings</li></ul></div></aside>
+<h2>Comparison and logical operators</h2>
+<div class="static-table"><table><thead><tr><th>Operator</th><th>Meaning</th></tr></thead><tbody><tr><td><code>==</code>, <code>!=</code></td><td>Equal, not equal (for primitives)</td></tr><tr><td><code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code></td><td>Comparisons</td></tr><tr><td><code>&amp;&amp;</code></td><td>AND (both true)</td></tr><tr><td><code>\|\|</code></td><td>OR (at least one true)</td></tr><tr><td><code>!</code></td><td>NOT</td></tr></tbody></table></div>
+<aside class="callout callout-warning"><p class="callout-title">Comparing Strings</p><div class="callout-body"><p>Use <code>.equals()</code> to compare String contents: <code>town.equals(&quot;Nairobi&quot;)</code>. <code>==</code> checks whether two variables point to the same object and can give surprising results. Use <code>.equalsIgnoreCase()</code> to ignore case.</p></div></aside>
+<h2>if, else if, else</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    public static void main(String[] args) {
+        int mark = 72;
+        String grade;
+        if (mark &gt;= 80) {
+            grade = &quot;A&quot;;
+        } else if (mark &gt;= 65) {
+            grade = &quot;B&quot;;
+        } else if (mark &gt;= 50) {
+            grade = &quot;C&quot;;
+        } else if (mark &gt;= 40) {
+            grade = &quot;D&quot;;
+        } else {
+            grade = &quot;E&quot;;
+        }
+        System.out.println(&quot;Mark &quot; + mark + &quot; = grade &quot; + grade);
+
+        double balance = 0;
+        boolean boarding = true;
+        if (balance == 0 &amp;&amp; boarding) {
+            System.out.println(&quot;Cleared to report to the dormitory&quot;);
+        }
+
+        String town = &quot;nairobi&quot;;
+        System.out.println(town.equalsIgnoreCase(&quot;Nairobi&quot;) ? &quot;Nairobi branch&quot; : &quot;Other branch&quot;);  // ternary
+    }
 }</code></pre></figure>
 <h2>switch</h2>
-<figure class="static-code"><figcaption>Java</figcaption><pre><code class="language-java">String day = &quot;SAT&quot;;
-switch (day) {
-    case &quot;SAT&quot;, &quot;SUN&quot; -&gt; System.out.println(&quot;Weekend&quot;);
-    default -&gt; System.out.println(&quot;Weekday&quot;);
+<p>Classic switch (needs <code>break</code> to stop falling through):</p>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    public static void main(String[] args) {
+        int day = 3;
+        switch (day) {
+            case 1: System.out.println(&quot;Monday&quot;); break;
+            case 2: System.out.println(&quot;Tuesday&quot;); break;
+            case 3: System.out.println(&quot;Wednesday&quot;); break;
+            default: System.out.println(&quot;Another day&quot;);
+        }
+
+        // Modern switch expression (Java 14+): no fall-through, returns a value
+        String status = &quot;shipped&quot;;
+        String label = switch (status) {
+            case &quot;pending&quot; -&gt; &quot;Waiting for payment&quot;;
+            case &quot;paid&quot;, &quot;processing&quot; -&gt; &quot;Preparing your order&quot;;
+            case &quot;shipped&quot; -&gt; &quot;On the way&quot;;
+            default -&gt; &quot;Unknown&quot;;
+        };
+        System.out.println(label);
+    }
 }</code></pre></figure>
 <h2>Loops</h2>
-<figure class="static-code"><figcaption>Java</figcaption><pre><code class="language-java">for (int i = 1; i &lt;= 5; i++) {
-    System.out.println(&quot;Line &quot; + i);
-}
-
-int balance = 1000;
-while (balance &gt; 0) {
-    balance -= 300;
+<h3>for loop</h3>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    public static void main(String[] args) {
+        for (int i = 1; i &lt;= 5; i++) {
+            System.out.println(&quot;7 x &quot; + i + &quot; = &quot; + (7 * i));
+        }
+        // Counting down in steps of 2
+        for (int i = 10; i &gt; 0; i -= 2) {
+            System.out.print(i + &quot; &quot;);
+        }
+        System.out.println();
+    }
 }</code></pre></figure>
-<h2>Arrays and ArrayList</h2>
-<figure class="static-code"><figcaption>Java</figcaption><pre><code class="language-java">int[] scores = {45, 78, 92, 60};
-int total = 0;
-for (int s : scores) {        // &quot;for each&quot; loop
-    total += s;
-}
-System.out.println(&quot;Average: &quot; + (double) total / scores.length);
+<h3>while and do-while</h3>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    public static void main(String[] args) {
+        // Months to save KSh 50,000 at KSh 4,500/month with 1% monthly interest
+        double balance = 0;
+        int months = 0;
+        while (balance &lt; 50000) {
+            balance = balance * 1.01 + 4500;
+            months++;
+        }
+        System.out.printf(&quot;Months: %d, balance KSh %,.0f%n&quot;, months, balance);
 
-import java.util.ArrayList;
-ArrayList&lt;String&gt; towns = new ArrayList&lt;&gt;();
-towns.add(&quot;Nakuru&quot;);
-towns.add(&quot;Eldoret&quot;);
-System.out.println(towns.size());   // 2</code></pre></figure>
-<p>Arrays have a fixed size; an <code>ArrayList</code> can grow and shrink.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which loop type is written like for (int s : scores)? (two words)</p><details><summary>Show answer</summary><p>for each</p></details></li><li><p>How do you get the number of items in a Java array called scores?</p><details><summary>Show answer</summary><p>scores.length</p></details></li><li><p>Which class gives you a list that can grow?</p><details><summary>Show answer</summary><p>ArrayList</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 9 in <a href="/learn/java/">Java</a> · <a href="/learn/?book=java">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/java/variables-types/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Variables, data types and operators in Java</a><a class="btn btn-solid btn-sm" href="/learn/java/methods/">Methods: parameters, return values and overloading <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+        int tries = 0;
+        do {
+            tries++;            // runs at least once
+        } while (tries &lt; 3);
+        System.out.println(&quot;Tries: &quot; + tries);
+    }
+}</code></pre></figure>
+<h3>break and continue</h3>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    public static void main(String[] args) {
+        int[] readings = {4, 7, -1, 12, 0, 9};
+        for (int r : readings) {
+            if (r &lt; 0) continue;      // skip invalid readings
+            if (r == 0) break;        // stop at a zero
+            System.out.println(r);
+        }
+    }
+}</code></pre></figure>
+<h2>Arrays</h2>
+<p>An <strong>array</strong> stores a fixed number of values of the same type, indexed from <strong>0</strong>.</p>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">import java.util.Arrays;
+
+class Main {
+    public static void main(String[] args) {
+        int[] marks = {67, 82, 45, 90, 58};
+        String[] towns = new String[3];      // default values: null for objects, 0 for numbers
+        towns[0] = &quot;Nairobi&quot;;
+        towns[1] = &quot;Mombasa&quot;;
+        towns[2] = &quot;Kisumu&quot;;
+
+        System.out.println(&quot;First mark: &quot; + marks[0] + &quot;, count: &quot; + marks.length);
+
+        int total = 0, highest = marks[0];
+        for (int m : marks) {                // enhanced for loop
+            total += m;
+            if (m &gt; highest) highest = m;
+        }
+        double average = (double) total / marks.length;
+        System.out.printf(&quot;Total %d, average %.1f, highest %d%n&quot;, total, average, highest);
+
+        int passCount = 0;
+        for (int i = 0; i &lt; marks.length; i++) {   // classic loop when you need the index
+            if (marks[i] &gt;= 50) passCount++;
+        }
+        System.out.println(passCount + &quot; passed&quot;);
+
+        Arrays.sort(marks);
+        System.out.println(Arrays.toString(marks));
+        System.out.println(Arrays.toString(towns));
+        int[] copy = Arrays.copyOf(marks, 7);    // longer copy padded with zeros
+        System.out.println(Arrays.toString(copy));
+    }
+}</code></pre></figure>
+<p>Arrays have a <strong>fixed size</strong>. For lists that grow and shrink, use <code>ArrayList</code> (see the collections lesson).</p>
+<h2>2D arrays</h2>
+<p>A table of rows and columns: students × subjects.</p>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    public static void main(String[] args) {
+        String[] students = {&quot;Brian&quot;, &quot;Faith&quot;, &quot;Juma&quot;};
+        String[] subjects = {&quot;Math&quot;, &quot;Eng&quot;, &quot;Sci&quot;};
+        int[][] marks = {
+            {72, 65, 80},
+            {88, 91, 79},
+            {55, 60, 49},
+        };
+
+        for (int s = 0; s &lt; marks.length; s++) {
+            int total = 0;
+            for (int j = 0; j &lt; marks[s].length; j++) {
+                total += marks[s][j];
+            }
+            System.out.printf(&quot;%-6s total %3d average %.1f%n&quot;, students[s], total, total / 3.0);
+        }
+
+        // Subject averages (column by column)
+        for (int j = 0; j &lt; subjects.length; j++) {
+            int sum = 0;
+            for (int[] row : marks) sum += row[j];
+            System.out.printf(&quot;%s average: %.1f%n&quot;, subjects[j], sum / (double) marks.length);
+        }
+    }
+}</code></pre></figure>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Symptom</th><th>Fix</th></tr></thead><tbody><tr><td><code>i &lt;= arr.length</code> in a loop</td><td><code>ArrayIndexOutOfBoundsException</code></td><td>Use <code>i &lt; arr.length</code> (last index is length − 1)</td></tr><tr><td>Comparing Strings with <code>==</code></td><td>Conditions unexpectedly false</td><td>Use <code>.equals()</code></td></tr><tr><td>Missing <code>break</code> in classic switch</td><td>Several cases run</td><td>Add <code>break</code> or use the <code>-&gt;</code> switch</td></tr><tr><td>Infinite while loop</td><td>Program never ends</td><td>Make sure the loop variable changes</td></tr><tr><td>Integer division in averages</td><td>Rounded down results</td><td>Cast to double</td></tr><tr><td>Semicolon after if: <code>if (x &gt; 5);</code></td><td>Body always runs</td><td>Remove the stray semicolon</td></tr></tbody></table></div>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Write the logic (in words or code) to count how many students in an int array <code>marks</code> scored above the class average.</span><em>Show answer</em></summary><div class="callout-body"><p>First loop to compute the total and average (<code>double avg = (double) total / marks.length;</code>), then a second loop counting marks greater than <code>avg</code>. Two passes are needed because you can't know the average until all marks are summed.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Combine comparisons with <code>&amp;&amp;</code>, <code>||</code>, <code>!</code>; compare Strings with <code>.equals()</code>.</li><li>Use if/else if/else, the ternary operator, and switch (prefer modern <code>-&gt;</code> switch expressions).</li><li>Loops: for (known count), enhanced for (each element), while (condition first), do-while (at least once); break and continue control them.</li><li>Arrays are fixed-size, zero-indexed, with <code>.length</code>; <code>Arrays.sort</code>, <code>toString</code> and <code>copyOf</code> help; 2D arrays model tables.</li><li>Avoid off-by-one errors, missing breaks, infinite loops and integer division.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which method compares the contents of two Strings in Java?</p><details><summary>Show answer</summary><p>equals</p></details></li><li><p>What is the index of the first element of a Java array?</p><details><summary>Show answer</summary><p>0</p></details></li><li><p>Which loop always runs at least once?</p><details><summary>Show answer</summary><p>do-while</p></details></li><li><p>Which exception occurs when you access index arr.length?</p><details><summary>Show answer</summary><p>ArrayIndexOutOfBoundsException</p></details></li><li><p>Which keyword skips to the next loop iteration?</p><details><summary>Show answer</summary><p>continue</p></details></li><li><p>Which property gives the number of elements in an array?</p><details><summary>Show answer</summary><p>length</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 9 in <a href="/learn/java/">Java</a> · <a href="/learn/?book=java">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/java/variables-types/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Variables, data types and operators in Java</a><a class="btn btn-solid btn-sm" href="/learn/java/methods/">Methods: parameters, return values and overloading <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

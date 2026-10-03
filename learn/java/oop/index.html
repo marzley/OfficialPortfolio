@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Classes and objects (OOP) | Java</title>
-    <meta name="description" content="Java is object-oriented . A class is a blueprint; an object is a thing made from it." />
+    <title>Classes and objects (OOP) in Java: fields, constructors,…</title>
+    <meta name="description" content="Java is built around object-oriented programming (OOP) : you model real-world things as objects that combine data (fields) and behaviour (methods). A…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/java/oop/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Classes and objects (OOP) | Java" />
-    <meta property="og:description" content="Java is object-oriented . A class is a blueprint; an object is a thing made from it." />
+    <meta property="og:title" content="Classes and objects (OOP) in Java: fields, constructors,…" />
+    <meta property="og:description" content="Java is built around object-oriented programming (OOP) : you model real-world things as objects that combine data (fields) and behaviour (methods). A…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/java/oop/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Classes and objects (OOP) | Java" />
-    <meta name="twitter:description" content="Java is object-oriented . A class is a blueprint; an object is a thing made from it." />
+    <meta name="twitter:title" content="Classes and objects (OOP) in Java: fields, constructors,…" />
+    <meta name="twitter:description" content="Java is built around object-oriented programming (OOP) : you model real-world things as objects that combine data (fields) and behaviour (methods). A…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/java/oop/#lesson","name":"Classes and objects (OOP)","description":"Java is object-oriented . A class is a blueprint; an object is a thing made from it.","url":"https://marzleytechsolutions.co.ke/learn/java/oop/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/java/#course","name":"Java","url":"https://marzleytechsolutions.co.ke/learn/java/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Java","item":"https://marzleytechsolutions.co.ke/learn/java/"},{"@type":"ListItem","position":4,"name":"Classes and objects (OOP)","item":"https://marzleytechsolutions.co.ke/learn/java/oop/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/java/oop/#lesson","name":"Classes and objects (OOP) in Java: fields, constructors, methods, encapsulation, static members, toString and designing classes","description":"Java is built around object-oriented programming (OOP) : you model real-world things as objects that combine data (fields) and behaviour (methods). A…","url":"https://marzleytechsolutions.co.ke/learn/java/oop/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/java/#course","name":"Java","url":"https://marzleytechsolutions.co.ke/learn/java/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Java","item":"https://marzleytechsolutions.co.ke/learn/java/"},{"@type":"ListItem","position":4,"name":"Classes and objects (OOP) in Java: fields, constructors, methods, encapsulation, static members, toString and designing classes","item":"https://marzleytechsolutions.co.ke/learn/java/oop/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,41 +36,224 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/java/">Java</a> / <span>Classes and objects (OOP)</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=java&amp;lesson=oop"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Classes and objects (OOP)</h1>
-<p>Java is <strong>object-oriented</strong>. A <strong>class</strong> is a blueprint; an <strong>object</strong> is a thing made from it.</p>
-<figure class="static-code"><figcaption>Java</figcaption><pre><code class="language-java">public class Account {
-    private String owner;          // fields (data)
-    private double balance;
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/java/">Java</a> / <span>Classes and objects (OOP) in Java: fields, constructors, methods, encapsulation, static members, toString and designing classes</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=java&amp;lesson=oop"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Classes and objects (OOP) in Java: fields, constructors, methods, encapsulation, static members, toString and designing classes</h1>
+<p>Java is built around <strong>object-oriented programming (OOP)</strong>: you model real-world things as <strong>objects</strong> that combine <strong>data</strong> (fields) and <strong>behaviour</strong> (methods). A school system has Student, Teacher and Payment objects; a shop has Product, Cart and Order; a SACCO has Member, Account and Loan. OOP keeps large programs organised, reusable and easier to change, which is why it dominates enterprise and Android development. This unit teaches how to design and write classes properly, building up to a small realistic example.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Classes vs objects</li><li>Fields (instance variables) and methods</li><li>Constructors and the this keyword</li><li>Creating objects with new</li><li>Encapsulation: private fields, getters and setters, validation</li><li>Static fields and methods</li><li>toString, equals and hashCode basics</li><li>Method overloading</li><li>Objects in arrays and lists</li><li>Designing classes for a real problem</li><li>The four pillars of OOP (preview of inheritance and polymorphism)</li></ul></div></aside>
+<h2>Classes and objects</h2>
+<ul><li>A <strong>class</strong> is a blueprint: it defines what data and behaviour objects will have.</li><li>An <strong>object</strong> is an instance created from the class, with its own values.</li></ul>
+<p>Blueprint: <code>Student</code> (admission number, name, form, balance). Objects: Brian (ADM001, Form 3, KSh 12,500), Faith (ADM002, Form 4, KSh 0).</p>
+<h2>A first class</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    static class Student {
+        String admissionNo;
+        String name;
+        int form;
+        double balance;
 
-    public Account(String owner) { // constructor
-        this.owner = owner;
-        this.balance = 0;
+        void payFees(double amount) {
+            balance -= amount;
+        }
+
+        void printSummary() {
+            System.out.printf(&quot;%s (%s), Form %d, balance KSh %,.2f%n&quot;, name, admissionNo, form, balance);
+        }
     }
 
-    public void deposit(double amount) {   // methods (behaviour)
-        if (amount &lt;= 0) throw new IllegalArgumentException(&quot;Amount must be positive&quot;);
-        balance += amount;
+    public static void main(String[] args) {
+        Student s1 = new Student();
+        s1.admissionNo = &quot;ADM001&quot;;
+        s1.name = &quot;Brian&quot;;
+        s1.form = 3;
+        s1.balance = 12500;
+
+        Student s2 = new Student();
+        s2.admissionNo = &quot;ADM002&quot;;
+        s2.name = &quot;Faith&quot;;
+        s2.form = 4;
+
+        s1.payFees(5000);
+        s1.printSummary();
+        s2.printSummary();
     }
-
-    public double getBalance() { return balance; }
-}
-
-// Using it
-Account a = new Account(&quot;Amina&quot;);
-a.deposit(2500);
-System.out.println(a.getBalance());   // 2500.0</code></pre></figure>
-<h2>The four pillars of OOP</h2>
-<div class="static-table"><table><thead><tr><th>Pillar</th><th>Meaning</th><th>Example</th></tr></thead><tbody><tr><td><strong>Encapsulation</strong></td><td>Hide data, expose safe methods</td><td><code>balance</code> is <code>private</code>; change it only through <code>deposit</code></td></tr><tr><td><strong>Inheritance</strong></td><td>A class extends another</td><td><code>SavingsAccount extends Account</code></td></tr><tr><td><strong>Polymorphism</strong></td><td>Same method, different behaviour</td><td>Each shape's <code>area()</code> is calculated differently</td></tr><tr><td><strong>Abstraction</strong></td><td>Show what, hide how</td><td>An <code>interface Payment { void pay(double amount); }</code> with MpesaPayment and CardPayment</td></tr></tbody></table></div>
-<figure class="static-code"><figcaption>Java</figcaption><pre><code class="language-java">interface Payment { void pay(double amount); }
-
-class MpesaPayment implements Payment {
-    public void pay(double amount) { System.out.println(&quot;STK push for KSh &quot; + amount); }
-}
-class CardPayment implements Payment {
-    public void pay(double amount) { System.out.println(&quot;Charging card KSh &quot; + amount); }
 }</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the blueprint for objects called?</p><details><summary>Show answer</summary><p>class</p></details></li><li><p>Which keyword creates a new object?</p><details><summary>Show answer</summary><p>new</p></details></li><li><p>Hiding data behind methods is which OOP pillar?</p><details><summary>Show answer</summary><p>encapsulation</p></details></li><li><p>Which keyword makes a class inherit from another?</p><details><summary>Show answer</summary><p>extends</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 9 in <a href="/learn/java/">Java</a> · <a href="/learn/?book=java">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/java/strings-arrays-lists/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Strings, arrays and ArrayLists</a><a class="btn btn-solid btn-sm" href="/learn/java/inheritance-interfaces/">Inheritance, interfaces and polymorphism <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<p>Each object has its own copy of the fields. But setting fields directly is error-prone (someone could set <code>form = 9</code> or a negative payment). Constructors and encapsulation fix this.</p>
+<h2>Constructors and this</h2>
+<p>A <strong>constructor</strong> runs when an object is created; it has the class's name and no return type.</p>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    static class Product {
+        private String name;
+        private double price;
+        private int stock;
+
+        Product(String name, double price, int stock) {
+            this.name = name;         // this.name = the field; name = the parameter
+            this.price = price;
+            this.stock = stock;
+        }
+
+        Product(String name, double price) {   // overloaded constructor
+            this(name, price, 0);              // call the other constructor
+        }
+
+        @Override
+        public String toString() {
+            return name + &quot; – KSh &quot; + price + &quot; (&quot; + stock + &quot; in stock)&quot;;
+        }
+    }
+
+    public static void main(String[] args) {
+        Product bag = new Product(&quot;Laptop bag&quot;, 2500, 12);
+        Product mouse = new Product(&quot;Wireless mouse&quot;, 1200);
+        System.out.println(bag);       // println calls toString()
+        System.out.println(mouse);
+    }
+}</code></pre></figure>
+<p>If you write no constructor, Java provides a default empty one.</p>
+<h2>Encapsulation: private fields, getters and setters</h2>
+<p><strong>Encapsulation</strong> hides internal data and only allows changes through methods that enforce rules.</p>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    static class Account {
+        private final String owner;
+        private double balance;
+
+        Account(String owner, double opening) {
+            if (opening &lt; 0) throw new IllegalArgumentException(&quot;Opening balance can&#x27;t be negative&quot;);
+            this.owner = owner;
+            this.balance = opening;
+        }
+
+        public String getOwner() { return owner; }
+        public double getBalance() { return balance; }
+
+        public void deposit(double amount) {
+            if (amount &lt;= 0) throw new IllegalArgumentException(&quot;Deposit must be positive&quot;);
+            balance += amount;
+        }
+
+        public boolean withdraw(double amount) {
+            if (amount &lt;= 0 || amount &gt; balance) return false;   // rule enforced in one place
+            balance -= amount;
+            return true;
+        }
+    }
+
+    public static void main(String[] args) {
+        Account acc = new Account(&quot;Wanjiku&quot;, 1000);
+        acc.deposit(2500);
+        System.out.println(&quot;Withdraw 5000: &quot; + acc.withdraw(5000));
+        System.out.println(&quot;Withdraw 1500: &quot; + acc.withdraw(1500));
+        System.out.println(acc.getOwner() + &quot; balance: &quot; + acc.getBalance());
+        // From any other class, acc.balance = 1000000; would not compile: balance is private.
+        // (Here Account is nested inside Main, and Java lets an outer class see its nested classes&#x27; private members.)
+    }
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Access modifier</th><th>Visible to</th></tr></thead><tbody><tr><td><code>private</code></td><td>Only this class</td></tr><tr><td>(none: package-private)</td><td>Classes in the same package</td></tr><tr><td><code>protected</code></td><td>Same package + subclasses</td></tr><tr><td><code>public</code></td><td>Everyone</td></tr></tbody></table></div>
+<p>Rule of thumb: make fields <strong>private</strong>, expose only the methods others need.</p>
+<h2>Static members</h2>
+<p><code>static</code> fields and methods belong to the <strong>class</strong>, not to individual objects:</p>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    static class Member {
+        private static int count = 0;          // shared by all members
+        private static final double SHARE_PRICE = 1000;
+        private final int memberNo;
+        private final String name;
+
+        Member(String name) {
+            count++;
+            this.memberNo = count;
+            this.name = name;
+        }
+
+        static int getCount() { return count; }
+        static double sharesValue(int shares) { return shares * SHARE_PRICE; }
+
+        @Override
+        public String toString() { return &quot;#&quot; + memberNo + &quot; &quot; + name; }
+    }
+
+    public static void main(String[] args) {
+        Member a = new Member(&quot;Otieno&quot;);
+        Member b = new Member(&quot;Achieng&quot;);
+        System.out.println(a + &quot;, &quot; + b);
+        System.out.println(&quot;Members: &quot; + Member.getCount());
+        System.out.println(&quot;Value of 25 shares: KSh &quot; + Member.sharesValue(25));
+    }
+}</code></pre></figure>
+<p><code>Math.sqrt()</code>, <code>Integer.parseInt()</code> and <code>main</code> itself are static.</p>
+<h2>Method overloading</h2>
+<p>Several methods with the same name but different parameters:</p>
+<figure class="static-code"><figcaption>Java</figcaption><pre><code class="language-java">double fee(int form) { ... }
+double fee(int form, boolean boarding) { ... }</code></pre></figure>
+<p>Java picks the version matching the arguments.</p>
+<h2>equals and hashCode</h2>
+<p><code>==</code> on objects compares <strong>references</strong> (same object?). To compare by content, override <code>equals</code> (and <code>hashCode</code>, needed for HashMap/HashSet):</p>
+<figure class="static-code"><figcaption>Java</figcaption><pre><code class="language-java">@Override
+public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Student other)) return false;
+    return admissionNo.equals(other.admissionNo);
+}
+@Override
+public int hashCode() { return admissionNo.hashCode(); }</code></pre></figure>
+<p>Modern Java (16+) also offers <strong>records</strong> for simple data classes, which generate the constructor, getters, <code>equals</code>, <code>hashCode</code> and <code>toString</code> automatically:</p>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    static record Payment(String receipt, String phone, double amount) {}
+
+    public static void main(String[] args) {
+        Payment p1 = new Payment(&quot;QJK7RT61SV&quot;, &quot;254712345678&quot;, 1500);
+        Payment p2 = new Payment(&quot;QJK7RT61SV&quot;, &quot;254712345678&quot;, 1500);
+        System.out.println(p1);
+        System.out.println(&quot;Same payment? &quot; + p1.equals(p2));
+        System.out.println(&quot;Amount: &quot; + p1.amount());
+    }
+}</code></pre></figure>
+<h2>Objects in collections</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">import java.util.ArrayList;
+import java.util.List;
+
+class Main {
+    static class Item {
+        private final String name;
+        private final double price;
+        private final int qty;
+        Item(String name, double price, int qty) { this.name = name; this.price = price; this.qty = qty; }
+        double lineTotal() { return price * qty; }
+        String getName() { return name; }
+    }
+
+    static class Cart {
+        private final List&lt;Item&gt; items = new ArrayList&lt;&gt;();
+        void add(Item item) { items.add(item); }
+        double subtotal() {
+            double sum = 0;
+            for (Item i : items) sum += i.lineTotal();
+            return sum;
+        }
+        double total() {
+            double sub = subtotal();
+            return sub &gt;= 5000 ? sub : sub + 250;      // free delivery over KSh 5,000
+        }
+        int size() { return items.size(); }
+    }
+
+    public static void main(String[] args) {
+        Cart cart = new Cart();
+        cart.add(new Item(&quot;Laptop bag&quot;, 2500, 1));
+        cart.add(new Item(&quot;Phone charger&quot;, 800, 2));
+        System.out.printf(&quot;%d items, subtotal KSh %,.0f, total KSh %,.0f%n&quot;, cart.size(), cart.subtotal(), cart.total());
+    }
+}</code></pre></figure>
+<p>The <code>Cart</code> hides how items are stored and how delivery is calculated: callers just use <code>add</code> and <code>total</code>.</p>
+<h2>Designing classes</h2>
+<ol><li><strong>Identify nouns</strong> in the problem (Member, Loan, Repayment) → candidate classes.</li><li><strong>Identify data</strong> each needs (fields) and <strong>actions</strong> (methods): a Loan has principal, rate, term; it can calculate repayment and record a payment.</li><li><strong>Assign responsibility</strong>: each class does one job well (single responsibility).</li><li><strong>Hide details</strong>: private fields, public methods for what others need.</li><li><strong>Validate</strong> in constructors and methods so objects can't get into invalid states.</li></ol>
+<h2>The four pillars of OOP</h2>
+<div class="static-table"><table><thead><tr><th>Pillar</th><th>Meaning</th></tr></thead><tbody><tr><td><strong>Encapsulation</strong></td><td>Bundle data with methods; hide internal details</td></tr><tr><td><strong>Abstraction</strong></td><td>Expose what an object does, not how</td></tr><tr><td><strong>Inheritance</strong></td><td>Build new classes from existing ones (<code>extends</code>)</td></tr><tr><td><strong>Polymorphism</strong></td><td>Treat different objects through a common type/interface</td></tr></tbody></table></div>
+<p>Inheritance and interfaces are covered in the inheritance and interfaces lesson.</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Design a Loan class for a SACCO: what fields, constructor checks and methods would it have?</span><em>Show answer</em></summary><div class="callout-body"><p>Fields (private): memberNo, principal, annualRate, months, balance. Constructor: validate principal &gt; 0, rate ≥ 0, months &gt; 0; set balance = principal (plus interest if flat-rate). Methods: monthlyInstalment(), repay(amount) (reject ≤ 0, reduce balance, record payment), isCleared(), getBalance(), toString(). Possibly a static method for the maximum loan based on savings (e.g. 3 × savings).</p></div></details>
+<h2>Summary</h2>
+<ul><li>A class is a blueprint; objects are instances with their own field values, created with <code>new</code>.</li><li>Constructors initialise objects (use <code>this</code> for fields; overload and chain with <code>this(...)</code>).</li><li>Encapsulate with private fields and public methods that validate; choose access modifiers carefully.</li><li>Static members belong to the class; override <code>toString</code>, and <code>equals</code>/<code>hashCode</code> for content equality; records simplify data classes.</li><li>Design classes around nouns, responsibilities and rules; OOP's pillars are encapsulation, abstraction, inheritance and polymorphism.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword creates a new object?</p><details><summary>Show answer</summary><p>new</p></details></li><li><p>Which keyword refers to the current object inside a method?</p><details><summary>Show answer</summary><p>this</p></details></li><li><p>Which access modifier hides a field from other classes?</p><details><summary>Show answer</summary><p>private</p></details></li><li><p>A field shared by all objects of a class is declared with which keyword?</p><details><summary>Show answer</summary><p>static</p></details></li><li><p>Which method does println call to display an object?</p><details><summary>Show answer</summary><p>toString</p></details></li><li><p>Which Java feature (16+) creates a simple immutable data class automatically?</p><details><summary>Show answer</summary><p>record</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 9 in <a href="/learn/java/">Java</a> · <a href="/learn/?book=java">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/java/strings-arrays-lists/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Strings, arrays and ArrayLists</a><a class="btn btn-solid btn-sm" href="/learn/java/inheritance-interfaces/">Inheritance, interfaces and polymorphism <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

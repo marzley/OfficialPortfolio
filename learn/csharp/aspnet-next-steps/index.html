@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ASP.NET Core and next steps | C#</title>
-    <meta name="description" content="ASP.NET Core builds fast websites and APIs that run on Windows, Linux and the cloud. A minimal API in one file: Create one with dotnet new web -o…" />
+    <title>ASP.NET Core and next steps: building web APIs, routing,…</title>
+    <meta name="description" content="ASP.NET Core is Microsoft&#x27;s open-source, cross-platform framework for building web applications and APIs with C . It&#x27;s fast, secure by design, and used…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/csharp/aspnet-next-steps/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="ASP.NET Core and next steps | C#" />
-    <meta property="og:description" content="ASP.NET Core builds fast websites and APIs that run on Windows, Linux and the cloud. A minimal API in one file: Create one with dotnet new web -o…" />
+    <meta property="og:title" content="ASP.NET Core and next steps: building web APIs, routing,…" />
+    <meta property="og:description" content="ASP.NET Core is Microsoft&#x27;s open-source, cross-platform framework for building web applications and APIs with C . It&#x27;s fast, secure by design, and used…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/csharp/aspnet-next-steps/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="ASP.NET Core and next steps | C#" />
-    <meta name="twitter:description" content="ASP.NET Core builds fast websites and APIs that run on Windows, Linux and the cloud. A minimal API in one file: Create one with dotnet new web -o…" />
+    <meta name="twitter:title" content="ASP.NET Core and next steps: building web APIs, routing,…" />
+    <meta name="twitter:description" content="ASP.NET Core is Microsoft&#x27;s open-source, cross-platform framework for building web applications and APIs with C . It&#x27;s fast, secure by design, and used…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/csharp/aspnet-next-steps/#lesson","name":"ASP.NET Core and next steps","description":"ASP.NET Core builds fast websites and APIs that run on Windows, Linux and the cloud. A minimal API in one file: Create one with dotnet new web -o…","url":"https://marzleytechsolutions.co.ke/learn/csharp/aspnet-next-steps/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/csharp/#course","name":"C#","url":"https://marzleytechsolutions.co.ke/learn/csharp/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"C#","item":"https://marzleytechsolutions.co.ke/learn/csharp/"},{"@type":"ListItem","position":4,"name":"ASP.NET Core and next steps","item":"https://marzleytechsolutions.co.ke/learn/csharp/aspnet-next-steps/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/csharp/aspnet-next-steps/#lesson","name":"ASP.NET Core and next steps: building web APIs, routing, dependency injection, Entity Framework Core, auth, deployment and Unity","description":"ASP.NET Core is Microsoft's open-source, cross-platform framework for building web applications and APIs with C . It's fast, secure by design, and used…","url":"https://marzleytechsolutions.co.ke/learn/csharp/aspnet-next-steps/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/csharp/#course","name":"C#","url":"https://marzleytechsolutions.co.ke/learn/csharp/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"C#","item":"https://marzleytechsolutions.co.ke/learn/csharp/"},{"@type":"ListItem","position":4,"name":"ASP.NET Core and next steps: building web APIs, routing, dependency injection, Entity Framework Core, auth, deployment and Unity","item":"https://marzleytechsolutions.co.ke/learn/csharp/aspnet-next-steps/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,25 +36,151 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/csharp/">C#</a> / <span>ASP.NET Core and next steps</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=csharp&amp;lesson=aspnet-next-steps"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>ASP.NET Core and next steps</h1>
-<p><strong>ASP.NET Core</strong> builds fast websites and APIs that run on Windows, Linux and the cloud.</p>
-<p>A minimal API in one file:</p>
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/csharp/">C#</a> / <span>ASP.NET Core and next steps: building web APIs, routing, dependency injection, Entity Framework Core, auth, deployment and Unity</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=csharp&amp;lesson=aspnet-next-steps"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>ASP.NET Core and next steps: building web APIs, routing, dependency injection, Entity Framework Core, auth, deployment and Unity</h1>
+<p><strong>ASP.NET Core</strong> is Microsoft's open-source, cross-platform framework for building web applications and APIs with C#. It's fast, secure by design, and used by banks, insurers, government agencies, software companies and startups. Mastering it, together with <strong>Entity Framework Core</strong> for databases, opens many back-end and full-stack developer jobs. This unit shows how an ASP.NET Core API is structured, builds a small working API step by step, adds a database, authentication and validation, explains deployment, and maps out other C# paths (Blazor, MAUI, Unity) and a learning plan.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>What ASP.NET Core can build: APIs, MVC sites, Razor Pages, Blazor</li><li>Creating a project and its structure (Program.cs, appsettings.json)</li><li>Minimal APIs and controllers: routes, HTTP methods, status codes</li><li>Dependency injection and services</li><li>Validation and error handling</li><li>Entity Framework Core: models, DbContext, migrations, LINQ queries</li><li>Configuration and secrets</li><li>Authentication and authorisation (JWT, Identity)</li><li>Testing APIs (Swagger/OpenAPI, Postman)</li><li>Deployment options (Azure, Linux VPS, Docker)</li><li>Other paths: Blazor, .NET MAUI, Unity games</li><li>A learning plan and portfolio projects</li></ul></div></aside>
+<h2>What you can build</h2>
+<div class="static-table"><table><thead><tr><th>Type</th><th>Use</th></tr></thead><tbody><tr><td><strong>Web API</strong></td><td>JSON APIs for mobile apps, front ends (React/Angular), integrations (e.g. M-Pesa callbacks)</td></tr><tr><td><strong>MVC / Razor Pages</strong></td><td>Server-rendered websites and admin portals</td></tr><tr><td><strong>Blazor</strong></td><td>Interactive web UIs written in C# instead of JavaScript</td></tr><tr><td><strong>SignalR</strong></td><td>Real-time features (chat, live dashboards)</td></tr><tr><td><strong>Background services</strong></td><td>Scheduled jobs, queues</td></tr></tbody></table></div>
+<h2>Create a project</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">dotnet new webapi -o SchoolApi
+cd SchoolApi
+dotnet run</code></pre></figure>
+<p>The template creates an API with an example endpoint and OpenAPI support for testing in the browser.</p>
+<div class="static-table"><table><thead><tr><th>File</th><th>Purpose</th></tr></thead><tbody><tr><td><code>Program.cs</code></td><td>App startup: services, middleware, endpoints</td></tr><tr><td><code>appsettings.json</code></td><td>Configuration (connection strings, settings)</td></tr><tr><td><code>Properties/launchSettings.json</code></td><td>Local URLs and environment</td></tr><tr><td><code>*.csproj</code></td><td>Project file: target framework, NuGet packages</td></tr></tbody></table></div>
+<h2>A minimal API</h2>
 <figure class="static-code"><figcaption>C#</figcaption><pre><code class="language-csharp">var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSingleton&lt;StudentStore&gt;();       // register a service (dependency injection)
 var app = builder.Build();
 
-var products = new List&lt;string&gt; { &quot;Laptop bag&quot;, &quot;Mouse&quot;, &quot;Charger&quot; };
+app.MapGet(&quot;/students&quot;, (StudentStore store) =&gt; store.All());
 
-app.MapGet(&quot;/&quot;, () =&gt; &quot;Karibu to our shop API&quot;);
-app.MapGet(&quot;/products&quot;, () =&gt; products);
-app.MapPost(&quot;/products&quot;, (string name) =&gt; { products.Add(name); return Results.Created($&quot;/products&quot;, name); });
+app.MapGet(&quot;/students/{admissionNo}&quot;, (string admissionNo, StudentStore store) =&gt;
+    store.Find(admissionNo) is Student s ? Results.Ok(s) : Results.NotFound());
 
-app.Run();</code></pre></figure>
-<p>Create one with <code>dotnet new web -o ShopApi</code>, then <code>dotnet run</code>.</p>
-<h2>The .NET world</h2>
-<div class="static-table"><table><thead><tr><th>Area</th><th>Technology</th></tr></thead><tbody><tr><td>Web apps</td><td>ASP.NET Core MVC, Razor Pages, Blazor</td></tr><tr><td>Databases</td><td>Entity Framework Core with SQL Server, MySQL or PostgreSQL</td></tr><tr><td>Desktop</td><td>WPF, WinForms, .NET MAUI</td></tr><tr><td>Mobile</td><td>.NET MAUI</td></tr><tr><td>Games</td><td>Unity</td></tr><tr><td>Cloud</td><td>Microsoft Azure</td></tr></tbody></table></div>
-<p>Free learning: <strong>learn.microsoft.com/dotnet</strong> (official tutorials and free certifications prep) and Unity Learn (<strong>learn.unity.com</strong>) for games.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which framework builds websites and APIs in C#? (two words)</p><details><summary>Show answer</summary><p>ASP.NET Core</p></details></li><li><p>Which library talks to databases in .NET? (two words, then Core)</p><details><summary>Show answer</summary><p>Entity Framework Core</p></details></li><li><p>Which command creates a new empty web project? (dotnet new …)</p><details><summary>Show answer</summary><p>dotnet new web</p></details></li></ol></section></div><p class="static-meta">Lesson 7 of 7 in <a href="/learn/csharp/">C#</a> · <a href="/learn/?book=csharp">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/csharp/async-files-json/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Files, JSON and async/await in C#</a><span></span></nav></article>
+app.MapPost(&quot;/students/{admissionNo}/payments&quot;, (string admissionNo, PaymentRequest req, StudentStore store) =&gt;
+{
+    if (req.Amount &lt;= 0) return Results.BadRequest(new { error = &quot;Amount must be positive&quot; });
+    var student = store.Find(admissionNo);
+    if (student is null) return Results.NotFound();
+    student.Balance -= req.Amount;
+    return Results.Ok(student);
+});
+
+app.Run();
+
+record PaymentRequest(decimal Amount, string Receipt);
+
+class Student
+{
+    public string AdmissionNo { get; init; } = &quot;&quot;;
+    public string Name { get; init; } = &quot;&quot;;
+    public decimal Balance { get; set; }
+}
+
+class StudentStore
+{
+    private readonly List&lt;Student&gt; students = new()
+    {
+        new Student { AdmissionNo = &quot;ADM001&quot;, Name = &quot;Brian&quot;, Balance = 12500m },
+        new Student { AdmissionNo = &quot;ADM002&quot;, Name = &quot;Faith&quot;, Balance = 0m }
+    };
+    public IEnumerable&lt;Student&gt; All() =&gt; students;
+    public Student? Find(string adm) =&gt; students.FirstOrDefault(s =&gt; s.AdmissionNo == adm);
+}</code></pre></figure>
+<p>Concepts:</p>
+<ul><li><strong>Routes</strong> map URLs and HTTP methods (GET, POST, PUT, DELETE) to code.</li><li><strong>Route parameters</strong> (<code>{admissionNo}</code>) and <strong>JSON bodies</strong> (<code>PaymentRequest</code>) bind automatically.</li><li><strong>Results</strong> return proper status codes: 200 OK, 201 Created, 400 Bad Request, 404 Not Found.</li><li><strong>Dependency injection (DI)</strong>: services are registered once and provided where needed, making code modular and testable.</li></ul>
+<h2>Controllers (the classic style)</h2>
+<p>Larger APIs often use controllers:</p>
+<figure class="static-code"><figcaption>C#</figcaption><pre><code class="language-csharp">[ApiController]
+[Route(&quot;api/[controller]&quot;)]
+public class StudentsController : ControllerBase
+{
+    private readonly SchoolDb db;
+    public StudentsController(SchoolDb db) =&gt; this.db = db;     // injected
+
+    [HttpGet(&quot;{admissionNo}&quot;)]
+    public async Task&lt;ActionResult&lt;Student&gt;&gt; Get(string admissionNo)
+    {
+        var student = await db.Students.FindAsync(admissionNo);
+        return student is null ? NotFound() : student;
+    }
+}</code></pre></figure>
+<p><code>[ApiController]</code> adds automatic model validation and helpful defaults.</p>
+<h2>Validation</h2>
+<p>Use data annotations (or libraries like FluentValidation):</p>
+<figure class="static-code"><figcaption>C#</figcaption><pre><code class="language-csharp">public record CreateStudent(
+    [Required, StringLength(10)] string AdmissionNo,
+    [Required, StringLength(100)] string Name,
+    [Range(0, 1_000_000)] decimal Balance);</code></pre></figure>
+<p>With controllers, invalid input automatically returns 400 with error details. Never trust client input, and don't expose internal error details in production responses.</p>
+<h2>Entity Framework Core: databases with C#</h2>
+<p><strong>EF Core</strong> maps C# classes to database tables (SQL Server, PostgreSQL, MySQL, SQLite) and translates LINQ into SQL.</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">dotnet add package Microsoft.EntityFrameworkCore.Sqlite
+dotnet add package Microsoft.EntityFrameworkCore.Design
+dotnet tool install --global dotnet-ef</code></pre></figure>
+<figure class="static-code"><figcaption>C#</figcaption><pre><code class="language-csharp">public class SchoolDb : DbContext
+{
+    public SchoolDb(DbContextOptions&lt;SchoolDb&gt; options) : base(options) {}
+    public DbSet&lt;Student&gt; Students =&gt; Set&lt;Student&gt;();
+    public DbSet&lt;Payment&gt; Payments =&gt; Set&lt;Payment&gt;();
+}
+
+public class Payment
+{
+    public int Id { get; set; }
+    public string AdmissionNo { get; set; } = &quot;&quot;;
+    public decimal Amount { get; set; }
+    public string Receipt { get; set; } = &quot;&quot;;
+    public DateTime PaidAt { get; set; } = DateTime.UtcNow;
+}</code></pre></figure>
+<p>Register it in Program.cs and create the database with migrations:</p>
+<figure class="static-code"><figcaption>C#</figcaption><pre><code class="language-csharp">builder.Services.AddDbContext&lt;SchoolDb&gt;(o =&gt;
+    o.UseSqlite(builder.Configuration.GetConnectionString(&quot;Default&quot;)));</code></pre></figure>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">dotnet ef migrations add Initial
+dotnet ef database update</code></pre></figure>
+<p>Query with LINQ (runs as SQL):</p>
+<figure class="static-code"><figcaption>C#</figcaption><pre><code class="language-csharp">var arrears = await db.Students
+    .Where(s =&gt; s.Balance &gt; 5000)
+    .OrderByDescending(s =&gt; s.Balance)
+    .Select(s =&gt; new { s.Name, s.Balance })
+    .ToListAsync();</code></pre></figure>
+<p>EF Core uses parameterised SQL, protecting against SQL injection.</p>
+<h2>Configuration and secrets</h2>
+<ul><li>Settings go in <code>appsettings.json</code> and per-environment files (<code>appsettings.Development.json</code>).</li><li><strong>Secrets</strong> (database passwords, M-Pesa keys, JWT signing keys) must not be committed: use <strong>User Secrets</strong> in development (<code>dotnet user-secrets set &quot;Mpesa:ConsumerSecret&quot; &quot;...&quot;</code>) and environment variables or a vault (Azure Key Vault) in production.</li><li>Read them with <code>builder.Configuration[&quot;Mpesa:ConsumerKey&quot;]</code> or bind to option classes.</li></ul>
+<h2>Authentication and authorisation</h2>
+<div class="static-table"><table><thead><tr><th>Need</th><th>Tool</th></tr></thead><tbody><tr><td>User accounts for a web app</td><td>ASP.NET Core Identity (registration, login, password hashing, 2FA)</td></tr><tr><td>APIs for mobile/SPA clients</td><td>JWT bearer tokens</td></tr><tr><td>Organisation logins</td><td>OpenID Connect (Microsoft Entra ID, Google)</td></tr><tr><td>Roles/permissions</td><td><code>[Authorize(Roles = &quot;Admin&quot;)]</code>, policies</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>C#</figcaption><pre><code class="language-csharp">app.MapGet(&quot;/admin/reports&quot;, () =&gt; &quot;secret report&quot;).RequireAuthorization(&quot;AdminOnly&quot;);</code></pre></figure>
+<p>Always use HTTPS, check that users can only access their own records (avoid IDOR), and rate-limit sensitive endpoints (ASP.NET Core includes rate-limiting middleware).</p>
+<h2>Testing and documentation</h2>
+<ul><li><strong>OpenAPI/Swagger</strong>: interactive documentation to test endpoints in the browser.</li><li><strong>Postman/Insomnia</strong> or VS Code REST Client for manual tests.</li><li><strong>xUnit</strong> for unit tests; <code>WebApplicationFactory</code> for integration tests.</li></ul>
+<h2>Deployment</h2>
+<div class="static-table"><table><thead><tr><th>Option</th><th>Notes</th></tr></thead><tbody><tr><td><strong>Azure App Service</strong></td><td>Easiest managed hosting for .NET</td></tr><tr><td><strong>Linux VPS</strong></td><td>Run <code>dotnet publish</code>, use a systemd service and Nginx reverse proxy (like the Node/Python deployment lesson)</td></tr><tr><td><strong>Docker</strong></td><td><code>dotnet publish</code> into a container; deploy anywhere</td></tr><tr><td><strong>Windows Server + IIS</strong></td><td>Common in enterprises</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">dotnet publish -c Release -o ./publish</code></pre></figure>
+<h2>Other C# paths</h2>
+<div class="static-table"><table><thead><tr><th>Path</th><th>What it is</th></tr></thead><tbody><tr><td><strong>Blazor</strong></td><td>Interactive web front ends in C# (server or WebAssembly)</td></tr><tr><td><strong>.NET MAUI</strong></td><td>Cross-platform mobile and desktop apps</td></tr><tr><td><strong>Unity</strong></td><td>Game engine using C# scripts: mobile games, AR/VR, simulations; huge community</td></tr><tr><td><strong>Desktop (WPF/WinUI)</strong></td><td>Windows business applications</td></tr></tbody></table></div>
+<p>A taste of Unity scripting:</p>
+<figure class="static-code"><figcaption>C#</figcaption><pre><code class="language-csharp">using UnityEngine;
+
+public class PlayerMovement : MonoBehaviour
+{
+    public float speed = 5f;
+    void Update()
+    {
+        float x = Input.GetAxis(&quot;Horizontal&quot;);
+        float y = Input.GetAxis(&quot;Vertical&quot;);
+        transform.Translate(new Vector3(x, y, 0) * speed * Time.deltaTime);
+    }
+}</code></pre></figure>
+<h2>Learning plan</h2>
+<div class="static-table"><table><thead><tr><th>Stage</th><th>Focus</th></tr></thead><tbody><tr><td>1</td><td>C# fundamentals, OOP, collections, LINQ (this subject)</td></tr><tr><td>2</td><td>ASP.NET Core minimal APIs and controllers</td></tr><tr><td>3</td><td>EF Core with SQL Server or PostgreSQL; SQL basics (SQL subject)</td></tr><tr><td>4</td><td>Authentication, validation, testing, logging</td></tr><tr><td>5</td><td>Deploy a project (Azure or VPS) and add CI (GitHub Actions)</td></tr><tr><td>6</td><td>Optional: Microsoft certifications (e.g. Azure Developer Associate), Blazor or Unity</td></tr></tbody></table></div>
+<p>Free resources: Microsoft Learn (official, free modules for C#, ASP.NET Core and Azure), the .NET YouTube channel, and freeCodeCamp's C# certification with Microsoft.</p>
+<h2>Portfolio project ideas</h2>
+<ul><li><strong>School fees API</strong>: students, payments, M-Pesa callback endpoint (sandbox), reports with LINQ.</li><li><strong>Inventory system</strong>: products, suppliers, stock movements, low-stock alerts, Blazor admin UI.</li><li><strong>Clinic booking API</strong> with JWT auth, roles (admin, doctor, patient) and SMS reminder background service.</li><li><strong>Unity mini-game</strong> showcasing C# skills.</li></ul>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> An M-Pesa callback endpoint in ASP.NET Core marks orders as paid whenever it receives a POST. What security checks should it have?</span><em>Show answer</em></summary><div class="callout-body"><p>Verify the request is genuine (a secret in the callback URL, HTTPS, optionally IP allow-listing per Safaricom guidance), match the CheckoutRequestID to a pending payment created by your system, confirm the amount, process each payment once (unique receipt), log raw payloads, and return the expected acknowledgement. Never trust client-side "paid" signals.</p></div></details>
+<h2>Summary</h2>
+<ul><li>ASP.NET Core builds fast, secure web APIs and apps in C#; create one with <code>dotnet new webapi</code>.</li><li>Minimal APIs or controllers map routes and HTTP methods to code, returning proper status codes; DI provides services.</li><li>Validate input; use EF Core with migrations and LINQ for databases (parameterised SQL).</li><li>Keep secrets in user secrets/environment variables; use Identity, JWT or OpenID Connect for auth, plus authorisation checks.</li><li>Test with OpenAPI and xUnit, deploy to Azure, a VPS or Docker, and explore Blazor, MAUI and Unity.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command creates a new ASP.NET Core Web API project? (three words)</p><details><summary>Show answer</summary><p>dotnet new webapi</p></details></li><li><p>Which ORM maps C# classes to database tables in .NET? (three words)</p><details><summary>Show answer</summary><p>Entity Framework Core</p></details></li><li><p>Which HTTP status code means "Not Found"?</p><details><summary>Show answer</summary><p>404</p></details></li><li><p>Which command applies EF Core migrations to the database? (four words)</p><details><summary>Show answer</summary><p>dotnet ef database update</p></details></li><li><p>Which .NET technology builds web UIs in C# instead of JavaScript?</p><details><summary>Show answer</summary><p>Blazor</p></details></li><li><p>Where should secrets like database passwords be kept in development? (two words)</p><details><summary>Show answer</summary><p>user secrets</p></details></li></ol></section></div><p class="static-meta">Lesson 7 of 7 in <a href="/learn/csharp/">C#</a> · <a href="/learn/?book=csharp">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/csharp/async-files-json/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Files, JSON and async/await in C#</a><span></span></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

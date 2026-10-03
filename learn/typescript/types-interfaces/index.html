@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Types, interfaces and functions | TypeScript</title>
-    <meta name="description" content="Free TypeScript lesson: Types, interfaces and functions." />
+    <title>Types, interfaces and functions: object types, optional…</title>
+    <meta name="description" content="Real programs work with objects : a customer with a name and phone, an order with items and a status, an API response with data and errors. TypeScript…" />
     <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/typescript/types-interfaces/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0b1b35" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Marzley Tech Learning Hub" />
-    <meta property="og:title" content="Types, interfaces and functions | TypeScript" />
-    <meta property="og:description" content="Free TypeScript lesson: Types, interfaces and functions." />
+    <meta property="og:title" content="Types, interfaces and functions: object types, optional…" />
+    <meta property="og:description" content="Real programs work with objects : a customer with a name and phone, an order with items and a status, an API response with data and errors. TypeScript…" />
     <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/typescript/types-interfaces/" />
     <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Types, interfaces and functions | TypeScript" />
-    <meta name="twitter:description" content="Free TypeScript lesson: Types, interfaces and functions." />
+    <meta name="twitter:title" content="Types, interfaces and functions: object types, optional…" />
+    <meta name="twitter:description" content="Real programs work with objects : a customer with a name and phone, an order with items and a status, an API response with data and errors. TypeScript…" />
     <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/typescript/types-interfaces/#lesson","name":"Types, interfaces and functions","description":"Free TypeScript lesson: Types, interfaces and functions.","url":"https://marzleytechsolutions.co.ke/learn/typescript/types-interfaces/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/typescript/#course","name":"TypeScript","url":"https://marzleytechsolutions.co.ke/learn/typescript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"TypeScript","item":"https://marzleytechsolutions.co.ke/learn/typescript/"},{"@type":"ListItem","position":4,"name":"Types, interfaces and functions","item":"https://marzleytechsolutions.co.ke/learn/typescript/types-interfaces/"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/typescript/types-interfaces/#lesson","name":"Types, interfaces and functions: object types, optional and readonly properties, unions, narrowing, generics and utility types","description":"Real programs work with objects : a customer with a name and phone, an order with items and a status, an API response with data and errors. TypeScript…","url":"https://marzleytechsolutions.co.ke/learn/typescript/types-interfaces/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/typescript/#course","name":"TypeScript","url":"https://marzleytechsolutions.co.ke/learn/typescript/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"TypeScript","item":"https://marzleytechsolutions.co.ke/learn/typescript/"},{"@type":"ListItem","position":4,"name":"Types, interfaces and functions: object types, optional and readonly properties, unions, narrowing, generics and utility types","item":"https://marzleytechsolutions.co.ke/learn/typescript/types-interfaces/"}]}]}</script>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=4ad0c7d1db" />
     <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
@@ -36,40 +36,174 @@
         </div>
     </header>
     <main id="learn-main" class="learn-main static-main" tabindex="-1">
-        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/typescript/">TypeScript</a> / <span>Types, interfaces and functions</span></p>
-<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=typescript&amp;lesson=types-interfaces"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Types, interfaces and functions</h1>
-<h2>Arrays and union types</h2>
-<figure class="static-code"><pre><code>let towns: string[] = [&quot;Nairobi&quot;, &quot;Kisumu&quot;];
-let phone: string | null = null;         // a string OR null
-type Status = &quot;pending&quot; | &quot;paid&quot; | &quot;failed&quot;;
-let s: Status = &quot;paid&quot;;
-s = &quot;done&quot;;   // Error: only the three listed values are allowed</code></pre></figure>
-<h2>Interfaces describe objects</h2>
-<figure class="static-code"><pre><code>interface Customer {
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/typescript/">TypeScript</a> / <span>Types, interfaces and functions: object types, optional and readonly properties, unions, narrowing, generics and utility types</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=typescript&amp;lesson=types-interfaces"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Types, interfaces and functions: object types, optional and readonly properties, unions, narrowing, generics and utility types</h1>
+<p>Real programs work with <strong>objects</strong>: a customer with a name and phone, an order with items and a status, an API response with data and errors. TypeScript lets you describe the <strong>shape</strong> of these objects precisely, so the compiler can check every use. This unit covers type aliases and interfaces, optional and readonly properties, union and literal types, narrowing, function types, generics and the built-in utility types, all with examples drawn from typical business apps.</p>
+<aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Object types with <code>type</code> and <code>interface</code></li><li>Optional (<code>?</code>) and <code>readonly</code> properties</li><li>Arrays of objects and nested types</li><li>Union types and literal types (like order statuses)</li><li>Narrowing with typeof, in, equality and discriminated unions</li><li>Function types and callbacks</li><li>Interfaces vs type aliases</li><li>Extending and combining types</li><li>Generics for reusable code</li><li>Utility types: Partial, Required, Pick, Omit, Record, Readonly</li><li>Enums vs union types</li></ul></div></aside>
+<h2>Object types</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type Customer = {
   id: number;
   name: string;
   phone: string;
-  email?: string;          // ? means optional
+  email?: string;            // optional
+  readonly createdAt: Date;  // can&#x27;t be reassigned
+};
+
+const c: Customer = {
+  id: 1,
+  name: &quot;Achieng Atieno&quot;,
+  phone: &quot;254712000003&quot;,
+  createdAt: new Date(&quot;2026-08-01&quot;),
+};
+
+// c.createdAt = new Date();   // error: Cannot assign to &#x27;createdAt&#x27; because it is a read-only property
+// c.nmae = &quot;x&quot;;               // error: Property &#x27;nmae&#x27; does not exist
+console.log(c.name, c.email ?? &quot;(no email)&quot;);</code></pre></figure>
+<h2>Interfaces</h2>
+<p><code>interface</code> is another way to describe object shapes:</p>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">interface Product {
+  id: number;
+  name: string;
+  category: &quot;Accessories&quot; | &quot;Storage&quot; | &quot;Electronics&quot;;
+  price: number;
+  tags?: string[];
 }
 
-const c: Customer = { id: 1, name: &quot;Wanjiku&quot;, phone: &quot;0712345678&quot; };</code></pre></figure>
-<h2>Typed functions</h2>
-<figure class="static-code"><pre><code>function vat(amount: number, rate: number = 0.16): number {
-  return amount * rate;
+const catalogue: Product[] = [
+  { id: 1, name: &quot;Laptop bag&quot;, category: &quot;Accessories&quot;, price: 2500 },
+  { id: 2, name: &quot;USB flash 32GB&quot;, category: &quot;Storage&quot;, price: 900, tags: [&quot;school&quot;] },
+  { id: 3, name: &quot;Bluetooth speaker&quot;, category: &quot;Electronics&quot;, price: 3500 },
+];
+
+const cheap = catalogue.filter((p) =&gt; p.price &lt; 3000).map((p) =&gt; p.name);
+console.log(cheap);</code></pre></figure>
+<h3>Extending</h3>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">interface Person {
+  name: string;
+  phone: string;
+}
+interface Employee extends Person {
+  staffNo: string;
+  department: string;
 }
 
-vat(1000);          // 160
-vat(&quot;1000&quot;);        // Error: Argument of type &#x27;string&#x27; is not assignable to parameter of type &#x27;number&#x27;.
+type Timestamps = { createdAt: string; updatedAt: string };
+type Student = Person &amp; Timestamps &amp; { admissionNo: string };   // intersection with &amp;
 
-const greet = (c: Customer): string =&gt; `Habari ${c.name}!`;</code></pre></figure>
+const e: Employee = { name: &quot;Kamau&quot;, phone: &quot;254712000004&quot;, staffNo: &quot;S-104&quot;, department: &quot;Finance&quot; };
+const s: Student = { name: &quot;Faith&quot;, phone: &quot;254712000009&quot;, admissionNo: &quot;ADM002&quot;, createdAt: &quot;2026-01-10&quot;, updatedAt: &quot;2026-09-01&quot; };
+console.log(e.department, s.admissionNo);</code></pre></figure>
+<h3>interface or type?</h3>
+<div class="static-table"><table><thead><tr><th></th><th><code>interface</code></th><th><code>type</code></th></tr></thead><tbody><tr><td>Object shapes</td><td>Yes</td><td>Yes</td></tr><tr><td>Unions (<code>A \| B</code>), tuples, primitives</td><td>No</td><td>Yes</td></tr><tr><td>Extending</td><td><code>extends</code></td><td><code>&amp;</code> intersections</td></tr><tr><td>Declaration merging</td><td>Yes (useful for libraries)</td><td>No</td></tr></tbody></table></div>
+<p>Both are fine for objects; many teams use <code>interface</code> for objects and <code>type</code> for unions and other combinations. Be consistent.</p>
+<h2>Union and literal types</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type OrderStatus = &quot;pending&quot; | &quot;paid&quot; | &quot;shipped&quot; | &quot;delivered&quot; | &quot;cancelled&quot;;
+
+function statusLabel(status: OrderStatus): string {
+  switch (status) {
+    case &quot;pending&quot;: return &quot;Waiting for payment&quot;;
+    case &quot;paid&quot;: return &quot;Preparing your order&quot;;
+    case &quot;shipped&quot;: return &quot;On the way&quot;;
+    case &quot;delivered&quot;: return &quot;Delivered&quot;;
+    case &quot;cancelled&quot;: return &quot;Cancelled&quot;;
+  }
+}
+
+let s: OrderStatus = &quot;paid&quot;;
+// s = &quot;refunded&quot;;   // error: not one of the allowed values
+console.log(statusLabel(s));</code></pre></figure>
+<p>Literal unions document allowed values and make typos impossible.</p>
+<h2>Narrowing</h2>
+<p>When a value can be several types, check which one it is; TypeScript narrows the type inside each branch:</p>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">function formatId(id: string | number): string {
+  if (typeof id === &quot;number&quot;) {
+    return id.toString().padStart(5, &quot;0&quot;);   // id is number here
+  }
+  return id.toUpperCase();                     // id is string here
+}
+console.log(formatId(42), formatId(&quot;adm002&quot;));</code></pre></figure>
+<h3>Discriminated unions</h3>
+<p>A shared literal property (the "discriminant") lets TypeScript narrow objects:</p>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type PaymentResult =
+  | { status: &quot;success&quot;; receipt: string; amount: number }
+  | { status: &quot;failed&quot;; reason: string }
+  | { status: &quot;pending&quot;; checkoutId: string };
+
+function describe(r: PaymentResult): string {
+  switch (r.status) {
+    case &quot;success&quot;: return `Paid KSh ${r.amount} (receipt ${r.receipt})`;
+    case &quot;failed&quot;: return `Payment failed: ${r.reason}`;
+    case &quot;pending&quot;: return `Waiting for PIN (checkout ${r.checkoutId})`;
+  }
+}
+
+const results: PaymentResult[] = [
+  { status: &quot;success&quot;, receipt: &quot;QJK7RT61SV&quot;, amount: 1500 },
+  { status: &quot;failed&quot;, reason: &quot;Insufficient balance&quot; },
+  { status: &quot;pending&quot;, checkoutId: &quot;ws_CO_123&quot; },
+];
+results.forEach((r) =&gt; console.log(describe(r)));</code></pre></figure>
+<p>This pattern models API responses, payment states and UI states safely: you can only access <code>receipt</code> when the status is <code>&quot;success&quot;</code>.</p>
+<h2>Function types and callbacks</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type PriceRule = (price: number) =&gt; number;
+
+const tenPercentOff: PriceRule = (p) =&gt; p * 0.9;
+const addDelivery: PriceRule = (p) =&gt; p + 250;
+
+function applyRules(price: number, rules: PriceRule[]): number {
+  return rules.reduce((current, rule) =&gt; rule(current), price);
+}
+
+console.log(applyRules(5000, [tenPercentOff, addDelivery]));   // 4750</code></pre></figure>
 <h2>Generics</h2>
-<p>Generics let a function work with many types while keeping them checked:</p>
-<figure class="static-code"><pre><code>function first&lt;T&gt;(items: T[]): T | undefined {
+<p><strong>Generics</strong> let you write reusable code that works with many types while keeping type safety. <code>T</code> is a placeholder for a type:</p>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">function first&lt;T&gt;(items: T[]): T | undefined {
   return items[0];
 }
-const n = first([10, 20]);        // n is number
-const t = first([&quot;a&quot;, &quot;b&quot;]);      // t is string</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which symbol makes an interface field optional?</p><details><summary>Show answer</summary><p>?</p></details></li><li><p>Which keyword describes the shape of an object in TypeScript?</p><details><summary>Show answer</summary><p>interface</p></details></li><li><p>What do we call a type like "pending" | "paid"? (a ___ type)</p><details><summary>Show answer</summary><p>union</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 7 in <a href="/learn/typescript/">TypeScript</a> · <a href="/learn/?book=typescript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/typescript/introduction/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> TypeScript introduction</a><a class="btn btn-solid btn-sm" href="/learn/typescript/typed-functions/">Typed functions, optional and default parameters <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+
+const n = first([10, 20, 30]);          // number | undefined
+const t = first([&quot;Nairobi&quot;, &quot;Kisumu&quot;]); // string | undefined
+console.log(n, t);
+
+type ApiResponse&lt;T&gt; = { ok: true; data: T } | { ok: false; error: string };
+
+type Student = { admissionNo: string; name: string };
+
+function handle&lt;T&gt;(res: ApiResponse&lt;T&gt;, show: (data: T) =&gt; string): string {
+  return res.ok ? show(res.data) : &quot;Error: &quot; + res.error;
+}
+
+const good: ApiResponse&lt;Student[]&gt; = { ok: true, data: [{ admissionNo: &quot;ADM001&quot;, name: &quot;Brian&quot; }] };
+const bad: ApiResponse&lt;Student[]&gt; = { ok: false, error: &quot;Server unavailable&quot; };
+console.log(handle(good, (list) =&gt; list.map((s) =&gt; s.name).join(&quot;, &quot;)));
+console.log(handle(bad, (list) =&gt; String(list.length)));</code></pre></figure>
+<p>You already use generics: <code>Array&lt;string&gt;</code>, <code>Promise&lt;User&gt;</code>, <code>Map&lt;string, number&gt;</code>.</p>
+<h2>Utility types</h2>
+<div class="static-table"><table><thead><tr><th>Utility</th><th>Result</th><th>Use</th></tr></thead><tbody><tr><td><code>Partial&lt;T&gt;</code></td><td>All properties optional</td><td>Update forms (send only changed fields)</td></tr><tr><td><code>Required&lt;T&gt;</code></td><td>All properties required</td><td>After validation</td></tr><tr><td><code>Readonly&lt;T&gt;</code></td><td>All properties readonly</td><td>Config, immutable state</td></tr><tr><td><code>Pick&lt;T, K&gt;</code></td><td>Only some properties</td><td>Public profile without private fields</td></tr><tr><td><code>Omit&lt;T, K&gt;</code></td><td>All except some</td><td>Create input without <code>id</code></td></tr><tr><td><code>Record&lt;K, V&gt;</code></td><td>Object with keys K and values V</td><td>Lookups: <code>Record&lt;string, number&gt;</code></td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">interface User {
+  id: number;
+  name: string;
+  email: string;
+  passwordHash: string;
+}
+
+type NewUser = Omit&lt;User, &quot;id&quot;&gt;;                 // for sign-up forms
+type PublicUser = Pick&lt;User, &quot;id&quot; | &quot;name&quot;&gt;;     // safe to send to the browser
+type UserUpdate = Partial&lt;Omit&lt;User, &quot;id&quot;&gt;&gt;;      // edit profile: any subset
+
+const update: UserUpdate = { name: &quot;Wanjiku M.&quot; };
+const stock: Record&lt;string, number&gt; = { unga: 40, sugar: 25 };
+const pub: PublicUser = { id: 7, name: &quot;Njeri&quot; };
+console.log(update, stock.unga, pub);</code></pre></figure>
+<h2>Enums vs union types</h2>
+<p>TypeScript has <code>enum</code>, but many teams prefer <strong>string literal unions</strong> (simpler, no extra runtime code):</p>
+<figure class="static-code"><figcaption>TypeScript</figcaption><pre><code class="language-typescript">enum Role { Admin = &quot;admin&quot;, Teacher = &quot;teacher&quot;, Parent = &quot;parent&quot; }   // generates a JS object
+type RoleU = &quot;admin&quot; | &quot;teacher&quot; | &quot;parent&quot;;                              // types only</code></pre></figure>
+<p>Use unions by default; enums appear in older codebases and some frameworks.</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Design types for a school fees app: a Payment can be by M-Pesa (with a receipt number and phone), by bank (with a bank reference) or in cash (with the receiving clerk's name). All payments have an amount and a date. How would you model it?</span><em>Show answer</em></summary><div class="callout-body"><p>A discriminated union: <code>type Payment = { amount: number; date: string } &amp; ({ method: &quot;mpesa&quot;; receipt: string; phone: string } | { method: &quot;bank&quot;; reference: string } | { method: &quot;cash&quot;; clerk: string });</code>. A <code>switch (p.method)</code> then safely accesses the right fields for each method.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Describe object shapes with <code>type</code> or <code>interface</code>; use <code>?</code> for optional and <code>readonly</code> for fixed properties.</li><li>Extend interfaces with <code>extends</code> or combine types with <code>&amp;</code>.</li><li>Union and literal types restrict values (order statuses); narrowing with typeof and discriminated unions makes branches type-safe.</li><li>Function types describe callbacks; generics write reusable, type-safe functions and types like <code>ApiResponse&lt;T&gt;</code>.</li><li>Utility types (Partial, Required, Readonly, Pick, Omit, Record) transform types; prefer literal unions to enums.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which symbol marks an object property as optional?</p><details><summary>Show answer</summary><p>?</p></details></li><li><p>Which keyword lets one interface build on another?</p><details><summary>Show answer</summary><p>extends</p></details></li><li><p>Which utility type makes all properties optional?</p><details><summary>Show answer</summary><p>Partial</p></details></li><li><p>Which utility type removes some properties from a type?</p><details><summary>Show answer</summary><p>Omit</p></details></li><li><p>What is the placeholder T in function first&lt;T&gt;(items: T[]) called? (one word)</p><details><summary>Show answer</summary><p>generic</p></details></li><li><p>A union of objects sharing a literal property like status is called a what union?</p><details><summary>Show answer</summary><p>discriminated</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 7 in <a href="/learn/typescript/">TypeScript</a> · <a href="/learn/?book=typescript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/typescript/introduction/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> TypeScript introduction: what it is, why teams use it, setup, basic types, type inference and compiling</a><a class="btn btn-solid btn-sm" href="/learn/typescript/typed-functions/">Typed functions, optional and default parameters <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
