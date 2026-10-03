@@ -78,7 +78,75 @@ sed -i &#x27;s/DEBUG=true/DEBUG=false/&#x27; .env                       # edit a
 <figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">mkdir site &amp;&amp; cd site          # run the second only if the first succeeds
 make build || echo &quot;Build failed&quot;   # run the second only if the first fails
 cd /tmp; ls                    # run both regardless</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which symbol appends output to a file instead of replacing it?</p><details><summary>Show answer</summary><p>&gt;&gt;</p></details></li><li><p>What is the name of the symbol that sends one command's output into the next command?</p><details><summary>Show answer</summary><p>pipe</p></details></li><li><p>Which command counts identical neighbouring lines? (with -c)</p><details><summary>Show answer</summary><p>uniq</p></details></li><li><p>Which command shows output on screen and also saves it to a file?</p><details><summary>Show answer</summary><p>tee</p></details></li><li><p>With &amp;&amp;, does the second command run if the first fails? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 12 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/viewing-editing-files/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Viewing, searching and editing text files (cat, less, grep, nano)</a><a class="btn btn-solid btn-sm" href="/learn/linux/permissions/">File permissions: reading rwx, chmod (symbolic and numeric), chown, umask and special permissions <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why pipes are Linux's superpower</h2>
+<p>Linux follows a simple philosophy: small programs that each do one job well, connected together. Pipes and redirection let you combine <code>grep</code>, <code>sort</code>, <code>uniq</code>, <code>cut</code>, <code>awk</code> and others to answer questions in one line that might otherwise need a script or spreadsheet: "which IP addresses hit the login page most?", "how many orders came in today?", "which folder is filling the disk?" System administrators, DevOps engineers and security analysts use these combinations constantly.</p>
+<h2>Standard streams</h2>
+<div class="static-table"><table><thead><tr><th>Stream</th><th>Number</th><th>Default</th><th>Redirect with</th></tr></thead><tbody><tr><td>Standard input (stdin)</td><td>0</td><td>Keyboard</td><td><code>&lt;</code></td></tr><tr><td>Standard output (stdout)</td><td>1</td><td>Screen</td><td><code>&gt;</code> or <code>&gt;&gt;</code></td></tr><tr><td>Standard error (stderr)</td><td>2</td><td>Screen</td><td><code>2&gt;</code> or <code>2&gt;&gt;</code></td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">ls /etc /nothing &gt; out.txt 2&gt; errors.txt     # normal output and errors to separate files
+ls /etc /nothing &gt; all.txt 2&gt;&amp;1              # both to the same file
+command &gt; /dev/null 2&gt;&amp;1                     # discard all output (common in cron jobs)
+sort &lt; names.txt                             # read input from a file</code></pre></figure>
+<p><code>/dev/null</code> is a special "black hole" file that discards anything written to it.</p>
+<h2>Here documents: multi-line input</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">cat &gt; notes.txt &lt;&lt;&#x27;EOF2&#x27;
+Server: web01
+Backups: daily at 2am
+EOF2</code></pre></figure>
+<p>Used in scripts to write config files or send multi-line input to commands.</p>
+<h2>Answering real questions about a web server</h2>
+<p>Assume a typical access log where field 1 is the visitor's IP, field 7 is the requested page and field 9 is the status code:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash"># Top 10 visitor IP addresses
+awk &#x27;{print $1}&#x27; access.log | sort | uniq -c | sort -rn | head
+
+# Most requested pages
+awk &#x27;{print $7}&#x27; access.log | sort | uniq -c | sort -rn | head
+
+# Count of each status code (200, 404, 500...)
+awk &#x27;{print $9}&#x27; access.log | sort | uniq -c | sort -rn
+
+# Pages that return 404 (broken links to fix)
+awk &#x27;$9 == 404 {print $7}&#x27; access.log | sort | uniq -c | sort -rn | head
+
+# Requests to the login page by IP (possible brute-force attempts)
+grep &quot;POST /wp-login.php&quot; access.log | awk &#x27;{print $1}&#x27; | sort | uniq -c | sort -rn | head</code></pre></figure>
+<p>Log formats vary; check a sample line with <code>head -n 3 access.log</code> and adjust the field numbers.</p>
+<h2>awk: a mini programming language for columns</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">awk -F, &#x27;{print $2}&#x27; sales.csv                       # 2nd column of a CSV (-F sets the separator)
+awk -F, &#x27;NR &gt; 1 {sum += $4} END {print sum}&#x27; sales.csv        # total of column 4, skipping the header
+awk -F, &#x27;NR &gt; 1 {t[$2] += $4} END {for (k in t) print k, t[k]}&#x27; sales.csv   # totals per town
+awk -F, &#x27;$4 &gt; 5000&#x27; sales.csv                        # rows where column 4 is over 5000
+awk &#x27;{print NR&quot;: &quot;$0}&#x27; file.txt                      # number each line</code></pre></figure>
+<p><code>NR</code> is the line number, <code>$0</code> the whole line, <code>$1</code>, <code>$2</code>... the columns, and <code>END</code> runs after all lines.</p>
+<h2>sed: find and replace in streams and files</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sed &#x27;s/http:/https:/g&#x27; page.html                      # print with replacements (file unchanged)
+sed -i.bak &#x27;s/old-domain.co.ke/new-domain.co.ke/g&#x27; config.php   # edit in place, keep a .bak backup
+sed -n &#x27;10,20p&#x27; big.log                               # print only lines 10 to 20
+sed &#x27;/^#/d&#x27; config.conf                               # remove comment lines
+sed &#x27;/^$/d&#x27; file.txt                                  # remove empty lines</code></pre></figure>
+<p>Always test without <code>-i</code> first, or use <code>-i.bak</code> to keep a backup.</p>
+<h2>xargs and command substitution</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">find . -name &quot;*.tmp&quot; | xargs rm                       # delete all found files
+find . -name &quot;*.php&quot; | xargs grep -l &quot;mysql_query&quot;    # PHP files using an old function
+grep -rl &quot;old-domain&quot; . | xargs sed -i &#x27;s/old-domain/new-domain/g&#x27;   # replace across many files
+
+echo &quot;Today is $(date +%A)&quot;                           # $( ) inserts a command&#x27;s output
+backup=&quot;db-$(date +%Y-%m-%d).sql&quot;                     # file name with today&#x27;s date
+echo &quot;Files in folder: $(ls | wc -l)&quot;</code></pre></figure>
+<p>For file names with spaces, use <code>find ... -print0 | xargs -0 ...</code>.</p>
+<h2>Chaining and conditions</h2>
+<div class="static-table"><table><thead><tr><th>Operator</th><th>Meaning</th><th>Example</th></tr></thead><tbody><tr><td><code>;</code></td><td>Run one after the other regardless</td><td><code>cd /tmp; ls</code></td></tr><tr><td><code>&amp;&amp;</code></td><td>Run the next only if the previous succeeded</td><td><code>npm run build &amp;&amp; rsync -a dist/ server:/var/www/</code></td></tr><tr><td><code>||</code></td><td>Run the next only if the previous failed</td><td><code>ping -c1 google.com || echo &quot;No internet&quot;</code></td></tr><tr><td><code>&amp;</code></td><td>Run in the background</td><td><code>long-task &amp;</code></td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo nginx -t &amp;&amp; sudo systemctl reload nginx          # reload only if the config is valid
+mkdir -p backups &amp;&amp; cp site.sql backups/</code></pre></figure>
+<p><code>&amp;&amp;</code> is a safety habit: never restart a service with a broken config.</p>
+<h2>Disk space detective work</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">df -h                                                 # free space per disk
+du -sh /var/* 2&gt;/dev/null | sort -h | tail            # biggest folders in /var
+du -ah /var/log | sort -rh | head -n 10               # biggest files and folders in logs</code></pre></figure>
+<p>When a server runs out of disk space, websites and databases fail; these commands find what's using it (often logs, old backups or caches).</p>
+<h2>Practice</h2>
+<ol><li>Create a CSV of sales (date, town, product, amount) and use awk to total sales per town.</li><li>Use <code>sort | uniq -c | sort -rn</code> to find the most common word in a text file.</li><li>Redirect a command's errors to a file and its normal output to another.</li><li>Use <code>sed -i.bak</code> to change a domain name in a config file, then compare with the backup using <code>diff</code>.</li><li>Find the five largest folders in your home directory.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why is <code>sudo nginx -t &amp;&amp; sudo systemctl reload nginx</code> safer than running the two commands separately with <code>;</code>?</span><em>Show answer</em></summary><div class="callout-body"><p>With <code>&amp;&amp;</code>, the reload only happens if the configuration test passes. With <code>;</code>, the reload would run even after a failed test, and restarting with a broken configuration could take the website down.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which symbol appends output to a file instead of replacing it?</p><details><summary>Show answer</summary><p>&gt;&gt;</p></details></li><li><p>What is the name of the symbol that sends one command's output into the next command?</p><details><summary>Show answer</summary><p>pipe</p></details></li><li><p>Which command counts identical neighbouring lines? (with -c)</p><details><summary>Show answer</summary><p>uniq</p></details></li><li><p>Which command shows output on screen and also saves it to a file?</p><details><summary>Show answer</summary><p>tee</p></details></li><li><p>With &amp;&amp;, does the second command run if the first fails? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which special file discards anything written to it?</p><details><summary>Show answer</summary><p>/dev/null</p></details></li><li><p>Which redirection sends errors (stderr) to the same place as normal output?</p><details><summary>Show answer</summary><p>2&gt;&amp;1</p></details></li><li><p>In awk, which variable holds the current line number?</p><details><summary>Show answer</summary><p>NR</p></details></li><li><p>Which sed option edits a file in place?</p><details><summary>Show answer</summary><p>-i</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 12 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/viewing-editing-files/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Viewing, searching and editing text files (cat, less, grep, nano)</a><a class="btn btn-solid btn-sm" href="/learn/linux/permissions/">File permissions: reading rwx, chmod (symbolic and numeric), chown, umask and special permissions <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

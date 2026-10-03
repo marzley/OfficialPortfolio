@@ -81,7 +81,74 @@ sudo chown -R www-data:www-data /var/www/uploads   # the web server&#x27;s user 
 <ol><li>Create a normal user with sudo; <strong>don't log in as root</strong>.</li><li>Use <strong>SSH keys</strong> and disable password login and root login in <code>/etc/ssh/sshd_config</code>:</li></ol>
 <p><code></code><code> PermitRootLogin no PasswordAuthentication no </code><code></code></p>
 <ol><li>Give each app its own user with only the access it needs (<strong>least privilege</strong>).</li><li>Remove accounts for people who leave.</li><li>Check <code>sudo last</code> and <code>/var/log/auth.log</code> for strange logins.</li></ol>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command runs a single command as the administrator?</p><details><summary>Show answer</summary><p>sudo</p></details></li><li><p>What is the Linux administrator account called?</p><details><summary>Show answer</summary><p>root</p></details></li><li><p>Which command adds a user to a group without removing other groups? (write the options)</p><details><summary>Show answer</summary><p>usermod -aG</p></details></li><li><p>Which user does the web server run as on Ubuntu?</p><details><summary>Show answer</summary><p>www-data</p></details></li><li><p>Which command changes a file's owner?</p><details><summary>Show answer</summary><p>chown</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 12 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/permissions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> File permissions: reading rwx, chmod (symbolic and numeric), chown, umask and special permissions</a><a class="btn btn-solid btn-sm" href="/learn/linux/processes-packages/">Processes and installing software: ps, top, kill, jobs, apt, snap and keeping a system updated <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why users and permissions matter</h2>
+<p>Linux was designed for many users sharing one computer, and servers still work that way: the web server, the database, developers and backup scripts each run as different users with only the access they need. Correct users, groups and permissions stop a hacked website from reading other sites' files, prevent junior staff from accidentally deleting system files, and keep secrets like database passwords private. Misconfigured permissions (like <code>chmod 777</code>) are one of the most common causes of hacked WordPress and PHP sites.</p>
+<h2>Reading permissions</h2>
+<figure class="static-code"><pre><code>-rw-r--r-- 1 amina webdev 2048 Sep 28 10:00 index.php
+│└┬┘└┬┘└┬┘   owner group
+│ │  │  └── others: r-- (read only)
+│ │  └───── group:  r-- (read only)
+│ └──────── owner:  rw- (read, write)
+└────────── type: - file, d directory, l link</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Letter</th><th>On a file</th><th>On a directory</th></tr></thead><tbody><tr><td><code>r</code> (4)</td><td>Read contents</td><td>List files</td></tr><tr><td><code>w</code> (2)</td><td>Change contents</td><td>Create/delete files inside</td></tr><tr><td><code>x</code> (1)</td><td>Run as a program</td><td>Enter the directory (<code>cd</code>)</td></tr></tbody></table></div>
+<h2>chmod with numbers and letters</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">chmod 644 index.php        # rw-r--r--  normal files: owner edits, others read
+chmod 755 deploy.sh        # rwxr-xr-x  scripts and directories
+chmod 600 .env             # rw-------  secrets: only the owner
+chmod 700 ~/.ssh           # rwx------  private SSH folder
+chmod u+x script.sh        # add execute for the owner
+chmod g+w shared.txt       # add write for the group
+chmod o-r secret.txt       # remove read for others
+chmod -R 755 /var/www/site # recursive (careful!)</code></pre></figure>
+<p>Common safe settings for websites: directories <strong>755</strong>, files <strong>644</strong>, config files with passwords <strong>600</strong> or <strong>640</strong>. Avoid <strong>777</strong> (everyone can write), which lets any compromised process change your files.</p>
+<h2>Setting web permissions correctly</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo chown -R deploy:www-data /var/www/shop          # owner: deploy user; group: web server
+sudo find /var/www/shop -type d -exec chmod 755 {} \;
+sudo find /var/www/shop -type f -exec chmod 644 {} \;
+sudo chmod -R 775 /var/www/shop/storage /var/www/shop/uploads   # only folders the app must write to
+sudo chmod 640 /var/www/shop/.env                    # readable by the owner and web server group only</code></pre></figure>
+<p>This gives the web server write access only where needed (uploads, cache), not to the code itself.</p>
+<h2>sudo best practices</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo -l                        # what am I allowed to run with sudo?
+sudo -i                        # root shell (use sparingly; exit when done)
+sudo visudo                    # safely edit sudo rules (checks syntax before saving)
+sudo journalctl _COMM=sudo     # who used sudo, and when (on systemd systems)</code></pre></figure>
+<ul><li>Don't log in as root directly over SSH; use a normal user with sudo.</li><li>Give sudo only to people who need it, and remove it when they leave.</li><li><code>visudo</code> prevents syntax errors that could lock everyone out of sudo.</li></ul>
+<h2>Creating a deployment user (a real server task)</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo adduser deploy                       # create the user (asks for a password)
+sudo usermod -aG sudo deploy              # allow sudo (Ubuntu); use &quot;wheel&quot; on some other distributions
+sudo usermod -aG www-data deploy          # share the web server group
+sudo mkdir -p /home/deploy/.ssh
+sudo cp ~/.ssh/authorized_keys /home/deploy/.ssh/   # allow your SSH key
+sudo chown -R deploy:deploy /home/deploy/.ssh
+sudo chmod 700 /home/deploy/.ssh &amp;&amp; sudo chmod 600 /home/deploy/.ssh/authorized_keys</code></pre></figure>
+<p>Then test <code>ssh deploy@server</code> in a new terminal <strong>before</strong> closing your current session.</p>
+<h2>Locking down SSH</h2>
+<p>In <code>/etc/ssh/sshd_config</code> (back it up first):</p>
+<figure class="static-code"><pre><code>PermitRootLogin no
+PasswordAuthentication no        # keys only (make sure your key login works first!)</code></pre></figure>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo sshd -t &amp;&amp; sudo systemctl reload ssh     # test config, then reload (service may be named sshd)</code></pre></figure>
+<p>Combined with a firewall (<code>ufw allow OpenSSH</code>) and Fail2ban, this blocks most automated attacks.</p>
+<h2>Special permissions (good to recognise)</h2>
+<div class="static-table"><table><thead><tr><th>Permission</th><th>Shown as</th><th>Meaning</th></tr></thead><tbody><tr><td>setuid</td><td><code>rws</code> in owner</td><td>Program runs with the file owner's rights (e.g. <code>passwd</code>)</td></tr><tr><td>setgid on a directory</td><td><code>rws</code> in group</td><td>New files inherit the directory's group: great for shared team folders</td></tr><tr><td>sticky bit</td><td><code>rwt</code> in others</td><td>Only the file's owner can delete it (used on <code>/tmp</code>)</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo chmod g+s /srv/shared      # new files in the shared folder belong to its group</code></pre></figure>
+<h2>Managing and auditing users</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">id amina                         # user ID and groups
+groups amina
+sudo passwd -l olduser           # lock a password
+sudo usermod -L olduser          # lock the account
+sudo deluser --remove-home olduser   # delete user and home folder (Debian/Ubuntu)
+last                             # recent logins
+lastlog                          # last login per user
+w                                # who is logged in now and what they&#x27;re doing
+sudo cat /var/log/auth.log | tail    # login attempts (Ubuntu/Debian)</code></pre></figure>
+<p>When a staff member leaves, lock or remove their account, remove their SSH keys, and rotate any shared passwords they knew.</p>
+<h2>umask: default permissions</h2>
+<p><code>umask</code> controls the permissions new files get. A common default of <code>022</code> gives new files 644 and new directories 755. Setting <code>umask 027</code> makes new files unreadable by "others", useful on shared servers.</p>
+<h2>Practice</h2>
+<ol><li>Create a file, then set it to 600, 644 and 755 in turn, checking with <code>ls -l</code>.</li><li>Create a user <code>trainee</code>, add them to a group <code>webdev</code>, and check with <code>id trainee</code>.</li><li>Create a shared folder owned by group <code>webdev</code> with setgid, and test that new files get the group.</li><li>Set correct permissions on a practice website folder (755 directories, 644 files).</li><li>Read <code>/var/log/auth.log</code> (or <code>journalctl -u ssh</code>) and identify failed login attempts.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A tutorial says "if uploads don't work, just run chmod -R 777 /var/www". Why is this dangerous, and what's better?</span><em>Show answer</em></summary><div class="callout-body"><p>777 lets every user and process write to every file, so if any part of the site is compromised, attackers can modify code, plant malware or deface the site. Instead, give the web server group write access only to the specific upload or cache folders (e.g. 775 with the correct group), keep code files 644 and directories 755, and keep secrets 600/640.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command runs a single command as the administrator?</p><details><summary>Show answer</summary><p>sudo</p></details></li><li><p>What is the Linux administrator account called?</p><details><summary>Show answer</summary><p>root</p></details></li><li><p>Which command adds a user to a group without removing other groups? (write the options)</p><details><summary>Show answer</summary><p>usermod -aG</p></details></li><li><p>Which user does the web server run as on Ubuntu?</p><details><summary>Show answer</summary><p>www-data</p></details></li><li><p>Which command changes a file's owner?</p><details><summary>Show answer</summary><p>chown</p></details></li><li><p>What numeric permission should a .env file with passwords usually have?</p><details><summary>Show answer</summary><p>600</p></details></li><li><p>Which command safely edits sudo rules with a syntax check?</p><details><summary>Show answer</summary><p>visudo</p></details></li><li><p>Which SSH setting stops direct root logins? (two words)</p><details><summary>Show answer</summary><p>PermitRootLogin no</p></details></li><li><p>Which special permission on a directory makes new files inherit its group?</p><details><summary>Show answer</summary><p>setgid</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 12 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/permissions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> File permissions: reading rwx, chmod (symbolic and numeric), chown, umask and special permissions</a><a class="btn btn-solid btn-sm" href="/learn/linux/processes-packages/">Processes and installing software: ps, top, kill, jobs, apt, snap and keeping a system updated <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

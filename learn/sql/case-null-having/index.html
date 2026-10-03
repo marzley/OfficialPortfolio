@@ -93,7 +93,78 @@ JOIN Products p ON p.ProductID = o.ProductID
 GROUP BY p.Category
 HAVING Revenue &gt; 0
 ORDER BY Revenue DESC;</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>How do you test for a missing value: = NULL or IS NULL?</p><details><summary>Show answer</summary><p>IS NULL</p></details></li><li><p>Which function returns the first value that is not NULL?</p><details><summary>Show answer</summary><p>COALESCE</p></details></li><li><p>Which clause filters groups after GROUP BY?</p><details><summary>Show answer</summary><p>HAVING</p></details></li><li><p>Which clause filters rows before grouping?</p><details><summary>Show answer</summary><p>WHERE</p></details></li><li><p>What is 5 + NULL?</p><details><summary>Show answer</summary><p>NULL</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>List each <strong>Category</strong> with the number of products in it, using <code>GROUP BY</code> and <code>COUNT(*)</code>.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=case-null-having#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 5 of 16 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/functions-group/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Aggregate functions and GROUP BY: COUNT, SUM, AVG, MIN, MAX and summary reports</a><a class="btn btn-solid btn-sm" href="/learn/sql/text-date-functions/">Text, number and date functions <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Where CASE, NULL and HAVING are used</h2>
+<p>These three features turn raw data into business answers. <strong>CASE</strong> labels data (big/small orders, price bands, grades). <strong>NULL handling</strong> prevents wrong totals and missing rows when information is incomplete, which is very common in real data (customers without emails, unpaid invoices without payment dates). <strong>HAVING</strong> finds groups that meet a condition, such as customers who spent over a threshold or products ordered more than a certain number of times. Analysts use them in nearly every report.</p>
+<h2>CASE for price bands and labels</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Name, Price,
+  CASE
+    WHEN Price &lt; 1000 THEN &#x27;Budget&#x27;
+    WHEN Price &lt; 3000 THEN &#x27;Mid-range&#x27;
+    ELSE &#x27;Premium&#x27;
+  END AS Band
+FROM Products
+ORDER BY Price;</code></pre></figure>
+<p>CASE checks conditions in order and returns the first match, just like IF/ELSE IF in programming.</p>
+<h2>Counting with CASE (pivot-style reports)</h2>
+<p>CASE inside SUM or COUNT creates columns for each category, a technique often called conditional aggregation:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT c.City,
+  COUNT(*) AS Orders,
+  SUM(CASE WHEN o.OrderDate &lt; &#x27;2026-09-01&#x27; THEN 1 ELSE 0 END) AS August,
+  SUM(CASE WHEN o.OrderDate &gt;= &#x27;2026-09-01&#x27; THEN 1 ELSE 0 END) AS September
+FROM Orders o
+JOIN Customers c ON c.CustomerID = o.CustomerID
+GROUP BY c.City
+ORDER BY Orders DESC;</code></pre></figure>
+<p>This is the SQL equivalent of an Excel pivot table with months as columns.</p>
+<h2>CASE in ORDER BY: custom sort orders</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Name, City FROM Customers
+ORDER BY CASE City WHEN &#x27;Nairobi&#x27; THEN 1 WHEN &#x27;Mombasa&#x27; THEN 2 ELSE 3 END, Name;</code></pre></figure>
+<p>Nairobi customers appear first, then Mombasa, then everyone else alphabetically.</p>
+<h2>How NULL behaves (and surprises people)</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT
+  NULL = NULL           AS EqualsNull,      -- NULL, not true!
+  NULL IS NULL          AS IsNullTest,          -- 1 (true)
+  5 + NULL              AS AddNull,         -- NULL
+  COALESCE(NULL, 0)     AS Coalesced,       -- 0
+  IFNULL(NULL, &#x27;none&#x27;)  AS IfNullResult,    -- &#x27;none&#x27; (SQLite/MySQL)
+  NULLIF(10, 10)        AS NullIfSame;      -- NULL (useful to avoid division by zero)</code></pre></figure>
+<p>Key rules:</p>
+<ul><li>Comparisons with NULL return NULL (unknown), so <code>WHERE Email = NULL</code> never matches. Use <code>IS NULL</code> / <code>IS NOT NULL</code>.</li><li>Aggregates like <code>SUM</code>, <code>AVG</code> and <code>COUNT(column)</code> <strong>ignore</strong> NULLs; <code>COUNT(*)</code> counts all rows.</li><li>Arithmetic with NULL gives NULL; wrap values in <code>COALESCE(col, 0)</code> when a missing value should count as zero.</li></ul>
+<h2>NULL in outer joins: finding what's missing</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">-- Customers who have never ordered
+SELECT c.Name, c.City
+FROM Customers c
+LEFT JOIN Orders o ON o.CustomerID = c.CustomerID
+WHERE o.OrderID IS NULL;</code></pre></figure>
+<p>A LEFT JOIN fills unmatched rows with NULLs, and <code>IS NULL</code> finds them. This is a classic interview question and a common business question ("which products never sold?").</p>
+<h2>Safe division with NULLIF</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT p.Name,
+  COALESCE(SUM(o.Quantity), 0) AS UnitsSold,
+  ROUND(p.Price * 1.0 / NULLIF(COALESCE(SUM(o.Quantity), 0), 0), 1) AS PricePerUnitSold
+FROM Products p
+LEFT JOIN Orders o ON o.ProductID = p.ProductID
+GROUP BY p.ProductID
+ORDER BY UnitsSold DESC;</code></pre></figure>
+<p><code>NULLIF(x, 0)</code> turns 0 into NULL, so dividing by it returns NULL instead of an error.</p>
+<h2>HAVING with several conditions</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT c.Name,
+  COUNT(*) AS Orders,
+  SUM(o.Quantity * p.Price) AS Spent
+FROM Orders o
+JOIN Customers c ON c.CustomerID = o.CustomerID
+JOIN Products p ON p.ProductID = o.ProductID
+GROUP BY c.CustomerID
+HAVING COUNT(*) &gt;= 1 AND SUM(o.Quantity * p.Price) &gt; 2000
+ORDER BY Spent DESC;</code></pre></figure>
+<h2>WHERE vs HAVING side by side</h2>
+<div class="static-table"><table><thead><tr><th></th><th>WHERE</th><th>HAVING</th></tr></thead><tbody><tr><td>Filters</td><td>Individual rows</td><td>Groups</td></tr><tr><td>Runs</td><td>Before GROUP BY</td><td>After GROUP BY</td></tr><tr><td>Can use aggregates (SUM, COUNT)?</td><td>No</td><td>Yes</td></tr><tr><td>Example</td><td><code>WHERE City = &#x27;Nairobi&#x27;</code></td><td><code>HAVING SUM(Total) &gt; 5000</code></td></tr></tbody></table></div>
+<p>Filtering with WHERE first (when possible) is faster, because fewer rows are grouped.</p>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Result</th><th>Fix</th></tr></thead><tbody><tr><td><code>WHERE Phone = NULL</code></td><td>No rows</td><td><code>WHERE Phone IS NULL</code></td></tr><tr><td><code>WHERE SUM(x) &gt; 100</code></td><td>Error</td><td>Move to <code>HAVING</code></td></tr><tr><td>Forgetting ELSE in CASE</td><td>NULL for unmatched rows</td><td>Add an ELSE</td></tr><tr><td><code>SUM(a + b)</code> when b can be NULL</td><td>Rows with NULL b are lost from the total</td><td><code>SUM(a + COALESCE(b, 0))</code></td></tr><tr><td><code>COUNT(column)</code> expecting all rows</td><td>NULLs not counted</td><td><code>COUNT(*)</code></td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Label orders as 'Single' (quantity 1) or 'Multiple' (quantity over 1) with CASE.</li><li>Count products per price band (Budget, Mid-range, Premium).</li><li>Find products that have never been ordered.</li><li>List cities whose customers placed more than one order in total.</li><li>Show each customer's total spending, showing 0 for customers with no orders.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A report shows total revenue per customer, but customers with no orders are missing. How do you include them with 0?</span><em>Show answer</em></summary><div class="callout-body"><p>Start from Customers and LEFT JOIN Orders (and Products), so every customer appears, then wrap the total in COALESCE: <code>COALESCE(SUM(o.Quantity * p.Price), 0)</code>. An inner JOIN drops customers with no matching orders.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>How do you test for a missing value: = NULL or IS NULL?</p><details><summary>Show answer</summary><p>IS NULL</p></details></li><li><p>Which function returns the first value that is not NULL?</p><details><summary>Show answer</summary><p>COALESCE</p></details></li><li><p>Which clause filters groups after GROUP BY?</p><details><summary>Show answer</summary><p>HAVING</p></details></li><li><p>Which clause filters rows before grouping?</p><details><summary>Show answer</summary><p>WHERE</p></details></li><li><p>What is 5 + NULL?</p><details><summary>Show answer</summary><p>NULL</p></details></li><li><p>Which function returns NULL when two values are equal, often used to avoid division by zero?</p><details><summary>Show answer</summary><p>NULLIF</p></details></li><li><p>Does COUNT(*) count rows where a column is NULL? (yes or no)</p><details><summary>Show answer</summary><p>yes</p></details></li><li><p>Which join helps find customers who have never ordered? (two words)</p><details><summary>Show answer</summary><p>LEFT JOIN</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>List each <strong>Category</strong> with the number of products in it, using <code>GROUP BY</code> and <code>COUNT(*)</code>.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=case-null-having#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 5 of 16 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/functions-group/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Aggregate functions and GROUP BY: COUNT, SUM, AVG, MIN, MAX and summary reports</a><a class="btn btn-solid btn-sm" href="/learn/sql/text-date-functions/">Text, number and date functions <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

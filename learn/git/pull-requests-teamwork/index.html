@@ -76,7 +76,72 @@ git push</code></pre></figure>
 <ul><li><strong>Issues</strong> track bugs and tasks. Mention one in a commit or PR with <code>Fixes #12</code> and GitHub closes it automatically when merged.</li><li><strong>Projects</strong> boards (To do → In progress → Done) organise the team's work.</li><li><strong>Protected branches</strong> (Settings → Branches) can require reviews and passing checks before merging to main.</li></ul>
 <h2>GitHub Actions in one sentence</h2>
 <p>A file in <code>.github/workflows/</code> can run your tests automatically on every push and PR, so broken code is caught before merging.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What do you open on GitHub to ask for your branch to be reviewed and merged? (two words)</p><details><summary>Show answer</summary><p>pull request</p></details></li><li><p>What is your own copy of someone else's repository on GitHub called?</p><details><summary>Show answer</summary><p>fork</p></details></li><li><p>Which merge option combines a whole PR into one commit? (three words)</p><details><summary>Show answer</summary><p>squash and merge</p></details></li><li><p>What words in a PR description close issue 12 automatically? (two words)</p><details><summary>Show answer</summary><p>Fixes #12</p></details></li><li><p>What is the original repository you forked usually called as a remote?</p><details><summary>Show answer</summary><p>upstream</p></details></li></ol></section></div><p class="static-meta">Lesson 8 of 12 in <a href="/learn/git/">Git &amp; GitHub</a> · <a href="/learn/?book=git">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/git/github/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> GitHub: remotes, push, pull, clone, SSH keys, tokens and a profile that gets you hired</a><a class="btn btn-solid btn-sm" href="/learn/git/github-actions-ci/">GitHub Actions and CI: run tests automatically on every push <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why pull requests matter</h2>
+<p>Pull requests (PRs) are how professional teams change code safely: someone proposes a change, others review it, automated tests run, and only then is it merged into the main branch. PRs catch bugs early, spread knowledge across the team, and keep a record of why each change was made. They're also how you contribute to open-source projects, which is a great way to build experience and a public track record when looking for your first developer job.</p>
+<h2>The life of a pull request</h2>
+<figure class="static-code"><pre><code>1. Create a branch          git switch -c fix/phone-validation
+2. Commit small changes     git commit -m &quot;fix: accept 01 numbers in phone validation&quot;
+3. Push the branch          git push -u origin fix/phone-validation
+4. Open a PR on GitHub      base: main  ←  compare: fix/phone-validation
+5. Automated checks run     tests, linting (GitHub Actions)
+6. Reviewers comment        questions, suggestions, approvals
+7. You push fixes           the PR updates automatically
+8. Merge                    squash, merge commit or rebase
+9. Delete the branch        keep the repository tidy</code></pre></figure>
+<h2>A PR description template</h2>
+<figure class="static-code"><figcaption>Markdown</figcaption><pre><code class="language-markdown">## What
+Phone validation now accepts numbers starting with 01 as well as 07.
+
+## Why
+Customers with newer Safaricom and Airtel numbers (01...) couldn&#x27;t check out. Closes #57.
+
+## How to test
+1. Go to /checkout
+2. Enter 0112345678 → should be accepted
+3. Enter 0812345678 → should show an error
+
+## Screenshots
+(before / after)
+
+## Notes
+No database changes.</code></pre></figure>
+<p>Teams often add this as <code>.github/pull_request_template.md</code> so every PR starts with the same headings.</p>
+<h2>Draft PRs and early feedback</h2>
+<p>Open a <strong>draft pull request</strong> when work isn't finished but you want early feedback on the approach. Reviewers can comment before you invest more time. Mark it "Ready for review" when done.</p>
+<h2>Reviewing code: what to look for</h2>
+<div class="static-table"><table><thead><tr><th>Area</th><th>Questions</th></tr></thead><tbody><tr><td>Correctness</td><td>Does it do what the PR says? Edge cases (empty input, 0, very large values)?</td></tr><tr><td>Security</td><td>User input validated? Secrets kept out of code? SQL queries parameterised?</td></tr><tr><td>Readability</td><td>Clear names, small functions, comments where logic is tricky?</td></tr><tr><td>Tests</td><td>Are there tests for the new behaviour? Do existing tests pass?</td></tr><tr><td>Performance</td><td>Any loops over large data, repeated database queries in a loop?</td></tr><tr><td>User experience</td><td>Error messages clear? Works on mobile? Accessible?</td></tr></tbody></table></div>
+<h2>Giving and receiving feedback</h2>
+<div class="static-table"><table><thead><tr><th>Unhelpful review comment</th><th>Helpful review comment</th></tr></thead><tbody><tr><td>"This is wrong."</td><td>"If <code>amount</code> is a string here, <code>amount &gt; 0</code> compares text. Could we convert with <code>Number()</code> first?"</td></tr><tr><td>"Bad naming."</td><td>"Maybe <code>calculateDeliveryFee</code> instead of <code>calc2</code>, so it's clear what it returns?"</td></tr><tr><td>"Why?"</td><td>"Could you explain why we retry 10 times? I worry about duplicate STK prompts."</td></tr></tbody></table></div>
+<p>Use GitHub's <strong>suggestion</strong> feature to propose exact code changes the author can accept with one click. As an author, don't take comments personally: reviewers are improving the code, not judging you. Reply to every comment, push fixes, and thank reviewers.</p>
+<h2>Protected branches and required checks</h2>
+<p>Repository settings → Branches → add a <strong>branch protection rule</strong> (or ruleset) for <code>main</code>:</p>
+<ul><li>Require pull requests before merging (no direct pushes).</li><li>Require at least one approval.</li><li>Require status checks (tests) to pass.</li><li>Require branches to be up to date before merging.</li><li>Restrict who can push or bypass.</li></ul>
+<p>This prevents accidental breaking changes on the live branch.</p>
+<h2>CODEOWNERS</h2>
+<p>A <code>.github/CODEOWNERS</code> file automatically requests reviews from the right people:</p>
+<figure class="static-code"><pre><code># Payments code must be reviewed by the payments team
+/src/payments/  @yourorg/payments-team
+*.sql           @db-lead</code></pre></figure>
+<h2>Contributing to open source step by step</h2>
+<ol><li>Find a project you use; look for issues labelled <code>good first issue</code> or <code>help wanted</code>.</li><li>Read <code>CONTRIBUTING.md</code> and the code of conduct.</li><li>Comment on the issue to say you'd like to work on it (avoid duplicate work).</li><li>Fork the repository, clone your fork, add the original as <code>upstream</code>:</li></ol>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git clone git@github.com:you/project.git
+cd project
+git remote add upstream https://github.com/original/project.git
+git switch -c fix/typo-in-docs
+# ...make changes, commit...
+git push -u origin fix/typo-in-docs</code></pre></figure>
+<ol><li>Open a PR from your fork's branch to the original repository's main branch.</li><li>Keep your fork updated:</li></ol>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git fetch upstream
+git switch main
+git merge upstream/main
+git push origin main</code></pre></figure>
+<p>Documentation fixes, translations (including Kiswahili) and tests are great first contributions.</p>
+<h2>Issues and project management</h2>
+<ul><li>Write issues with clear steps to reproduce bugs, expected vs actual behaviour, screenshots and environment details (browser, phone model).</li><li>Use labels (<code>bug</code>, <code>enhancement</code>, <code>good first issue</code>), milestones and assignees.</li><li>GitHub Projects boards (To do / In progress / Done) track work visually.</li><li>Link PRs to issues with keywords like <code>Closes #57</code> so issues close automatically on merge.</li></ul>
+<h2>Practice</h2>
+<ol><li>Create a repository, protect <code>main</code>, and practise merging only through PRs.</li><li>Add a pull request template and open a PR that follows it.</li><li>Review a friend's PR using at least one suggestion comment.</li><li>Fork an open-source project, fix a typo in its documentation and open a PR.</li><li>Keep your fork in sync with <code>upstream</code> after the original project gets new commits.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A reviewer asks for many changes on your first PR to an open-source project. How should you respond?</span><em>Show answer</em></summary><div class="callout-body"><p>Thank them, read each comment carefully, ask politely if something is unclear, make the requested changes in new commits on the same branch (the PR updates automatically), and reply to each comment saying what you changed. Detailed feedback means the maintainers are investing time in you; responding well builds your reputation in the community.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What do you open on GitHub to ask for your branch to be reviewed and merged? (two words)</p><details><summary>Show answer</summary><p>pull request</p></details></li><li><p>What is your own copy of someone else's repository on GitHub called?</p><details><summary>Show answer</summary><p>fork</p></details></li><li><p>Which merge option combines a whole PR into one commit? (three words)</p><details><summary>Show answer</summary><p>squash and merge</p></details></li><li><p>What words in a PR description close issue 12 automatically? (two words)</p><details><summary>Show answer</summary><p>Fixes #12</p></details></li><li><p>What is the original repository you forked usually called as a remote?</p><details><summary>Show answer</summary><p>upstream</p></details></li><li><p>What kind of PR signals that work is unfinished but open for early feedback?</p><details><summary>Show answer</summary><p>draft</p></details></li><li><p>Which file automatically requests reviews from specific people for certain paths?</p><details><summary>Show answer</summary><p>CODEOWNERS</p></details></li><li><p>Which GitHub label often marks issues suitable for newcomers? (three words)</p><details><summary>Show answer</summary><p>good first issue</p></details></li><li><p>Which repository setting stops direct pushes to main? (two words, e.g. branch ...)</p><details><summary>Show answer</summary><p>branch protection</p></details></li></ol></section></div><p class="static-meta">Lesson 8 of 12 in <a href="/learn/git/">Git &amp; GitHub</a> · <a href="/learn/?book=git">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/git/github/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> GitHub: remotes, push, pull, clone, SSH keys, tokens and a profile that gets you hired</a><a class="btn btn-solid btn-sm" href="/learn/git/github-actions-ci/">GitHub Actions and CI: run tests automatically on every push <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

@@ -95,7 +95,107 @@ git push origin v1.0</code></pre></figure>
 <p>Tags mark important points (a launch, a client handover) you can return to.</p>
 <h2>A good README</h2>
 <p>Every repository should have a <code>README.md</code> explaining what the project is, how to run it and how to configure it (without real secrets). GitHub shows it on the repo's front page. See the Markdown example in our practice editor.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the name of the file that lists files Git should ignore?</p><details><summary>Show answer</summary><p>.gitignore</p></details></li><li><p>Which pattern ignores every file ending in .log?</p><details><summary>Show answer</summary><p>*.log</p></details></li><li><p>A password was committed and pushed. What is the only real fix?</p><details><summary>Show answer</summary><p>change the password</p></details></li><li><p>Which command stops tracking a file but keeps your local copy?</p><details><summary>Show answer</summary><p>git rm --cached</p></details></li><li><p>Should a commit summary say "Added feature" or "Add feature"?</p><details><summary>Show answer</summary><p>Add feature</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 12 in <a href="/learn/git/">Git &amp; GitHub</a> · <a href="/learn/?book=git">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/git/first-repo/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Your first repository: init, status, add, commit, log and diff step by step</a><a class="btn btn-solid btn-sm" href="/learn/git/branches/">Branches and merging: working on features safely, switching, fast-forward and merge commits <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why commit habits matter</h2>
+<p>Your Git history is a diary of the project. Good commits make it easy to find when a bug appeared, understand why a change was made, undo one feature without losing others, and review a teammate's work. A clean history full of clear messages also impresses employers who look at your GitHub. A messy one ("update", "fix", "asdf") makes debugging and teamwork much harder. And a single committed password or API key can lead to a hacked server or a drained payment account.</p>
+<h2>.gitignore for common project types</h2>
+<figure class="static-code"><figcaption>GITIGNORE</figcaption><pre><code class="language-gitignore"># Node.js / React / Vite
+node_modules/
+dist/
+build/
+.env
+.env.*
+!.env.example
+npm-debug.log*
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# PHP / Laravel
+/vendor/
+/storage/*.key
+.env
+
+# Flutter / Android
+.dart_tool/
+build/
+*.jks
+key.properties
+local.properties
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db</code></pre></figure>
+<p>Patterns: <code>folder/</code> ignores a folder, <code>*.log</code> ignores by extension, <code>!file</code> makes an exception, and a leading <code>/</code> anchors to the repository root. GitHub's gitignore templates (github.com/github/gitignore) have ready lists for most languages.</p>
+<p>Commit an <code>.env.example</code> with variable <strong>names</strong> but no real values, so teammates know which settings they need:</p>
+<figure class="static-code"><pre><code>MPESA_CONSUMER_KEY=
+MPESA_CONSUMER_SECRET=
+DATABASE_URL=</code></pre></figure>
+<h2>Checking why a file is ignored (or not)</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git check-ignore -v config/secret.php     # shows which .gitignore rule matches
+git status --ignored                       # list ignored files
+git rm --cached .env                       # stop tracking a file that was committed before being ignored</code></pre></figure>
+<p>Adding a file to <code>.gitignore</code> doesn't remove it from Git if it was already committed; <code>git rm --cached</code> does (and the old version stays in history).</p>
+<h2>Committed a secret? Act in this order</h2>
+<ol><li><strong>Revoke/rotate the secret immediately</strong>: generate a new API key, change the password, regenerate the M-Pesa Daraja credentials. Assume the old one is compromised the moment it was pushed (bots scan GitHub for keys within minutes).</li><li>Remove it from the code and move it to environment variables or a config file outside the repository.</li><li>Optionally clean history with tools like <code>git filter-repo</code> or BFG, then force-push and ask collaborators to re-clone. Cleaning history alone isn't enough; rotation is the real fix.</li><li>Turn on <strong>secret scanning</strong> and push protection in GitHub settings where available.</li></ol>
+<h2>Small, focused commits</h2>
+<div class="static-table"><table><thead><tr><th>One big commit</th><th>Several small commits</th></tr></thead><tbody><tr><td>"Update website" (40 files: header, payments, typo fixes, new page)</td><td>"Add M-Pesa payment button to checkout"</td></tr><tr><td></td><td>"Fix typo on About page"</td></tr><tr><td></td><td>"Add Services page with pricing table"</td></tr></tbody></table></div>
+<p>Small commits are easier to review, revert and understand. Use <code>git add -p</code> to stage only some changes in a file:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git add -p index.html     # Git shows each change (&quot;hunk&quot;) and asks: stage this? y/n/s(plit)</code></pre></figure>
+<h2>Commit message format</h2>
+<figure class="static-code"><pre><code>Add M-Pesa STK push to checkout          ← summary: imperative, about 50 characters
+
+Customers can now pay with an STK push instead of typing the till
+number. The callback updates the order status to &quot;paid&quot;.
+
+Closes #42                               ← links and closes an issue</code></pre></figure>
+<p>Many teams use <strong>Conventional Commits</strong> prefixes:</p>
+<div class="static-table"><table><thead><tr><th>Prefix</th><th>Use</th><th>Example</th></tr></thead><tbody><tr><td><code>feat:</code></td><td>New feature</td><td><code>feat: add booking calendar</code></td></tr><tr><td><code>fix:</code></td><td>Bug fix</td><td><code>fix: correct VAT rounding on invoices</code></td></tr><tr><td><code>docs:</code></td><td>Documentation</td><td><code>docs: add setup steps to README</code></td></tr><tr><td><code>style:</code></td><td>Formatting only</td><td><code>style: format CSS with Prettier</code></td></tr><tr><td><code>refactor:</code></td><td>Code change without new behaviour</td><td><code>refactor: split cart logic into module</code></td></tr><tr><td><code>test:</code></td><td>Tests</td><td><code>test: add tests for phone validation</code></td></tr><tr><td><code>chore:</code></td><td>Maintenance</td><td><code>chore: update dependencies</code></td></tr></tbody></table></div>
+<h2>Searching history like a detective</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git log --oneline --graph --all          # visual history
+git log -p index.html                    # every change to one file
+git log --author=&quot;Wanjiru&quot; --since=&quot;2 weeks ago&quot;
+git log -S &quot;calculateVat&quot;                # commits that added or removed this text
+git log --grep=&quot;payment&quot;                 # commits whose message mentions &quot;payment&quot;
+git show a1b2c3d                         # what one commit changed
+git blame checkout.js                    # who last changed each line, and in which commit
+git bisect start                         # binary search for the commit that introduced a bug</code></pre></figure>
+<p><code>git bisect</code> asks you to mark commits as good or bad and finds the exact commit that broke something, even among hundreds.</p>
+<h2>Tags and releases</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">git tag -a v1.0.0 -m &quot;First public release&quot;
+git push origin v1.0.0
+git tag                                  # list tags</code></pre></figure>
+<p><strong>Semantic versioning</strong> (<code>MAJOR.MINOR.PATCH</code>): increase PATCH for bug fixes (1.0.1), MINOR for new features (1.1.0), MAJOR for breaking changes (2.0.0). On GitHub, create a Release from a tag with notes describing changes.</p>
+<h2>Writing a strong README</h2>
+<figure class="static-code"><figcaption>Markdown</figcaption><pre><code class="language-markdown"># Duka Bora Online Shop
+
+A mobile-friendly shop for a Nakuru grocery with WhatsApp ordering and M-Pesa payments.
+
+![Screenshot](docs/screenshot.png)
+
+## Features
+- Product catalogue with search
+- Cart and WhatsApp checkout
+- Admin page to update prices
+
+## Run locally
+1. `git clone https://github.com/you/duka-bora.git`
+2. `cp .env.example .env` and fill in the values
+3. `npm install &amp;&amp; npm run dev`
+
+## Live demo
+https://duka-bora.example.com
+
+## Tech
+HTML, CSS, JavaScript, PHP, MySQL</code></pre></figure>
+<h2>Practice</h2>
+<ol><li>Create a <code>.gitignore</code> for a Node project and check that <code>node_modules</code> and <code>.env</code> are ignored.</li><li>Make three small commits using Conventional Commit prefixes.</li><li>Use <code>git add -p</code> to commit only part of a file's changes.</li><li>Use <code>git log -S</code> to find when a function name first appeared.</li><li>Tag a release <code>v1.0.0</code> and push the tag.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A developer pushes a Daraja consumer secret to a public repository, then deletes it in the next commit. Is the problem solved?</span><em>Show answer</em></summary><div class="callout-body"><p>No. The secret remains in the Git history and may already have been copied by bots that scan GitHub. The developer must revoke and regenerate the credentials immediately, store the new ones outside the repository (environment variables), and optionally scrub the history. Deleting it in a later commit doesn't remove it from earlier commits.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the name of the file that lists files Git should ignore?</p><details><summary>Show answer</summary><p>.gitignore</p></details></li><li><p>Which pattern ignores every file ending in .log?</p><details><summary>Show answer</summary><p>*.log</p></details></li><li><p>A password was committed and pushed. What is the only real fix?</p><details><summary>Show answer</summary><p>change the password</p></details></li><li><p>Which command stops tracking a file but keeps your local copy?</p><details><summary>Show answer</summary><p>git rm --cached</p></details></li><li><p>Should a commit summary say "Added feature" or "Add feature"?</p><details><summary>Show answer</summary><p>Add feature</p></details></li><li><p>Which command shows who last changed each line of a file?</p><details><summary>Show answer</summary><p>git blame</p></details></li><li><p>Which command binary-searches history to find the commit that introduced a bug?</p><details><summary>Show answer</summary><p>git bisect</p></details></li><li><p>In semantic versioning, which number increases for a bug fix: major, minor or patch?</p><details><summary>Show answer</summary><p>patch</p></details></li><li><p>Which Conventional Commit prefix marks a new feature?</p><details><summary>Show answer</summary><p>feat</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 12 in <a href="/learn/git/">Git &amp; GitHub</a> · <a href="/learn/?book=git">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/git/first-repo/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Your first repository: init, status, add, commit, log and diff step by step</a><a class="btn btn-solid btn-sm" href="/learn/git/branches/">Branches and merging: working on features safely, switching, fast-forward and merge commits <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

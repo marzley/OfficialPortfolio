@@ -106,7 +106,98 @@ SELECT Category, SUM(Amount) FROM SalesLines GROUP BY Category;</code></pre></fi
 <blockquote><p><em>Revenue so far is KSh X from Y orders. Storage items bring in the most money (Z%). Kamau Njoroge is our top customer. The new laptop stand hasn't sold yet: consider a promotion. Eldoret customers haven't ordered yet.</em></p></blockquote>
 <h2>Challenges</h2>
 <ol><li>Which day of the week gets the most orders? (Hint: <code>STRFTIME(&#x27;%w&#x27;, OrderDate)</code>.)</li><li>Add a <code>Discount</code> column to Orders and recalculate revenue.</li><li>Find customers who ordered more than one different product.</li><li>Build a query that a dashboard could use for a "last 30 days" chart.</li></ol>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which join keeps rows from the first table even when there is no match?</p><details><summary>Show answer</summary><p>LEFT JOIN</p></details></li><li><p>What is a saved query you can use like a table called?</p><details><summary>Show answer</summary><p>view</p></details></li><li><p>How do you find products with no orders after a LEFT JOIN? Complete: WHERE o.OrderID IS ...</p><details><summary>Show answer</summary><p>NULL</p></details></li></ol></section></div><p class="static-meta">Lesson 15 of 16 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/sql-from-code/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Using SQL from code: Python sqlite3, parameters, SQL injection and connecting apps to MySQL/PostgreSQL</a><a class="btn btn-solid btn-sm" href="/learn/sql/sql-practice-interview/">SQL practice workbook and interview questions: 40 problems from easy to hard, with answers <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>How analysts turn queries into decisions</h2>
+<p>A sales report is only useful if it leads to action: restock fast-moving products, reward loyal customers, run a promotion in a quiet town, drop products that never sell. Analysts in retail chains, banks, telcos, NGOs and startups follow the same process you're practising here: ask clear questions, write queries, check the results, and write findings in plain language for managers.</p>
+<h2>Step 0: understand and check the data first</h2>
+<p>Before reporting, check data quality. Wrong data gives confident but wrong answers.</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">-- Row counts and date range
+SELECT COUNT(*) AS Orders, MIN(OrderDate) AS FirstOrder, MAX(OrderDate) AS LastOrder FROM Orders;
+
+-- Orders pointing to customers or products that do not exist (should be 0)
+SELECT COUNT(*) AS OrphanOrders
+FROM Orders o
+LEFT JOIN Customers c ON c.CustomerID = o.CustomerID
+LEFT JOIN Products p ON p.ProductID = o.ProductID
+WHERE c.CustomerID IS NULL OR p.ProductID IS NULL;
+
+-- Suspicious values
+SELECT * FROM Orders WHERE Quantity &lt;= 0 OR Quantity &gt; 100;</code></pre></figure>
+<h2>Key performance indicators (KPIs) in one query</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">WITH lines AS (
+  SELECT o.OrderID, o.CustomerID, o.Quantity, p.Price, o.Quantity * p.Price AS Amount
+  FROM Orders o JOIN Products p ON p.ProductID = o.ProductID
+)
+SELECT
+  COUNT(DISTINCT OrderID)                       AS Orders,
+  COUNT(DISTINCT CustomerID)                    AS ActiveCustomers,
+  SUM(Quantity)                                 AS UnitsSold,
+  SUM(Amount)                                   AS Revenue,
+  ROUND(SUM(Amount) * 1.0 / COUNT(DISTINCT OrderID), 0)     AS AvgOrderValue,
+  ROUND(SUM(Amount) * 1.0 / COUNT(DISTINCT CustomerID), 0)  AS RevenuePerCustomer
+FROM lines;</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>KPI</th><th>Why managers care</th></tr></thead><tbody><tr><td>Revenue</td><td>Overall size of the business</td></tr><tr><td>Average order value</td><td>Are customers buying more per visit? Bundles and upselling raise it</td></tr><tr><td>Active customers</td><td>Is the customer base growing?</td></tr><tr><td>Revenue per customer</td><td>Value of each customer; guides marketing spend</td></tr><tr><td>Repeat customer rate</td><td>Loyalty; cheaper than finding new customers</td></tr></tbody></table></div>
+<h2>Repeat customers</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">WITH counts AS (
+  SELECT CustomerID, COUNT(*) AS Orders FROM Orders GROUP BY CustomerID
+)
+SELECT
+  SUM(CASE WHEN Orders &gt; 1 THEN 1 ELSE 0 END) AS RepeatCustomers,
+  COUNT(*) AS BuyingCustomers,
+  ROUND(100.0 * SUM(CASE WHEN Orders &gt; 1 THEN 1 ELSE 0 END) / COUNT(*), 1) AS RepeatRatePct
+FROM counts;</code></pre></figure>
+<h2>Month-over-month growth</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">WITH monthly AS (
+  SELECT strftime(&#x27;%Y-%m&#x27;, o.OrderDate) AS Month, SUM(o.Quantity * p.Price) AS Revenue
+  FROM Orders o JOIN Products p ON p.ProductID = o.ProductID
+  GROUP BY Month
+)
+SELECT Month, Revenue,
+  LAG(Revenue) OVER (ORDER BY Month) AS PrevMonth,
+  ROUND(100.0 * (Revenue - LAG(Revenue) OVER (ORDER BY Month)) / LAG(Revenue) OVER (ORDER BY Month), 1) AS GrowthPct
+FROM monthly;</code></pre></figure>
+<p>With only two months of sample data, be careful: small numbers swing a lot. Real reports compare the same period across years too, to account for seasons (school opening, December holidays).</p>
+<h2>Category mix and Pareto (80/20) analysis</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">WITH rev AS (
+  SELECT p.Name, SUM(o.Quantity * p.Price) AS Revenue
+  FROM Orders o JOIN Products p ON p.ProductID = o.ProductID
+  GROUP BY p.ProductID
+)
+SELECT Name, Revenue,
+  ROUND(100.0 * SUM(Revenue) OVER (ORDER BY Revenue DESC) / SUM(Revenue) OVER (), 1) AS CumulativePct
+FROM rev
+ORDER BY Revenue DESC;</code></pre></figure>
+<p>Often a small share of products brings most of the revenue (the Pareto principle). Those products should never run out of stock.</p>
+<h2>Customer segments (simple RFM idea)</h2>
+<p><strong>RFM</strong> groups customers by Recency (how recently they bought), Frequency (how often) and Monetary value (how much):</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">WITH c AS (
+  SELECT cu.Name,
+    MAX(o.OrderDate) AS LastOrder,
+    COUNT(*) AS Frequency,
+    SUM(o.Quantity * p.Price) AS Monetary
+  FROM Orders o
+  JOIN Customers cu ON cu.CustomerID = o.CustomerID
+  JOIN Products p ON p.ProductID = o.ProductID
+  GROUP BY cu.CustomerID
+)
+SELECT Name, LastOrder, Frequency, Monetary,
+  CASE
+    WHEN Monetary &gt;= 5000 THEN &#x27;High value&#x27;
+    WHEN LastOrder &gt;= &#x27;2026-09-01&#x27; THEN &#x27;Recent&#x27;
+    ELSE &#x27;Needs follow-up&#x27;
+  END AS Segment
+FROM c
+ORDER BY Monetary DESC;</code></pre></figure>
+<p>Segments guide actions: thank and reward high-value customers, send offers to those who haven't bought recently.</p>
+<h2>From SQL to a dashboard</h2>
+<ul><li>Save key queries as <strong>views</strong> so dashboards always use the same logic.</li><li>Connect a dashboard tool (Looker Studio, Power BI, Metabase or Excel's Get Data) to the database or an exported CSV.</li><li>Use simple visuals: KPI cards, a monthly line chart, a bar chart of top products, a table of customers to follow up.</li><li>Schedule refreshes (daily or weekly).</li></ul>
+<h2>Writing the findings</h2>
+<p>A short report for a manager might read:</p>
+<blockquote><p><strong>September summary.</strong> Revenue was KSh X from Y orders (average order KSh Z). Two products produced most revenue: keep them in stock. One customer bought twice; most bought once, so a follow-up offer could increase repeat purchases. Mombasa and Eldoret have few orders: consider local promotions. Data note: only two months of data, so trends are early indications.</p></blockquote>
+<p>Use plain language, round numbers sensibly, and state limitations honestly.</p>
+<h2>Practice</h2>
+<ol><li>Calculate the KPIs for August only, then September only, and compare.</li><li>Find the repeat customer rate.</li><li>Build the Pareto table and identify the products making up 80% of revenue.</li><li>Create a view <code>customer_summary</code> with each customer's orders, spend and last order date.</li><li>Write a five-sentence findings summary for the shop owner.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Average order value rose from KSh 2,000 to KSh 3,000, but total revenue fell. How is that possible, and what would you check?</span><em>Show answer</em></summary><div class="callout-body"><p>Fewer orders were placed, even though each was bigger (for example, a few large purchases replacing many small ones). Check the number of orders and active customers, whether a few unusually large orders distort the average (look at the median or exclude outliers), and whether some customer group or town stopped buying.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which join keeps rows from the first table even when there is no match?</p><details><summary>Show answer</summary><p>LEFT JOIN</p></details></li><li><p>What is a saved query you can use like a table called?</p><details><summary>Show answer</summary><p>view</p></details></li><li><p>How do you find products with no orders after a LEFT JOIN? Complete: WHERE o.OrderID IS ...</p><details><summary>Show answer</summary><p>NULL</p></details></li><li><p>What does AOV stand for? (three words)</p><details><summary>Show answer</summary><p>average order value</p></details></li><li><p>What principle says a small share of products often brings most revenue? (one word or 80/20)</p><details><summary>Show answer</summary><p>Pareto</p></details></li><li><p>In RFM analysis, what does F stand for?</p><details><summary>Show answer</summary><p>frequency</p></details></li></ol></section></div><p class="static-meta">Lesson 15 of 16 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/sql-from-code/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Using SQL from code: Python sqlite3, parameters, SQL injection and connecting apps to MySQL/PostgreSQL</a><a class="btn btn-solid btn-sm" href="/learn/sql/sql-practice-interview/">SQL practice workbook and interview questions: 40 problems from easy to hard, with answers <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

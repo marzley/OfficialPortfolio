@@ -102,7 +102,92 @@ DROP TABLE Vendors;              -- deletes the table and ALL its data. Careful!
   joined_on DATE DEFAULT (CURRENT_DATE)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;</code></pre></figure>
 <p><code>utf8mb4</code> supports all characters including emoji. Use it for every table.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which constraint stops duplicate values in a column?</p><details><summary>Show answer</summary><p>UNIQUE</p></details></li><li><p>Which constraint means a column must always have a value?</p><details><summary>Show answer</summary><p>NOT NULL</p></details></li><li><p>Which MySQL data type should you use for money?</p><details><summary>Show answer</summary><p>DECIMAL</p></details></li><li><p>Which command deletes a whole table and its data?</p><details><summary>Show answer</summary><p>DROP TABLE</p></details></li><li><p>Which command adds a column to an existing table?</p><details><summary>Show answer</summary><p>ALTER TABLE</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Create a table <strong>Books</strong> with <code>BookID INTEGER PRIMARY KEY</code>, <code>Title TEXT NOT NULL</code> and <code>Price INTEGER</code>, then <code>SELECT * FROM Books</code>.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=create-tables-constraints#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 9 of 16 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/changing-data/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> INSERT, UPDATE and DELETE: adding, changing and removing data safely</a><a class="btn btn-solid btn-sm" href="/learn/sql/keys-design/">Keys, relationships and table design: primary keys, foreign keys, one-to-many, many-to-many and normalisation <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why table design matters</h2>
+<p>A well-designed database keeps data correct for years: no duplicate customers, no orders for products that don't exist, no negative prices, no missing phone numbers. A badly designed one causes endless bugs and reports nobody trusts. Designing tables (choosing columns, types, keys and constraints) is a core job for back-end developers and database administrators, and a common topic in interviews and university projects.</p>
+<h2>Designing tables step by step: a school example</h2>
+<ol><li><strong>List the things (entities)</strong>: Students, Classes, Subjects, Marks, Fee payments.</li><li><strong>List each entity's attributes</strong>: Student → admission number, name, date of birth, class, parent phone.</li><li><strong>Choose primary keys</strong>: StudentID (auto number), or the admission number if it never changes.</li><li><strong>Find relationships</strong>: one class has many students; a student has many marks; a mark belongs to one subject.</li><li><strong>Add foreign keys</strong> for those relationships.</li><li><strong>Add constraints</strong>: required fields, unique admission numbers, marks between 0 and 100.</li></ol>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE TABLE Classes (
+  ClassID   INTEGER PRIMARY KEY,
+  Name      TEXT NOT NULL UNIQUE              -- e.g. &#x27;Form 2 East&#x27;
+);
+CREATE TABLE Students (
+  StudentID    INTEGER PRIMARY KEY,
+  AdmissionNo  TEXT NOT NULL UNIQUE,
+  FullName     TEXT NOT NULL,
+  DateOfBirth  TEXT,
+  ClassID      INTEGER NOT NULL REFERENCES Classes(ClassID),
+  ParentPhone  TEXT CHECK (length(ParentPhone) = 10)
+);
+CREATE TABLE Subjects (
+  SubjectID INTEGER PRIMARY KEY,
+  Name      TEXT NOT NULL UNIQUE
+);
+CREATE TABLE Marks (
+  StudentID INTEGER NOT NULL REFERENCES Students(StudentID),
+  SubjectID INTEGER NOT NULL REFERENCES Subjects(SubjectID),
+  Term      TEXT NOT NULL,
+  Score     INTEGER NOT NULL CHECK (Score BETWEEN 0 AND 100),
+  PRIMARY KEY (StudentID, SubjectID, Term)     -- one mark per student, subject and term
+);
+
+INSERT INTO Classes (Name) VALUES (&#x27;Form 2 East&#x27;), (&#x27;Form 2 West&#x27;);
+INSERT INTO Subjects (Name) VALUES (&#x27;Maths&#x27;), (&#x27;English&#x27;);
+INSERT INTO Students (AdmissionNo, FullName, ClassID, ParentPhone) VALUES
+  (&#x27;ADM001&#x27;, &#x27;Baraka Mutua&#x27;, 1, &#x27;0712000101&#x27;),
+  (&#x27;ADM002&#x27;, &#x27;Neema Chebet&#x27;, 2, &#x27;0712000102&#x27;);
+INSERT INTO Marks VALUES (1, 1, &#x27;2026T3&#x27;, 78), (1, 2, &#x27;2026T3&#x27;, 65), (2, 1, &#x27;2026T3&#x27;, 91);
+
+SELECT s.FullName, c.Name AS Class, sub.Name AS Subject, m.Score
+FROM Marks m
+JOIN Students s ON s.StudentID = m.StudentID
+JOIN Classes c ON c.ClassID = s.ClassID
+JOIN Subjects sub ON sub.SubjectID = m.SubjectID
+ORDER BY s.FullName, sub.Name;</code></pre></figure>
+<p>The <strong>composite primary key</strong> (StudentID, SubjectID, Term) stops the same mark being entered twice.</p>
+<h2>Watching constraints protect your data</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE TABLE Accounts (
+  AccountID INTEGER PRIMARY KEY,
+  Phone     TEXT NOT NULL UNIQUE,
+  Balance   INTEGER NOT NULL DEFAULT 0 CHECK (Balance &gt;= 0)
+);
+INSERT INTO Accounts (Phone) VALUES (&#x27;0712000001&#x27;);
+INSERT INTO Accounts (Phone, Balance) VALUES (&#x27;0712000002&#x27;, 500);
+SELECT * FROM Accounts;
+-- Each line below would be rejected. Remove the -- from one line at a time and run:
+-- INSERT INTO Accounts (Phone) VALUES (&#x27;0712000001&#x27;)                (UNIQUE fails)
+-- INSERT INTO Accounts (Phone, Balance) VALUES (&#x27;0712000003&#x27;, -50)  (CHECK fails)
+-- INSERT INTO Accounts (Balance) VALUES (100)                       (NOT NULL fails)</code></pre></figure>
+<p>Try un-commenting one line at a time to see the error. Constraints are the database refusing bad data, even if the application code has a bug.</p>
+<h2>Choosing good data types</h2>
+<div class="static-table"><table><thead><tr><th>Data</th><th>Good choice</th><th>Why</th></tr></thead><tbody><tr><td>Money</td><td><code>INTEGER</code> cents (SQLite) or <code>DECIMAL(12,2)</code> (MySQL/PostgreSQL)</td><td>Floats cause rounding errors</td></tr><tr><td>Phone numbers, ID numbers, admission numbers</td><td><code>TEXT</code> / <code>VARCHAR</code></td><td>Leading zeros; no maths is done on them</td></tr><tr><td>Dates</td><td><code>DATE</code> / <code>DATETIME</code> (or ISO text in SQLite)</td><td>Correct sorting and date functions</td></tr><tr><td>Yes/no</td><td><code>BOOLEAN</code> (MySQL <code>TINYINT(1)</code>, SQLite 0/1)</td><td>Clear meaning</td></tr><tr><td>Long descriptions</td><td><code>TEXT</code></td><td>No small length limit</td></tr><tr><td>Fixed set of values</td><td><code>TEXT</code> with <code>CHECK (Status IN (&#x27;pending&#x27;,&#x27;paid&#x27;,&#x27;cancelled&#x27;))</code> or a lookup table</td><td>Prevents typos</td></tr></tbody></table></div>
+<h2>ON DELETE: what happens to related rows</h2>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">CREATE TABLE Orders (
+  OrderID    INTEGER PRIMARY KEY,
+  CustomerID INTEGER NOT NULL REFERENCES Customers(CustomerID) ON DELETE RESTRICT,
+  ...
+);
+CREATE TABLE OrderItems (
+  OrderID   INTEGER NOT NULL REFERENCES Orders(OrderID) ON DELETE CASCADE,
+  ...
+);</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Option</th><th>Meaning</th><th>Use</th></tr></thead><tbody><tr><td><code>RESTRICT</code> / <code>NO ACTION</code></td><td>Refuse to delete a parent that has children</td><td>Can't delete a customer who has orders</td></tr><tr><td><code>CASCADE</code></td><td>Delete children automatically</td><td>Deleting an order removes its items</td></tr><tr><td><code>SET NULL</code></td><td>Set the foreign key to NULL</td><td>Keep posts when an author account is removed</td></tr></tbody></table></div>
+<p>Note: SQLite only enforces foreign keys after <code>PRAGMA foreign_keys = ON;</code> (many apps run this on every connection).</p>
+<h2>Altering tables safely</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE TABLE Suppliers (SupplierID INTEGER PRIMARY KEY, Name TEXT NOT NULL);
+ALTER TABLE Suppliers ADD COLUMN Phone TEXT;
+ALTER TABLE Suppliers ADD COLUMN Active INTEGER NOT NULL DEFAULT 1;
+ALTER TABLE Suppliers RENAME COLUMN Name TO CompanyName;
+INSERT INTO Suppliers (CompanyName, Phone) VALUES (&#x27;Nairobi Electronics Ltd&#x27;, &#x27;0722000000&#x27;);
+SELECT * FROM Suppliers;</code></pre></figure>
+<p>On live systems, changes to tables are done through <strong>migrations</strong>: versioned scripts (Laravel, Django and Prisma all have migration tools) so every developer's and server's database stays in sync. Always back up before changing production tables.</p>
+<h2>Naming conventions</h2>
+<ul><li>Pick one style and stick to it: <code>PascalCase</code> (Customers, OrderDate) or <code>snake_case</code> (customers, order_date).</li><li>Table names: plural (Customers) or singular (Customer), but consistent.</li><li>Primary key: <code>ID</code> or <code>TableNameID</code> (CustomerID).</li><li>Foreign key: same name as the primary key it refers to.</li><li>Avoid spaces and reserved words (<code>Order</code>, <code>Group</code>, <code>User</code> need quoting in some databases).</li></ul>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Phone numbers stored as INTEGER</td><td>TEXT</td></tr><tr><td>Money as FLOAT</td><td>DECIMAL or integer cents</td></tr><tr><td>No primary key</td><td>Every table needs one</td></tr><tr><td>Comma-separated lists in one column ("Maths,English")</td><td>A separate linking table</td></tr><tr><td>Same data in several tables</td><td>Normalise: store once, link by ID</td></tr><tr><td>No constraints, trusting the app</td><td>Add NOT NULL, UNIQUE, CHECK, foreign keys</td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Design tables for a chama: Members, Contributions (member, amount, date), Loans and Repayments.</li><li>Add CHECK constraints so contributions are positive and loan status is one of 'active', 'repaid', 'defaulted'.</li><li>Create a linking table for a many-to-many relationship between Students and Clubs.</li><li>Add a <code>CreatedAt</code> column with a default of the current time (<code>DEFAULT CURRENT_TIMESTAMP</code>).</li><li>Try inserting invalid data and read each error message.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why is storing "Maths,English,Kiswahili" in one Subjects column of a Students table a poor design?</span><em>Show answer</em></summary><div class="callout-body"><p>You can't easily count students per subject, enforce valid subject names, add marks per subject, or update one subject without string manipulation. Queries become slow and error-prone. A separate linking table (StudentSubjects with StudentID and SubjectID) stores one row per combination and works with joins, constraints and indexes.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which constraint stops duplicate values in a column?</p><details><summary>Show answer</summary><p>UNIQUE</p></details></li><li><p>Which constraint means a column must always have a value?</p><details><summary>Show answer</summary><p>NOT NULL</p></details></li><li><p>Which MySQL data type should you use for money?</p><details><summary>Show answer</summary><p>DECIMAL</p></details></li><li><p>Which command deletes a whole table and its data?</p><details><summary>Show answer</summary><p>DROP TABLE</p></details></li><li><p>Which command adds a column to an existing table?</p><details><summary>Show answer</summary><p>ALTER TABLE</p></details></li><li><p>What is a primary key made of two or more columns called? (two words)</p><details><summary>Show answer</summary><p>composite key</p></details></li><li><p>Which ON DELETE option automatically deletes child rows?</p><details><summary>Show answer</summary><p>CASCADE</p></details></li><li><p>Which SQLite command must be run to enforce foreign keys? (PRAGMA ...)</p><details><summary>Show answer</summary><p>PRAGMA foreign_keys = ON</p></details></li><li><p>What data type should phone numbers use: INTEGER or TEXT?</p><details><summary>Show answer</summary><p>TEXT</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Create a table <strong>Books</strong> with <code>BookID INTEGER PRIMARY KEY</code>, <code>Title TEXT NOT NULL</code> and <code>Price INTEGER</code>, then <code>SELECT * FROM Books</code>.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=create-tables-constraints#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 9 of 16 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/changing-data/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> INSERT, UPDATE and DELETE: adding, changing and removing data safely</a><a class="btn btn-solid btn-sm" href="/learn/sql/keys-design/">Keys, relationships and table design: primary keys, foreign keys, one-to-many, many-to-many and normalisation <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

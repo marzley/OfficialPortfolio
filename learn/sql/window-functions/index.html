@@ -88,7 +88,87 @@ FROM daily;</code></pre></figure>
 <p><code>WITH daily AS (...)</code> is a <strong>CTE</strong> (common table expression): a named temporary result that makes long queries readable.</p>
 <h2>Where they work</h2>
 <p>Window functions work in SQLite 3.25+, MySQL 8+, PostgreSQL, SQL Server and Oracle. Older MySQL 5.7 hosting doesn't support them: check your host's version with <code>SELECT VERSION();</code>.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword turns a function into a window function?</p><details><summary>Show answer</summary><p>OVER</p></details></li><li><p>Which clause splits rows into groups inside a window?</p><details><summary>Show answer</summary><p>PARTITION BY</p></details></li><li><p>Which ranking function never gives two rows the same number?</p><details><summary>Show answer</summary><p>ROW_NUMBER</p></details></li><li><p>Which function reads the value from the previous row?</p><details><summary>Show answer</summary><p>LAG</p></details></li><li><p>What does WITH name AS (...) create? (three letters)</p><details><summary>Show answer</summary><p>CTE</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Rank all products by <strong>Price</strong> from highest to lowest using <code>RANK() OVER (ORDER BY Price DESC)</code>.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=window-functions#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 13 of 16 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/subqueries-views/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Subqueries, CTEs, views and UNION: queries inside queries and reusable results</a><a class="btn btn-solid btn-sm" href="/learn/sql/sql-from-code/">Using SQL from code: Python sqlite3, parameters, SQL injection and connecting apps to MySQL/PostgreSQL <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why window functions matter</h2>
+<p>Many business questions need a value <strong>for each row</strong> plus information about <strong>other rows</strong>: "rank each salesperson", "show each order with the customer's total", "running total of sales by date", "change from last month", "top 3 products per category". Before window functions, these needed complicated self-joins or exporting to Excel. Now they're a few lines of SQL. Data analysts use them daily, and they're a favourite interview topic.</p>
+<h2>GROUP BY vs window functions</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">-- GROUP BY: one row per customer (details disappear)
+SELECT CustomerID, SUM(Quantity) AS Units FROM Orders GROUP BY CustomerID;
+
+-- Window: every order row stays, with the customer total alongside
+SELECT OrderID, CustomerID, Quantity,
+       SUM(Quantity) OVER (PARTITION BY CustomerID) AS CustomerUnits
+FROM Orders
+ORDER BY CustomerID, OrderID;</code></pre></figure>
+<p>GROUP BY collapses rows; window functions keep them and add calculated columns.</p>
+<h2>Share of total (percentages)</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT p.Name,
+  SUM(o.Quantity * p.Price) AS Revenue,
+  ROUND(100.0 * SUM(o.Quantity * p.Price) / SUM(SUM(o.Quantity * p.Price)) OVER (), 1) AS PctOfTotal
+FROM Orders o
+JOIN Products p ON p.ProductID = o.ProductID
+GROUP BY p.ProductID
+ORDER BY Revenue DESC;</code></pre></figure>
+<p><code>SUM(SUM(...)) OVER ()</code> looks odd but is common: the inner SUM is the GROUP BY total per product; the outer window SUM adds those totals across all rows.</p>
+<h2>ROW_NUMBER vs RANK vs DENSE_RANK</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">WITH scores(Student, Score) AS (
+  VALUES (&#x27;Amina&#x27;, 92), (&#x27;Brian&#x27;, 88), (&#x27;Chebet&#x27;, 88), (&#x27;Dennis&#x27;, 75), (&#x27;Esther&#x27;, 70)
+)
+SELECT Student, Score,
+  ROW_NUMBER() OVER (ORDER BY Score DESC) AS RowNum,
+  RANK()       OVER (ORDER BY Score DESC) AS Rnk,
+  DENSE_RANK() OVER (ORDER BY Score DESC) AS DenseRnk,
+  NTILE(2)     OVER (ORDER BY Score DESC) AS Half
+FROM scores;</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Function</th><th>Ties (88, 88)</th><th>Next value</th></tr></thead><tbody><tr><td>ROW_NUMBER</td><td>2, 3 (arbitrary order)</td><td>4</td></tr><tr><td>RANK</td><td>2, 2</td><td>4 (gap)</td></tr><tr><td>DENSE_RANK</td><td>2, 2</td><td>3 (no gap)</td></tr><tr><td>NTILE(n)</td><td>Splits rows into n roughly equal groups</td><td>Quartiles, top/bottom halves</td></tr></tbody></table></div>
+<p>Schools usually rank with RANK (ties share a position and the next is skipped).</p>
+<h2>Running totals and moving averages</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">WITH daily(Day, Sales) AS (
+  VALUES (&#x27;2026-09-01&#x27;, 1200), (&#x27;2026-09-02&#x27;, 800), (&#x27;2026-09-03&#x27;, 1500),
+         (&#x27;2026-09-04&#x27;, 600), (&#x27;2026-09-05&#x27;, 2100), (&#x27;2026-09-06&#x27;, 900)
+)
+SELECT Day, Sales,
+  SUM(Sales) OVER (ORDER BY Day) AS RunningTotal,
+  ROUND(AVG(Sales) OVER (ORDER BY Day ROWS BETWEEN 2 PRECEDING AND CURRENT ROW), 0) AS MovingAvg3,
+  Sales - LAG(Sales) OVER (ORDER BY Day) AS ChangeFromYesterday,
+  ROUND(100.0 * (Sales - LAG(Sales) OVER (ORDER BY Day)) / LAG(Sales) OVER (ORDER BY Day), 1) AS PctChange
+FROM daily;</code></pre></figure>
+<p>The <strong>frame</strong> <code>ROWS BETWEEN 2 PRECEDING AND CURRENT ROW</code> limits the window to the current row and the two before it: a 3-day moving average that smooths out daily ups and downs.</p>
+<h2>Frames explained</h2>
+<div class="static-table"><table><thead><tr><th>Frame</th><th>Meaning</th></tr></thead><tbody><tr><td><code>ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW</code></td><td>From the first row to this one (running total)</td></tr><tr><td><code>ROWS BETWEEN 2 PRECEDING AND CURRENT ROW</code></td><td>Last 3 rows</td></tr><tr><td><code>ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING</code></td><td>Previous, current and next row</td></tr><tr><td><code>ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING</code></td><td>The whole partition</td></tr></tbody></table></div>
+<h2>FIRST_VALUE and LAST_VALUE: comparing with the best</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">SELECT Name, Category, Price,
+  FIRST_VALUE(Name) OVER (PARTITION BY Category ORDER BY Price DESC) AS MostExpensiveInCategory,
+  Price - MAX(Price) OVER (PARTITION BY Category) AS DiffFromTop
+FROM Products
+ORDER BY Category, Price DESC;</code></pre></figure>
+<h2>Top N per group with a CTE</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">WITH ranked AS (
+  SELECT Name, Category, Price,
+         ROW_NUMBER() OVER (PARTITION BY Category ORDER BY Price DESC) AS rn
+  FROM Products
+)
+SELECT Category, Name, Price FROM ranked WHERE rn &lt;= 1 ORDER BY Category;</code></pre></figure>
+<p>You can't use a window function directly in WHERE (windows are calculated after WHERE), so wrap it in a CTE or subquery, then filter.</p>
+<h2>Customer analytics example</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">WITH spend AS (
+  SELECT c.Name, o.OrderDate, o.Quantity * p.Price AS Amount
+  FROM Orders o
+  JOIN Customers c ON c.CustomerID = o.CustomerID
+  JOIN Products p ON p.ProductID = o.ProductID
+)
+SELECT Name, OrderDate, Amount,
+  ROW_NUMBER() OVER (PARTITION BY Name ORDER BY OrderDate) AS OrderNumber,
+  SUM(Amount) OVER (PARTITION BY Name ORDER BY OrderDate) AS LifetimeSpend,
+  CAST(julianday(OrderDate) - julianday(LAG(OrderDate) OVER (PARTITION BY Name ORDER BY OrderDate)) AS INTEGER) AS DaysSinceLastOrder
+FROM spend
+ORDER BY Name, OrderDate;</code></pre></figure>
+<p>This shows each customer's order number, how much they have spent so far, and the gap between orders: the basis of loyalty and retention analysis.</p>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Using a window function in WHERE</td><td>Wrap in a CTE/subquery</td></tr><tr><td>Forgetting ORDER BY inside OVER for running totals</td><td><code>SUM(x) OVER (ORDER BY date)</code></td></tr><tr><td>Integer division in percentages</td><td>Multiply by <code>100.0</code></td></tr><tr><td>LAST_VALUE returning the current row</td><td>Add <code>ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING</code></td></tr><tr><td>Ranking without a tie-breaker</td><td>Add a second ORDER BY column for ROW_NUMBER</td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Rank products by price within each category using DENSE_RANK.</li><li>Show each order with the running total of quantity by date.</li><li>Calculate each product's percentage of total revenue.</li><li>Find the most expensive product in each category with a CTE and ROW_NUMBER.</li><li>Show the change in daily sales from the previous day with LAG.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why can't you write <code>WHERE RANK() OVER (ORDER BY Price DESC) &lt;= 3</code> to get the top 3 products?</span><em>Show answer</em></summary><div class="callout-body"><p>SQL processes WHERE before calculating window functions (which happen at the SELECT stage), so the rank doesn't exist yet when WHERE runs. Calculate the rank in a CTE or subquery first, then filter on it in the outer query.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword turns a function into a window function?</p><details><summary>Show answer</summary><p>OVER</p></details></li><li><p>Which clause splits rows into groups inside a window?</p><details><summary>Show answer</summary><p>PARTITION BY</p></details></li><li><p>Which ranking function never gives two rows the same number?</p><details><summary>Show answer</summary><p>ROW_NUMBER</p></details></li><li><p>Which function reads the value from the previous row?</p><details><summary>Show answer</summary><p>LAG</p></details></li><li><p>What does WITH name AS (...) create? (three letters)</p><details><summary>Show answer</summary><p>CTE</p></details></li><li><p>Which ranking function leaves no gaps after ties?</p><details><summary>Show answer</summary><p>DENSE_RANK</p></details></li><li><p>Which function splits rows into a given number of roughly equal groups?</p><details><summary>Show answer</summary><p>NTILE</p></details></li><li><p>What part of a window definition limits it to, for example, the previous 2 rows and the current row?</p><details><summary>Show answer</summary><p>frame</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Rank all products by <strong>Price</strong> from highest to lowest using <code>RANK() OVER (ORDER BY Price DESC)</code>.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=window-functions#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 13 of 16 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/subqueries-views/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Subqueries, CTEs, views and UNION: queries inside queries and reusable results</a><a class="btn btn-solid btn-sm" href="/learn/sql/sql-from-code/">Using SQL from code: Python sqlite3, parameters, SQL injection and connecting apps to MySQL/PostgreSQL <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

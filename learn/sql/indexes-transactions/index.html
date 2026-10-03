@@ -95,7 +95,71 @@ try {
 INSERT INTO Invoices (Amount) VALUES (2500), (4000);
 UPDATE Invoices SET DeletedAt = DATETIME(&#x27;now&#x27;) WHERE InvoiceID = 1;   -- &quot;delete&quot; softly
 SELECT * FROM Invoices WHERE DeletedAt IS NULL;                        -- active invoices</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What speeds up searches on a column, like the index of a book?</p><details><summary>Show answer</summary><p>index</p></details></li><li><p>Which command permanently saves a transaction's changes?</p><details><summary>Show answer</summary><p>COMMIT</p></details></li><li><p>Which command undoes everything since BEGIN?</p><details><summary>Show answer</summary><p>ROLLBACK</p></details></li><li><p>What does the A in ACID stand for?</p><details><summary>Show answer</summary><p>Atomicity</p></details></li><li><p>Do indexes make INSERTs slightly faster or slower?</p><details><summary>Show answer</summary><p>slower</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Create an index called <strong>idx_products_category</strong> on <code>Products(Category)</code>.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=indexes-transactions#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 11 of 16 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/keys-design/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Keys, relationships and table design: primary keys, foreign keys, one-to-many, many-to-many and normalisation</a><a class="btn btn-solid btn-sm" href="/learn/sql/subqueries-views/">Subqueries, CTEs, views and UNION: queries inside queries and reusable results <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why indexes and transactions matter</h2>
+<p>A query that takes 5 milliseconds on 100 rows can take many seconds on 5 million rows without an index, making an app feel broken. And without transactions, a crash halfway through an M-Pesa-style transfer could take money from one account without adding it to the other. Banks, payment systems, e-commerce sites and school systems all depend on indexes for speed and transactions for correctness. These topics separate beginners from professional developers.</p>
+<h2>Seeing whether a query uses an index</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE TABLE Payments (
+  PaymentID INTEGER PRIMARY KEY,
+  Phone     TEXT NOT NULL,
+  Amount    INTEGER NOT NULL,
+  PaidAt    TEXT NOT NULL
+);
+EXPLAIN QUERY PLAN SELECT * FROM Payments WHERE Phone = &#x27;0712000001&#x27;;
+CREATE INDEX idx_payments_phone ON Payments(Phone);
+EXPLAIN QUERY PLAN SELECT * FROM Payments WHERE Phone = &#x27;0712000001&#x27;;</code></pre></figure>
+<p>Before the index, the plan says <strong>SCAN</strong> (read every row). After, it says <strong>SEARCH ... USING INDEX</strong> (jump straight to matching rows). In MySQL and PostgreSQL use <code>EXPLAIN SELECT ...</code>.</p>
+<h2>Composite indexes and column order</h2>
+<p>An index on several columns works like a phone book sorted by surname, then first name:</p>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">CREATE INDEX idx_payments_phone_date ON Payments(Phone, PaidAt);</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Query</th><th>Can use the index?</th></tr></thead><tbody><tr><td><code>WHERE Phone = ?</code></td><td>Yes (first column)</td></tr><tr><td><code>WHERE Phone = ? AND PaidAt &gt;= ?</code></td><td>Yes, very efficiently</td></tr><tr><td><code>WHERE PaidAt &gt;= ?</code> alone</td><td>Usually not (it's not the first column)</td></tr></tbody></table></div>
+<p>Put the column you filter by with <code>=</code> first, and range or sort columns after it.</p>
+<h2>What stops an index being used</h2>
+<div class="static-table"><table><thead><tr><th>Query pattern</th><th>Problem</th><th>Better</th></tr></thead><tbody><tr><td><code>WHERE UPPER(Name) = &#x27;KAMAU&#x27;</code></td><td>Function on the column</td><td>Store normalised values, or an expression index</td></tr><tr><td><code>WHERE Name LIKE &#x27;%amau&#x27;</code></td><td>Leading wildcard</td><td>Full-text search for "contains" searches</td></tr><tr><td><code>WHERE Phone = 712000001</code> (number vs text)</td><td>Type conversion</td><td>Compare with the same type: <code>&#x27;0712000001&#x27;</code></td></tr><tr><td><code>WHERE strftime(&#x27;%Y&#x27;, PaidAt) = &#x27;2026&#x27;</code></td><td>Function on the column</td><td><code>WHERE PaidAt &gt;= &#x27;2026-01-01&#x27; AND PaidAt &lt; &#x27;2027-01-01&#x27;</code></td></tr></tbody></table></div>
+<h2>Transactions in action</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE TABLE Wallets (Name TEXT PRIMARY KEY, Balance INTEGER NOT NULL CHECK (Balance &gt;= 0));
+INSERT INTO Wallets VALUES (&#x27;Wanjiku&#x27;, 5000), (&#x27;Otieno&#x27;, 1000);
+
+BEGIN;
+UPDATE Wallets SET Balance = Balance - 1500 WHERE Name = &#x27;Wanjiku&#x27;;
+UPDATE Wallets SET Balance = Balance + 1500 WHERE Name = &#x27;Otieno&#x27;;
+COMMIT;
+
+SELECT * FROM Wallets;</code></pre></figure>
+<p>Both updates happen together or not at all. If the second update failed (or the server crashed), <code>ROLLBACK</code> (or the database's recovery) would undo the first.</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE TABLE Wallets (Name TEXT PRIMARY KEY, Balance INTEGER NOT NULL CHECK (Balance &gt;= 0));
+INSERT INTO Wallets VALUES (&#x27;Wanjiku&#x27;, 5000), (&#x27;Otieno&#x27;, 1000);
+
+BEGIN;
+UPDATE Wallets SET Balance = Balance + 800 WHERE Name = &#x27;Wanjiku&#x27;;
+-- we changed our mind (or an error was detected in the app):
+ROLLBACK;
+
+SELECT * FROM Wallets;      -- unchanged</code></pre></figure>
+<h2>Savepoints: partial undo</h2>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">BEGIN;
+INSERT INTO Orders ...;
+SAVEPOINT before_items;
+INSERT INTO OrderItems ...;      -- something goes wrong here
+ROLLBACK TO before_items;        -- undo only the items
+INSERT INTO OrderItems ...;      -- try again
+COMMIT;</code></pre></figure>
+<h2>Concurrency: two people buying the last item</h2>
+<p>Two customers click "Buy" for the last laptop at the same moment. Without care, both see <code>Stock = 1</code>, both buy, and stock becomes -1. Solutions:</p>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">-- Update only if stock is still available, then check how many rows changed
+UPDATE Products SET Stock = Stock - 1 WHERE ProductID = 6 AND Stock &gt;= 1;
+-- If 0 rows were updated, tell the second customer it&#x27;s sold out.</code></pre></figure>
+<p>Combined with a <code>CHECK (Stock &gt;= 0)</code> constraint and transactions, the database guarantees correctness. Larger systems also use row locks (<code>SELECT ... FOR UPDATE</code> in MySQL/PostgreSQL) and isolation levels.</p>
+<h2>Isolation levels in brief</h2>
+<div class="static-table"><table><thead><tr><th>Level</th><th>Prevents</th><th>Notes</th></tr></thead><tbody><tr><td>Read uncommitted</td><td>Almost nothing</td><td>Rarely used</td></tr><tr><td>Read committed</td><td>Reading uncommitted changes</td><td>PostgreSQL default</td></tr><tr><td>Repeatable read</td><td>Values changing during your transaction</td><td>MySQL InnoDB default</td></tr><tr><td>Serializable</td><td>All anomalies; transactions behave as if one at a time</td><td>Safest, slowest</td></tr></tbody></table></div>
+<h2>Backups and recovery</h2>
+<div class="static-table"><table><thead><tr><th>Database</th><th>Backup tool</th></tr></thead><tbody><tr><td>MySQL / MariaDB</td><td><code>mysqldump -u user -p dbname &gt; backup.sql</code> (or cPanel → Backup)</td></tr><tr><td>PostgreSQL</td><td><code>pg_dump dbname &gt; backup.sql</code></td></tr><tr><td>SQLite</td><td>Copy the file while no writes happen, or <code>.backup</code> in the sqlite3 shell</td></tr></tbody></table></div>
+<ul><li>Automate daily backups and keep copies off the server (cloud storage).</li><li><strong>Test restoring</strong> a backup regularly: a backup you can't restore is useless.</li><li>Encrypt backups that contain personal data, and limit who can access them (Data Protection Act).</li></ul>
+<h2>Security essentials</h2>
+<ul><li>Use <strong>parameterised queries</strong> in application code to prevent SQL injection (never join user input into SQL strings).</li><li>Give each application its own database user with only the permissions it needs (<code>GRANT SELECT, INSERT, UPDATE ON shop.* TO &#x27;shopapp&#x27;@&#x27;localhost&#x27;</code>).</li><li>Never expose the database port to the internet without strong protection.</li><li>Hash passwords (bcrypt, Argon2); never store them as plain text.</li></ul>
+<h2>Practice</h2>
+<ol><li>Create a Payments table, run <code>EXPLAIN QUERY PLAN</code> for a phone search, add an index, and compare.</li><li>Write a transfer transaction between two wallets and a version that rolls back.</li><li>Write an UPDATE that only reduces stock if enough is available.</li><li>Rewrite <code>WHERE strftime(&#x27;%m&#x27;, PaidAt) = &#x27;09&#x27;</code> so it can use an index on PaidAt (for one year).</li><li>Explain the ACID properties using an M-Pesa transfer as the example.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A developer adds indexes on every column of a busy Orders table "to make it fast". Why might the app get slower?</span><em>Show answer</em></summary><div class="callout-body"><p>Every index must be updated on each INSERT, UPDATE and DELETE, so writes become slower and the database uses more storage and memory. Indexes should be added for columns actually used in frequent WHERE, JOIN and ORDER BY clauses, guided by EXPLAIN plans and slow-query logs.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What speeds up searches on a column, like the index of a book?</p><details><summary>Show answer</summary><p>index</p></details></li><li><p>Which command permanently saves a transaction's changes?</p><details><summary>Show answer</summary><p>COMMIT</p></details></li><li><p>Which command undoes everything since BEGIN?</p><details><summary>Show answer</summary><p>ROLLBACK</p></details></li><li><p>What does the A in ACID stand for?</p><details><summary>Show answer</summary><p>Atomicity</p></details></li><li><p>Do indexes make INSERTs slightly faster or slower?</p><details><summary>Show answer</summary><p>slower</p></details></li><li><p>Which SQLite command shows whether a query uses an index? (three words)</p><details><summary>Show answer</summary><p>EXPLAIN QUERY PLAN</p></details></li><li><p>Which command undoes only part of a transaction back to a named point? (two words)</p><details><summary>Show answer</summary><p>ROLLBACK TO</p></details></li><li><p>Does a function on a column like UPPER(Name) usually stop a normal index being used? (yes or no)</p><details><summary>Show answer</summary><p>yes</p></details></li><li><p>Which MySQL tool creates a SQL backup file?</p><details><summary>Show answer</summary><p>mysqldump</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Create an index called <strong>idx_products_category</strong> on <code>Products(Category)</code>.</p><p><a class="btn btn-solid" href="/learn/?track=sql&amp;lesson=indexes-transactions#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 11 of 16 in <a href="/learn/sql/">SQL</a> · <a href="/learn/?book=sql">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/sql/keys-design/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Keys, relationships and table design: primary keys, foreign keys, one-to-many, many-to-many and normalisation</a><a class="btn btn-solid btn-sm" href="/learn/sql/subqueries-views/">Subqueries, CTEs, views and UNION: queries inside queries and reusable results <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

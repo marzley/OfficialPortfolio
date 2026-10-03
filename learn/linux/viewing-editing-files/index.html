@@ -77,7 +77,68 @@ uniq                          # remove repeated neighbouring lines (use after so
 cut -d, -f2 sales.csv         # 2nd column of a CSV</code></pre></figure>
 <h2>Practice on your own computer</h2>
 <ul><li><strong>Windows</strong>: install <strong>WSL</strong> (Windows Subsystem for Linux) from the Microsoft Store and choose Ubuntu, or use Git Bash.</li><li><strong>Android</strong>: the Termux app.</li><li><strong>Online</strong>: any free cloud shell, or a cheap VPS.</li></ul>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command shows the last lines of a file and keeps showing new ones?</p><details><summary>Show answer</summary><p>tail -f</p></details></li><li><p>Which command searches for text inside files?</p><details><summary>Show answer</summary><p>grep</p></details></li><li><p>Which grep option ignores upper and lower case?</p><details><summary>Show answer</summary><p>-i</p></details></li><li><p>In nano, which keys exit the editor?</p><details><summary>Show answer</summary><p>Ctrl+X</p></details></li><li><p>In vim, what do you type to save and quit?</p><details><summary>Show answer</summary><p>:wq</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 12 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/navigating-files/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Navigating and managing files: the Linux file system, paths, ls, cd, mkdir, cp, mv, rm, find and wildcards</a><a class="btn btn-solid btn-sm" href="/learn/linux/pipes-redirection/">Pipes and redirection: combining commands <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why text file skills matter on Linux</h2>
+<p>On Linux, almost everything is configured with text files: web server settings (nginx, Apache), PHP settings, cron jobs, environment variables, logs that record errors and visits, and application code. System administrators, DevOps engineers, back-end developers and cybersecurity analysts read logs and edit config files daily, often over SSH on a server with no graphical interface. Being fast with these commands is what makes you effective on servers and VPS hosting.</p>
+<h2>Reading large files efficiently</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">less /var/log/syslog          # scroll with arrows, / to search, n for next match, q to quit
+head -n 20 access.log         # first 20 lines
+tail -n 50 error.log          # last 50 lines
+tail -f /var/log/nginx/error.log      # watch new lines live (Ctrl+C to stop)
+wc -l access.log              # count lines (e.g. number of requests)
+du -h access.log              # file size</code></pre></figure>
+<p>Never open a 2 GB log in a normal editor; use <code>less</code>, <code>tail</code> and <code>grep</code>.</p>
+<h2>grep in depth</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">grep &quot;404&quot; access.log                     # lines containing 404
+grep -i &quot;error&quot; app.log                   # ignore case
+grep -n &quot;DB_HOST&quot; .env                    # show line numbers
+grep -c &quot;POST /checkout&quot; access.log       # count matching lines
+grep -v &quot;bot&quot; access.log                  # lines NOT containing &quot;bot&quot;
+grep -r &quot;mpesa_callback&quot; /var/www/app     # search all files in a folder
+grep -rl &quot;TODO&quot; src/                      # only list file names
+grep -A 3 -B 2 &quot;Fatal error&quot; php.log      # 3 lines after and 2 before each match (context)
+grep -E &quot;404|500&quot; access.log              # extended regex: 404 OR 500
+grep -o &quot;[0-9]\{1,3\}\(\.[0-9]\{1,3\}\)\{3\}&quot; access.log | head   # extract IP addresses</code></pre></figure>
+<p><code>-A</code>/<code>-B</code> context is very useful for errors, which often span several lines.</p>
+<h2>find in depth</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">find /var/www -name &quot;*.php&quot;                      # by name
+find . -iname &quot;*invoice*&quot;                        # case-insensitive
+find /var/log -name &quot;*.log&quot; -size +100M          # large logs
+find /backups -name &quot;*.sql.gz&quot; -mtime +30        # older than 30 days
+find . -type d -name node_modules                # directories only
+find /var/www -type f -perm -o+w                 # files writable by everyone (security risk)
+find /backups -name &quot;*.gz&quot; -mtime +30 -delete    # delete old backups (test without -delete first!)</code></pre></figure>
+<p>Always run <code>find</code> without <code>-delete</code> first to see what would be removed.</p>
+<h2>Editing with nano: more shortcuts</h2>
+<div class="static-table"><table><thead><tr><th>Keys</th><th>Action</th></tr></thead><tbody><tr><td>Ctrl + O, Enter</td><td>Save</td></tr><tr><td>Ctrl + X</td><td>Exit</td></tr><tr><td>Ctrl + W</td><td>Search</td></tr><tr><td>Ctrl + \</td><td>Search and replace</td></tr><tr><td>Ctrl + K / Ctrl + U</td><td>Cut line / paste</td></tr><tr><td>Alt + U</td><td>Undo</td></tr><tr><td>Ctrl + _</td><td>Go to line number</td></tr><tr><td>Alt + N</td><td>Toggle line numbers</td></tr></tbody></table></div>
+<h2>vim survival guide</h2>
+<p>vim has <strong>modes</strong>: Normal (commands), Insert (typing) and Command-line (<code>:</code>).</p>
+<div class="static-table"><table><thead><tr><th>Keys</th><th>Action</th></tr></thead><tbody><tr><td><code>i</code></td><td>Insert mode (start typing)</td></tr><tr><td><code>Esc</code></td><td>Back to Normal mode</td></tr><tr><td><code>:w</code> / <code>:q</code> / <code>:wq</code> / <code>:q!</code></td><td>Save / quit / save and quit / quit without saving</td></tr><tr><td><code>/word</code> then <code>n</code></td><td>Search forward, next match</td></tr><tr><td><code>dd</code> / <code>yy</code> / <code>p</code></td><td>Delete line / copy line / paste</td></tr><tr><td><code>u</code> / <code>Ctrl + r</code></td><td>Undo / redo</td></tr><tr><td><code>gg</code> / <code>G</code></td><td>Top / bottom of file</td></tr><tr><td><code>:%s/old/new/g</code></td><td>Replace all</td></tr><tr><td><code>:set number</code></td><td>Show line numbers</td></tr></tbody></table></div>
+<p>If you're ever "stuck in vim", press <code>Esc</code>, then type <code>:q!</code> and Enter.</p>
+<h2>Safe editing habits for config files</h2>
+<ol><li><strong>Back up first</strong>: <code>sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak</code></li><li>Edit with <code>sudo nano</code> (config files are owned by root).</li><li><strong>Test the config</strong> before restarting: <code>sudo nginx -t</code>, <code>apachectl configtest</code>, <code>php -l file.php</code>.</li><li>Reload the service: <code>sudo systemctl reload nginx</code>.</li><li>If something breaks, restore the backup.</li></ol>
+<h2>Comparing, sorting and counting</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">diff old.conf new.conf                # differences between files
+diff -u old.conf new.conf             # unified format (like Git)
+sort names.txt                        # alphabetical
+sort -n numbers.txt                   # numeric
+sort -t, -k3 -n sales.csv             # sort CSV by 3rd column numerically
+sort names.txt | uniq                 # remove duplicate neighbours
+sort names.txt | uniq -c | sort -rn   # count occurrences, most common first
+cut -d, -f1,3 sales.csv               # columns 1 and 3 of a CSV</code></pre></figure>
+<h2>A real task: investigating a website error</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash"># 1. Is the error log growing?
+tail -n 30 /var/log/nginx/error.log
+# 2. Which PHP errors happened today?
+grep &quot;$(date +%d-%b-%Y)&quot; /var/log/php*-fpm.log | tail
+# 3. Which pages return 500 errors most?
+grep &#x27;&quot; 500 &#x27; /var/log/nginx/access.log | awk &#x27;{print $7}&#x27; | sort | uniq -c | sort -rn | head
+# 4. Find the code mentioned in the error
+grep -rn &quot;function processPayment&quot; /var/www/app</code></pre></figure>
+<p>(Log file names and formats vary between servers and configurations.)</p>
+<h2>Practice</h2>
+<ol><li>Create a text file with 20 names (some repeated) and count each name with <code>sort | uniq -c</code>.</li><li>Use <code>grep -n</code> and <code>grep -c</code> on a log file (try <code>/var/log/syslog</code> or any <code>.log</code> file).</li><li>Find all <code>.jpg</code> files larger than 1 MB in your home folder.</li><li>Edit a file in nano, then in vim, saving and quitting both ways.</li><li>Make a backup copy of a config file and compare the two with <code>diff -u</code> after a change.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A website shows "502 Bad Gateway". Which files and commands would you check first on an nginx + PHP-FPM server?</span><em>Show answer</em></summary><div class="callout-body"><p>Check the nginx error log (<code>tail -n 50 /var/log/nginx/error.log</code>) for messages about connecting to PHP-FPM, check whether PHP-FPM is running (<code>systemctl status php*-fpm</code>), and look at the PHP-FPM log for crashes. A 502 usually means nginx couldn't get a valid response from the backend (PHP-FPM stopped, wrong socket path, or timeouts).</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which command shows the last lines of a file and keeps showing new ones?</p><details><summary>Show answer</summary><p>tail -f</p></details></li><li><p>Which command searches for text inside files?</p><details><summary>Show answer</summary><p>grep</p></details></li><li><p>Which grep option ignores upper and lower case?</p><details><summary>Show answer</summary><p>-i</p></details></li><li><p>In nano, which keys exit the editor?</p><details><summary>Show answer</summary><p>Ctrl+X</p></details></li><li><p>In vim, what do you type to save and quit?</p><details><summary>Show answer</summary><p>:wq</p></details></li><li><p>Which grep option shows lines that do NOT match?</p><details><summary>Show answer</summary><p>-v</p></details></li><li><p>Which grep options show context lines after and before a match? (letters)</p><details><summary>Show answer</summary><p>-A and -B</p></details></li><li><p>Which find option selects files older than a number of days?</p><details><summary>Show answer</summary><p>-mtime</p></details></li><li><p>Which command tests nginx configuration before reloading?</p><details><summary>Show answer</summary><p>nginx -t</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 12 in <a href="/learn/linux/">Linux command line</a> · <a href="/learn/?book=linux">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/linux/navigating-files/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Navigating and managing files: the Linux file system, paths, ls, cd, mkdir, cp, mv, rm, find and wildcards</a><a class="btn btn-solid btn-sm" href="/learn/linux/pipes-redirection/">Pipes and redirection: combining commands <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
