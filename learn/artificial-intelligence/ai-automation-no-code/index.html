@@ -94,7 +94,71 @@ for row in sheet:
 <p>If you use Google Sheets, <strong>Apps Script</strong> (Extensions → Apps Script) can automate it with JavaScript, and AI assistants can write the script for you: <em>"Write a Google Apps Script that emails me every morning with yesterday's total sales from column D."</em> Learn JavaScript in this hub to understand and fix what it writes.</p>
 <h2>Costs and limits</h2>
 <ul><li>Zapier and Make have <strong>free tiers</strong> with limited runs per month; paid plans add more.</li><li>AI steps may cost money per use (API usage).</li><li>Start with <strong>one workflow that saves real time</strong>, measure it, then add more.</li></ul>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What are ChatGPT's saved custom assistants called?</p><details><summary>Show answer</summary><p>Custom GPTs</p></details></li><li><p>What are Gemini's saved assistants called?</p><details><summary>Show answer</summary><p>Gems</p></details></li><li><p>In automation, what starts a workflow?</p><details><summary>Show answer</summary><p>a trigger</p></details></li><li><p>What should a custom assistant do when it's unsure?</p><details><summary>Show answer</summary><p>hand over to a human</p></details></li><li><p>Which Google tool automates Sheets with JavaScript?</p><details><summary>Show answer</summary><p>Apps Script</p></details></li></ol></section></div><p class="static-meta">Lesson 10 of 17 in <a href="/learn/artificial-intelligence/">Artificial intelligence (AI): from zero to pro</a> · <a href="/learn/?book=artificial-intelligence">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/artificial-intelligence/earning-with-ai/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Level 3: Earning with AI skills</a><a class="btn btn-solid btn-sm" href="/learn/artificial-intelligence/how-machine-learning-works/">Level 4: How machine learning works (with code you can run) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why automation matters</h2>
+<p>Repetitive digital tasks (copying form responses into spreadsheets, sending reminder messages, saving email attachments, posting updates) eat hours every week. Automation tools connect apps so these tasks happen on their own, and AI steps can now summarise, classify or draft text inside those workflows. Office workers, small business owners, virtual assistants and developers who can build reliable automations save time and can sell automation as a service.</p>
+<h2>Anatomy of a workflow</h2>
+<figure class="static-code"><figcaption>TEXT</figcaption><pre><code class="language-text">TRIGGER          →  ACTIONS (steps)                          →  RESULT
+New Google Form     1. Add row to Google Sheet                  Customer gets confirmation,
+response            2. AI step: classify request (booking,       team gets a summary, nothing
+                       complaint, question)                     is forgotten
+                    3. If complaint → email the manager
+                    4. Send WhatsApp/SMS/email confirmation</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Term</th><th>Meaning</th></tr></thead><tbody><tr><td>Trigger</td><td>The event that starts the workflow (new email, form submission, time of day)</td></tr><tr><td>Action</td><td>A step the workflow performs</td></tr><tr><td>Condition / filter</td><td>Only continue if something is true</td></tr><tr><td>Variables / data mapping</td><td>Passing values (name, phone, amount) between steps</td></tr><tr><td>Error handling</td><td>What happens when a step fails</td></tr></tbody></table></div>
+<h2>Common automation ideas</h2>
+<div class="static-table"><table><thead><tr><th>Who</th><th>Workflow</th></tr></thead><tbody><tr><td>School</td><td>Form registration → sheet → confirmation email → weekly summary to the head teacher</td></tr><tr><td>Salon</td><td>New booking → calendar event → reminder message the day before</td></tr><tr><td>Online shop</td><td>New order → stock sheet updated → low-stock alert</td></tr><tr><td>Freelancer</td><td>Invoice due date → reminder email to client → mark paid when payment confirmed</td></tr><tr><td>Office</td><td>Email attachments with "invoice" → saved to a Drive folder → row added to an accounts sheet</td></tr><tr><td>Support team</td><td>New message → AI suggests category and draft reply → human approves</td></tr></tbody></table></div>
+<h2>A simulation: how workflow logic works</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">requests = [
+    {&quot;name&quot;: &quot;Amina&quot;, &quot;message&quot;: &quot;I want to book braids for Saturday&quot;, &quot;phone&quot;: &quot;0712000001&quot;},
+    {&quot;name&quot;: &quot;Brian&quot;, &quot;message&quot;: &quot;My order arrived late and the cake was damaged&quot;, &quot;phone&quot;: &quot;0722000002&quot;},
+    {&quot;name&quot;: &quot;Chebet&quot;, &quot;message&quot;: &quot;What time do you open on Sunday?&quot;, &quot;phone&quot;: &quot;0733000003&quot;},
+]
+
+def classify(text):                       # a simple rule-based stand-in for an AI step
+    t = text.lower()
+    if any(w in t for w in [&quot;damaged&quot;, &quot;late&quot;, &quot;refund&quot;, &quot;bad&quot;]):
+        return &quot;complaint&quot;
+    if any(w in t for w in [&quot;book&quot;, &quot;appointment&quot;, &quot;reserve&quot;]):
+        return &quot;booking&quot;
+    return &quot;question&quot;
+
+sheet, manager_alerts, confirmations = [], [], []
+for r in requests:                        # trigger: each new form response
+    category = classify(r[&quot;message&quot;])     # AI-style classification step
+    sheet.append((r[&quot;name&quot;], category))   # action: add to sheet
+    if category == &quot;complaint&quot;:           # condition
+        manager_alerts.append(f&quot;Call {r[&#x27;name&#x27;]} on {r[&#x27;phone&#x27;]} today&quot;)
+    confirmations.append(f&quot;Hi {r[&#x27;name&#x27;]}, we received your {category}. We&#x27;ll reply soon.&quot;)
+
+print(sheet)
+print(manager_alerts)
+print(confirmations[1])</code></pre></figure>
+<p>Real automation platforms do the same thing visually, and an AI step can classify messages much more flexibly than simple keyword rules (but still needs checking).</p>
+<h2>Building reliable automations</h2>
+<ol><li><strong>Start small</strong>: automate one painful step, test it, then extend.</li><li><strong>Use test data</strong> before connecting real customers.</li><li><strong>Add a human check</strong> for anything involving money, complaints or sensitive information.</li><li><strong>Handle failures</strong>: notifications when a step fails, retries, and a log of runs.</li><li><strong>Document</strong> what each workflow does, who owns it, and which accounts it uses.</li><li><strong>Review monthly</strong>: remove broken or unused workflows.</li></ol>
+<h2>Automation with code: Google Apps Script</h2>
+<p>Google Sheets includes Apps Script (JavaScript) for free automation inside Google Workspace:</p>
+<figure class="static-code"><figcaption>JavaScript</figcaption><pre><code class="language-javascript">// Send a reminder email for each unpaid invoice due today (runs on a daily time trigger)
+function sendReminders() {
+  const sheet = SpreadsheetApp.getActive().getSheetByName(&quot;Invoices&quot;);
+  const rows = sheet.getDataRange().getValues();      // [client, email, amount, dueDate, status]
+  const today = new Date().toDateString();
+  rows.slice(1).forEach(([client, email, amount, due, status]) =&gt; {
+    if (status !== &quot;Paid&quot; &amp;&amp; new Date(due).toDateString() === today) {
+      MailApp.sendEmail(email, &quot;Invoice reminder&quot;,
+        `Hello ${client}, a friendly reminder that KSh ${amount} is due today. Thank you.`);
+    }
+  });
+}</code></pre></figure>
+<p>Set it to run daily under Triggers in the Apps Script editor. Test with your own email first, and respect sending limits and recipients' preferences.</p>
+<h2>Custom assistants grounded in your documents</h2>
+<p>Many AI platforms let you create a custom assistant with instructions and uploaded files (a price list, FAQ, policies). Good practice:</p>
+<ul><li>Write clear instructions: role, tone, what to do when unsure ("say you'll check with the team").</li><li>Upload accurate, current documents and update them when things change.</li><li>Test with tricky questions (prices not in the documents, complaints, requests for personal data).</li><li>Don't upload confidential or personal data unless the platform and your policy allow it.</li></ul>
+<h2>Costs, limits and privacy</h2>
+<ul><li>Automation platforms charge by number of tasks or runs; AI steps may add usage costs.</li><li>Check rate limits of email, SMS and messaging services.</li><li>Workflows often hold access to several accounts: use strong passwords, MFA and least-privilege access.</li><li>Personal data flowing through automations must be protected under the Data Protection Act.</li></ul>
+<h2>Practice</h2>
+<ol><li>Map a repetitive task you do weekly as trigger → actions → result.</li><li>Build a Google Form that adds responses to a sheet and sends a confirmation email.</li><li>Write an Apps Script that highlights overdue invoices in red.</li><li>Create a custom assistant grounded in a one-page FAQ and test it with five questions.</li><li>Add a failure notification to one of your workflows.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> An automation sends payment reminders to clients automatically. One day, a bug sends 50 reminders to a client who has already paid. What safeguards should have been in place?</span><em>Show answer</em></summary><div class="callout-body"><p>Check payment status from a reliable source before each send, limit reminders per client per day, test changes with sample data first, log every message sent, alert the owner when unusual volumes occur, and have a quick way to pause the workflow. A human review step for unusual cases also helps.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What are ChatGPT's saved custom assistants called?</p><details><summary>Show answer</summary><p>Custom GPTs</p></details></li><li><p>What are Gemini's saved assistants called?</p><details><summary>Show answer</summary><p>Gems</p></details></li><li><p>In automation, what starts a workflow?</p><details><summary>Show answer</summary><p>a trigger</p></details></li><li><p>What should a custom assistant do when it's unsure?</p><details><summary>Show answer</summary><p>hand over to a human</p></details></li><li><p>Which Google tool automates Sheets with JavaScript?</p><details><summary>Show answer</summary><p>Apps Script</p></details></li><li><p>What starts an automation workflow?</p><details><summary>Show answer</summary><p>trigger</p></details></li><li><p>Which Google tool automates Sheets and Gmail with JavaScript? (two words)</p><details><summary>Show answer</summary><p>Apps Script</p></details></li><li><p>Should automations involving money include a human check or safeguards? (yes or no)</p><details><summary>Show answer</summary><p>yes</p></details></li></ol></section></div><p class="static-meta">Lesson 10 of 17 in <a href="/learn/artificial-intelligence/">Artificial intelligence (AI): from zero to pro</a> · <a href="/learn/?book=artificial-intelligence">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/artificial-intelligence/earning-with-ai/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Level 3: Earning with AI skills</a><a class="btn btn-solid btn-sm" href="/learn/artificial-intelligence/how-machine-learning-works/">Level 4: How machine learning works (with code you can run) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

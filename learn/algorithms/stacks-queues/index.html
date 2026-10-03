@@ -110,7 +110,134 @@ while tickets:
     print(priority, task)</code></pre></figure>
 <h2>Comparison</h2>
 <div class="static-table"><table><thead><tr><th></th><th>Stack</th><th>Queue</th></tr></thead><tbody><tr><td>Order</td><td>LIFO (last in, first out)</td><td>FIFO (first in, first out)</td></tr><tr><td>Python</td><td><code>list</code> (<code>append</code>, <code>pop</code>)</td><td><code>collections.deque</code> (<code>append</code>, <code>popleft</code>)</td></tr><tr><td>Everyday example</td><td>Plates, Undo</td><td>Bank line, printer</td></tr></tbody></table></div>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does LIFO stand for? (four words)</p><details><summary>Show answer</summary><p>last in first out</p></details></li><li><p>Which data structure does the browser Back button use?</p><details><summary>Show answer</summary><p>stack</p></details></li><li><p>Which Python class is best for a queue?</p><details><summary>Show answer</summary><p>deque</p></details></li><li><p>Which deque method removes from the front?</p><details><summary>Show answer</summary><p>popleft</p></details></li><li><p>What kind of queue serves the most urgent item first? (one word before "queue")</p><details><summary>Show answer</summary><p>priority</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Use a list as a stack: push <code>&quot;a&quot;</code>, <code>&quot;b&quot;</code>, <code>&quot;c&quot;</code>, then pop once and print the stack: <strong>['a', 'b']</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=stacks-queues#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 7 of 11 in <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> · <a href="/learn/?book=algorithms">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/algorithms/data-structures/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Data structures: arrays/lists, tuples, sets, dictionaries, stacks, queues, linked lists, trees, heaps and graphs, and when to use each</a><a class="btn btn-solid btn-sm" href="/learn/algorithms/hash-tables/">Hash tables: fast look-ups with dictionaries <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Where stacks and queues are used</h2>
+<p>Stacks and queues are everywhere in software: the browser's Back button and every app's Undo are stacks; print jobs, customer support tickets, SMS sending and payment processing systems use queues; operating systems schedule tasks with queues; compilers check brackets with stacks. Understanding them helps you design systems that process work fairly and in the right order, and they're common in interviews.</p>
+<h2>Stack application: checking balanced brackets</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def balanced(text):
+    pairs = {&quot;)&quot;: &quot;(&quot;, &quot;]&quot;: &quot;[&quot;, &quot;}&quot;: &quot;{&quot;}
+    stack = []
+    for ch in text:
+        if ch in &quot;([{&quot;:
+            stack.append(ch)
+        elif ch in pairs:
+            if not stack or stack.pop() != pairs[ch]:
+                return False
+    return not stack
+
+for code in [&quot;print(len([1, 2]))&quot;, &quot;{ if (x) { y(); }&quot;, &quot;[(])&quot;, &quot;total = (a + b) * {c}&quot;]:
+    print(f&quot;{code:&lt;24} balanced: {balanced(code)}&quot;)</code></pre></figure>
+<p>Code editors and compilers use this exact idea to report "missing bracket" errors.</p>
+<h2>Stack application: undo and redo</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">class Editor:
+    def __init__(self):
+        self.text = &quot;&quot;
+        self.undo_stack = []
+        self.redo_stack = []
+
+    def type(self, s):
+        self.undo_stack.append(self.text)
+        self.redo_stack.clear()          # new action clears redo history
+        self.text += s
+
+    def undo(self):
+        if self.undo_stack:
+            self.redo_stack.append(self.text)
+            self.text = self.undo_stack.pop()
+
+    def redo(self):
+        if self.redo_stack:
+            self.undo_stack.append(self.text)
+            self.text = self.redo_stack.pop()
+
+e = Editor()
+e.type(&quot;Habari &quot;)
+e.type(&quot;Kenya&quot;)
+print(repr(e.text))
+e.undo(); print(repr(e.text))
+e.redo(); print(repr(e.text))
+e.undo(); e.type(&quot;Nairobi&quot;); print(repr(e.text))
+e.redo(); print(repr(e.text))   # nothing to redo after a new action</code></pre></figure>
+<p>Two stacks implement undo and redo. Typing something new clears the redo stack, just like real editors.</p>
+<h2>Queue application: round-robin task scheduling</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">from collections import deque
+
+# (job name, time units still needed)
+jobs = deque([(&quot;Print fee statements&quot;, 3), (&quot;Send SMS reminders&quot;, 1), (&quot;Backup database&quot;, 4)])
+slice_size = 2
+clock = 0
+while jobs:
+    name, remaining = jobs.popleft()
+    work = min(slice_size, remaining)
+    clock += work
+    remaining -= work
+    if remaining:
+        jobs.append((name, remaining))       # back of the queue for another turn
+        print(f&quot;t={clock}: {name} paused, {remaining} left&quot;)
+    else:
+        print(f&quot;t={clock}: {name} finished&quot;)</code></pre></figure>
+<p>Operating systems give each task a short time slice in turn so no single task blocks the others.</p>
+<h2>Queue application: breadth-first search (shortest path)</h2>
+<p>Queues explore things level by level. Here's the fewest number of matatu changes between towns:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">from collections import deque
+
+routes = {
+    &quot;Nairobi&quot;: [&quot;Thika&quot;, &quot;Nakuru&quot;, &quot;Machakos&quot;],
+    &quot;Thika&quot;: [&quot;Nairobi&quot;, &quot;Nyeri&quot;],
+    &quot;Nakuru&quot;: [&quot;Nairobi&quot;, &quot;Eldoret&quot;, &quot;Kisumu&quot;],
+    &quot;Machakos&quot;: [&quot;Nairobi&quot;],
+    &quot;Nyeri&quot;: [&quot;Thika&quot;],
+    &quot;Eldoret&quot;: [&quot;Nakuru&quot;, &quot;Kitale&quot;],
+    &quot;Kisumu&quot;: [&quot;Nakuru&quot;],
+    &quot;Kitale&quot;: [&quot;Eldoret&quot;],
+}
+
+def shortest_route(start, goal):
+    queue = deque([[start]])
+    visited = {start}
+    while queue:
+        path = queue.popleft()
+        town = path[-1]
+        if town == goal:
+            return path
+        for nxt in routes[town]:
+            if nxt not in visited:
+                visited.add(nxt)
+                queue.append(path + [nxt])
+    return None
+
+print(&quot; -&gt; &quot;.join(shortest_route(&quot;Machakos&quot;, &quot;Kitale&quot;)))
+print(&quot; -&gt; &quot;.join(shortest_route(&quot;Nyeri&quot;, &quot;Kisumu&quot;)))</code></pre></figure>
+<p>Breadth-first search (BFS) finds the path with the fewest steps; it's used in maps, social networks ("people you may know") and network routing.</p>
+<h2>Priority queue application: emergency triage</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import heapq
+
+patients = []
+counter = 0     # keeps arrival order for equal priorities
+def arrive(name, priority):           # 1 = most urgent
+    global counter
+    heapq.heappush(patients, (priority, counter, name))
+    counter += 1
+
+arrive(&quot;Amina (sprained ankle)&quot;, 3)
+arrive(&quot;Brian (chest pain)&quot;, 1)
+arrive(&quot;Chebet (fever)&quot;, 2)
+arrive(&quot;Dennis (deep cut)&quot;, 1)
+
+while patients:
+    priority, _, name = heapq.heappop(patients)
+    print(f&quot;Priority {priority}: treating {name}&quot;)</code></pre></figure>
+<p>A heap always gives the smallest item quickly (O(log n) to add or remove). The counter breaks ties fairly by arrival time.</p>
+<h2>Message queues in real systems</h2>
+<p>Large applications use <strong>message queues</strong> (RabbitMQ, Redis queues, Amazon SQS, Kafka) to handle work in the background:</p>
+<ol><li>A customer pays; the web server records the order and puts "send receipt" on a queue.</li><li>The server responds immediately ("Payment received").</li><li>A background <strong>worker</strong> takes jobs from the queue: sends the SMS/email, updates stock, generates the PDF.</li><li>If the SMS gateway is down, the job is retried later instead of failing the payment.</li></ol>
+<p>This keeps websites fast and reliable even under heavy load (e.g. thousands of school fee payments on opening day).</p>
+<h2>Complexity summary</h2>
+<div class="static-table"><table><thead><tr><th>Operation</th><th>Python list as stack</th><th><code>deque</code> as queue</th><th><code>heapq</code> priority queue</th></tr></thead><tbody><tr><td>Add</td><td><code>append</code> O(1)</td><td><code>append</code> O(1)</td><td><code>heappush</code> O(log n)</td></tr><tr><td>Remove</td><td><code>pop()</code> O(1)</td><td><code>popleft</code> O(1)</td><td><code>heappop</code> O(log n)</td></tr><tr><td>Peek</td><td><code>stack[-1]</code> O(1)</td><td><code>q[0]</code> O(1)</td><td><code>heap[0]</code> O(1)</td></tr></tbody></table></div>
+<p>Avoid <code>list.pop(0)</code> for queues: it shifts every element (O(n)).</p>
+<h2>Practice</h2>
+<ol><li>Reverse a string using a stack.</li><li>Use a stack to evaluate a postfix expression like <code>3 4 + 2 *</code> (answer 14).</li><li>Simulate a bank with two tellers serving one shared queue of 10 customers.</li><li>Use BFS to find the shortest path in a small grid maze.</li><li>Use <code>heapq</code> to always process the largest order first (hint: push negative amounts).</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why is <code>collections.deque</code> better than a Python list for a queue that handles thousands of jobs?</span><em>Show answer</em></summary><div class="callout-body"><p>Removing from the front of a list with <code>pop(0)</code> shifts all remaining elements, taking time proportional to the list length, so a large queue becomes slow. A deque is designed for fast additions and removals at both ends (O(1)), so performance stays constant no matter how many jobs are queued.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does LIFO stand for? (four words)</p><details><summary>Show answer</summary><p>last in first out</p></details></li><li><p>Which data structure does the browser Back button use?</p><details><summary>Show answer</summary><p>stack</p></details></li><li><p>Which Python class is best for a queue?</p><details><summary>Show answer</summary><p>deque</p></details></li><li><p>Which deque method removes from the front?</p><details><summary>Show answer</summary><p>popleft</p></details></li><li><p>What kind of queue serves the most urgent item first? (one word before "queue")</p><details><summary>Show answer</summary><p>priority</p></details></li><li><p>Which search algorithm uses a queue to find the path with the fewest steps? (abbreviation)</p><details><summary>Show answer</summary><p>BFS</p></details></li><li><p>Which Python module provides a heap-based priority queue?</p><details><summary>Show answer</summary><p>heapq</p></details></li><li><p>How many stacks does a simple undo/redo system use?</p><details><summary>Show answer</summary><p>2</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Use a list as a stack: push <code>&quot;a&quot;</code>, <code>&quot;b&quot;</code>, <code>&quot;c&quot;</code>, then pop once and print the stack: <strong>['a', 'b']</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=stacks-queues#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 7 of 11 in <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> · <a href="/learn/?book=algorithms">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/algorithms/data-structures/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Data structures: arrays/lists, tuples, sets, dictionaries, stacks, queues, linked lists, trees, heaps and graphs, and when to use each</a><a class="btn btn-solid btn-sm" href="/learn/algorithms/hash-tables/">Hash tables: fast look-ups with dictionaries <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

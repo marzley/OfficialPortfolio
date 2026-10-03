@@ -118,7 +118,119 @@ console.log(patch, shown, counts);</code></pre></figure>
 <div class="static-table"><table><thead><tr><th>Utility</th><th>Result</th></tr></thead><tbody><tr><td><code>Partial&lt;T&gt;</code></td><td>All properties optional</td></tr><tr><td><code>Required&lt;T&gt;</code></td><td>All properties required</td></tr><tr><td><code>Readonly&lt;T&gt;</code></td><td>No property can be reassigned</td></tr><tr><td><code>Pick&lt;T, K&gt;</code></td><td>Only the listed keys</td></tr><tr><td><code>Omit&lt;T, K&gt;</code></td><td>Everything except the listed keys</td></tr><tr><td><code>Record&lt;K, V&gt;</code></td><td>An object with keys K and values V</td></tr><tr><td><code>ReturnType&lt;F&gt;</code></td><td>The type a function returns</td></tr><tr><td><code>NonNullable&lt;T&gt;</code></td><td>Removes <code>null</code> and <code>undefined</code></td></tr></tbody></table></div>
 <h2>When to use generics</h2>
 <p>Use them when the <strong>same logic</strong> works for many types and you want to keep the type information (collections, API wrappers, caches, form helpers). Don't add them "just because": a simple function with concrete types is easier to read.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is &lt;T&gt; in function first&lt;T&gt;() called? (two words)</p><details><summary>Show answer</summary><p>type parameter</p></details></li><li><p>Which keyword limits T to types with certain properties?</p><details><summary>Show answer</summary><p>extends</p></details></li><li><p>Which utility type makes every property optional?</p><details><summary>Show answer</summary><p>Partial</p></details></li><li><p>Which utility type removes some properties?</p><details><summary>Show answer</summary><p>Omit</p></details></li><li><p>Which operator gives the union of an object type's property names?</p><details><summary>Show answer</summary><p>keyof</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 7 in <a href="/learn/typescript/">TypeScript</a> · <a href="/learn/?book=typescript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/typescript/unions-narrowing/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Union types, literal types and narrowing</a><a class="btn btn-solid btn-sm" href="/learn/typescript/classes-enums-modules/">Classes, enums and organising a TypeScript project <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why generics matter</h2>
+<p>Generics let you write one function, class or type that works for many data types while keeping full type safety. Without them, you either duplicate code (one function for products, another for students) or lose safety with <code>any</code>. Every serious TypeScript codebase uses generics: React's <code>useState&lt;T&gt;</code>, <code>Promise&lt;T&gt;</code>, <code>Array&lt;T&gt;</code>, API clients, form libraries and data stores. Understanding them lets you read library types and write reusable code.</p>
+<h2>Generic API helper</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type ApiResponse&lt;T&gt; = { ok: true; data: T } | { ok: false; error: string };
+
+async function fakeGet&lt;T&gt;(url: string, sample: T): Promise&lt;ApiResponse&lt;T&gt;&gt; {
+  await new Promise(r =&gt; setTimeout(r, 10));
+  if (url.includes(&quot;broken&quot;)) return { ok: false, error: &quot;404 Not Found&quot; };
+  return { ok: true, data: sample };
+}
+
+type Product = { id: number; name: string; price: number };
+type Student = { adm: string; name: string; form: number };
+
+(async () =&gt; {
+  const p = await fakeGet&lt;Product[]&gt;(&quot;/api/products&quot;, [{ id: 1, name: &quot;Unga&quot;, price: 180 }]);
+  if (p.ok) console.log(p.data[0].name, p.data[0].price);     // data is Product[]
+
+  const s = await fakeGet&lt;Student&gt;(&quot;/api/students/1&quot;, { adm: &quot;ADM001&quot;, name: &quot;Baraka&quot;, form: 3 });
+  if (s.ok) console.log(s.data.name, &quot;Form&quot;, s.data.form);    // data is Student
+
+  const bad = await fakeGet&lt;Product[]&gt;(&quot;/api/broken&quot;, []);
+  if (!bad.ok) console.log(&quot;Error:&quot;, bad.error);
+})();</code></pre></figure>
+<p>One helper, fully typed for every endpoint.</p>
+<h2>Multiple type parameters and defaults</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">function pair&lt;A, B&gt;(a: A, b: B): [A, B] {
+  return [a, b];
+}
+const p1 = pair(&quot;Nairobi&quot;, 4_400_000);      // [string, number]
+const p2 = pair(true, [&quot;a&quot;, &quot;b&quot;]);           // [boolean, string[]]
+console.log(p1, p2);
+
+type Paginated&lt;T, Meta = { page: number; total: number }&gt; = { items: T[]; meta: Meta };
+const page: Paginated&lt;string&gt; = { items: [&quot;Unga&quot;, &quot;Sugar&quot;], meta: { page: 1, total: 42 } };
+console.log(page.meta.total);</code></pre></figure>
+<h2>keyof and indexed access with generics</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">function pluck&lt;T, K extends keyof T&gt;(items: T[], key: K): T[K][] {
+  return items.map(item =&gt; item[key]);
+}
+
+const students = [
+  { name: &quot;Amina&quot;, form: 2, fees: 12000 },
+  { name: &quot;Brian&quot;, form: 3, fees: 0 },
+];
+console.log(pluck(students, &quot;name&quot;));    // string[]
+console.log(pluck(students, &quot;fees&quot;));    // number[]
+// pluck(students, &quot;age&quot;);               // error: &quot;age&quot; is not a key
+
+function sortBy&lt;T&gt;(items: T[], key: keyof T): T[] {
+  return [...items].sort((a, b) =&gt; (a[key] &gt; b[key] ? 1 : a[key] &lt; b[key] ? -1 : 0));
+}
+console.log(sortBy(students, &quot;fees&quot;).map(s =&gt; s.name));</code></pre></figure>
+<p><code>K extends keyof T</code> means "K must be one of T's property names", and <code>T[K]</code> is "the type of that property".</p>
+<h2>A typed event emitter</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type Events = {
+  paymentReceived: { receipt: string; amount: number };
+  orderShipped: { orderId: number; courier: string };
+};
+
+class Emitter&lt;E extends Record&lt;string, unknown&gt;&gt; {
+  private handlers: { [K in keyof E]?: ((payload: E[K]) =&gt; void)[] } = {};
+  on&lt;K extends keyof E&gt;(event: K, fn: (payload: E[K]) =&gt; void) {
+    (this.handlers[event] ??= []).push(fn);
+  }
+  emit&lt;K extends keyof E&gt;(event: K, payload: E[K]) {
+    this.handlers[event]?.forEach(fn =&gt; fn(payload));
+  }
+}
+
+const bus = new Emitter&lt;Events&gt;();
+bus.on(&quot;paymentReceived&quot;, p =&gt; console.log(`Paid KSh ${p.amount} (${p.receipt})`));
+bus.on(&quot;orderShipped&quot;, o =&gt; console.log(`Order ${o.orderId} shipped via ${o.courier}`));
+bus.emit(&quot;paymentReceived&quot;, { receipt: &quot;SJK4H2L9XA&quot;, amount: 1500 });
+bus.emit(&quot;orderShipped&quot;, { orderId: 1024, courier: &quot;G4S&quot; });
+// bus.emit(&quot;orderShipped&quot;, { orderId: 1 });   // error: courier missing</code></pre></figure>
+<p>Event names and payloads are checked: a typo in an event name or a missing field is caught immediately.</p>
+<h2>Mapped and conditional types</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type Product = { id: number; name: string; price: number; inStock: boolean };
+
+// Make every property a form field with an error message
+type FormErrors&lt;T&gt; = { [K in keyof T]?: string };
+const errors: FormErrors&lt;Product&gt; = { price: &quot;Price must be above 0&quot; };
+
+// Make every property readonly (like Readonly&lt;T&gt;)
+type Frozen&lt;T&gt; = { readonly [K in keyof T]: T[K] };
+const frozen: Frozen&lt;Product&gt; = { id: 1, name: &quot;Unga&quot;, price: 180, inStock: true };
+
+// Conditional type: pick only the keys whose values are numbers
+type NumberKeys&lt;T&gt; = { [K in keyof T]: T[K] extends number ? K : never }[keyof T];
+type ProductNumbers = NumberKeys&lt;Product&gt;;   // &quot;id&quot; | &quot;price&quot;
+const k: ProductNumbers = &quot;price&quot;;
+
+console.log(errors, frozen.name, k);</code></pre></figure>
+<p>These power the built-in utility types (<code>Partial</code>, <code>Required</code>, <code>Readonly</code>, <code>Pick</code>, <code>Omit</code>, <code>Record</code>, <code>ReturnType</code>, <code>Awaited</code>).</p>
+<h2>More built-in utility types</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">async function loadUser() { return { id: 7, name: &quot;Zawadi&quot;, roles: [&quot;admin&quot;] }; }
+
+type User = Awaited&lt;ReturnType&lt;typeof loadUser&gt;&gt;;          // the resolved object type
+type UserUpdate = Partial&lt;Omit&lt;User, &quot;id&quot;&gt;&gt;;               // everything optional except id removed
+type Contact = Required&lt;{ phone?: string; email?: string }&gt;;
+type Status = Exclude&lt;&quot;draft&quot; | &quot;published&quot; | &quot;deleted&quot;, &quot;deleted&quot;&gt;;   // &quot;draft&quot; | &quot;published&quot;
+
+const update: UserUpdate = { name: &quot;Zawadi W.&quot; };
+const contact: Contact = { phone: &quot;0712000000&quot;, email: &quot;z@example.co.ke&quot; };
+const st: Status = &quot;published&quot;;
+console.log(update, contact, st);</code></pre></figure>
+<h2>When not to use generics</h2>
+<ul><li>If a function only ever handles one type, a plain type is clearer.</li><li>Don't add type parameters that appear only once (e.g. <code>function log&lt;T&gt;(x: T): void</code>): <code>unknown</code> works the same.</li><li>Readability matters: deeply nested conditional types can be hard for teammates to maintain.</li></ul>
+<h2>Practice</h2>
+<ol><li>Write <code>last&lt;T&gt;(items: T[]): T | undefined</code>.</li><li>Write <code>indexBy&lt;T, K extends keyof T&gt;(items: T[], key: K): Map&lt;T[K], T&gt;</code>.</li><li>Create a generic <code>Cache&lt;K, V&gt;</code> class with get, set and has.</li><li>Define <code>FormValues&lt;T&gt;</code> that converts every property of T to <code>string</code> (form inputs are strings).</li><li>Use <code>ReturnType</code> and <code>Awaited</code> to type the result of an async function without repeating the type.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why is <code>function first&lt;T&gt;(items: T[]): T</code> better than <code>function first(items: any[]): any</code>?</span><em>Show answer</em></summary><div class="callout-body"><p>With the generic version, TypeScript knows that <code>first(products)</code> returns a product and <code>first(names)</code> returns a string, so autocomplete works and mistakes are caught. With <code>any</code>, the result has no type information, so typos and wrong assumptions slip through to runtime.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is &lt;T&gt; in function first&lt;T&gt;() called? (two words)</p><details><summary>Show answer</summary><p>type parameter</p></details></li><li><p>Which keyword limits T to types with certain properties?</p><details><summary>Show answer</summary><p>extends</p></details></li><li><p>Which utility type makes every property optional?</p><details><summary>Show answer</summary><p>Partial</p></details></li><li><p>Which utility type removes some properties?</p><details><summary>Show answer</summary><p>Omit</p></details></li><li><p>Which operator gives the union of an object type's property names?</p><details><summary>Show answer</summary><p>keyof</p></details></li><li><p>Which constraint means K must be one of T's property names? (K extends ...)</p><details><summary>Show answer</summary><p>keyof T</p></details></li><li><p>Which utility type gives the resolved type of a Promise?</p><details><summary>Show answer</summary><p>Awaited</p></details></li><li><p>Which utility type gives a function's return type?</p><details><summary>Show answer</summary><p>ReturnType</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 7 in <a href="/learn/typescript/">TypeScript</a> · <a href="/learn/?book=typescript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/typescript/unions-narrowing/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Union types, literal types and narrowing</a><a class="btn btn-solid btn-sm" href="/learn/typescript/classes-enums-modules/">Classes, enums and organising a TypeScript project <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

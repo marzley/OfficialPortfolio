@@ -150,7 +150,156 @@ npx tsc --watch         # recompile on every save</code></pre></figure>
 <ul><li>**Always turn on <code>&quot;strict&quot;: true</code>**: it enables the checks that catch the most bugs (like forgetting that a value might be <code>undefined</code>).</li><li>For apps, tools like <strong>Vite</strong> (front-end) or <strong>tsx</strong>/<strong>Node's type stripping</strong> (back-end) run TypeScript directly during development.</li></ul>
 <h2>Typing data from outside (APIs, forms)</h2>
 <p>TypeScript types disappear at runtime, so data from an API or form isn't <em>guaranteed</em> to match. Validate it (for example with the <strong>Zod</strong> library) at the boundary, then enjoy full type safety inside your app.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which modifier makes a property visible only inside its class?</p><details><summary>Show answer</summary><p>private</p></details></li><li><p>Which modifier allows a property to be assigned only once?</p><details><summary>Show answer</summary><p>readonly</p></details></li><li><p>Which keyword makes a class follow an interface?</p><details><summary>Show answer</summary><p>implements</p></details></li><li><p>Which tsconfig option turns on all the important safety checks?</p><details><summary>Show answer</summary><p>strict</p></details></li><li><p>Which command creates a tsconfig.json file?</p><details><summary>Show answer</summary><p>npx tsc --init</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 7 in <a href="/learn/typescript/">TypeScript</a> · <a href="/learn/?book=typescript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/typescript/generics-utility-types/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Generics and utility types</a><a class="btn btn-solid btn-sm" href="/learn/typescript/typescript-in-practice/">TypeScript in real projects: classes, modules, async APIs, runtime validation, React and Node.js, tsconfig and migrating JavaScript <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Where classes and project setup matter</h2>
+<p>Classes are common in Angular apps, NestJS back ends, game code, SDKs and object-oriented domain models (orders, accounts, invoices). Even in function-heavy React code, you'll use classes from libraries and need to understand them. Knowing how to set up a real TypeScript project (tsconfig, strict mode, build and run scripts, typed external data) is what moves you from small exercises to production code.</p>
+<h2>Parameter properties and getters</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">class Invoice {
+  private static nextNumber = 1001;
+  readonly number: number;
+  private lines: { item: string; qty: number; price: number }[] = [];
+
+  constructor(public readonly customer: string, private vatRate = 0.16) {
+    this.number = Invoice.nextNumber++;
+  }
+
+  add(item: string, qty: number, price: number): this {
+    if (qty &lt;= 0 || price &lt; 0) throw new Error(&quot;Invalid line&quot;);
+    this.lines.push({ item, qty, price });
+    return this;
+  }
+
+  get subtotal(): number {
+    return this.lines.reduce((s, l) =&gt; s + l.qty * l.price, 0);
+  }
+  get vat(): number {
+    return Math.round(this.subtotal * this.vatRate * 100) / 100;
+  }
+  get total(): number {
+    return this.subtotal + this.vat;
+  }
+  toString(): string {
+    return `INV-${this.number} ${this.customer}: KSh ${this.total.toFixed(2)}`;
+  }
+}
+
+const inv = new Invoice(&quot;Kamau Hardware&quot;).add(&quot;Cement 50kg&quot;, 10, 780).add(&quot;Nails 1kg&quot;, 3, 250);
+console.log(String(inv));
+console.log(inv.subtotal, inv.vat);
+const inv2 = new Invoice(&quot;Wanjiru Salon&quot;, 0);
+console.log(String(inv2.add(&quot;Hair dryer&quot;, 1, 4500)));</code></pre></figure>
+<p><code>public readonly customer</code> in the constructor creates and assigns the property in one step. Returning <code>this</code> allows chaining.</p>
+<h2>private vs #private</h2>
+<div class="static-table"><table><thead><tr><th></th><th><code>private</code></th><th><code>#private</code></th></tr></thead><tbody><tr><td>Checked by</td><td>TypeScript only (compile time)</td><td>JavaScript runtime</td></tr><tr><td>Visible in compiled JS</td><td>Yes (just a normal property)</td><td>No, truly hidden</td></tr><tr><td>Use</td><td>Most TypeScript code</td><td>When real runtime privacy matters (libraries)</td></tr></tbody></table></div>
+<h2>Abstract classes and interfaces together</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">interface Notifier {
+  send(to: string, message: string): Promise&lt;boolean&gt;;
+}
+
+abstract class BaseNotifier implements Notifier {
+  protected sent = 0;
+  abstract send(to: string, message: string): Promise&lt;boolean&gt;;
+  get count() { return this.sent; }
+  protected log(channel: string, to: string, message: string) {
+    this.sent++;
+    console.log(`[${channel}] to ${to}: ${message}`);
+  }
+}
+
+class SmsNotifier extends BaseNotifier {
+  async send(to: string, message: string) {
+    if (message.length &gt; 160) return false;
+    this.log(&quot;SMS&quot;, to, message);
+    return true;
+  }
+}
+
+class EmailNotifier extends BaseNotifier {
+  async send(to: string, message: string) {
+    this.log(&quot;Email&quot;, to, message);
+    return true;
+  }
+}
+
+(async () =&gt; {
+  const channels: Notifier[] = [new SmsNotifier(), new EmailNotifier()];
+  for (const c of channels) await c.send(&quot;customer&quot;, &quot;Your order #1024 has shipped&quot;);
+})();</code></pre></figure>
+<p>Code that depends on the <code>Notifier</code> interface can use any channel, which makes testing easy (a fake notifier in tests).</p>
+<h2>const enums, union types and as const</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">const PaymentMethod = {
+  Mpesa: &quot;mpesa&quot;,
+  Card: &quot;card&quot;,
+  Cash: &quot;cash&quot;,
+} as const;
+type PaymentMethod = typeof PaymentMethod[keyof typeof PaymentMethod];   // &quot;mpesa&quot; | &quot;card&quot; | &quot;cash&quot;
+
+function fee(method: PaymentMethod, amount: number): number {
+  return method === PaymentMethod.Card ? Math.round(amount * 0.03) : 0;
+}
+
+console.log(fee(PaymentMethod.Card, 2000), fee(&quot;mpesa&quot;, 2000));
+console.log(Object.values(PaymentMethod));</code></pre></figure>
+<p>The <code>as const</code> object pattern gives you named constants and a union type, works in plain JavaScript, and is popular as an alternative to enums.</p>
+<h2>A production-ready tsconfig</h2>
+<figure class="static-code"><figcaption>JSON</figcaption><pre><code class="language-json">{
+  &quot;compilerOptions&quot;: {
+    &quot;target&quot;: &quot;ES2022&quot;,
+    &quot;module&quot;: &quot;NodeNext&quot;,
+    &quot;moduleResolution&quot;: &quot;NodeNext&quot;,
+    &quot;outDir&quot;: &quot;dist&quot;,
+    &quot;rootDir&quot;: &quot;src&quot;,
+    &quot;strict&quot;: true,
+    &quot;noUncheckedIndexedAccess&quot;: true,
+    &quot;noImplicitOverride&quot;: true,
+    &quot;exactOptionalPropertyTypes&quot;: true,
+    &quot;esModuleInterop&quot;: true,
+    &quot;skipLibCheck&quot;: true,
+    &quot;sourceMap&quot;: true
+  },
+  &quot;include&quot;: [&quot;src&quot;]
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Option</th><th>Effect</th></tr></thead><tbody><tr><td><code>strict</code></td><td>Enables the core safety checks (null checks, no implicit any, and more)</td></tr><tr><td><code>noUncheckedIndexedAccess</code></td><td><code>arr[0]</code> is <code>T | undefined</code>: forces you to handle missing items</td></tr><tr><td><code>noImplicitOverride</code></td><td>Requires <code>override</code> keyword in subclasses: catches typos</td></tr><tr><td><code>sourceMap</code></td><td>Error stack traces point to your <code>.ts</code> lines</td></tr></tbody></table></div>
+<p>Front-end projects using Vite set many of these for you (<code>npm create vite@latest</code> → a TypeScript template).</p>
+<h2>Validating external data at runtime</h2>
+<p>Types disappear at runtime, so data from APIs, forms and <code>localStorage</code> must be checked. Libraries like <strong>Zod</strong> define a schema once and give you both validation and a type:</p>
+<figure class="static-code"><figcaption>TypeScript</figcaption><pre><code class="language-typescript">import { z } from &quot;zod&quot;;
+
+const OrderSchema = z.object({
+  id: z.number(),
+  phone: z.string().regex(/^2547\d{8}$/),
+  amount: z.number().positive(),
+  status: z.enum([&quot;pending&quot;, &quot;paid&quot;, &quot;cancelled&quot;]),
+});
+type Order = z.infer&lt;typeof OrderSchema&gt;;
+
+const result = OrderSchema.safeParse(await res.json());
+if (!result.success) {
+  console.error(result.error.issues);
+} else {
+  const order: Order = result.data;   // safe to use
+}</code></pre></figure>
+<h2>Project structure and scripts</h2>
+<figure class="static-code"><pre><code>my-api/
+├── src/
+│   ├── index.ts
+│   ├── routes/orders.ts
+│   ├── services/payments.ts
+│   └── types.ts
+├── tests/
+├── package.json
+└── tsconfig.json</code></pre></figure>
+<figure class="static-code"><figcaption>JSON</figcaption><pre><code class="language-json">&quot;scripts&quot;: {
+  &quot;dev&quot;: &quot;tsx watch src/index.ts&quot;,
+  &quot;build&quot;: &quot;tsc&quot;,
+  &quot;start&quot;: &quot;node dist/index.js&quot;,
+  &quot;typecheck&quot;: &quot;tsc --noEmit&quot;,
+  &quot;test&quot;: &quot;vitest&quot;
+}</code></pre></figure>
+<p>Run <code>npm run typecheck</code> in CI (e.g. GitHub Actions) so type errors block merging.</p>
+<h2>Practice</h2>
+<ol><li>Build a <code>BankAccount</code> class with a <code>#balance</code>, deposit/withdraw methods and a transactions getter.</li><li>Create an interface <code>Storage&lt;T&gt;</code> with get/set and two implementations: in-memory and (in the browser) localStorage.</li><li>Replace an enum with the <code>as const</code> object pattern.</li><li>Set up a Node + TypeScript project with <code>strict</code> and <code>noUncheckedIndexedAccess</code>, and fix the errors it reveals.</li><li>Write a Zod schema for a student record and validate sample data.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Your TypeScript types say an API returns <code>{ amount: number }</code>, but in production the app crashes because the API sometimes sends <code>&quot;amount&quot;: &quot;1500&quot;</code> (a string). Why didn't TypeScript catch it, and how do you prevent it?</span><em>Show answer</em></summary><div class="callout-body"><p>TypeScript types are erased at compile time and only describe what you assume; they don't check real data arriving at runtime. Validate external data at the boundary with a schema library (Zod, Valibot) or manual checks, convert or reject bad values, and only then treat the data as your typed model.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which modifier makes a property visible only inside its class?</p><details><summary>Show answer</summary><p>private</p></details></li><li><p>Which modifier allows a property to be assigned only once?</p><details><summary>Show answer</summary><p>readonly</p></details></li><li><p>Which keyword makes a class follow an interface?</p><details><summary>Show answer</summary><p>implements</p></details></li><li><p>Which tsconfig option turns on all the important safety checks?</p><details><summary>Show answer</summary><p>strict</p></details></li><li><p>Which command creates a tsconfig.json file?</p><details><summary>Show answer</summary><p>npx tsc --init</p></details></li><li><p>Which keyword in a constructor parameter creates and assigns a property automatically? (one of)</p><details><summary>Show answer</summary><p>public</p></details></li><li><p>Which tsconfig option makes arr[0] possibly undefined?</p><details><summary>Show answer</summary><p>noUncheckedIndexedAccess</p></details></li><li><p>Which library is popular for runtime validation that also produces TypeScript types?</p><details><summary>Show answer</summary><p>Zod</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 7 in <a href="/learn/typescript/">TypeScript</a> · <a href="/learn/?book=typescript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/typescript/generics-utility-types/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Generics and utility types</a><a class="btn btn-solid btn-sm" href="/learn/typescript/typescript-in-practice/">TypeScript in real projects: classes, modules, async APIs, runtime validation, React and Node.js, tsconfig and migrating JavaScript <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

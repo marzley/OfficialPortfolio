@@ -172,7 +172,182 @@ func main() {
 	}
 	fmt.Println(byForm[&quot;2A&quot;])
 }</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which built-in function adds items to a slice?</p><details><summary>Show answer</summary><p>append</p></details></li><li><p>What does marks[1:3] include: indexes 1 and 2, or 1, 2 and 3?</p><details><summary>Show answer</summary><p>1 and 2</p></details></li><li><p>What does the second value ok mean in qty, ok := stock["Beans"]?</p><details><summary>Show answer</summary><p>whether the key exists</p></details></li><li><p>Do Go maps keep their keys in order? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which function sorts a slice using your own comparison?</p><details><summary>Show answer</summary><p>sort.Slice</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 6 in <a href="/learn/go/">Go (Golang)</a> · <a href="/learn/?book=go">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/go/variables-control-functions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Variables, control flow and functions in Go</a><a class="btn btn-solid btn-sm" href="/learn/go/structs-web/">Structs and a web server in Go: structs, methods, JSON, net/http handlers, routing, a REST API, databases and deployment <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Where slices and maps are used</h2>
+<p>Slices and maps are the workhorses of Go programs: lists of orders, products and users; lookups by ID, phone number or code; counting and grouping data for reports; caching results. JSON from APIs becomes slices and maps of structs. Understanding how slices share memory and how maps behave avoids some of the most common Go bugs.</p>
+<h2>How slices really work</h2>
+<p>A slice is a small header pointing to an underlying array, with a <strong>length</strong> and a <strong>capacity</strong>:</p>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func main() {
+	s := make([]int, 0, 3) // length 0, capacity 3
+	for i := 1; i &lt;= 5; i++ {
+		s = append(s, i*100)
+		fmt.Printf(&quot;len=%d cap=%d %v\n&quot;, len(s), cap(s), s)
+	}
+
+	original := []int{1, 2, 3, 4, 5}
+	part := original[1:3]   // shares memory with original
+	part[0] = 99
+	fmt.Println(original)  // [1 99 3 4 5]: the change shows in original
+
+	independent := make([]int, len(part))
+	copy(independent, part) // a real copy
+	independent[0] = 7
+	fmt.Println(original, independent)
+}</code></pre></figure>
+<p>When <code>append</code> exceeds capacity, Go allocates a bigger array and copies the data. Sub-slices share the original array, so changing one can change the other; use <code>copy</code> (or <code>slices.Clone</code>) when you need independence.</p>
+<h2>Removing and filtering items</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;slices&quot;
+)
+
+func main() {
+	towns := []string{&quot;Nairobi&quot;, &quot;Mombasa&quot;, &quot;Kisumu&quot;, &quot;Nakuru&quot;, &quot;Eldoret&quot;}
+
+	i := slices.Index(towns, &quot;Kisumu&quot;)
+	towns = slices.Delete(towns, i, i+1) // remove Kisumu
+	fmt.Println(towns)
+
+	towns = slices.Insert(towns, 1, &quot;Thika&quot;)
+	fmt.Println(towns, slices.Contains(towns, &quot;Nakuru&quot;))
+
+	marks := []int{67, 82, 45, 90, 58, 39}
+	passed := marks[:0:0] // empty slice, new backing array when appended
+	for _, m := range marks {
+		if m &gt;= 50 {
+			passed = append(passed, m)
+		}
+	}
+	slices.Sort(passed)
+	fmt.Println(passed, slices.Max(marks), slices.Min(marks))
+}</code></pre></figure>
+<p>The <code>slices</code> package (Go 1.21+) provides common operations like <code>Sort</code>, <code>Contains</code>, <code>Index</code>, <code>Insert</code>, <code>Delete</code>, <code>Max</code> and <code>Min</code>.</p>
+<h2>Maps: counting, grouping and sorted output</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;sort&quot;
+)
+
+type Sale struct {
+	Town    string
+	Product string
+	Amount  int
+}
+
+func main() {
+	sales := []Sale{
+		{&quot;Nakuru&quot;, &quot;Unga&quot;, 1800}, {&quot;Thika&quot;, &quot;Sugar&quot;, 840},
+		{&quot;Nakuru&quot;, &quot;Oil&quot;, 1400}, {&quot;Eldoret&quot;, &quot;Unga&quot;, 900},
+	}
+
+	totals := map[string]int{}
+	byProduct := map[string][]Sale{}
+	for _, s := range sales {
+		totals[s.Town] += s.Amount // missing keys start at 0
+		byProduct[s.Product] = append(byProduct[s.Product], s)
+	}
+
+	towns := make([]string, 0, len(totals))
+	for t := range totals {
+		towns = append(towns, t)
+	}
+	sort.Strings(towns) // maps have no order: sort keys for stable output
+	for _, t := range towns {
+		fmt.Printf(&quot;%-8s %5d\n&quot;, t, totals[t])
+	}
+	fmt.Println(&quot;Unga sales:&quot;, len(byProduct[&quot;Unga&quot;]))
+
+	delete(totals, &quot;Thika&quot;)
+	if _, ok := totals[&quot;Thika&quot;]; !ok {
+		fmt.Println(&quot;Thika removed&quot;)
+	}
+}</code></pre></figure>
+<p>Map iteration order is deliberately random in Go; always sort keys when output order matters (reports, tests).</p>
+<h2>Sets with maps</h2>
+<p>Go has no built-in set type; a <code>map[string]bool</code> (or <code>map[string]struct{}</code>) does the job:</p>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func main() {
+	receipts := []string{&quot;QJK1&quot;, &quot;QJK2&quot;, &quot;QJK1&quot;, &quot;QJK3&quot;, &quot;QJK2&quot;}
+	seen := map[string]bool{}
+	var duplicates []string
+	for _, r := range receipts {
+		if seen[r] {
+			duplicates = append(duplicates, r)
+		}
+		seen[r] = true
+	}
+	fmt.Println(&quot;Unique:&quot;, len(seen), &quot;Duplicates:&quot;, duplicates)
+}</code></pre></figure>
+<p>Detecting duplicate M-Pesa receipt codes like this prevents recording the same payment twice.</p>
+<h2>Strings, bytes and runes</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;strings&quot;
+	&quot;unicode/utf8&quot;
+)
+
+func main() {
+	word := &quot;Wanjirũ&quot;
+	fmt.Println(len(word), utf8.RuneCountInString(word)) // bytes vs characters
+	for i, r := range word {
+		fmt.Printf(&quot;%d:%c &quot;, i, r)
+	}
+	fmt.Println()
+
+	var b strings.Builder
+	for i := 1; i &lt;= 3; i++ {
+		fmt.Fprintf(&amp;b, &quot;Item %d; &quot;, i)
+	}
+	fmt.Println(b.String())
+	fmt.Println(strings.Fields(&quot;  pay   school   fees  &quot;))
+	fmt.Println(strings.ToUpper(&quot;kenya&quot;), strings.Repeat(&quot;=&quot;, 10))
+}</code></pre></figure>
+<p><code>len</code> counts bytes; characters like <code>ũ</code> take more than one byte in UTF-8. Range over a string to get <strong>runes</strong> (Unicode characters). Use <code>strings.Builder</code> to build long strings efficiently.</p>
+<h2>JSON with structs</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;encoding/json&quot;
+	&quot;fmt&quot;
+)
+
+type Product struct {
+	ID      int     `json:&quot;id&quot;`
+	Name    string  `json:&quot;name&quot;`
+	Price   float64 `json:&quot;price&quot;`
+	InStock bool    `json:&quot;in_stock&quot;`
+}
+
+func main() {
+	data := `[{&quot;id&quot;:1,&quot;name&quot;:&quot;Unga 2kg&quot;,&quot;price&quot;:180,&quot;in_stock&quot;:true},{&quot;id&quot;:2,&quot;name&quot;:&quot;Sugar 1kg&quot;,&quot;price&quot;:210,&quot;in_stock&quot;:false}]`
+	var products []Product
+	if err := json.Unmarshal([]byte(data), &amp;products); err != nil {
+		fmt.Println(&quot;bad JSON:&quot;, err)
+		return
+	}
+	for _, p := range products {
+		fmt.Printf(&quot;%+v\n&quot;, p)
+	}
+	out, _ := json.MarshalIndent(products[0], &quot;&quot;, &quot;  &quot;)
+	fmt.Println(string(out))
+}</code></pre></figure>
+<p>Struct tags (<code>json:&quot;in_stock&quot;</code>) map Go field names to JSON keys. This is exactly how Go APIs read requests and send responses.</p>
+<h2>Practice</h2>
+<ol><li>Show how appending to a slice changes its length and capacity.</li><li>Remove all out-of-stock products from a slice of structs.</li><li>Count word frequencies in a sentence and print them sorted alphabetically.</li><li>Find duplicate phone numbers in a slice using a map as a set.</li><li>Decode a JSON array of students and print the one with the highest mark.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A function receives <code>marks []int</code> and runs <code>marks[0] = 100</code>. The caller's slice changes. But when the function does <code>marks = append(marks, 5)</code>, the caller doesn't see the new item. Why?</span><em>Show answer</em></summary><div class="callout-body"><p>A slice header (pointer, length, capacity) is passed by value, but it points to the same underlying array, so changing an element affects the caller's data. <code>append</code> returns a new header (possibly with a new array); assigning it to the local parameter doesn't update the caller's header. Return the new slice (<code>return marks</code>) or pass a pointer if the caller must see appended items.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which built-in function adds items to a slice?</p><details><summary>Show answer</summary><p>append</p></details></li><li><p>What does marks[1:3] include: indexes 1 and 2, or 1, 2 and 3?</p><details><summary>Show answer</summary><p>1 and 2</p></details></li><li><p>What does the second value ok mean in qty, ok := stock["Beans"]?</p><details><summary>Show answer</summary><p>whether the key exists</p></details></li><li><p>Do Go maps keep their keys in order? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which function sorts a slice using your own comparison?</p><details><summary>Show answer</summary><p>sort.Slice</p></details></li><li><p>Which built-in function makes an independent copy of slice elements into another slice?</p><details><summary>Show answer</summary><p>copy</p></details></li><li><p>Is Go map iteration order guaranteed? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>What Go type represents a single Unicode character?</p><details><summary>Show answer</summary><p>rune</p></details></li><li><p>What part of a struct field maps it to a JSON key, like <code>json:&quot;name&quot;</code>? (two words)</p><details><summary>Show answer</summary><p>struct tag</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 6 in <a href="/learn/go/">Go (Golang)</a> · <a href="/learn/?book=go">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/go/variables-control-functions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Variables, control flow and functions in Go</a><a class="btn btn-solid btn-sm" href="/learn/go/structs-web/">Structs and a web server in Go: structs, methods, JSON, net/http handlers, routing, a REST API, databases and deployment <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

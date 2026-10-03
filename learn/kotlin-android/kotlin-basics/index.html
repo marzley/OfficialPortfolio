@@ -132,7 +132,118 @@ fun main() {
     }
     println(&quot;Reached KSh $savings after $week weeks&quot;)
 }</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword declares a read-only variable in Kotlin?</p><details><summary>Show answer</summary><p>val</p></details></li><li><p>Which keyword declares a variable that can change?</p><details><summary>Show answer</summary><p>var</p></details></li><li><p>Where does every Kotlin program start? Write the function.</p><details><summary>Show answer</summary><p>main</p></details></li><li><p>Complete the template to print a variable called name: "Hello ..."</p><details><summary>Show answer</summary><p>$name</p></details></li><li><p>Which Kotlin keyword is a powerful replacement for switch?</p><details><summary>Show answer</summary><p>when</p></details></li><li><p>Does 0 until 3 include 3? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Write a function <code>vat(amount: Double): Double</code> that returns 16% of the amount, and print the VAT on <strong>2500.0</strong>. The output should be <strong>400.0</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=kotlin-android&amp;lesson=kotlin-basics#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 1 of 10 in <a href="/learn/kotlin-android/">Android apps with Kotlin</a> · <a href="/learn/?book=kotlin-android">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><span></span><a class="btn btn-solid btn-sm" href="/learn/kotlin-android/kotlin-functions-collections/">Kotlin functions, lambdas and collections <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why Kotlin is the language of Android</h2>
+<p>Google recommends Kotlin for Android development, and most new Android apps (banking, mobile money, ride-hailing, delivery and e-commerce apps) are written in it. Kotlin is concise, null-safe and fully compatible with Java, so it works with existing Android libraries. It's also used for back-end services (Ktor, Spring) and shared mobile code (Kotlin Multiplatform). Since Android dominates the Kenyan smartphone market, Kotlin skills lead directly to app development jobs and freelance projects.</p>
+<h2>Null safety in practice</h2>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">fun findPhone(name: String, contacts: Map&lt;String, String&gt;): String? = contacts[name]
+
+fun main() {
+    val contacts = mapOf(&quot;Amina&quot; to &quot;0712000001&quot;, &quot;Brian&quot; to &quot;0722000002&quot;)
+
+    val phone: String? = findPhone(&quot;Chebet&quot;, contacts)
+    println(phone ?: &quot;No phone saved&quot;)                 // Elvis operator: default when null
+    println(phone?.length)                             // safe call: null instead of a crash
+
+    findPhone(&quot;Amina&quot;, contacts)?.let { p -&gt;          // run only when not null
+        println(&quot;Calling $p&quot;)
+    }
+
+    val length = findPhone(&quot;Brian&quot;, contacts)?.length ?: 0
+    println(&quot;Length: $length&quot;)
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Syntax</th><th>Meaning</th></tr></thead><tbody><tr><td><code>String?</code></td><td>May be null</td></tr><tr><td><code>a?.b</code></td><td>Access <code>b</code> only if <code>a</code> isn't null</td></tr><tr><td><code>a ?: b</code></td><td><code>a</code> if not null, otherwise <code>b</code></td></tr><tr><td><code>a?.let { }</code></td><td>Run the block only when <code>a</code> isn't null</td></tr><tr><td><code>a!!</code></td><td>Assert not null (crashes if it is; avoid)</td></tr></tbody></table></div>
+<p>Most crashes in older Android apps were <code>NullPointerException</code>s; Kotlin's type system prevents most of them at compile time.</p>
+<h2>Functions: defaults, named arguments and single-expression functions</h2>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">fun withVat(amount: Double, rate: Double = 0.16): Double = amount * (1 + rate)
+
+fun formatKsh(amount: Double, decimals: Int = 0): String =
+    &quot;KSh &quot; + &quot;%,.${decimals}f&quot;.format(amount)
+
+fun greet(name: String, title: String = &quot;&quot;, greeting: String = &quot;Habari&quot;) =
+    if (title.isEmpty()) &quot;$greeting $name&quot; else &quot;$greeting $title $name&quot;
+
+fun main() {
+    println(formatKsh(withVat(2500.0)))
+    println(formatKsh(withVat(2500.0, rate = 0.08), decimals = 2))
+    println(greet(&quot;Otieno&quot;))
+    println(greet(&quot;Akinyi&quot;, title = &quot;Dr.&quot;, greeting = &quot;Karibu&quot;))
+}</code></pre></figure>
+<h2>Collections and their functions</h2>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">data class Product(val name: String, val category: String, val price: Int, val stock: Int)
+
+fun main() {
+    val products = listOf(
+        Product(&quot;Unga 2kg&quot;, &quot;Food&quot;, 180, 12),
+        Product(&quot;Sugar 1kg&quot;, &quot;Food&quot;, 210, 0),
+        Product(&quot;Soap&quot;, &quot;Home&quot;, 60, 30),
+        Product(&quot;Cooking oil 1L&quot;, &quot;Food&quot;, 350, 7),
+    )
+
+    val inStock = products.filter { it.stock &gt; 0 }
+    println(inStock.map { it.name })
+    println(&quot;Stock value: &quot; + products.sumOf { it.price * it.stock })
+    println(&quot;Cheapest: &quot; + products.minByOrNull { it.price }?.name)
+    println(&quot;By category: &quot; + products.groupBy { it.category }.mapValues { (_, list) -&gt; list.size })
+    println(&quot;Sorted: &quot; + products.sortedByDescending { it.price }.map { it.name })
+    println(&quot;Any out of stock? &quot; + products.any { it.stock == 0 })
+
+    val (cheap, pricey) = products.partition { it.price &lt; 200 }
+    println(&quot;Cheap ${cheap.size}, pricey ${pricey.size}&quot;)
+}</code></pre></figure>
+<p><code>it</code> is the default name for a single lambda parameter. <code>data class</code> gives you <code>toString</code>, <code>equals</code> and <code>copy</code> automatically.</p>
+<h2>Data classes and copy</h2>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">data class Order(val id: Int, val customer: String, val total: Double, val status: String = &quot;pending&quot;)
+
+fun main() {
+    val order = Order(1024, &quot;Wanjiru&quot;, 3500.0)
+    val paid = order.copy(status = &quot;paid&quot;)       // new object, one field changed
+    println(order)
+    println(paid)
+    println(order == Order(1024, &quot;Wanjiru&quot;, 3500.0))   // value equality: true
+    val (id, customer) = paid                     // destructuring
+    println(&quot;Order $id for $customer&quot;)
+}</code></pre></figure>
+<p>Android apps keep screen state in data classes and create updated copies, which works well with Jetpack Compose.</p>
+<h2>Mutable vs read-only collections</h2>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">fun main() {
+    val towns = listOf(&quot;Nairobi&quot;, &quot;Mombasa&quot;)      // read-only
+    val cart = mutableListOf(&quot;Unga&quot;)              // can change
+    cart.add(&quot;Milk&quot;)
+    cart += &quot;Bread&quot;
+    cart.remove(&quot;Unga&quot;)
+    println(&quot;$towns $cart&quot;)
+
+    val stock = mutableMapOf(&quot;unga&quot; to 40, &quot;sugar&quot; to 25)
+    stock[&quot;rice&quot;] = 30
+    stock[&quot;unga&quot;] = (stock[&quot;unga&quot;] ?: 0) - 5
+    stock.getOrPut(&quot;salt&quot;) { 0 }
+    println(stock)
+    for ((item, qty) in stock) println(&quot;$item: $qty&quot;)
+}</code></pre></figure>
+<p>Prefer read-only collections (<code>listOf</code>, <code>mapOf</code>) and use mutable ones only where changes are needed; it prevents accidental modifications.</p>
+<h2>Extension functions</h2>
+<figure class="static-code"><figcaption>Kotlin · runs live in the interactive lesson</figcaption><pre><code class="language-kotlin">fun String.toKenyanIntl(): String? {
+    val digits = filter { it.isDigit() }
+    return when {
+        digits.length == 10 &amp;&amp; digits.startsWith(&quot;0&quot;) -&gt; &quot;254&quot; + digits.drop(1)
+        digits.length == 12 &amp;&amp; digits.startsWith(&quot;254&quot;) -&gt; digits
+        else -&gt; null
+    }
+}
+
+fun Int.ksh(): String = &quot;KSh &quot; + &quot;%,d&quot;.format(this)
+
+fun main() {
+    println(&quot;0712 345 678&quot;.toKenyanIntl())
+    println(&quot;+254-722-000-111&quot;.toKenyanIntl())
+    println(&quot;12345&quot;.toKenyanIntl())
+    println(15000.ksh())
+}</code></pre></figure>
+<p>Extension functions add methods to existing types (even <code>String</code> and <code>Int</code>) without inheritance, keeping helper code readable: <code>phone.toKenyanIntl()</code>.</p>
+<h2>Practice</h2>
+<ol><li>Write <code>fun parseAmount(text: String): Double?</code> that returns null for invalid input, and print a default with <code>?:</code>.</li><li>Use <code>groupBy</code> and <code>sumOf</code> to total sales per town from a list of data classes.</li><li>Create a data class <code>Student</code> and use <code>copy</code> to update a mark.</li><li>Write an extension function <code>String.initials()</code> that returns "AO" for "Achieng Odhiambo".</li><li>Use <code>partition</code> to split marks into passed and failed lists.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why is <code>val name: String = getName() ?: &quot;Guest&quot;</code> safer than <code>val name = getName()!!</code>?</span><em>Show answer</em></summary><div class="callout-body"><p><code>!!</code> throws a NullPointerException (crashing the app) whenever <code>getName()</code> returns null. The Elvis operator provides a sensible default instead, so the app keeps working and the compiler guarantees <code>name</code> is never null afterwards.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword declares a read-only variable in Kotlin?</p><details><summary>Show answer</summary><p>val</p></details></li><li><p>Which keyword declares a variable that can change?</p><details><summary>Show answer</summary><p>var</p></details></li><li><p>Where does every Kotlin program start? Write the function.</p><details><summary>Show answer</summary><p>main</p></details></li><li><p>Complete the template to print a variable called name: "Hello ..."</p><details><summary>Show answer</summary><p>$name</p></details></li><li><p>Which Kotlin keyword is a powerful replacement for switch?</p><details><summary>Show answer</summary><p>when</p></details></li><li><p>Does 0 until 3 include 3? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>What is the ?: operator called in Kotlin?</p><details><summary>Show answer</summary><p>Elvis</p></details></li><li><p>Which data class function creates a changed copy of an object?</p><details><summary>Show answer</summary><p>copy</p></details></li><li><p>What is the default name of a single lambda parameter in Kotlin?</p><details><summary>Show answer</summary><p>it</p></details></li><li><p>Which collection function splits a list into two lists by a condition?</p><details><summary>Show answer</summary><p>partition</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Write a function <code>vat(amount: Double): Double</code> that returns 16% of the amount, and print the VAT on <strong>2500.0</strong>. The output should be <strong>400.0</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=kotlin-android&amp;lesson=kotlin-basics#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 1 of 10 in <a href="/learn/kotlin-android/">Android apps with Kotlin</a> · <a href="/learn/?book=kotlin-android">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><span></span><a class="btn btn-solid btn-sm" href="/learn/kotlin-android/kotlin-functions-collections/">Kotlin functions, lambdas and collections <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

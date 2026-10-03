@@ -105,7 +105,115 @@ print(by_class)</code></pre></figure>
 <ul><li>Keys must be <strong>hashable</strong> (unchangeable): strings, numbers, tuples. Not lists.</li><li>Keys are unique: assigning the same key again <strong>replaces</strong> the value.</li><li>Dictionaries use more memory than lists: the price of speed.</li></ul>
 <h2>Where you'll meet hashing</h2>
 <ul><li>Database <strong>indexes</strong> (hash and B-tree indexes)</li><li>Caches (storing results so you don't recompute them)</li><li>Password hashing (a different, deliberately slow kind of hash: see the cybersecurity lessons)</li><li>Git uses hashes to name every commit</li></ul>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the average time to look up a key in a hash table, in Big O?</p><details><summary>Show answer</summary><p>O(1)</p></details></li><li><p>What is it called when two keys land in the same bucket?</p><details><summary>Show answer</summary><p>collision</p></details></li><li><p>What is Python's built-in hash table type?</p><details><summary>Show answer</summary><p>dict</p></details></li><li><p>Can a list be a dictionary key? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Two-sum with a dictionary runs in O(n). What is it with nested loops?</p><details><summary>Show answer</summary><p>O(n^2)</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Count the letters in <code>&quot;banana&quot;</code> with a dictionary and print the count for <code>&quot;a&quot;</code>: <strong>3</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=hash-tables#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 8 of 11 in <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> · <a href="/learn/?book=algorithms">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/algorithms/stacks-queues/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Stacks and queues</a><a class="btn btn-solid btn-sm" href="/learn/algorithms/recursion/">Recursion: base cases, the call stack, classic examples, recursion vs loops, tree recursion and avoiding stack overflow <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why hash tables are everywhere</h2>
+<p>Hash tables (Python dictionaries and sets, JavaScript objects and Maps, PHP associative arrays, Java HashMaps) are the most used data structure in everyday programming. They power database indexes, caches, user sessions, counting and grouping in reports, duplicate detection for payments, and lookups by ID, phone number or code. Knowing how they work explains why they're fast, when they slow down, and what can be used as a key.</p>
+<h2>Building a tiny hash table yourself</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">class HashTable:
+    def __init__(self, size=8):
+        self.buckets = [[] for _ in range(size)]
+        self.count = 0
+
+    def _index(self, key):
+        return hash(key) % len(self.buckets)
+
+    def put(self, key, value):
+        bucket = self.buckets[self._index(key)]
+        for i, (k, _) in enumerate(bucket):
+            if k == key:
+                bucket[i] = (key, value)      # update existing key
+                return
+        bucket.append((key, value))           # new key (collisions share the bucket list)
+        self.count += 1
+        if self.count / len(self.buckets) &gt; 0.75:
+            self._resize()
+
+    def get(self, key, default=None):
+        for k, v in self.buckets[self._index(key)]:
+            if k == key:
+                return v
+        return default
+
+    def _resize(self):
+        old = [pair for bucket in self.buckets for pair in bucket]
+        self.buckets = [[] for _ in range(len(self.buckets) * 2)]
+        self.count = 0
+        for k, v in old:
+            self.put(k, v)
+
+stock = HashTable()
+for item, qty in [(&quot;unga&quot;, 40), (&quot;sugar&quot;, 25), (&quot;rice&quot;, 30), (&quot;salt&quot;, 12), (&quot;tea&quot;, 18), (&quot;oil&quot;, 9), (&quot;soap&quot;, 50)]:
+    stock.put(item, qty)
+stock.put(&quot;unga&quot;, 35)
+print(stock.get(&quot;unga&quot;), stock.get(&quot;tea&quot;), stock.get(&quot;milk&quot;, 0))
+print(&quot;Buckets:&quot;, len(stock.buckets), &quot;items:&quot;, stock.count)</code></pre></figure>
+<p>Key ideas: a <strong>hash function</strong> turns a key into a bucket number; <strong>collisions</strong> (two keys in one bucket) are handled by keeping a small list; when the table gets too full (the <strong>load factor</strong> passes a threshold), it <strong>resizes</strong> and redistributes keys so lookups stay fast.</p>
+<h2>Two-sum: the classic interview question</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def two_sum(prices, budget):
+    seen = {}                       # price -&gt; index
+    for i, p in enumerate(prices):
+        need = budget - p
+        if need in seen:
+            return seen[need], i
+        seen[p] = i
+    return None
+
+prices = [450, 1200, 350, 900, 2500, 750]
+print(two_sum(prices, 1600))       # indexes of two items costing exactly 1600 together
+print(two_sum(prices, 10))</code></pre></figure>
+<p>The brute-force approach checks every pair (O(n²)); the hash table version is a single pass (O(n)).</p>
+<h2>Grouping and indexing records</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">from collections import defaultdict
+
+transactions = [
+    {&quot;receipt&quot;: &quot;QJK1&quot;, &quot;phone&quot;: &quot;0712000001&quot;, &quot;amount&quot;: 1500},
+    {&quot;receipt&quot;: &quot;QJK2&quot;, &quot;phone&quot;: &quot;0722000002&quot;, &quot;amount&quot;: 300},
+    {&quot;receipt&quot;: &quot;QJK3&quot;, &quot;phone&quot;: &quot;0712000001&quot;, &quot;amount&quot;: 700},
+    {&quot;receipt&quot;: &quot;QJK4&quot;, &quot;phone&quot;: &quot;0733000003&quot;, &quot;amount&quot;: 2500},
+]
+
+by_receipt = {t[&quot;receipt&quot;]: t for t in transactions}          # index for O(1) lookups
+by_phone = defaultdict(list)
+for t in transactions:
+    by_phone[t[&quot;phone&quot;]].append(t)
+
+print(by_receipt[&quot;QJK3&quot;][&quot;amount&quot;])
+for phone, items in by_phone.items():
+    print(phone, len(items), &quot;payments, total&quot;, sum(t[&quot;amount&quot;] for t in items))</code></pre></figure>
+<p>Building an index once and then looking items up is far faster than searching the list each time, which is exactly what database indexes do.</p>
+<h2>Caching expensive results</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import time
+from functools import lru_cache
+
+@lru_cache(maxsize=1000)
+def delivery_fee(town):
+    time.sleep(0.05)             # pretend this calls a slow pricing service
+    return {&quot;Nairobi&quot;: 200, &quot;Thika&quot;: 300}.get(town, 500)
+
+start = time.perf_counter()
+for town in [&quot;Nairobi&quot;, &quot;Thika&quot;, &quot;Nairobi&quot;, &quot;Nairobi&quot;, &quot;Thika&quot;, &quot;Kisumu&quot;]:
+    delivery_fee(town)
+print(f&quot;Took about {time.perf_counter() - start:.2f}s for 6 lookups (only 3 slow calls)&quot;)
+print(delivery_fee.cache_info())</code></pre></figure>
+<p><code>lru_cache</code> stores results in a hash table keyed by the arguments. Web applications use the same idea with Redis or Memcached to avoid repeating slow database queries.</p>
+<h2>What makes a good key</h2>
+<div class="static-table"><table><thead><tr><th>Key</th><th>Usable?</th><th>Why</th></tr></thead><tbody><tr><td><code>&quot;0712000001&quot;</code> (string)</td><td>Yes</td><td>Immutable, hashable</td></tr><tr><td><code>42</code>, <code>3.5</code>, <code>True</code></td><td>Yes</td><td>Immutable</td></tr><tr><td><code>(&quot;Nakuru&quot;, &quot;2026-09&quot;)</code> (tuple)</td><td>Yes, if its contents are immutable</td><td>Great for multi-part keys</td></tr><tr><td><code>[&quot;a&quot;, &quot;b&quot;]</code> (list)</td><td>No</td><td>Mutable: its hash could change</td></tr><tr><td><code>{&quot;a&quot;: 1}</code> (dict)</td><td>No</td><td>Mutable</td></tr><tr><td><code>frozenset({1, 2})</code></td><td>Yes</td><td>Immutable set</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">sales = {}
+for town, month, amount in [(&quot;Nakuru&quot;, &quot;2026-08&quot;, 1800), (&quot;Nakuru&quot;, &quot;2026-09&quot;, 1400), (&quot;Thika&quot;, &quot;2026-09&quot;, 840), (&quot;Nakuru&quot;, &quot;2026-09&quot;, 600)]:
+    sales[(town, month)] = sales.get((town, month), 0) + amount
+print(sales)
+try:
+    bad = {[&quot;Nakuru&quot;]: 1}
+except TypeError as e:
+    print(&quot;Error:&quot;, e)</code></pre></figure>
+<h2>Hashing beyond dictionaries</h2>
+<ul><li><strong>Password storage</strong> uses slow cryptographic hashes (bcrypt, Argon2): related idea, different goal (security, not speed).</li><li><strong>File integrity</strong>: SHA-256 checksums verify downloads haven't changed.</li><li><strong>Git</strong> identifies every commit and file by its hash.</li><li><strong>Load balancers</strong> hash a user's ID to send them to the same server consistently.</li><li><strong>Bloom filters</strong> use several hashes to test "probably seen" cheaply (used in databases and browsers).</li></ul>
+<h2>Performance notes</h2>
+<div class="static-table"><table><thead><tr><th>Operation</th><th>Average</th><th>Worst case</th></tr></thead><tbody><tr><td>Lookup, insert, delete</td><td>O(1)</td><td>O(n) (many collisions)</td></tr><tr><td>Iterate all items</td><td>O(n)</td><td>O(n)</td></tr></tbody></table></div>
+<p>Python dictionaries keep insertion order (since Python 3.7) and resize automatically, so in everyday use you get fast, predictable behaviour.</p>
+<h2>Practice</h2>
+<ol><li>Find the first repeated M-Pesa receipt code in a list using a set.</li><li>Count word frequencies in a paragraph and print the top 5.</li><li>Group students by form into a dictionary of lists.</li><li>Check whether two strings are anagrams using a dictionary of character counts.</li><li>Use a tuple key <code>(town, product)</code> to total sales.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A developer uses a list of 200,000 customer phone numbers and checks <code>if phone in customers</code> for each of 100,000 new orders. The job takes many minutes. What's the fix and why does it work?</span><em>Show answer</em></summary><div class="callout-body"><p>Convert the list to a set once (<code>customers = set(customers)</code>). Membership checks on a list scan item by item (O(n)), while sets use hashing for roughly constant-time lookups (O(1)), so the total work drops from billions of comparisons to about 300,000 operations.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the average time to look up a key in a hash table, in Big O?</p><details><summary>Show answer</summary><p>O(1)</p></details></li><li><p>What is it called when two keys land in the same bucket?</p><details><summary>Show answer</summary><p>collision</p></details></li><li><p>What is Python's built-in hash table type?</p><details><summary>Show answer</summary><p>dict</p></details></li><li><p>Can a list be a dictionary key? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Two-sum with a dictionary runs in O(n). What is it with nested loops?</p><details><summary>Show answer</summary><p>O(n^2)</p></details></li><li><p>What is the ratio of stored items to buckets in a hash table called? (two words)</p><details><summary>Show answer</summary><p>load factor</p></details></li><li><p>Which Python decorator caches function results in a hash table?</p><details><summary>Show answer</summary><p>lru_cache</p></details></li><li><p>Can a tuple of strings be a dictionary key? (yes or no)</p><details><summary>Show answer</summary><p>yes</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Count the letters in <code>&quot;banana&quot;</code> with a dictionary and print the count for <code>&quot;a&quot;</code>: <strong>3</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=hash-tables#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 8 of 11 in <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> · <a href="/learn/?book=algorithms">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/algorithms/stacks-queues/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Stacks and queues</a><a class="btn btn-solid btn-sm" href="/learn/algorithms/recursion/">Recursion: base cases, the call stack, classic examples, recursion vs loops, tree recursion and avoiding stack overflow <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

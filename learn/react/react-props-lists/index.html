@@ -134,7 +134,146 @@ ReactDOM.createRoot(document.getElementById(&quot;root&quot;)).render(&lt;App /&
 <p>Anything between <code>&lt;Card&gt;</code> and <code>&lt;/Card&gt;</code> arrives as the <code>children</code> prop. Layouts, modals and cards are built this way.</p>
 <h2>Thinking in components</h2>
 <ol><li>Draw the screen and box each part (header, search, product list, product row, cart summary).</li><li>Each box becomes a component.</li><li>Decide what data each needs (props) and where that data lives (next lesson: state).</li></ol>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is data passed into a component called?</p><details><summary>Show answer</summary><p>props</p></details></li><li><p>Can a component change its own props? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which array method turns a list of data into a list of elements?</p><details><summary>Show answer</summary><p>map</p></details></li><li><p>What unique attribute does each list item need?</p><details><summary>Show answer</summary><p>key</p></details></li><li><p>Which prop holds the content placed between a component's opening and closing tags?</p><details><summary>Show answer</summary><p>children</p></details></li><li><p>What appears on screen if you write {count &amp;&amp; &lt;p&gt;Items&lt;/p&gt;} and count is 0?</p><details><summary>Show answer</summary><p>0</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 6 in <a href="/learn/react/">React for web apps</a> · <a href="/learn/?book=react">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/react/react-intro/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> React introduction: components and JSX</a><a class="btn btn-solid btn-sm" href="/learn/react/react-state-events/">State, events and forms <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why props and lists are the heart of React</h2>
+<p>Almost every screen displays lists of data (products, messages, students, transactions) and passes data down from parent components to children. Props make components reusable: one <code>ProductCard</code> can show any product. Getting lists, keys and conditional rendering right avoids common bugs like wrong items updating, flickering inputs or <code>0</code> appearing on screen.</p>
+<h2>Passing functions as props (lifting state up)</h2>
+<p>When several components need the same data, keep the state in their closest common parent and pass down both the data and functions to change it:</p>
+<figure class="static-code"><figcaption>React · runs live in the interactive lesson</figcaption><pre><code class="language-react">const { useState } = React;
+
+function QuantityPicker({ value, onChange }) {
+  return (
+    &lt;span&gt;
+      &lt;button onClick={() =&gt; onChange(Math.max(0, value - 1))}&gt;−&lt;/button&gt;
+      &lt;strong style={{ margin: &quot;0 8px&quot; }}&gt;{value}&lt;/strong&gt;
+      &lt;button onClick={() =&gt; onChange(value + 1)}&gt;+&lt;/button&gt;
+    &lt;/span&gt;
+  );
+}
+
+function CartRow({ item, onQtyChange }) {
+  return (
+    &lt;li style={{ margin: &quot;6px 0&quot; }}&gt;
+      {item.name} (KSh {item.price}){&quot; &quot;}
+      &lt;QuantityPicker value={item.qty} onChange={(q) =&gt; onQtyChange(item.id, q)} /&gt;
+    &lt;/li&gt;
+  );
+}
+
+function App() {
+  const [items, setItems] = useState([
+    { id: 1, name: &quot;Unga 2kg&quot;, price: 180, qty: 1 },
+    { id: 2, name: &quot;Oil 1L&quot;, price: 350, qty: 2 },
+  ]);
+  const updateQty = (id, qty) =&gt;
+    setItems(items.map((it) =&gt; (it.id === id ? { ...it, qty } : it)));
+  const total = items.reduce((s, it) =&gt; s + it.price * it.qty, 0);
+
+  return (
+    &lt;div style={{ fontFamily: &quot;system-ui&quot; }}&gt;
+      &lt;ul&gt;{items.map((it) =&gt; &lt;CartRow key={it.id} item={it} onQtyChange={updateQty} /&gt;)}&lt;/ul&gt;
+      &lt;p&gt;Total: KSh {total.toLocaleString()}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+ReactDOM.createRoot(document.getElementById(&quot;root&quot;)).render(&lt;App /&gt;);</code></pre></figure>
+<p>Data flows <strong>down</strong> through props; events flow <strong>up</strong> through callback props. <code>App</code> owns the state, so the total and every row stay in sync.</p>
+<h2>Filtering, searching and sorting lists</h2>
+<figure class="static-code"><figcaption>React · runs live in the interactive lesson</figcaption><pre><code class="language-react">const { useState } = React;
+
+const students = [
+  { id: 1, name: &quot;Amina Hassan&quot;, form: 2, mean: 78 },
+  { id: 2, name: &quot;Brian Otieno&quot;, form: 3, mean: 65 },
+  { id: 3, name: &quot;Chebet Kiprop&quot;, form: 2, mean: 91 },
+  { id: 4, name: &quot;Dennis Mwangi&quot;, form: 3, mean: 49 },
+];
+
+function App() {
+  const [query, setQuery] = useState(&quot;&quot;);
+  const [form, setForm] = useState(&quot;all&quot;);
+  const [sortBy, setSortBy] = useState(&quot;name&quot;);
+
+  const visible = students
+    .filter((s) =&gt; s.name.toLowerCase().includes(query.toLowerCase()))
+    .filter((s) =&gt; form === &quot;all&quot; || s.form === Number(form))
+    .sort((a, b) =&gt; (sortBy === &quot;name&quot; ? a.name.localeCompare(b.name) : b.mean - a.mean));
+
+  return (
+    &lt;div style={{ fontFamily: &quot;system-ui&quot; }}&gt;
+      &lt;input placeholder=&quot;Search name&quot; value={query} onChange={(e) =&gt; setQuery(e.target.value)} /&gt;
+      &lt;select value={form} onChange={(e) =&gt; setForm(e.target.value)}&gt;
+        &lt;option value=&quot;all&quot;&gt;All forms&lt;/option&gt;
+        &lt;option value=&quot;2&quot;&gt;Form 2&lt;/option&gt;
+        &lt;option value=&quot;3&quot;&gt;Form 3&lt;/option&gt;
+      &lt;/select&gt;
+      &lt;select value={sortBy} onChange={(e) =&gt; setSortBy(e.target.value)}&gt;
+        &lt;option value=&quot;name&quot;&gt;Sort by name&lt;/option&gt;
+        &lt;option value=&quot;mean&quot;&gt;Sort by mean&lt;/option&gt;
+      &lt;/select&gt;
+      {visible.length === 0 ? (
+        &lt;p&gt;No students match.&lt;/p&gt;
+      ) : (
+        &lt;ul&gt;
+          {visible.map((s) =&gt; (
+            &lt;li key={s.id}&gt;{s.name}, Form {s.form}: {s.mean} {s.mean &lt; 50 &amp;&amp; &lt;em&gt;(needs support)&lt;/em&gt;}&lt;/li&gt;
+          ))}
+        &lt;/ul&gt;
+      )}
+    &lt;/div&gt;
+  );
+}
+
+ReactDOM.createRoot(document.getElementById(&quot;root&quot;)).render(&lt;App /&gt;);</code></pre></figure>
+<p>Notice that the filtered list is <strong>calculated</strong> from state on every render rather than stored separately. Storing derived data in extra state is a common source of out-of-sync bugs.</p>
+<h2>Why keys matter: a demonstration</h2>
+<p>When items are reordered or removed, React uses <code>key</code> to match old and new elements. With index keys, typed input can "jump" to the wrong row:</p>
+<figure class="static-code"><figcaption>JSX</figcaption><pre><code class="language-jsx">// Problem: index keys + inputs + removing items = state attached to the wrong row
+{todos.map((t, i) =&gt; &lt;TodoRow key={i} todo={t} /&gt;)}
+
+// Fix: a stable id from the data
+{todos.map((t) =&gt; &lt;TodoRow key={t.id} todo={t} /&gt;)}</code></pre></figure>
+<p>Use database IDs, or generate an ID when an item is created (<code>crypto.randomUUID()</code>), never <code>Math.random()</code> during rendering.</p>
+<h2>Conditional rendering patterns</h2>
+<div class="static-table"><table><thead><tr><th>Pattern</th><th>Example</th><th>Note</th></tr></thead><tbody><tr><td>Ternary</td><td><code>{isLoggedIn ? &lt;Dashboard /&gt; : &lt;Login /&gt;}</code></td><td>Two options</td></tr><tr><td><code>&amp;&amp;</code></td><td><code>{error &amp;&amp; &lt;p className=&quot;error&quot;&gt;{error}&lt;/p&gt;}</code></td><td>Show or nothing; careful with numbers (<code>0 &amp;&amp; ...</code> renders 0)</td></tr><tr><td>Early return</td><td><code>if (loading) return &lt;Spinner /&gt;;</code></td><td>Clean for loading/error states</td></tr><tr><td>Object map</td><td><code>const icons = { paid: &quot;✓&quot;, pending: &quot;…&quot; }; {icons[status]}</code></td><td>Many states</td></tr></tbody></table></div>
+<p>Use <code>{items.length &gt; 0 &amp;&amp; ...}</code> rather than <code>{items.length &amp;&amp; ...}</code> to avoid a stray <code>0</code>.</p>
+<h2>Composition with children and render props</h2>
+<figure class="static-code"><figcaption>JSX</figcaption><pre><code class="language-jsx">function Card({ title, children, footer }) {
+  return (
+    &lt;section className=&quot;card&quot;&gt;
+      &lt;h3&gt;{title}&lt;/h3&gt;
+      &lt;div&gt;{children}&lt;/div&gt;
+      {footer &amp;&amp; &lt;footer&gt;{footer}&lt;/footer&gt;}
+    &lt;/section&gt;
+  );
+}
+
+&lt;Card title=&quot;Business plan&quot; footer={&lt;button&gt;Choose plan&lt;/button&gt;}&gt;
+  &lt;p&gt;KSh 2,500 per month&lt;/p&gt;
+  &lt;ul&gt;&lt;li&gt;5 email accounts&lt;/li&gt;&lt;li&gt;Daily backups&lt;/li&gt;&lt;/ul&gt;
+&lt;/Card&gt;</code></pre></figure>
+<p>Passing JSX through <code>children</code> (and other props like <code>footer</code>) creates flexible layout components without making one giant component with many options.</p>
+<h2>Prop validation with TypeScript</h2>
+<figure class="static-code"><figcaption>TSX</figcaption><pre><code class="language-tsx">type Product = { id: number; name: string; price: number; stock: number };
+
+type ProductCardProps = {
+  product: Product;
+  onAdd?: (p: Product) =&gt; void;      // optional callback
+  compact?: boolean;
+};
+
+function ProductCard({ product, onAdd, compact = false }: ProductCardProps) {
+  return (
+    &lt;div className={compact ? &quot;card card--compact&quot; : &quot;card&quot;}&gt;
+      {product.name}: KSh {product.price}
+      {onAdd &amp;&amp; &lt;button onClick={() =&gt; onAdd(product)}&gt;Add&lt;/button&gt;}
+    &lt;/div&gt;
+  );
+}</code></pre></figure>
+<p>TypeScript catches missing or wrongly typed props at build time, which is why most professional React projects use it.</p>
+<h2>Practice</h2>
+<ol><li>Build a product list with a search box and a category filter.</li><li>Lift state up so a cart icon in the header shows the number of items added from product cards.</li><li>Create a <code>Card</code> component that accepts <code>title</code>, <code>children</code> and an optional <code>footer</code>.</li><li>Render a list of orders with different badges for pending, paid and cancelled using an object map.</li><li>Convert a component's props to TypeScript types.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A developer stores both <code>students</code> and <code>filteredStudents</code> in state and updates <code>filteredStudents</code> whenever the search box changes. After editing a student's mark, the filtered list shows the old mark. Why, and what's better?</span><em>Show answer</em></summary><div class="callout-body"><p>The two pieces of state got out of sync: the edit updated <code>students</code> but <code>filteredStudents</code> still held old copies. Better to keep only the source data and the search text in state, and calculate the filtered list during rendering (<code>students.filter(...)</code>), so it's always derived from the latest data.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is data passed into a component called?</p><details><summary>Show answer</summary><p>props</p></details></li><li><p>Can a component change its own props? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which array method turns a list of data into a list of elements?</p><details><summary>Show answer</summary><p>map</p></details></li><li><p>What unique attribute does each list item need?</p><details><summary>Show answer</summary><p>key</p></details></li><li><p>Which prop holds the content placed between a component's opening and closing tags?</p><details><summary>Show answer</summary><p>children</p></details></li><li><p>What appears on screen if you write {count &amp;&amp; &lt;p&gt;Items&lt;/p&gt;} and count is 0?</p><details><summary>Show answer</summary><p>0</p></details></li><li><p>In which direction does data flow through props: down or up?</p><details><summary>Show answer</summary><p>down</p></details></li><li><p>What is moving shared state to the closest common parent called? (three words)</p><details><summary>Show answer</summary><p>lifting state up</p></details></li><li><p>Should list keys use Math.random()? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 6 in <a href="/learn/react/">React for web apps</a> · <a href="/learn/?book=react">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/react/react-intro/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> React introduction: components and JSX</a><a class="btn btn-solid btn-sm" href="/learn/react/react-state-events/">State, events and forms <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

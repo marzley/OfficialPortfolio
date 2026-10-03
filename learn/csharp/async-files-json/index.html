@@ -128,7 +128,194 @@ var products = await http.GetFromJsonAsync&lt;List&lt;Product&gt;&gt;(&quot;http
 <h2>Where to go next</h2>
 <div class="static-table"><table><thead><tr><th>Want to build</th><th>Learn</th></tr></thead><tbody><tr><td>Web APIs and websites</td><td><strong>ASP.NET Core</strong> (minimal APIs, MVC, Razor Pages)</td></tr><tr><td>Databases</td><td><strong>Entity Framework Core</strong></td></tr><tr><td>Windows desktop apps</td><td>WinForms, WPF or .NET MAUI</td></tr><tr><td>Mobile apps</td><td>.NET MAUI</td></tr><tr><td>Games</td><td><strong>Unity</strong></td></tr></tbody></table></div>
 <p>Install the free <strong>.NET SDK</strong> and <strong>Visual Studio Community</strong> or <strong>VS Code</strong> with the C# Dev Kit, then run <code>dotnet new console -o MyApp</code>.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which method reads a whole text file into an array of lines?</p><details><summary>Show answer</summary><p>File.ReadAllLines</p></details></li><li><p>Which class turns objects into JSON text?</p><details><summary>Show answer</summary><p>JsonSerializer</p></details></li><li><p>What type does an async method that returns a value give back? Write it for decimal.</p><details><summary>Show answer</summary><p>Task&lt;decimal&gt;</p></details></li><li><p>Which keyword waits for a Task without blocking?</p><details><summary>Show answer</summary><p>await</p></details></li><li><p>Which method waits for several tasks at once?</p><details><summary>Show answer</summary><p>Task.WhenAll</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 7 in <a href="/learn/csharp/">C#</a> · <a href="/learn/?book=csharp">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/csharp/oop-inheritance-interfaces/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Classes, inheritance and interfaces in C#</a><a class="btn btn-solid btn-sm" href="/learn/csharp/aspnet-next-steps/">ASP.NET Core and next steps: building web APIs, routing, dependency injection, Entity Framework Core, auth, deployment and Unity <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why async and file handling matter</h2>
+<p>Real applications constantly wait for slow things: databases, web APIs (payment providers, SMS gateways), files and network drives. Asynchronous code lets an ASP.NET server handle other requests while waiting, and keeps desktop and mobile apps responsive instead of freezing. Reading and writing files (CSV reports, logs, JSON settings, exported statements) is a daily task in business software.</p>
+<h2>Running tasks at the same time</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
+
+class Program
+{
+    static async Task&lt;decimal&gt; GetBalanceAsync(string account, int delayMs)
+    {
+        await Task.Delay(delayMs);              // pretend to call a slow service
+        return account.Length * 1000m;
+    }
+
+    static async Task Main()
+    {
+        var timer = Stopwatch.StartNew();
+
+        // One after another: about 300 ms
+        decimal a = await GetBalanceAsync(&quot;Savings&quot;, 150);
+        decimal b = await GetBalanceAsync(&quot;Current&quot;, 150);
+        bool slow = timer.ElapsedMilliseconds &gt;= 290;
+        Console.WriteLine($&quot;Sequential total {a + b}, took 300 ms or more: {slow}&quot;);
+
+        // At the same time: about 150 ms
+        timer.Restart();
+        Task&lt;decimal&gt; t1 = GetBalanceAsync(&quot;Savings&quot;, 150);
+        Task&lt;decimal&gt; t2 = GetBalanceAsync(&quot;Current&quot;, 150);
+        decimal[] results = await Task.WhenAll(t1, t2);
+        bool fast = timer.ElapsedMilliseconds &lt; 290;
+        Console.WriteLine($&quot;Parallel total {results[0] + results[1]}, faster: {fast}&quot;);
+    }
+}</code></pre></figure>
+<p>Starting tasks first and awaiting them together with <code>Task.WhenAll</code> is how an API calls several independent services without adding up their delays.</p>
+<h2>Timeouts and cancellation</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+class Program
+{
+    static async Task&lt;string&gt; CheckPaymentAsync(string receipt, CancellationToken token)
+    {
+        await Task.Delay(500, token);            // a slow provider
+        return $&quot;{receipt}: confirmed&quot;;
+    }
+
+    static async Task Main()
+    {
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(100));
+        try
+        {
+            string status = await CheckPaymentAsync(&quot;SJK4H2L9XA&quot;, cts.Token);
+            Console.WriteLine(status);
+        }
+        catch (OperationCanceledException)
+        {
+            Console.WriteLine(&quot;Payment check timed out; we&#x27;ll retry shortly.&quot;);
+        }
+    }
+}</code></pre></figure>
+<p>Pass a <code>CancellationToken</code> through async methods so slow work can be stopped when a user leaves the page or a timeout passes.</p>
+<h2>Handling errors in async code</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+using System.Threading.Tasks;
+
+class Program
+{
+    static async Task&lt;int&gt; LoadOrderAsync(int id)
+    {
+        await Task.Delay(10);
+        if (id == 3) throw new InvalidOperationException($&quot;Order {id} not found&quot;);
+        return id * 100;
+    }
+
+    static async Task Main()
+    {
+        foreach (int id in new[] { 1, 3, 4 })
+        {
+            try
+            {
+                int total = await LoadOrderAsync(id);
+                Console.WriteLine($&quot;Order {id}: {total}&quot;);
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine($&quot;Error: {ex.Message}&quot;);
+            }
+        }
+    }
+}</code></pre></figure>
+<p>Exceptions thrown inside an async method surface when you <code>await</code> it, so normal <code>try/catch</code> works. Avoid <code>async void</code> except for event handlers: exceptions from it can't be caught by the caller.</p>
+<h2>Retry with backoff</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+using System.Threading.Tasks;
+
+class Program
+{
+    static int attempts = 0;
+
+    static async Task&lt;string&gt; FlakyServiceAsync()
+    {
+        await Task.Delay(5);
+        attempts++;
+        if (attempts &lt; 3) throw new TimeoutException(&quot;Gateway timeout&quot;);
+        return &quot;SMS sent&quot;;
+    }
+
+    static async Task&lt;T&gt; RetryAsync&lt;T&gt;(Func&lt;Task&lt;T&gt;&gt; action, int maxAttempts)
+    {
+        for (int attempt = 1; ; attempt++)
+        {
+            try
+            {
+                return await action();
+            }
+            catch (TimeoutException) when (attempt &lt; maxAttempts)
+            {
+                int wait = 10 * (int)Math.Pow(2, attempt);    // 20, 40, 80 ms...
+                Console.WriteLine($&quot;Attempt {attempt} failed, retrying in {wait} ms&quot;);
+                await Task.Delay(wait);
+            }
+        }
+    }
+
+    static async Task Main()
+    {
+        string result = await RetryAsync(FlakyServiceAsync, 5);
+        Console.WriteLine($&quot;{result} after {attempts} attempts&quot;);
+    }
+}</code></pre></figure>
+<p>Waiting longer after each failure (exponential backoff) gives an overloaded service time to recover. Libraries like Polly provide retries, timeouts and circuit breakers for production systems.</p>
+<h2>Working with paths and CSV text</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+using System.IO;
+using System.Linq;
+
+class Program
+{
+    static void Main()
+    {
+        string folder = Path.Combine(&quot;reports&quot;, &quot;2026&quot;, &quot;september&quot;);
+        string file = Path.Combine(folder, &quot;sales.csv&quot;);
+        Console.WriteLine(file);
+        Console.WriteLine($&quot;Name: {Path.GetFileName(file)}, extension: {Path.GetExtension(file)}&quot;);
+
+        string csv = &quot;date,town,amount\n2026-09-01,Nakuru,1800\n2026-09-02,Thika,840\n2026-09-03,Nakuru,1400&quot;;
+        var rows = csv.Split(&#x27;\n&#x27;).Skip(1)
+            .Select(line =&gt; line.Split(&#x27;,&#x27;))
+            .Select(p =&gt; new { Date = DateTime.Parse(p[0]), Town = p[1], Amount = decimal.Parse(p[2]) });
+
+        foreach (var g in rows.GroupBy(r =&gt; r.Town))
+            Console.WriteLine($&quot;{g.Key}: {g.Sum(r =&gt; r.Amount):N0} from {g.Count()} sales, last on {g.Max(r =&gt; r.Date):dd MMM}&quot;);
+    }
+}</code></pre></figure>
+<p>Use <code>Path.Combine</code> instead of joining folder names with <code>&quot;\\&quot;</code> or <code>&quot;/&quot;</code>, so code works on Windows, Linux and macOS servers.</p>
+<h2>Reading large files efficiently</h2>
+<figure class="static-code"><figcaption>C#</figcaption><pre><code class="language-csharp">// Streams line by line instead of loading a 2 GB log into memory
+await foreach (string line in File.ReadLinesAsync(&quot;app.log&quot;))   // .NET 7+
+{
+    if (line.Contains(&quot;ERROR&quot;)) Console.WriteLine(line);
+}
+
+// Writing safely: &#x27;using&#x27; closes the file even if an error occurs
+await using var writer = new StreamWriter(&quot;summary.csv&quot;);
+await writer.WriteLineAsync(&quot;town,total&quot;);
+await writer.WriteLineAsync(&quot;Nakuru,3200&quot;);</code></pre></figure>
+<h2>Calling a REST API with HttpClient</h2>
+<figure class="static-code"><figcaption>C#</figcaption><pre><code class="language-csharp">using System.Net.Http.Json;
+
+record Rate(string Currency, decimal Value);
+
+var http = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };   // reuse one HttpClient
+try
+{
+    Rate? rate = await http.GetFromJsonAsync&lt;Rate&gt;(&quot;https://api.example.com/rates/usd-kes&quot;);
+    Console.WriteLine(rate is null ? &quot;No data&quot; : $&quot;1 USD = {rate.Value} KES&quot;);
+}
+catch (HttpRequestException ex)
+{
+    Console.WriteLine($&quot;Network error: {ex.Message}&quot;);
+}</code></pre></figure>
+<p>Create one <code>HttpClient</code> and reuse it (or use <code>IHttpClientFactory</code> in ASP.NET); creating a new one per request can exhaust network sockets. Keep API keys in configuration (environment variables, user secrets), never in source code.</p>
+<h2>Practice</h2>
+<ol><li>Start three fake API calls with different delays and await them with <code>Task.WhenAll</code>.</li><li>Add a 200 ms timeout to a slow task using <code>CancellationTokenSource</code>.</li><li>Write a retry helper that retries up to 3 times on <code>TimeoutException</code>.</li><li>Parse a CSV string of expenses and print totals per category with LINQ.</li><li>Build file paths for monthly report folders with <code>Path.Combine</code>.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> An ASP.NET API calls three independent services (customer, orders, loyalty points) one after another with <code>await</code>, taking 3 seconds in total. How can you make it faster without changing the services?</span><em>Show answer</em></summary><div class="callout-body"><p>Start all three calls first (store the tasks), then <code>await Task.WhenAll(...)</code>. Because the calls don't depend on each other, they run concurrently and the total time drops to roughly the slowest single call (about 1 second) instead of the sum.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which method reads a whole text file into an array of lines?</p><details><summary>Show answer</summary><p>File.ReadAllLines</p></details></li><li><p>Which class turns objects into JSON text?</p><details><summary>Show answer</summary><p>JsonSerializer</p></details></li><li><p>What type does an async method that returns a value give back? Write it for decimal.</p><details><summary>Show answer</summary><p>Task&lt;decimal&gt;</p></details></li><li><p>Which keyword waits for a Task without blocking?</p><details><summary>Show answer</summary><p>await</p></details></li><li><p>Which method waits for several tasks at once?</p><details><summary>Show answer</summary><p>Task.WhenAll</p></details></li><li><p>Which method awaits several tasks at the same time?</p><details><summary>Show answer</summary><p>Task.WhenAll</p></details></li><li><p>Which type lets you cancel an async operation or apply a timeout? (two words, the token type)</p><details><summary>Show answer</summary><p>CancellationToken</p></details></li><li><p>Which method builds file paths that work on any operating system?</p><details><summary>Show answer</summary><p>Path.Combine</p></details></li><li><p>Should you write async void methods for normal code? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 7 in <a href="/learn/csharp/">C#</a> · <a href="/learn/?book=csharp">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/csharp/oop-inheritance-interfaces/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Classes, inheritance and interfaces in C#</a><a class="btn btn-solid btn-sm" href="/learn/csharp/aspnet-next-steps/">ASP.NET Core and next steps: building web APIs, routing, dependency injection, Entity Framework Core, auth, deployment and Unity <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

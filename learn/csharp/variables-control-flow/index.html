@@ -168,7 +168,185 @@ class Program
     }
 }</code></pre></figure>
 <p>C# methods use <strong>PascalCase</strong> names (<code>WithVat</code>, <code>IsValidPhone</code>), unlike Java's camelCase.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which C# type should you use for money?</p><details><summary>Show answer</summary><p>decimal</p></details></li><li><p>What letter must follow a decimal literal like 199.99?</p><details><summary>Show answer</summary><p>m</p></details></li><li><p>Which method converts a string to an int without crashing on bad input?</p><details><summary>Show answer</summary><p>int.TryParse</p></details></li><li><p>What symbol starts an interpolated string in C#?</p><details><summary>Show answer</summary><p>$</p></details></li><li><p>Which loop goes through every item in an array?</p><details><summary>Show answer</summary><p>foreach</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 7 in <a href="/learn/csharp/">C#</a> · <a href="/learn/?book=csharp">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/csharp/introduction/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> C# introduction: what C# and .NET are, where they&#x27;re used, setup, your first program, types, strings, control flow and methods</a><a class="btn btn-solid btn-sm" href="/learn/csharp/lists-dictionaries-linq/">Lists, dictionaries and LINQ queries <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why C# is worth learning</h2>
+<p>C# (pronounced "C sharp") is Microsoft's main language and runs on .NET, which works on Windows, Linux and macOS. It's used for business and banking systems, ASP.NET web APIs, Windows desktop apps, cloud services on Azure, and games with the Unity engine (one of the most popular game engines in the world). Many Kenyan banks, insurers and enterprises run .NET systems, so C# skills lead to well-paid corporate and freelance work.</p>
+<h2>Value types, reference types and nullable values</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+
+class Program
+{
+    static void Main()
+    {
+        int a = 10;
+        int b = a;          // value type: b gets a copy
+        b = 20;
+        Console.WriteLine($&quot;a={a}, b={b}&quot;);
+
+        int[] first = { 1, 2, 3 };
+        int[] second = first;   // reference type: both point to the same array
+        second[0] = 99;
+        Console.WriteLine($&quot;first[0]={first[0]}&quot;);
+
+        int? discount = null;   // nullable int: may have no value
+        Console.WriteLine(discount.HasValue ? $&quot;Discount {discount}&quot; : &quot;No discount&quot;);
+        int applied = discount ?? 0;   // default when null
+        Console.WriteLine($&quot;Applied: {applied}&quot;);
+
+        string? nickname = null;
+        Console.WriteLine(nickname?.Length ?? 0);   // ?. avoids NullReferenceException
+    }
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Kind</th><th>Examples</th><th>Assignment copies...</th></tr></thead><tbody><tr><td>Value types</td><td><code>int</code>, <code>double</code>, <code>decimal</code>, <code>bool</code>, <code>char</code>, <code>struct</code></td><td>The value</td></tr><tr><td>Reference types</td><td><code>string</code>, arrays, <code>class</code> objects, <code>List&lt;T&gt;</code></td><td>The reference (both names share one object)</td></tr></tbody></table></div>
+<p>Strings are reference types but immutable, so they behave like values in practice.</p>
+<h2>Safe conversions with TryParse</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+
+class Program
+{
+    static void Main()
+    {
+        string[] inputs = { &quot;1500&quot;, &quot;abc&quot;, &quot;-20&quot;, &quot;2,500&quot;, &quot;&quot; };
+        foreach (string input in inputs)
+        {
+            string clean = input.Replace(&quot;,&quot;, &quot;&quot;).Trim();
+            if (decimal.TryParse(clean, out decimal amount) &amp;&amp; amount &gt; 0)
+            {
+                Console.WriteLine($&quot;&#x27;{input}&#x27; -&gt; KSh {amount:N2}&quot;);
+            }
+            else
+            {
+                Console.WriteLine($&quot;&#x27;{input}&#x27; -&gt; invalid amount&quot;);
+            }
+        }
+    }
+}</code></pre></figure>
+<p><code>TryParse</code> returns <code>false</code> instead of throwing an exception, which is the right choice for user input.</p>
+<h2>switch expressions and pattern matching</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+
+class Program
+{
+    static string Grade(int mark) =&gt; mark switch
+    {
+        &gt;= 80 =&gt; &quot;A&quot;,
+        &gt;= 65 =&gt; &quot;B&quot;,
+        &gt;= 50 =&gt; &quot;C&quot;,
+        &gt;= 0 =&gt; &quot;E&quot;,
+        _ =&gt; &quot;Invalid&quot;
+    };
+
+    static decimal DeliveryFee(string town, decimal orderTotal) =&gt; (town, orderTotal) switch
+    {
+        (_, &gt;= 5000m) =&gt; 0m,               // free delivery for big orders anywhere
+        (&quot;Nairobi&quot;, _) =&gt; 200m,
+        (&quot;Mombasa&quot; or &quot;Kisumu&quot;, _) =&gt; 400m,
+        _ =&gt; 600m
+    };
+
+    static void Main()
+    {
+        foreach (int m in new[] { 92, 71, 55, 30, -5 })
+            Console.WriteLine($&quot;{m}: {Grade(m)}&quot;);
+
+        Console.WriteLine(DeliveryFee(&quot;Nairobi&quot;, 1200m));
+        Console.WriteLine(DeliveryFee(&quot;Kisumu&quot;, 800m));
+        Console.WriteLine(DeliveryFee(&quot;Garissa&quot;, 6000m));
+    }
+}</code></pre></figure>
+<p>Switch expressions with patterns (<code>&gt;= 80</code>, tuples, <code>or</code>) express business rules clearly and the compiler warns if cases are missing.</p>
+<h2>Loops: a savings plan and a multiplication table</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+
+class Program
+{
+    static void Main()
+    {
+        decimal balance = 0m;
+        int month = 0;
+        do
+        {
+            balance = balance * 1.01m + 4500m;
+            month++;
+        } while (balance &lt; 50000m);
+        Console.WriteLine($&quot;Target reached in {month} months: KSh {balance:N2}&quot;);
+
+        for (int row = 1; row &lt;= 3; row++)
+        {
+            for (int col = 1; col &lt;= 5; col++)
+                Console.Write($&quot;{row * col,4}&quot;);    // ,4 = width 4, right-aligned
+            Console.WriteLine();
+        }
+    }
+}</code></pre></figure>
+<h2>Methods with out, ref and optional parameters</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+
+class Program
+{
+    static decimal WithVat(decimal amount, decimal rate = 0.16m) =&gt; amount * (1 + rate);
+
+    static bool TrySplitName(string full, out string first, out string last)
+    {
+        string[] parts = full.Trim().Split(&#x27; &#x27;, 2);
+        first = parts[0];
+        last = parts.Length &gt; 1 ? parts[1] : &quot;&quot;;
+        return parts.Length &gt; 1;
+    }
+
+    static void AddBonus(ref int marks, int bonus) =&gt; marks += bonus;
+
+    static void Main()
+    {
+        Console.WriteLine(WithVat(1000m));
+        Console.WriteLine(WithVat(1000m, rate: 0.08m));      // named argument
+
+        if (TrySplitName(&quot;Achieng Odhiambo&quot;, out string f, out string l))
+            Console.WriteLine($&quot;First: {f}, last: {l}&quot;);
+
+        int score = 60;
+        AddBonus(ref score, 5);
+        Console.WriteLine($&quot;Score: {score}&quot;);
+    }
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Keyword</th><th>Meaning</th></tr></thead><tbody><tr><td><code>out</code></td><td>The method must assign it; used to return extra values (like <code>TryParse</code>)</td></tr><tr><td><code>ref</code></td><td>The method can read and change the caller's variable</td></tr><tr><td>Optional parameter</td><td>Has a default value; can be skipped</td></tr><tr><td>Named argument</td><td><code>rate: 0.08m</code> makes calls clearer</td></tr></tbody></table></div>
+<h2>Exceptions for unexpected problems</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+
+class Program
+{
+    static decimal Withdraw(decimal balance, decimal amount)
+    {
+        if (amount &lt;= 0) throw new ArgumentOutOfRangeException(nameof(amount), &quot;Amount must be positive&quot;);
+        if (amount &gt; balance) throw new InvalidOperationException($&quot;Insufficient funds: balance {balance:N2}&quot;);
+        return balance - amount;
+    }
+
+    static void Main()
+    {
+        decimal balance = 1000m;
+        foreach (decimal request in new[] { 200m, 5000m, -5m })
+        {
+            try
+            {
+                balance = Withdraw(balance, request);
+                Console.WriteLine($&quot;Withdrew {request:N2}, balance {balance:N2}&quot;);
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine($&quot;Declined: {ex.Message}&quot;);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                Console.WriteLine(&quot;Invalid amount&quot;);
+            }
+        }
+    }
+}</code></pre></figure>
+<p>Use exceptions for situations that shouldn't normally happen; use <code>TryParse</code>-style methods for expected invalid input.</p>
+<h2>Practice</h2>
+<ol><li>Read amounts from a string array with <code>decimal.TryParse</code> and total only the valid ones.</li><li>Write a switch expression that returns a shipping zone from a town name.</li><li>Write <code>bool TryParsePhone(string input, out string normalised)</code> for 2547XXXXXXXX numbers.</li><li>Use a <code>do while</code> loop to calculate how many months it takes to repay a loan.</li><li>Throw and catch a custom message when a withdrawal exceeds the balance.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why should a banking app use <code>decimal</code> instead of <code>double</code> for balances?</span><em>Show answer</em></summary><div class="callout-body"><p><code>double</code> stores numbers in binary and can't represent many decimal fractions exactly (0.1 + 0.2 isn't exactly 0.3), so tiny rounding errors accumulate over many transactions. <code>decimal</code> stores base-10 values exactly to 28–29 significant digits, which is what money calculations require.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which C# type should you use for money?</p><details><summary>Show answer</summary><p>decimal</p></details></li><li><p>What letter must follow a decimal literal like 199.99?</p><details><summary>Show answer</summary><p>m</p></details></li><li><p>Which method converts a string to an int without crashing on bad input?</p><details><summary>Show answer</summary><p>int.TryParse</p></details></li><li><p>What symbol starts an interpolated string in C#?</p><details><summary>Show answer</summary><p>$</p></details></li><li><p>Which loop goes through every item in an array?</p><details><summary>Show answer</summary><p>foreach</p></details></li><li><p>Which method converts text to a number without throwing an exception if it fails?</p><details><summary>Show answer</summary><p>TryParse</p></details></li><li><p>What symbol makes a value type nullable, as in int? ...</p><details><summary>Show answer</summary><p>?</p></details></li><li><p>Which keyword passes a variable so the method can change the caller's value?</p><details><summary>Show answer</summary><p>ref</p></details></li><li><p>In a switch expression, which symbol is the catch-all case?</p><details><summary>Show answer</summary><p>_</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 7 in <a href="/learn/csharp/">C#</a> · <a href="/learn/?book=csharp">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/csharp/introduction/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> C# introduction: what C# and .NET are, where they&#x27;re used, setup, your first program, types, strings, control flow and methods</a><a class="btn btn-solid btn-sm" href="/learn/csharp/lists-dictionaries-linq/">Lists, dictionaries and LINQ queries <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

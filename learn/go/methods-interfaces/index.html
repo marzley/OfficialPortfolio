@@ -177,7 +177,225 @@ func main() {
 <div class="static-table"><table><thead><tr><th>Tool</th><th>Use</th></tr></thead><tbody><tr><td><code>errors.New(&quot;...&quot;)</code></td><td>A simple error</td></tr><tr><td><code>fmt.Errorf(&quot;context: %w&quot;, err)</code></td><td>Add context while keeping the original</td></tr><tr><td><code>errors.Is(err, ErrX)</code></td><td>Is it (or does it wrap) a specific error?</td></tr><tr><td><code>errors.As(err, &amp;target)</code></td><td>Is it a specific error <strong>type</strong>? Get its details</td></tr></tbody></table></div>
 <h2>panic and recover</h2>
 <p><code>panic</code> is for truly unexpected situations (a bug), not normal errors. Normal code returns errors; you'll rarely use panic yourself.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which receiver type lets a method change the struct: value or pointer?</p><details><summary>Show answer</summary><p>pointer</p></details></li><li><p>Does Go need an implements keyword for interfaces? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Is a struct field named balance (lowercase) visible outside its package? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which method must a type have to satisfy the error interface?</p><details><summary>Show answer</summary><p>Error</p></details></li><li><p>Which function checks whether an error wraps a specific error value?</p><details><summary>Show answer</summary><p>errors.Is</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 6 in <a href="/learn/go/">Go (Golang)</a> · <a href="/learn/?book=go">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/go/structs-web/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Structs and a web server in Go: structs, methods, JSON, net/http handlers, routing, a REST API, databases and deployment</a><a class="btn btn-solid btn-sm" href="/learn/go/goroutines-channels/">Concurrency: goroutines, channels and sync <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why methods and interfaces matter in Go</h2>
+<p>Go doesn't have classes or inheritance. Instead, it combines <strong>structs</strong> (data), <strong>methods</strong> (behaviour) and <strong>interfaces</strong> (contracts). This design keeps code simple and flexible: a payment processor, a storage layer or a notifier can be swapped for a test version just by satisfying the same interface. Every Go web framework, database driver and cloud SDK is built on these ideas.</p>
+<h2>Constructors and validation</h2>
+<p>Go uses ordinary functions (often named <code>NewX</code>) as constructors:</p>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;errors&quot;
+	&quot;fmt&quot;
+	&quot;strings&quot;
+)
+
+type Account struct {
+	owner   string
+	phone   string
+	balance float64
+}
+
+func NewAccount(owner, phone string) (*Account, error) {
+	owner = strings.TrimSpace(owner)
+	if owner == &quot;&quot; {
+		return nil, errors.New(&quot;owner is required&quot;)
+	}
+	if len(phone) != 10 || !strings.HasPrefix(phone, &quot;07&quot;) &amp;&amp; !strings.HasPrefix(phone, &quot;01&quot;) {
+		return nil, fmt.Errorf(&quot;invalid phone %q&quot;, phone)
+	}
+	return &amp;Account{owner: owner, phone: phone}, nil
+}
+
+func (a *Account) Deposit(amount float64) error {
+	if amount &lt;= 0 {
+		return errors.New(&quot;deposit must be positive&quot;)
+	}
+	a.balance += amount
+	return nil
+}
+
+func (a *Account) Withdraw(amount float64) error {
+	if amount &gt; a.balance {
+		return fmt.Errorf(&quot;insufficient funds: balance %.2f, requested %.2f&quot;, a.balance, amount)
+	}
+	a.balance -= amount
+	return nil
+}
+
+func (a Account) Balance() float64 { return a.balance }
+
+func main() {
+	acc, err := NewAccount(&quot;Juma Ali&quot;, &quot;0712345678&quot;)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	_ = acc.Deposit(2000)
+	if err := acc.Withdraw(5000); err != nil {
+		fmt.Println(&quot;Error:&quot;, err)
+	}
+	_ = acc.Withdraw(500)
+	fmt.Printf(&quot;%s balance: %.2f\n&quot;, acc.owner, acc.Balance())
+
+	if _, err := NewAccount(&quot;&quot;, &quot;0712345678&quot;); err != nil {
+		fmt.Println(&quot;Error:&quot;, err)
+	}
+}</code></pre></figure>
+<p>Lowercase fields (<code>balance</code>) can't be changed from other packages, so all changes go through validated methods.</p>
+<h2>Embedding: composition instead of inheritance</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+type Timestamps struct {
+	CreatedAt string
+	UpdatedAt string
+}
+
+func (t *Timestamps) Touch(now string) { t.UpdatedAt = now }
+
+type Order struct {
+	ID    int
+	Total float64
+	Timestamps // embedded: Order gets the fields and the Touch method
+}
+
+func main() {
+	o := Order{ID: 1024, Total: 3500, Timestamps: Timestamps{CreatedAt: &quot;2026-09-01&quot;}}
+	o.Touch(&quot;2026-09-03&quot;)
+	fmt.Println(o.ID, o.CreatedAt, o.UpdatedAt)
+}</code></pre></figure>
+<p>Embedding promotes the inner struct's fields and methods, giving reuse without class hierarchies.</p>
+<h2>Interfaces for swappable parts</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;sort&quot;
+)
+
+type Notifier interface {
+	Notify(to, message string) error
+}
+
+type SMS struct{}
+
+func (SMS) Notify(to, message string) error {
+	fmt.Printf(&quot;SMS to %s: %s\n&quot;, to, message)
+	return nil
+}
+
+type Email struct{ From string }
+
+func (e Email) Notify(to, message string) error {
+	fmt.Printf(&quot;Email from %s to %s: %s\n&quot;, e.From, to, message)
+	return nil
+}
+
+// FakeNotifier records messages: perfect for tests
+type FakeNotifier struct{ Sent []string }
+
+func (f *FakeNotifier) Notify(to, message string) error {
+	f.Sent = append(f.Sent, to+&quot;: &quot;+message)
+	return nil
+}
+
+func confirmOrder(n Notifier, customer string, orderID int) error {
+	return n.Notify(customer, fmt.Sprintf(&quot;Order #%d confirmed&quot;, orderID))
+}
+
+func main() {
+	_ = confirmOrder(SMS{}, &quot;0712345678&quot;, 1024)
+	_ = confirmOrder(Email{From: &quot;shop@example.co.ke&quot;}, &quot;amina@example.co.ke&quot;, 1025)
+
+	fake := &amp;FakeNotifier{}
+	_ = confirmOrder(fake, &quot;test&quot;, 1)
+	sort.Strings(fake.Sent)
+	fmt.Println(&quot;Fake recorded:&quot;, fake.Sent)
+}</code></pre></figure>
+<p><code>confirmOrder</code> depends only on the <code>Notifier</code> interface, so production code uses SMS or email, and tests use the fake. Go interfaces are satisfied implicitly: no <code>implements</code> keyword.</p>
+<h2>Small interfaces from the standard library</h2>
+<div class="static-table"><table><thead><tr><th>Interface</th><th>Method</th><th>Implemented by</th></tr></thead><tbody><tr><td><code>fmt.Stringer</code></td><td><code>String() string</code></td><td>Any type you want to print nicely</td></tr><tr><td><code>error</code></td><td><code>Error() string</code></td><td>All error types</td></tr><tr><td><code>io.Reader</code></td><td><code>Read(p []byte) (n int, err error)</code></td><td>Files, network connections, HTTP bodies, strings</td></tr><tr><td><code>io.Writer</code></td><td><code>Write(p []byte) (n int, err error)</code></td><td>Files, buffers, HTTP responses, stdout</td></tr><tr><td><code>sort.Interface</code></td><td><code>Len</code>, <code>Less</code>, <code>Swap</code></td><td>Custom sortable collections</td></tr></tbody></table></div>
+<p>Because so many types implement <code>io.Reader</code> and <code>io.Writer</code>, one function can read from a file, a web request or a string without changes.</p>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;io&quot;
+	&quot;os&quot;
+	&quot;strings&quot;
+)
+
+func countLines(r io.Reader) int {
+	data, _ := io.ReadAll(r)
+	return strings.Count(string(data), &quot;\n&quot;)
+}
+
+func main() {
+	fmt.Println(countLines(strings.NewReader(&quot;one\ntwo\nthree\n&quot;)))
+	fmt.Fprintln(os.Stdout, &quot;Writing through the io.Writer interface&quot;)
+}</code></pre></figure>
+<h2>Type switches</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func describe(v any) string {
+	switch x := v.(type) {
+	case int:
+		return fmt.Sprintf(&quot;int %d&quot;, x)
+	case float64:
+		return fmt.Sprintf(&quot;float %.2f&quot;, x)
+	case string:
+		return fmt.Sprintf(&quot;string %q (%d chars)&quot;, x, len(x))
+	case []int:
+		return fmt.Sprintf(&quot;slice of %d ints&quot;, len(x))
+	case nil:
+		return &quot;nil&quot;
+	default:
+		return fmt.Sprintf(&quot;other %T&quot;, x)
+	}
+}
+
+func main() {
+	for _, v := range []any{42, 3.5, &quot;Kenya&quot;, []int{1, 2}, nil, true} {
+		fmt.Println(describe(v))
+	}
+}</code></pre></figure>
+<h2>Custom error types</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;errors&quot;
+	&quot;fmt&quot;
+)
+
+type ValidationError struct {
+	Field, Msg string
+}
+
+func (e *ValidationError) Error() string { return e.Field + &quot;: &quot; + e.Msg }
+
+func validateAmount(a float64) error {
+	if a &lt;= 0 {
+		return &amp;ValidationError{Field: &quot;amount&quot;, Msg: &quot;must be above 0&quot;}
+	}
+	return nil
+}
+
+func main() {
+	err := fmt.Errorf(&quot;checkout failed: %w&quot;, validateAmount(-5))
+	var ve *ValidationError
+	if errors.As(err, &amp;ve) {
+		fmt.Println(&quot;Show under field&quot;, ve.Field, &quot;-&gt;&quot;, ve.Msg)
+	}
+	fmt.Println(err)
+}</code></pre></figure>
+<p><code>errors.As</code> finds a specific error type inside a wrapped error chain, so an API can return a precise message for the field that failed.</p>
+<h2>Practice</h2>
+<ol><li>Create a <code>Product</code> struct with a constructor that rejects negative prices.</li><li>Give <code>Product</code> a <code>String()</code> method and print a slice of products.</li><li>Define a <code>Storage</code> interface with <code>Save</code> and <code>Load</code>, then a memory implementation and a fake for tests.</li><li>Embed an <code>Address</code> struct in <code>Customer</code> and use its fields directly.</li><li>Write a custom <code>NotFoundError</code> and detect it with <code>errors.As</code>.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why do Go developers say "accept interfaces, return structs"?</span><em>Show answer</em></summary><div class="callout-body"><p>Functions that accept small interfaces (like <code>io.Reader</code> or <code>Notifier</code>) work with any type that has the needed methods, making them flexible and easy to test with fakes. Returning concrete structs gives callers full access to the type's features without forcing a particular interface on them. The result is loosely coupled, testable code.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which receiver type lets a method change the struct: value or pointer?</p><details><summary>Show answer</summary><p>pointer</p></details></li><li><p>Does Go need an implements keyword for interfaces? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Is a struct field named balance (lowercase) visible outside its package? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which method must a type have to satisfy the error interface?</p><details><summary>Show answer</summary><p>Error</p></details></li><li><p>Which function checks whether an error wraps a specific error value?</p><details><summary>Show answer</summary><p>errors.Is</p></details></li><li><p>What is putting one struct inside another to reuse its fields and methods called?</p><details><summary>Show answer</summary><p>embedding</p></details></li><li><p>Which function finds a specific error type in a wrapped error chain?</p><details><summary>Show answer</summary><p>errors.As</p></details></li><li><p>Which interface has a single String() method?</p><details><summary>Show answer</summary><p>Stringer</p></details></li><li><p>Which standard interface do files, HTTP bodies and strings.Reader all implement for reading?</p><details><summary>Show answer</summary><p>io.Reader</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 6 in <a href="/learn/go/">Go (Golang)</a> · <a href="/learn/?book=go">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/go/structs-web/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Structs and a web server in Go: structs, methods, JSON, net/http handlers, routing, a REST API, databases and deployment</a><a class="btn btn-solid btn-sm" href="/learn/go/goroutines-channels/">Concurrency: goroutines, channels and sync <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

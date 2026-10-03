@@ -124,7 +124,124 @@ $data = $status === 200 ? json_decode($body, true) : null;</code></pre></figure>
 <p>This is exactly the pattern for M-Pesa Daraja: get an access token, then <code>POST</code> JSON to the STK Push endpoint.</p>
 <h2>Securing an API</h2>
 <ul><li><strong>Authentication</strong>: sessions for your own website; API keys or tokens (<code>Authorization: Bearer ...</code>) for apps.</li><li><strong>Validate every input</strong> and return clear <code>422</code> errors.</li><li><strong>Rate limit</strong> login and payment endpoints.</li><li>Allow other websites (CORS) only if you really need to, and only specific origins.</li><li>Always use <strong>HTTPS</strong>.</li><li>Never return passwords, full card data or internal error messages.</li></ul>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which PHP function turns an array into JSON?</p><details><summary>Show answer</summary><p>json_encode</p></details></li><li><p>What second argument makes json_decode return arrays?</p><details><summary>Show answer</summary><p>true</p></details></li><li><p>Which status code means a new record was created?</p><details><summary>Show answer</summary><p>201</p></details></li><li><p>Which status code is best for failed validation?</p><details><summary>Show answer</summary><p>422</p></details></li><li><p>Which PHP stream reads the raw JSON body of a POST request?</p><details><summary>Show answer</summary><p>php://input</p></details></li></ol></section></div><p class="static-meta">Lesson 11 of 15 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/file-uploads/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Secure file uploads (images and documents)</a><a class="btn btn-solid btn-sm" href="/learn/php/composer-frameworks/">Composer, packages and frameworks: from plain PHP to Laravel <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why APIs matter</h2>
+<p>APIs connect systems: a mobile app talks to a PHP back end, a website loads products without refreshing, an M-Pesa payment callback notifies your server, a school portal sends results to an SMS gateway. Building JSON APIs in PHP lets your existing hosting power mobile apps, JavaScript front ends and integrations with other businesses. API skills are in demand for back-end and full-stack roles.</p>
+<h2>A consistent JSON response helper</h2>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+function jsonResponse(mixed $data, int $status = 200): string {
+    // In a real endpoint: http_response_code($status); header(&#x27;Content-Type: application/json&#x27;);
+    return json_encode([
+        &#x27;success&#x27; =&gt; $status &lt; 400,
+        &#x27;status&#x27; =&gt; $status,
+        &#x27;data&#x27; =&gt; $status &lt; 400 ? $data : null,
+        &#x27;error&#x27; =&gt; $status &gt;= 400 ? $data : null,
+    ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+}
+
+echo jsonResponse([&#x27;id&#x27; =&gt; 7, &#x27;name&#x27; =&gt; &#x27;Wanjirũ&#x27;, &#x27;site&#x27; =&gt; &#x27;https://example.co.ke&#x27;]), &quot;\n&quot;;
+echo jsonResponse([&#x27;phone&#x27; =&gt; &#x27;Enter a valid phone number&#x27;], 422), &quot;\n&quot;;</code></pre></figure>
+<p>A predictable shape (<code>success</code>, <code>data</code>, <code>error</code>) makes life easier for the developers using your API. <code>JSON_UNESCAPED_UNICODE</code> keeps characters like <code>ũ</code> readable.</p>
+<h2>Validating JSON input</h2>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+function validateOrder(array $in): array {
+    $errors = [];
+    if (!isset($in[&#x27;product_id&#x27;]) || !is_int($in[&#x27;product_id&#x27;]) || $in[&#x27;product_id&#x27;] &lt;= 0) {
+        $errors[&#x27;product_id&#x27;] = &#x27;product_id must be a positive integer&#x27;;
+    }
+    if (!isset($in[&#x27;qty&#x27;]) || !is_int($in[&#x27;qty&#x27;]) || $in[&#x27;qty&#x27;] &lt; 1 || $in[&#x27;qty&#x27;] &gt; 100) {
+        $errors[&#x27;qty&#x27;] = &#x27;qty must be between 1 and 100&#x27;;
+    }
+    $phone = preg_replace(&#x27;/\D/&#x27;, &#x27;&#x27;, (string) ($in[&#x27;phone&#x27;] ?? &#x27;&#x27;));
+    if (!preg_match(&#x27;/^(?:254|0)[17]\d{8}$/&#x27;, $phone)) {
+        $errors[&#x27;phone&#x27;] = &#x27;phone must be a valid Kenyan mobile number&#x27;;
+    }
+    return $errors;
+}
+
+$bodies = [
+    &#x27;{&quot;product_id&quot;: 3, &quot;qty&quot;: 2, &quot;phone&quot;: &quot;0712 345 678&quot;}&#x27;,
+    &#x27;{&quot;product_id&quot;: &quot;3&quot;, &quot;qty&quot;: 0}&#x27;,
+    &#x27;{bad json&#x27;,
+];
+foreach ($bodies as $raw) {
+    $data = json_decode($raw, true);
+    if (!is_array($data)) {
+        echo &quot;400: invalid JSON (&quot;, json_last_error_msg(), &quot;)\n&quot;;
+        continue;
+    }
+    $errors = validateOrder($data);
+    echo $errors ? &quot;422: &quot; . json_encode($errors) : &quot;201: order accepted&quot;, &quot;\n&quot;;
+}</code></pre></figure>
+<p>In a live endpoint, <code>$raw = file_get_contents(&#x27;php://input&#x27;);</code> reads the request body. Never trust input types: <code>&quot;3&quot;</code> (a string) isn't the same as <code>3</code>.</p>
+<h2>Routing several endpoints in one file</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+// api/index.php (with .htaccess sending /api/* here)
+header(&#x27;Content-Type: application/json&#x27;);
+$method = $_SERVER[&#x27;REQUEST_METHOD&#x27;];
+$path = trim(parse_url($_SERVER[&#x27;REQUEST_URI&#x27;], PHP_URL_PATH), &#x27;/&#x27;);   // e.g. &quot;api/products/3&quot;
+$parts = explode(&#x27;/&#x27;, $path);
+
+match (true) {
+    $method === &#x27;GET&#x27; &amp;&amp; $parts[1] === &#x27;products&#x27; &amp;&amp; !isset($parts[2]) =&gt; listProducts($pdo),
+    $method === &#x27;GET&#x27; &amp;&amp; $parts[1] === &#x27;products&#x27; &amp;&amp; isset($parts[2]) =&gt; showProduct($pdo, (int) $parts[2]),
+    $method === &#x27;POST&#x27; &amp;&amp; $parts[1] === &#x27;orders&#x27; =&gt; createOrder($pdo),
+    default =&gt; notFound(),
+};</code></pre></figure>
+<figure class="static-code"><figcaption>APACHE</figcaption><pre><code class="language-apache"># api/.htaccess
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [QSA,L]</code></pre></figure>
+<p>Frameworks like Laravel and Slim provide routing, validation and middleware out of the box when projects grow.</p>
+<h2>Pagination and filtering</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">$page = max(1, (int) ($_GET[&#x27;page&#x27;] ?? 1));
+$perPage = min(50, max(1, (int) ($_GET[&#x27;per_page&#x27;] ?? 20)));
+$offset = ($page - 1) * $perPage;
+$search = &#x27;%&#x27; . ($_GET[&#x27;q&#x27;] ?? &#x27;&#x27;) . &#x27;%&#x27;;
+
+$stmt = $pdo-&gt;prepare(&#x27;SELECT id, name, price FROM products WHERE name LIKE ? ORDER BY name LIMIT ? OFFSET ?&#x27;);
+$stmt-&gt;bindValue(1, $search);
+$stmt-&gt;bindValue(2, $perPage, PDO::PARAM_INT);
+$stmt-&gt;bindValue(3, $offset, PDO::PARAM_INT);
+$stmt-&gt;execute();
+echo json_encode([&#x27;page&#x27; =&gt; $page, &#x27;per_page&#x27; =&gt; $perPage, &#x27;items&#x27; =&gt; $stmt-&gt;fetchAll(PDO::FETCH_ASSOC)]);</code></pre></figure>
+<p>Always cap <code>per_page</code> so nobody can request a million rows at once.</p>
+<h2>Authentication with API tokens</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">function requireToken(PDO $pdo): array {
+    $header = $_SERVER[&#x27;HTTP_AUTHORIZATION&#x27;] ?? &#x27;&#x27;;
+    if (!preg_match(&#x27;/^Bearer\s+(\S+)$/&#x27;, $header, $m)) {
+        http_response_code(401);
+        exit(json_encode([&#x27;error&#x27; =&gt; &#x27;Missing token&#x27;]));
+    }
+    $hash = hash(&#x27;sha256&#x27;, $m[1]);                       // store only hashes of tokens
+    $stmt = $pdo-&gt;prepare(&#x27;SELECT id, name FROM api_clients WHERE token_hash = ? AND active = 1&#x27;);
+    $stmt-&gt;execute([$hash]);
+    $client = $stmt-&gt;fetch(PDO::FETCH_ASSOC);
+    if (!$client) {
+        http_response_code(401);
+        exit(json_encode([&#x27;error&#x27; =&gt; &#x27;Invalid token&#x27;]));
+    }
+    return $client;
+}</code></pre></figure>
+<p>Tokens are like passwords: send them only over HTTPS, store only hashes, and let clients rotate them. (Some Apache setups need a rewrite rule to pass the Authorization header to PHP.)</p>
+<h2>Handling payment callbacks (webhooks) safely</h2>
+<p>When a payment provider calls your callback URL:</p>
+<ol><li>Read the raw body and log it securely (without exposing secrets).</li><li>Validate the structure; find the matching pending order by its reference.</li><li><strong>Confirm</strong> the payment (verify a signature if the provider offers one, or query the provider's status API).</li><li>Make processing <strong>idempotent</strong>: if the same callback arrives twice, don't mark the order paid twice or send two receipts (check a unique transaction ID).</li><li>Respond quickly with the status the provider expects; do slow work (emails, SMS) afterwards.</li><li>Keep consumer keys and secrets in configuration outside the web root, never in code repositories.</li></ol>
+<h2>CORS: allowing browser apps on other domains</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">$allowed = [&#x27;https://app.example.co.ke&#x27;];
+$origin = $_SERVER[&#x27;HTTP_ORIGIN&#x27;] ?? &#x27;&#x27;;
+if (in_array($origin, $allowed, true)) {
+    header(&quot;Access-Control-Allow-Origin: $origin&quot;);
+    header(&#x27;Access-Control-Allow-Headers: Content-Type, Authorization&#x27;);
+    header(&#x27;Access-Control-Allow-Methods: GET, POST, OPTIONS&#x27;);
+}
+if ($_SERVER[&#x27;REQUEST_METHOD&#x27;] === &#x27;OPTIONS&#x27;) { http_response_code(204); exit; }</code></pre></figure>
+<p>Allow only the origins you trust; <code>Access-Control-Allow-Origin: *</code> with credentials is unsafe.</p>
+<h2>Testing your API</h2>
+<ul><li><strong>curl</strong>: <code>curl -X POST https://example.co.ke/api/orders -H &quot;Content-Type: application/json&quot; -d &#x27;{&quot;product_id&quot;:3,&quot;qty&quot;:2,&quot;phone&quot;:&quot;0712345678&quot;}&#x27;</code></li><li><strong>Postman / Insomnia / Bruno</strong>: save collections of requests for each endpoint.</li><li>Check status codes, response shape, error messages and behaviour with bad input.</li></ul>
+<h2>Practice</h2>
+<ol><li>Write a <code>jsonResponse</code> helper and use it for success and validation-error responses.</li><li>Build <code>GET /api/products?page=2&amp;q=unga</code> with pagination and search using PDO.</li><li>Add <code>POST /api/orders</code> with validation returning 422 for bad input and 201 for success.</li><li>Protect write endpoints with a Bearer token stored as a hash.</li><li>Make a callback handler idempotent by checking a unique transaction ID before updating an order.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A payment provider retries a callback three times because your server took 30 seconds to respond. Customers receive three receipts and orders are marked paid three times. How do you fix it?</span><em>Show answer</em></summary><div class="callout-body"><p>Make the handler idempotent: store the provider's unique transaction ID with a UNIQUE constraint and skip processing if it already exists. Respond quickly (within the provider's timeout) and move slow tasks like emails and SMS to a queue or background job, so the provider doesn't keep retrying.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which PHP function turns an array into JSON?</p><details><summary>Show answer</summary><p>json_encode</p></details></li><li><p>What second argument makes json_decode return arrays?</p><details><summary>Show answer</summary><p>true</p></details></li><li><p>Which status code means a new record was created?</p><details><summary>Show answer</summary><p>201</p></details></li><li><p>Which status code is best for failed validation?</p><details><summary>Show answer</summary><p>422</p></details></li><li><p>Which PHP stream reads the raw JSON body of a POST request?</p><details><summary>Show answer</summary><p>php://input</p></details></li><li><p>Which status code should an API return for a missing or invalid token?</p><details><summary>Show answer</summary><p>401</p></details></li><li><p>What property means repeating the same request has the same effect as doing it once?</p><details><summary>Show answer</summary><p>idempotent</p></details></li><li><p>Which json_encode flag keeps characters like ũ readable instead of escaped?</p><details><summary>Show answer</summary><p>JSON_UNESCAPED_UNICODE</p></details></li><li><p>Which header prefix carries an API token, as in Authorization: ... token? (one word)</p><details><summary>Show answer</summary><p>Bearer</p></details></li></ol></section></div><p class="static-meta">Lesson 11 of 15 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/file-uploads/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Secure file uploads (images and documents)</a><a class="btn btn-solid btn-sm" href="/learn/php/composer-frameworks/">Composer, packages and frameworks: from plain PHP to Laravel <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

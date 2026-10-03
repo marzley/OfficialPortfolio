@@ -92,7 +92,106 @@ const styles = StyleSheet.create({
 <h2>When to choose React Native</h2>
 <div class="static-table"><table><thead><tr><th>Good fit</th><th>Consider Flutter or native instead</th></tr></thead><tbody><tr><td>Your team knows JavaScript/React</td><td>You want pixel-identical custom UI everywhere (Flutter)</td></tr><tr><td>You also have a React website (share logic and skills)</td><td>Heavy graphics, games, or deep hardware features (native)</td></tr><tr><td>Rapid prototyping with Expo Go</td><td></td></tr></tbody></table></div>
 <p>See <a href="/flutter-vs-react-native-kenya">Flutter vs React Native vs native Android</a>.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which app runs your React Native project on your phone by scanning a QR code?</p><details><summary>Show answer</summary><p>Expo Go</p></details></li><li><p>Which command starts an Expo project?</p><details><summary>Show answer</summary><p>npx expo start</p></details></li><li><p>What replaces &lt;div&gt; in React Native?</p><details><summary>Show answer</summary><p>View</p></details></li><li><p>Must all text in React Native be inside a &lt;Text&gt; component? (yes or no)</p><details><summary>Show answer</summary><p>yes</p></details></li><li><p>Which event replaces onClick in React Native?</p><details><summary>Show answer</summary><p>onPress</p></details></li><li><p>Which website lets you write React Native in the browser?</p><details><summary>Show answer</summary><p>snack.expo.dev</p></details></li></ol></section></div><p class="static-meta">Lesson 1 of 5 in <a href="/learn/react-native/">React Native apps (Expo)</a> · <a href="/learn/?book=react-native">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><span></span><a class="btn btn-solid btn-sm" href="/learn/react-native/react-native-components-styling/">Core components, styling and Flexbox layouts <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why React Native</h2>
+<p>React Native lets you build real Android and iOS apps with JavaScript (or TypeScript) and React. One codebase produces native apps, and web developers can reuse their React skills. Apps from Meta, Microsoft, Shopify, Discord and many startups use it. For Kenyan developers and agencies, it's a practical way to deliver apps for clients who want both Android and iPhone versions without maintaining two separate codebases.</p>
+<h2>How React Native works</h2>
+<ul><li>You write components with React (<code>&lt;View&gt;</code>, <code>&lt;Text&gt;</code>, <code>&lt;Pressable&gt;</code>), and React Native renders <strong>real native UI elements</strong>, not a web page inside the app.</li><li>JavaScript runs on the device (with the Hermes engine) and talks to native code for things like the camera, location and notifications.</li><li><strong>Expo</strong> adds tooling and ready-made libraries (camera, image picker, notifications, secure storage, updates) so you rarely need to write native Android/iOS code.</li></ul>
+<h2>Core components compared with the web</h2>
+<div class="static-table"><table><thead><tr><th>Web (React)</th><th>React Native</th><th>Notes</th></tr></thead><tbody><tr><td><code>&lt;div&gt;</code></td><td><code>&lt;View&gt;</code></td><td>Layout container (uses flexbox by default, column direction)</td></tr><tr><td><code>&lt;p&gt;</code>, <code>&lt;span&gt;</code></td><td><code>&lt;Text&gt;</code></td><td>All text must be inside <code>&lt;Text&gt;</code></td></tr><tr><td><code>&lt;img&gt;</code></td><td><code>&lt;Image&gt;</code></td><td>Needs width/height for remote images</td></tr><tr><td><code>&lt;button&gt;</code>, <code>onClick</code></td><td><code>&lt;Pressable&gt;</code> / <code>&lt;TouchableOpacity&gt;</code>, <code>onPress</code></td><td>Custom touchable areas</td></tr><tr><td><code>&lt;input&gt;</code></td><td><code>&lt;TextInput&gt;</code></td><td><code>keyboardType=&quot;phone-pad&quot;</code>, <code>secureTextEntry</code></td></tr><tr><td><code>&lt;ul&gt;</code> with <code>map</code></td><td><code>&lt;FlatList&gt;</code></td><td>Efficient long lists (renders only what's visible)</td></tr><tr><td>CSS files</td><td><code>StyleSheet.create({...})</code></td><td>camelCase properties, numbers are density-independent pixels</td></tr><tr><td>Scrolling page</td><td><code>&lt;ScrollView&gt;</code></td><td>For short content; use FlatList for long lists</td></tr></tbody></table></div>
+<h2>A product list screen</h2>
+<figure class="static-code"><figcaption>JSX</figcaption><pre><code class="language-jsx">import { useState } from &quot;react&quot;;
+import { View, Text, FlatList, Pressable, TextInput, StyleSheet } from &quot;react-native&quot;;
+
+const PRODUCTS = [
+  { id: &quot;1&quot;, name: &quot;Unga 2kg&quot;, price: 180 },
+  { id: &quot;2&quot;, name: &quot;Sugar 1kg&quot;, price: 210 },
+  { id: &quot;3&quot;, name: &quot;Cooking oil 1L&quot;, price: 350 },
+];
+
+export default function ProductsScreen() {
+  const [query, setQuery] = useState(&quot;&quot;);
+  const [cart, setCart] = useState([]);
+  const visible = PRODUCTS.filter((p) =&gt; p.name.toLowerCase().includes(query.toLowerCase()));
+  const total = cart.reduce((s, p) =&gt; s + p.price, 0);
+
+  return (
+    &lt;View style={styles.screen}&gt;
+      &lt;TextInput style={styles.search} placeholder=&quot;Search products&quot; value={query} onChangeText={setQuery} /&gt;
+      &lt;FlatList
+        data={visible}
+        keyExtractor={(item) =&gt; item.id}
+        renderItem={({ item }) =&gt; (
+          &lt;View style={styles.row}&gt;
+            &lt;Text style={styles.name}&gt;{item.name}&lt;/Text&gt;
+            &lt;Text&gt;KSh {item.price}&lt;/Text&gt;
+            &lt;Pressable style={styles.button} onPress={() =&gt; setCart([...cart, item])}&gt;
+              &lt;Text style={styles.buttonText}&gt;Add&lt;/Text&gt;
+            &lt;/Pressable&gt;
+          &lt;/View&gt;
+        )}
+        ListEmptyComponent={&lt;Text&gt;No products found&lt;/Text&gt;}
+      /&gt;
+      &lt;Text style={styles.total}&gt;{cart.length} items · KSh {total}&lt;/Text&gt;
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  screen: { flex: 1, padding: 16, backgroundColor: &quot;#fff&quot; },
+  search: { borderWidth: 1, borderColor: &quot;#cbd5e1&quot;, borderRadius: 8, padding: 10, marginBottom: 12 },
+  row: { flexDirection: &quot;row&quot;, alignItems: &quot;center&quot;, justifyContent: &quot;space-between&quot;, paddingVertical: 10 },
+  name: { flex: 1, fontWeight: &quot;600&quot; },
+  button: { backgroundColor: &quot;#0b1b35&quot;, paddingHorizontal: 14, paddingVertical: 8, borderRadius: 8, marginLeft: 8 },
+  buttonText: { color: &quot;#fff&quot;, fontWeight: &quot;700&quot; },
+  total: { fontSize: 18, fontWeight: &quot;700&quot;, paddingTop: 12 },
+});</code></pre></figure>
+<h2>Layout with flexbox</h2>
+<p>React Native uses flexbox for everything, with <code>flexDirection: &quot;column&quot;</code> as the default:</p>
+<div class="static-table"><table><thead><tr><th>Property</th><th>Effect</th></tr></thead><tbody><tr><td><code>flex: 1</code></td><td>Take up available space</td></tr><tr><td><code>flexDirection: &quot;row&quot;</code></td><td>Arrange children horizontally</td></tr><tr><td><code>justifyContent</code></td><td>Spacing along the main axis (<code>center</code>, <code>space-between</code>)</td></tr><tr><td><code>alignItems</code></td><td>Alignment on the cross axis (<code>center</code>, <code>flex-start</code>)</td></tr><tr><td><code>gap</code></td><td>Space between children</td></tr></tbody></table></div>
+<p>Use <code>SafeAreaView</code> (from <code>react-native-safe-area-context</code>) so content doesn't go under phone notches and status bars.</p>
+<h2>Navigation with Expo Router</h2>
+<p>Expo Router uses files and folders as screens, like Next.js:</p>
+<figure class="static-code"><figcaption>TEXT</figcaption><pre><code class="language-text">app/
+├── _layout.jsx          ← stack or tab layout
+├── index.jsx            ← home screen &quot;/&quot;
+├── cart.jsx             ← &quot;/cart&quot;
+└── product/[id].jsx     ← &quot;/product/123&quot; (dynamic route)</code></pre></figure>
+<figure class="static-code"><figcaption>JSX</figcaption><pre><code class="language-jsx">import { Link, useLocalSearchParams } from &quot;expo-router&quot;;
+
+&lt;Link href=&quot;/product/2&quot;&gt;View sugar&lt;/Link&gt;          // navigate
+
+const { id } = useLocalSearchParams();            // read the id on product/[id].jsx</code></pre></figure>
+<h2>Fetching data from your API</h2>
+<figure class="static-code"><figcaption>JSX</figcaption><pre><code class="language-jsx">import { useEffect, useState } from &quot;react&quot;;
+import { ActivityIndicator, Text } from &quot;react-native&quot;;
+
+function useProducts() {
+  const [state, setState] = useState({ loading: true, data: [], error: null });
+  useEffect(() =&gt; {
+    let cancelled = false;
+    fetch(&quot;https://api.example.co.ke/products&quot;)
+      .then((r) =&gt; { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+      .then((data) =&gt; !cancelled &amp;&amp; setState({ loading: false, data, error: null }))
+      .catch(() =&gt; !cancelled &amp;&amp; setState({ loading: false, data: [], error: &quot;Check your internet connection&quot; }));
+    return () =&gt; { cancelled = true; };
+  }, []);
+  return state;
+}</code></pre></figure>
+<p>Always show loading and error states; mobile connections drop often. Cache important data on the device (AsyncStorage, SQLite) so the app works offline.</p>
+<h2>Device features with Expo libraries</h2>
+<div class="static-table"><table><thead><tr><th>Feature</th><th>Library</th></tr></thead><tbody><tr><td>Camera / photos</td><td><code>expo-image-picker</code>, <code>expo-camera</code></td></tr><tr><td>Location</td><td><code>expo-location</code></td></tr><tr><td>Push notifications</td><td><code>expo-notifications</code></td></tr><tr><td>Secure storage (tokens)</td><td><code>expo-secure-store</code></td></tr><tr><td>Local database</td><td><code>expo-sqlite</code></td></tr><tr><td>Sharing files</td><td><code>expo-sharing</code></td></tr><tr><td>Over-the-air updates</td><td><code>expo-updates</code> (EAS Update)</td></tr></tbody></table></div>
+<p>Ask for permissions only when needed, with a clear explanation, and handle "denied" gracefully.</p>
+<h2>Building and publishing</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">npm install -g eas-cli
+eas login
+eas build --platform android      # builds an .aab in the cloud (no Android Studio needed)
+eas build --platform ios          # needs an Apple Developer account
+eas submit --platform android     # upload to Google Play</code></pre></figure>
+<p>EAS (Expo Application Services) builds apps in the cloud, which helps if your computer is not powerful or you don't have a Mac for iOS builds. Keep API secrets on your server, not in the app bundle.</p>
+<h2>Practice</h2>
+<ol><li>Create an Expo app and change the home screen to show your name and a button that counts taps.</li><li>Build a product list with <code>FlatList</code>, a search <code>TextInput</code> and an "Add" button.</li><li>Add a second screen with Expo Router and navigate to it with <code>Link</code>.</li><li>Fetch a list from a public test API and show loading and error states.</li><li>Use <code>expo-image-picker</code> to choose a photo and display it.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why should a long product list use FlatList instead of mapping items inside a ScrollView?</span><em>Show answer</em></summary><div class="callout-body"><p>A ScrollView renders every item at once, which uses a lot of memory and makes screens slow (especially on budget phones) when lists are long. FlatList renders only the items currently visible (plus a small buffer) and recycles them while scrolling, keeping the app fast and smooth.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which app runs your React Native project on your phone by scanning a QR code?</p><details><summary>Show answer</summary><p>Expo Go</p></details></li><li><p>Which command starts an Expo project?</p><details><summary>Show answer</summary><p>npx expo start</p></details></li><li><p>What replaces &lt;div&gt; in React Native?</p><details><summary>Show answer</summary><p>View</p></details></li><li><p>Must all text in React Native be inside a &lt;Text&gt; component? (yes or no)</p><details><summary>Show answer</summary><p>yes</p></details></li><li><p>Which event replaces onClick in React Native?</p><details><summary>Show answer</summary><p>onPress</p></details></li><li><p>Which website lets you write React Native in the browser?</p><details><summary>Show answer</summary><p>snack.expo.dev</p></details></li><li><p>Which React Native component efficiently renders long lists?</p><details><summary>Show answer</summary><p>FlatList</p></details></li><li><p>Which function creates styles in React Native? (StyleSheet...)</p><details><summary>Show answer</summary><p>StyleSheet.create</p></details></li><li><p>Which Expo service builds Android and iOS apps in the cloud? (abbreviation)</p><details><summary>Show answer</summary><p>EAS</p></details></li><li><p>What is the default flexDirection in React Native?</p><details><summary>Show answer</summary><p>column</p></details></li></ol></section></div><p class="static-meta">Lesson 1 of 5 in <a href="/learn/react-native/">React Native apps (Expo)</a> · <a href="/learn/?book=react-native">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><span></span><a class="btn btn-solid btn-sm" href="/learn/react-native/react-native-components-styling/">Core components, styling and Flexbox layouts <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

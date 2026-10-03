@@ -125,7 +125,119 @@ int main(void) {
 <p>(To try input in our editor, type values when it asks. On your computer compile with <code>gcc main.c -o main</code> and run <code>./main</code>.)</p>
 <h2>Common beginner mistakes</h2>
 <div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Forgetting <code>;</code></td><td>Every statement ends with <code>;</code></td></tr><tr><td><code>scanf(&quot;%d&quot;, qty)</code></td><td>Needs <code>&amp;qty</code></td></tr><tr><td>Using <code>%d</code> for a double</td><td>Use <code>%f</code> in printf, <code>%lf</code> in scanf</td></tr><tr><td><code>=</code> instead of <code>==</code> in <code>if</code></td><td><code>if (x == 5)</code></td></tr><tr><td>Uninitialised variables</td><td>Always give a starting value: <code>int total = 0;</code></td></tr></tbody></table></div>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which printf specifier prints an int?</p><details><summary>Show answer</summary><p>%d</p></details></li><li><p>Which printf specifier prints a double with 2 decimal places?</p><details><summary>Show answer</summary><p>%.2f</p></details></li><li><p>What is 17 / 5 in C when both are int?</p><details><summary>Show answer</summary><p>3</p></details></li><li><p>What symbol must go before an int variable in scanf?</p><details><summary>Show answer</summary><p>&amp;</p></details></li><li><p>Which specifier does scanf use to read a double?</p><details><summary>Show answer</summary><p>%lf</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 8 in <a href="/learn/c-programming/">C programming</a> · <a href="/learn/?book=c-programming">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/c-programming/introduction/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> C introduction: why C matters, where it&#x27;s used, compiling, your first program, program structure, data types and printf</a><a class="btn btn-solid btn-sm" href="/learn/c-programming/control-functions/">Conditions, loops and functions in C: if/else, switch, for, while, do-while, writing functions, scope and header files <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why C still matters</h2>
+<p>C is the language underneath much of computing: operating systems (Linux, the core of Windows and Android), embedded devices (ATMs, POS machines, routers, smart meters, car electronics, medical devices), databases and the interpreters of languages like Python and PHP. Learning C teaches how computers really store data in memory, which makes you a better programmer in any language. It's also common in university computer science and engineering courses and in embedded systems jobs.</p>
+<h2>Sizes and ranges of types</h2>
+<p>The exact size of types can vary by platform, but on typical modern computers:</p>
+<div class="static-table"><table><thead><tr><th>Type</th><th>Usual size</th><th>Typical range / use</th></tr></thead><tbody><tr><td><code>char</code></td><td>1 byte</td><td>One character or small number (-128 to 127)</td></tr><tr><td><code>short</code></td><td>2 bytes</td><td>-32,768 to 32,767</td></tr><tr><td><code>int</code></td><td>4 bytes</td><td>About ±2.1 billion</td></tr><tr><td><code>long long</code></td><td>8 bytes</td><td>Very large whole numbers</td></tr><tr><td><code>float</code></td><td>4 bytes</td><td>About 6–7 significant digits</td></tr><tr><td><code>double</code></td><td>8 bytes</td><td>About 15–16 significant digits (use this for decimals)</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void) {
+    printf(&quot;char: %d byte\n&quot;, (int) sizeof(char));
+    printf(&quot;int: %d bytes\n&quot;, (int) sizeof(int));
+    printf(&quot;double: %d bytes\n&quot;, (int) sizeof(double));
+    return 0;
+}</code></pre></figure>
+<p><code>sizeof</code> tells you how many bytes a type uses on the current machine, which matters in embedded systems where memory is very limited.</p>
+<h2>Integer division and the modulo operator in practice</h2>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void) {
+    int total_minutes = 135;
+    int hours = total_minutes / 60;
+    int minutes = total_minutes % 60;
+    printf(&quot;%d minutes = %d h %d min\n&quot;, total_minutes, hours, minutes);
+
+    int students = 173;
+    int bus_seats = 50;
+    int buses = (students + bus_seats - 1) / bus_seats;   /* round up without floats */
+    printf(&quot;Buses needed: %d\n&quot;, buses);
+
+    int amount = 2750;
+    int thousands = amount / 1000;
+    int hundreds = (amount % 1000) / 100;
+    printf(&quot;KSh %d = %d x 1000 + %d x 100 + %d\n&quot;, amount, thousands, hundreds, amount % 100);
+
+    double average = (double) (67 + 82 + 45) / 3;          /* cast before dividing */
+    printf(&quot;Average: %.2f\n&quot;, average);
+    return 0;
+}</code></pre></figure>
+<p>The <code>(a + b - 1) / b</code> trick rounds up using integers only, which is common in embedded code where floating point is slow or unavailable.</p>
+<h2>Increment, compound assignment and precedence</h2>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void) {
+    int stock = 10;
+    stock -= 3;
+    stock *= 2;
+    stock++;
+    printf(&quot;Stock: %d\n&quot;, stock);
+
+    int a = 5;
+    int b = a++;      /* b gets 5, then a becomes 6 */
+    int c = ++a;      /* a becomes 7, then c gets 7 */
+    printf(&quot;a=%d b=%d c=%d\n&quot;, a, b, c);
+
+    printf(&quot;%d %d\n&quot;, 2 + 3 * 4, (2 + 3) * 4);
+    return 0;
+}</code></pre></figure>
+<p>Avoid using <code>x++</code> more than once in the same expression (like <code>x++ + x++</code>): the result is undefined in C.</p>
+<h2>Formatting output like a receipt</h2>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void) {
+    printf(&quot;%-12s %5s %10s\n&quot;, &quot;ITEM&quot;, &quot;QTY&quot;, &quot;AMOUNT&quot;);
+    printf(&quot;%-12s %5d %10.2f\n&quot;, &quot;Unga 2kg&quot;, 2, 360.0);
+    printf(&quot;%-12s %5d %10.2f\n&quot;, &quot;Sugar 1kg&quot;, 1, 210.0);
+    printf(&quot;%-12s %5d %10.2f\n&quot;, &quot;Milk 500ml&quot;, 3, 180.0);
+    printf(&quot;%-12s %5s %10.2f\n&quot;, &quot;TOTAL&quot;, &quot;&quot;, 750.0);
+    printf(&quot;Leading zeros: %05d\n&quot;, 42);
+    printf(&quot;Percent sign: %d%%\n&quot;, 16);
+    return 0;
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Format</th><th>Meaning</th></tr></thead><tbody><tr><td><code>%-12s</code></td><td>String, left-aligned in 12 characters</td></tr><tr><td><code>%5d</code></td><td>Integer, right-aligned in 5 characters</td></tr><tr><td><code>%10.2f</code></td><td>Decimal, 10 wide, 2 decimals</td></tr><tr><td><code>%05d</code></td><td>Pad with zeros</td></tr><tr><td><code>%%</code></td><td>A literal percent sign</td></tr><tr><td><code>%c</code></td><td>One character</td></tr><tr><td><code>%lld</code></td><td><code>long long</code></td></tr></tbody></table></div>
+<h2>Safer input with fgets</h2>
+<p><code>scanf(&quot;%s&quot;, ...)</code> stops at spaces and can overflow a buffer. A safer pattern reads a whole line with <code>fgets</code>, then converts:</p>
+<figure class="static-code"><figcaption>C</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main(void) {
+    char line[64];
+    printf(&quot;Enter amount: &quot;);
+    if (fgets(line, sizeof line, stdin) != NULL) {
+        char *end;
+        double amount = strtod(line, &amp;end);
+        if (end == line) {
+            printf(&quot;That is not a number.\n&quot;);
+        } else {
+            printf(&quot;With VAT: %.2f\n&quot;, amount * 1.16);
+        }
+    }
+    return 0;
+}</code></pre></figure>
+<p><code>strtod</code> (and <code>strtol</code> for integers) report where conversion stopped, so you can detect invalid input instead of getting silent garbage.</p>
+<h2>Characters are numbers</h2>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void) {
+    char grade = &#x27;B&#x27;;
+    printf(&quot;%c has code %d\n&quot;, grade, grade);
+    printf(&quot;Next letter: %c\n&quot;, grade + 1);
+    char digit = &#x27;7&#x27;;
+    int value = digit - &#x27;0&#x27;;
+    printf(&quot;Digit value doubled: %d\n&quot;, value * 2);
+    char lower = &#x27;k&#x27;;
+    printf(&quot;Upper case: %c\n&quot;, lower - &#x27;a&#x27; + &#x27;A&#x27;);
+    return 0;
+}</code></pre></figure>
+<h2>Compiling and warnings</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">gcc -Wall -Wextra -std=c11 -o receipt receipt.c   # turn on warnings
+./receipt</code></pre></figure>
+<p>Always compile with <code>-Wall -Wextra</code>: warnings often point to real bugs (unused variables, wrong printf specifiers, missing returns). Treat warnings as errors you must fix.</p>
+<h2>Practice</h2>
+<ol><li>Convert 4,000 seconds into hours, minutes and seconds.</li><li>Calculate how many crates of 24 bottles are needed for 500 bottles, rounding up.</li><li>Print a 3-item receipt with aligned columns and a total.</li><li>Read an amount safely with <code>fgets</code> and <code>strtod</code>, rejecting non-numbers.</li><li>Print the codes of the letters in your name with <code>%c</code> and <code>%d</code>.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why does <code>printf(&quot;%d\n&quot;, 7 / 2 * 2.0)</code> print a strange number or trigger a warning, while <code>printf(&quot;%.1f\n&quot;, 7 / 2 * 2.0)</code> prints 6.0?</span><em>Show answer</em></summary><div class="callout-body"><p><code>7 / 2</code> is integer division (3), then <code>3 * 2.0</code> is a double (6.0). Printing a double with <code>%d</code> is a format mismatch, which gives undefined/garbage output (and a compiler warning with -Wall). The correct specifier for a double is <code>%f</code>, and the value is 6.0, not 7, because the division happened first as integers.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which printf specifier prints an int?</p><details><summary>Show answer</summary><p>%d</p></details></li><li><p>Which printf specifier prints a double with 2 decimal places?</p><details><summary>Show answer</summary><p>%.2f</p></details></li><li><p>What is 17 / 5 in C when both are int?</p><details><summary>Show answer</summary><p>3</p></details></li><li><p>What symbol must go before an int variable in scanf?</p><details><summary>Show answer</summary><p>&amp;</p></details></li><li><p>Which specifier does scanf use to read a double?</p><details><summary>Show answer</summary><p>%lf</p></details></li><li><p>Which operator tells you how many bytes a type uses?</p><details><summary>Show answer</summary><p>sizeof</p></details></li><li><p>Which printf format left-aligns a string in 12 characters?</p><details><summary>Show answer</summary><p>%-12s</p></details></li><li><p>Which function safely reads a whole line of input?</p><details><summary>Show answer</summary><p>fgets</p></details></li><li><p>Which gcc options turn on common warnings? (give the main one)</p><details><summary>Show answer</summary><p>-Wall</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 8 in <a href="/learn/c-programming/">C programming</a> · <a href="/learn/?book=c-programming">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/c-programming/introduction/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> C introduction: why C matters, where it&#x27;s used, compiling, your first program, program structure, data types and printf</a><a class="btn btn-solid btn-sm" href="/learn/c-programming/control-functions/">Conditions, loops and functions in C: if/else, switch, for, while, do-while, writing functions, scope and header files <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

@@ -176,7 +176,195 @@ func main() {
 	}
 }</code></pre></figure>
 <p>Go has no exceptions for normal errors: functions <strong>return an error</strong> as the last value, and you check <code>if err != nil</code>. It's verbose, but you always see where things can fail.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which operator declares a variable and infers its type inside a function?</p><details><summary>Show answer</summary><p>:=</p></details></li><li><p>How many loop keywords does Go have?</p><details><summary>Show answer</summary><p>1</p></details></li><li><p>What is the zero value of an int in Go?</p><details><summary>Show answer</summary><p>0</p></details></li><li><p>What value means "no error" in Go?</p><details><summary>Show answer</summary><p>nil</p></details></li><li><p>Will Go compile a program with an unused variable? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 6 in <a href="/learn/go/">Go (Golang)</a> · <a href="/learn/?book=go">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/go/introduction/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Go introduction: why Go, where it&#x27;s used, setup, packages, variables and types, control flow, functions, errors and the go tool</a><a class="btn btn-solid btn-sm" href="/learn/go/slices-maps/">Slices, maps and strings in Go <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why companies choose Go</h2>
+<p>Go (Golang) was created at Google for building fast, reliable server software that's easy to maintain. It compiles to a single file that runs anywhere, starts instantly, and handles many simultaneous connections efficiently. Docker, Kubernetes, many cloud tools, payment and fintech back ends, and APIs at companies around the world are written in Go. Its small, simple syntax makes it a good second language after Python or JavaScript, especially for back-end and DevOps careers.</p>
+<h2>Constants and iota</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+const VATRate = 0.16
+
+type Status int
+
+const (
+	Pending Status = iota // 0
+	Paid                  // 1
+	Shipped               // 2
+	Delivered             // 3
+)
+
+func (s Status) String() string {
+	return [...]string{&quot;Pending&quot;, &quot;Paid&quot;, &quot;Shipped&quot;, &quot;Delivered&quot;}[s]
+}
+
+func main() {
+	price := 2500.0
+	fmt.Printf(&quot;VAT on %.0f is %.2f\n&quot;, price, price*VATRate)
+	var s Status = Shipped
+	fmt.Println(&quot;Order status:&quot;, s, int(s))
+}</code></pre></figure>
+<p><code>iota</code> numbers constants automatically, and adding a <code>String()</code> method makes them print nicely, a common Go pattern for enumerations.</p>
+<h2>Formatted printing in detail</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func main() {
+	name, qty, price := &quot;Unga 2kg&quot;, 3, 180.0
+	fmt.Printf(&quot;%-10s|%4d|%8.2f|\n&quot;, name, qty, price)
+	fmt.Printf(&quot;%v %T\n&quot;, price, price)       // value and type
+	fmt.Printf(&quot;%q\n&quot;, name)                  // quoted string
+	fmt.Printf(&quot;%05d\n&quot;, 42)                  // zero padded
+	fmt.Printf(&quot;%x %b\n&quot;, 255, 5)             // hex and binary
+	line := fmt.Sprintf(&quot;%s x%d = KSh %.0f&quot;, name, qty, float64(qty)*price)
+	fmt.Println(line)
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Verb</th><th>Meaning</th></tr></thead><tbody><tr><td><code>%v</code></td><td>Default format for any value</td></tr><tr><td><code>%+v</code></td><td>Struct with field names</td></tr><tr><td><code>%T</code></td><td>Type of the value</td></tr><tr><td><code>%d</code>, <code>%f</code>, <code>%s</code>, <code>%q</code></td><td>Integer, float, string, quoted string</td></tr><tr><td><code>%-10s</code>, <code>%8.2f</code></td><td>Width, alignment and precision</td></tr></tbody></table></div>
+<h2>switch without a condition (cleaner if/else chains)</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func grade(mark int) string {
+	switch {
+	case mark &gt;= 80:
+		return &quot;A&quot;
+	case mark &gt;= 65:
+		return &quot;B&quot;
+	case mark &gt;= 50:
+		return &quot;C&quot;
+	default:
+		return &quot;E&quot;
+	}
+}
+
+func main() {
+	for _, m := range []int{92, 71, 55, 38} {
+		fmt.Println(m, grade(m))
+	}
+
+	day := &quot;Sat&quot;
+	switch day {
+	case &quot;Sat&quot;, &quot;Sun&quot;:
+		fmt.Println(&quot;Weekend rates apply&quot;)
+	default:
+		fmt.Println(&quot;Weekday&quot;)
+	}
+}</code></pre></figure>
+<p>Go's <code>switch</code> cases don't fall through by default (no <code>break</code> needed), which avoids a classic C/Java bug.</p>
+<h2>Loops with labels, break and continue</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func main() {
+	balance := 0.0
+	months := 0
+	for balance &lt; 50000 {
+		balance = balance*1.01 + 4500
+		months++
+	}
+	fmt.Printf(&quot;Saved %.0f after %d months\n&quot;, balance, months)
+
+	for i := 1; i &lt;= 10; i++ {
+		if i%2 == 0 {
+			continue // skip even numbers
+		}
+		if i &gt; 7 {
+			break
+		}
+		fmt.Print(i, &quot; &quot;)
+	}
+	fmt.Println()
+
+outer:
+	for row := 1; row &lt;= 3; row++ {
+		for col := 1; col &lt;= 3; col++ {
+			if row*col == 4 {
+				fmt.Println(&quot;found 4 at&quot;, row, col)
+				break outer // leave both loops
+			}
+		}
+	}
+}</code></pre></figure>
+<h2>Errors as values: a real validation example</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;errors&quot;
+	&quot;fmt&quot;
+	&quot;strconv&quot;
+	&quot;strings&quot;
+)
+
+var ErrEmpty = errors.New(&quot;amount is empty&quot;)
+
+func parseAmount(text string) (float64, error) {
+	text = strings.ReplaceAll(strings.TrimSpace(text), &quot;,&quot;, &quot;&quot;)
+	if text == &quot;&quot; {
+		return 0, ErrEmpty
+	}
+	n, err := strconv.ParseFloat(text, 64)
+	if err != nil {
+		return 0, fmt.Errorf(&quot;%q is not a number: %w&quot;, text, err)
+	}
+	if n &lt;= 0 {
+		return 0, fmt.Errorf(&quot;amount must be above 0, got %.2f&quot;, n)
+	}
+	return n, nil
+}
+
+func main() {
+	for _, input := range []string{&quot;1,500&quot;, &quot;&quot;, &quot;abc&quot;, &quot;-20&quot;, &quot; 250 &quot;} {
+		amount, err := parseAmount(input)
+		switch {
+		case errors.Is(err, ErrEmpty):
+			fmt.Println(&quot;Please enter an amount&quot;)
+		case err != nil:
+			fmt.Println(&quot;Error:&quot;, err)
+		default:
+			fmt.Printf(&quot;OK: %.2f\n&quot;, amount)
+		}
+	}
+}</code></pre></figure>
+<p><code>%w</code> wraps an error so callers can inspect the original with <code>errors.Is</code>. Handling errors right where they happen makes Go programs predictable.</p>
+<h2>defer: clean-up that always runs</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func process(order int) {
+	fmt.Println(&quot;start&quot;, order)
+	defer fmt.Println(&quot;finished&quot;, order) // runs when the function returns
+	if order%2 == 0 {
+		fmt.Println(&quot;even order, returning early&quot;)
+		return
+	}
+	fmt.Println(&quot;processing odd order&quot;)
+}
+
+func main() {
+	process(1)
+	process(2)
+	for i := 1; i &lt;= 3; i++ {
+		defer fmt.Println(&quot;deferred&quot;, i) // run in reverse order: 3, 2, 1
+	}
+}</code></pre></figure>
+<p><code>defer</code> is used to close files, release locks and close database connections, guaranteeing clean-up even when a function returns early or an error occurs.</p>
+<h2>Go tooling</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">go mod init github.com/you/shop     # start a module
+go run .                            # compile and run
+go build -o shop                    # build a single binary
+go fmt ./...                        # format all code the standard way
+go vet ./...                        # find suspicious code
+go test ./...                       # run tests
+GOOS=linux GOARCH=amd64 go build    # cross-compile for a Linux server from any OS</code></pre></figure>
+<p><code>go fmt</code> ends formatting debates: all Go code looks the same.</p>
+<h2>Practice</h2>
+<ol><li>Create constants for three payment methods with <code>iota</code> and a <code>String()</code> method.</li><li>Write a <code>switch</code>-based function that returns a delivery fee by town.</li><li>Write <code>parsePhone(text string) (string, error)</code> returning 2547XXXXXXXX or an error.</li><li>Use <code>defer</code> to print "done" at the end of a function with several return paths.</li><li>Print a receipt table with <code>Printf</code> widths and precision.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why does Go return errors as values instead of throwing exceptions like Java or Python?</span><em>Show answer</em></summary><div class="callout-body"><p>Returning errors makes every possible failure visible in a function's signature and forces callers to decide what to do right away. Control flow stays explicit and easy to follow, with no hidden jumps up the call stack. The trade-off is more <code>if err != nil</code> checks, which Go developers accept for clarity and reliability.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which operator declares a variable and infers its type inside a function?</p><details><summary>Show answer</summary><p>:=</p></details></li><li><p>How many loop keywords does Go have?</p><details><summary>Show answer</summary><p>1</p></details></li><li><p>What is the zero value of an int in Go?</p><details><summary>Show answer</summary><p>0</p></details></li><li><p>What value means "no error" in Go?</p><details><summary>Show answer</summary><p>nil</p></details></li><li><p>Will Go compile a program with an unused variable? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which identifier numbers constants automatically in a const block?</p><details><summary>Show answer</summary><p>iota</p></details></li><li><p>Which keyword schedules a function call to run when the surrounding function returns?</p><details><summary>Show answer</summary><p>defer</p></details></li><li><p>Which formatting verb wraps an error in fmt.Errorf?</p><details><summary>Show answer</summary><p>%w</p></details></li><li><p>Do Go switch cases fall through by default? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 6 in <a href="/learn/go/">Go (Golang)</a> · <a href="/learn/?book=go">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/go/introduction/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Go introduction: why Go, where it&#x27;s used, setup, packages, variables and types, control flow, functions, errors and the go tool</a><a class="btn btn-solid btn-sm" href="/learn/go/slices-maps/">Slices, maps and strings in Go <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

@@ -125,7 +125,161 @@
 }</code></pre></figure>
 <h2>Good method habits</h2>
 <ul><li>One method, one job. If you need "and" to describe it, split it.</li><li>Descriptive names: <code>calculateFee()</code>, <code>isOverdue()</code>, <code>sendReminder()</code>.</li><li>Keep them short: under ~20–30 lines is a good guide.</li><li>Prefer returning values over printing inside helper methods: it makes them reusable.</li></ul>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What return type does a method that returns nothing have?</p><details><summary>Show answer</summary><p>void</p></details></li><li><p>Which keyword sends a value back from a method?</p><details><summary>Show answer</summary><p>return</p></details></li><li><p>Two methods with the same name but different parameters is called what?</p><details><summary>Show answer</summary><p>overloading</p></details></li><li><p>If a method changes an int parameter, does the caller's variable change? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>What must every recursive method have so it stops? (two words)</p><details><summary>Show answer</summary><p>base case</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 9 in <a href="/learn/java/">Java</a> · <a href="/learn/?book=java">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/java/control-flow/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Conditions, loops and arrays in Java: if/else, switch, for, while, do-while, break/continue, arrays and 2D arrays</a><a class="btn btn-solid btn-sm" href="/learn/java/strings-arrays-lists/">Strings, arrays and ArrayLists <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why methods matter in real Java projects</h2>
+<p>Professional Java code is organised into many small methods, each doing one clear job: validating a phone number, calculating a loan repayment, formatting a receipt, saving an order. Small methods are easier to read, test and reuse. Android apps, Spring Boot back ends and banking systems are all built this way, and interviews often ask you to write and explain methods.</p>
+<h2>Varargs: any number of arguments</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    static int total(int... amounts) {          // amounts is an int[] inside the method
+        int sum = 0;
+        for (int a : amounts) sum += a;
+        return sum;
+    }
+
+    static String joinTowns(String separator, String... towns) {
+        return String.join(separator, towns);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(total());                    // 0
+        System.out.println(total(500));                 // 500
+        System.out.println(total(500, 1200, 350));      // 2050
+        System.out.println(joinTowns(&quot; | &quot;, &quot;Nairobi&quot;, &quot;Nakuru&quot;, &quot;Kisumu&quot;));
+    }
+}</code></pre></figure>
+<p>A varargs parameter must be the last parameter.</p>
+<h2>Returning several values</h2>
+<p>Java methods return one value, but that value can be an object holding several:</p>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    static class LoanSummary {
+        final double monthly;
+        final double totalPaid;
+        final double interest;
+        LoanSummary(double monthly, double totalPaid, double interest) {
+            this.monthly = monthly; this.totalPaid = totalPaid; this.interest = interest;
+        }
+    }
+
+    static LoanSummary reducingBalance(double principal, double annualRate, int months) {
+        double r = annualRate / 12;
+        double monthly = principal * r / (1 - Math.pow(1 + r, -months));
+        double totalPaid = monthly * months;
+        return new LoanSummary(monthly, totalPaid, totalPaid - principal);
+    }
+
+    public static void main(String[] args) {
+        LoanSummary s = reducingBalance(100_000, 0.14, 12);
+        System.out.printf(&quot;Monthly: KSh %,.2f%n&quot;, s.monthly);
+        System.out.printf(&quot;Total paid: KSh %,.2f%n&quot;, s.totalPaid);
+        System.out.printf(&quot;Interest: KSh %,.2f%n&quot;, s.interest);
+    }
+}</code></pre></figure>
+<p>Modern Java also offers <strong>records</strong> (<code>record LoanSummary(double monthly, double totalPaid, double interest) {}</code>), a short way to define such data classes.</p>
+<h2>Pass by value with objects</h2>
+<p>Java always passes a <strong>copy of the value</strong>. For objects, the value is a reference, so a method can change the object's contents but can't make the caller's variable point to a different object:</p>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">import java.util.ArrayList;
+
+class Main {
+    static void addItem(ArrayList&lt;String&gt; cart) {
+        cart.add(&quot;Milk&quot;);                    // changes the shared list: caller sees it
+    }
+    static void replaceCart(ArrayList&lt;String&gt; cart) {
+        cart = new ArrayList&lt;&gt;();            // only changes the local copy of the reference
+        cart.add(&quot;Bread&quot;);
+    }
+
+    public static void main(String[] args) {
+        ArrayList&lt;String&gt; cart = new ArrayList&lt;&gt;();
+        cart.add(&quot;Unga&quot;);
+        addItem(cart);
+        replaceCart(cart);
+        System.out.println(cart);            // [Unga, Milk]
+    }
+}</code></pre></figure>
+<h2>Recursion vs loops</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    static long factorialRecursive(int n) {
+        if (n &lt;= 1) return 1;                // base case
+        return n * factorialRecursive(n - 1);
+    }
+    static long factorialLoop(int n) {
+        long result = 1;
+        for (int i = 2; i &lt;= n; i++) result *= i;
+        return result;
+    }
+    static int sumDigits(int n) {
+        return n &lt; 10 ? n : n % 10 + sumDigits(n / 10);
+    }
+    static boolean isPalindrome(String s) {
+        if (s.length() &lt;= 1) return true;
+        return s.charAt(0) == s.charAt(s.length() - 1) &amp;&amp; isPalindrome(s.substring(1, s.length() - 1));
+    }
+
+    public static void main(String[] args) {
+        System.out.println(factorialRecursive(10) + &quot; &quot; + factorialLoop(10));
+        System.out.println(sumDigits(254712));
+        System.out.println(isPalindrome(&quot;racecar&quot;) + &quot; &quot; + isPalindrome(&quot;kenya&quot;));
+    }
+}</code></pre></figure>
+<p>Each recursive call uses stack memory; very deep recursion causes a <code>StackOverflowError</code>. Loops are usually more efficient for simple repetition; recursion shines for naturally recursive problems (trees, folders, divide-and-conquer algorithms).</p>
+<h2>Static vs instance methods</h2>
+<div class="static-table"><table><thead><tr><th>Static method</th><th>Instance method</th></tr></thead><tbody><tr><td>Belongs to the class: <code>MathUtils.round2(x)</code></td><td>Belongs to an object: <code>account.deposit(500)</code></td></tr><tr><td>Can't use instance fields directly</td><td>Uses the object's fields (<code>this.balance</code>)</td></tr><tr><td>Utilities, factory methods</td><td>Behaviour of a specific object</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    static class Account {
+        private double balance;
+        private final String owner;
+        Account(String owner) { this.owner = owner; }
+
+        void deposit(double amount) {                    // instance method
+            if (amount &lt;= 0) throw new IllegalArgumentException(&quot;Amount must be positive&quot;);
+            balance += amount;
+        }
+        double getBalance() { return balance; }
+
+        static Account openWith(String owner, double first) {   // static factory method
+            Account a = new Account(owner);
+            a.deposit(first);
+            return a;
+        }
+    }
+
+    public static void main(String[] args) {
+        Account acc = Account.openWith(&quot;Juma&quot;, 1000);
+        acc.deposit(250);
+        System.out.println(acc.owner + &quot;: &quot; + acc.getBalance());
+        try {
+            acc.deposit(-5);
+        } catch (IllegalArgumentException e) {
+            System.out.println(&quot;Rejected: &quot; + e.getMessage());
+        }
+    }
+}</code></pre></figure>
+<h2>Writing testable methods</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    static String normalisePhone(String input) {
+        String digits = input.replaceAll(&quot;[^0-9]&quot;, &quot;&quot;);
+        if (digits.matches(&quot;0[17]\\d{8}&quot;)) return &quot;254&quot; + digits.substring(1);
+        if (digits.matches(&quot;254[17]\\d{8}&quot;)) return digits;
+        return null;
+    }
+
+    static void check(String input, String expected) {
+        String actual = normalisePhone(input);
+        boolean ok = expected == null ? actual == null : expected.equals(actual);
+        System.out.println((ok ? &quot;PASS &quot; : &quot;FAIL &quot;) + input + &quot; -&gt; &quot; + actual);
+    }
+
+    public static void main(String[] args) {
+        check(&quot;0712 345 678&quot;, &quot;254712345678&quot;);
+        check(&quot;+254-722-000-111&quot;, &quot;254722000111&quot;);
+        check(&quot;0112345678&quot;, &quot;254112345678&quot;);
+        check(&quot;12345&quot;, null);
+    }
+}</code></pre></figure>
+<p>Pure methods (same input, same output, no side effects) are easy to test. In real projects, JUnit runs tests like these automatically.</p>
+<h2>Practice</h2>
+<ol><li>Write <code>average(double... values)</code> that returns 0 for no values.</li><li>Write a method returning a <code>MinMax</code> object with the lowest and highest mark.</li><li>Write a recursive <code>power(base, exp)</code> and compare it with a loop version.</li><li>Create an <code>Account</code> class with deposit, withdraw (rejecting overdrafts) and a static factory method.</li><li>Write five checks for a <code>isValidKraPin(String pin)</code> method (format: a letter, 9 digits, a letter).</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A method <code>void reset(int count) { count = 0; }</code> is called with a variable <code>total</code>, but <code>total</code> doesn't change. Yet <code>void clear(ArrayList&lt;String&gt; list) { list.clear(); }</code> does empty the caller's list. Why the difference?</span><em>Show answer</em></summary><div class="callout-body"><p>Java passes copies of values. For <code>int</code>, the copy is the number itself, so changing it doesn't affect the caller. For an <code>ArrayList</code>, the copy is a reference to the same list object, so calling <code>clear()</code> modifies that shared object. Reassigning the parameter (<code>list = new ArrayList&lt;&gt;()</code>) wouldn't affect the caller either.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What return type does a method that returns nothing have?</p><details><summary>Show answer</summary><p>void</p></details></li><li><p>Which keyword sends a value back from a method?</p><details><summary>Show answer</summary><p>return</p></details></li><li><p>Two methods with the same name but different parameters is called what?</p><details><summary>Show answer</summary><p>overloading</p></details></li><li><p>If a method changes an int parameter, does the caller's variable change? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>What must every recursive method have so it stops? (two words)</p><details><summary>Show answer</summary><p>base case</p></details></li><li><p>What is the syntax for a parameter that accepts any number of ints? (type then dots)</p><details><summary>Show answer</summary><p>int...</p></details></li><li><p>Which error occurs when recursion goes too deep?</p><details><summary>Show answer</summary><p>StackOverflowError</p></details></li><li><p>Which kind of method can be called without creating an object?</p><details><summary>Show answer</summary><p>static</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 9 in <a href="/learn/java/">Java</a> · <a href="/learn/?book=java">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/java/control-flow/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Conditions, loops and arrays in Java: if/else, switch, for, while, do-while, break/continue, arrays and 2D arrays</a><a class="btn btn-solid btn-sm" href="/learn/java/strings-arrays-lists/">Strings, arrays and ArrayLists <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

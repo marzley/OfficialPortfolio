@@ -125,7 +125,121 @@ int main(void) {
 <p>Tools like <strong>Valgrind</strong> (<code>valgrind ./program</code>) and gcc's <code>-fsanitize=address</code> find these bugs automatically.</p>
 <h2>Why this matters beyond C</h2>
 <p>Languages like Python, Java, JavaScript and Go have a <strong>garbage collector</strong> that frees memory for you. Knowing what happens underneath helps you write faster code in any language, and explains why many security holes (and whole "memory-safe language" debates, like Rust) exist.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which function requests memory from the heap?</p><details><summary>Show answer</summary><p>malloc</p></details></li><li><p>Which function gives memory back?</p><details><summary>Show answer</summary><p>free</p></details></li><li><p>What does malloc return if it fails?</p><details><summary>Show answer</summary><p>NULL</p></details></li><li><p>Which function changes the size of an existing block?</p><details><summary>Show answer</summary><p>realloc</p></details></li><li><p>What is it called when a program forgets to free memory? (two words)</p><details><summary>Show answer</summary><p>memory leak</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 8 in <a href="/learn/c-programming/">C programming</a> · <a href="/learn/?book=c-programming">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/c-programming/pointers-memory/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Pointers and memory in C: addresses, dereferencing, pointers and functions, arrays, pointer arithmetic, malloc/free and common bugs</a><a class="btn btn-solid btn-sm" href="/learn/c-programming/structs-files/">Structs and files in C: grouping data with struct, arrays of structs, pointers to structs, typedef, enums and reading/writing files <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why dynamic memory matters</h2>
+<p>Fixed-size arrays only work when you know the size in advance. Real programs often don't: how many customers will register today, how long a file is, how many sensor readings arrive. Dynamic memory lets programs request exactly what they need at runtime. It's used in operating systems, databases, games and embedded firmware, and understanding it explains how higher-level languages (Python lists, Java objects) manage memory behind the scenes, and why memory leaks and crashes happen.</p>
+<h2>A growing list (like Python's list or Java's ArrayList)</h2>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main(void) {
+    int capacity = 2;
+    int count = 0;
+    int *amounts = malloc(capacity * sizeof(int));
+    if (amounts == NULL) { printf(&quot;Out of memory\n&quot;); return 1; }
+
+    int incoming[7];
+    incoming[0] = 500; incoming[1] = 1200; incoming[2] = 350; incoming[3] = 2500;
+    incoming[4] = 800; incoming[5] = 150; incoming[6] = 4100;
+
+    for (int i = 0; i &lt; 7; i++) {
+        if (count == capacity) {
+            capacity = capacity * 2;                      /* double the space */
+            int *bigger = realloc(amounts, capacity * sizeof(int));
+            if (bigger == NULL) { free(amounts); printf(&quot;Out of memory\n&quot;); return 1; }
+            amounts = bigger;
+            printf(&quot;Grew to capacity %d\n&quot;, capacity);
+        }
+        amounts[count] = incoming[i];
+        count++;
+    }
+
+    int total = 0;
+    for (int i = 0; i &lt; count; i++) total += amounts[i];
+    printf(&quot;%d payments, total KSh %d\n&quot;, count, total);
+    free(amounts);
+    amounts = NULL;
+    return 0;
+}</code></pre></figure>
+<p>Doubling the capacity each time keeps the number of <code>realloc</code> calls small; this is how dynamic arrays in many languages work internally. Note the pattern of assigning <code>realloc</code>'s result to a temporary pointer first: if it fails, the original block is still valid and can be freed.</p>
+<h2>calloc: zeroed memory</h2>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main(void) {
+    int days = 7;
+    int *sales = calloc(days, sizeof(int));     /* all values start at 0 */
+    if (sales == NULL) return 1;
+    sales[2] = 1500;
+    sales[5] = 900;
+    for (int d = 0; d &lt; days; d++) printf(&quot;Day %d: %d\n&quot;, d + 1, sales[d]);
+    free(sales);
+    return 0;
+}</code></pre></figure>
+<p><code>malloc</code> leaves memory with unpredictable contents; <code>calloc</code> sets it all to zero.</p>
+<h2>A dynamic array of structs</h2>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+struct Student {
+    char name[30];
+    int mark;
+};
+
+void set_student(struct Student *s, char name[], int mark) {
+    strcpy(s-&gt;name, name);
+    s-&gt;mark = mark;
+}
+
+int main(void) {
+    int n = 3;
+    struct Student *list = malloc(n * sizeof(struct Student));
+    if (list == NULL) return 1;
+
+    set_student(&amp;list[0], &quot;Amina&quot;, 78);
+    set_student(&amp;list[1], &quot;Brian&quot;, 91);
+    set_student(&amp;list[2], &quot;Chebet&quot;, 64);
+
+    int best = 0;
+    for (int i = 1; i &lt; n; i++) {
+        if (list[i].mark &gt; list[best].mark) best = i;
+    }
+    for (int i = 0; i &lt; n; i++) printf(&quot;%-8s %d\n&quot;, list[i].name, list[i].mark);
+    printf(&quot;Top student: %s\n&quot;, list[best].name);
+
+    free(list);
+    return 0;
+}</code></pre></figure>
+<p><code>s-&gt;name</code> is shorthand for <code>(*s).name</code>: access a field through a pointer.</p>
+<h2>Reading a line of unknown length (concept)</h2>
+<figure class="static-code"><figcaption>C</figcaption><pre><code class="language-c">char *read_line(FILE *in) {
+    int cap = 16, len = 0, c;
+    char *buf = malloc(cap);
+    if (!buf) return NULL;
+    while ((c = fgetc(in)) != EOF &amp;&amp; c != &#x27;\n&#x27;) {
+        if (len + 1 &gt;= cap) {
+            cap *= 2;
+            char *tmp = realloc(buf, cap);
+            if (!tmp) { free(buf); return NULL; }
+            buf = tmp;
+        }
+        buf[len++] = (char) c;
+    }
+    buf[len] = &#x27;\0&#x27;;
+    return buf;          /* the caller must free() it */
+}</code></pre></figure>
+<p>Functions that return allocated memory must clearly document that the caller is responsible for freeing it.</p>
+<h2>Ownership rules that prevent bugs</h2>
+<ol><li>**Every <code>malloc</code>/<code>calloc</code>/<code>realloc</code> has exactly one matching <code>free</code>.**</li><li>Decide which function <strong>owns</strong> each block (who frees it); document it.</li><li>Set pointers to <code>NULL</code> after freeing to avoid accidental reuse.</li><li>Never free memory you didn't allocate (stack variables, string literals).</li><li>Check every allocation for <code>NULL</code>.</li><li>Free in reverse order of allocation for nested structures (free inner parts before the outer struct).</li></ol>
+<h2>Finding memory bugs with tools</h2>
+<div class="static-table"><table><thead><tr><th>Tool</th><th>Finds</th></tr></thead><tbody><tr><td>Valgrind (<code>valgrind --leak-check=full ./app</code>)</td><td>Leaks, invalid reads/writes, use of uninitialised memory</td></tr><tr><td>AddressSanitizer (<code>gcc -fsanitize=address -g</code>)</td><td>Out-of-bounds access, use-after-free, double free</td></tr><tr><td>Compiler warnings (<code>-Wall -Wextra</code>)</td><td>Many simple mistakes</td></tr></tbody></table></div>
+<p>Run tests under these tools regularly; memory bugs often don't crash immediately, which makes them hard to find later.</p>
+<h2>Memory in embedded systems</h2>
+<p>Many microcontrollers have only a few kilobytes of RAM. Embedded developers often <strong>avoid dynamic allocation</strong> entirely after start-up (to prevent fragmentation and unpredictable failures), using fixed-size buffers and static pools instead. Safety-critical coding standards (such as MISRA C in the automotive industry) restrict dynamic memory use.</p>
+<h2>Practice</h2>
+<ol><li>Build a dynamic array that reads numbers until -1 and prints their average (on your own computer with scanf).</li><li>Allocate an array of 5 <code>struct Product</code> (name, price), fill it, and print the cheapest product.</li><li>Write a function <code>char *repeat(char *s, int times)</code> that returns a new allocated string, and free it in <code>main</code>.</li><li>Run a program with a deliberate leak under Valgrind or AddressSanitizer and read the report.</li><li>Explain in your own words why <code>realloc</code> should be assigned to a temporary pointer.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A program calls <code>p = realloc(p, new_size);</code> and realloc fails. What goes wrong, and how should it be written?</span><em>Show answer</em></summary><div class="callout-body"><p>On failure realloc returns NULL but doesn't free the original block. Assigning directly to <code>p</code> overwrites the only pointer to that block with NULL, so the memory leaks and the data is lost. Write <code>tmp = realloc(p, new_size); if (tmp == NULL) { /* handle error, p still valid */ } else { p = tmp; }</code>.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which function requests memory from the heap?</p><details><summary>Show answer</summary><p>malloc</p></details></li><li><p>Which function gives memory back?</p><details><summary>Show answer</summary><p>free</p></details></li><li><p>What does malloc return if it fails?</p><details><summary>Show answer</summary><p>NULL</p></details></li><li><p>Which function changes the size of an existing block?</p><details><summary>Show answer</summary><p>realloc</p></details></li><li><p>What is it called when a program forgets to free memory? (two words)</p><details><summary>Show answer</summary><p>memory leak</p></details></li><li><p>Which function allocates memory and sets it to zero?</p><details><summary>Show answer</summary><p>calloc</p></details></li><li><p>Which operator accesses a struct field through a pointer?</p><details><summary>Show answer</summary><p>-&gt;</p></details></li><li><p>Which tool reports memory leaks when running a program? (name one)</p><details><summary>Show answer</summary><p>Valgrind</p></details></li><li><p>What should you set a pointer to after freeing it?</p><details><summary>Show answer</summary><p>NULL</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 8 in <a href="/learn/c-programming/">C programming</a> · <a href="/learn/?book=c-programming">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/c-programming/pointers-memory/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Pointers and memory in C: addresses, dereferencing, pointers and functions, arrays, pointer arithmetic, malloc/free and common bugs</a><a class="btn btn-solid btn-sm" href="/learn/c-programming/structs-files/">Structs and files in C: grouping data with struct, arrays of structs, pointers to structs, typedef, enums and reading/writing files <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

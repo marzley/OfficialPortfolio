@@ -141,7 +141,120 @@ class Program
 <p><code>s =&gt; s.Mark &gt;= 50</code> is a <strong>lambda expression</strong>: a small function passed to the method.</p>
 <h2>Arrays vs List</h2>
 <div class="static-table"><table><thead><tr><th></th><th>Array <code>int[]</code></th><th><code>List&lt;int&gt;</code></th></tr></thead><tbody><tr><td>Size</td><td>Fixed</td><td>Grows</td></tr><tr><td>Length</td><td><code>arr.Length</code></td><td><code>list.Count</code></td></tr><tr><td>Use when</td><td>Size is known and fixed</td><td>Most of the time</td></tr></tbody></table></div>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which collection stores key-value pairs in C#?</p><details><summary>Show answer</summary><p>Dictionary</p></details></li><li><p>Which List property gives the number of items?</p><details><summary>Show answer</summary><p>Count</p></details></li><li><p>Which LINQ method filters items?</p><details><summary>Show answer</summary><p>Where</p></details></li><li><p>Which LINQ method transforms each item?</p><details><summary>Show answer</summary><p>Select</p></details></li><li><p>What is s =&gt; s.Mark &gt;= 50 called? (two words)</p><details><summary>Show answer</summary><p>lambda expression</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 7 in <a href="/learn/csharp/">C#</a> · <a href="/learn/?book=csharp">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/csharp/variables-control-flow/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Variables, types, conditions and loops in C#</a><a class="btn btn-solid btn-sm" href="/learn/csharp/classes-linq/">Classes and LINQ in C#: properties, constructors, records, inheritance, interfaces, collections and querying data with LINQ <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Where collections and LINQ are used</h2>
+<p>Business applications constantly work with lists of records: customers, invoices, products, students, transactions. C#'s <code>List&lt;T&gt;</code>, <code>Dictionary&lt;TKey, TValue&gt;</code> and LINQ (Language Integrated Query) make filtering, grouping, sorting and summarising data short and readable. ASP.NET APIs, Unity games and desktop apps all use them daily, and LINQ queries look very similar to SQL, which helps when working with databases through Entity Framework.</p>
+<h2>Records: concise data types</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+using System.Collections.Generic;
+
+record Product(int Id, string Name, string Category, decimal Price, int Stock);
+
+class Program
+{
+    static void Main()
+    {
+        var p1 = new Product(1, &quot;Unga 2kg&quot;, &quot;Food&quot;, 180m, 12);
+        var p2 = p1 with { Price = 190m };          // copy with one change
+        Console.WriteLine(p1);
+        Console.WriteLine(p2);
+        Console.WriteLine(p1 == new Product(1, &quot;Unga 2kg&quot;, &quot;Food&quot;, 180m, 12));   // value equality: True
+    }
+}</code></pre></figure>
+<p>Records give you a constructor, properties, readable <code>ToString()</code>, value-based equality and <code>with</code> copies in one line, ideal for data from databases and APIs.</p>
+<h2>LINQ: grouping and summarising</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+using System.Collections.Generic;
+using System.Linq;
+
+record Sale(string Town, string Product, int Qty, decimal Price)
+{
+    public decimal Amount =&gt; Qty * Price;
+}
+
+class Program
+{
+    static void Main()
+    {
+        var sales = new List&lt;Sale&gt;
+        {
+            new(&quot;Nakuru&quot;, &quot;Unga&quot;, 10, 180m), new(&quot;Thika&quot;, &quot;Sugar&quot;, 4, 210m),
+            new(&quot;Nakuru&quot;, &quot;Oil&quot;, 4, 350m), new(&quot;Eldoret&quot;, &quot;Unga&quot;, 5, 180m),
+            new(&quot;Thika&quot;, &quot;Unga&quot;, 6, 180m),
+        };
+
+        var byTown = sales
+            .GroupBy(s =&gt; s.Town)
+            .Select(g =&gt; new { Town = g.Key, Orders = g.Count(), Revenue = g.Sum(s =&gt; s.Amount) })
+            .OrderByDescending(x =&gt; x.Revenue);
+
+        foreach (var t in byTown)
+            Console.WriteLine($&quot;{t.Town,-8} {t.Orders,2} orders  KSh {t.Revenue,8:N0}&quot;);
+
+        Console.WriteLine($&quot;Total revenue: KSh {sales.Sum(s =&gt; s.Amount):N0}&quot;);
+        Console.WriteLine($&quot;Average sale: KSh {sales.Average(s =&gt; s.Amount):N0}&quot;);
+        Console.WriteLine($&quot;Best seller: {sales.GroupBy(s =&gt; s.Product).OrderByDescending(g =&gt; g.Sum(s =&gt; s.Qty)).First().Key}&quot;);
+        Console.WriteLine($&quot;Any sale over 3,000? {sales.Any(s =&gt; s.Amount &gt; 3000m)}&quot;);
+    }
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>LINQ method</th><th>SQL equivalent</th><th>Purpose</th></tr></thead><tbody><tr><td><code>Where</code></td><td><code>WHERE</code></td><td>Filter</td></tr><tr><td><code>Select</code></td><td><code>SELECT</code></td><td>Transform/project</td></tr><tr><td><code>OrderBy</code> / <code>OrderByDescending</code> / <code>ThenBy</code></td><td><code>ORDER BY</code></td><td>Sort</td></tr><tr><td><code>GroupBy</code></td><td><code>GROUP BY</code></td><td>Group</td></tr><tr><td><code>Count</code>, <code>Sum</code>, <code>Average</code>, <code>Min</code>, <code>Max</code></td><td>Aggregates</td><td>Summaries</td></tr><tr><td><code>First</code>, <code>FirstOrDefault</code>, <code>Single</code></td><td><code>LIMIT 1</code></td><td>One item</td></tr><tr><td><code>Any</code>, <code>All</code></td><td><code>EXISTS</code></td><td>Yes/no checks</td></tr><tr><td><code>Distinct</code>, <code>Take</code>, <code>Skip</code></td><td><code>DISTINCT</code>, <code>LIMIT</code>, <code>OFFSET</code></td><td>Unique items, paging</td></tr></tbody></table></div>
+<h2>Dictionaries: safe lookups and counting</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program
+{
+    static void Main()
+    {
+        var prices = new Dictionary&lt;string, decimal&gt;(StringComparer.OrdinalIgnoreCase)
+        {
+            [&quot;unga&quot;] = 180m, [&quot;sugar&quot;] = 210m, [&quot;oil&quot;] = 350m
+        };
+
+        if (prices.TryGetValue(&quot;SUGAR&quot;, out decimal price))      // case-insensitive keys
+            Console.WriteLine($&quot;Sugar: {price}&quot;);
+        Console.WriteLine(prices.GetValueOrDefault(&quot;salt&quot;, 0m));
+
+        string[] words = &quot;pay fees pay rent pay fees&quot;.Split(&#x27; &#x27;);
+        var counts = new Dictionary&lt;string, int&gt;();
+        foreach (var w in words)
+            counts[w] = counts.GetValueOrDefault(w) + 1;
+        foreach (var kv in counts.OrderByDescending(kv =&gt; kv.Value))
+            Console.WriteLine($&quot;{kv.Key}: {kv.Value}&quot;);
+    }
+}</code></pre></figure>
+<p><code>TryGetValue</code> avoids <code>KeyNotFoundException</code>; a <code>StringComparer</code> makes keys case-insensitive, which helps with user-typed data.</p>
+<h2>HashSet and Queue</h2>
+<figure class="static-code"><figcaption>C# · runs live in the interactive lesson</figcaption><pre><code class="language-csharp">using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        var receipts = new HashSet&lt;string&gt;();
+        foreach (var r in new[] { &quot;QJK1&quot;, &quot;QJK2&quot;, &quot;QJK1&quot;, &quot;QJK3&quot; })
+        {
+            if (!receipts.Add(r))                  // Add returns false for duplicates
+                Console.WriteLine($&quot;Duplicate receipt {r} ignored&quot;);
+        }
+        Console.WriteLine($&quot;Unique receipts: {receipts.Count}&quot;);
+
+        var queue = new Queue&lt;string&gt;();
+        queue.Enqueue(&quot;Customer A&quot;);
+        queue.Enqueue(&quot;Customer B&quot;);
+        queue.Enqueue(&quot;Customer C&quot;);
+        while (queue.Count &gt; 0)
+            Console.WriteLine($&quot;Serving {queue.Dequeue()}&quot;);
+    }
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Collection</th><th>Use</th></tr></thead><tbody><tr><td><code>List&lt;T&gt;</code></td><td>Ordered list, index access</td></tr><tr><td><code>Dictionary&lt;K,V&gt;</code></td><td>Lookup by key</td></tr><tr><td><code>HashSet&lt;T&gt;</code></td><td>Unique items, fast "contains"</td></tr><tr><td><code>Queue&lt;T&gt;</code></td><td>First in, first out (customer queues, jobs)</td></tr><tr><td><code>Stack&lt;T&gt;</code></td><td>Last in, first out (undo history)</td></tr><tr><td><code>SortedDictionary&lt;K,V&gt;</code></td><td>Keys kept in order</td></tr></tbody></table></div>
+<h2>Classes vs records vs structs</h2>
+<div class="static-table"><table><thead><tr><th>Type</th><th>Use when</th></tr></thead><tbody><tr><td><code>class</code></td><td>Objects with identity and behaviour that change over time (an <code>Account</code> with deposits)</td></tr><tr><td><code>record</code></td><td>Data that's mostly read-only and compared by value (DTOs, API responses, report rows)</td></tr><tr><td><code>struct</code></td><td>Small value types (coordinates, money amounts) where copying is cheap</td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Create a <code>record Student(string Name, int Form, double Mean)</code> list and print the top student in each form with LINQ.</li><li>Group a list of expenses by category and show totals sorted from largest to smallest.</li><li>Count word frequencies with a <code>Dictionary&lt;string, int&gt;</code>.</li><li>Use a <code>HashSet&lt;string&gt;</code> to detect duplicate phone numbers.</li><li>Simulate a bank queue with <code>Queue&lt;string&gt;</code> serving five customers.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why is <code>prices.TryGetValue(key, out var p)</code> usually better than <code>prices[key]</code> when the key comes from user input?</span><em>Show answer</em></summary><div class="callout-body"><p><code>prices[key]</code> throws a <code>KeyNotFoundException</code> if the key doesn't exist, which crashes the request unless caught. <code>TryGetValue</code> returns <code>false</code> for missing keys so you can show a friendly message, and it looks the key up only once.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which collection stores key-value pairs in C#?</p><details><summary>Show answer</summary><p>Dictionary</p></details></li><li><p>Which List property gives the number of items?</p><details><summary>Show answer</summary><p>Count</p></details></li><li><p>Which LINQ method filters items?</p><details><summary>Show answer</summary><p>Where</p></details></li><li><p>Which LINQ method transforms each item?</p><details><summary>Show answer</summary><p>Select</p></details></li><li><p>What is s =&gt; s.Mark &gt;= 50 called? (two words)</p><details><summary>Show answer</summary><p>lambda expression</p></details></li><li><p>Which C# type gives value equality, ToString and with-copies in one line?</p><details><summary>Show answer</summary><p>record</p></details></li><li><p>Which LINQ method groups items by a key?</p><details><summary>Show answer</summary><p>GroupBy</p></details></li><li><p>Which collection returns false from Add when the item already exists?</p><details><summary>Show answer</summary><p>HashSet</p></details></li><li><p>Which Dictionary method looks up a key without throwing if it's missing?</p><details><summary>Show answer</summary><p>TryGetValue</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 7 in <a href="/learn/csharp/">C#</a> · <a href="/learn/?book=csharp">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/csharp/variables-control-flow/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Variables, types, conditions and loops in C#</a><a class="btn btn-solid btn-sm" href="/learn/csharp/classes-linq/">Classes and LINQ in C#: properties, constructors, records, inheritance, interfaces, collections and querying data with LINQ <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

@@ -144,7 +144,161 @@ int main(void) {
     printf(&quot;Digits: %d, letters: %d\n%s\n&quot;, digits, letters, sms);
     return 0;
 }</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the index of the first element of a C array?</p><details><summary>Show answer</summary><p>0</p></details></li><li><p>What character marks the end of a C string? (write it as in code)</p><details><summary>Show answer</summary><p>'\0'</p></details></li><li><p>How many chars of space does the string "Kenya" need?</p><details><summary>Show answer</summary><p>6</p></details></li><li><p>Which function compares two strings?</p><details><summary>Show answer</summary><p>strcmp</p></details></li><li><p>Does C check array bounds for you? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 8 in <a href="/learn/c-programming/">C programming</a> · <a href="/learn/?book=c-programming">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/c-programming/control-functions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Conditions, loops and functions in C: if/else, switch, for, while, do-while, writing functions, scope and header files</a><a class="btn btn-solid btn-sm" href="/learn/c-programming/pointers-memory/">Pointers and memory in C: addresses, dereferencing, pointers and functions, arrays, pointer arithmetic, malloc/free and common bugs <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Where arrays and strings are used in C</h2>
+<p>Arrays hold sensor readings in embedded devices, pixel data in images, buffers of network packets, and lists of records in small systems. C strings are everywhere in system programming: file paths, commands, messages sent over serial ports, SMS text in GSM modules. Because C doesn't protect you from going past the end of an array, careless string handling has caused many famous security vulnerabilities (buffer overflows). Learning to handle them carefully is essential.</p>
+<h2>Finding minimum, maximum and searching</h2>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void) {
+    int marks[8];
+    marks[0] = 67; marks[1] = 82; marks[2] = 45; marks[3] = 90;
+    marks[4] = 58; marks[5] = 73; marks[6] = 39; marks[7] = 88;
+    int n = 8;
+
+    int min = marks[0];
+    int max = marks[0];
+    int sum = 0;
+    int passed = 0;
+    for (int i = 0; i &lt; n; i++) {
+        if (marks[i] &lt; min) min = marks[i];
+        if (marks[i] &gt; max) max = marks[i];
+        if (marks[i] &gt;= 50) passed++;
+        sum += marks[i];
+    }
+    printf(&quot;Min %d, max %d, average %.1f, passed %d of %d\n&quot;, min, max, (double) sum / n, passed, n);
+
+    int target = 73;
+    int found = -1;
+    for (int i = 0; i &lt; n; i++) {
+        if (marks[i] == target) { found = i; break; }
+    }
+    if (found &gt;= 0) printf(&quot;%d found at index %d\n&quot;, target, found);
+    else printf(&quot;%d not found\n&quot;, target);
+    return 0;
+}</code></pre></figure>
+<h2>Sorting with bubble sort</h2>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+void print_array(int *a, int n) {
+    for (int i = 0; i &lt; n; i++) printf(&quot;%d &quot;, a[i]);
+    printf(&quot;\n&quot;);
+}
+
+void bubble_sort(int *a, int n) {
+    for (int pass = 0; pass &lt; n - 1; pass++) {
+        int swapped = 0;
+        for (int i = 0; i &lt; n - 1 - pass; i++) {
+            if (a[i] &gt; a[i + 1]) {
+                int tmp = a[i];
+                a[i] = a[i + 1];
+                a[i + 1] = tmp;
+                swapped = 1;
+            }
+        }
+        if (!swapped) break;          /* already sorted: stop early */
+    }
+}
+
+int main(void) {
+    int prices[6];
+    prices[0] = 350; prices[1] = 180; prices[2] = 2500;
+    prices[3] = 60; prices[4] = 900; prices[5] = 210;
+    print_array(prices, 6);
+    bubble_sort(prices, 6);
+    print_array(prices, 6);
+    return 0;
+}</code></pre></figure>
+<p>Bubble sort is simple but slow for large data; the standard library's <code>qsort</code> is much faster. Learning it builds understanding of loops, swaps and passing arrays to functions.</p>
+<h2>Building strings safely</h2>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+int main(void) {
+    char first[20];
+    char last[20];
+    char full[40];
+    strcpy(first, &quot;Achieng&quot;);
+    strcpy(last, &quot;Odhiambo&quot;);
+
+    strcpy(full, first);
+    strcat(full, &quot; &quot;);
+    strcat(full, last);
+    printf(&quot;Full name: %s (%d characters)\n&quot;, full, (int) strlen(full));
+
+    char message[60];
+    snprintf(message, sizeof message, &quot;Habari %s, your balance is KSh %d&quot;, first, 1250);
+    printf(&quot;%s\n&quot;, message);
+    return 0;
+}</code></pre></figure>
+<p><code>snprintf</code> writes formatted text into a buffer and never writes more than the size you give it, which makes it much safer than repeated <code>strcat</code>.</p>
+<h2>Reversing and checking palindromes</h2>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+void reverse(char *s) {
+    int i = 0;
+    int j = strlen(s) - 1;
+    while (i &lt; j) {
+        char tmp = s[i];
+        s[i] = s[j];
+        s[j] = tmp;
+        i++;
+        j--;
+    }
+}
+
+int is_palindrome(char s[]) {
+    int i = 0;
+    int j = strlen(s) - 1;
+    while (i &lt; j) {
+        if (s[i] != s[j]) return 0;
+        i++;
+        j--;
+    }
+    return 1;
+}
+
+int main(void) {
+    char word[20];
+    strcpy(word, &quot;Kenya&quot;);
+    reverse(word);
+    printf(&quot;Reversed: %s\n&quot;, word);
+    printf(&quot;racecar palindrome? %d\n&quot;, is_palindrome(&quot;racecar&quot;));
+    printf(&quot;nairobi palindrome? %d\n&quot;, is_palindrome(&quot;nairobi&quot;));
+    return 0;
+}</code></pre></figure>
+<h2>Validating a phone number</h2>
+<figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;ctype.h&gt;
+
+int valid_phone(char s[]) {
+    if (strlen(s) != 10) return 0;
+    if (s[0] != &#x27;0&#x27;) return 0;
+    if (s[1] != &#x27;7&#x27; &amp;&amp; s[1] != &#x27;1&#x27;) return 0;
+    for (int i = 0; i &lt; 10; i++) {
+        if (!isdigit(s[i])) return 0;
+    }
+    return 1;
+}
+
+int main(void) {
+    printf(&quot;0712345678 -&gt; %d\n&quot;, valid_phone(&quot;0712345678&quot;));
+    printf(&quot;0112345678 -&gt; %d\n&quot;, valid_phone(&quot;0112345678&quot;));
+    printf(&quot;07123 -&gt; %d\n&quot;, valid_phone(&quot;07123&quot;));
+    printf(&quot;07123456a8 -&gt; %d\n&quot;, valid_phone(&quot;07123456a8&quot;));
+    return 0;
+}</code></pre></figure>
+<h2>Buffer overflows: the classic danger</h2>
+<figure class="static-code"><figcaption>C</figcaption><pre><code class="language-c">char name[8];
+strcpy(name, &quot;A very long name indeed&quot;);   /* writes past the end of name: undefined behaviour */</code></pre></figure>
+<p>Writing beyond an array's end can corrupt other variables, crash the program, or let attackers run their own code. Safer habits:</p>
+<div class="static-table"><table><thead><tr><th>Risky</th><th>Safer</th></tr></thead><tbody><tr><td><code>gets(buffer)</code> (removed from the standard)</td><td><code>fgets(buffer, sizeof buffer, stdin)</code></td></tr><tr><td><code>strcpy(dest, src)</code> with unknown length</td><td>Check <code>strlen(src) &lt; sizeof dest</code>, or use <code>snprintf</code></td></tr><tr><td><code>sprintf(buf, ...)</code></td><td><code>snprintf(buf, sizeof buf, ...)</code></td></tr><tr><td><code>scanf(&quot;%s&quot;, buf)</code></td><td><code>scanf(&quot;%19s&quot;, buf)</code> with a width limit, or <code>fgets</code></td></tr><tr><td>Loops with <code>i &lt;= n</code></td><td><code>i &lt; n</code></td></tr></tbody></table></div>
+<p>Compiler tools like <code>-fsanitize=address</code> (AddressSanitizer) detect many out-of-bounds errors during testing.</p>
+<h2>Practice</h2>
+<ol><li>Store 10 daily temperatures and print the hottest day, coldest day and average.</li><li>Sort an array of 8 prices with bubble sort, then print them from highest to lowest.</li><li>Write <code>count_char(s, c)</code> that counts how often a character appears in a string.</li><li>Build a greeting with <code>snprintf</code> that includes a name and an amount.</li><li>Write a function that checks whether a KRA PIN-like code has a letter, 9 digits and a letter.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why must a buffer for the string "Nairobi" be at least 8 chars, and what goes wrong with <code>char town[7]; strcpy(town, &quot;Nairobi&quot;);</code>?</span><em>Show answer</em></summary><div class="callout-body"><p>"Nairobi" has 7 letters plus the terminating <code>&#x27;\0&#x27;</code>, so it needs 8 bytes. With only 7, <code>strcpy</code> writes the <code>&#x27;\0&#x27;</code> one byte past the end, which is a buffer overflow: it may overwrite another variable or crash, and the behaviour is undefined even if it seems to work.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the index of the first element of a C array?</p><details><summary>Show answer</summary><p>0</p></details></li><li><p>What character marks the end of a C string? (write it as in code)</p><details><summary>Show answer</summary><p>'\0'</p></details></li><li><p>How many chars of space does the string "Kenya" need?</p><details><summary>Show answer</summary><p>6</p></details></li><li><p>Which function compares two strings?</p><details><summary>Show answer</summary><p>strcmp</p></details></li><li><p>Does C check array bounds for you? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which function writes formatted text into a buffer with a size limit?</p><details><summary>Show answer</summary><p>snprintf</p></details></li><li><p>Which unsafe input function was removed from the C standard?</p><details><summary>Show answer</summary><p>gets</p></details></li><li><p>Which ctype.h function checks whether a character is a digit?</p><details><summary>Show answer</summary><p>isdigit</p></details></li><li><p>In bubble sort, what flag lets you stop early when the array is already sorted?</p><details><summary>Show answer</summary><p>swapped</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 8 in <a href="/learn/c-programming/">C programming</a> · <a href="/learn/?book=c-programming">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/c-programming/control-functions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Conditions, loops and functions in C: if/else, switch, for, while, do-while, writing functions, scope and header files</a><a class="btn btn-solid btn-sm" href="/learn/c-programming/pointers-memory/">Pointers and memory in C: addresses, dereferencing, pointers and functions, arrays, pointer arithmetic, malloc/free and common bugs <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

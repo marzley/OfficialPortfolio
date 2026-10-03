@@ -129,7 +129,138 @@ int main() {
 <p>Inheritance models <strong>is a</strong> (a Circle <em>is a</em> Shape). Many designs are better with <strong>composition</strong>, <strong>has a</strong>: a <code>Car</code> <em>has an</em> <code>Engine</code> member rather than inheriting from <code>Engine</code>. A good rule: prefer composition unless there's a true "is a" relationship.</p>
 <h2>The rule of zero</h2>
 <p>If your class only uses members that manage themselves (<code>string</code>, <code>vector</code>, smart pointers), you don't need to write a destructor, copy constructor or assignment operator at all: the compiler's versions are correct. That's the modern C++ "rule of zero".</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword lets a derived class replace a base class function at runtime?</p><details><summary>Show answer</summary><p>virtual</p></details></li><li><p>Which keyword asks the compiler to check that you are overriding a virtual function?</p><details><summary>Show answer</summary><p>override</p></details></li><li><p>What does = 0 after a virtual function make it? (two words)</p><details><summary>Show answer</summary><p>pure virtual</p></details></li><li><p>Which smart pointer owns an object and deletes it automatically?</p><details><summary>Show answer</summary><p>unique_ptr</p></details></li><li><p>Should a base class with virtual functions have a virtual destructor? (yes or no)</p><details><summary>Show answer</summary><p>yes</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 7 in <a href="/learn/cpp/">C++</a> · <a href="/learn/?book=cpp">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/cpp/classes/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Classes and objects in C++: members, constructors, access control, const methods, operator overloading, RAII and smart pointers</a><a class="btn btn-solid btn-sm" href="/learn/cpp/project-inventory/">Project: a shop inventory manager in C++ <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Where inheritance and polymorphism are used</h2>
+<p>Object-oriented design organises large programs: game engines have a base <code>Entity</code> with players, enemies and items deriving from it; GUI frameworks have widgets (buttons, text boxes) sharing a base class; payment systems treat card, mobile money and bank transfers through one interface. Understanding inheritance, virtual functions and when to prefer composition helps you read and design professional C++ code.</p>
+<h2>A payment hierarchy</h2>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Payment {
+public:
+    Payment(double amount) : amount(amount) {}
+    virtual ~Payment() {}
+    virtual string method() const = 0;            // pure virtual: must be implemented
+    virtual double fee() const { return 0; }      // default behaviour
+    double total() const { return amount + fee(); }
+    void receipt() const {
+        cout &lt;&lt; method() &lt;&lt; &quot;: KSh &quot; &lt;&lt; amount &lt;&lt; &quot; + fee &quot; &lt;&lt; fee() &lt;&lt; &quot; = &quot; &lt;&lt; total() &lt;&lt; endl;
+    }
+protected:
+    double amount;
+};
+
+class MpesaPayment : public Payment {
+public:
+    MpesaPayment(double amount, string phone) : Payment(amount), phone(phone) {}
+    string method() const override { return &quot;M-Pesa (&quot; + phone + &quot;)&quot;; }
+private:
+    string phone;
+};
+
+class CardPayment : public Payment {
+public:
+    CardPayment(double amount) : Payment(amount) {}
+    string method() const override { return &quot;Card&quot;; }
+    double fee() const override { return amount * 0.03; }
+};
+
+int main() {
+    MpesaPayment m(1500, &quot;0712345678&quot;);
+    CardPayment c(2000);
+    Payment *payments[2];
+    payments[0] = &amp;m;
+    payments[1] = &amp;c;
+    for (int i = 0; i &lt; 2; i++) payments[i]-&gt;receipt();
+    return 0;
+}</code></pre></figure>
+<p><code>receipt()</code> is written once in the base class but calls the correct <code>method()</code> and <code>fee()</code> for each derived class at runtime. That's <strong>polymorphism</strong>.</p>
+<h2>Constructors and destructors in inheritance</h2>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+class Base {
+public:
+    Base() { cout &lt;&lt; &quot;Base constructed&quot; &lt;&lt; endl; }
+    virtual ~Base() { cout &lt;&lt; &quot;Base destroyed&quot; &lt;&lt; endl; }
+};
+
+class Derived : public Base {
+public:
+    Derived() { cout &lt;&lt; &quot;Derived constructed&quot; &lt;&lt; endl; }
+    ~Derived() override { cout &lt;&lt; &quot;Derived destroyed&quot; &lt;&lt; endl; }
+};
+
+int main() {
+    Base *p = new Derived();
+    delete p;          // with a virtual destructor, both destructors run
+    return 0;
+}</code></pre></figure>
+<p>Base parts are built first and destroyed last. Without <code>virtual</code> on the base destructor, deleting through a <code>Base*</code> would skip the derived destructor and leak resources.</p>
+<h2>Smart pointers and polymorphic containers</h2>
+<figure class="static-code"><figcaption>C++</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;memory&gt;
+#include &lt;vector&gt;
+
+int main() {
+    std::vector&lt;std::unique_ptr&lt;Payment&gt;&gt; payments;
+    payments.push_back(std::make_unique&lt;MpesaPayment&gt;(1500, &quot;0712345678&quot;));
+    payments.push_back(std::make_unique&lt;CardPayment&gt;(2000));
+    for (const auto &amp;p : payments) p-&gt;receipt();
+}   // all payments deleted automatically here</code></pre></figure>
+<p><code>std::unique_ptr</code> owns the object and deletes it automatically; no manual <code>delete</code>, no leaks. <code>std::shared_ptr</code> is for shared ownership (use only when needed).</p>
+<h2>Composition: building from parts</h2>
+<p>Prefer "has a" relationships when one class isn't truly a kind of another:</p>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Address {
+public:
+    Address(string town, string street) : town(town), street(street) {}
+    string label() const { return street + &quot;, &quot; + town; }
+private:
+    string town;
+    string street;
+};
+
+class Customer {
+public:
+    Customer(string name, Address address) : name(name), address(address) {}
+    void print() const { cout &lt;&lt; name &lt;&lt; &quot; - &quot; &lt;&lt; address.label() &lt;&lt; endl; }
+private:
+    string name;
+    Address address;          // a Customer HAS an Address
+};
+
+int main() {
+    Customer c(&quot;Kamau Hardware&quot;, Address(&quot;Nakuru&quot;, &quot;Kenyatta Avenue&quot;));
+    c.print();
+    return 0;
+}</code></pre></figure>
+<p>A <code>Customer</code> isn't a kind of <code>Address</code>, so inheriting would be wrong; containing one is natural and flexible.</p>
+<h2>Interfaces in C++</h2>
+<p>C++ has no <code>interface</code> keyword; an <strong>abstract class with only pure virtual functions</strong> plays that role:</p>
+<figure class="static-code"><figcaption>C++</figcaption><pre><code class="language-cpp">class Notifier {
+public:
+    virtual ~Notifier() = default;
+    virtual bool send(const std::string &amp;to, const std::string &amp;message) = 0;
+};
+
+class SmsNotifier : public Notifier {
+public:
+    bool send(const std::string &amp;to, const std::string &amp;message) override {
+        std::cout &lt;&lt; &quot;SMS to &quot; &lt;&lt; to &lt;&lt; &quot;: &quot; &lt;&lt; message &lt;&lt; &quot;\n&quot;;
+        return true;
+    }
+};</code></pre></figure>
+<p>Code that depends on <code>Notifier&amp;</code> works with SMS, email or a fake notifier used in tests.</p>
+<h2>Common inheritance mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Problem</th><th>Fix</th></tr></thead><tbody><tr><td>No virtual destructor in a polymorphic base</td><td>Derived destructors skipped</td><td><code>virtual ~Base() = default;</code></td></tr><tr><td>Forgetting <code>override</code></td><td>Typos create a new function instead of overriding</td><td>Always write <code>override</code></td></tr><tr><td>Storing derived objects by value in <code>vector&lt;Base&gt;</code></td><td><strong>Slicing</strong>: derived parts are cut off</td><td>Store pointers/smart pointers</td></tr><tr><td>Deep inheritance trees</td><td>Hard to understand and change</td><td>Prefer composition, keep hierarchies shallow</td></tr><tr><td>Making everything <code>public</code></td><td>No encapsulation</td><td><code>private</code> data, <code>protected</code> only when needed</td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Create <code>Shape</code> with pure virtual <code>area()</code> and <code>name()</code>, then <code>Circle</code>, <code>Rectangle</code> and <code>Triangle</code>.</li><li>Store mixed shapes in an array of base pointers and print each area.</li><li>Add a virtual destructor and print messages to see the order of destruction.</li><li>Model <code>Car</code> with an <code>Engine</code> member (composition) rather than inheriting from <code>Engine</code>.</li><li>Rewrite the payment example using <code>std::vector&lt;std::unique_ptr&lt;Payment&gt;&gt;</code>.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> What is object slicing, and how does <code>std::vector&lt;Payment&gt;</code> cause it if you push an <code>MpesaPayment</code>?</span><em>Show answer</em></summary><div class="callout-body"><p>A <code>vector&lt;Payment&gt;</code> stores actual <code>Payment</code> objects. Pushing an <code>MpesaPayment</code> copies only the <code>Payment</code> part into the vector, cutting off the phone field and the derived behaviour, so virtual calls use the base versions. Store pointers (preferably <code>unique_ptr&lt;Payment&gt;</code>) to keep the full derived objects.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword lets a derived class replace a base class function at runtime?</p><details><summary>Show answer</summary><p>virtual</p></details></li><li><p>Which keyword asks the compiler to check that you are overriding a virtual function?</p><details><summary>Show answer</summary><p>override</p></details></li><li><p>What does = 0 after a virtual function make it? (two words)</p><details><summary>Show answer</summary><p>pure virtual</p></details></li><li><p>Which smart pointer owns an object and deletes it automatically?</p><details><summary>Show answer</summary><p>unique_ptr</p></details></li><li><p>Should a base class with virtual functions have a virtual destructor? (yes or no)</p><details><summary>Show answer</summary><p>yes</p></details></li><li><p>What is it called when a derived object is copied into a base object and loses its derived parts?</p><details><summary>Show answer</summary><p>slicing</p></details></li><li><p>Which smart pointer should usually own polymorphic objects in a vector?</p><details><summary>Show answer</summary><p>unique_ptr</p></details></li><li><p>Is "a Customer has an Address" inheritance or composition?</p><details><summary>Show answer</summary><p>composition</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 7 in <a href="/learn/cpp/">C++</a> · <a href="/learn/?book=cpp">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/cpp/classes/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Classes and objects in C++: members, constructors, access control, const methods, operator overloading, RAII and smart pointers</a><a class="btn btn-solid btn-sm" href="/learn/cpp/project-inventory/">Project: a shop inventory manager in C++ <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

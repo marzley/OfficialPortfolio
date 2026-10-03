@@ -106,7 +106,122 @@ log(&quot;Server started&quot;);
 try { fail(&quot;Payment gateway down&quot;); } catch (e) { console.log((e as Error).message); }</code></pre></figure>
 <h2>Overloads (briefly)</h2>
 <p>When a function accepts different argument shapes, you can declare several signatures. Most of the time, a <strong>union type</strong> (next lesson) is simpler.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which symbol after a parameter name makes it optional?</p><details><summary>Show answer</summary><p>?</p></details></li><li><p>Must optional parameters come before or after required ones?</p><details><summary>Show answer</summary><p>after</p></details></li><li><p>What return type means a function returns nothing useful?</p><details><summary>Show answer</summary><p>void</p></details></li><li><p>What return type means a function never finishes normally?</p><details><summary>Show answer</summary><p>never</p></details></li><li><p>What do you call it when TypeScript works out a type without you writing it?</p><details><summary>Show answer</summary><p>inference</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 7 in <a href="/learn/typescript/">TypeScript</a> · <a href="/learn/?book=typescript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/typescript/types-interfaces/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Types, interfaces and functions: object types, optional and readonly properties, unions, narrowing, generics and utility types</a><a class="btn btn-solid btn-sm" href="/learn/typescript/unions-narrowing/">Union types, literal types and narrowing <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why typed functions matter</h2>
+<p>Functions are where most bugs hide: called with the wrong arguments, returning <code>undefined</code> by accident, or receiving a string where a number was expected (very common with form inputs and API data). Typed functions document themselves, let your editor autocomplete correctly, and catch mistakes before the code ever runs. Teams building React apps, Node APIs, Angular projects and mobile apps with React Native rely on this every day.</p>
+<h2>Typing callbacks</h2>
+<p>Many functions take other functions as arguments: event handlers, array methods, API helpers.</p>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type Product = { name: string; price: number; inStock: boolean };
+
+function filterProducts(items: Product[], test: (p: Product) =&gt; boolean): Product[] {
+  return items.filter(test);
+}
+
+const products: Product[] = [
+  { name: &quot;Unga 2kg&quot;, price: 180, inStock: true },
+  { name: &quot;Sugar 1kg&quot;, price: 210, inStock: false },
+  { name: &quot;Cooking oil 1L&quot;, price: 350, inStock: true },
+];
+
+const cheapInStock = filterProducts(products, p =&gt; p.inStock &amp;&amp; p.price &lt; 300);
+console.log(cheapInStock.map(p =&gt; p.name));
+
+function onEach&lt;T&gt;(items: T[], action: (item: T, index: number) =&gt; void): void {
+  items.forEach(action);
+}
+onEach(products, (p, i) =&gt; console.log(`${i + 1}. ${p.name} - KSh ${p.price}`));</code></pre></figure>
+<p>Notice how <code>p</code> in the arrow functions is automatically typed as <code>Product</code>: TypeScript infers callback parameter types from the function signature.</p>
+<h2>Returning objects and tuples</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">function splitName(full: string): { first: string; last: string } {
+  const [first, ...rest] = full.trim().split(/\s+/);
+  return { first, last: rest.join(&quot; &quot;) };
+}
+
+function minMax(values: number[]): [min: number, max: number] {
+  return [Math.min(...values), Math.max(...values)];
+}
+
+const { first, last } = splitName(&quot;Achieng Mary Odhiambo&quot;);
+console.log(first, &quot;|&quot;, last);
+const [lowest, highest] = minMax([67, 82, 45, 90]);
+console.log(`Lowest ${lowest}, highest ${highest}`);</code></pre></figure>
+<p>Labelled tuples (<code>[min: number, max: number]</code>) make return values self-explanatory in editor tooltips.</p>
+<h2>Async functions and Promise types</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type Payment = { receipt: string; amount: number; phone: string };
+
+function fakeLookup(receipt: string): Promise&lt;Payment | null&gt; {
+  return new Promise(resolve =&gt; {
+    setTimeout(() =&gt; {
+      resolve(receipt === &quot;SJK4H2L9XA&quot; ? { receipt, amount: 1500, phone: &quot;254712345678&quot; } : null);
+    }, 20);
+  });
+}
+
+async function describePayment(receipt: string): Promise&lt;string&gt; {
+  const p = await fakeLookup(receipt);
+  if (!p) return `${receipt}: not found`;
+  return `${p.receipt}: KSh ${p.amount} from ${p.phone}`;
+}
+
+(async () =&gt; {
+  console.log(await describePayment(&quot;SJK4H2L9XA&quot;));
+  console.log(await describePayment(&quot;XXXX&quot;));
+})();</code></pre></figure>
+<p>An <code>async</code> function always returns a <code>Promise&lt;...&gt;</code>. Writing the return type explicitly catches mistakes such as forgetting to return in one branch.</p>
+<h2>Type guards: functions that narrow types</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type MpesaPayment = { method: &quot;mpesa&quot;; phone: string; amount: number };
+type CardPayment = { method: &quot;card&quot;; last4: string; amount: number };
+type AnyPayment = MpesaPayment | CardPayment;
+
+function isMpesa(p: AnyPayment): p is MpesaPayment {
+  return p.method === &quot;mpesa&quot;;
+}
+
+const payments: AnyPayment[] = [
+  { method: &quot;mpesa&quot;, phone: &quot;0712345678&quot;, amount: 500 },
+  { method: &quot;card&quot;, last4: &quot;4242&quot;, amount: 2500 },
+];
+
+for (const p of payments) {
+  if (isMpesa(p)) console.log(&quot;M-Pesa from&quot;, p.phone);   // p is MpesaPayment here
+  else console.log(&quot;Card ending&quot;, p.last4);              // p is CardPayment here
+}</code></pre></figure>
+<p>The return type <code>p is MpesaPayment</code> tells TypeScript that when the function returns true, the argument has that type.</p>
+<h2>Assertion functions</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">function assertPositive(n: number, label: string): asserts n {
+  if (!(n &gt; 0)) throw new Error(`${label} must be greater than 0`);
+}
+
+function pay(amount: number) {
+  assertPositive(amount, &quot;Amount&quot;);
+  return `Paying KSh ${amount}`;
+}
+
+console.log(pay(1200));
+try { pay(0); } catch (e) { console.log((e as Error).message); }</code></pre></figure>
+<h2>Generic helper functions (preview)</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">function groupBy&lt;T, K extends string&gt;(items: T[], key: (item: T) =&gt; K): Record&lt;K, T[]&gt; {
+  const out = {} as Record&lt;K, T[]&gt;;
+  for (const item of items) {
+    const k = key(item);
+    (out[k] ??= []).push(item);
+  }
+  return out;
+}
+
+const sales = [
+  { town: &quot;Nakuru&quot;, amount: 1800 },
+  { town: &quot;Thika&quot;, amount: 840 },
+  { town: &quot;Nakuru&quot;, amount: 1400 },
+];
+const byTown = groupBy(sales, s =&gt; s.town);
+console.log(Object.keys(byTown), byTown[&quot;Nakuru&quot;].length);</code></pre></figure>
+<p>You'll learn generics fully in a later lesson; notice how one function works safely for any item type.</p>
+<h2>Best practices</h2>
+<div class="static-table"><table><thead><tr><th>Practice</th><th>Why</th></tr></thead><tbody><tr><td>Type parameters always; let return types be inferred for small functions</td><td>Clear inputs, less noise</td></tr><tr><td>Write explicit return types for exported/public functions</td><td>Stable API, clearer errors</td></tr><tr><td>Prefer one object parameter when there are more than 3 parameters</td><td>Order-proof calls, easier to extend</td></tr><tr><td>Avoid <code>any</code>; use <code>unknown</code> and narrow it</td><td>Keeps type safety</td></tr><tr><td>Keep functions small and pure where possible</td><td>Easier to test</td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Write <code>formatKsh(amount: number, decimals?: number): string</code> with a default of 0 decimals.</li><li>Write <code>applyDiscounts(price: number, ...rules: ((p: number) =&gt; number)[]): number</code>.</li><li>Create a type guard <code>isError(value: unknown): value is Error</code>.</li><li>Write an async function that returns <code>Promise&lt;number[]&gt;</code> of fake marks after a short delay.</li><li>Write a <code>sumBy&lt;T&gt;(items: T[], pick: (item: T) =&gt; number): number</code> helper.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why is <code>unknown</code> safer than <code>any</code> for data coming from an API?</span><em>Show answer</em></summary><div class="callout-body"><p>With <code>any</code>, TypeScript lets you do anything (call methods, read properties) without checks, so mistakes reach runtime. With <code>unknown</code>, you must narrow the type first (typeof checks, type guards or validation) before using it, so you can't accidentally assume the data has a shape it might not have.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which symbol after a parameter name makes it optional?</p><details><summary>Show answer</summary><p>?</p></details></li><li><p>Must optional parameters come before or after required ones?</p><details><summary>Show answer</summary><p>after</p></details></li><li><p>What return type means a function returns nothing useful?</p><details><summary>Show answer</summary><p>void</p></details></li><li><p>What return type means a function never finishes normally?</p><details><summary>Show answer</summary><p>never</p></details></li><li><p>What do you call it when TypeScript works out a type without you writing it?</p><details><summary>Show answer</summary><p>inference</p></details></li><li><p>What return type syntax marks a function as a type guard for Product? (fill in: p is ...)</p><details><summary>Show answer</summary><p>p is Product</p></details></li><li><p>What type does an async function returning a string have? (generic form)</p><details><summary>Show answer</summary><p>Promise&lt;string&gt;</p></details></li><li><p>Which type is safer than any for unknown data?</p><details><summary>Show answer</summary><p>unknown</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 7 in <a href="/learn/typescript/">TypeScript</a> · <a href="/learn/?book=typescript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/typescript/types-interfaces/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Types, interfaces and functions: object types, optional and readonly properties, unions, narrowing, generics and utility types</a><a class="btn btn-solid btn-sm" href="/learn/typescript/unions-narrowing/">Union types, literal types and narrowing <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

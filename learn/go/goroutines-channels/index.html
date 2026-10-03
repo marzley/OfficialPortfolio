@@ -195,7 +195,183 @@ func main() {
 <p>In real servers, the <code>context</code> package carries timeouts and cancellation through every request.</p>
 <h2>The Go proverb</h2>
 <blockquote><p>"Don't communicate by sharing memory; share memory by communicating." Prefer passing data through channels over many goroutines touching the same variables.</p></blockquote>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword starts a function as a goroutine?</p><details><summary>Show answer</summary><p>go</p></details></li><li><p>What type lets goroutines send values to each other safely?</p><details><summary>Show answer</summary><p>channel</p></details></li><li><p>Which sync type waits for a group of goroutines to finish?</p><details><summary>Show answer</summary><p>WaitGroup</p></details></li><li><p>Which sync type protects shared data with Lock and Unlock?</p><details><summary>Show answer</summary><p>Mutex</p></details></li><li><p>Which statement waits on several channel operations at once?</p><details><summary>Show answer</summary><p>select</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 6 in <a href="/learn/go/">Go (Golang)</a> · <a href="/learn/?book=go">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/go/methods-interfaces/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Methods, interfaces and error handling in Go</a><span></span></nav></article>
+<h2>Why concurrency is Go's superpower</h2>
+<p>A busy API might handle thousands of requests at once: checking M-Pesa payment statuses, sending SMS notifications, resizing images, calling other services. Go makes this kind of concurrency simple and efficient: goroutines are cheap (you can run many thousands), and channels let them communicate safely. This is a major reason Go is popular for back-end services, networking tools and cloud infrastructure.</p>
+<h2>Concurrency vs parallelism</h2>
+<div class="static-table"><table><thead><tr><th>Concept</th><th>Meaning</th><th>Example</th></tr></thead><tbody><tr><td>Concurrency</td><td>Managing many tasks that are in progress at the same time</td><td>A server juggling 1,000 open connections</td></tr><tr><td>Parallelism</td><td>Literally running tasks at the same instant on multiple CPU cores</td><td>Resizing 8 images on 8 cores at once</td></tr></tbody></table></div>
+<p>Goroutines give you concurrency; the Go runtime spreads them over available cores for parallelism.</p>
+<h2>Collecting results in order</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;sync&quot;
+	&quot;time&quot;
+)
+
+func checkStatus(receipt string) string {
+	time.Sleep(10 * time.Millisecond) // pretend to call an API
+	return receipt + &quot;: confirmed&quot;
+}
+
+func main() {
+	receipts := []string{&quot;QJK1&quot;, &quot;QJK2&quot;, &quot;QJK3&quot;, &quot;QJK4&quot;}
+	results := make([]string, len(receipts)) // each goroutine writes its own slot
+
+	var wg sync.WaitGroup
+	for i, r := range receipts {
+		wg.Add(1)
+		go func(i int, r string) {
+			defer wg.Done()
+			results[i] = checkStatus(r)
+		}(i, r)
+	}
+	wg.Wait()
+	for _, line := range results {
+		fmt.Println(line)
+	}
+}</code></pre></figure>
+<p>All four checks run at the same time (about 10 ms total instead of 40 ms), and writing to separate slice positions avoids data races while keeping results in the original order.</p>
+<h2>errgroup-style error handling (pattern)</h2>
+<p>When several tasks run concurrently and any can fail, collect the first error:</p>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;errors&quot;
+	&quot;fmt&quot;
+	&quot;sync&quot;
+)
+
+func fetch(id int) (int, error) {
+	if id == 3 {
+		return 0, errors.New(&quot;order 3 not found&quot;)
+	}
+	return id * 100, nil
+}
+
+func main() {
+	ids := []int{1, 2, 3, 4}
+	var (
+		wg       sync.WaitGroup
+		mu       sync.Mutex
+		total    int
+		firstErr error
+	)
+	for _, id := range ids {
+		wg.Add(1)
+		go func(id int) {
+			defer wg.Done()
+			v, err := fetch(id)
+			mu.Lock()
+			defer mu.Unlock()
+			if err != nil {
+				if firstErr == nil {
+					firstErr = err
+				}
+				return
+			}
+			total += v
+		}(id)
+	}
+	wg.Wait()
+	if firstErr != nil {
+		fmt.Println(&quot;Error:&quot;, firstErr)
+	}
+	fmt.Println(&quot;Total of successful fetches:&quot;, total)
+}</code></pre></figure>
+<p>The <code>golang.org/x/sync/errgroup</code> package wraps this pattern neatly in real projects.</p>
+<h2>Context: cancellation and timeouts</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;context&quot;
+	&quot;fmt&quot;
+	&quot;time&quot;
+)
+
+func slowPaymentCheck(ctx context.Context) (string, error) {
+	select {
+	case &lt;-time.After(200 * time.Millisecond): // the &quot;API&quot; takes 200 ms
+		return &quot;paid&quot;, nil
+	case &lt;-ctx.Done(): // cancelled or timed out first
+		return &quot;&quot;, ctx.Err()
+	}
+}
+
+func main() {
+	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)
+	defer cancel()
+	status, err := slowPaymentCheck(ctx)
+	if err != nil {
+		fmt.Println(&quot;Gave up:&quot;, err)
+		return
+	}
+	fmt.Println(&quot;Status:&quot;, status)
+}</code></pre></figure>
+<p>Every HTTP request in Go carries a <code>context</code>; if the client disconnects or a timeout passes, work is cancelled instead of wasting resources. Pass <code>ctx</code> as the first parameter of functions that do I/O.</p>
+<h2>Rate limiting with a ticker</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;time&quot;
+)
+
+func main() {
+	messages := []string{&quot;msg1&quot;, &quot;msg2&quot;, &quot;msg3&quot;, &quot;msg4&quot;}
+	limiter := time.NewTicker(20 * time.Millisecond) // at most one send per 20 ms
+	defer limiter.Stop()
+	start := time.Now()
+	for _, m := range messages {
+		&lt;-limiter.C // wait for the next tick
+		fmt.Println(&quot;sent&quot;, m)
+	}
+	fmt.Println(&quot;took at least 80ms:&quot;, time.Since(start) &gt;= 80*time.Millisecond)
+}</code></pre></figure>
+<p>SMS gateways and payment APIs limit how many requests you can send per second; a ticker or token bucket keeps you within limits.</p>
+<h2>Pipelines with channels</h2>
+<figure class="static-code"><figcaption>Go · runs live in the interactive lesson</figcaption><pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func generate(nums ...int) &lt;-chan int {
+	out := make(chan int)
+	go func() {
+		for _, n := range nums {
+			out &lt;- n
+		}
+		close(out)
+	}()
+	return out
+}
+
+func addVAT(in &lt;-chan int) &lt;-chan float64 {
+	out := make(chan float64)
+	go func() {
+		for n := range in {
+			out &lt;- float64(n) * 1.16
+		}
+		close(out)
+	}()
+	return out
+}
+
+func main() {
+	for v := range addVAT(generate(100, 250, 1000)) {
+		fmt.Printf(&quot;%.2f\n&quot;, v)
+	}
+}</code></pre></figure>
+<p>Each stage runs in its own goroutine and passes values along a channel, like an assembly line. Closing a channel signals "no more values", which ends the <code>range</code> loop.</p>
+<h2>Finding data races</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">go run -race .
+go test -race ./...</code></pre></figure>
+<p>The race detector reports when two goroutines access the same variable at the same time without synchronisation. Run it regularly in tests; races cause rare, hard-to-reproduce bugs.</p>
+<h2>Common concurrency mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Problem</th><th>Fix</th></tr></thead><tbody><tr><td>Forgetting <code>wg.Wait()</code></td><td><code>main</code> exits before goroutines finish</td><td>Wait for the group</td></tr><tr><td>Writing a shared map from several goroutines</td><td>Crash: concurrent map writes</td><td><code>sync.Mutex</code> or <code>sync.Map</code>, or one owner goroutine</td></tr><tr><td>Never closing a channel that's ranged over</td><td>Goroutine waits forever (deadlock or leak)</td><td>Sender closes when done</td></tr><tr><td>Goroutines that never exit</td><td>Memory leaks</td><td>Use <code>context</code> cancellation</td></tr><tr><td>Starting unlimited goroutines for huge workloads</td><td>Resource exhaustion</td><td>Worker pools with a fixed number of workers</td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Check 5 fake payment statuses concurrently and print results in the original order.</li><li>Add a 30 ms timeout with <code>context.WithTimeout</code> to a slow function.</li><li>Build a three-stage pipeline: generate numbers, square them, print them.</li><li>Run a program with a deliberate data race using <code>go run -race</code> and fix it with a mutex.</li><li>Limit a loop of 10 "SMS sends" to one every 50 ms with a ticker.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A Go service starts a new goroutine for every incoming request to call a slow third-party API, with no timeout. During an outage of that API, the service's memory keeps growing until it crashes. Why, and how would you fix it?</span><em>Show answer</em></summary><div class="callout-body"><p>Each goroutine waits forever on the stuck API, so goroutines (and their memory) pile up with every request. Use <code>context</code> with timeouts so calls are abandoned after a reasonable time, limit concurrency with a worker pool or semaphore, and return errors quickly (possibly with retries/backoff or a circuit breaker) when the dependency is down.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword starts a function as a goroutine?</p><details><summary>Show answer</summary><p>go</p></details></li><li><p>What type lets goroutines send values to each other safely?</p><details><summary>Show answer</summary><p>channel</p></details></li><li><p>Which sync type waits for a group of goroutines to finish?</p><details><summary>Show answer</summary><p>WaitGroup</p></details></li><li><p>Which sync type protects shared data with Lock and Unlock?</p><details><summary>Show answer</summary><p>Mutex</p></details></li><li><p>Which statement waits on several channel operations at once?</p><details><summary>Show answer</summary><p>select</p></details></li><li><p>Which package provides cancellation and timeouts passed through function calls?</p><details><summary>Show answer</summary><p>context</p></details></li><li><p>Which go command flag detects data races?</p><details><summary>Show answer</summary><p>-race</p></details></li><li><p>Who should close a channel: the sender or the receiver?</p><details><summary>Show answer</summary><p>sender</p></details></li><li><p>Which time type sends a value on a channel at regular intervals?</p><details><summary>Show answer</summary><p>Ticker</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 6 in <a href="/learn/go/">Go (Golang)</a> · <a href="/learn/?book=go">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/go/methods-interfaces/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Methods, interfaces and error handling in Go</a><span></span></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

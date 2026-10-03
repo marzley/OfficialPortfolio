@@ -125,7 +125,144 @@ final qty = 2;
 final price = 1800.0;
 print(&#x27;$qty x $item = KSh ${(qty * price).toStringAsFixed(2)}&#x27;);</code></pre></figure>
 <p><code>$name</code> inserts a variable; <code>${expression}</code> inserts any expression.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which free website runs Dart and Flutter code in the browser?</p><details><summary>Show answer</summary><p>DartPad</p></details></li><li><p>Which symbol after a type means the variable may be null?</p><details><summary>Show answer</summary><p>?</p></details></li><li><p>Which operator gives a default value when something is null?</p><details><summary>Show answer</summary><p>??</p></details></li><li><p>Which keyword makes a named parameter compulsory?</p><details><summary>Show answer</summary><p>required</p></details></li><li><p>Which list method keeps only matching items?</p><details><summary>Show answer</summary><p>where</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 10 in <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> · <a href="/learn/?book=dart-flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/dart-flutter/dart-basics/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Dart basics: why Dart and Flutter, setup, variables and null safety, strings, control flow, functions and collections</a><a class="btn btn-solid btn-sm" href="/learn/dart-flutter/dart-classes-async/">Dart classes, JSON models and async/await <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why Dart functions and collections matter for Flutter</h2>
+<p>Every Flutter screen is built from Dart: lists of products become <code>ListView</code>s, maps hold JSON from APIs, and functions handle button taps, validation and calculations. Fluency with Dart's collection methods (<code>map</code>, <code>where</code>, <code>fold</code>), named parameters and null safety makes Flutter code shorter, safer and easier to read. Flutter developers are in demand for cross-platform apps used by fintechs, retailers, logistics companies and startups.</p>
+<h2>Named, required and default parameters</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">String formatPrice(double amount, {String currency = &#x27;KSh&#x27;, int decimals = 0}) {
+  return &#x27;$currency ${amount.toStringAsFixed(decimals)}&#x27;;
+}
+
+String orderSummary({required String customer, required int items, double delivery = 0}) {
+  final fee = delivery == 0 ? &#x27;free delivery&#x27; : &#x27;delivery ${formatPrice(delivery)}&#x27;;
+  return &#x27;$customer: $items items, $fee&#x27;;
+}
+
+void main() {
+  print(formatPrice(2500));
+  print(formatPrice(19.5, currency: &#x27;USD&#x27;, decimals: 2));
+  print(orderSummary(customer: &#x27;Wanjiru&#x27;, items: 3));
+  print(orderSummary(customer: &#x27;Otieno&#x27;, items: 1, delivery: 250));
+}</code></pre></figure>
+<p>This is the same style Flutter widgets use: <code>Text(&#x27;Hi&#x27;, style: ...)</code>, <code>Padding(padding: ..., child: ...)</code>. <code>required</code> makes a named parameter compulsory.</p>
+<h2>Functions as values and closures</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">typedef PriceRule = double Function(double price);
+
+PriceRule percentOff(double percent) =&gt; (price) =&gt; price * (1 - percent / 100);
+PriceRule flatOff(double amount) =&gt; (price) =&gt; (price - amount).clamp(0, double.infinity).toDouble();
+
+double applyRules(double price, List&lt;PriceRule&gt; rules) =&gt;
+    rules.fold(price, (current, rule) =&gt; rule(current));
+
+void main() {
+  final rules = [percentOff(10), flatOff(100)];
+  print(applyRules(2000, rules));        // 2000 -&gt; 1800 -&gt; 1700
+
+  var counter = 0;
+  void increment() =&gt; counter++;         // closure captures counter
+  increment();
+  increment();
+  print(&#x27;Counter: $counter&#x27;);
+}</code></pre></figure>
+<p>Callbacks like <code>onPressed: () =&gt; setState(() =&gt; count++)</code> in Flutter are exactly these closures.</p>
+<h2>Collection methods in depth</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">class Product {
+  final String name;
+  final String category;
+  final double price;
+  final int stock;
+  const Product(this.name, this.category, this.price, this.stock);
+}
+
+void main() {
+  const products = [
+    Product(&#x27;Unga 2kg&#x27;, &#x27;Food&#x27;, 180, 12),
+    Product(&#x27;Sugar 1kg&#x27;, &#x27;Food&#x27;, 210, 0),
+    Product(&#x27;Soap&#x27;, &#x27;Home&#x27;, 60, 30),
+    Product(&#x27;Cooking oil 1L&#x27;, &#x27;Food&#x27;, 350, 7),
+  ];
+
+  final inStock = products.where((p) =&gt; p.stock &gt; 0).toList();
+  final names = inStock.map((p) =&gt; p.name).join(&#x27;, &#x27;);
+  final stockValue = products.fold&lt;double&gt;(0, (sum, p) =&gt; sum + p.price * p.stock);
+  final cheapest = products.reduce((a, b) =&gt; a.price &lt; b.price ? a : b);
+  final anyOut = products.any((p) =&gt; p.stock == 0);
+  final sorted = [...products]..sort((a, b) =&gt; b.price.compareTo(a.price));
+
+  print(&#x27;In stock: $names&#x27;);
+  print(&#x27;Stock value: KSh ${stockValue.toStringAsFixed(0)}&#x27;);
+  print(&#x27;Cheapest: ${cheapest.name}&#x27;);
+  print(&#x27;Anything out of stock? $anyOut&#x27;);
+  print(&#x27;Most expensive first: ${sorted.map((p) =&gt; p.name).toList()}&#x27;);
+
+  final byCategory = &lt;String, List&lt;Product&gt;&gt;{};
+  for (final p in products) {
+    byCategory.putIfAbsent(p.category, () =&gt; []).add(p);
+  }
+  byCategory.forEach((cat, list) =&gt; print(&#x27;$cat: ${list.length} products&#x27;));
+}</code></pre></figure>
+<p><code>[...products]..sort(...)</code> copies the list with the spread operator and sorts the copy using the cascade operator <code>..</code>, leaving the original unchanged.</p>
+<h2>Cascades: configuring objects fluently</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">class Receipt {
+  final lines = &lt;String&gt;[];
+  double total = 0;
+  void add(String item, double amount) {
+    lines.add(&#x27;$item: ${amount.toStringAsFixed(0)}&#x27;);
+    total += amount;
+  }
+}
+
+void main() {
+  final r = Receipt()
+    ..add(&#x27;Unga&#x27;, 180)
+    ..add(&#x27;Milk&#x27;, 120)
+    ..add(&#x27;Bread&#x27;, 65);
+  print(r.lines.join(&#x27;\n&#x27;));
+  print(&#x27;Total: ${r.total.toStringAsFixed(0)}&#x27;);
+}</code></pre></figure>
+<h2>Records and pattern matching (Dart 3)</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">(double min, double max) range(List&lt;double&gt; values) {
+  final sorted = [...values]..sort();
+  return (sorted.first, sorted.last);
+}
+
+String describePayment(Map&lt;String, Object?&gt; json) {
+  return switch (json) {
+    {&#x27;method&#x27;: &#x27;mpesa&#x27;, &#x27;phone&#x27;: String phone} =&gt; &#x27;M-Pesa from $phone&#x27;,
+    {&#x27;method&#x27;: &#x27;card&#x27;, &#x27;last4&#x27;: String last4} =&gt; &#x27;Card ending $last4&#x27;,
+    _ =&gt; &#x27;Unknown payment&#x27;,
+  };
+}
+
+void main() {
+  final (low, high) = range([67, 82, 45, 90]);
+  print(&#x27;Lowest $low, highest $high&#x27;);
+
+  print(describePayment({&#x27;method&#x27;: &#x27;mpesa&#x27;, &#x27;phone&#x27;: &#x27;0712345678&#x27;}));
+  print(describePayment({&#x27;method&#x27;: &#x27;card&#x27;, &#x27;last4&#x27;: &#x27;4242&#x27;}));
+  print(describePayment({&#x27;method&#x27;: &#x27;cash&#x27;}));
+}</code></pre></figure>
+<p>Records return several values without creating a class; patterns safely pull values out of JSON-like maps, with the compiler checking types.</p>
+<h2>Null safety with collections</h2>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">void main() {
+  final stock = &lt;String, int&gt;{&#x27;unga&#x27;: 40, &#x27;sugar&#x27;: 25};
+  final salt = stock[&#x27;salt&#x27;];               // int? because the key may be missing
+  print(salt ?? 0);
+  print(stock[&#x27;unga&#x27;]! + 10);               // ! only when you&#x27;re sure
+
+  final List&lt;String?&gt; phones = [&#x27;0712000001&#x27;, null, &#x27;0722000002&#x27;];
+  final valid = phones.whereType&lt;String&gt;().toList();   // removes nulls
+  print(valid);
+
+  final first = phones.firstWhere((p) =&gt; p != null &amp;&amp; p.startsWith(&#x27;07&#x27;), orElse: () =&gt; null);
+  print(first);
+}</code></pre></figure>
+<p><code>whereType&lt;String&gt;()</code> turns a <code>List&lt;String?&gt;</code> into a list of non-null strings, a common clean-up step for API data.</p>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Forgetting <code>.toList()</code> after <code>map</code>/<code>where</code></td><td>They return lazy iterables; call <code>.toList()</code> when you need a list</td></tr><tr><td><code>sort()</code> returns void, so <code>final s = list.sort()</code> fails</td><td>Sort in place, or <code>[...list]..sort()</code></td></tr><tr><td>Using <code>!</code> everywhere</td><td>Use <code>??</code>, <code>?.</code> and proper checks</td></tr><tr><td>Mutating a <code>const</code> list</td><td>Copy it first with the spread operator</td></tr><tr><td><code>reduce</code> on an empty list</td><td>Throws; use <code>fold</code> with a starting value</td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Write <code>double cartTotal(List&lt;Map&lt;String, num&gt;&gt; items, {double vat = 0.16})</code>.</li><li>Group a list of students by form into a <code>Map&lt;int, List&lt;String&gt;&gt;</code>.</li><li>Return the lowest and highest mark as a record and destructure it.</li><li>Use a switch with patterns to describe different notification maps (sms, email, push).</li><li>Clean a list of nullable phone numbers with <code>whereType</code> and keep only valid 10-digit numbers.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why does <code>final total = items.map((i) =&gt; i.price).reduce((a, b) =&gt; a + b);</code> crash for an empty cart, and what's safer?</span><em>Show answer</em></summary><div class="callout-body"><p><code>reduce</code> needs at least one element and throws a StateError on an empty list. <code>fold&lt;double&gt;(0, (sum, i) =&gt; sum + i.price)</code> starts from 0 and works for empty lists, returning 0.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which free website runs Dart and Flutter code in the browser?</p><details><summary>Show answer</summary><p>DartPad</p></details></li><li><p>Which symbol after a type means the variable may be null?</p><details><summary>Show answer</summary><p>?</p></details></li><li><p>Which operator gives a default value when something is null?</p><details><summary>Show answer</summary><p>??</p></details></li><li><p>Which keyword makes a named parameter compulsory?</p><details><summary>Show answer</summary><p>required</p></details></li><li><p>Which list method keeps only matching items?</p><details><summary>Show answer</summary><p>where</p></details></li><li><p>Which operator calls several methods on the same object in a row?</p><details><summary>Show answer</summary><p>..</p></details></li><li><p>Which collection method combines items with a starting value and works on empty lists?</p><details><summary>Show answer</summary><p>fold</p></details></li><li><p>Which keyword makes a named parameter compulsory in Dart?</p><details><summary>Show answer</summary><p>required</p></details></li><li><p>Which method removes nulls from a List&lt;String?&gt;? (whereType&lt;...&gt;)</p><details><summary>Show answer</summary><p>whereType</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 10 in <a href="/learn/dart-flutter/">Dart &amp; Flutter (mobile apps)</a> · <a href="/learn/?book=dart-flutter">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/dart-flutter/dart-basics/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Dart basics: why Dart and Flutter, setup, variables and null safety, strings, control flow, functions and collections</a><a class="btn btn-solid btn-sm" href="/learn/dart-flutter/dart-classes-async/">Dart classes, JSON models and async/await <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

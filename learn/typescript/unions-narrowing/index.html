@@ -111,7 +111,115 @@ for (const x of [&quot;1500&quot;, &quot;abc&quot;, &quot;-5&quot;]) {
 <figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type Customer = { name: string; address?: { town?: string } };
 const c: Customer = { name: &quot;Brian&quot; };
 console.log(c.address?.town ?? &quot;Town not given&quot;);</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>A union type like string | number uses which symbol? Name it in words.</p><details><summary>Show answer</summary><p>pipe</p></details></li><li><p>What kind of type allows only exact values like "mpesa" | "card"? (two words)</p><details><summary>Show answer</summary><p>literal type</p></details></li><li><p>Which operator checks a primitive type, like "string"?</p><details><summary>Show answer</summary><p>typeof</p></details></li><li><p>What is a union of object types with a shared tag property called? (two words)</p><details><summary>Show answer</summary><p>discriminated union</p></details></li><li><p>Which operator gives a default when a value is null or undefined?</p><details><summary>Show answer</summary><p>??</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 7 in <a href="/learn/typescript/">TypeScript</a> · <a href="/learn/?book=typescript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/typescript/typed-functions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Typed functions, optional and default parameters</a><a class="btn btn-solid btn-sm" href="/learn/typescript/generics-utility-types/">Generics and utility types <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why unions and narrowing matter</h2>
+<p>Real data comes in different shapes: a payment can be M-Pesa or card, an API call can succeed or fail, a form field can be empty or filled, a user can be a guest or logged in. Union types describe these possibilities exactly, and narrowing forces your code to handle each case. This removes whole classes of bugs, like reading a property that doesn't exist or forgetting to handle an error state, which is why React and Node teams lean on these features heavily.</p>
+<h2>Exhaustive checking with never</h2>
+<p>When you add a new case to a union, TypeScript can tell you every place that doesn't handle it yet:</p>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type OrderStatus = &quot;pending&quot; | &quot;paid&quot; | &quot;shipped&quot; | &quot;delivered&quot; | &quot;cancelled&quot;;
+
+function statusLabel(s: OrderStatus): string {
+  switch (s) {
+    case &quot;pending&quot;: return &quot;Waiting for payment&quot;;
+    case &quot;paid&quot;: return &quot;Preparing your order&quot;;
+    case &quot;shipped&quot;: return &quot;On the way&quot;;
+    case &quot;delivered&quot;: return &quot;Delivered&quot;;
+    case &quot;cancelled&quot;: return &quot;Cancelled&quot;;
+    default: {
+      const unreachable: never = s;     // error here if a status isn&#x27;t handled
+      return unreachable;
+    }
+  }
+}
+
+const all: OrderStatus[] = [&quot;pending&quot;, &quot;paid&quot;, &quot;shipped&quot;, &quot;delivered&quot;, &quot;cancelled&quot;];
+all.forEach(s =&gt; console.log(s.padEnd(10), statusLabel(s)));</code></pre></figure>
+<p>If someone adds <code>&quot;refunded&quot;</code> to <code>OrderStatus</code>, the <code>never</code> line becomes a compile error until the new case is handled.</p>
+<h2>Narrowing with in and instanceof</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type Teacher = { name: string; subjects: string[] };
+type Student = { name: string; form: number };
+
+function describe(person: Teacher | Student): string {
+  if (&quot;subjects&quot; in person) return `${person.name} teaches ${person.subjects.join(&quot;, &quot;)}`;
+  return `${person.name} is in Form ${person.form}`;
+}
+console.log(describe({ name: &quot;Mr Otieno&quot;, subjects: [&quot;Maths&quot;, &quot;Physics&quot;] }));
+console.log(describe({ name: &quot;Neema&quot;, form: 3 }));
+
+function messageOf(err: unknown): string {
+  if (err instanceof Error) return err.message;
+  if (typeof err === &quot;string&quot;) return err;
+  return &quot;Unknown error&quot;;
+}
+console.log(messageOf(new Error(&quot;Network timeout&quot;)), &quot;|&quot;, messageOf(&quot;Bad input&quot;), &quot;|&quot;, messageOf(42));</code></pre></figure>
+<h2>Modelling UI states with discriminated unions</h2>
+<p>Instead of several booleans (<code>isLoading</code>, <code>hasError</code>, <code>data</code>) that can contradict each other, use one union:</p>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type LoadState&lt;T&gt; =
+  | { status: &quot;idle&quot; }
+  | { status: &quot;loading&quot; }
+  | { status: &quot;success&quot;; data: T }
+  | { status: &quot;error&quot;; message: string };
+
+function render(state: LoadState&lt;string[]&gt;): string {
+  switch (state.status) {
+    case &quot;idle&quot;: return &quot;Press Search to begin&quot;;
+    case &quot;loading&quot;: return &quot;Loading...&quot;;
+    case &quot;success&quot;: return state.data.length ? state.data.join(&quot;, &quot;) : &quot;No results&quot;;
+    case &quot;error&quot;: return `Error: ${state.message}`;
+  }
+}
+
+const states: LoadState&lt;string[]&gt;[] = [
+  { status: &quot;idle&quot; },
+  { status: &quot;loading&quot; },
+  { status: &quot;success&quot;, data: [&quot;Nairobi&quot;, &quot;Nakuru&quot;] },
+  { status: &quot;error&quot;, message: &quot;No internet connection&quot; },
+];
+states.forEach(s =&gt; console.log(render(s)));</code></pre></figure>
+<p>It's impossible to have <code>data</code> while in the "error" state, so whole categories of UI bugs disappear.</p>
+<h2>Result types for errors without exceptions</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type Result&lt;T, E = string&gt; = { ok: true; value: T } | { ok: false; error: E };
+
+function parseAmount(text: string): Result&lt;number&gt; {
+  const n = Number(text.replace(/,/g, &quot;&quot;).trim());
+  if (!Number.isFinite(n)) return { ok: false, error: `&quot;${text}&quot; is not a number` };
+  if (n &lt;= 0) return { ok: false, error: &quot;Amount must be above 0&quot; };
+  return { ok: true, value: n };
+}
+
+for (const input of [&quot;1,500&quot;, &quot;abc&quot;, &quot;-20&quot;, &quot;250&quot;]) {
+  const r = parseAmount(input);
+  console.log(r.ok ? `OK: ${r.value}` : `Error: ${r.error}`);
+}</code></pre></figure>
+<p>The caller must check <code>r.ok</code> before reading <code>r.value</code>, so errors can't be ignored by accident.</p>
+<h2>Template literal types</h2>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type Size = &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;;
+type Variant = &quot;primary&quot; | &quot;outline&quot;;
+type ButtonClass = `btn-${Variant}-${Size}`;     // 6 combinations
+
+const cls: ButtonClass = &quot;btn-primary-md&quot;;
+console.log(cls);
+
+type Currency = &quot;KES&quot; | &quot;USD&quot;;
+type PriceKey = `price_${Lowercase&lt;Currency&gt;}`;   // &quot;price_kes&quot; | &quot;price_usd&quot;
+const prices: Record&lt;PriceKey, number&gt; = { price_kes: 2500, price_usd: 19 };
+console.log(prices);</code></pre></figure>
+<h2>The satisfies operator</h2>
+<p><code>satisfies</code> checks that a value matches a type while keeping its precise inferred type:</p>
+<figure class="static-code"><figcaption>TypeScript · runs live in the interactive lesson</figcaption><pre><code class="language-typescript">type Town = &quot;Nairobi&quot; | &quot;Mombasa&quot; | &quot;Kisumu&quot;;
+const deliveryFees = {
+  Nairobi: 200,
+  Mombasa: 450,
+  Kisumu: 400,
+} satisfies Record&lt;Town, number&gt;;
+
+console.log(deliveryFees.Mombasa + 50);</code></pre></figure>
+<p>If a town is missing or misspelled, TypeScript reports it, yet <code>deliveryFees</code> keeps exact keys for autocomplete.</p>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td>Several booleans for one state</td><td>One discriminated union</td></tr><tr><td>Using <code>as</code> to force a type</td><td>Narrow with checks or validate</td></tr><tr><td>Forgetting a case in a switch</td><td>Add a <code>never</code> exhaustive check</td></tr><tr><td><code>typeof x === &quot;array&quot;</code></td><td><code>Array.isArray(x)</code></td></tr><tr><td><code>typeof null === &quot;object&quot;</code> surprises</td><td>Check <code>x !== null</code> first</td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Model a form field as <code>{ state: &quot;empty&quot; } | { state: &quot;invalid&quot;; reason: string } | { state: &quot;valid&quot;; value: string }</code> and render each.</li><li>Add <code>&quot;refunded&quot;</code> to <code>OrderStatus</code> and fix the error the <code>never</code> check reports.</li><li>Write <code>parsePhone(text): Result&lt;string&gt;</code> that normalises to 2547XXXXXXXX or returns an error.</li><li>Create a template literal type for CSS spacing classes like <code>mt-1</code> to <code>mt-4</code>.</li><li>Use <code>satisfies</code> to type a config object of payment methods and their fees.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why is <code>{ status: &quot;success&quot;; data: T } | { status: &quot;error&quot;; message: string }</code> safer than <code>{ loading: boolean; error?: string; data?: T }</code>?</span><em>Show answer</em></summary><div class="callout-body"><p>The boolean/optional version allows impossible combinations (loading with an error and data at the same time) and forces checks everywhere. The discriminated union allows only valid states, and TypeScript narrows automatically on <code>status</code>, so you can only read <code>data</code> when it actually exists.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>A union type like string | number uses which symbol? Name it in words.</p><details><summary>Show answer</summary><p>pipe</p></details></li><li><p>What kind of type allows only exact values like "mpesa" | "card"? (two words)</p><details><summary>Show answer</summary><p>literal type</p></details></li><li><p>Which operator checks a primitive type, like "string"?</p><details><summary>Show answer</summary><p>typeof</p></details></li><li><p>What is a union of object types with a shared tag property called? (two words)</p><details><summary>Show answer</summary><p>discriminated union</p></details></li><li><p>Which operator gives a default when a value is null or undefined?</p><details><summary>Show answer</summary><p>??</p></details></li><li><p>Which type is used in a default branch to check that every union case is handled?</p><details><summary>Show answer</summary><p>never</p></details></li><li><p>Which operator checks whether a property exists on an object to narrow a union?</p><details><summary>Show answer</summary><p>in</p></details></li><li><p>Which operator checks a value against a type while keeping its precise inferred type?</p><details><summary>Show answer</summary><p>satisfies</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 7 in <a href="/learn/typescript/">TypeScript</a> · <a href="/learn/?book=typescript">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/typescript/typed-functions/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Typed functions, optional and default parameters</a><a class="btn btn-solid btn-sm" href="/learn/typescript/generics-utility-types/">Generics and utility types <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

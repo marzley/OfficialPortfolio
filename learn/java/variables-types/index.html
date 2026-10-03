@@ -125,7 +125,112 @@
 }</code></pre></figure>
 <h2>Naming conventions</h2>
 <ul><li>Variables and methods: <strong>camelCase</strong> (<code>totalPrice</code>, <code>calculateFee()</code>)</li><li>Classes: <strong>PascalCase</strong> (<code>BankAccount</code>)</li><li>Constants: <strong>UPPER_SNAKE_CASE</strong> (<code>MAX_LOGIN_TRIES</code>)</li></ul>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which type is the default for decimal numbers in Java?</p><details><summary>Show answer</summary><p>double</p></details></li><li><p>What is 17 / 5 in Java when both are int?</p><details><summary>Show answer</summary><p>3</p></details></li><li><p>Which method should you use to compare two strings' text?</p><details><summary>Show answer</summary><p>equals</p></details></li><li><p>Which keyword makes a variable a constant?</p><details><summary>Show answer</summary><p>final</p></details></li><li><p>Which method converts the String "250" to an int?</p><details><summary>Show answer</summary><p>Integer.parseInt</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 9 in <a href="/learn/java/">Java</a> · <a href="/learn/?book=java">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/java/introduction/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Java introduction: what Java is, where it&#x27;s used, the JDK and JVM, your first program, syntax rules and input/output</a><a class="btn btn-solid btn-sm" href="/learn/java/control-flow/">Conditions, loops and arrays in Java: if/else, switch, for, while, do-while, break/continue, arrays and 2D arrays <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why Java fundamentals matter</h2>
+<p>Java runs Android apps, banking and telecom back-end systems, large enterprise software, and many university programming courses. Its strict types catch mistakes early, which is one reason banks and big companies trust it for systems that handle money. Getting variables, types and operators right is the foundation: most beginner bugs in Java come from integer division, wrong comparisons of strings, and type conversions.</p>
+<h2>Wrapper classes and autoboxing</h2>
+<p>Each primitive has a matching <strong>wrapper class</strong> (an object version) used in collections like <code>ArrayList</code>:</p>
+<div class="static-table"><table><thead><tr><th>Primitive</th><th>Wrapper</th><th>Useful methods</th></tr></thead><tbody><tr><td><code>int</code></td><td><code>Integer</code></td><td><code>Integer.parseInt(&quot;42&quot;)</code>, <code>Integer.MAX_VALUE</code></td></tr><tr><td><code>double</code></td><td><code>Double</code></td><td><code>Double.parseDouble(&quot;3.5&quot;)</code></td></tr><tr><td><code>boolean</code></td><td><code>Boolean</code></td><td><code>Boolean.parseBoolean(&quot;true&quot;)</code></td></tr><tr><td><code>char</code></td><td><code>Character</code></td><td><code>Character.isDigit(&#x27;7&#x27;)</code>, <code>Character.toUpperCase(&#x27;a&#x27;)</code></td></tr><tr><td><code>long</code></td><td><code>Long</code></td><td><code>Long.parseLong(&quot;254712345678&quot;)</code></td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">import java.util.ArrayList;
+
+class Main {
+    public static void main(String[] args) {
+        ArrayList&lt;Integer&gt; marks = new ArrayList&lt;&gt;();
+        marks.add(78);              // autoboxing: int -&gt; Integer
+        marks.add(91);
+        int first = marks.get(0);   // unboxing: Integer -&gt; int
+        System.out.println(&quot;First mark: &quot; + first);
+
+        System.out.println(Integer.MAX_VALUE);
+        System.out.println(Character.isDigit(&#x27;7&#x27;) + &quot; &quot; + Character.isLetter(&#x27;7&#x27;));
+        long phone = Long.parseLong(&quot;254712345678&quot;);      // too big for int
+        System.out.println(&quot;Phone as long: &quot; + phone);
+    }
+}</code></pre></figure>
+<p>A phone number like 254712345678 doesn't fit in an <code>int</code> (maximum about 2.1 billion). In real apps, store phone numbers as <code>String</code>, since you never do maths on them and leading zeros matter.</p>
+<h2>Overflow: when numbers wrap around</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    public static void main(String[] args) {
+        int big = Integer.MAX_VALUE;
+        System.out.println(big + 1);              // wraps to a large negative number!
+        long safe = (long) big + 1;
+        System.out.println(safe);
+        try {
+            Math.addExact(big, 1);                // throws instead of silently wrapping
+        } catch (ArithmeticException e) {
+            System.out.println(&quot;Overflow detected: &quot; + e.getMessage());
+        }
+    }
+}</code></pre></figure>
+<p>For totals that may grow large (e.g. a bank's daily transaction value in cents), use <code>long</code>, and <code>Math.addExact</code> when overflow must never go unnoticed.</p>
+<h2>Money: use BigDecimal, not double</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+class Main {
+    public static void main(String[] args) {
+        System.out.println(0.1 + 0.2);                          // 0.30000000000000004
+
+        BigDecimal price = new BigDecimal(&quot;1999.99&quot;);
+        BigDecimal qty = new BigDecimal(&quot;3&quot;);
+        BigDecimal vatRate = new BigDecimal(&quot;0.16&quot;);
+        BigDecimal subtotal = price.multiply(qty);
+        BigDecimal vat = subtotal.multiply(vatRate).setScale(2, RoundingMode.HALF_UP);
+        System.out.println(&quot;Subtotal: &quot; + subtotal);
+        System.out.println(&quot;VAT: &quot; + vat);
+        System.out.println(&quot;Total: &quot; + subtotal.add(vat));
+    }
+}</code></pre></figure>
+<p>Create <code>BigDecimal</code> from <strong>strings</strong> (<code>new BigDecimal(&quot;0.1&quot;)</code>), not doubles, to avoid carrying the floating-point error in.</p>
+<h2>char arithmetic</h2>
+<p>Characters are stored as numbers (Unicode code points), which allows some useful tricks:</p>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    public static void main(String[] args) {
+        char grade = &#x27;B&#x27;;
+        System.out.println((int) grade);          // 66
+        System.out.println((char) (grade - 1));   // A
+        char digit = &#x27;7&#x27;;
+        int value = digit - &#x27;0&#x27;;                  // convert a digit character to its number
+        System.out.println(value * 2);            // 14
+        for (char c = &#x27;A&#x27;; c &lt;= &#x27;E&#x27;; c++) System.out.print(c + &quot; &quot;);
+        System.out.println();
+    }
+}</code></pre></figure>
+<h2>var: local type inference</h2>
+<p>Since Java 10, <code>var</code> lets the compiler infer the type of local variables:</p>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">import java.util.ArrayList;
+
+class Main {
+    public static void main(String[] args) {
+        var town = &quot;Kisumu&quot;;                         // String
+        var population = 610_082;                    // int (underscores improve readability)
+        var towns = new ArrayList&lt;String&gt;();         // ArrayList&lt;String&gt;
+        towns.add(town);
+        System.out.println(towns + &quot; &quot; + population);
+    }
+}</code></pre></figure>
+<p><code>var</code> still has a fixed type; it's just inferred. Use it when the type is obvious from the right-hand side.</p>
+<h2>Scanner: reading user input</h2>
+<figure class="static-code"><figcaption>Java</figcaption><pre><code class="language-java">import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        System.out.print(&quot;Enter amount: &quot;);
+        if (in.hasNextDouble()) {
+            double amount = in.nextDouble();
+            System.out.printf(&quot;With VAT: %.2f%n&quot;, amount * 1.16);
+        } else {
+            System.out.println(&quot;Please enter a number.&quot;);
+        }
+    }
+}</code></pre></figure>
+<p><code>hasNextDouble()</code> checks the input before reading, avoiding an <code>InputMismatchException</code> when someone types letters.</p>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Problem</th><th>Fix</th></tr></thead><tbody><tr><td><code>double avg = total / count;</code> with ints</td><td>Integer division happens first</td><td><code>(double) total / count</code></td></tr><tr><td><code>if (name == &quot;Amina&quot;)</code></td><td>Compares object references</td><td><code>name.equals(&quot;Amina&quot;)</code></td></tr><tr><td><code>int phone = 0712345678;</code></td><td>Leading zero means octal / too big</td><td>Store as <code>String</code></td></tr><tr><td><code>double</code> for money</td><td>Rounding errors</td><td><code>BigDecimal</code> or <code>long</code> cents</td></tr><tr><td><code>Integer</code> compared with <code>==</code></td><td>Works for small values only (caching), fails for larger ones</td><td><code>.equals()</code> or unbox to <code>int</code></td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Calculate the average of three integer marks correctly as a decimal.</li><li>Show what happens when an <code>int</code> overflows, then fix it with <code>long</code>.</li><li>Calculate VAT and total for an invoice using <code>BigDecimal</code> with 2 decimal places.</li><li>Convert the characters <code>&#x27;4&#x27;</code> and <code>&#x27;9&#x27;</code> to numbers and add them.</li><li>Read a number with <code>Scanner</code> and handle non-numeric input gracefully.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why might <code>Integer a = 1000; Integer b = 1000; a == b</code> be false while the same code with 100 gives true?</span><em>Show answer</em></summary><div class="callout-body"><p><code>==</code> on <code>Integer</code> objects compares references. Java caches small Integer values (by default -128 to 127), so 100 refers to the same cached object, but 1000 creates two different objects. Always compare wrapper objects with <code>.equals()</code> or compare primitive <code>int</code> values.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which type is the default for decimal numbers in Java?</p><details><summary>Show answer</summary><p>double</p></details></li><li><p>What is 17 / 5 in Java when both are int?</p><details><summary>Show answer</summary><p>3</p></details></li><li><p>Which method should you use to compare two strings' text?</p><details><summary>Show answer</summary><p>equals</p></details></li><li><p>Which keyword makes a variable a constant?</p><details><summary>Show answer</summary><p>final</p></details></li><li><p>Which method converts the String "250" to an int?</p><details><summary>Show answer</summary><p>Integer.parseInt</p></details></li><li><p>Which class should you use for exact money calculations in Java?</p><details><summary>Show answer</summary><p>BigDecimal</p></details></li><li><p>Which wrapper class goes with the primitive int?</p><details><summary>Show answer</summary><p>Integer</p></details></li><li><p>Which keyword lets Java infer a local variable's type?</p><details><summary>Show answer</summary><p>var</p></details></li><li><p>Which Math method throws an exception on int overflow when adding?</p><details><summary>Show answer</summary><p>addExact</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 9 in <a href="/learn/java/">Java</a> · <a href="/learn/?book=java">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/java/introduction/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Java introduction: what Java is, where it&#x27;s used, the JDK and JVM, your first program, syntax rules and input/output</a><a class="btn btn-solid btn-sm" href="/learn/java/control-flow/">Conditions, loops and arrays in Java: if/else, switch, for, while, do-while, break/continue, arrays and 2D arrays <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

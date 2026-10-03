@@ -97,7 +97,83 @@ print(total, count_nines, biggest, dupes)</code></pre></figure>
 <p>Most beginner problems are a combination of these.</p>
 <h2>Practice sites</h2>
 <p>Start easy and practise a little every day: our Python and Algorithms exercises, then sites like Exercism, HackerRank, LeetCode (Easy level), Codewars and Kenya's own hackathons and competitions.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the first step in solving a problem?</p><details><summary>Show answer</summary><p>understand</p></details></li><li><p>What do we call unusual inputs like an empty list or zero? (two words, hyphen allowed)</p><details><summary>Show answer</summary><p>edge cases</p></details></li><li><p>Which Python type removes duplicates quickly?</p><details><summary>Show answer</summary><p>set</p></details></li><li><p>What informal plan written in plain words comes before code?</p><details><summary>Show answer</summary><p>pseudocode</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Write <code>count_even(nums)</code> that returns how many numbers in the list are even, and print <code>count_even([4, 7, 10, 3, 8])</code>. Output: <strong>3</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=problem-solving-steps#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 2 of 11 in <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> · <a href="/learn/?book=algorithms">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/algorithms/pseudocode-flowcharts/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Pseudocode and flowcharts: algorithms explained, sequence, selection, iteration, trace tables and turning plans into code</a><a class="btn btn-solid btn-sm" href="/learn/algorithms/searching/">Searching algorithms: linear search, binary search, step counts, edge cases and searching real data <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why problem solving is the core skill</h2>
+<p>Programming languages change; problem-solving skills last. Employers test them in technical interviews, and every real task (calculating loan schedules, matching payments to invoices, finding the cheapest delivery route) starts with understanding the problem and designing steps before writing code. Practising structured problem solving makes you faster and more confident in any language.</p>
+<h2>Applying the method: matching payments to invoices</h2>
+<p><strong>Problem</strong>: a school has a list of invoices (admission number, amount due) and a list of M-Pesa payments (account number = admission number, amount). Find who has fully paid, who has partly paid and who hasn't paid.</p>
+<ol><li><strong>Understand</strong>: inputs are two lists; output is three groups. Several payments can belong to one student. Account numbers may have spaces or lowercase letters.</li><li><strong>Examples</strong>: ADM001 owes 15,000 and paid 10,000 + 5,000 → fully paid. ADM002 owes 15,000 and paid 4,000 → partial. ADM003 paid nothing → unpaid.</li><li><strong>Edge cases</strong>: overpayment, payment with an unknown account number, empty lists.</li><li><strong>Plan</strong>: total payments per account in a dictionary, then compare each invoice with its total.</li><li><strong>Code</strong>, then <strong>test</strong> with the examples and edge cases.</li></ol>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">invoices = {&quot;ADM001&quot;: 15000, &quot;ADM002&quot;: 15000, &quot;ADM003&quot;: 12000, &quot;ADM004&quot;: 8000}
+payments = [(&quot;adm001&quot;, 10000), (&quot; ADM001&quot;, 5000), (&quot;ADM002&quot;, 4000), (&quot;ADM004&quot;, 9000), (&quot;ADM999&quot;, 3000)]
+
+paid = {}
+unknown = []
+for account, amount in payments:
+    key = account.strip().upper()          # clean the account number
+    if key in invoices:
+        paid[key] = paid.get(key, 0) + amount
+    else:
+        unknown.append((account, amount))
+
+for adm, due in invoices.items():
+    total = paid.get(adm, 0)
+    if total == 0:
+        status = &quot;UNPAID&quot;
+    elif total &lt; due:
+        status = f&quot;PARTIAL (balance {due - total:,})&quot;
+    elif total == due:
+        status = &quot;PAID&quot;
+    else:
+        status = f&quot;OVERPAID by {total - due:,}&quot;
+    print(f&quot;{adm}: due {due:,}, paid {total:,} -&gt; {status}&quot;)
+print(&quot;Payments to unknown accounts:&quot;, unknown)</code></pre></figure>
+<p>The plan (group, then compare) came before the code, and edge cases (cleaning account numbers, overpayments, unknown accounts) shaped it.</p>
+<h2>Thinking about efficiency (a first look at Big O)</h2>
+<p>How does the work grow as the input grows?</p>
+<div class="static-table"><table><thead><tr><th>Approach to "is this receipt a duplicate?"</th><th>Work for n receipts</th><th>Big O</th></tr></thead><tbody><tr><td>Compare every receipt with every other</td><td>About n × n comparisons</td><td>O(n²)</td></tr><tr><td>Sort first, then compare neighbours</td><td>About n log n</td><td>O(n log n)</td></tr><tr><td>Keep a set of seen receipts</td><td>About n set lookups</td><td>O(n)</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import time
+
+receipts = [f&quot;QJK{i}&quot; for i in range(2000)] + [&quot;QJK10&quot;]
+
+start = time.perf_counter()
+dups_slow = {r for i, r in enumerate(receipts) for s in receipts[i + 1:] if r == s}
+slow = time.perf_counter() - start
+
+start = time.perf_counter()
+seen, dups_fast = set(), set()
+for r in receipts:
+    if r in seen:
+        dups_fast.add(r)
+    seen.add(r)
+fast = time.perf_counter() - start
+
+print(dups_slow, dups_fast)
+print(f&quot;Nested loops took about {slow / max(fast, 1e-9):.0f}x longer than the set approach&quot;)</code></pre></figure>
+<p>For a few hundred items any approach works; for millions of M-Pesa transactions, the choice of algorithm decides whether a report takes seconds or hours.</p>
+<h2>Debugging your own solution</h2>
+<p>When code gives the wrong answer:</p>
+<ol><li><strong>Reproduce</strong> with the smallest input that fails.</li><li><strong>Print or inspect</strong> values at each step (or use a debugger with breakpoints).</li><li><strong>Check assumptions</strong>: is the input what you think (types, spaces, case)?</li><li><strong>Trace by hand</strong> on paper for a small example.</li><li><strong>Fix one thing at a time</strong>, then rerun all your test cases.</li></ol>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def average(marks):
+    return sum(marks) / len(marks)
+
+tests = [([80, 60], 70), ([50], 50), ([], 0)]
+for marks, expected in tests:
+    try:
+        result = average(marks)
+    except ZeroDivisionError:
+        result = &quot;error&quot;
+    print(marks, &quot;-&gt;&quot;, result, &quot;expected&quot;, expected, &quot;OK&quot; if result == expected else &quot;FIX ME&quot;)</code></pre></figure>
+<p>The failing empty-list test shows exactly what to fix: <code>return sum(marks) / len(marks) if marks else 0</code>.</p>
+<h2>Breaking big problems into smaller ones</h2>
+<p><strong>Problem</strong>: "Build a weekly sales report for a shop."</p>
+<div class="static-table"><table><thead><tr><th>Sub-problem</th><th>Function</th></tr></thead><tbody><tr><td>Read sales data</td><td><code>load_sales(path)</code></td></tr><tr><td>Clean bad rows</td><td><code>clean(rows)</code></td></tr><tr><td>Total by day</td><td><code>totals_by_day(rows)</code></td></tr><tr><td>Best-selling products</td><td><code>top_products(rows, n)</code></td></tr><tr><td>Format the report</td><td><code>format_report(...)</code></td></tr></tbody></table></div>
+<p>Each small function is easy to write and test. This <strong>decomposition</strong> is how large programs are built.</p>
+<h2>Interview-style practice approach</h2>
+<ol><li>Repeat the problem in your own words and ask clarifying questions.</li><li>Work through an example out loud.</li><li>Describe a simple (even slow) solution first.</li><li>Improve it, explaining the time and space trade-offs.</li><li>Write clean code with good names.</li><li>Test with normal and edge cases before saying you're done.</li></ol>
+<p>Interviewers value clear thinking and communication as much as the final code.</p>
+<h2>Practice</h2>
+<ol><li>Given a list of daily sales, find the longest streak of days with sales above KSh 10,000.</li><li>Given two lists of phone numbers (customers and blacklist), return customers who are not blacklisted, efficiently.</li><li>Check whether two words are anagrams ("listen", "silent").</li><li>Find the first non-repeating character in a string.</li><li>Given a list of prices and a budget, find two different items whose prices add up exactly to the budget.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> You need to check 100,000 new payments against a list of 50,000 already-processed receipt codes. Why is converting the processed list to a set a good idea?</span><em>Show answer</em></summary><div class="callout-body"><p>Checking <code>code in list</code> scans the list each time (up to 50,000 comparisons per payment, billions in total), while <code>code in set</code> uses hashing and takes roughly constant time per check. Building the set once costs about 50,000 steps, after which 100,000 checks are fast, turning a very slow job into a quick one.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the first step in solving a problem?</p><details><summary>Show answer</summary><p>understand</p></details></li><li><p>What do we call unusual inputs like an empty list or zero? (two words, hyphen allowed)</p><details><summary>Show answer</summary><p>edge cases</p></details></li><li><p>Which Python type removes duplicates quickly?</p><details><summary>Show answer</summary><p>set</p></details></li><li><p>What informal plan written in plain words comes before code?</p><details><summary>Show answer</summary><p>pseudocode</p></details></li><li><p>What is the Big O of checking every item against every other item?</p><details><summary>Show answer</summary><p>O(n^2)</p></details></li><li><p>What is splitting a big problem into smaller functions called?</p><details><summary>Show answer</summary><p>decomposition</p></details></li><li><p>Which Python structure gives fast membership checks for duplicates?</p><details><summary>Show answer</summary><p>set</p></details></li></ol></section></div><section class="static-exercise"><h2>Exercise</h2><p>Write <code>count_even(nums)</code> that returns how many numbers in the list are even, and print <code>count_even([4, 7, 10, 3, 8])</code>. Output: <strong>3</strong>.</p><p><a class="btn btn-solid" href="/learn/?track=algorithms&amp;lesson=problem-solving-steps#exercise">Do this exercise in the live editor</a></p></section><p class="static-meta">Lesson 2 of 11 in <a href="/learn/algorithms/">Algorithms &amp; problem solving</a> · <a href="/learn/?book=algorithms">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/algorithms/pseudocode-flowcharts/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Pseudocode and flowcharts: algorithms explained, sequence, selection, iteration, trace tables and turning plans into code</a><a class="btn btn-solid btn-sm" href="/learn/algorithms/searching/">Searching algorithms: linear search, binary search, step counts, edge cases and searching real data <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

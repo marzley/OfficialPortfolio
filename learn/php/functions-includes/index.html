@@ -123,7 +123,128 @@ require __DIR__ . &#x27;/includes/header.php&#x27;;
 <h2>Keep secrets out of the web folder</h2>
 <p>Put database passwords and API keys in a config file <strong>outside</strong> <code>public_html</code> (or protect it), and never commit it to Git:</p>
 <figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">$config = require dirname(__DIR__) . &#x27;/private/config.php&#x27;;</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which statement stops the page with a fatal error if the file is missing?</p><details><summary>Show answer</summary><p>require</p></details></li><li><p>Which version loads a file only once even if called twice?</p><details><summary>Show answer</summary><p>require_once</p></details></li><li><p>Which constant gives the folder of the current PHP file?</p><details><summary>Show answer</summary><p>__DIR__</p></details></li><li><p>Which function formats 1500 as 1,500.00 when given 2 decimals?</p><details><summary>Show answer</summary><p>number_format</p></details></li><li><p>What does fn($x) =&gt; $x * 2 create? (two words)</p><details><summary>Show answer</summary><p>arrow function</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 15 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/arrays-loops/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Arrays, conditions and loops: lists, associative arrays, if/else, match, for, foreach, while and array functions</a><a class="btn btn-solid btn-sm" href="/learn/php/oop-classes/">Object-oriented PHP: classes, interfaces and namespaces <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why functions and includes matter in PHP</h2>
+<p>Most websites in Kenya run on PHP: WordPress sites, custom school and SACCO portals, booking systems and M-Pesa integrations on cPanel hosting. Real PHP projects are split into many files and functions: one file for the database connection, one for helper functions, a header and footer shared by every page, and separate files for each feature. Organising code this way makes it easier to fix bugs, add features and keep secrets safe.</p>
+<h2>Type declarations and strict types</h2>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+declare(strict_types=1);
+
+function vat(float $amount, float $rate = 0.16): float {
+    return round($amount * $rate, 2);
+}
+
+function formatKsh(float $amount): string {
+    return &#x27;KSh &#x27; . number_format($amount, 2);
+}
+
+function findStudent(array $students, string $adm): ?array {   // ?array: array or null
+    foreach ($students as $s) {
+        if ($s[&#x27;adm&#x27;] === $adm) return $s;
+    }
+    return null;
+}
+
+echo formatKsh(vat(2500)) . &quot;\n&quot;;
+$students = [[&#x27;adm&#x27; =&gt; &#x27;ADM001&#x27;, &#x27;name&#x27; =&gt; &#x27;Baraka&#x27;], [&#x27;adm&#x27; =&gt; &#x27;ADM002&#x27;, &#x27;name&#x27; =&gt; &#x27;Neema&#x27;]];
+$s = findStudent($students, &#x27;ADM002&#x27;);
+echo $s ? $s[&#x27;name&#x27;] : &#x27;Not found&#x27;, &quot;\n&quot;;
+echo findStudent($students, &#x27;ADM999&#x27;)[&#x27;name&#x27;] ?? &#x27;Not found&#x27;, &quot;\n&quot;;
+
+try {
+    echo vat(&quot;2500&quot;);          // a string is rejected in strict mode
+} catch (TypeError $e) {
+    echo &quot;TypeError: wrong argument type\n&quot;;
+}</code></pre></figure>
+<p><code>declare(strict_types=1);</code> at the top of a file stops PHP from silently converting types (like the string <code>&quot;2500&quot;</code> into a number), catching bugs early.</p>
+<h2>Named arguments and nullsafe operator</h2>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+function createInvoice(string $customer, float $amount, float $vatRate = 0.16, string $currency = &#x27;KSh&#x27;, bool $paid = false): string {
+    $total = $amount * (1 + $vatRate);
+    return sprintf(&quot;%s: %s %s (%s)&quot;, $customer, $currency, number_format($total, 2), $paid ? &#x27;paid&#x27; : &#x27;unpaid&#x27;);
+}
+
+echo createInvoice(&#x27;Kamau Hardware&#x27;, 10000), &quot;\n&quot;;
+echo createInvoice(customer: &#x27;School&#x27;, amount: 5000, paid: true, vatRate: 0), &quot;\n&quot;;
+
+$order = [&#x27;customer&#x27; =&gt; [&#x27;address&#x27; =&gt; null]];
+echo $order[&#x27;customer&#x27;][&#x27;address&#x27;][&#x27;town&#x27;] ?? &#x27;No town given&#x27;, &quot;\n&quot;;</code></pre></figure>
+<p>Named arguments make calls with many optional parameters readable and order-independent.</p>
+<h2>Closures and array functions</h2>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+$products = [
+    [&#x27;name&#x27; =&gt; &#x27;Unga 2kg&#x27;, &#x27;price&#x27; =&gt; 180, &#x27;stock&#x27; =&gt; 12],
+    [&#x27;name&#x27; =&gt; &#x27;Sugar 1kg&#x27;, &#x27;price&#x27; =&gt; 210, &#x27;stock&#x27; =&gt; 0],
+    [&#x27;name&#x27; =&gt; &#x27;Cooking oil 1L&#x27;, &#x27;price&#x27; =&gt; 350, &#x27;stock&#x27; =&gt; 7],
+];
+
+$inStock = array_filter($products, fn($p) =&gt; $p[&#x27;stock&#x27;] &gt; 0);
+$names = array_map(fn($p) =&gt; strtoupper($p[&#x27;name&#x27;]), $inStock);
+$stockValue = array_reduce($products, fn($sum, $p) =&gt; $sum + $p[&#x27;price&#x27;] * $p[&#x27;stock&#x27;], 0);
+usort($products, fn($a, $b) =&gt; $b[&#x27;price&#x27;] &lt;=&gt; $a[&#x27;price&#x27;]);    // most expensive first
+
+print_r(array_values($names));
+echo &quot;Stock value: KSh &quot;, number_format($stockValue), &quot;\n&quot;;
+echo &quot;Most expensive: &quot;, $products[0][&#x27;name&#x27;], &quot;\n&quot;;
+
+$discount = 10;
+$applyDiscount = function (float $price) use ($discount): float {   // use: capture a variable
+    return $price * (1 - $discount / 100);
+};
+echo $applyDiscount(1000), &quot;\n&quot;;</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Function</th><th>Purpose</th></tr></thead><tbody><tr><td><code>array_map</code></td><td>Transform every item</td></tr><tr><td><code>array_filter</code></td><td>Keep matching items (keys are preserved; use <code>array_values</code> to reindex)</td></tr><tr><td><code>array_reduce</code></td><td>Combine into one value</td></tr><tr><td><code>usort</code></td><td>Sort with your own comparison (<code>&lt;=&gt;</code> is the "spaceship" operator)</td></tr><tr><td><code>array_column</code></td><td>Pull one column from a list of rows</td></tr><tr><td><code>in_array</code>, <code>array_search</code></td><td>Find values</td></tr></tbody></table></div>
+<h2>A helpers file used by every page</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+// includes/helpers.php
+declare(strict_types=1);
+
+function e(?string $value): string {               // escape output to prevent XSS
+    return htmlspecialchars($value ?? &#x27;&#x27;, ENT_QUOTES, &#x27;UTF-8&#x27;);
+}
+
+function redirect(string $path): never {
+    header(&#x27;Location: &#x27; . $path);
+    exit;
+}
+
+function old(string $field): string {               // refill forms after validation errors
+    return e($_POST[$field] ?? &#x27;&#x27;);
+}
+
+function flash(string $message): void {
+    $_SESSION[&#x27;flash&#x27;] = $message;
+}</code></pre></figure>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+// contact.php
+session_start();
+require_once __DIR__ . &#x27;/includes/helpers.php&#x27;;
+require_once __DIR__ . &#x27;/includes/db.php&#x27;;          // database connection
+include __DIR__ . &#x27;/partials/header.php&#x27;;
+?&gt;
+&lt;h1&gt;Contact us&lt;/h1&gt;
+&lt;input name=&quot;name&quot; value=&quot;&lt;?= old(&#x27;name&#x27;) ?&gt;&quot;&gt;
+&lt;?php include __DIR__ . &#x27;/partials/footer.php&#x27;; ?&gt;</code></pre></figure>
+<p>Every page escapes output with <code>e()</code> and shares the same header and footer, so a design change happens in one place.</p>
+<h2>Organising a small PHP project</h2>
+<figure class="static-code"><figcaption>TEXT</figcaption><pre><code class="language-text">/home/username/
+├── config/
+│   └── config.php          ← database password, API keys (outside public_html)
+└── public_html/
+    ├── index.php
+    ├── contact.php
+    ├── includes/
+    │   ├── helpers.php
+    │   └── db.php           ← requires ../config/config.php
+    ├── partials/
+    │   ├── header.php
+    │   └── footer.php
+    └── assets/ (css, js, images)</code></pre></figure>
+<p>Keeping configuration with passwords <strong>outside</strong> <code>public_html</code> means it can never be downloaded through a browser, even if the server is misconfigured.</p>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td><code>include &#x27;header.php&#x27;</code> with relative paths breaking in subfolders</td><td>Use <code>__DIR__ . &#x27;/partials/header.php&#x27;</code></td></tr><tr><td>Echoing user input directly</td><td>Escape with <code>htmlspecialchars</code> (an <code>e()</code> helper)</td></tr><tr><td>Global variables everywhere</td><td>Pass values as function parameters</td></tr><tr><td>Database password in a file inside <code>public_html</code></td><td>Move config outside the web root</td></tr><tr><td>Using <code>==</code> for comparisons</td><td>Use <code>===</code> to compare value and type</td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Write <code>formatPhone(string $phone): ?string</code> that returns 2547XXXXXXXX or null.</li><li>Use <code>array_filter</code> and <code>array_map</code> to list the names of products under KSh 300.</li><li>Create a header and footer partial and include them in three pages.</li><li>Write an <code>e()</code> helper and use it to display a comment containing <code>&lt;script&gt;</code>.</li><li>Rewrite a function call with five parameters using named arguments.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why use <code>require_once __DIR__ . &#x27;/includes/db.php&#x27;</code> instead of <code>include &#x27;includes/db.php&#x27;</code>?</span><em>Show answer</em></summary><div class="callout-body"><p><code>require_once</code> stops with a clear error if the database file is missing (the page can't work without it) and prevents loading it twice. <code>__DIR__</code> builds an absolute path from the current file's folder, so the include works no matter which page or subfolder runs it.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which statement stops the page with a fatal error if the file is missing?</p><details><summary>Show answer</summary><p>require</p></details></li><li><p>Which version loads a file only once even if called twice?</p><details><summary>Show answer</summary><p>require_once</p></details></li><li><p>Which constant gives the folder of the current PHP file?</p><details><summary>Show answer</summary><p>__DIR__</p></details></li><li><p>Which function formats 1500 as 1,500.00 when given 2 decimals?</p><details><summary>Show answer</summary><p>number_format</p></details></li><li><p>What does fn($x) =&gt; $x * 2 create? (two words)</p><details><summary>Show answer</summary><p>arrow function</p></details></li><li><p>Which declaration stops PHP from silently converting argument types?</p><details><summary>Show answer</summary><p>strict_types</p></details></li><li><p>What is the &lt;=&gt; operator called?</p><details><summary>Show answer</summary><p>spaceship</p></details></li><li><p>Which keyword makes a closure capture an outside variable?</p><details><summary>Show answer</summary><p>use</p></details></li><li><p>Which function escapes text for safe HTML output?</p><details><summary>Show answer</summary><p>htmlspecialchars</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 15 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/arrays-loops/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Arrays, conditions and loops: lists, associative arrays, if/else, match, for, foreach, while and array functions</a><a class="btn btn-solid btn-sm" href="/learn/php/oop-classes/">Object-oriented PHP: classes, interfaces and namespaces <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

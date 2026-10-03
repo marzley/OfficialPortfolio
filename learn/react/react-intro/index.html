@@ -108,7 +108,82 @@ ReactDOM.createRoot(document.getElementById(&quot;root&quot;)).render(&lt;App /&
 <p>When data changes, React re-runs your component functions, compares the new result with the previous one (the <strong>virtual DOM</strong>), and changes <strong>only</strong> what differs in the real page. You describe <em>what</em> the UI should look like for the current data; React handles <em>how</em> to update it. This is called <strong>declarative</strong> UI.</p>
 <h2>Where React is used</h2>
 <div class="static-table"><table><thead><tr><th>Use</th><th>Example</th></tr></thead><tbody><tr><td>Single-page apps and dashboards</td><td>Admin panels, school portals, POS screens</td></tr><tr><td>Websites with frameworks</td><td><strong>Next.js</strong> (React plus server rendering, routing, SEO)</td></tr><tr><td>Mobile apps</td><td><strong>React Native</strong></td></tr><tr><td>Desktop apps</td><td>Electron apps like VS Code's UI ideas, Slack</td></tr></tbody></table></div>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What do we call the reusable pieces a React UI is built from?</p><details><summary>Show answer</summary><p>components</p></details></li><li><p>Must a component's name start with a capital letter? (yes or no)</p><details><summary>Show answer</summary><p>yes</p></details></li><li><p>What is the HTML-like syntax inside React code called?</p><details><summary>Show answer</summary><p>JSX</p></details></li><li><p>In JSX, which attribute replaces HTML's class?</p><details><summary>Show answer</summary><p>className</p></details></li><li><p>Which brackets insert a JavaScript expression into JSX?</p><details><summary>Show answer</summary><p>{}</p></details></li><li><p>Which React framework adds server rendering and routing for SEO-friendly sites?</p><details><summary>Show answer</summary><p>Next.js</p></details></li></ol></section></div><p class="static-meta">Lesson 1 of 6 in <a href="/learn/react/">React for web apps</a> · <a href="/learn/?book=react">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><span></span><a class="btn btn-solid btn-sm" href="/learn/react/react-props-lists/">Props, lists and conditional rendering <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why React is so widely used</h2>
+<p>React (created at Meta) is one of the most popular libraries for building user interfaces. Facebook, Instagram, WhatsApp Web, Netflix, Airbnb and countless startups, fintechs and agencies use it. Its component model means you build small, reusable pieces (a product card, a navbar, a payment form) and combine them into whole apps. React skills are among the most requested in front-end job adverts, and the same knowledge carries over to React Native for mobile apps.</p>
+<h2>Thinking in components</h2>
+<p>Look at a typical shop page and break it into components:</p>
+<figure class="static-code"><figcaption>TEXT</figcaption><pre><code class="language-text">App
+├── Header (logo, search box, cart icon with count)
+├── CategoryTabs
+├── ProductGrid
+│   └── ProductCard × many (image, name, price, &quot;Add&quot; button)
+├── CartSummary (items, total, checkout button)
+└── Footer</code></pre></figure>
+<p>Each component has one job. If <code>ProductCard</code> changes design, you edit one place and every card updates.</p>
+<h2>A small interactive example</h2>
+<figure class="static-code"><figcaption>React · runs live in the interactive lesson</figcaption><pre><code class="language-react">const { useState } = React;
+
+const products = [
+  { id: 1, name: &quot;Unga 2kg&quot;, price: 180 },
+  { id: 2, name: &quot;Sugar 1kg&quot;, price: 210 },
+  { id: 3, name: &quot;Milk 500ml&quot;, price: 60 },
+];
+
+function ProductCard({ product, onAdd }) {
+  return (
+    &lt;div style={{ border: &quot;1px solid #e2e8f0&quot;, borderRadius: 10, padding: 10, marginBottom: 8 }}&gt;
+      &lt;strong&gt;{product.name}&lt;/strong&gt; &lt;span&gt;KSh {product.price}&lt;/span&gt;{&quot; &quot;}
+      &lt;button onClick={() =&gt; onAdd(product)}&gt;Add&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+function App() {
+  const [cart, setCart] = useState([]);
+  const total = cart.reduce((sum, p) =&gt; sum + p.price, 0);
+  return (
+    &lt;div style={{ fontFamily: &quot;system-ui&quot;, maxWidth: 360 }}&gt;
+      &lt;h2&gt;Duka Bora&lt;/h2&gt;
+      {products.map((p) =&gt; (
+        &lt;ProductCard key={p.id} product={p} onAdd={(item) =&gt; setCart([...cart, item])} /&gt;
+      ))}
+      &lt;p&gt;{cart.length} items · Total KSh {total}&lt;/p&gt;
+      {cart.length &gt; 0 &amp;&amp; &lt;button onClick={() =&gt; setCart([])}&gt;Clear cart&lt;/button&gt;}
+    &lt;/div&gt;
+  );
+}
+
+ReactDOM.createRoot(document.getElementById(&quot;root&quot;)).render(&lt;App /&gt;);</code></pre></figure>
+<p>Click "Add": React re-renders with the new state, and the total updates automatically. You describe <strong>what</strong> the UI should look like for the current data; React works out <strong>how</strong> to update the page.</p>
+<h2>JSX rules to remember</h2>
+<div class="static-table"><table><thead><tr><th>Rule</th><th>Example</th></tr></thead><tbody><tr><td>Return one parent element (or a fragment)</td><td><code>&lt;&gt;...&lt;/&gt;</code> wraps siblings without adding a div</td></tr><tr><td>Close every tag</td><td><code>&lt;img /&gt;</code>, <code>&lt;br /&gt;</code>, <code>&lt;input /&gt;</code></td></tr><tr><td><code>className</code> instead of <code>class</code></td><td><code>&lt;div className=&quot;card&quot;&gt;</code></td></tr><tr><td><code>htmlFor</code> instead of <code>for</code> on labels</td><td><code>&lt;label htmlFor=&quot;email&quot;&gt;</code></td></tr><tr><td>camelCase attributes and events</td><td><code>onClick</code>, <code>onChange</code>, <code>tabIndex</code></td></tr><tr><td>Inline styles are objects</td><td><code>style={{ color: &quot;red&quot;, fontSize: 18 }}</code></td></tr><tr><td>JavaScript expressions in <code>{}</code></td><td><code>{price * qty}</code>, <code>{isOpen ? &quot;Open&quot; : &quot;Closed&quot;}</code></td></tr><tr><td>Comments inside JSX</td><td><code>{/* comment */}</code></td></tr></tbody></table></div>
+<h2>Declarative vs imperative UI</h2>
+<figure class="static-code"><figcaption>JavaScript</figcaption><pre><code class="language-javascript">// Imperative (plain DOM): you describe every step
+const li = document.createElement(&quot;li&quot;);
+li.textContent = product.name;
+list.appendChild(li);
+counter.textContent = items.length;
+
+// Declarative (React): you describe the result for the current data
+&lt;ul&gt;{items.map((p) =&gt; &lt;li key={p.id}&gt;{p.name}&lt;/li&gt;)}&lt;/ul&gt;
+&lt;p&gt;{items.length} items&lt;/p&gt;</code></pre></figure>
+<p>As apps grow, keeping many manual DOM updates in sync becomes error-prone; declarative rendering avoids that class of bugs.</p>
+<h2>Setting up a real React project</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">npm create vite@latest duka-app -- --template react      # or react-ts for TypeScript
+cd duka-app
+npm install
+npm run dev          # local development server with instant updates
+npm run build        # optimised files in dist/ ready to deploy</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Option</th><th>Use when</th></tr></thead><tbody><tr><td><strong>Vite + React</strong></td><td>Single-page apps, dashboards, learning; deploy <code>dist/</code> to Netlify, Cloudflare Pages or any static host</td></tr><tr><td><strong>Next.js</strong></td><td>SEO-friendly websites, server rendering, API routes, full-stack apps</td></tr><tr><td><strong>React Native / Expo</strong></td><td>Mobile apps for Android and iOS</td></tr></tbody></table></div>
+<h2>React developer tools</h2>
+<ul><li><strong>React Developer Tools</strong> browser extension: inspect the component tree, props and state.</li><li><strong>ESLint</strong> with React rules (<code>eslint-plugin-react-hooks</code>) catches common hook mistakes.</li><li><strong>Prettier</strong> formats code consistently.</li><li><strong>TypeScript</strong> adds types for props and state, increasingly standard in jobs.</li></ul>
+<h2>The React ecosystem (what you'll meet later)</h2>
+<div class="static-table"><table><thead><tr><th>Need</th><th>Common choices</th></tr></thead><tbody><tr><td>Routing (pages)</td><td>React Router, Next.js routing</td></tr><tr><td>Server data fetching and caching</td><td>TanStack Query, SWR, Next.js data fetching</td></tr><tr><td>Forms</td><td>React Hook Form + Zod validation</td></tr><tr><td>Styling</td><td>CSS Modules, Tailwind CSS, component libraries (MUI, shadcn/ui, Chakra)</td></tr><tr><td>Global state</td><td>Context, Zustand, Redux Toolkit</td></tr><tr><td>Testing</td><td>Vitest/Jest + React Testing Library, Playwright for end-to-end</td></tr></tbody></table></div>
+<p>Learn core React (components, props, state, effects) well before adding libraries.</p>
+<h2>Practice</h2>
+<ol><li>Break the homepage of a site you use into a component tree on paper.</li><li>Build a <code>Greeting</code> component that shows "Habari za asubuhi" before noon and "Habari za jioni" after.</li><li>Create a <code>PriceTag</code> component that formats numbers as KSh with commas.</li><li>Build a simple counter with "+" and "−" buttons that never goes below zero.</li><li>Create a Vite React project and replace the starter page with your own components.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why does React need you to call <code>setCart(...)</code> instead of just doing <code>cart.push(item)</code>?</span><em>Show answer</em></summary><div class="callout-body"><p>React re-renders when state is updated through its setter function. <code>cart.push</code> changes the array in place without telling React, so the screen doesn't update (and React may not detect the change because the array reference stays the same). Calling <code>setCart([...cart, item])</code> creates a new array and schedules a re-render with the new data.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What do we call the reusable pieces a React UI is built from?</p><details><summary>Show answer</summary><p>components</p></details></li><li><p>Must a component's name start with a capital letter? (yes or no)</p><details><summary>Show answer</summary><p>yes</p></details></li><li><p>What is the HTML-like syntax inside React code called?</p><details><summary>Show answer</summary><p>JSX</p></details></li><li><p>In JSX, which attribute replaces HTML's class?</p><details><summary>Show answer</summary><p>className</p></details></li><li><p>Which brackets insert a JavaScript expression into JSX?</p><details><summary>Show answer</summary><p>{}</p></details></li><li><p>Which React framework adds server rendering and routing for SEO-friendly sites?</p><details><summary>Show answer</summary><p>Next.js</p></details></li><li><p>What empty tag pair groups elements without adding a div? (write it)</p><details><summary>Show answer</summary><p>&lt;&gt;&lt;/&gt;</p></details></li><li><p>Which command creates a new React project with Vite? (npm create ...)</p><details><summary>Show answer</summary><p>npm create vite@latest</p></details></li><li><p>Which browser extension inspects React components, props and state? (three words)</p><details><summary>Show answer</summary><p>React Developer Tools</p></details></li></ol></section></div><p class="static-meta">Lesson 1 of 6 in <a href="/learn/react/">React for web apps</a> · <a href="/learn/?book=react">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><span></span><a class="btn btn-solid btn-sm" href="/learn/react/react-props-lists/">Props, lists and conditional rendering <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

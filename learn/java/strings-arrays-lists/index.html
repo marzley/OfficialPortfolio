@@ -139,7 +139,168 @@ class Main {
         System.out.printf(&quot;Average %.1f, passed %d, top %s%n&quot;, avg, passed, top);
     }
 }</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the index of the first item in a Java array?</p><details><summary>Show answer</summary><p>0</p></details></li><li><p>How do you get the number of items in an array called marks?</p><details><summary>Show answer</summary><p>marks.length</p></details></li><li><p>How do you get the number of items in an ArrayList called cart?</p><details><summary>Show answer</summary><p>cart.size()</p></details></li><li><p>Which class builds strings efficiently in a loop?</p><details><summary>Show answer</summary><p>StringBuilder</p></details></li><li><p>Which exception happens when you use an index that doesn't exist? (the name before Exception is enough)</p><details><summary>Show answer</summary><p>ArrayIndexOutOfBoundsException</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 9 in <a href="/learn/java/">Java</a> · <a href="/learn/?book=java">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/java/methods/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Methods: parameters, return values and overloading</a><a class="btn btn-solid btn-sm" href="/learn/java/oop/">Classes and objects (OOP) in Java: fields, constructors, methods, encapsulation, static members, toString and designing classes <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Where strings and collections are used</h2>
+<p>Almost every Java program processes text and lists: names and phone numbers from forms, CSV files from banks, product lists, student marks, transaction histories. Android apps display lists of items, and back-end systems filter, sort and group thousands of records. Mastering <code>String</code>, arrays, <code>ArrayList</code> and <code>HashMap</code> covers most day-to-day Java work.</p>
+<h2>Strings are immutable</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    public static void main(String[] args) {
+        String town = &quot;nairobi&quot;;
+        town.toUpperCase();                  // creates a new String, which is thrown away
+        System.out.println(town);            // still &quot;nairobi&quot;
+        town = town.toUpperCase();           // keep the new String
+        System.out.println(town);
+
+        String a = &quot;Kenya&quot;;
+        String b = new String(&quot;Kenya&quot;);
+        System.out.println(a == b);          // false: different objects
+        System.out.println(a.equals(b));     // true: same text
+        System.out.println(&quot;kenya&quot;.equalsIgnoreCase(a));
+    }
+}</code></pre></figure>
+<h2>Parsing CSV-style text</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    public static void main(String[] args) {
+        String csv = &quot;name,town,amount\nAmina,Mombasa,1200\nBrian,Nakuru,850\nChebet,Eldoret,2300&quot;;
+        String[] lines = csv.split(&quot;\n&quot;);
+        int total = 0;
+        for (int i = 1; i &lt; lines.length; i++) {          // skip the header
+            String[] parts = lines[i].split(&quot;,&quot;);
+            String name = parts[0].trim();
+            int amount = Integer.parseInt(parts[2].trim());
+            total += amount;
+            System.out.printf(&quot;%-8s %-10s KSh %,6d%n&quot;, name, parts[1], amount);
+        }
+        System.out.printf(&quot;%-19s KSh %,6d%n&quot;, &quot;TOTAL&quot;, total);
+    }
+}</code></pre></figure>
+<p>Simple <code>split(&quot;,&quot;)</code> works for clean data; real CSV files with quoted commas need a CSV library (such as OpenCSV or Apache Commons CSV).</p>
+<h2>StringBuilder for building text</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">class Main {
+    public static void main(String[] args) {
+        String[] items = {&quot;Unga&quot;, &quot;Sugar&quot;, &quot;Oil&quot;, &quot;Salt&quot;};
+        int[] prices = {180, 210, 350, 40};
+
+        StringBuilder receipt = new StringBuilder(&quot;RECEIPT\n&quot;);
+        for (int i = 0; i &lt; items.length; i++) {
+            receipt.append(String.format(&quot;%-6s %5d%n&quot;, items[i], prices[i]));
+        }
+        receipt.append(&quot;-&quot;.repeat(12)).append(&#x27;\n&#x27;);
+        System.out.print(receipt);
+        System.out.println(new StringBuilder(&quot;racecar&quot;).reverse());
+    }
+}</code></pre></figure>
+<p>Joining strings with <code>+</code> inside a loop creates many temporary objects; <code>StringBuilder</code> is much faster for large outputs.</p>
+<h2>Arrays utilities and 2D arrays</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">import java.util.Arrays;
+
+class Main {
+    public static void main(String[] args) {
+        int[] marks = {67, 82, 45, 90, 58};
+        int[] sorted = marks.clone();
+        Arrays.sort(sorted);
+        System.out.println(Arrays.toString(sorted));
+        System.out.println(&quot;Index of 82 after sorting: &quot; + Arrays.binarySearch(sorted, 82));
+        System.out.println(&quot;Sum: &quot; + Arrays.stream(marks).sum() + &quot;, average: &quot; + Arrays.stream(marks).average().orElse(0));
+
+        // 2D array: rows = students, columns = subjects
+        int[][] scores = {
+            {78, 84, 90},
+            {92, 71, 65},
+            {55, 62, 70},
+        };
+        String[] students = {&quot;Amina&quot;, &quot;Brian&quot;, &quot;Chebet&quot;};
+        for (int r = 0; r &lt; scores.length; r++) {
+            int total = 0;
+            for (int c = 0; c &lt; scores[r].length; c++) total += scores[r][c];
+            System.out.println(students[r] + &quot;: &quot; + total);
+        }
+    }
+}</code></pre></figure>
+<h2>HashMap: key–value lookups</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
+class Main {
+    public static void main(String[] args) {
+        Map&lt;String, Integer&gt; stock = new HashMap&lt;&gt;();
+        stock.put(&quot;unga&quot;, 40);
+        stock.put(&quot;sugar&quot;, 25);
+        stock.put(&quot;unga&quot;, stock.get(&quot;unga&quot;) - 5);             // update
+        stock.merge(&quot;rice&quot;, 30, Integer::sum);                 // add new or combine
+        stock.merge(&quot;sugar&quot;, 10, Integer::sum);
+        System.out.println(stock.getOrDefault(&quot;salt&quot;, 0));     // 0: missing key
+
+        String[] sales = {&quot;Nakuru&quot;, &quot;Thika&quot;, &quot;Nakuru&quot;, &quot;Eldoret&quot;, &quot;Nakuru&quot;};
+        Map&lt;String, Integer&gt; counts = new TreeMap&lt;&gt;();         // TreeMap keeps keys sorted
+        for (String town : sales) counts.merge(town, 1, Integer::sum);
+        for (Map.Entry&lt;String, Integer&gt; e : counts.entrySet()) {
+            System.out.println(e.getKey() + &quot;: &quot; + e.getValue());
+        }
+        System.out.println(new TreeMap&lt;&gt;(stock));
+    }
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Collection</th><th>Use</th></tr></thead><tbody><tr><td><code>ArrayList&lt;T&gt;</code></td><td>Ordered list that grows</td></tr><tr><td><code>HashMap&lt;K, V&gt;</code></td><td>Fast lookup by key (no order guarantee)</td></tr><tr><td><code>TreeMap&lt;K, V&gt;</code></td><td>Keys kept sorted</td></tr><tr><td><code>LinkedHashMap&lt;K, V&gt;</code></td><td>Keeps insertion order</td></tr><tr><td><code>HashSet&lt;T&gt;</code></td><td>Unique values, fast "contains"</td></tr></tbody></table></div>
+<h2>Sorting objects with Comparator</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+class Main {
+    static class Student {
+        final String name; final int form; final double mean;
+        Student(String name, int form, double mean) { this.name = name; this.form = form; this.mean = mean; }
+        public String toString() { return &quot;Form &quot; + form + &quot; &quot; + name + &quot; (&quot; + mean + &quot;)&quot;; }
+    }
+
+    public static void main(String[] args) {
+        List&lt;Student&gt; list = new ArrayList&lt;&gt;(List.of(
+            new Student(&quot;Wanjiru&quot;, 2, 71.5),
+            new Student(&quot;Otieno&quot;, 1, 80.2),
+            new Student(&quot;Akinyi&quot;, 2, 84.0),
+            new Student(&quot;Baraka&quot;, 1, 80.2)
+        ));
+        list.sort(Comparator.comparingInt((Student s) -&gt; s.form)
+                .thenComparing(s -&gt; s.mean, Comparator.reverseOrder())
+                .thenComparing(s -&gt; s.name));
+        list.forEach(System.out::println);
+    }
+}</code></pre></figure>
+<h2>Streams for data processing</h2>
+<figure class="static-code"><figcaption>Java · runs live in the interactive lesson</figcaption><pre><code class="language-java">import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+class Main {
+    static class Sale {
+        final String town; final String product; final int amount;
+        Sale(String town, String product, int amount) { this.town = town; this.product = product; this.amount = amount; }
+    }
+
+    public static void main(String[] args) {
+        List&lt;Sale&gt; sales = List.of(
+            new Sale(&quot;Nakuru&quot;, &quot;Unga&quot;, 1800), new Sale(&quot;Thika&quot;, &quot;Sugar&quot;, 840),
+            new Sale(&quot;Nakuru&quot;, &quot;Oil&quot;, 1400), new Sale(&quot;Eldoret&quot;, &quot;Unga&quot;, 900));
+
+        int total = sales.stream().mapToInt(s -&gt; s.amount).sum();
+        Map&lt;String, Integer&gt; byTown = sales.stream()
+            .collect(Collectors.groupingBy(s -&gt; s.town, Collectors.summingInt(s -&gt; s.amount)));
+        List&lt;String&gt; bigSales = sales.stream()
+            .filter(s -&gt; s.amount &gt; 1000)
+            .map(s -&gt; s.town + &quot;:&quot; + s.product)
+            .collect(Collectors.toList());
+
+        System.out.println(&quot;Total &quot; + total);
+        System.out.println(&quot;By town &quot; + byTown);
+        System.out.println(&quot;Over 1000 &quot; + bigSales);
+    }
+}</code></pre></figure>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Fix</th></tr></thead><tbody><tr><td><code>str1 == str2</code> for text</td><td><code>str1.equals(str2)</code></td></tr><tr><td>Changing a list while looping with for-each</td><td>Use an <code>Iterator</code> with <code>remove()</code>, or <code>removeIf</code></td></tr><tr><td><code>ArrayIndexOutOfBoundsException</code></td><td>Loop with <code>i &lt; array.length</code></td></tr><tr><td><code>map.get(key)</code> returns null and is unboxed to int</td><td><code>getOrDefault(key, 0)</code></td></tr><tr><td>Using <code>List.of(...)</code> then trying to add</td><td><code>List.of</code> is immutable; wrap in <code>new ArrayList&lt;&gt;(...)</code></td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Parse a CSV string of products and print the most expensive one.</li><li>Count how many times each word appears in a sentence with a <code>TreeMap</code>.</li><li>Sort a list of students by form, then by mean (highest first).</li><li>Use streams to get the names of products costing over KSh 500, sorted alphabetically.</li><li>Build a receipt with <code>StringBuilder</code> and aligned columns.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why does <code>list.forEach(x -&gt; { if (x &lt; 50) list.remove(x); })</code> throw a ConcurrentModificationException, and how do you remove items safely?</span><em>Show answer</em></summary><div class="callout-body"><p>Changing a list's structure while iterating over it invalidates the iteration. Use <code>list.removeIf(x -&gt; x &lt; 50)</code>, an explicit <code>Iterator</code> and its <code>remove()</code> method, or build a new filtered list with streams.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the index of the first item in a Java array?</p><details><summary>Show answer</summary><p>0</p></details></li><li><p>How do you get the number of items in an array called marks?</p><details><summary>Show answer</summary><p>marks.length</p></details></li><li><p>How do you get the number of items in an ArrayList called cart?</p><details><summary>Show answer</summary><p>cart.size()</p></details></li><li><p>Which class builds strings efficiently in a loop?</p><details><summary>Show answer</summary><p>StringBuilder</p></details></li><li><p>Which exception happens when you use an index that doesn't exist? (the name before Exception is enough)</p><details><summary>Show answer</summary><p>ArrayIndexOutOfBoundsException</p></details></li><li><p>Which Map method adds a new key or combines with the existing value?</p><details><summary>Show answer</summary><p>merge</p></details></li><li><p>Which Map implementation keeps keys sorted?</p><details><summary>Show answer</summary><p>TreeMap</p></details></li><li><p>Which list method removes all items matching a condition?</p><details><summary>Show answer</summary><p>removeIf</p></details></li><li><p>Are Java Strings mutable or immutable?</p><details><summary>Show answer</summary><p>immutable</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 9 in <a href="/learn/java/">Java</a> · <a href="/learn/?book=java">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/java/methods/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Methods: parameters, return values and overloading</a><a class="btn btn-solid btn-sm" href="/learn/java/oop/">Classes and objects (OOP) in Java: fields, constructors, methods, encapsulation, static members, toString and designing classes <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

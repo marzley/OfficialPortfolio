@@ -134,7 +134,122 @@ int main() {
     }
     return 0;
 }</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which object prints to the screen in C++?</p><details><summary>Show answer</summary><p>cout</p></details></li><li><p>Which keyword lets the compiler work out a variable's type?</p><details><summary>Show answer</summary><p>auto</p></details></li><li><p>Which symbol in a parameter makes it a reference?</p><details><summary>Show answer</summary><p>&amp;</p></details></li><li><p>Does a function receiving int x (by value) change the caller's variable? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>What is the best way to pass a large string you only read? (two words)</p><details><summary>Show answer</summary><p>const reference</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 7 in <a href="/learn/cpp/">C++</a> · <a href="/learn/?book=cpp">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/cpp/introduction/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> C++ introduction: what C++ is, where it&#x27;s used, compilers, your first program, iostream, types, strings, control flow and functions</a><a class="btn btn-solid btn-sm" href="/learn/cpp/vectors-strings-stl/">vector, string, map and the STL algorithms <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why C++ is worth learning</h2>
+<p>C++ powers game engines (Unreal Engine), browsers (Chrome, Firefox), databases, trading systems, embedded devices, graphics software and competitive programming. It combines C's speed and low-level control with higher-level features like classes, templates and the Standard Library. Many engineering and computer science students learn it, and it's the most popular language in programming competitions.</p>
+<h2>Strings in C++ are much easier than in C</h2>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int main() {
+    string first = &quot;Achieng&quot;;
+    string last = &quot;Odhiambo&quot;;
+    string full = first + &quot; &quot; + last;          // no buffer sizes to worry about
+    cout &lt;&lt; full &lt;&lt; &quot; has &quot; &lt;&lt; full.length() &lt;&lt; &quot; characters&quot; &lt;&lt; endl;
+    cout &lt;&lt; &quot;First letter: &quot; &lt;&lt; full[0] &lt;&lt; endl;
+    cout &lt;&lt; &quot;Surname starts at index &quot; &lt;&lt; full.find(&quot; &quot;) + 1 &lt;&lt; endl;
+    cout &lt;&lt; &quot;Surname: &quot; &lt;&lt; full.substr(full.find(&quot; &quot;) + 1) &lt;&lt; endl;
+    full += &quot; (Kisumu)&quot;;
+    cout &lt;&lt; full &lt;&lt; endl;
+    if (first == &quot;Achieng&quot;) cout &lt;&lt; &quot;Names compare with == in C++&quot; &lt;&lt; endl;
+    return 0;
+}</code></pre></figure>
+<p><code>std::string</code> grows automatically and supports <code>+</code>, <code>==</code>, <code>find</code>, <code>substr</code> and more, removing most of C's string dangers.</p>
+<h2>Default parameters and overloading</h2>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+double withVat(double amount, double rate = 0.16) {
+    return amount * (1 + rate);
+}
+
+void describe(int qty) { cout &lt;&lt; qty &lt;&lt; &quot; items&quot; &lt;&lt; endl; }
+void describe(double kg) { cout &lt;&lt; kg &lt;&lt; &quot; kg&quot; &lt;&lt; endl; }
+void describe(string name) { cout &lt;&lt; &quot;Product: &quot; &lt;&lt; name &lt;&lt; endl; }
+
+int main() {
+    cout &lt;&lt; withVat(1000) &lt;&lt; endl;          // uses the default 16%
+    cout &lt;&lt; withVat(1000, 0.08) &lt;&lt; endl;
+    describe(5);                            // calls the int version
+    describe(2.5);                          // calls the double version
+    describe(string(&quot;Unga&quot;));               // calls the string version
+    return 0;
+}</code></pre></figure>
+<h2>Passing by value, reference and const reference</h2>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+void addBonusCopy(int marks) { marks += 5; }            // changes a copy only
+void addBonusRef(int &amp;marks) { marks += 5; }            // changes the caller&#x27;s variable
+int countVowels(const string &amp;text) {                   // read-only, no copy made
+    int n = 0;
+    for (char c : text) {
+        if (c == &#x27;a&#x27; || c == &#x27;e&#x27; || c == &#x27;i&#x27; || c == &#x27;o&#x27; || c == &#x27;u&#x27;) n++;
+    }
+    return n;
+}
+
+int main() {
+    int m = 60;
+    addBonusCopy(m);
+    cout &lt;&lt; &quot;After copy: &quot; &lt;&lt; m &lt;&lt; endl;
+    addBonusRef(m);
+    cout &lt;&lt; &quot;After reference: &quot; &lt;&lt; m &lt;&lt; endl;
+    cout &lt;&lt; &quot;Vowels: &quot; &lt;&lt; countVowels(&quot;habari ya asubuhi&quot;) &lt;&lt; endl;
+    return 0;
+}</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Parameter style</th><th>Use when</th></tr></thead><tbody><tr><td><code>int x</code> (by value)</td><td>Small types you don't need to change</td></tr><tr><td><code>int &amp;x</code> (reference)</td><td>The function must change the caller's variable</td></tr><tr><td><code>const string &amp;s</code></td><td>Large objects you only read (avoids copying)</td></tr></tbody></table></div>
+<h2>Range-based for loops and vectors (preview)</h2>
+<figure class="static-code"><figcaption>C++ · runs live in the interactive lesson</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; marks = {67, 82, 45, 90, 58};
+    marks.push_back(73);
+
+    int total = 0;
+    for (int m : marks) total += m;
+    cout &lt;&lt; &quot;Count &quot; &lt;&lt; marks.size() &lt;&lt; &quot;, average &quot; &lt;&lt; (double) total / marks.size() &lt;&lt; endl;
+
+    for (int &amp;m : marks) m += 2;      // reference: change each element
+    for (int m : marks) cout &lt;&lt; m &lt;&lt; &quot; &quot;;
+    cout &lt;&lt; endl;
+    return 0;
+}</code></pre></figure>
+<p><code>vector</code> is a resizable array; you'll use it more than raw arrays in C++.</p>
+<h2>Reading input robustly</h2>
+<figure class="static-code"><figcaption>C++</figcaption><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;limits&gt;
+using namespace std;
+
+int main() {
+    int qty;
+    cout &lt;&lt; &quot;Quantity: &quot;;
+    while (!(cin &gt;&gt; qty) || qty &lt;= 0) {
+        cin.clear();                                          // clear the error state
+        cin.ignore(numeric_limits&lt;streamsize&gt;::max(), &#x27;\n&#x27;);  // discard the bad input
+        cout &lt;&lt; &quot;Please enter a positive whole number: &quot;;
+    }
+    string name;
+    cin.ignore();                         // drop the leftover newline before getline
+    cout &lt;&lt; &quot;Customer name: &quot;;
+    getline(cin, name);                   // reads a full name with spaces
+    cout &lt;&lt; name &lt;&lt; &quot; ordered &quot; &lt;&lt; qty &lt;&lt; endl;
+}</code></pre></figure>
+<p><code>getline</code> reads names with spaces, unlike <code>cin &gt;&gt; name</code>, which stops at the first space.</p>
+<h2>Namespaces</h2>
+<p><code>using namespace std;</code> is convenient in small programs and exercises. In larger projects, prefer <code>std::cout</code>, <code>std::string</code> or specific <code>using std::cout;</code> declarations, to avoid name clashes between libraries.</p>
+<h2>Compiling C++</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">g++ -std=c++20 -Wall -Wextra -O2 -o shop shop.cpp
+./shop</code></pre></figure>
+<p>Choose a modern standard (C++17 or C++20) to get useful features, and keep warnings on.</p>
+<h2>Practice</h2>
+<ol><li>Ask for a full name with <code>getline</code> and print the initials.</li><li>Write overloaded <code>area</code> functions for a square (one side) and a rectangle (two sides).</li><li>Write <code>void applyDiscount(double &amp;price, double percent = 10)</code> and test it.</li><li>Store 6 prices in a vector, add VAT to each with a reference loop, and print the total.</li><li>Write a function that counts words in a <code>const string &amp;</code> sentence.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Why is <code>void print(const std::string &amp;s)</code> preferred over <code>void print(std::string s)</code> for long strings?</span><em>Show answer</em></summary><div class="callout-body"><p>Passing by value copies the whole string every call, which costs time and memory for long text. A const reference passes the original without copying, and <code>const</code> guarantees the function can't modify it, giving both efficiency and safety.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which object prints to the screen in C++?</p><details><summary>Show answer</summary><p>cout</p></details></li><li><p>Which keyword lets the compiler work out a variable's type?</p><details><summary>Show answer</summary><p>auto</p></details></li><li><p>Which symbol in a parameter makes it a reference?</p><details><summary>Show answer</summary><p>&amp;</p></details></li><li><p>Does a function receiving int x (by value) change the caller's variable? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>What is the best way to pass a large string you only read? (two words)</p><details><summary>Show answer</summary><p>const reference</p></details></li><li><p>Which function reads a full line including spaces into a string?</p><details><summary>Show answer</summary><p>getline</p></details></li><li><p>Which container is C++'s resizable array?</p><details><summary>Show answer</summary><p>vector</p></details></li><li><p>What feature lets a parameter have a value used when the argument is left out? (two words)</p><details><summary>Show answer</summary><p>default parameter</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 7 in <a href="/learn/cpp/">C++</a> · <a href="/learn/?book=cpp">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/cpp/introduction/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> C++ introduction: what C++ is, where it&#x27;s used, compilers, your first program, iostream, types, strings, control flow and functions</a><a class="btn btn-solid btn-sm" href="/learn/cpp/vectors-strings-stl/">vector, string, map and the STL algorithms <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

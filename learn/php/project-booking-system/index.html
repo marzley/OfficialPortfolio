@@ -133,7 +133,75 @@ try {
 <ul><li>Protect it with the login from the <em>Sessions and login</em> lesson.</li><li>Show today's bookings: <code>SELECT b.*, s.name AS service FROM bookings b JOIN services s ON s.id = b.service_id WHERE DATE(starts_at) = CURDATE() ORDER BY starts_at</code>.</li><li>Buttons (POST forms with a CSRF token) to mark <strong>done</strong> or <strong>cancelled</strong>.</li></ul>
 <h2>6. Going further</h2>
 <div class="static-table"><table><thead><tr><th>Feature</th><th>How</th></tr></thead><tbody><tr><td>SMS confirmation</td><td>An SMS API (e.g. Africa's Talking) after saving</td></tr><tr><td>Deposit to secure the slot</td><td>M-Pesa STK Push (see the M-Pesa lesson), confirm on callback</td></tr><tr><td>Reminders</td><td>A cron job each morning sends SMS for tomorrow's bookings</td></tr><tr><td>Multiple staff</td><td>Add a <code>staff</code> table and make the unique key <code>(staff_id, starts_at)</code></td></tr><tr><td>Calendar view</td><td>FullCalendar (JavaScript) fed by a JSON API</td></tr></tbody></table></div>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What database feature prevents two bookings for the same time slot? (one word)</p><details><summary>Show answer</summary><p>unique</p></details></li><li><p>What MySQL error number means a duplicate key?</p><details><summary>Show answer</summary><p>1062</p></details></li><li><p>Which PHP function returns the values in one array that are not in another?</p><details><summary>Show answer</summary><p>array_diff</p></details></li><li><p>Which function gives secure random numbers for codes?</p><details><summary>Show answer</summary><p>random_int</p></details></li></ol></section></div><p class="static-meta">Lesson 14 of 15 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/mpesa-integration/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> M-Pesa STK push with PHP: Daraja setup, access tokens, STK push, callbacks, verification and going live</a><a class="btn btn-solid btn-sm" href="/learn/php/deploy-php-hosting/">Deploying a PHP and MySQL site to cPanel hosting: upload, database, config, HTTPS, emails, backups and going live <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why booking systems are great projects</h2>
+<p>Salons, clinics, driving schools, tutors, car washes, event venues, photographers and consultants all need bookings. A working booking system combines the core skills of web development: database design, business logic (free slots), validation, preventing double bookings, notifications, payments and an admin dashboard. Built well, it's both a strong portfolio piece and a product you can sell to local businesses.</p>
+<h2>Handling business rules</h2>
+<p>Real businesses have rules that your slot logic must respect:</p>
+<div class="static-table"><table><thead><tr><th>Rule</th><th>Example</th><th>Implementation idea</th></tr></thead><tbody><tr><td>Opening hours by day</td><td>Mon–Fri 8:00–18:00, Sat 9:00–14:00, closed Sunday</td><td><code>opening_hours</code> table (weekday, open, close)</td></tr><tr><td>Service durations</td><td>Haircut 30 min, braiding 3 hours</td><td><code>services.duration_minutes</code>; check consecutive slots</td></tr><tr><td>Breaks</td><td>Lunch 13:00–14:00</td><td>Blocked times table</td></tr><tr><td>Holidays/closures</td><td>Public holidays, staff leave</td><td><code>closures</code> table with dates</td></tr><tr><td>Lead time</td><td>Bookings at least 2 hours ahead</td><td>Compare with current time</td></tr><tr><td>Booking window</td><td>Up to 30 days ahead</td><td>Date range validation</td></tr><tr><td>Several staff</td><td>Each stylist has their own calendar</td><td>Bookings linked to <code>staff_id</code></td></tr></tbody></table></div>
+<h2>Generating slots that fit a service's duration</h2>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+function slotsForDay(string $open, string $close, int $stepMinutes, int $durationMinutes, array $booked, array $breaks = []): array {
+    $slots = [];
+    $start = strtotime(&quot;2026-10-05 $open&quot;);
+    $end = strtotime(&quot;2026-10-05 $close&quot;);
+    for ($t = $start; $t + $durationMinutes * 60 &lt;= $end; $t += $stepMinutes * 60) {
+        $slotStart = $t;
+        $slotEnd = $t + $durationMinutes * 60;
+        $clash = false;
+        foreach (array_merge($booked, $breaks) as [$bStart, $bEnd]) {
+            $bs = strtotime(&quot;2026-10-05 $bStart&quot;);
+            $be = strtotime(&quot;2026-10-05 $bEnd&quot;);
+            if ($slotStart &lt; $be &amp;&amp; $slotEnd &gt; $bs) { $clash = true; break; }   // overlap test
+        }
+        if (!$clash) $slots[] = date(&#x27;H:i&#x27;, $slotStart);
+    }
+    return $slots;
+}
+
+$booked = [[&#x27;09:00&#x27;, &#x27;10:30&#x27;], [&#x27;14:00&#x27;, &#x27;15:00&#x27;]];
+$breaks = [[&#x27;13:00&#x27;, &#x27;14:00&#x27;]];
+echo &quot;60-minute service: &quot;, implode(&#x27;, &#x27;, slotsForDay(&#x27;08:00&#x27;, &#x27;17:00&#x27;, 30, 60, $booked, $breaks)), &quot;\n&quot;;
+echo &quot;2-hour service:    &quot;, implode(&#x27;, &#x27;, slotsForDay(&#x27;08:00&#x27;, &#x27;17:00&#x27;, 30, 120, $booked, $breaks)), &quot;\n&quot;;</code></pre></figure>
+<p>The key line is the <strong>overlap test</strong>: two time ranges overlap when <code>startA &lt; endB</code> and <code>endA &gt; startB</code>. This one rule handles services of any length, breaks and existing bookings.</p>
+<h2>Preventing double bookings under pressure</h2>
+<p>Two customers may pick the same slot at the same moment. Protect it at the database level:</p>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">-- One booking per staff member per start time
+ALTER TABLE bookings ADD UNIQUE KEY uniq_staff_slot (staff_id, booking_date, start_time);</code></pre></figure>
+<p>For variable-length services, check overlaps inside a transaction with a row lock:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">$pdo-&gt;beginTransaction();
+$stmt = $pdo-&gt;prepare(
+    &#x27;SELECT COUNT(*) FROM bookings
+     WHERE staff_id = ? AND booking_date = ? AND status &lt;&gt; &quot;cancelled&quot;
+       AND start_time &lt; ? AND end_time &gt; ? FOR UPDATE&#x27;
+);
+$stmt-&gt;execute([$staffId, $date, $newEnd, $newStart]);
+if ($stmt-&gt;fetchColumn() &gt; 0) {
+    $pdo-&gt;rollBack();
+    exit(&#x27;Sorry, that time was just taken. Please choose another slot.&#x27;);
+}
+$pdo-&gt;prepare(&#x27;INSERT INTO bookings (staff_id, booking_date, start_time, end_time, customer_name, phone, status) VALUES (?, ?, ?, ?, ?, ?, &quot;pending&quot;)&#x27;)
+    -&gt;execute([$staffId, $date, $newStart, $newEnd, $name, $phone]);
+$pdo-&gt;commit();</code></pre></figure>
+<h2>Booking statuses and their lifecycle</h2>
+<figure class="static-code"><pre><code>pending  →  confirmed (deposit paid or owner approves)  →  completed
+    ↘ cancelled (by customer or owner)          ↘ no_show</code></pre></figure>
+<p>Store status changes with timestamps; the owner can see no-show patterns and you can automatically release unpaid pending bookings after, say, 30 minutes.</p>
+<h2>Deposits with M-Pesa (flow)</h2>
+<ol><li>Customer chooses a slot; booking saved as <code>pending</code> with an expiry time.</li><li>Your server starts an M-Pesa payment request for the deposit (through Daraja or a payment provider), using credentials stored in configuration outside <code>public_html</code>.</li><li>The callback confirms payment; after verifying it, mark the booking <code>confirmed</code> and store the receipt number (unique).</li><li>If no payment arrives before expiry, mark it <code>cancelled</code> and free the slot.</li><li>Send confirmation by SMS, WhatsApp or email.</li></ol>
+<p>Never mark a booking paid based only on the customer's screenshot or the browser saying "done": rely on the verified callback or a status query.</p>
+<h2>Reminders and notifications</h2>
+<ul><li>Confirmation immediately after booking.</li><li>Reminder the day before (a cron job runs every morning to send reminders for tomorrow's bookings).</li><li>Optional reminder 1 hour before.</li><li>A link to cancel or reschedule (with a secure random token), which reduces no-shows.</li></ul>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash"># cron: send tomorrow&#x27;s reminders at 8:15 every morning
+15 8 * * * /usr/bin/php /home/username/app/cron/send_reminders.php &gt;&gt; /home/username/logs/reminders.log 2&gt;&amp;1</code></pre></figure>
+<h2>The owner's dashboard: useful views</h2>
+<div class="static-table"><table><thead><tr><th>View</th><th>Shows</th></tr></thead><tbody><tr><td>Today</td><td>Time-ordered list with customer, service, status, phone (tap to call/WhatsApp)</td></tr><tr><td>Calendar</td><td>Week view per staff member</td></tr><tr><td>Pending payments</td><td>Bookings awaiting deposits</td></tr><tr><td>Reports</td><td>Bookings per service, revenue, no-show rate, busiest days and hours</td></tr><tr><td>Customers</td><td>History per customer, repeat visit count</td></tr></tbody></table></div>
+<p>Protect the dashboard with secure login (hashed passwords, session regeneration, HTTPS), and record who changed what.</p>
+<h2>Testing the system</h2>
+<ul><li>Book the same slot from two browsers at once and confirm only one succeeds.</li><li>Try booking in the past, outside opening hours, during breaks and on closure days.</li><li>Test services that cross a break (a 2-hour service starting at 12:30 should not be offered if lunch is 13:00–14:00).</li><li>Test time zone handling (server in UTC, business in EAT): set <code>date_default_timezone_set(&#x27;Africa/Nairobi&#x27;)</code> or store UTC consistently.</li><li>Test on a phone over a slow connection.</li></ul>
+<h2>Practice</h2>
+<ol><li>Add an <code>opening_hours</code> table and generate slots using each weekday's hours.</li><li>Extend <code>slotsForDay</code> to skip slots that start less than 2 hours from "now".</li><li>Add per-staff calendars and show each staff member's free slots.</li><li>Implement automatic cancellation of unpaid pending bookings after 30 minutes with a cron job.</li><li>Build a "reschedule" link using a random token stored with the booking.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A salon offers 30-minute and 3-hour services. A customer books braiding (3 hours) at 10:00, and the system still shows 11:00 as free for a haircut with the same stylist. What's wrong in the logic, and how is it fixed?</span><em>Show answer</em></summary><div class="callout-body"><p>The availability check only compares start times (10:00 vs 11:00) instead of time ranges. Each booking must store an end time (start + duration), and slots should be rejected if they overlap any booking: <code>newStart &lt; existingEnd AND newEnd &gt; existingStart</code>. Then 11:00 clashes with 10:00–13:00 and is hidden.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What database feature prevents two bookings for the same time slot? (one word)</p><details><summary>Show answer</summary><p>unique</p></details></li><li><p>What MySQL error number means a duplicate key?</p><details><summary>Show answer</summary><p>1062</p></details></li><li><p>Which PHP function returns the values in one array that are not in another?</p><details><summary>Show answer</summary><p>array_diff</p></details></li><li><p>Which function gives secure random numbers for codes?</p><details><summary>Show answer</summary><p>random_int</p></details></li><li><p>Two time ranges overlap when startA &lt; endB and endA &gt; ...?</p><details><summary>Show answer</summary><p>startB</p></details></li><li><p>Which SQL clause locks the selected rows inside a transaction? (two words)</p><details><summary>Show answer</summary><p>FOR UPDATE</p></details></li><li><p>Which PHP function sets the default time zone, e.g. Africa/Nairobi?</p><details><summary>Show answer</summary><p>date_default_timezone_set</p></details></li></ol></section></div><p class="static-meta">Lesson 14 of 15 in <a href="/learn/php/">PHP &amp; MySQL</a> · <a href="/learn/?book=php">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/php/mpesa-integration/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> M-Pesa STK push with PHP: Daraja setup, access tokens, STK push, callbacks, verification and going live</a><a class="btn btn-solid btn-sm" href="/learn/php/deploy-php-hosting/">Deploying a PHP and MySQL site to cPanel hosting: upload, database, config, HTTPS, emails, backups and going live <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

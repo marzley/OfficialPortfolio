@@ -128,7 +128,98 @@ fun main() = runBlocking {
     }
     println(result ?: &quot;Timed out: please check your connection&quot;)
 }</code></pre></figure>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword marks a function that can pause without blocking a thread?</p><details><summary>Show answer</summary><p>suspend</p></details></li><li><p>Which builder starts work that returns a value you can await?</p><details><summary>Show answer</summary><p>async</p></details></li><li><p>Which dispatcher is for network and database work?</p><details><summary>Show answer</summary><p>Dispatchers.IO</p></details></li><li><p>Which scope cancels coroutines automatically when a ViewModel is cleared?</p><details><summary>Show answer</summary><p>viewModelScope</p></details></li><li><p>What emits many values over time: suspend function or Flow?</p><details><summary>Show answer</summary><p>Flow</p></details></li><li><p>About how long can the main thread be blocked before Android shows "App isn't responding"? Give seconds.</p><details><summary>Show answer</summary><p>5</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 10 in <a href="/learn/kotlin-android/">Android apps with Kotlin</a> · <a href="/learn/?book=kotlin-android">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/kotlin-android/kotlin-classes-null-safety/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Kotlin classes, data classes, sealed classes and null safety</a><a class="btn btn-solid btn-sm" href="/learn/kotlin-android/android-studio-first-app/">Android Studio and your first Android app <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why coroutines matter in Android</h2>
+<p>Android apps must never block the main (UI) thread: if the screen freezes for about 5 seconds, Android shows an "App Not Responding" dialog, and users uninstall slow apps quickly. Network calls (loading products, checking M-Pesa payment status), database queries and file operations must run in the background. Kotlin coroutines make this background work look like simple, sequential code, and they're the standard approach in modern Android with Jetpack libraries.</p>
+<h2>A typical screen: loading data with a ViewModel</h2>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">data class ProductsUiState(
+    val isLoading: Boolean = false,
+    val products: List&lt;Product&gt; = emptyList(),
+    val error: String? = null,
+)
+
+class ProductsViewModel(private val repo: ProductRepository) : ViewModel() {
+    private val _state = MutableStateFlow(ProductsUiState())
+    val state: StateFlow&lt;ProductsUiState&gt; = _state.asStateFlow()
+
+    init { load() }
+
+    fun load() {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true, error = null) }
+            try {
+                val items = repo.getProducts()            // suspend function, runs off the main thread
+                _state.update { it.copy(isLoading = false, products = items) }
+            } catch (e: IOException) {
+                _state.update { it.copy(isLoading = false, error = &quot;No internet connection&quot;) }
+            }
+        }
+    }
+}</code></pre></figure>
+<p>In Compose, the screen collects the state: <code>val state by viewModel.state.collectAsStateWithLifecycle()</code>. When the user leaves the screen, <code>viewModelScope</code> cancels the work automatically, so no wasted data or memory leaks.</p>
+<h2>Repository with withContext</h2>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">class ProductRepository(private val api: ShopApi, private val dao: ProductDao) {
+    suspend fun getProducts(): List&lt;Product&gt; = withContext(Dispatchers.IO) {
+        try {
+            val fresh = api.fetchProducts()          // network
+            dao.replaceAll(fresh)                    // cache in the local database
+            fresh
+        } catch (e: IOException) {
+            dao.getAll()                             // offline: fall back to cached data
+        }
+    }
+}</code></pre></figure>
+<p><code>withContext(Dispatchers.IO)</code> switches to a background thread pool for I/O work and returns the result to the caller. The <strong>offline-first</strong> pattern (show cached data when the network fails) is very valuable for users with unstable connections or limited data bundles.</p>
+<h2>Running requests in parallel</h2>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">suspend fun loadDashboard(): Dashboard = coroutineScope {
+    val balance = async { api.getBalance() }
+    val transactions = async { api.getRecentTransactions() }
+    val offers = async { api.getOffers() }
+    Dashboard(balance.await(), transactions.await(), offers.await())   // total time ≈ slowest call
+}</code></pre></figure>
+<p><code>coroutineScope</code> ensures that if one request fails, the others are cancelled and the error is passed up: this is <strong>structured concurrency</strong>.</p>
+<h2>Polling a payment status with timeout</h2>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">suspend fun waitForPayment(checkoutId: String): PaymentStatus =
+    withTimeoutOrNull(60_000) {                       // give up after 60 seconds
+        while (true) {
+            val status = api.paymentStatus(checkoutId)
+            if (status != PaymentStatus.PENDING) return@withTimeoutOrNull status
+            delay(3_000)                               // wait 3 s between checks without blocking
+        }
+        @Suppress(&quot;UNREACHABLE_CODE&quot;) PaymentStatus.PENDING
+    } ?: PaymentStatus.TIMED_OUT</code></pre></figure>
+<p>After starting an M-Pesa payment, apps often show "Check your phone to enter your PIN" and poll their <strong>own server</strong> (which receives the provider's callback) until the payment is confirmed or times out. Keep payment secrets on the server, never in the app.</p>
+<h2>Flow for live updates</h2>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">fun searchResults(queries: Flow&lt;String&gt;): Flow&lt;List&lt;Product&gt;&gt; =
+    queries
+        .debounce(300)                       // wait until typing pauses
+        .map { it.trim() }
+        .distinctUntilChanged()              // skip repeated queries
+        .filter { it.length &gt;= 2 }
+        .mapLatest { q -&gt; repo.search(q) }   // cancel the previous search when a new query arrives
+        .catch { emit(emptyList()) }</code></pre></figure>
+<p>This search pipeline avoids sending a request for every keystroke, saving data and server load.</p>
+<h2>Exception handling in coroutines</h2>
+<div class="static-table"><table><thead><tr><th>Situation</th><th>Approach</th></tr></thead><tbody><tr><td>A single call may fail</td><td><code>try/catch</code> around the suspend call</td></tr><tr><td>Expected failures (no internet)</td><td>Return a <code>Result</code> or sealed class instead of throwing</td></tr><tr><td>Unexpected crashes in a scope</td><td><code>CoroutineExceptionHandler</code> for logging</td></tr><tr><td>One child failure shouldn't cancel siblings</td><td><code>supervisorScope</code></td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">sealed interface LoadResult&lt;out T&gt; {
+    data class Success&lt;T&gt;(val data: T) : LoadResult&lt;T&gt;
+    data class Failure(val message: String) : LoadResult&lt;Nothing&gt;
+}</code></pre></figure>
+<p>Never catch <code>CancellationException</code> and ignore it; that breaks cancellation. Rethrow it if you catch general exceptions.</p>
+<h2>Testing coroutines</h2>
+<figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">@Test
+fun loadsProducts() = runTest {
+    val repo = FakeProductRepository(listOf(Product(&quot;Unga&quot;, 180)))
+    val vm = ProductsViewModel(repo)
+    advanceUntilIdle()                               // run pending coroutines
+    assertEquals(1, vm.state.value.products.size)
+}</code></pre></figure>
+<p><code>runTest</code> (from kotlinx-coroutines-test) skips real delays, so tests involving <code>delay(3000)</code> run instantly.</p>
+<h2>Common mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Problem</th><th>Fix</th></tr></thead><tbody><tr><td>Network call on the main thread</td><td>Freezes or crashes (NetworkOnMainThreadException)</td><td><code>withContext(Dispatchers.IO)</code> or a suspend library (Retrofit, Ktor)</td></tr><tr><td><code>GlobalScope.launch</code></td><td>Work outlives the screen; leaks</td><td><code>viewModelScope</code> / <code>lifecycleScope</code></td></tr><tr><td><code>Thread.sleep</code> in coroutines</td><td>Blocks the thread</td><td><code>delay()</code></td></tr><tr><td>Swallowing <code>CancellationException</code></td><td>Coroutines can't be cancelled</td><td>Rethrow it</td></tr><tr><td>Updating UI from a background thread</td><td>Crashes</td><td>Update state flows; collect them on the main thread</td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Write a ViewModel that loads a list from a fake repository with a 1-second <code>delay</code> and exposes loading/error states.</li><li>Load three fake API results in parallel with <code>async</code> and measure the time.</li><li>Implement payment status polling with <code>withTimeoutOrNull</code> against a fake API.</li><li>Build a search <code>Flow</code> with <code>debounce</code> and <code>distinctUntilChanged</code>.</li><li>Write a <code>runTest</code> unit test for your ViewModel.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A developer starts a network request with <code>GlobalScope.launch</code> in an Activity. Users rotate the phone several times and the app becomes slow and uses lots of data. Why?</span><em>Show answer</em></summary><div class="callout-body"><p>Each rotation recreates the Activity and starts a new request, but GlobalScope coroutines aren't tied to any lifecycle, so old requests keep running and may update screens that no longer exist. Using <code>viewModelScope</code> (which survives rotation and cancels when the screen is truly closed) or <code>lifecycleScope</code> fixes the leak and duplicate work.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which keyword marks a function that can pause without blocking a thread?</p><details><summary>Show answer</summary><p>suspend</p></details></li><li><p>Which builder starts work that returns a value you can await?</p><details><summary>Show answer</summary><p>async</p></details></li><li><p>Which dispatcher is for network and database work?</p><details><summary>Show answer</summary><p>Dispatchers.IO</p></details></li><li><p>Which scope cancels coroutines automatically when a ViewModel is cleared?</p><details><summary>Show answer</summary><p>viewModelScope</p></details></li><li><p>What emits many values over time: suspend function or Flow?</p><details><summary>Show answer</summary><p>Flow</p></details></li><li><p>About how long can the main thread be blocked before Android shows "App isn't responding"? Give seconds.</p><details><summary>Show answer</summary><p>5</p></details></li><li><p>Which scope automatically cancels coroutines when a ViewModel is cleared?</p><details><summary>Show answer</summary><p>viewModelScope</p></details></li><li><p>Which dispatcher is used for network and disk work?</p><details><summary>Show answer</summary><p>Dispatchers.IO</p></details></li><li><p>Which function returns null instead of throwing when a timeout passes?</p><details><summary>Show answer</summary><p>withTimeoutOrNull</p></details></li><li><p>Which test function from kotlinx-coroutines-test skips real delays?</p><details><summary>Show answer</summary><p>runTest</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 10 in <a href="/learn/kotlin-android/">Android apps with Kotlin</a> · <a href="/learn/?book=kotlin-android">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/kotlin-android/kotlin-classes-null-safety/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Kotlin classes, data classes, sealed classes and null safety</a><a class="btn btn-solid btn-sm" href="/learn/kotlin-android/android-studio-first-app/">Android Studio and your first Android app <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
