@@ -177,6 +177,245 @@ func main() {
 
 Go has no exceptions for normal errors: functions **return an error** as the last value, and you check `if err != nil`. It's verbose, but you always see where things can fail.
 
+## Why companies choose Go
+
+Go (Golang) was created at Google for building fast, reliable server software that's easy to maintain. It compiles to a single file that runs anywhere, starts instantly, and handles many simultaneous connections efficiently. Docker, Kubernetes, many cloud tools, payment and fintech back ends, and APIs at companies around the world are written in Go. Its small, simple syntax makes it a good second language after Python or JavaScript, especially for back-end and DevOps careers.
+
+## Constants and iota
+
+```try-go
+package main
+
+import "fmt"
+
+const VATRate = 0.16
+
+type Status int
+
+const (
+	Pending Status = iota // 0
+	Paid                  // 1
+	Shipped               // 2
+	Delivered             // 3
+)
+
+func (s Status) String() string {
+	return [...]string{"Pending", "Paid", "Shipped", "Delivered"}[s]
+}
+
+func main() {
+	price := 2500.0
+	fmt.Printf("VAT on %.0f is %.2f\n", price, price*VATRate)
+	var s Status = Shipped
+	fmt.Println("Order status:", s, int(s))
+}
+```
+
+`iota` numbers constants automatically, and adding a `String()` method makes them print nicely, a common Go pattern for enumerations.
+
+## Formatted printing in detail
+
+```try-go
+package main
+
+import "fmt"
+
+func main() {
+	name, qty, price := "Unga 2kg", 3, 180.0
+	fmt.Printf("%-10s|%4d|%8.2f|\n", name, qty, price)
+	fmt.Printf("%v %T\n", price, price)       // value and type
+	fmt.Printf("%q\n", name)                  // quoted string
+	fmt.Printf("%05d\n", 42)                  // zero padded
+	fmt.Printf("%x %b\n", 255, 5)             // hex and binary
+	line := fmt.Sprintf("%s x%d = KSh %.0f", name, qty, float64(qty)*price)
+	fmt.Println(line)
+}
+```
+
+| Verb | Meaning |
+|---|---|
+| `%v` | Default format for any value |
+| `%+v` | Struct with field names |
+| `%T` | Type of the value |
+| `%d`, `%f`, `%s`, `%q` | Integer, float, string, quoted string |
+| `%-10s`, `%8.2f` | Width, alignment and precision |
+
+## switch without a condition (cleaner if/else chains)
+
+```try-go
+package main
+
+import "fmt"
+
+func grade(mark int) string {
+	switch {
+	case mark >= 80:
+		return "A"
+	case mark >= 65:
+		return "B"
+	case mark >= 50:
+		return "C"
+	default:
+		return "E"
+	}
+}
+
+func main() {
+	for _, m := range []int{92, 71, 55, 38} {
+		fmt.Println(m, grade(m))
+	}
+
+	day := "Sat"
+	switch day {
+	case "Sat", "Sun":
+		fmt.Println("Weekend rates apply")
+	default:
+		fmt.Println("Weekday")
+	}
+}
+```
+
+Go's `switch` cases don't fall through by default (no `break` needed), which avoids a classic C/Java bug.
+
+## Loops with labels, break and continue
+
+```try-go
+package main
+
+import "fmt"
+
+func main() {
+	balance := 0.0
+	months := 0
+	for balance < 50000 {
+		balance = balance*1.01 + 4500
+		months++
+	}
+	fmt.Printf("Saved %.0f after %d months\n", balance, months)
+
+	for i := 1; i <= 10; i++ {
+		if i%2 == 0 {
+			continue // skip even numbers
+		}
+		if i > 7 {
+			break
+		}
+		fmt.Print(i, " ")
+	}
+	fmt.Println()
+
+outer:
+	for row := 1; row <= 3; row++ {
+		for col := 1; col <= 3; col++ {
+			if row*col == 4 {
+				fmt.Println("found 4 at", row, col)
+				break outer // leave both loops
+			}
+		}
+	}
+}
+```
+
+## Errors as values: a real validation example
+
+```try-go
+package main
+
+import (
+	"errors"
+	"fmt"
+	"strconv"
+	"strings"
+)
+
+var ErrEmpty = errors.New("amount is empty")
+
+func parseAmount(text string) (float64, error) {
+	text = strings.ReplaceAll(strings.TrimSpace(text), ",", "")
+	if text == "" {
+		return 0, ErrEmpty
+	}
+	n, err := strconv.ParseFloat(text, 64)
+	if err != nil {
+		return 0, fmt.Errorf("%q is not a number: %w", text, err)
+	}
+	if n <= 0 {
+		return 0, fmt.Errorf("amount must be above 0, got %.2f", n)
+	}
+	return n, nil
+}
+
+func main() {
+	for _, input := range []string{"1,500", "", "abc", "-20", " 250 "} {
+		amount, err := parseAmount(input)
+		switch {
+		case errors.Is(err, ErrEmpty):
+			fmt.Println("Please enter an amount")
+		case err != nil:
+			fmt.Println("Error:", err)
+		default:
+			fmt.Printf("OK: %.2f\n", amount)
+		}
+	}
+}
+```
+
+`%w` wraps an error so callers can inspect the original with `errors.Is`. Handling errors right where they happen makes Go programs predictable.
+
+## defer: clean-up that always runs
+
+```try-go
+package main
+
+import "fmt"
+
+func process(order int) {
+	fmt.Println("start", order)
+	defer fmt.Println("finished", order) // runs when the function returns
+	if order%2 == 0 {
+		fmt.Println("even order, returning early")
+		return
+	}
+	fmt.Println("processing odd order")
+}
+
+func main() {
+	process(1)
+	process(2)
+	for i := 1; i <= 3; i++ {
+		defer fmt.Println("deferred", i) // run in reverse order: 3, 2, 1
+	}
+}
+```
+
+`defer` is used to close files, release locks and close database connections, guaranteeing clean-up even when a function returns early or an error occurs.
+
+## Go tooling
+
+```bash
+go mod init github.com/you/shop     # start a module
+go run .                            # compile and run
+go build -o shop                    # build a single binary
+go fmt ./...                        # format all code the standard way
+go vet ./...                        # find suspicious code
+go test ./...                       # run tests
+GOOS=linux GOARCH=amd64 go build    # cross-compile for a Linux server from any OS
+```
+
+`go fmt` ends formatting debates: all Go code looks the same.
+
+## Practice
+
+1. Create constants for three payment methods with `iota` and a `String()` method.
+2. Write a `switch`-based function that returns a delivery fee by town.
+3. Write `parsePhone(text string) (string, error)` returning 2547XXXXXXXX or an error.
+4. Use `defer` to print "done" at the end of a function with several return paths.
+5. Print a receipt table with `Printf` widths and precision.
+
+:::think Why does Go return errors as values instead of throwing exceptions like Java or Python?
+Returning errors makes every possible failure visible in a function's signature and forces callers to decide what to do right away. Control flow stays explicit and easy to follow, with no hidden jumps up the call stack. The trade-off is more `if err != nil` checks, which Go developers accept for clarity and reliability.
+:::
+
 ```quiz
 Q: Which operator declares a variable and infers its type inside a function?
 A: :=
@@ -187,5 +426,13 @@ A: 0 | zero
 Q: What value means "no error" in Go?
 A: nil
 Q: Will Go compile a program with an unused variable? (yes or no)
+A: no
+Q: Which identifier numbers constants automatically in a const block?
+A: iota
+Q: Which keyword schedules a function call to run when the surrounding function returns?
+A: defer
+Q: Which formatting verb wraps an error in fmt.Errorf?
+A: %w
+Q: Do Go switch cases fall through by default? (yes or no)
 A: no
 ```

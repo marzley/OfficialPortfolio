@@ -192,6 +192,238 @@ In real servers, the `context` package carries timeouts and cancellation through
 
 > "Don't communicate by sharing memory; share memory by communicating." Prefer passing data through channels over many goroutines touching the same variables.
 
+## Why concurrency is Go's superpower
+
+A busy API might handle thousands of requests at once: checking M-Pesa payment statuses, sending SMS notifications, resizing images, calling other services. Go makes this kind of concurrency simple and efficient: goroutines are cheap (you can run many thousands), and channels let them communicate safely. This is a major reason Go is popular for back-end services, networking tools and cloud infrastructure.
+
+## Concurrency vs parallelism
+
+| Concept | Meaning | Example |
+|---|---|---|
+| Concurrency | Managing many tasks that are in progress at the same time | A server juggling 1,000 open connections |
+| Parallelism | Literally running tasks at the same instant on multiple CPU cores | Resizing 8 images on 8 cores at once |
+
+Goroutines give you concurrency; the Go runtime spreads them over available cores for parallelism.
+
+## Collecting results in order
+
+```try-go
+package main
+
+import (
+	"fmt"
+	"sync"
+	"time"
+)
+
+func checkStatus(receipt string) string {
+	time.Sleep(10 * time.Millisecond) // pretend to call an API
+	return receipt + ": confirmed"
+}
+
+func main() {
+	receipts := []string{"QJK1", "QJK2", "QJK3", "QJK4"}
+	results := make([]string, len(receipts)) // each goroutine writes its own slot
+
+	var wg sync.WaitGroup
+	for i, r := range receipts {
+		wg.Add(1)
+		go func(i int, r string) {
+			defer wg.Done()
+			results[i] = checkStatus(r)
+		}(i, r)
+	}
+	wg.Wait()
+	for _, line := range results {
+		fmt.Println(line)
+	}
+}
+```
+
+All four checks run at the same time (about 10 ms total instead of 40 ms), and writing to separate slice positions avoids data races while keeping results in the original order.
+
+## errgroup-style error handling (pattern)
+
+When several tasks run concurrently and any can fail, collect the first error:
+
+```try-go
+package main
+
+import (
+	"errors"
+	"fmt"
+	"sync"
+)
+
+func fetch(id int) (int, error) {
+	if id == 3 {
+		return 0, errors.New("order 3 not found")
+	}
+	return id * 100, nil
+}
+
+func main() {
+	ids := []int{1, 2, 3, 4}
+	var (
+		wg       sync.WaitGroup
+		mu       sync.Mutex
+		total    int
+		firstErr error
+	)
+	for _, id := range ids {
+		wg.Add(1)
+		go func(id int) {
+			defer wg.Done()
+			v, err := fetch(id)
+			mu.Lock()
+			defer mu.Unlock()
+			if err != nil {
+				if firstErr == nil {
+					firstErr = err
+				}
+				return
+			}
+			total += v
+		}(id)
+	}
+	wg.Wait()
+	if firstErr != nil {
+		fmt.Println("Error:", firstErr)
+	}
+	fmt.Println("Total of successful fetches:", total)
+}
+```
+
+The `golang.org/x/sync/errgroup` package wraps this pattern neatly in real projects.
+
+## Context: cancellation and timeouts
+
+```try-go
+package main
+
+import (
+	"context"
+	"fmt"
+	"time"
+)
+
+func slowPaymentCheck(ctx context.Context) (string, error) {
+	select {
+	case <-time.After(200 * time.Millisecond): // the "API" takes 200 ms
+		return "paid", nil
+	case <-ctx.Done(): // cancelled or timed out first
+		return "", ctx.Err()
+	}
+}
+
+func main() {
+	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)
+	defer cancel()
+	status, err := slowPaymentCheck(ctx)
+	if err != nil {
+		fmt.Println("Gave up:", err)
+		return
+	}
+	fmt.Println("Status:", status)
+}
+```
+
+Every HTTP request in Go carries a `context`; if the client disconnects or a timeout passes, work is cancelled instead of wasting resources. Pass `ctx` as the first parameter of functions that do I/O.
+
+## Rate limiting with a ticker
+
+```try-go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	messages := []string{"msg1", "msg2", "msg3", "msg4"}
+	limiter := time.NewTicker(20 * time.Millisecond) // at most one send per 20 ms
+	defer limiter.Stop()
+	start := time.Now()
+	for _, m := range messages {
+		<-limiter.C // wait for the next tick
+		fmt.Println("sent", m)
+	}
+	fmt.Println("took at least 80ms:", time.Since(start) >= 80*time.Millisecond)
+}
+```
+
+SMS gateways and payment APIs limit how many requests you can send per second; a ticker or token bucket keeps you within limits.
+
+## Pipelines with channels
+
+```try-go
+package main
+
+import "fmt"
+
+func generate(nums ...int) <-chan int {
+	out := make(chan int)
+	go func() {
+		for _, n := range nums {
+			out <- n
+		}
+		close(out)
+	}()
+	return out
+}
+
+func addVAT(in <-chan int) <-chan float64 {
+	out := make(chan float64)
+	go func() {
+		for n := range in {
+			out <- float64(n) * 1.16
+		}
+		close(out)
+	}()
+	return out
+}
+
+func main() {
+	for v := range addVAT(generate(100, 250, 1000)) {
+		fmt.Printf("%.2f\n", v)
+	}
+}
+```
+
+Each stage runs in its own goroutine and passes values along a channel, like an assembly line. Closing a channel signals "no more values", which ends the `range` loop.
+
+## Finding data races
+
+```bash
+go run -race .
+go test -race ./...
+```
+
+The race detector reports when two goroutines access the same variable at the same time without synchronisation. Run it regularly in tests; races cause rare, hard-to-reproduce bugs.
+
+## Common concurrency mistakes
+
+| Mistake | Problem | Fix |
+|---|---|---|
+| Forgetting `wg.Wait()` | `main` exits before goroutines finish | Wait for the group |
+| Writing a shared map from several goroutines | Crash: concurrent map writes | `sync.Mutex` or `sync.Map`, or one owner goroutine |
+| Never closing a channel that's ranged over | Goroutine waits forever (deadlock or leak) | Sender closes when done |
+| Goroutines that never exit | Memory leaks | Use `context` cancellation |
+| Starting unlimited goroutines for huge workloads | Resource exhaustion | Worker pools with a fixed number of workers |
+
+## Practice
+
+1. Check 5 fake payment statuses concurrently and print results in the original order.
+2. Add a 30 ms timeout with `context.WithTimeout` to a slow function.
+3. Build a three-stage pipeline: generate numbers, square them, print them.
+4. Run a program with a deliberate data race using `go run -race` and fix it with a mutex.
+5. Limit a loop of 10 "SMS sends" to one every 50 ms with a ticker.
+
+:::think A Go service starts a new goroutine for every incoming request to call a slow third-party API, with no timeout. During an outage of that API, the service's memory keeps growing until it crashes. Why, and how would you fix it?
+Each goroutine waits forever on the stuck API, so goroutines (and their memory) pile up with every request. Use `context` with timeouts so calls are abandoned after a reasonable time, limit concurrency with a worker pool or semaphore, and return errors quickly (possibly with retries/backoff or a circuit breaker) when the dependency is down.
+:::
+
 ```quiz
 Q: Which keyword starts a function as a goroutine?
 A: go
@@ -203,4 +435,12 @@ Q: Which sync type protects shared data with Lock and Unlock?
 A: Mutex | sync.Mutex
 Q: Which statement waits on several channel operations at once?
 A: select
+Q: Which package provides cancellation and timeouts passed through function calls?
+A: context
+Q: Which go command flag detects data races?
+A: -race
+Q: Who should close a channel: the sender or the receiver?
+A: sender | the sender
+Q: Which time type sends a value on a channel at regular intervals?
+A: Ticker | time.Ticker
 ```
