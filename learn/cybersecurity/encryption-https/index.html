@@ -74,7 +74,79 @@ var_dump(password_verify(&quot;wrongpass&quot;, $hash));      // false</code></p
 <ul><li>Turn on device encryption: <strong>BitLocker</strong> (Windows Pro), <strong>FileVault</strong> (Mac); Android and iPhone encrypt automatically when you set a screen lock.</li><li>Encrypt backups and USB drives with sensitive data.</li><li>A stolen encrypted laptop is a lost laptop; an unencrypted one is a data breach.</li></ul>
 <h2>Common mistakes developers make</h2>
 <ul><li>Storing passwords in plain text or with MD5.</li><li>Putting API keys and secrets in front-end JavaScript or public GitHub repos.</li><li>Using <code>http://</code> for login or payment pages.</li><li>Turning off certificate checks (<code>CURLOPT_SSL_VERIFYPEER =&gt; false</code>) "to make it work".</li><li>Writing their own encryption algorithm.</li></ul>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Is hashing reversible? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which key in a key pair must never be shared: public or private?</p><details><summary>Show answer</summary><p>private</p></details></li><li><p>Which PHP function hashes a password safely?</p><details><summary>Show answer</summary><p>password_hash</p></details></li><li><p>What is the random value added to a password before hashing called?</p><details><summary>Show answer</summary><p>salt</p></details></li><li><p>Does the HTTPS padlock prove a website is honest? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 13 in <a href="/learn/cybersecurity/">Cybersecurity</a> · <a href="/learn/?book=cybersecurity">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/cybersecurity/passwords-2fa/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Passwords and two-factor authentication: how passwords are attacked, strong passphrases, password managers and MFA</a><a class="btn btn-solid btn-sm" href="/learn/cybersecurity/phishing-scams/">Phishing, social engineering and fraud: how the tricks work, how to spot them and what to do <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Where encryption protects you every day</h2>
+<p>Encryption is working whenever you see the padlock in your browser, send a WhatsApp message (end-to-end encrypted), use M-Pesa or a banking app, unlock an encrypted phone, or connect to a VPN. Developers use hashing to store passwords safely and digital signatures to verify software updates and payment callbacks. Understanding these tools helps you build secure systems and spot dangerous practices like storing passwords in plain text.</p>
+<h2>Hashing in practice</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import hashlib
+
+for text in [&quot;password123&quot;, &quot;password124&quot;, &quot;Password123&quot;]:
+    digest = hashlib.sha256(text.encode()).hexdigest()
+    print(f&quot;{text:&lt;12} {digest[:32]}...&quot;)
+
+# Integrity check: has a downloaded file changed?
+data = b&quot;Invoice #1024 total KSh 15,000&quot;
+original = hashlib.sha256(data).hexdigest()
+tampered = hashlib.sha256(b&quot;Invoice #1024 total KSh 95,000&quot;).hexdigest()
+print(&quot;Unchanged?&quot;, original == hashlib.sha256(data).hexdigest())
+print(&quot;Tampered matches?&quot;, original == tampered)</code></pre></figure>
+<p>A tiny change produces a completely different hash (the <strong>avalanche effect</strong>). Software download pages often publish SHA-256 checksums so you can confirm the file wasn't modified.</p>
+<h2>Why plain hashes aren't enough for passwords</h2>
+<p>Fast hashes like SHA-256 are designed for speed, so attackers can test billions of guesses per second, and identical passwords give identical hashes. Password storage needs <strong>slow, salted</strong> algorithms:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import hashlib, os, hmac
+
+def hash_password(password, salt=None, rounds=200_000):
+    salt = salt or os.urandom(16)
+    digest = hashlib.pbkdf2_hmac(&quot;sha256&quot;, password.encode(), salt, rounds)
+    return salt.hex() + &quot;$&quot; + digest.hex()
+
+def verify(password, stored):
+    salt_hex, digest_hex = stored.split(&quot;$&quot;)
+    check = hash_password(password, bytes.fromhex(salt_hex)).split(&quot;$&quot;)[1]
+    return hmac.compare_digest(check, digest_hex)      # constant-time comparison
+
+stored = hash_password(&quot;Nairobi2026!&quot;)
+print(&quot;Stored:&quot;, stored[:40], &quot;...&quot;)
+print(&quot;Correct password:&quot;, verify(&quot;Nairobi2026!&quot;, stored))
+print(&quot;Wrong password:&quot;, verify(&quot;nairobi2026!&quot;, stored))
+print(&quot;Same password, different salt:&quot;, hash_password(&quot;Nairobi2026!&quot;)[:20], &quot;vs&quot;, stored[:20])</code></pre></figure>
+<p>In real applications use the language's built-in password functions: PHP <code>password_hash()</code>/<code>password_verify()</code>, Python's <code>bcrypt</code> or <code>argon2</code> libraries, Node's <code>bcrypt</code>. Never invent your own encryption.</p>
+<h2>HMAC: proving a message wasn't faked</h2>
+<p>Payment providers and webhooks often sign messages with a shared secret so you can verify they're genuine:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import hmac, hashlib
+
+secret = b&quot;shared-webhook-secret&quot;          # stored on the server, never in public code
+body = b&#x27;{&quot;order&quot;: 1024, &quot;status&quot;: &quot;paid&quot;, &quot;amount&quot;: 1500}&#x27;
+signature = hmac.new(secret, body, hashlib.sha256).hexdigest()
+print(&quot;Signature sent with the webhook:&quot;, signature[:24], &quot;...&quot;)
+
+# Receiver recomputes and compares
+received_body = b&#x27;{&quot;order&quot;: 1024, &quot;status&quot;: &quot;paid&quot;, &quot;amount&quot;: 1500}&#x27;
+expected = hmac.new(secret, received_body, hashlib.sha256).hexdigest()
+print(&quot;Genuine:&quot;, hmac.compare_digest(expected, signature))
+
+forged = b&#x27;{&quot;order&quot;: 1024, &quot;status&quot;: &quot;paid&quot;, &quot;amount&quot;: 15}&#x27;
+print(&quot;Forged accepted?&quot;, hmac.compare_digest(hmac.new(secret, forged, hashlib.sha256).hexdigest(), signature))</code></pre></figure>
+<p>Always verify signatures (or confirm with the provider's API) before marking an order as paid; never trust a callback just because it arrived.</p>
+<h2>Generating secure random values</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import secrets, string
+print(&quot;Session token:&quot;, secrets.token_urlsafe(32))
+print(&quot;6-digit OTP:&quot;, &quot;&quot;.join(secrets.choice(string.digits) for _ in range(6)))
+alphabet = string.ascii_letters + string.digits + &quot;!@#$%&quot;
+print(&quot;Strong password:&quot;, &quot;&quot;.join(secrets.choice(alphabet) for _ in range(16)))</code></pre></figure>
+<p>Use <code>secrets</code> (not <code>random</code>) for tokens, OTPs and passwords.</p>
+<h2>TLS certificates explained</h2>
+<ul><li>A certificate binds a domain name to a public key, signed by a <strong>Certificate Authority (CA)</strong> that browsers trust.</li><li><strong>Let's Encrypt</strong> issues free certificates; most cPanel hosts offer free AutoSSL.</li><li>Certificates expire (often after 90 days for Let's Encrypt), so automatic renewal must work.</li><li>Click the padlock → certificate details to see who issued it and when it expires.</li></ul>
+<p>Common HTTPS problems:</p>
+<div class="static-table"><table><thead><tr><th>Problem</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>"Your connection is not private"</td><td>Expired, wrong-domain or self-signed certificate</td><td>Renew/issue the correct certificate</td></tr><tr><td>Mixed content warnings</td><td>Page loads images/scripts over <code>http://</code></td><td>Change links to <code>https://</code></td></tr><tr><td>Site works on HTTP and HTTPS</td><td>No redirect</td><td>Redirect all HTTP to HTTPS and enable HSTS</td></tr></tbody></table></div>
+<h2>End-to-end encryption</h2>
+<p>With end-to-end encryption (WhatsApp, Signal), only the sender and recipient devices hold the keys; the service provider can't read message content. But:</p>
+<ul><li>Backups to the cloud may not be end-to-end encrypted unless you enable that option.</li><li>Anyone with access to your unlocked phone can read messages.</li><li>Metadata (who you talk to and when) may still be visible to the provider.</li></ul>
+<h2>Encryption at rest for everyone</h2>
+<div class="static-table"><table><thead><tr><th>Device</th><th>How</th></tr></thead><tbody><tr><td>Android</td><td>Encrypted by default on modern phones with a screen lock</td></tr><tr><td>iPhone</td><td>Encrypted when a passcode is set</td></tr><tr><td>Windows</td><td>BitLocker (Pro editions) or Device Encryption; save the recovery key safely</td></tr><tr><td>macOS</td><td>FileVault</td></tr><tr><td>USB drives</td><td>BitLocker To Go, VeraCrypt</td></tr><tr><td>Databases/backups</td><td>Encrypt sensitive backups; restrict access to keys</td></tr></tbody></table></div>
+<h2>Practice</h2>
+<ol><li>Hash three slightly different strings with SHA-256 and compare the results.</li><li>Use the PBKDF2 example to store and verify a password; try a wrong one.</li><li>Verify an HMAC signature, then change one character of the message and verify again.</li><li>Check the certificate of three websites you use: issuer and expiry date.</li><li>Turn on device encryption on a laptop and store the recovery key securely.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A website stores passwords with plain SHA-256 (no salt). Its database leaks. Why are users at risk even though the passwords are "hashed"?</span><em>Show answer</em></summary><div class="callout-body"><p>Fast unsalted hashes can be attacked with precomputed tables and billions of guesses per second, and identical passwords share identical hashes, so common passwords are cracked quickly. Users who reused those passwords elsewhere are also at risk. Passwords should be stored with slow, salted algorithms like bcrypt or Argon2.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Is hashing reversible? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which key in a key pair must never be shared: public or private?</p><details><summary>Show answer</summary><p>private</p></details></li><li><p>Which PHP function hashes a password safely?</p><details><summary>Show answer</summary><p>password_hash</p></details></li><li><p>What is the random value added to a password before hashing called?</p><details><summary>Show answer</summary><p>salt</p></details></li><li><p>Does the HTTPS padlock prove a website is honest? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>What is a tiny input change causing a completely different hash called? (two words)</p><details><summary>Show answer</summary><p>avalanche effect</p></details></li><li><p>Which technique uses a shared secret to prove a webhook message is genuine? (abbreviation)</p><details><summary>Show answer</summary><p>HMAC</p></details></li><li><p>Which Python module should generate OTPs and tokens instead of random?</p><details><summary>Show answer</summary><p>secrets</p></details></li><li><p>Which free certificate authority is widely used for HTTPS? (two words)</p><details><summary>Show answer</summary><p>Let's Encrypt</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 13 in <a href="/learn/cybersecurity/">Cybersecurity</a> · <a href="/learn/?book=cybersecurity">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/cybersecurity/passwords-2fa/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Passwords and two-factor authentication: how passwords are attacked, strong passphrases, password managers and MFA</a><a class="btn btn-solid btn-sm" href="/learn/cybersecurity/phishing-scams/">Phishing, social engineering and fraud: how the tricks work, how to spot them and what to do <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

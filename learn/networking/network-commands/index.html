@@ -82,7 +82,65 @@ ss -tulpn             (Linux: listening ports and programs)</code></pre></figure
 <h2>Practice scenario</h2>
 <p>A user says "the internet is not working". You run:</p>
 <ul><li><code>ipconfig</code> shows <code>169.254.10.4</code> → no DHCP. Check the cable/Wi-Fi and router.</li><li>Address is fine, <code>ping 192.168.1.1</code> works, <code>ping 8.8.8.8</code> fails → the router or ISP line is down. Restart the router, check the ISP.</li><li><code>ping 8.8.8.8</code> works, <code>ping google.com</code> fails → DNS. Set DNS to 8.8.8.8 / 1.1.1.1 or run <code>ipconfig /flushdns</code>.</li></ul>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which Windows command shows your IP address, gateway and DNS?</p><details><summary>Show answer</summary><p>ipconfig</p></details></li><li><p>Your address starts with 169.254. What service failed to give you an address?</p><details><summary>Show answer</summary><p>DHCP</p></details></li><li><p>ping 8.8.8.8 works but ping google.com fails. What is the problem?</p><details><summary>Show answer</summary><p>DNS</p></details></li><li><p>Which command lists every router on the way to a website on Windows?</p><details><summary>Show answer</summary><p>tracert</p></details></li><li><p>Which command asks DNS for a domain's IP address?</p><details><summary>Show answer</summary><p>nslookup</p></details></li></ol></section></div><p class="static-meta">Lesson 20 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/troubleshooting/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Network troubleshooting: a proven method, the essential commands and 12 real fault scenarios</a><a class="btn btn-solid btn-sm" href="/learn/networking/network-security/">Network security basics: threats, defence in depth, segmentation, firewalls, hardening devices and monitoring <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why network commands matter</h2>
+<p>"The internet is down" can mean many different problems: a loose cable, Wi-Fi with no internet, an expired data bundle, a DNS failure, a router fault, a blocked website or a problem at the ISP. Network commands let you find <strong>where</strong> the problem is in minutes instead of guessing, and give you facts to report to the ISP or your manager. Help desk staff, ICT officers, network engineers and developers use them every day.</p>
+<h2>A systematic troubleshooting approach (bottom-up)</h2>
+<div class="static-table"><table><thead><tr><th>Step</th><th>Check</th><th>Command / action</th></tr></thead><tbody><tr><td>1. Physical</td><td>Cable plugged in? Wi-Fi connected? Lights on the router?</td><td>Look; reconnect</td></tr><tr><td>2. IP address</td><td>Did the device get a valid address?</td><td><code>ipconfig</code> / <code>ip a</code></td></tr><tr><td>3. Local network</td><td>Can you reach the router (gateway)?</td><td><code>ping 192.168.1.1</code> (your gateway)</td></tr><tr><td>4. Internet</td><td>Can you reach an outside IP?</td><td><code>ping 8.8.8.8</code></td></tr><tr><td>5. DNS</td><td>Do names resolve?</td><td><code>nslookup google.com</code></td></tr><tr><td>6. Application</td><td>Does the website or app itself work?</td><td>Try another site, browser or device</td></tr></tbody></table></div>
+<p>Stop at the first step that fails: that's where the problem is.</p>
+<h2>Reading ipconfig /all</h2>
+<figure class="static-code"><pre><code>Windows IP Configuration
+   IPv4 Address. . . . . . . . . . . : 192.168.1.23
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : 192.168.1.1
+   DHCP Server . . . . . . . . . . . : 192.168.1.1
+   DNS Servers . . . . . . . . . . . : 192.168.1.1
+   Lease Obtained. . . . . . . . . . : ...
+   Physical Address. . . . . . . . . : 3C-52-82-1A-9F-04</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Clue</th><th>Meaning</th></tr></thead><tbody><tr><td>Address starts with <code>169.254.</code></td><td>DHCP failed: the device gave itself an address. Check cable/Wi-Fi and router DHCP</td></tr><tr><td>No default gateway</td><td>Can't reach other networks</td></tr><tr><td>Gateway in a different subnet</td><td>Misconfigured static IP</td></tr><tr><td>Unexpected DNS server</td><td>Could be misconfiguration or malware changing settings</td></tr></tbody></table></div>
+<h2>Fixing common address problems</h2>
+<figure class="static-code"><pre><code>ipconfig /release        # give up the current DHCP address
+ipconfig /renew          # ask for a new one
+ipconfig /flushdns       # clear cached DNS answers (fixes some &quot;site not found&quot; issues)
+netsh winsock reset      # reset network stack (admin; restart afterwards)</code></pre></figure>
+<p>Linux: <code>sudo dhclient -r &amp;&amp; sudo dhclient</code> or restart NetworkManager; flush DNS cache with <code>resolvectl flush-caches</code> on systemd-resolved systems.</p>
+<h2>Understanding ping results</h2>
+<figure class="static-code"><pre><code>Reply from 8.8.8.8: bytes=32 time=24ms TTL=117
+Request timed out.
+Destination host unreachable.</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Result</th><th>Likely meaning</th></tr></thead><tbody><tr><td>Replies with low time (under ~50 ms locally)</td><td>Connection OK</td></tr><tr><td>High or very variable times</td><td>Congestion, weak Wi-Fi, overloaded link</td></tr><tr><td>Some "Request timed out"</td><td>Packet loss: unstable connection</td></tr><tr><td>All time out</td><td>No route, device off, or ICMP blocked by a firewall</td></tr><tr><td>"Destination host unreachable" from your own IP</td><td>Your device has no route (no gateway or link down)</td></tr></tbody></table></div>
+<p>Some servers block ping on purpose, so a failed ping isn't always proof the server is down. Try opening the service (e.g. the website) too.</p>
+<figure class="static-code"><pre><code>ping -n 20 8.8.8.8       # Windows: 20 pings to measure packet loss
+ping -c 20 8.8.8.8       # Linux/macOS
+ping -t 8.8.8.8          # Windows: continuous (Ctrl+C to stop), useful while testing cables</code></pre></figure>
+<h2>traceroute: finding where delay starts</h2>
+<figure class="static-code"><pre><code>tracert google.com       # Windows
+traceroute google.com    # Linux/macOS
+mtr google.com           # Linux: live traceroute + ping statistics combined</code></pre></figure>
+<p>Each line is a router ("hop"). If delays jump at hop 2 or 3 (your ISP's network), the problem is likely with the ISP; at hop 1, it's your local router or Wi-Fi. Asterisks (<code>* * *</code>) on a hop often just mean that router doesn't reply to traceroute.</p>
+<h2>DNS tools in depth</h2>
+<figure class="static-code"><pre><code>nslookup marzleytechsolutions.co.ke            # ask your default DNS server
+nslookup example.co.ke 8.8.8.8                 # ask Google DNS directly (compare answers)
+nslookup -type=mx example.co.ke                # mail servers for a domain
+dig example.co.ke +short                       # Linux/macOS: concise answer
+dig example.co.ke MX
+dig example.co.ke TXT                          # SPF/verification records</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Record</th><th>Purpose</th></tr></thead><tbody><tr><td>A / AAAA</td><td>Domain → IPv4 / IPv6 address</td></tr><tr><td>CNAME</td><td>Alias to another name</td></tr><tr><td>MX</td><td>Mail servers</td></tr><tr><td>TXT</td><td>Verification, SPF, DKIM, DMARC for email</td></tr><tr><td>NS</td><td>Which name servers are authoritative</td></tr></tbody></table></div>
+<p>When a new website "doesn't work" after changing hosting, comparing DNS answers from different servers shows whether the change has propagated.</p>
+<h2>Ports and connections</h2>
+<figure class="static-code"><pre><code>netstat -ano | findstr :443          # Windows: who uses port 443 (PID in the last column)
+ss -tulpn                            # Linux: listening ports and the programs using them
+Test-NetConnection example.co.ke -Port 443    # PowerShell: is a port reachable?
+curl -I https://example.co.ke        # fetch only headers: status code, server, redirects</code></pre></figure>
+<p><code>curl -I</code> quickly shows if a site returns <code>200 OK</code>, a redirect (<code>301</code>) or an error (<code>500</code>).</p>
+<h2>Speed and Wi-Fi checks</h2>
+<ul><li>Run a speed test (e.g. speedtest.net or fast.com) on cable and on Wi-Fi to compare.</li><li><code>netsh wlan show interfaces</code> (Windows) shows Wi-Fi signal %, channel and link speed.</li><li>Test at different times: evening slowdowns often mean ISP congestion.</li></ul>
+<h2>Writing a useful fault report for an ISP</h2>
+<blockquote><p>Since 9:00 am, all devices on our network lose internet. Router lights normal. <code>ping 192.168.1.1</code> OK (2 ms). <code>ping 8.8.8.8</code>: 40% packet loss, times 300–900 ms. <code>tracert</code> shows delays starting at hop 2 (your gateway 41.x.x.x). Speed test: 2 Mbps on a 40 Mbps plan. Account number: ...</p></blockquote>
+<p>Clear facts get faster, more useful support.</p>
+<h2>Practice</h2>
+<ol><li>Run <code>ipconfig /all</code> (or <code>ip a</code>) and identify your IP, gateway, DNS and MAC address.</li><li>Ping your gateway, 8.8.8.8 and google.com 20 times each and compare times and packet loss.</li><li>Run a traceroute to a Kenyan website and to an international one; compare hop counts and times.</li><li>Look up the MX and TXT records of a domain you know.</li><li>Use <code>curl -I</code> on three websites and note their status codes and redirects.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A user can open websites by IP address but not by name, and other users on the same network are fine. What would you check?</span><em>Show answer</em></summary><div class="callout-body"><p>This points to a DNS problem on that one device: check its DNS settings in <code>ipconfig /all</code> (a wrong static DNS server, VPN or malware changes), flush the DNS cache (<code>ipconfig /flushdns</code>), test with <code>nslookup google.com 8.8.8.8</code>, and check the hosts file for unexpected entries.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which Windows command shows your IP address, gateway and DNS?</p><details><summary>Show answer</summary><p>ipconfig</p></details></li><li><p>Your address starts with 169.254. What service failed to give you an address?</p><details><summary>Show answer</summary><p>DHCP</p></details></li><li><p>ping 8.8.8.8 works but ping google.com fails. What is the problem?</p><details><summary>Show answer</summary><p>DNS</p></details></li><li><p>Which command lists every router on the way to a website on Windows?</p><details><summary>Show answer</summary><p>tracert</p></details></li><li><p>Which command asks DNS for a domain's IP address?</p><details><summary>Show answer</summary><p>nslookup</p></details></li><li><p>Which Windows command clears the local DNS cache?</p><details><summary>Show answer</summary><p>ipconfig /flushdns</p></details></li><li><p>Which DNS record type lists a domain's mail servers?</p><details><summary>Show answer</summary><p>MX</p></details></li><li><p>Which Linux command shows listening ports and the programs using them? (two letters plus options allowed)</p><details><summary>Show answer</summary><p>ss</p></details></li><li><p>What is the first device you should ping to test the local network? (two words)</p><details><summary>Show answer</summary><p>default gateway</p></details></li></ol></section></div><p class="static-meta">Lesson 20 of 24 in <a href="/learn/networking/">Networking</a> · <a href="/learn/?book=networking">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/networking/troubleshooting/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Network troubleshooting: a proven method, the essential commands and 12 real fault scenarios</a><a class="btn btn-solid btn-sm" href="/learn/networking/network-security/">Network security basics: threats, defence in depth, segmentation, firewalls, hardening devices and monitoring <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>

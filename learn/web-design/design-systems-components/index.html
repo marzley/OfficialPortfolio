@@ -95,7 +95,72 @@
 <p>You don't always need to start from zero:</p>
 <ul><li><strong>CSS frameworks</strong>: Bootstrap, Tailwind CSS (utility classes built on a token scale).</li><li><strong>Component libraries</strong>: Material UI, shadcn/ui (React), Flutter's Material widgets.</li></ul>
 <p>Customise them with your brand tokens so your site doesn't look like everyone else's.</p>
-<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What are named values like --brand and --space-2 called? (two words)</p><details><summary>Show answer</summary><p>design tokens</p></details></li><li><p>Name one state besides default that a button needs.</p><details><summary>Show answer</summary><p>hover</p></details></li><li><p>In Figma, what do you call a reusable element whose copies update together?</p><details><summary>Show answer</summary><p>component</p></details></li><li><p>What Figma feature groups types and states of one component?</p><details><summary>Show answer</summary><p>variants</p></details></li><li><p>Name a popular utility-first CSS framework.</p><details><summary>Show answer</summary><p>Tailwind</p></details></li></ol></section></div><p class="static-meta">Lesson 12 of 13 in <a href="/learn/web-design/">Web design &amp; UI/UX</a> · <a href="/learn/?book=web-design">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/web-design/design-tools-figma/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Design tools: Figma step by step, frames, auto layout, components, prototypes, handoff and alternatives</a><a class="btn btn-solid btn-sm" href="/learn/web-design/portfolio-project/">Project: design and build your portfolio page, from planning and case studies to publishing and getting clients <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+<h2>Why design systems matter</h2>
+<p>As websites and apps grow, inconsistency creeps in: five shades of blue, buttons of different sizes, forms that behave differently on each page. A design system is a shared set of rules, tokens and components that keeps everything consistent and makes design and development faster. Large organisations (Google's Material Design, GOV.UK, Shopify Polaris, IBM Carbon) publish theirs, and even small agencies benefit from a simple version reused across client projects.</p>
+<h2>Layers of a design system</h2>
+<div class="static-table"><table><thead><tr><th>Layer</th><th>Contents</th><th>Example</th></tr></thead><tbody><tr><td>Principles</td><td>The values guiding decisions</td><td>"Clear over clever", "Mobile first", "Accessible by default"</td></tr><tr><td>Design tokens</td><td>Named values</td><td><code>--color-primary</code>, <code>--space-4</code>, <code>--radius-md</code>, <code>--font-size-lg</code></td></tr><tr><td>Foundations</td><td>Colour, typography, spacing, grid, elevation, motion, icons</td><td>A spacing scale of 4, 8, 12, 16, 24, 32, 48</td></tr><tr><td>Components</td><td>Reusable UI parts with states</td><td>Buttons, inputs, cards, modals, navigation, alerts</td></tr><tr><td>Patterns</td><td>Combinations solving common problems</td><td>Sign-up form, checkout, search with filters, empty states</td></tr><tr><td>Documentation</td><td>How and when to use each part</td><td>Usage guidelines, do/don't examples, code snippets</td></tr></tbody></table></div>
+<h2>A spacing and sizing scale</h2>
+<p>Using a consistent scale (often based on 4px or 8px) makes layouts feel balanced:</p>
+<figure class="static-code"><figcaption>CSS</figcaption><pre><code class="language-css">:root {
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px;
+  --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px; --radius-full: 999px;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / .06);
+  --shadow-md: 0 4px 12px rgb(0 0 0 / .08);
+}
+.card { padding: var(--space-5); border-radius: var(--radius-md); box-shadow: var(--shadow-md); }
+.stack &gt; * + * { margin-top: var(--space-4); }</code></pre></figure>
+<p>Designers pick from the scale instead of random values like 13px or 27px.</p>
+<h2>Semantic colour tokens and theming</h2>
+<p>Separate <strong>raw colours</strong> from <strong>meaning</strong>:</p>
+<figure class="static-code"><figcaption>CSS</figcaption><pre><code class="language-css">:root {
+  /* raw palette */
+  --blue-600: #1d4ed8; --blue-700: #1e40af;
+  --gray-50: #f8fafc;  --gray-900: #0f172a;
+  --green-600: #16a34a; --red-600: #dc2626;
+
+  /* semantic tokens */
+  --color-bg: var(--gray-50);
+  --color-text: var(--gray-900);
+  --color-primary: var(--blue-600);
+  --color-primary-hover: var(--blue-700);
+  --color-success: var(--green-600);
+  --color-danger: var(--red-600);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #0b1220;
+    --color-text: #e2e8f0;
+    --color-primary: #60a5fa;
+  }
+}
+.btn-primary { background: var(--color-primary); color: #fff; }
+.btn-primary:hover { background: var(--color-primary-hover); }</code></pre></figure>
+<p>Components use semantic tokens (<code>--color-primary</code>), so rebranding or adding dark mode means changing tokens, not every component.</p>
+<h2>Documenting a component: the button</h2>
+<div class="static-table"><table><thead><tr><th>Aspect</th><th>Specification</th></tr></thead><tbody><tr><td>Variants</td><td>Primary (main action), Secondary, Outline, Ghost/text, Danger</td></tr><tr><td>Sizes</td><td>Small (32px), Medium (40px), Large (48px)</td></tr><tr><td>States</td><td>Default, hover, focus-visible, active, disabled, loading</td></tr><tr><td>Content</td><td>Short verb phrases: "Get quote", "Pay with M-Pesa"; optional icon</td></tr><tr><td>Accessibility</td><td>Real <code>&lt;button&gt;</code> or <code>&lt;a&gt;</code>; visible focus; minimum 44px touch target on mobile; loading state announced</td></tr><tr><td>Usage</td><td>One primary button per section; use Danger only for destructive actions</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>HTML</figcaption><pre><code class="language-html">&lt;button class=&quot;btn btn-primary btn-md&quot;&gt;Get a quote&lt;/button&gt;
+&lt;button class=&quot;btn btn-outline btn-md&quot; disabled&gt;Unavailable&lt;/button&gt;
+&lt;button class=&quot;btn btn-primary btn-md&quot; aria-busy=&quot;true&quot;&gt;Processing…&lt;/button&gt;</code></pre></figure>
+<h2>Forms in a design system</h2>
+<p>Define once and reuse everywhere:</p>
+<ul><li>Label above the field, optional hint text, error message below.</li><li>Consistent field height, border, focus style and error colour.</li><li>Validation rules and message tone ("Enter a phone number like 0712 345 678").</li><li>Patterns for phone numbers, amounts (KSh), dates and file uploads.</li></ul>
+<h2>Design tokens across tools</h2>
+<p>Tokens can be stored once (often in JSON) and exported to CSS variables, Figma variables, and mobile apps (Flutter, Android, iOS), so web and app stay consistent:</p>
+<figure class="static-code"><figcaption>JSON</figcaption><pre><code class="language-json">{
+  &quot;color&quot;: { &quot;primary&quot;: { &quot;value&quot;: &quot;#1d4ed8&quot; }, &quot;danger&quot;: { &quot;value&quot;: &quot;#dc2626&quot; } },
+  &quot;space&quot;: { &quot;4&quot;: { &quot;value&quot;: &quot;16px&quot; } }
+}</code></pre></figure>
+<p>Tools such as Style Dictionary transform token files into platform formats. Figma <strong>variables</strong> and <strong>modes</strong> support light/dark themes and multiple brands.</p>
+<h2>Governance: keeping the system alive</h2>
+<ul><li>Assign an owner (a person or small team).</li><li>Version the system (v1.2.0) and keep a changelog.</li><li>Have a simple process for proposing new components ("Do we really need a new card type?").</li><li>Review regularly; remove unused components.</li><li>Keep documentation next to code (e.g. a style guide page or Storybook).</li></ul>
+<h2>Starting small as a freelancer or small team</h2>
+<p>You don't need a huge system. Start with:</p>
+<ol><li>A token file: colours, fonts, font sizes, spacing, radius, shadows.</li><li>Five core components: button, input, card, alert, navigation.</li><li>A one-page style guide showing them with their states.</li><li>Reuse and improve it across projects.</li></ol>
+<h2>Practice</h2>
+<ol><li>Create a token set (colours, spacing, radius, shadows, font sizes) as CSS variables.</li><li>Build a button component with five variants, three sizes and all states.</li><li>Add dark mode by changing only semantic tokens.</li><li>Document an input field component with label, hint, error and disabled states.</li><li>Create a style guide page showing all your components.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A team's website uses 23 slightly different shades of blue and 9 button styles. Rebranding to green will take weeks. How would a design system have helped?</span><em>Show answer</em></summary><div class="callout-body"><p>With semantic tokens (e.g. <code>--color-primary</code>) and a small set of documented button variants, every component would reference the same values. Rebranding would mean changing a few token values, and all buttons, links and highlights would update consistently, taking hours instead of weeks.</p></div></details>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What are named values like --brand and --space-2 called? (two words)</p><details><summary>Show answer</summary><p>design tokens</p></details></li><li><p>Name one state besides default that a button needs.</p><details><summary>Show answer</summary><p>hover</p></details></li><li><p>In Figma, what do you call a reusable element whose copies update together?</p><details><summary>Show answer</summary><p>component</p></details></li><li><p>What Figma feature groups types and states of one component?</p><details><summary>Show answer</summary><p>variants</p></details></li><li><p>Name a popular utility-first CSS framework.</p><details><summary>Show answer</summary><p>Tailwind</p></details></li><li><p>Spacing scales are commonly based on multiples of which number of pixels? (4 or 8)</p><details><summary>Show answer</summary><p>4</p></details></li><li><p>What are tokens like --color-primary that describe meaning rather than a raw colour called? (two words)</p><details><summary>Show answer</summary><p>semantic tokens</p></details></li><li><p>What tool is often used to document components next to code?</p><details><summary>Show answer</summary><p>Storybook</p></details></li></ol></section></div><p class="static-meta">Lesson 12 of 13 in <a href="/learn/web-design/">Web design &amp; UI/UX</a> · <a href="/learn/?book=web-design">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/web-design/design-tools-figma/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Design tools: Figma step by step, frames, auto layout, components, prototypes, handoff and alternatives</a><a class="btn btn-solid btn-sm" href="/learn/web-design/portfolio-project/">Project: design and build your portfolio page, from planning and case studies to publishing and getting clients <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
     </main>
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
