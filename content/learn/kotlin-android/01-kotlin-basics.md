@@ -139,6 +139,164 @@ fun main() {
 }
 ```
 
+## Why Kotlin is the language of Android
+
+Google recommends Kotlin for Android development, and most new Android apps (banking, mobile money, ride-hailing, delivery and e-commerce apps) are written in it. Kotlin is concise, null-safe and fully compatible with Java, so it works with existing Android libraries. It's also used for back-end services (Ktor, Spring) and shared mobile code (Kotlin Multiplatform). Since Android dominates the Kenyan smartphone market, Kotlin skills lead directly to app development jobs and freelance projects.
+
+## Null safety in practice
+
+```try-kotlin
+fun findPhone(name: String, contacts: Map<String, String>): String? = contacts[name]
+
+fun main() {
+    val contacts = mapOf("Amina" to "0712000001", "Brian" to "0722000002")
+
+    val phone: String? = findPhone("Chebet", contacts)
+    println(phone ?: "No phone saved")                 // Elvis operator: default when null
+    println(phone?.length)                             // safe call: null instead of a crash
+
+    findPhone("Amina", contacts)?.let { p ->          // run only when not null
+        println("Calling $p")
+    }
+
+    val length = findPhone("Brian", contacts)?.length ?: 0
+    println("Length: $length")
+}
+```
+
+| Syntax | Meaning |
+|---|---|
+| `String?` | May be null |
+| `a?.b` | Access `b` only if `a` isn't null |
+| `a ?: b` | `a` if not null, otherwise `b` |
+| `a?.let { }` | Run the block only when `a` isn't null |
+| `a!!` | Assert not null (crashes if it is; avoid) |
+
+Most crashes in older Android apps were `NullPointerException`s; Kotlin's type system prevents most of them at compile time.
+
+## Functions: defaults, named arguments and single-expression functions
+
+```try-kotlin
+fun withVat(amount: Double, rate: Double = 0.16): Double = amount * (1 + rate)
+
+fun formatKsh(amount: Double, decimals: Int = 0): String =
+    "KSh " + "%,.${decimals}f".format(amount)
+
+fun greet(name: String, title: String = "", greeting: String = "Habari") =
+    if (title.isEmpty()) "$greeting $name" else "$greeting $title $name"
+
+fun main() {
+    println(formatKsh(withVat(2500.0)))
+    println(formatKsh(withVat(2500.0, rate = 0.08), decimals = 2))
+    println(greet("Otieno"))
+    println(greet("Akinyi", title = "Dr.", greeting = "Karibu"))
+}
+```
+
+## Collections and their functions
+
+```try-kotlin
+data class Product(val name: String, val category: String, val price: Int, val stock: Int)
+
+fun main() {
+    val products = listOf(
+        Product("Unga 2kg", "Food", 180, 12),
+        Product("Sugar 1kg", "Food", 210, 0),
+        Product("Soap", "Home", 60, 30),
+        Product("Cooking oil 1L", "Food", 350, 7),
+    )
+
+    val inStock = products.filter { it.stock > 0 }
+    println(inStock.map { it.name })
+    println("Stock value: " + products.sumOf { it.price * it.stock })
+    println("Cheapest: " + products.minByOrNull { it.price }?.name)
+    println("By category: " + products.groupBy { it.category }.mapValues { (_, list) -> list.size })
+    println("Sorted: " + products.sortedByDescending { it.price }.map { it.name })
+    println("Any out of stock? " + products.any { it.stock == 0 })
+
+    val (cheap, pricey) = products.partition { it.price < 200 }
+    println("Cheap ${cheap.size}, pricey ${pricey.size}")
+}
+```
+
+`it` is the default name for a single lambda parameter. `data class` gives you `toString`, `equals` and `copy` automatically.
+
+## Data classes and copy
+
+```try-kotlin
+data class Order(val id: Int, val customer: String, val total: Double, val status: String = "pending")
+
+fun main() {
+    val order = Order(1024, "Wanjiru", 3500.0)
+    val paid = order.copy(status = "paid")       // new object, one field changed
+    println(order)
+    println(paid)
+    println(order == Order(1024, "Wanjiru", 3500.0))   // value equality: true
+    val (id, customer) = paid                     // destructuring
+    println("Order $id for $customer")
+}
+```
+
+Android apps keep screen state in data classes and create updated copies, which works well with Jetpack Compose.
+
+## Mutable vs read-only collections
+
+```try-kotlin
+fun main() {
+    val towns = listOf("Nairobi", "Mombasa")      // read-only
+    val cart = mutableListOf("Unga")              // can change
+    cart.add("Milk")
+    cart += "Bread"
+    cart.remove("Unga")
+    println("$towns $cart")
+
+    val stock = mutableMapOf("unga" to 40, "sugar" to 25)
+    stock["rice"] = 30
+    stock["unga"] = (stock["unga"] ?: 0) - 5
+    stock.getOrPut("salt") { 0 }
+    println(stock)
+    for ((item, qty) in stock) println("$item: $qty")
+}
+```
+
+Prefer read-only collections (`listOf`, `mapOf`) and use mutable ones only where changes are needed; it prevents accidental modifications.
+
+## Extension functions
+
+```try-kotlin
+fun String.toKenyanIntl(): String? {
+    val digits = filter { it.isDigit() }
+    return when {
+        digits.length == 10 && digits.startsWith("0") -> "254" + digits.drop(1)
+        digits.length == 12 && digits.startsWith("254") -> digits
+        else -> null
+    }
+}
+
+fun Int.ksh(): String = "KSh " + "%,d".format(this)
+
+fun main() {
+    println("0712 345 678".toKenyanIntl())
+    println("+254-722-000-111".toKenyanIntl())
+    println("12345".toKenyanIntl())
+    println(15000.ksh())
+}
+```
+
+Extension functions add methods to existing types (even `String` and `Int`) without inheritance, keeping helper code readable: `phone.toKenyanIntl()`.
+
+## Practice
+
+1. Write `fun parseAmount(text: String): Double?` that returns null for invalid input, and print a default with `?:`.
+2. Use `groupBy` and `sumOf` to total sales per town from a list of data classes.
+3. Create a data class `Student` and use `copy` to update a mark.
+4. Write an extension function `String.initials()` that returns "AO" for "Achieng Odhiambo".
+5. Use `partition` to split marks into passed and failed lists.
+
+:::think Why is `val name: String = getName() ?: "Guest"` safer than `val name = getName()!!`?
+`!!` throws a NullPointerException (crashing the app) whenever `getName()` returns null. The Elvis operator provides a sensible default instead, so the app keeps working and the compiler guarantees `name` is never null afterwards.
+:::
+
 ```quiz
 Q: Which keyword declares a read-only variable in Kotlin?
 A: val
@@ -152,6 +310,14 @@ Q: Which Kotlin keyword is a powerful replacement for switch?
 A: when
 Q: Does 0 until 3 include 3? (yes or no)
 A: no
+Q: What is the ?: operator called in Kotlin?
+A: Elvis | Elvis operator
+Q: Which data class function creates a changed copy of an object?
+A: copy
+Q: What is the default name of a single lambda parameter in Kotlin?
+A: it
+Q: Which collection function splits a list into two lists by a condition?
+A: partition
 ```
 === exercise ===
 Write a function `vat(amount: Double): Double` that returns 16% of the amount, and print the VAT on **2500.0**. The output should be **400.0**.
