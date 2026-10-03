@@ -109,6 +109,150 @@ Soft, low-opacity shadows look modern; dark hard shadows look dated.
 </div>
 ```
 
+## Where you use these properties
+
+Backgrounds, borders, corners and shadows create the visual personality of a site: hero banners, buttons, cards, pricing tables, badges and profile pictures. Used well, they create **depth and hierarchy** (what's important, what's clickable). Used badly, they make a site look dated or cluttered. These properties are also cheap: a gradient or shadow in CSS loads instantly, unlike an image.
+
+## Gradients in depth
+
+```try-html
+<style>
+  .g { height: 70px; border-radius: 12px; margin: 8px 0; color: #fff; font: 600 14px system-ui; display: grid; place-items: center; }
+  .linear { background: linear-gradient(135deg, #0b1b35, #1d4ed8); }
+  .stops  { background: linear-gradient(90deg, #16a34a 0 33%, #000 33% 66%, #dc2626 66%); }
+  .radial { background: radial-gradient(circle at 30% 30%, #fbbf24, #b45309); }
+  .conic  { background: conic-gradient(#0b1b35 0 70%, #e2e8f0 0); width: 70px; border-radius: 50%; color: #0b1b35; }
+  .overlay { background: linear-gradient(rgba(11,27,53,.75), rgba(11,27,53,.75)), url("https://picsum.photos/600/200") center/cover; }
+</style>
+<div class="g linear">Linear gradient (135deg)</div>
+<div class="g stops">Hard colour stops</div>
+<div class="g radial">Radial gradient</div>
+<div class="g conic"></div>
+<div class="g overlay">Dark overlay on a photo keeps text readable</div>
+```
+
+The conic gradient makes a simple "70% complete" pie chart with no images. The overlay technique is essential: white text directly on a busy photo often fails contrast checks.
+
+## Multiple backgrounds and background shorthand
+
+```css
+.hero {
+  background:
+    url("/img/pattern.svg") repeat top left / 40px,      /* top layer */
+    linear-gradient(#0b1b35, #13284d);                    /* bottom layer */
+}
+/* shorthand order: image position / size repeat attachment colour */
+.banner { background: url(banner.webp) center / cover no-repeat #0b1b35; }
+```
+
+Always include a background **colour** as a fallback in case the image fails to load (common on slow connections).
+
+## Background images vs `<img>`
+
+| Use `<img>` when... | Use `background-image` when... |
+|---|---|
+| The image is content (product photo, team photo) | The image is decoration (patterns, textures) |
+| It needs alt text for screen readers and SEO | It has no meaning to convey |
+| It should be printed and lazy-loaded | It's part of the design only |
+
+Search engines index `<img>` with alt text; background images are mostly ignored.
+
+## Border tricks
+
+```try-html
+<style>
+  .row { display: flex; gap: 12px; flex-wrap: wrap; font: 14px system-ui; }
+  .row > div { padding: 14px; background: #fff; }
+  .accent { border-left: 5px solid #f59e0b; background: #fffbeb !important; }
+  .dashed { border: 2px dashed #94a3b8; border-radius: 10px; }
+  .outline { outline: 3px solid #1d4ed8; outline-offset: 4px; }
+  .pill { border-radius: 999px; background: #dcfce7 !important; color: #166534; font-weight: 600; }
+  .gradient-border { border: 3px solid transparent; border-radius: 12px; background: linear-gradient(#fff, #fff) padding-box, linear-gradient(135deg, #f59e0b, #1d4ed8) border-box !important; }
+</style>
+<div class="row">
+  <div class="accent">Callout with an accent border</div>
+  <div class="dashed">Upload area (dashed)</div>
+  <div class="outline">Outline with offset</div>
+  <div class="pill">Pill badge</div>
+  <div class="gradient-border">Gradient border</div>
+</div>
+```
+
+`outline` doesn't take up space or change layout, which is why browsers use it for focus rings. Never remove focus outlines without providing a visible replacement.
+
+## Layered, realistic shadows
+
+Real shadows are soft and come from one light direction. Layering two or three shadows looks more natural than one heavy shadow:
+
+```try-html
+<style>
+  body { background: #f1f5f9; font: 14px system-ui; }
+  .cards { display: flex; gap: 20px; flex-wrap: wrap; padding: 16px; }
+  .c { width: 150px; height: 90px; background: #fff; border-radius: 12px; display: grid; place-items: center; }
+  .heavy { box-shadow: 0 0 20px #000; }
+  .soft { box-shadow: 0 1px 2px rgba(15,23,42,.06), 0 4px 12px rgba(15,23,42,.08); }
+  .lifted { box-shadow: 0 2px 4px rgba(15,23,42,.06), 0 12px 32px rgba(15,23,42,.14); transform: translateY(-2px); }
+  .glow { box-shadow: 0 0 0 4px rgba(29,78,216,.25); }
+</style>
+<div class="cards">
+  <div class="c heavy">Too heavy</div>
+  <div class="c soft">Soft (resting)</div>
+  <div class="c lifted">Lifted (hover)</div>
+  <div class="c glow">Focus ring</div>
+</div>
+```
+
+Use stronger shadows for elements that are "higher" (dropdowns, modals) and lighter ones for cards resting on the page.
+
+## Design consistency with variables
+
+```css
+:root {
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --shadow-1: 0 1px 2px rgba(15,23,42,.06), 0 4px 12px rgba(15,23,42,.08);
+  --shadow-2: 0 2px 4px rgba(15,23,42,.06), 0 12px 32px rgba(15,23,42,.14);
+  --border: 1px solid #e2e8f0;
+}
+.card { border: var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-1); }
+.card:hover { box-shadow: var(--shadow-2); }
+.modal { border-radius: var(--radius-lg); box-shadow: var(--shadow-2); }
+```
+
+A small set of radii and shadows used everywhere is what makes professional sites feel consistent.
+
+## Dark mode considerations
+
+Shadows are almost invisible on dark backgrounds. In dark mode, show depth with lighter surface colours and subtle borders instead:
+
+```css
+@media (prefers-color-scheme: dark) {
+  .card { background: #1e293b; border: 1px solid #334155; box-shadow: none; }
+}
+```
+
+## Common mistakes
+
+| Mistake | Fix |
+|---|---|
+| Text on photos without an overlay | Add a dark gradient overlay or text background |
+| Background image with no colour fallback | Add a background-color |
+| Very dark, large shadows | Use low-opacity, layered shadows |
+| Different border radius on every component | Use 2 or 3 radius variables |
+| `outline: none` on buttons and links | Keep a visible `:focus-visible` style |
+
+## Practice
+
+1. Make a hero section with a photo, a dark overlay gradient and white heading text.
+2. Build three pricing cards with consistent radius and shadow variables, the middle one "lifted".
+3. Create a circular progress indicator showing 65% with a conic gradient.
+4. Design an "upload your CV" box with a dashed border that turns solid blue on hover.
+
+:::think Why is it better to put a semi-transparent gradient over a hero photo than to choose a photo that "looks dark enough"?
+Photos change: a client replaces the image, or different screen sizes crop different areas, so a light patch may end up behind the text. An overlay guarantees enough contrast for the text regardless of which part of the image shows, keeping it readable and accessible.
+:::
+
 ```quiz
 Q: Which background-size value fills the whole box, cropping if needed?
 A: cover
@@ -120,6 +264,12 @@ Q: Which keyword makes a box-shadow appear inside the element?
 A: inset
 Q: What is the order of the border shorthand: width style colour, or colour style width?
 A: width style colour | width style color
+Q: Which gradient type can draw a simple pie chart?
+A: conic | conic-gradient
+Q: Which property draws a ring that doesn't affect layout and is used for focus styles?
+A: outline
+Q: Should content images like product photos use img or background-image?
+A: img | <img>
 ```
 === exercise ===
 Give `.card` a **border-radius of 12px** and a **box-shadow**.
