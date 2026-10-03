@@ -109,6 +109,142 @@ HAVING Revenue > 0
 ORDER BY Revenue DESC;
 ```
 
+## Where CASE, NULL and HAVING are used
+
+These three features turn raw data into business answers. **CASE** labels data (big/small orders, price bands, grades). **NULL handling** prevents wrong totals and missing rows when information is incomplete, which is very common in real data (customers without emails, unpaid invoices without payment dates). **HAVING** finds groups that meet a condition, such as customers who spent over a threshold or products ordered more than a certain number of times. Analysts use them in nearly every report.
+
+## CASE for price bands and labels
+
+```try-sql
+SELECT Name, Price,
+  CASE
+    WHEN Price < 1000 THEN 'Budget'
+    WHEN Price < 3000 THEN 'Mid-range'
+    ELSE 'Premium'
+  END AS Band
+FROM Products
+ORDER BY Price;
+```
+
+CASE checks conditions in order and returns the first match, just like IF/ELSE IF in programming.
+
+## Counting with CASE (pivot-style reports)
+
+CASE inside SUM or COUNT creates columns for each category, a technique often called conditional aggregation:
+
+```try-sql
+SELECT c.City,
+  COUNT(*) AS Orders,
+  SUM(CASE WHEN o.OrderDate < '2026-09-01' THEN 1 ELSE 0 END) AS August,
+  SUM(CASE WHEN o.OrderDate >= '2026-09-01' THEN 1 ELSE 0 END) AS September
+FROM Orders o
+JOIN Customers c ON c.CustomerID = o.CustomerID
+GROUP BY c.City
+ORDER BY Orders DESC;
+```
+
+This is the SQL equivalent of an Excel pivot table with months as columns.
+
+## CASE in ORDER BY: custom sort orders
+
+```try-sql
+SELECT Name, City FROM Customers
+ORDER BY CASE City WHEN 'Nairobi' THEN 1 WHEN 'Mombasa' THEN 2 ELSE 3 END, Name;
+```
+
+Nairobi customers appear first, then Mombasa, then everyone else alphabetically.
+
+## How NULL behaves (and surprises people)
+
+```try-sql
+SELECT
+  NULL = NULL           AS EqualsNull,      -- NULL, not true!
+  NULL IS NULL          AS IsNullTest,          -- 1 (true)
+  5 + NULL              AS AddNull,         -- NULL
+  COALESCE(NULL, 0)     AS Coalesced,       -- 0
+  IFNULL(NULL, 'none')  AS IfNullResult,    -- 'none' (SQLite/MySQL)
+  NULLIF(10, 10)        AS NullIfSame;      -- NULL (useful to avoid division by zero)
+```
+
+Key rules:
+
+- Comparisons with NULL return NULL (unknown), so `WHERE Email = NULL` never matches. Use `IS NULL` / `IS NOT NULL`.
+- Aggregates like `SUM`, `AVG` and `COUNT(column)` **ignore** NULLs; `COUNT(*)` counts all rows.
+- Arithmetic with NULL gives NULL; wrap values in `COALESCE(col, 0)` when a missing value should count as zero.
+
+## NULL in outer joins: finding what's missing
+
+```try-sql
+-- Customers who have never ordered
+SELECT c.Name, c.City
+FROM Customers c
+LEFT JOIN Orders o ON o.CustomerID = c.CustomerID
+WHERE o.OrderID IS NULL;
+```
+
+A LEFT JOIN fills unmatched rows with NULLs, and `IS NULL` finds them. This is a classic interview question and a common business question ("which products never sold?").
+
+## Safe division with NULLIF
+
+```try-sql
+SELECT p.Name,
+  COALESCE(SUM(o.Quantity), 0) AS UnitsSold,
+  ROUND(p.Price * 1.0 / NULLIF(COALESCE(SUM(o.Quantity), 0), 0), 1) AS PricePerUnitSold
+FROM Products p
+LEFT JOIN Orders o ON o.ProductID = p.ProductID
+GROUP BY p.ProductID
+ORDER BY UnitsSold DESC;
+```
+
+`NULLIF(x, 0)` turns 0 into NULL, so dividing by it returns NULL instead of an error.
+
+## HAVING with several conditions
+
+```try-sql
+SELECT c.Name,
+  COUNT(*) AS Orders,
+  SUM(o.Quantity * p.Price) AS Spent
+FROM Orders o
+JOIN Customers c ON c.CustomerID = o.CustomerID
+JOIN Products p ON p.ProductID = o.ProductID
+GROUP BY c.CustomerID
+HAVING COUNT(*) >= 1 AND SUM(o.Quantity * p.Price) > 2000
+ORDER BY Spent DESC;
+```
+
+## WHERE vs HAVING side by side
+
+| | WHERE | HAVING |
+|---|---|---|
+| Filters | Individual rows | Groups |
+| Runs | Before GROUP BY | After GROUP BY |
+| Can use aggregates (SUM, COUNT)? | No | Yes |
+| Example | `WHERE City = 'Nairobi'` | `HAVING SUM(Total) > 5000` |
+
+Filtering with WHERE first (when possible) is faster, because fewer rows are grouped.
+
+## Common mistakes
+
+| Mistake | Result | Fix |
+|---|---|---|
+| `WHERE Phone = NULL` | No rows | `WHERE Phone IS NULL` |
+| `WHERE SUM(x) > 100` | Error | Move to `HAVING` |
+| Forgetting ELSE in CASE | NULL for unmatched rows | Add an ELSE |
+| `SUM(a + b)` when b can be NULL | Rows with NULL b are lost from the total | `SUM(a + COALESCE(b, 0))` |
+| `COUNT(column)` expecting all rows | NULLs not counted | `COUNT(*)` |
+
+## Practice
+
+1. Label orders as 'Single' (quantity 1) or 'Multiple' (quantity over 1) with CASE.
+2. Count products per price band (Budget, Mid-range, Premium).
+3. Find products that have never been ordered.
+4. List cities whose customers placed more than one order in total.
+5. Show each customer's total spending, showing 0 for customers with no orders.
+
+:::think A report shows total revenue per customer, but customers with no orders are missing. How do you include them with 0?
+Start from Customers and LEFT JOIN Orders (and Products), so every customer appears, then wrap the total in COALESCE: `COALESCE(SUM(o.Quantity * p.Price), 0)`. An inner JOIN drops customers with no matching orders.
+:::
+
 ```quiz
 Q: How do you test for a missing value: = NULL or IS NULL?
 A: IS NULL
@@ -120,6 +256,12 @@ Q: Which clause filters rows before grouping?
 A: WHERE
 Q: What is 5 + NULL?
 A: NULL
+Q: Which function returns NULL when two values are equal, often used to avoid division by zero?
+A: NULLIF
+Q: Does COUNT(*) count rows where a column is NULL? (yes or no)
+A: yes
+Q: Which join helps find customers who have never ordered? (two words)
+A: LEFT JOIN | left outer join
 ```
 === exercise ===
 List each **Category** with the number of products in it, using `GROUP BY` and `COUNT(*)`.
