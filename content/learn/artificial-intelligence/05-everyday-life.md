@@ -64,6 +64,91 @@ But **never use AI instead of a doctor**, especially for emergencies, children, 
 
 Pick **three** areas from this lesson and use AI in each this week. Notice where it saves time and where you had to correct it. That judgement is exactly what makes you good at AI.
 
+## AI as a daily helper, used wisely
+
+AI can save time on everyday tasks, from planning meals and budgets to preparing for interviews and understanding government processes. The key is using it as an **assistant**, not an authority: let it help you think, draft and organise, while you check important facts and make the decisions.
+
+## Personal finance with AI
+
+```text
+Prompt: My monthly income is KSh 35,000. Rent is 9,000, transport about 4,500,
+and I send 3,000 home. Help me build a simple budget with food, airtime/data,
+savings and an emergency fund. Show it as a table and suggest where I could save.
+```
+
+Use AI to:
+
+- Build a budget table and spot spending patterns (paste a summary, not your full M-Pesa statement with numbers).
+- Understand terms: interest rates, reducing balance vs flat rate loans, SACCO dividends.
+- Compare options by asking for questions to ask a bank or SACCO.
+
+Don't let AI recommend specific investments or loans for you; it doesn't know your full situation and may be wrong or outdated. Check licensed institutions and current rates yourself.
+
+## Job hunting step by step
+
+| Step | How AI helps | Your job |
+|---|---|---|
+| Understand a job advert | "Summarise the key skills in this advert" | Decide honestly if you fit |
+| Tailor your CV | "Suggest bullet points that match this advert using my real experience" | Never invent experience or qualifications |
+| Cover letter | Draft a first version | Personalise it with real details |
+| Interview prep | "Ask me 10 likely interview questions for this role, one at a time, and give feedback" | Practise aloud |
+| Follow-up | Draft a thank-you email | Send promptly |
+
+Watch out for fake job adverts that ask for payment; AI can help you spot red flags if you paste the advert, but use your judgement too.
+
+## Learning new skills
+
+- Ask for a 4-week learning plan for a skill (Excel, coding, bookkeeping) with daily 30-minute tasks.
+- Ask the AI to explain mistakes in your work and give similar practice exercises.
+- Use it to translate difficult English explanations into simpler English or Kiswahili.
+
+## Parents and teachers
+
+- Generate practice questions at the right level and check the answers yourself.
+- Create simple explanations or stories that explain a concept to children.
+- Plan activities and lesson outlines, adapted to available materials.
+- Teach children responsible use: AI helps learning but doesn't replace their own work.
+
+## Health information: careful use
+
+AI can help you **understand** general health information and prepare questions for a doctor:
+
+```text
+Prompt: I've been told I have high blood pressure. Explain in simple terms what it means,
+common lifestyle changes people discuss with their doctor, and 5 questions I should ask
+at my next clinic visit.
+```
+
+- Never use AI instead of medical care, especially in emergencies (chest pain, difficulty breathing, severe bleeding, signs of stroke): go to a health facility or call emergency services.
+- Don't change medication based on AI answers.
+- Health information is sensitive; avoid sharing identifying details.
+
+## Farming and small enterprise
+
+- Planning crop calendars, simple record-keeping templates, and costing an enterprise (poultry, kitchen garden).
+- Drafting messages to buyers or cooperatives.
+- Identifying questions for agricultural extension officers.
+
+Confirm pest and disease diagnoses and chemical use with qualified officers or agrovets, and follow product labels.
+
+## Safety reminders
+
+- AI-generated voices and messages can impersonate family members: verify unusual money requests by calling back on a known number.
+- Don't share PINs, passwords or OTPs with any AI tool or anyone claiming to be AI support.
+- Double-check AI answers on laws, fees and deadlines with official sources.
+
+## Practice
+
+1. Ask an AI to help build your monthly budget table (with rounded figures, no personal identifiers).
+2. Paste a real job advert and ask for the top five skills required, then compare with your CV.
+3. Ask for 10 interview questions and practise answering three aloud.
+4. Create a 4-week learning plan for a skill you want.
+5. Prepare five questions for a doctor, SACCO officer or agricultural officer using AI.
+
+:::think A friend asks an AI whether to take a digital loan to buy stock for their shop, and the AI says "yes, it's a good idea". Why shouldn't they rely on that answer?
+The AI doesn't know their real income, expenses, existing debts, the loan's true cost or the lender's licence status, and may simply be agreeable. They should calculate the total cost of the loan, check the lender is licensed, compare options (SACCO, bank, savings), and think about whether the stock will sell fast enough to repay on time.
+:::
+
 ```quiz
 Q: Should AI write your school assignments for you to hand in? (yes or no)
 A: no
@@ -75,4 +160,10 @@ Q: What should you never let AI invent on your CV?
 A: qualifications | experience | qualifications or experience
 Q: What should you use to double-check important calculations?
 A: a calculator | calculator
+Q: Should you invent experience in a CV because an AI suggested it? (yes or no)
+A: no
+Q: In a medical emergency, should you consult AI first or go to a health facility?
+A: health facility | go to a health facility | facility | hospital
+Q: How should you verify an unusual money request from a "relative"? (call back on a known ...)
+A: number | known number
 ```

@@ -74,6 +74,94 @@ Prices depend on your skill and the client's size: start modestly, collect resul
 3. **Week 3**: Offer the service to 10 local businesses and create one marketplace profile.
 4. **Week 4**: Deliver your first job, ask for a testimonial, refine your prompts and process.
 
+## Earning with AI skills: realistic expectations
+
+AI has created new kinds of work (data annotation, AI training, prompt and automation services) and changed old ones (writing, design, customer support, transcription). Many people earn by using AI to deliver services faster and better, not by expecting AI to "make money automatically". Be wary of courses and schemes promising easy passive income from AI; sustainable income comes from real skills, honest work and satisfied clients.
+
+## Skills that clients pay for
+
+| Skill | What clients want | How AI helps |
+|---|---|---|
+| Content writing and editing | Blog posts, product descriptions, website copy | Research outlines, first drafts, editing suggestions |
+| Social media management | Consistent posts, replies, simple analytics | Content calendars, captions, ideas, scheduling |
+| Graphic design | Posters, social graphics, brand kits | Background removal, image generation, layout ideas |
+| Video editing | Short-form videos with captions | Auto-captions, transcripts, cutting silences |
+| Virtual assistance | Email management, scheduling, research | Drafting replies, summaries, organising information |
+| Data work | Cleaning spreadsheets, reports | Formula help, scripts, summaries |
+| AI implementation for businesses | Chatbots, automations, staff training | Building workflows and grounded assistants |
+| Data annotation / AI training | Labelling data, rating AI answers | Domain knowledge and careful judgement matter |
+
+## Packaging services for local businesses
+
+| Package | Contents | Who buys it |
+|---|---|---|
+| Social media starter | 12 posts/month with captions, profile clean-up | Shops, salons, restaurants |
+| WhatsApp Business set-up | Catalogue, quick replies, greeting/away messages, labels | Small traders |
+| Website content refresh | Rewrite service pages, FAQ, SEO titles | SMEs with outdated websites |
+| AI training workshop | Half-day training on safe AI use for staff | Offices, schools, SACCOs |
+| Customer FAQ assistant | A grounded chatbot built from the business's own information | Busy businesses with repeated questions |
+
+Show before-and-after examples and measurable results (time saved, more enquiries) to win clients.
+
+## Building a portfolio quickly (honestly)
+
+1. Create sample work for imaginary or real local businesses (with permission), clearly labelled as samples.
+2. Offer a few discounted projects to get testimonials.
+3. Document your process: brief → AI-assisted draft → your editing → final result.
+4. Publish samples on LinkedIn, a simple website, Behance or a Google Drive portfolio.
+
+## Freelance platforms and AI rules
+
+- Read each platform's rules on AI use; some clients forbid AI-generated content, others welcome AI-assisted work.
+- Never misrepresent AI output as purely human work when the client asks for human-only work.
+- Data annotation and AI training platforms often require tests and have strict quality guidelines; follow them carefully.
+- Protect accounts: never share your login, never "rent" accounts, and beware of agents who demand fees to get you onto platforms.
+
+## Pricing your AI-assisted services
+
+- Price by **value and outcome**, not by how long AI took. Your skill in prompting, editing, checking and understanding the client's business is what they pay for.
+- Include revision rounds and clear deliverables.
+- Charge separately for tool subscriptions the project needs, if significant.
+- Raise prices as your portfolio and results grow.
+
+## Quality control: what separates professionals
+
+| Step | Why |
+|---|---|
+| Fact-check every claim | Clients lose trust after one false statistic |
+| Edit for voice and local relevance | Generic AI text doesn't convert |
+| Check originality | Avoid content too similar to existing work |
+| Proofread names, prices and contacts | Errors cost clients money |
+| Keep client data private | Required by clients and the law |
+
+## Avoiding scams in the "AI money" space
+
+- "Earn KSh 10,000 a day with AI, pay for the secret course" → be very sceptical.
+- "Pay a registration fee to access AI training jobs" → genuine platforms don't charge to apply.
+- "AI trading bot with guaranteed profits" → a classic scam pattern.
+- Requests to buy or rent verified freelancer accounts → violates platform rules and risks bans and fraud.
+
+## A 60-day plan
+
+| Days | Action |
+|---|---|
+| 1–10 | Choose one service; learn tools; create 3 samples |
+| 11–20 | Build a simple portfolio and LinkedIn profile; tell your network |
+| 21–40 | Pitch 20 local businesses or apply to relevant platforms; do 2–3 projects |
+| 41–60 | Collect testimonials, refine packages, raise prices slightly, ask for referrals |
+
+## Practice
+
+1. Choose one AI-assisted service and define a package with price and deliverables.
+2. Create two portfolio samples and write a short case study for each.
+3. Write a pitch message to a local business explaining the value of your service.
+4. Read the AI policy of one freelance platform.
+5. List five red flags of AI money scams and share them with a friend.
+
+:::think A client hired you to write 10 blog posts and later discovers they were copied straight from an AI tool, with two invented statistics. What went wrong, and how should AI-assisted writing be done?
+The writer delivered unedited AI output without fact-checking or adding value, which damages the client's credibility and the writer's reputation. Professional AI-assisted writing means researching, using AI for outlines or drafts, verifying every fact, adding expertise and local relevance, editing for the brand voice, and being honest with the client about how AI is used.
+:::
+
 ```quiz
 Q: Should you tell clients honestly that you use AI tools? (yes or no)
 A: yes
@@ -85,4 +173,10 @@ Q: Writing students' assignments with AI for pay is called contract ...?
 A: cheating
 Q: What should you always do before delivering AI-assisted work?
 A: check facts | fact-check | check it | edit and check
+Q: Should you price AI-assisted services only by the minutes AI took? (yes or no)
+A: no
+Q: Do genuine AI training platforms charge registration fees to apply? (yes or no)
+A: no
+Q: Name one AI-assisted service you could sell to local businesses.
+A: social media | social media management | WhatsApp Business setup | content writing | chatbot | training | design
 ```

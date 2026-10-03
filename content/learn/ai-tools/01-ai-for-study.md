@@ -67,6 +67,81 @@ Don't paste personal data (ID numbers, medical information, other people's detai
 4. Ask it for one common misconception about the topic.
 5. Check one of its facts against your textbook.
 
+## Learning faster with AI (without cheating yourself)
+
+AI can be the patient tutor available any time: explaining difficult topics in simpler words, giving practice questions, checking your reasoning and helping you plan revision. Used well, it deepens understanding. Used badly (copying answers), it skips the thinking that exams, jobs and real life require. The goal is to use AI to **learn**, not just to finish assignments.
+
+## Study techniques that work, powered by AI
+
+| Technique | What it is | AI prompt example |
+|---|---|---|
+| **Active recall** | Testing yourself instead of re-reading | "Quiz me on photosynthesis with 10 questions, one at a time. Don't show answers until I reply." |
+| **Spaced repetition** | Reviewing at increasing intervals | "Turn these notes into 20 flashcards (question | answer) I can import into a flashcard app." |
+| **Feynman technique** | Explaining a topic simply to find gaps | "I'll explain supply and demand. Point out what I got wrong or left out." |
+| **Worked examples then practice** | Learn a method, then apply it | "Show one solved example of simultaneous equations, then give me 3 similar ones to try." |
+| **Interleaving** | Mixing different types of problems | "Give me a mixed set of 10 questions on fractions, percentages and ratios." |
+| **Elaboration** | Asking why and how | "Why does increasing interest rates reduce inflation? Explain step by step." |
+
+## A revision session with AI (45 minutes)
+
+1. **5 min**: Ask for a short overview of the topic in simple language.
+2. **10 min**: Read your own notes/textbook section on it.
+3. **15 min**: Get quizzed; answer without looking; ask for explanations of mistakes.
+4. **10 min**: Explain the topic back to the AI in your own words and get feedback.
+5. **5 min**: Write a summary from memory and list what to review next time.
+
+## Using AI for languages
+
+- Practise conversations: "Let's have a simple conversation in French about ordering food. Correct my mistakes gently."
+- Ask for vocabulary lists with example sentences.
+- Get grammar explanations with examples from Kiswahili or English comparisons.
+- Translate your writing and ask why certain words are better.
+
+## Using AI for maths and science (carefully)
+
+- Ask for step-by-step explanations, then try similar problems yourself.
+- Check answers with a calculator or by substituting back; AI sometimes makes arithmetic errors.
+- Ask "What's a common mistake students make here?" to avoid traps.
+- For diagrams and graphs, use your textbook, teacher or specialised tools as well.
+
+## Academic integrity: where the line is
+
+| Generally acceptable (check your institution's rules) | Generally not acceptable |
+|---|---|
+| Explaining concepts you're stuck on | Submitting AI-written essays or answers as your own |
+| Generating practice questions | Using AI during exams or tests where it's not allowed |
+| Getting feedback on your own draft's clarity and grammar | Fabricating references or data |
+| Brainstorming ideas, then doing the work yourself | Paraphrasing AI text to hide its source when disclosure is required |
+| Summarising your own notes for revision | Having AI write code for programming assignments you must write yourself |
+
+Schools and universities have different policies; some require you to declare AI use. When unsure, ask your teacher or lecturer.
+
+## Research and references
+
+- Use AI to understand a topic and find **keywords**, then search real sources (library databases, Google Scholar, textbooks, official websites).
+- Open and read every source you cite; AI can invent references that look real.
+- Cite sources properly in the required style (APA, Harvard, etc.).
+- Note the date of information; some topics change quickly.
+
+## Privacy and wellbeing
+
+- Don't share personal details or other students' work without permission.
+- Take breaks; long sessions with screens reduce focus.
+- Combine AI with group study, teachers and practice papers.
+- Past papers and marking schemes remain some of the best exam preparation.
+
+## Practice
+
+1. Use AI to quiz you on a topic from this week and record your score.
+2. Turn a page of notes into flashcards and review them over three days.
+3. Explain a topic to the AI using the Feynman technique and correct the gaps it finds.
+4. Find three real sources for a topic using keywords from an AI overview.
+5. Write down your school's or college's AI policy and what it allows.
+
+:::think A student uses AI to write their entire essay and gets a good mark, but fails the exam on the same topic. Why, and what would have helped more?
+The AI did the thinking, so the student never practised understanding, structuring arguments or recalling facts, which the exam tests. Using AI to explain concepts, quiz them and give feedback on their own drafts would have built real understanding and exam skills.
+:::
+
 ```quiz
 Q: What is it called when AI confidently makes up wrong information?
 A: hallucination | hallucinating | hallucinate
@@ -78,4 +153,10 @@ Q: Is submitting AI-written work as your own usually allowed? (yes or no)
 A: no
 Q: What should you always do with code an AI gives you before trusting it?
 A: run it | test it | run and test it
+Q: What is the study technique of testing yourself instead of re-reading called? (two words)
+A: active recall
+Q: Which technique involves explaining a topic simply to find gaps in understanding?
+A: Feynman | Feynman technique
+Q: Should you cite a reference without opening and reading it? (yes or no)
+A: no
 ```

@@ -67,6 +67,79 @@ Every answer is a **draft from a fast assistant, not the final truth**:
 
 Do this now: open any assistant and have a **5-message conversation** about something you want to learn this month. Ask follow-ups like *"give me an example"*, *"make it shorter"*, *"now in Kiswahili"*, *"quiz me"*.
 
+## How to write prompts that get good answers
+
+The quality of an AI answer depends heavily on how you ask. A vague question gets a generic answer; a clear request with context gets something useful. A simple structure works for almost everything:
+
+| Part | Example |
+|---|---|
+| **Role** (optional) | "Act as a friendly maths tutor for a Form 2 student." |
+| **Task** | "Explain how to calculate simple interest." |
+| **Context** | "I'm in Kenya, and the example should use Kenyan shillings and a SACCO loan." |
+| **Format** | "Use 3 short steps and one worked example, under 150 words." |
+| **Constraints** | "Don't use difficult words. End with one practice question." |
+
+### Weak vs strong prompts
+
+| Weak | Strong |
+|---|---|
+| "Write a CV" | "Help me write a one-page CV for a junior accounts assistant role in Nairobi. Here are my details: [education, skills, attachment experience]. Use clear headings and bullet points." |
+| "Tell me about farming" | "I have half an acre in Kiambu. Suggest three vegetables I could grow for the local market in the long rains, with rough planting-to-harvest times. Say which details I should confirm with an agricultural officer." |
+| "Fix this" | "Check this email for grammar and make it more polite but keep it short: [email]" |
+
+## Following up: AI chats are conversations
+
+You rarely get the perfect answer first time. Improve it step by step:
+
+- "Make it shorter / simpler / more formal."
+- "Give me three alternative versions."
+- "Explain step 2 in more detail."
+- "Translate this into Kiswahili."
+- "Turn that into a table."
+- "What questions should I ask a professional about this?"
+
+Start a **new chat** for a new topic, so earlier instructions don't confuse the answer.
+
+## Useful everyday prompts to copy
+
+```text
+Explain [topic] to me like I'm 15, with a Kenyan example.
+Summarise this text in 5 bullet points: [paste text]
+Quiz me with 5 questions on [topic], one at a time, and tell me if I'm right.
+Rewrite this message to sound polite and professional: [message]
+Help me plan a weekly budget for KSh [amount] covering rent, food, transport and savings.
+Give me a step-by-step checklist for [task], and tell me which steps I should confirm with an official source.
+```
+
+## Understanding what AI is good and bad at
+
+| Good at | Weak at |
+|---|---|
+| Explaining concepts in simple language | Up-to-date facts (prices, laws, fees) unless it searches the web |
+| Drafting emails, letters, posts | Exact calculations without checking (sometimes gets maths wrong) |
+| Summarising long text you provide | Knowing local, recent or niche information |
+| Brainstorming ideas and names | Telling you when it's unsure (it may sound confident and still be wrong) |
+| Translating and rephrasing | Making decisions that need professional judgement (medical, legal, financial) |
+
+## Privacy habits
+
+- Don't paste ID numbers, passwords, PINs, bank details, medical records or other people's personal information.
+- Remove names from work documents before asking for help, unless your organisation allows that tool.
+- Check the tool's settings for chat history and whether conversations are used to improve the model; turn off what you don't want.
+- Remember that screenshots and shared chat links can be seen by others.
+
+## Practice
+
+1. Rewrite three weak prompts from your own life using the role–task–context–format–constraints structure.
+2. Ask an AI to quiz you on a topic you're studying, then check two answers in your notes or textbook.
+3. Use follow-up prompts to improve a draft message three times.
+4. Ask the same question to two different assistants and compare the answers.
+5. Find the privacy and history settings in the assistant you use.
+
+:::think You ask an AI for the current fee to renew a passport, and it gives a confident number. What should you do before relying on it?
+Treat it as a starting point, not a fact. Fees and procedures change, and AI may have outdated or wrong information. Check the official government source (for example the relevant eCitizen service page) or call the office, and use the official figure.
+:::
+
 ```quiz
 Q: Which assistant is built into WhatsApp (where available)?
 A: Meta AI
@@ -77,5 +150,11 @@ A: no
 Q: For a new topic, should you start a new chat or continue the old one?
 A: a new chat | new chat | new
 Q: Do you need to pay to learn Levels 1 to 3 of AI? (yes or no)
+A: no
+Q: Name one part of a strong prompt besides the task. (role, context, format or constraints)
+A: context | role | format | constraints
+Q: Should you start a new chat when changing to a completely different topic? (yes or no)
+A: yes
+Q: Is AI reliable for current government fees without checking an official source? (yes or no)
 A: no
 ```
