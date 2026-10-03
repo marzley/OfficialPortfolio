@@ -149,6 +149,204 @@ for n in range(1, months + 1):
 print(f"Total repaid: KSh {payment * months:,.2f}")
 ```
 
+## Who uses dates and numbers in code?
+
+| Where | Example |
+|---|---|
+| Lending apps and SACCOs | Due dates, late penalties, interest schedules |
+| Schools | Term dates, attendance by week, age on admission |
+| Shops and pharmacies | Expiry dates, daily sales reports, opening hours |
+| HR and payroll | Working days in a month, leave balances, overtime |
+| Games and quizzes | Random questions, dice, shuffled answers |
+| Data analysis | Averages, medians and spread of marks, sales or survey answers |
+
+## Working with times and durations
+
+```try-python
+from datetime import datetime, timedelta
+
+clock_in = datetime(2026, 9, 28, 7, 55)
+clock_out = datetime(2026, 9, 28, 17, 20)
+worked = clock_out - clock_in
+hours = worked.total_seconds() / 3600
+print("Worked:", worked, f"= {hours:.2f} hours")
+
+overtime = max(0, hours - 8)
+print(f"Overtime: {overtime:.2f} h, pay KSh {overtime * 250:,.0f}")
+
+meeting = datetime(2026, 10, 1, 9, 0)
+reminder = meeting - timedelta(minutes=30)
+print("Send reminder at", reminder.strftime("%H:%M on %d %b"))
+```
+
+`timedelta` supports `days`, `seconds`, `minutes`, `hours` and `weeks`. There is no `months=` because months have different lengths.
+
+## Adding months safely
+
+```try-python
+from datetime import date
+import calendar
+
+def add_months(d, n):
+    month = d.month - 1 + n
+    year = d.year + month // 12
+    month = month % 12 + 1
+    last_day = calendar.monthrange(year, month)[1]
+    return date(year, month, min(d.day, last_day))
+
+start = date(2026, 1, 31)
+for i in range(1, 5):
+    print(add_months(start, i))      # Feb 28, Mar 31, Apr 30, May 31
+print("Days in Feb 2028:", calendar.monthrange(2028, 2)[1])
+print("2028 leap year?", calendar.isleap(2028))
+```
+
+## Comparing and sorting dates
+
+Dates compare like numbers, so you can sort them, find the earliest and check ranges:
+
+```try-python
+from datetime import date
+
+expiry = {
+    "Panadol": date(2026, 11, 30),
+    "Amoxil": date(2026, 10, 10),
+    "ORS": date(2027, 3, 1),
+}
+today = date(2026, 10, 1)
+for drug, exp in sorted(expiry.items(), key=lambda kv: kv[1]):
+    days = (exp - today).days
+    status = "EXPIRED" if days < 0 else "expires soon" if days <= 30 else "ok"
+    print(f"{drug:<8} {exp}  {days:>4} days  {status}")
+```
+
+## Working days
+
+```try-python
+from datetime import date, timedelta
+
+holidays = {date(2026, 10, 10), date(2026, 10, 20)}   # Mazingira Day, Mashujaa Day (example list)
+
+def working_days(start, end):
+    d, count = start, 0
+    while d <= end:
+        if d.weekday() < 5 and d not in holidays:
+            count += 1
+        d += timedelta(days=1)
+    return count
+
+print("Working days in Oct 2026:", working_days(date(2026, 10, 1), date(2026, 10, 31)))
+```
+
+Keep a list of public holidays in your program or a settings file and update it each year, because some holiday dates move or are gazetted at short notice.
+
+## ISO format: the safest way to store dates
+
+Store dates as `YYYY-MM-DD` (ISO 8601) in files and databases. They sort correctly as text and every system understands them:
+
+```try-python
+from datetime import date, datetime
+
+d = date(2026, 3, 5)
+print(d.isoformat())                         # 2026-03-05
+print(date.fromisoformat("2026-12-25"))
+print(datetime.fromisoformat("2026-12-25T18:30:00"))
+print(sorted(["05/03/2026", "12/01/2026"]))   # wrong order as text!
+print(sorted(["2026-03-05", "2026-01-12"]))   # correct order
+```
+
+## Time zones in brief
+
+`datetime.now()` gives the computer's local time with no time zone attached ("naive"). Servers often run on UTC, three hours behind Kenya (EAT, UTC+3). For anything shared between systems, use aware datetimes:
+
+```try-python
+from datetime import datetime, timezone, timedelta
+
+EAT = timezone(timedelta(hours=3), "EAT")
+utc_now = datetime(2026, 9, 28, 6, 0, tzinfo=timezone.utc)
+print("UTC:", utc_now)
+print("Nairobi:", utc_now.astimezone(EAT))
+```
+
+In larger programs, `zoneinfo.ZoneInfo("Africa/Nairobi")` provides the official zone.
+
+## Money and decimals
+
+Floats store numbers in binary, so some decimals can't be represented exactly. For money, either round carefully or use `Decimal`:
+
+```try-python
+from decimal import Decimal, ROUND_HALF_UP
+
+print(0.1 + 0.2)                                  # 0.30000000000000004
+print(Decimal("0.1") + Decimal("0.2"))            # 0.3
+
+price = Decimal("1999.995")
+print(price.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
+vat = (Decimal("2500") * Decimal("0.16")).quantize(Decimal("0.01"))
+print("VAT:", vat)
+```
+
+Another common approach is to store amounts in **cents** as integers (KSh 12.50 → 1250) and only format them for display.
+
+## Compound interest and loans
+
+```try-python
+principal = 50000
+annual_rate = 0.12
+years = 3
+
+simple = principal * annual_rate * years
+compound = principal * (1 + annual_rate / 12) ** (12 * years) - principal
+print(f"Simple interest:   KSh {simple:,.2f}")
+print(f"Compound (monthly): KSh {compound:,.2f}")
+
+# reducing-balance monthly payment (standard loan formula)
+r = annual_rate / 12
+n = years * 12
+payment = principal * r / (1 - (1 + r) ** -n)
+print(f"Monthly payment: KSh {payment:,.2f}, total KSh {payment * n:,.2f}")
+```
+
+## A random simulation: estimating chances
+
+Simulations repeat a random experiment many times to estimate a probability:
+
+```try-python
+import random
+
+random.seed(1)
+trials = 10000
+both_six = sum(1 for _ in range(trials)
+               if random.randint(1, 6) == 6 and random.randint(1, 6) == 6)
+print(f"Estimated chance of double six: {both_six / trials:.3f} (exact {1/36:.3f})")
+
+# weighted choice: 70% chance of 'small prize'
+prizes = random.choices(["small", "medium", "big"], weights=[70, 25, 5], k=10)
+print(prizes)
+```
+
+## Common mistakes
+
+| Mistake | Problem | Fix |
+|---|---|---|
+| `datetime.strptime("5/3/2026", "%m/%d/%Y")` | Day and month swapped (US order) | Kenya uses day/month: `%d/%m/%Y` |
+| Storing dates as `"05/03/2026"` text | Sorts wrongly | Store ISO `2026-03-05` |
+| `timedelta(months=1)` | TypeError | Use an add-months function |
+| Using `random` for OTPs | Predictable | Use `secrets` |
+| Comparing money floats with `==` | Rounding errors | Round, use Decimal or integer cents |
+
+## Practice
+
+1. Ask for a date of birth as text (`DD/MM/YYYY`) and print the exact age in years.
+2. Print a 6-month repayment schedule using `add_months` instead of `+30 days`.
+3. Simulate 1,000 coin tosses and print how many heads and tails.
+4. List all Fridays in December 2026.
+5. Given a list of sale timestamps, count sales per hour of the day.
+
+:::think Why might adding `timedelta(days=30)` each month give the wrong due dates for a loan that is due on the 5th of every month?
+Months have 28 to 31 days, so adding 30 days drifts: 5 Jan + 30 days is 4 Feb, then 6 Mar, and so on. Use a month-aware calculation that keeps the same day number (and clamps to the last day for the 29th to 31st).
+:::
+
 ```quiz
 Q: Which datetime method formats a date as text?
 A: strftime | strftime()
@@ -160,6 +358,14 @@ Q: Which random function picks a whole number between two values?
 A: randint | random.randint
 Q: Which module should you use for security codes and passwords?
 A: secrets
+Q: Which timedelta method converts a duration to a number of seconds?
+A: total_seconds | total_seconds()
+Q: Which date format sorts correctly as text and should be used for storage? (name or pattern)
+A: ISO | ISO 8601 | YYYY-MM-DD
+Q: Which module gives exact decimal arithmetic for money?
+A: decimal | Decimal
+Q: Which calendar function tells you how many days are in a month?
+A: monthrange | calendar.monthrange
 ```
 === exercise ===
 Use `timedelta` to print the date 30 days after `date(2026, 9, 1)`. The output should be **2026-10-01**.
