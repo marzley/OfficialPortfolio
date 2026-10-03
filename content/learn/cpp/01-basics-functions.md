@@ -148,6 +148,167 @@ int main() {
 }
 ```
 
+## Why C++ is worth learning
+
+C++ powers game engines (Unreal Engine), browsers (Chrome, Firefox), databases, trading systems, embedded devices, graphics software and competitive programming. It combines C's speed and low-level control with higher-level features like classes, templates and the Standard Library. Many engineering and computer science students learn it, and it's the most popular language in programming competitions.
+
+## Strings in C++ are much easier than in C
+
+```try-cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string first = "Achieng";
+    string last = "Odhiambo";
+    string full = first + " " + last;          // no buffer sizes to worry about
+    cout << full << " has " << full.length() << " characters" << endl;
+    cout << "First letter: " << full[0] << endl;
+    cout << "Surname starts at index " << full.find(" ") + 1 << endl;
+    cout << "Surname: " << full.substr(full.find(" ") + 1) << endl;
+    full += " (Kisumu)";
+    cout << full << endl;
+    if (first == "Achieng") cout << "Names compare with == in C++" << endl;
+    return 0;
+}
+```
+
+`std::string` grows automatically and supports `+`, `==`, `find`, `substr` and more, removing most of C's string dangers.
+
+## Default parameters and overloading
+
+```try-cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+double withVat(double amount, double rate = 0.16) {
+    return amount * (1 + rate);
+}
+
+void describe(int qty) { cout << qty << " items" << endl; }
+void describe(double kg) { cout << kg << " kg" << endl; }
+void describe(string name) { cout << "Product: " << name << endl; }
+
+int main() {
+    cout << withVat(1000) << endl;          // uses the default 16%
+    cout << withVat(1000, 0.08) << endl;
+    describe(5);                            // calls the int version
+    describe(2.5);                          // calls the double version
+    describe(string("Unga"));               // calls the string version
+    return 0;
+}
+```
+
+## Passing by value, reference and const reference
+
+```try-cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+void addBonusCopy(int marks) { marks += 5; }            // changes a copy only
+void addBonusRef(int &marks) { marks += 5; }            // changes the caller's variable
+int countVowels(const string &text) {                   // read-only, no copy made
+    int n = 0;
+    for (char c : text) {
+        if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') n++;
+    }
+    return n;
+}
+
+int main() {
+    int m = 60;
+    addBonusCopy(m);
+    cout << "After copy: " << m << endl;
+    addBonusRef(m);
+    cout << "After reference: " << m << endl;
+    cout << "Vowels: " << countVowels("habari ya asubuhi") << endl;
+    return 0;
+}
+```
+
+| Parameter style | Use when |
+|---|---|
+| `int x` (by value) | Small types you don't need to change |
+| `int &x` (reference) | The function must change the caller's variable |
+| `const string &s` | Large objects you only read (avoids copying) |
+
+## Range-based for loops and vectors (preview)
+
+```try-cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    vector<int> marks = {67, 82, 45, 90, 58};
+    marks.push_back(73);
+
+    int total = 0;
+    for (int m : marks) total += m;
+    cout << "Count " << marks.size() << ", average " << (double) total / marks.size() << endl;
+
+    for (int &m : marks) m += 2;      // reference: change each element
+    for (int m : marks) cout << m << " ";
+    cout << endl;
+    return 0;
+}
+```
+
+`vector` is a resizable array; you'll use it more than raw arrays in C++.
+
+## Reading input robustly
+
+```cpp
+#include <iostream>
+#include <limits>
+using namespace std;
+
+int main() {
+    int qty;
+    cout << "Quantity: ";
+    while (!(cin >> qty) || qty <= 0) {
+        cin.clear();                                          // clear the error state
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');  // discard the bad input
+        cout << "Please enter a positive whole number: ";
+    }
+    string name;
+    cin.ignore();                         // drop the leftover newline before getline
+    cout << "Customer name: ";
+    getline(cin, name);                   // reads a full name with spaces
+    cout << name << " ordered " << qty << endl;
+}
+```
+
+`getline` reads names with spaces, unlike `cin >> name`, which stops at the first space.
+
+## Namespaces
+
+`using namespace std;` is convenient in small programs and exercises. In larger projects, prefer `std::cout`, `std::string` or specific `using std::cout;` declarations, to avoid name clashes between libraries.
+
+## Compiling C++
+
+```bash
+g++ -std=c++20 -Wall -Wextra -O2 -o shop shop.cpp
+./shop
+```
+
+Choose a modern standard (C++17 or C++20) to get useful features, and keep warnings on.
+
+## Practice
+
+1. Ask for a full name with `getline` and print the initials.
+2. Write overloaded `area` functions for a square (one side) and a rectangle (two sides).
+3. Write `void applyDiscount(double &price, double percent = 10)` and test it.
+4. Store 6 prices in a vector, add VAT to each with a reference loop, and print the total.
+5. Write a function that counts words in a `const string &` sentence.
+
+:::think Why is `void print(const std::string &s)` preferred over `void print(std::string s)` for long strings?
+Passing by value copies the whole string every call, which costs time and memory for long text. A const reference passes the original without copying, and `const` guarantees the function can't modify it, giving both efficiency and safety.
+:::
+
 ```quiz
 Q: Which object prints to the screen in C++?
 A: cout | std::cout
@@ -159,4 +320,10 @@ Q: Does a function receiving int x (by value) change the caller's variable? (yes
 A: no
 Q: What is the best way to pass a large string you only read? (two words)
 A: const reference | const string& | const &
+Q: Which function reads a full line including spaces into a string?
+A: getline
+Q: Which container is C++'s resizable array?
+A: vector
+Q: What feature lets a parameter have a value used when the argument is left out? (two words)
+A: default parameter | default argument | default parameters
 ```
