@@ -95,6 +95,121 @@ PersistentKeepalive = 25
 - Keep router and firewall firmware updated.
 - Log and review failed login attempts.
 
+## Who needs firewalls and VPNs
+
+Every network connected to the internet is scanned by automated attack tools constantly. Firewalls decide what traffic is allowed in and out; VPNs create private, encrypted connections over public networks. Banks connect branches with site-to-site VPNs, companies let staff work from home securely, cloud servers use firewalls to expose only websites while hiding databases, and individuals use VPNs on public Wi-Fi. Network administrators, cloud engineers and security analysts configure these every day.
+
+## Writing firewall rules: a worked example
+
+A small company web server should allow: website traffic from anyone, SSH only from the office, and nothing else.
+
+| # | Action | Protocol | Port | Source | Purpose |
+|---|---|---|---|---|---|
+| 1 | Allow | TCP | 443 | Any | HTTPS website |
+| 2 | Allow | TCP | 80 | Any | HTTP (redirects to HTTPS) |
+| 3 | Allow | TCP | 22 | Office public IP only | SSH administration |
+| 4 | Deny | Any | Any | Any | Everything else |
+
+The same rules with **ufw** on Ubuntu:
+
+```bash
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw allow from 203.0.113.10 to any port 22 proto tcp    # example office IP
+sudo ufw enable
+sudo ufw status numbered
+```
+
+Before enabling a firewall on a remote server, make sure the SSH rule is in place, or you'll lock yourself out. Cloud providers also have their own firewalls (security groups); both layers should agree.
+
+## Stateful firewalls
+
+Modern firewalls are **stateful**: they remember outgoing connections and automatically allow the replies. That's why "allow outgoing, deny incoming" still lets you browse the web: replies to your requests are recognised as part of an existing connection.
+
+## Common ports to know
+
+| Port | Service | Expose to the internet? |
+|---|---|---|
+| 80 / 443 | HTTP / HTTPS | Yes, for websites |
+| 22 | SSH | Restrict by IP, keys only |
+| 25, 465, 587 | Email sending (SMTP) | Mail servers only |
+| 53 | DNS | DNS servers only |
+| 3306 | MySQL | No: keep private |
+| 5432 | PostgreSQL | No |
+| 3389 | Remote Desktop (RDP) | No: use a VPN |
+| 21 | FTP (unencrypted) | Avoid; use SFTP |
+
+## Windows Defender Firewall
+
+- Keep it on for all network profiles; mark public Wi-Fi as a **Public** network (stricter).
+- When an app asks to allow access, allow it only on Private networks unless needed.
+- Advanced settings show inbound/outbound rules; administrators can push rules via Group Policy.
+
+## Port forwarding and its risks
+
+Port forwarding on a router sends traffic from the internet to a device inside, e.g. CCTV DVRs, game servers or a small office server. Risks: anything exposed is attacked continuously, and many devices have weak default passwords or old firmware.
+
+Safer alternatives:
+
+- Use the vendor's secure cloud app (with strong passwords and updates) or a VPN to reach CCTV.
+- Use tunnelling services (e.g. Cloudflare Tunnel) for small web apps.
+- If you must forward a port, change default passwords, update firmware and restrict source IPs.
+
+## VPN types compared
+
+| Type | Use | Examples |
+|---|---|---|
+| Remote-access VPN | Staff working from home connect to the office network | WireGuard, OpenVPN, IPsec clients, vendor VPNs |
+| Site-to-site VPN | Connect two office networks permanently | IPsec between routers/firewalls |
+| Commercial/consumer VPN | Privacy on public Wi-Fi; hides browsing from the local network | Paid VPN apps |
+| Zero-trust / mesh access | Access to specific apps based on identity and device | Tailscale, Cloudflare Access and similar |
+
+A consumer VPN encrypts traffic between your device and the VPN provider, so you shift trust from the local Wi-Fi/ISP to the VPN company. It doesn't make you anonymous or protect you from phishing and malware. Free VPN apps of unknown origin may collect and sell data; choose reputable providers.
+
+## Setting up WireGuard (overview)
+
+1. Install WireGuard on the server and the client.
+2. Generate a key pair on each (`wg genkey | tee private.key | wg pubkey > public.key`).
+3. Server config: its private key, a VPN subnet (e.g. 10.8.0.1/24), listening UDP port, and each client's public key and allowed IP.
+4. Client config: its private key, the server's public key and endpoint (public IP:port), and which traffic goes through the tunnel (AllowedIPs).
+5. Open the UDP port in the firewall and start the tunnel (`wg-quick up wg0`).
+
+WireGuard is popular because its configuration is short and it's fast on phones and low-power devices.
+
+## Split tunnelling vs full tunnelling
+
+| Full tunnel | Split tunnel |
+|---|---|
+| All traffic goes through the VPN | Only company traffic goes through the VPN |
+| More secure monitoring and filtering | Less load on the office internet |
+| Slower personal browsing; uses office bandwidth | Personal traffic isn't protected by company controls |
+
+## Network segmentation
+
+Don't put everything on one flat network. Separate:
+
+- Staff computers
+- Servers
+- Guest Wi-Fi
+- CCTV and IoT devices (smart TVs, printers)
+- Point-of-sale/payment systems
+
+Use VLANs and firewall rules between them, so a compromised guest phone or camera can't reach the accounting server.
+
+## Practice
+
+1. On an Ubuntu VM, configure ufw to allow only SSH and HTTP, then check with `sudo ufw status`.
+2. Use `ss -tulpn` (Linux) or `netstat -ano` (Windows) to list listening ports and decide which should be closed.
+3. Check whether your home router has port forwarding rules or UPnP enabled; disable what you don't need.
+4. Draw a network with separate VLANs for staff, guests, CCTV and servers.
+5. Install WireGuard on two VMs and create a tunnel between them.
+
+:::think A small company exposes its accounting server's Remote Desktop (port 3389) to the internet so the director can work from home. What's the risk and the better solution?
+RDP exposed to the internet is constantly scanned and attacked with password guessing and exploits, and is a common entry point for ransomware. Better: close the port and give the director VPN access (or a zero-trust access tool) with MFA, then use RDP only inside the VPN, keeping the server patched and accounts protected with strong passwords.
+:::
+
 ```quiz
 Q: In a firewall rule list, which rule applies: the first match or the last match?
 A: first | the first match | first match
@@ -106,4 +221,12 @@ Q: Which remote desktop port should never be exposed directly to the internet?
 A: 3389
 Q: Name a modern, fast VPN protocol that starts with W.
 A: WireGuard
+Q: What kind of firewall remembers connections and allows reply traffic automatically?
+A: stateful | stateful firewall
+Q: Which default MySQL port should never be open to the internet?
+A: 3306
+Q: Which VPN type permanently connects two office networks? (hyphenated)
+A: site-to-site | site to site
+Q: What is splitting a network into separate zones like staff, guests and CCTV called?
+A: segmentation | network segmentation | VLANs
 ```

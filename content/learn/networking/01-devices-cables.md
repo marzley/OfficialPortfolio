@@ -83,6 +83,108 @@ Tools: crimping tool, cable stripper, RJ-45 plugs, and a **cable tester** to con
 - Walls, water tanks and metal roofs weaken the signal: place access points high and central.
 - See the *Wi-Fi* lesson for security settings.
 
+## Who works with network hardware
+
+Every office, school, hospital, hotel, bank branch, SACCO and cyber café needs a working network. Network technicians install cables and Wi-Fi, ICT officers configure routers and switches, and support staff fix "no internet" problems daily. Fibre providers (Safaricom Home Fibre, Zuku, Faiba and others) employ installers, and businesses hire technicians to set up and maintain their networks. Understanding devices and cables is the foundation for networking certifications such as CompTIA Network+ and Cisco CCNA.
+
+## Devices in more detail
+
+| Device | OSI layer | Works with | Typical place |
+|---|---|---|---|
+| Hub (old) | 1 (Physical) | Repeats signals to every port | Rarely used today |
+| Switch | 2 (Data link) | MAC addresses; sends frames only to the right port | Office network cabinet |
+| Router | 3 (Network) | IP addresses; connects different networks | Between LAN and internet |
+| Wireless access point (AP) | 2 | Connects Wi-Fi devices to the wired network | Ceilings and walls |
+| Modem / ONT | 1–2 | Converts the provider's signal (fibre, DSL, cable) | Where the ISP line enters |
+| Firewall | 3–7 | Allows or blocks traffic by rules | At the network edge |
+| Home "router" | Several | Router + switch + Wi-Fi AP + firewall + DHCP in one box | Homes and small offices |
+
+## Managed vs unmanaged switches
+
+| Unmanaged | Managed |
+|---|---|
+| Plug and play, no configuration | Configurable through a web page or command line |
+| Cheap | More expensive |
+| Good for homes and tiny offices | VLANs, port security, monitoring, link aggregation |
+
+**PoE (Power over Ethernet)** switches power devices like IP phones, Wi-Fi access points and CCTV cameras through the network cable, so no separate power socket is needed. Check the switch's PoE power budget (watts) against the devices you'll connect.
+
+## MAC addresses up close
+
+A MAC address is a 48-bit hardware address written in hexadecimal, like `3C:52:82:1A:9F:04`. The first half identifies the manufacturer (OUI). Switches learn which MAC address is on which port and store it in a **MAC address table**.
+
+```
+Windows:  ipconfig /all       → "Physical Address"
+Linux:    ip link             → "link/ether"
+Android:  Settings → About phone → Status (Wi-Fi MAC; modern phones may use a randomised MAC per network)
+```
+
+## Cable categories
+
+| Category | Max speed (typical) | Notes |
+|---|---|---|
+| Cat5e | 1 Gbps | Still common, fine for most offices |
+| Cat6 | 1 Gbps (10 Gbps for short runs) | Common for new installations |
+| Cat6a | 10 Gbps up to 100 m | Thicker, more expensive |
+| Fibre (single-mode / multi-mode) | 10 Gbps and much more | Long distances, between buildings, ISP connections |
+
+Copper Ethernet runs are limited to about 100 metres; beyond that use a switch in between or fibre. Fibre also resists electrical interference and lightning damage between buildings.
+
+## Straight-through vs crossover
+
+- **Straight-through** (T568B on both ends): PC to switch, switch to router. The normal cable.
+- **Crossover** (T568A on one end, T568B on the other): historically for PC to PC or switch to switch. Most modern devices auto-detect (Auto-MDI/MDIX), so straight-through cables work almost everywhere now.
+
+## Tools of a network technician
+
+| Tool | Use |
+|---|---|
+| Crimping tool | Attaches RJ45 connectors to cable |
+| Cable stripper | Removes the outer jacket without damaging wires |
+| Punch-down tool | Terminates cables on patch panels and wall sockets |
+| Cable tester | Checks each wire is connected in the right order |
+| Toner and probe | Finds which cable is which in a bundle |
+| Wi-Fi analyser app | Measures signal strength and channel congestion |
+| Labelling machine | Labels both ends of every cable |
+
+## Wi-Fi standards and planning
+
+| Standard | Also called | Notes |
+|---|---|---|
+| 802.11n | Wi-Fi 4 | Older, 2.4 and 5 GHz |
+| 802.11ac | Wi-Fi 5 | 5 GHz, common in homes |
+| 802.11ax | Wi-Fi 6 / 6E | Better with many devices; 6E adds 6 GHz |
+| 802.11be | Wi-Fi 7 | Newest generation |
+
+- **2.4 GHz**: longer range, goes through walls better, slower, more interference (microwaves, neighbours).
+- **5 GHz**: faster, shorter range.
+- Place access points centrally and high, away from metal and thick concrete walls.
+- For large buildings, use several access points connected by cable (or a mesh system) rather than one powerful router.
+- Use WPA2 or WPA3 with a strong password; create a separate **guest network** for visitors.
+
+## Planning a small office network
+
+For an office of 15 staff:
+
+1. Fibre connection from an ISP → ONT/modem → router/firewall.
+2. A 24-port switch (PoE if using IP phones or access points) in a lockable cabinet with a UPS.
+3. A patch panel; cables run to wall sockets at each desk, labelled.
+4. Two ceiling-mounted access points for Wi-Fi coverage; a separate guest Wi-Fi.
+5. A printer with a fixed (reserved) IP address.
+6. Documentation: a network diagram, IP plan, passwords stored securely, and ISP support contacts.
+
+## Practice
+
+1. Find the MAC address and IP address of your computer and phone.
+2. Look at your home or school router: identify the WAN port, LAN ports and the Wi-Fi bands it offers.
+3. Use a Wi-Fi analyser app to see which channels nearby networks use.
+4. Draw a network diagram for a small shop with a router, switch, 3 PCs, a printer and Wi-Fi.
+5. If you have the tools, crimp a T568B cable and test it.
+
+:::think Users at the far end of an office complain Wi-Fi is slow, while those near the router are fine. What could you suggest?
+The signal weakens with distance and walls. Options: add a second access point wired back to the switch (best), use a mesh Wi-Fi system, move the router or AP to a central and higher position, switch nearby users to 5 GHz and distant users to 2.4 GHz if needed, and check for channel interference with a Wi-Fi analyser.
+:::
+
 ```quiz
 Q: Which device connects different networks, like your LAN and the internet?
 A: router | a router
@@ -94,4 +196,12 @@ Q: What is the name of the 8-pin plug on Ethernet cables?
 A: RJ-45 | RJ45
 Q: In T568B, what colour is pin 1?
 A: white-orange | white orange | orange white
+Q: Which switch feature powers phones, cameras and access points through the network cable? (abbreviation)
+A: PoE | Power over Ethernet
+Q: Which Wi-Fi band has longer range but slower speeds: 2.4 GHz or 5 GHz?
+A: 2.4 GHz | 2.4
+Q: Which tool finds which cable is which in a bundle? (three words)
+A: toner and probe | tone generator | toner
+Q: Which type of switch supports VLANs and configuration?
+A: managed | managed switch
 ```
