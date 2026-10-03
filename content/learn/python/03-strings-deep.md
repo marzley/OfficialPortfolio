@@ -130,6 +130,94 @@ for p in ["0712 345 678", "+254 712-345-678", "12345", "0110 123 456"]:
     print(f"{p:<20} -> {clean_phone(p)}")
 ```
 
+## Strings are immutable
+
+You can't change a character inside a string; you create a new string instead:
+
+```try-python
+town = "nairobi"
+# town[0] = "N"          # TypeError: 'str' object does not support item assignment
+town = "N" + town[1:]     # build a new string
+print(town)
+print("nairobi".capitalize(), "NAIROBI".lower(), "nairobi city".title())
+```
+
+## Searching and checking text
+
+```try-python
+message = "Confirmed. KSh1,500.00 sent to JOHN KAMAU 0712345678 on 15/9/26"
+print("sent" in message)                         # membership
+print(message.find("KSh"), message.find("USD"))  # index, or -1 if missing
+print(message.count("0"))
+print(message.startswith("Confirmed"), message.endswith("26"))
+print("0712345678".isdigit(), "Kamau".isalpha(), "ADM001".isalnum())
+```
+
+## Extracting data from text
+
+Combine `split`, `find` and slicing to pull out values, a common real-world task (reading SMS confirmations, CSV lines, log files):
+
+```try-python
+message = "Confirmed. KSh1,500.00 sent to JOHN KAMAU 0712345678 on 15/9/26"
+start = message.find("KSh") + 3
+end = message.find(" ", start)
+amount = float(message[start:end].replace(",", ""))
+phone = [word for word in message.split() if word.isdigit() and len(word) == 10][0]
+print("Amount:", amount, "Phone:", phone)
+```
+
+For more complex patterns, Python's `re` module (regular expressions) helps:
+
+```try-python
+import re
+message = "Confirmed. KSh1,500.00 sent to JOHN KAMAU 0712345678 on 15/9/26"
+match = re.search(r"KSh([\d,]+\.\d{2})", message)
+print(match.group(1) if match else "no amount")
+print(re.findall(r"\b0\d{9}\b", "Call 0712345678 or 0722000111"))
+```
+
+## Joining and formatting tables
+
+```try-python
+items = [("Unga 2kg", 195), ("Sugar 1kg", 180), ("Cooking oil 1L", 380)]
+print(f"{'Item':<16}{'Price':>8}")
+print("-" * 24)
+for name, price in items:
+    print(f"{name:<16}{price:>8,.2f}")
+print("-" * 24)
+print(f"{'Total':<16}{sum(p for _, p in items):>8,.2f}")
+print(", ".join(name for name, _ in items))
+```
+
+| Format spec | Meaning |
+|---|---|
+| `:<16` / `:>8` / `:^10` | Left / right / centre align in a width |
+| `:,` | Thousands separators |
+| `:.2f` | 2 decimal places |
+| `:05d` | Zero-pad to width 5 |
+| `:.1%` | Percentage with 1 decimal |
+
+## Common mistakes
+
+| Mistake | Fix |
+|---|---|
+| Joining text and numbers with `+` (`"Age " + 21`) | `f"Age {21}"` or `"Age " + str(21)` |
+| Forgetting methods return new strings (`name.upper()` alone does nothing) | `name = name.upper()` |
+| Off-by-one slices (`s[0:3]` gives 3 characters, indexes 0–2) | Remember the end index is excluded |
+| Comparing case-sensitive text (`"Yes" == "yes"` is False) | Compare `.lower()` versions |
+| Using backslashes in Windows paths (`"C:\new"` contains a newline) | Raw strings `r"C:\new"` or forward slashes |
+
+## Practice
+
+1. From `"KCSE-2025-ADM0042"`, extract the year and the admission number.
+2. Write `initials("Wanjiku Mary Kamau")` returning `"W.M.K."`.
+3. Check if a word is a palindrome, ignoring case and spaces ("Never odd or even").
+4. Print a receipt table of 4 items with aligned columns and a total.
+
+:::think You have `name = "  amina HASSAN "`. Write one expression that produces "Amina Hassan".
+`name.strip().title()`: `strip()` removes the spaces at both ends, and `title()` capitalises each word.
+:::
+
 ```quiz
 Q: What is "Nairobi"[0]?
 A: N
@@ -141,6 +229,12 @@ Q: Which method turns "a,b,c" into a list?
 A: split | split() | split(",")
 Q: How do you show 2 decimal places in an f-string? Write the format code after the colon.
 A: .2f
+Q: Can you change one character of a Python string in place? (yes/no)
+A: no
+Q: What does "nairobi".find("x") return when not found?
+A: -1
+Q: Which module provides regular expressions?
+A: re
 ```
 === exercise ===
 Given `phone = "0712345678"`, print the masked number **0712***678** using slicing.

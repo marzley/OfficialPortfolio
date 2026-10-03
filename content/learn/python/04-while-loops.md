@@ -142,6 +142,96 @@ for m in marks:
 print(passed, round(average, 1), best, grades)
 ```
 
+## Input validation loops
+
+A very common use of `while` is asking until the input is valid. Here the inputs are simulated so the example runs anywhere:
+
+```try-python
+attempts = iter(["abc", "-5", "1500"])     # pretend these are typed by the user
+
+while True:
+    typed = next(attempts)
+    print("User typed:", typed)
+    if not typed.lstrip("-").isdigit():
+        print("  Please enter a number.")
+        continue
+    amount = int(typed)
+    if amount <= 0:
+        print("  Amount must be positive.")
+        continue
+    break
+print("Accepted amount:", amount)
+```
+
+## Avoiding infinite loops
+
+A `while` loop needs something inside it that eventually makes the condition False:
+
+| Problem | Example | Fix |
+|---|---|---|
+| Counter never changes | `while i < 10: print(i)` | Add `i += 1` |
+| Condition can never be reached | `while x != 10: x += 3` (from 0: 3, 6, 9, 12...) | Use `x < 10` |
+| `while True` with no `break` | Runs forever | Make sure every path can reach `break` |
+
+If a program gets stuck, press **Ctrl+C** to stop it.
+
+## Simulations with while
+
+Loops are perfect for "how long until..." questions:
+
+```try-python
+# A chama saves KSh 20,000 per month and earns 0.8% interest monthly.
+# How many months to reach KSh 500,000?
+balance, months = 0.0, 0
+while balance < 500_000:
+    balance = balance * 1.008 + 20_000
+    months += 1
+print(f"{months} months ({months // 12} years {months % 12} months), balance KSh {balance:,.0f}")
+
+# A loan of KSh 100,000 at 1.5% monthly interest, repaid KSh 9,000 a month
+loan, month = 100_000.0, 0
+while loan > 0:
+    loan = loan * 1.015 - 9_000
+    month += 1
+print(f"Loan cleared in {month} months")
+```
+
+## enumerate, zip and range in loops
+
+```try-python
+students = ["Brian", "Faith", "Juma"]
+marks = [72, 88, 55]
+
+for position, name in enumerate(students, start=1):
+    print(position, name)
+
+for name, mark in zip(students, marks):
+    print(f"{name}: {mark}")
+
+for i in range(10, 0, -3):          # count down in steps of 3
+    print(i, end=" ")
+print()
+```
+
+## for or while?
+
+| Use `for` when... | Use `while` when... |
+|---|---|
+| You loop over a collection or a known range | You don't know how many times in advance |
+| Processing every item in a list/file | Waiting for valid input, a condition, a target |
+| Example: total every sale | Example: months until savings reach a goal |
+
+## Practice
+
+1. Print all even numbers from 2 to 20 with a `while` loop.
+2. Simulate a PIN check: allow 3 attempts from a list of guesses, print "Locked" if all fail.
+3. A population of 1,000 chicks grows 8% a month; how many months to exceed 5,000?
+4. Use `zip` to print each item with its price and the running total.
+
+:::think What's the difference between `break` and `continue` inside a loop?
+`break` exits the loop completely and moves on to the code after it. `continue` skips the rest of the current round and jumps to the next iteration of the same loop.
+:::
+
 ```quiz
 Q: Which loop keeps going as long as a condition is True?
 A: while
@@ -153,6 +243,12 @@ Q: Which function numbers the items while looping?
 A: enumerate | enumerate()
 Q: Which function loops over two lists together?
 A: zip | zip()
+Q: Which key combination stops a program stuck in an infinite loop?
+A: Ctrl+C | ctrl c
+Q: Which built-in gives both the index and the item in a for loop?
+A: enumerate
+Q: Which built-in pairs items from two lists together?
+A: zip
 ```
 === exercise ===
 Use a `while` loop to print the numbers **1 to 5**, one per line.

@@ -128,6 +128,105 @@ print((2 + 3) * 4)     # 20
 print(True or False and False)   # True: "and" runs before "or"
 ```
 
+## Short-circuit evaluation
+
+`and` and `or` stop as soon as the answer is known. Python uses this to avoid errors and to provide defaults:
+
+```try-python
+items = []
+# Without short-circuiting, items[0] would crash on an empty list:
+if items and items[0] > 100:
+    print("First item is expensive")
+else:
+    print("No items, or the first is cheap")
+
+nickname = ""
+display = nickname or "Guest"      # or returns the first truthy value
+print("Welcome,", display)
+
+count = 0
+print(count != 0 and 100 / count)  # safe: division never happens when count is 0
+```
+
+## Chained comparisons and conditional expressions
+
+```try-python
+mark = 72
+print(50 <= mark < 80)                       # same as 50 <= mark and mark < 80
+age = 17
+status = "adult" if age >= 18 else "minor"   # one-line if/else (conditional expression)
+print(status)
+
+temperature = 31
+advice = "Hot: drink water" if temperature > 30 else "Cool" if temperature < 18 else "Pleasant"
+print(advice)
+```
+
+Keep conditional expressions short; use a normal `if/elif/else` when logic gets longer.
+
+## match: pattern matching (Python 3.10+)
+
+```try-python
+def handle(command):
+    match command.split():
+        case ["balance"]:
+            return "Your balance is KSh 3,450"
+        case ["send", amount, phone]:
+            return f"Sending KSh {amount} to {phone}"
+        case ["help" | "menu"]:
+            return "Options: balance, send <amount> <phone>"
+        case _:
+            return "Unknown command"
+
+for c in ["balance", "send 500 0712345678", "menu", "withdraw"]:
+    print(c, "->", handle(c))
+```
+
+## Worked example: M-Pesa-style fee bands
+
+Decisions often check ranges. Here are example bands for practice (not real tariffs):
+
+```try-python
+def fee(amount):
+    if amount < 1:
+        raise ValueError("Amount must be at least KSh 1")
+    elif amount <= 100:
+        return 0
+    elif amount <= 1_500:
+        return 15
+    elif amount <= 5_000:
+        return 30
+    elif amount <= 20_000:
+        return 50
+    return 100
+
+for a in [50, 100, 101, 1500, 1501, 25000]:
+    print(f"KSh {a:>6,}: fee KSh {fee(a)}")
+```
+
+Test **boundary values** (100, 101, 1,500, 1,501): that's where most bugs hide.
+
+## Common mistakes
+
+| Mistake | Problem | Fix |
+|---|---|---|
+| `if x = 5:` | `=` assigns; SyntaxError | Use `==` to compare |
+| `if mark > 50 or < 80:` | Invalid syntax | `if 50 < mark < 80:` |
+| `if answer == "yes" or "y":` | Always True ("y" is truthy) | `if answer in ("yes", "y"):` |
+| Checking `> 80` after `> 50` | First match wins; wrong branch | Order from most to least strict |
+| `is` to compare numbers/strings | Compares identity, not value | Use `==` (use `is` only for `None`) |
+
+## Practice
+
+1. Write `can_vote(age, has_id)` returning True only if age ≥ 18 and has_id is True.
+2. Write a grade function with A (80+), B (65–79), C (50–64), D (40–49), E (below 40), and test boundaries.
+3. Given hours worked, pay KSh 300/hour, with overtime (over 40 hours) at 1.5×. Print the pay for 35, 40 and 46 hours.
+4. Rewrite `if x > 0: sign = "positive" else: sign = "not positive"` as a conditional expression.
+
+:::think Why does `if answer == "yes" or "y":` always run, even when answer is "no"?
+Python reads it as `(answer == "yes") or ("y")`. The second part, the non-empty string "y", is always truthy, so the whole condition is True. Write `if answer in ("yes", "y"):` or `if answer == "yes" or answer == "y":`.
+:::
+
 ```quiz
 Q: What does 17 // 5 give?
 A: 3
@@ -139,6 +238,12 @@ Q: What is the result of True and False?
 A: False
 Q: Which keyword checks whether a value is in a list?
 A: in
+Q: What does "" or "Guest" return?
+A: Guest | "Guest"
+Q: Which keyword starts structural pattern matching in Python 3.10+?
+A: match
+Q: Is 50 <= 72 < 80 True or False?
+A: True
 ```
 === exercise ===
 Given `minutes = 135`, print the hours and remaining minutes as **2 h 15 min** using `//` and `%`.

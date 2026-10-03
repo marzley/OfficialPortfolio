@@ -148,6 +148,127 @@ countdown(3)
 
 See the Algorithms tutorial for more on recursion.
 
+## Pure functions and side effects
+
+A **pure function** returns a result based only on its inputs and doesn't change anything outside itself. Pure functions are easy to test and reuse:
+
+```try-python
+def with_vat(amount, rate=0.16):          # pure: same input, same output, no side effects
+    return round(amount * (1 + rate), 2)
+
+cart_total = 0
+def add_to_cart(price):                   # impure: changes a global variable
+    global cart_total
+    cart_total += price
+
+print(with_vat(1000))
+add_to_cart(500); add_to_cart(250)
+print(cart_total)
+```
+
+Prefer pure functions and pass data in/out explicitly; use globals sparingly.
+
+## The mutable default argument trap
+
+```try-python
+def add_item_bad(item, basket=[]):        # the same list is reused on every call!
+    basket.append(item)
+    return basket
+
+print(add_item_bad("tea"))
+print(add_item_bad("sugar"))              # ['tea', 'sugar']: surprise!
+
+def add_item(item, basket=None):          # the correct pattern
+    if basket is None:
+        basket = []
+    basket.append(item)
+    return basket
+
+print(add_item("tea"))
+print(add_item("sugar"))
+```
+
+Default values are created **once**, when the function is defined. Never use a list or dict as a default; use `None`.
+
+## Docstrings and documentation
+
+```try-python
+def loan_instalment(principal, monthly_rate, months):
+    """Return the fixed monthly instalment for an amortised loan.
+
+    principal: amount borrowed (KSh)
+    monthly_rate: interest per month as a decimal (0.015 = 1.5%)
+    months: number of monthly payments
+    """
+    if monthly_rate == 0:
+        return principal / months
+    r = monthly_rate
+    return principal * r * (1 + r) ** months / ((1 + r) ** months - 1)
+
+print(f"KSh {loan_instalment(100_000, 0.015, 12):,.2f} per month")
+help(loan_instalment)
+```
+
+## Functions as values: sorting with key
+
+```try-python
+students = [("Brian", 72), ("Faith", 88), ("Juma", 45), ("Halima", 91)]
+print(sorted(students, key=lambda s: s[1], reverse=True))    # by mark
+print(max(students, key=lambda s: s[1])[0])                   # top student
+
+def by_name_length(s):
+    return len(s[0])
+print(sorted(students, key=by_name_length))
+
+rules = [lambda p: p * 0.9, lambda p: p + 250]               # list of functions
+price = 5000
+for rule in rules:
+    price = rule(price)
+print(price)
+```
+
+## Testing functions with assert
+
+```try-python
+def grade(mark):
+    if not 0 <= mark <= 100:
+        raise ValueError("mark must be 0-100")
+    return "A" if mark >= 80 else "B" if mark >= 65 else "C" if mark >= 50 else "D"
+
+assert grade(80) == "A"
+assert grade(79) == "B"
+assert grade(50) == "C"
+assert grade(0) == "D"
+try:
+    grade(101)
+except ValueError as e:
+    print("Correctly rejected:", e)
+print("All tests passed")
+```
+
+Professional projects use **pytest** with test files, but `assert` is a great start.
+
+## Common mistakes
+
+| Mistake | Fix |
+|---|---|
+| Forgetting `return` (the function returns `None`) | Return the result explicitly |
+| Calling without parentheses (`print(total)` shows `<function ...>`) | `total()` |
+| Mutable default arguments | Default to `None`, create inside |
+| Functions that do too many things | One job per function; split them |
+| Changing globals from many functions | Pass parameters and return values |
+
+## Practice
+
+1. Write `bmi(weight_kg, height_m)` returning BMI rounded to 1 decimal, and test it with assert.
+2. Write `describe(*marks)` that returns the count, average and highest of any number of marks.
+3. Sort a list of products (name, price, stock) by stock, then by price.
+4. Write a function with a docstring that converts KSh to USD at a given rate (default rate parameter).
+
+:::think Why does `add_item_bad("sugar")` return `['tea', 'sugar']` the second time it's called?
+The default list `basket=[]` is created once when the function is defined and reused on every call that doesn't pass a basket, so items accumulate. Use `basket=None` and create a new list inside the function.
+:::
+
 ```quiz
 Q: What does a function return if it has no return statement?
 A: None
@@ -159,6 +280,12 @@ Q: Which keyword makes a small one-line nameless function?
 A: lambda
 Q: What is the triple-quoted text right under def called?
 A: docstring | a docstring
+Q: What does a function return if it has no return statement?
+A: None
+Q: What should you use as a default instead of an empty list?
+A: None
+Q: Which keyword checks a condition in tests and raises an error if it's false?
+A: assert
 ```
 === exercise ===
 Write a function `total(*amounts)` that returns the sum of all its arguments, and print `total(100, 250, 75)`: **425**.
