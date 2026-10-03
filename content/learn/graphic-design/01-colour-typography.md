@@ -87,6 +87,110 @@ Rules:
 
 A viewer should get the message in **3 seconds**.
 
+## Why colour and typography matter
+
+Colour and type are the first things people notice in any design: posters, logos, websites, packaging, social media posts, church programmes, wedding invitations. They create mood, show what's important and make a brand recognisable (think of how quickly you recognise mobile network brands by colour alone). Graphic designers, web designers, marketers and small business owners who make their own posters all benefit from understanding these basics.
+
+## Colour harmonies in practice
+
+| Harmony | How to find it | Feel | Example use |
+|---|---|---|---|
+| Monochromatic | Shades and tints of one hue | Calm, elegant | Corporate reports, minimal brands |
+| Analogous | 2–3 neighbours on the wheel (blue, teal, green) | Harmonious, natural | Wellness, nature, agriculture |
+| Complementary | Opposites (blue and orange) | High contrast, energetic | Sales posters, calls to action |
+| Split-complementary | One colour + the two beside its opposite | Contrast with less tension | Events, youth brands |
+| Triadic | Three evenly spaced (red, yellow, blue) | Playful, vibrant | Children's products, schools |
+
+Tools like Adobe Color and Coolors generate harmonies and palettes; Canva also suggests palettes from photos.
+
+## Tints, shades and tones
+
+- **Tint**: colour + white (lighter): good for backgrounds.
+- **Shade**: colour + black (darker): good for text and buttons.
+- **Tone**: colour + grey (muted): sophisticated, less intense.
+
+A simple brand palette: one main colour, one accent, plus a dark neutral for text and a light neutral for backgrounds, each with a few tints and shades.
+
+## Building a brand palette (worked example)
+
+For a Nakuru agribusiness "Shamba Fresh":
+
+| Role | Colour | Hex | Use |
+|---|---|---|---|
+| Primary | Deep green | `#1F6F43` | Logo, headers |
+| Accent | Harvest orange | `#F29F05` | Buttons, highlights, offers |
+| Dark | Charcoal | `#1F2933` | Body text |
+| Light | Cream | `#FBF8F1` | Backgrounds |
+| Support | Soft green tint | `#DCEFE3` | Cards, sections |
+
+Check that text colours have enough contrast against backgrounds (aim for at least 4.5:1 for normal text).
+
+## Colour for accessibility
+
+- About 1 in 12 men has some form of colour vision deficiency; don't use colour alone to show meaning (add icons, labels or patterns).
+- Red/green combinations are especially problematic.
+- Test designs in greyscale: if the hierarchy still works, contrast is good.
+- Use contrast checkers (WebAIM Contrast Checker) and colour-blindness simulators.
+
+## RGB, CMYK and spot colours
+
+| System | Used for | Notes |
+|---|---|---|
+| RGB / HEX | Screens (web, social media, presentations) | Bright colours possible |
+| CMYK | Print (flyers, banners, business cards) | Some bright RGB colours look duller in print |
+| Pantone (spot) | Exact brand colours in professional print | Consistent across printers; extra cost |
+
+Design print work in CMYK from the start, and ask the printer for a proof. Colours on your phone screen won't match print exactly.
+
+## Typography in depth
+
+| Term | Meaning |
+|---|---|
+| Typeface / font family | The design (e.g. Montserrat); a font is a specific weight/style (Montserrat Bold) |
+| Serif / sans-serif | With or without small strokes ("feet") at the ends of letters |
+| Weight | Thin, Light, Regular, Medium, Bold, Black |
+| Leading (line height) | Space between lines |
+| Tracking (letter spacing) | Space across a whole word or line |
+| Kerning | Space between specific pairs of letters (e.g. "AV") |
+| X-height | Height of lowercase letters; larger x-height reads better at small sizes |
+
+## Proven font pairings (free Google Fonts)
+
+| Headings | Body | Feel |
+|---|---|---|
+| Montserrat | Open Sans | Modern, clean |
+| Playfair Display | Source Sans 3 | Elegant, editorial |
+| Poppins | Inter | Friendly tech |
+| Oswald | Roboto | Bold, sporty |
+| Merriweather | Lato | Classic, readable |
+
+Rule of thumb: contrast the pair (serif + sans-serif, or very different weights), but keep the overall mood consistent.
+
+## Typography rules for posters and social posts
+
+- Make the headline **big**: it should be readable from across a room or at thumbnail size on a phone.
+- Limit to 2 fonts, and use weight and size for hierarchy instead of more fonts.
+- Avoid all-caps for long text; use it for short labels only.
+- Don't stretch or squash letters; resize proportionally.
+- Left-align body text for readability; centre short headlines only.
+- Keep line lengths comfortable and leave space between sections.
+
+## Licensing fonts
+
+Free doesn't always mean free for commercial use. Google Fonts are open-licensed and safe for commercial work. Fonts downloaded from random "free font" sites may be personal-use only; check the licence before using them in client logos or products.
+
+## Practice
+
+1. Create a 5-colour brand palette for a local business with hex codes and roles.
+2. Check the contrast of your text/background pairs with a contrast checker.
+3. Design the same poster headline with three different font pairings and compare the mood.
+4. Convert a design to greyscale and check whether the hierarchy still works.
+5. Recreate a brand's colours from its logo using an eyedropper tool and identify the harmony type.
+
+:::think A client wants their poster in "all the bright colours" with five different fonts so it "stands out". How would you advise them?
+Too many colours and fonts compete for attention, so nothing stands out and the message is harder to read. Recommend one main colour, one strong accent for the key information (offer, date, call to action), and two fonts using size and weight for hierarchy. Contrast and clear focus are what make a poster noticeable.
+:::
+
 ```quiz
 Q: What are colours opposite each other on the colour wheel called?
 A: complementary
@@ -98,4 +202,12 @@ Q: What is the maximum number of fonts you should usually use in one design?
 A: 2 | two
 Q: Which font category has small feet on the letters?
 A: serif
+Q: What is a colour mixed with white called?
+A: tint
+Q: What is the space between specific pairs of letters called?
+A: kerning
+Q: Which colour harmony uses colours next to each other on the wheel?
+A: analogous
+Q: Which colour system is used for professional exact brand colours in print?
+A: Pantone | spot | spot colour
 ```

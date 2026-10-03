@@ -67,6 +67,113 @@ Consider your time, skill, the client's size and how the design will be used (a 
 
 Follow designers you admire, study good posters in town, practise daily challenges (e.g. a poster a day for 30 days), and learn a vector tool (Inkscape, Illustrator, Figma) for professional logo work.
 
+## Making a living from design
+
+Graphic design work is in demand from small businesses, churches, schools, NGOs, event organisers, politicians, startups and international clients on freelance platforms. Designers earn through local clients, monthly retainers (social media posts every week), marketplaces (Fiverr, Upwork), selling templates, and employment in agencies and companies. A strong portfolio, reliable process and fair pricing are what turn skills into steady income.
+
+## Building a portfolio with impact
+
+| Do | Don't |
+|---|---|
+| Show 8–12 of your best pieces | Show everything you've ever made |
+| Present work as case studies (brief → process → result) | Post images with no context |
+| Show mock-ups (posters on walls, logos on signs, posts on phones) | Only show flat files |
+| Include a range relevant to the clients you want | Mix in weak student exercises |
+| Include self-initiated projects if client work is limited | Pretend concept work was for a real client |
+
+**Case study format**:
+
+1. **Client and challenge**: "A Kisumu bakery needed a brand that felt fresh and local to compete with supermarket bread."
+2. **Process**: research, sketches, options, feedback.
+3. **Solution**: logo, colours, packaging, social media templates.
+4. **Result**: client feedback or measurable outcome (only what you can support).
+
+Platforms: Behance, Dribbble, Instagram, LinkedIn, your own website, and a PDF portfolio you can send on WhatsApp or email.
+
+## Finding clients
+
+| Channel | How |
+|---|---|
+| Local businesses | Visit shops with a few printed samples; offer a refresh of their menu, signage or social posts |
+| Referrals | Ask happy clients to recommend you; offer a small referral thank-you |
+| Social media | Post your work consistently with captions explaining the problem solved |
+| Freelance marketplaces | A clear profile, niche gigs, fast responses, honest delivery times |
+| Agencies and print shops | Offer overflow work; many need extra designers in busy seasons |
+| Communities | Design groups, tech hubs, events, church and school networks |
+
+Specialising (e.g. restaurant branding, real estate marketing, church media, school publications) often makes marketing easier and lets you charge more.
+
+## Pricing methods
+
+| Method | Works for | Notes |
+|---|---|---|
+| Per project | Logos, brand kits, posters | Clear scope and revision limits |
+| Per hour/day | Ongoing or unclear work | Track time honestly |
+| Retainer (monthly) | Social media design, ongoing marketing | Predictable income; define monthly deliverables |
+| Value-based | Major brand projects | Price relates to the value for the client |
+
+Consider your time (including meetings and revisions), skills, software and equipment costs, internet and electricity, and taxes. Research what others in your market charge, and avoid competing only on low prices, which attracts difficult clients and is hard to sustain.
+
+## Proposals and contracts
+
+A simple written agreement (even by email) should include:
+
+- Deliverables (e.g. logo in 3 variations, colour palette, 5 social media templates).
+- Timeline and milestones.
+- Price, deposit (often 50% upfront) and payment method (M-Pesa till/Paybill, bank, platform).
+- Number of revision rounds included and the cost of extra revisions.
+- File formats to be delivered.
+- Ownership: when the client receives rights (usually after full payment), and whether you may show the work in your portfolio.
+- What happens if the project is cancelled.
+
+## Professional file delivery
+
+| File | Use |
+|---|---|
+| AI/EPS/PDF/SVG (vector) | Logos for printing, signage, embroidery at any size |
+| PNG (transparent) | Logos on websites, videos, presentations |
+| JPG/WebP | Photos and social media posts |
+| Print-ready PDF | Flyers, brochures, business cards |
+| Brand guide (PDF) | How to use the logo, colours and fonts consistently |
+
+Organise files in folders (Logo / Colour, Logo / Black, Logo / White, Social media, Print) and name them clearly.
+
+## Communication and handling difficult clients
+
+- Reply promptly and confirm decisions in writing.
+- Ask questions at the start (brief questionnaire) to avoid misunderstandings.
+- Present work with a short explanation of your choices.
+- When feedback is vague ("make it pop"), ask specific questions: "Do you want brighter colours, bigger text or a different image?"
+- If requests go beyond scope, politely quote for extra work.
+- Know when to walk away from clients who refuse to pay deposits or are abusive.
+
+## Getting paid and managing money
+
+- Take deposits before starting, and deliver final files after full payment.
+- Issue simple invoices with your details, the client's details, items, amounts and payment instructions.
+- Keep records of income and expenses; learn your tax obligations (KRA PIN, filing returns).
+- Separate business and personal money where possible.
+- Save for slow months and equipment upgrades.
+
+## Growing your skills and income
+
+- Learn related skills: motion graphics, UI design (Figma), video editing, branding strategy, copywriting.
+- Sell templates (social media packs, CV templates, presentation designs) on marketplaces for passive income.
+- Teach: short classes or tutorials for beginners.
+- Build relationships with printers, photographers, developers and marketers who can refer clients.
+
+## Practice
+
+1. Choose your best 8–10 pieces and write a short case study for three of them.
+2. Create a Behance or Instagram portfolio and post your first case study.
+3. Write a one-page design agreement template with deposit and revision terms.
+4. Calculate a project price for a logo package based on estimated hours and costs.
+5. Create a client brief questionnaire with at least 10 questions.
+
+:::think A client approves a logo, pays the deposit, then asks for "a few more small changes" for the eighth time and delays the final payment. How should you handle it professionally?
+Refer politely to the agreement: the included revision rounds have been used, so additional changes are quoted as extra work. Summarise what's been delivered, send the invoice for the balance, and explain that final files (vectors) will be released on full payment. Clear written terms from the start prevent most of these situations.
+:::
+
 ```quiz
 Q: How many pieces of work should a portfolio usually show? Give a number between 8 and 12.
 A: 8 | 9 | 10 | 11 | 12 | 8-12
@@ -78,4 +185,10 @@ Q: Which logo file type is a vector that scales to any size?
 A: SVG | PDF | EPS | AI
 Q: Should extra revisions beyond the agreed rounds be free? (yes or no)
 A: no
+Q: How many pieces should a focused design portfolio usually show? (range or number)
+A: 8-12 | 10 | 8 to 12 | 8 | 12
+Q: What is an ongoing monthly payment for agreed design work called?
+A: retainer
+Q: What document explains how to use a logo, colours and fonts consistently? (two words)
+A: brand guide | brand guidelines | style guide
 ```
