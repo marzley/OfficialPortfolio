@@ -141,6 +141,151 @@ Let's build a complete, working quiz app: questions from an array of objects, mu
 4. Load the questions from a JSON file with `fetch`.
 5. Add a "Review answers" screen at the end showing what the player chose.
 
+## How real quiz and exam apps work
+
+Platforms for school revision, driving theory tests, job aptitude tests and online courses (including the quizzes on this site) all follow the same pattern you just built: a list of questions as **data**, a **state** object tracking progress, a **render** function that draws the current state, and **event handlers** that update the state and render again. This "state → render" loop is the core idea behind React, Vue and most modern front-end frameworks, so this project prepares you for them.
+
+| Part | In this app | In bigger apps |
+|---|---|---|
+| Data | `questions` array | Loaded from an API or database |
+| State | `state` object | Framework state (useState, stores) |
+| View | `render()` builds HTML | Components |
+| Events | Button clicks | Same, plus routing and forms |
+| Persistence | `localStorage` best score | Server database, user accounts |
+
+## Step-by-step: building it yourself
+
+1. **Write the data first**: an array of `{ q, choices, answer }` objects. Test that you can `console.log` each question.
+2. **Create the state**: `{ index: 0, score: 0 }`. Every screen should be drawable from state alone.
+3. **Render one question**: build the HTML for `questions[state.index]`.
+4. **Handle a click**: compare the chosen index with `answer`, update the score, show right/wrong colours, disable buttons.
+5. **Next question**: increase `index`, render again; when `index === questions.length`, show the results screen.
+6. **Add the timer**: `setInterval` every second, `clearInterval` when answered or time runs out.
+7. **Save the best score** with `localStorage` inside `try/catch` (it can fail in private mode).
+8. **Polish**: progress bar, keyboard support, shuffling, accessibility.
+
+Building in small steps and testing after each one is how professionals avoid getting lost.
+
+## The quiz logic without the DOM
+
+Separating logic from display lets you test it in Node. Here is the core as pure functions:
+
+```try-javascript
+function createQuiz(questions) {
+  return { questions, index: 0, score: 0, answers: [] };
+}
+function answer(quiz, choice) {
+  const q = quiz.questions[quiz.index];
+  const correct = choice === q.answer;
+  return {
+    ...quiz,
+    score: quiz.score + (correct ? 1 : 0),
+    answers: [...quiz.answers, { q: q.q, choice, correct }],
+    index: quiz.index + 1,
+  };
+}
+const isFinished = quiz => quiz.index >= quiz.questions.length;
+function summary(quiz) {
+  const pct = Math.round((quiz.score / quiz.questions.length) * 100);
+  const grade = pct >= 80 ? "Excellent" : pct >= 50 ? "Good, keep practising" : "Revise and try again";
+  return `${quiz.score}/${quiz.questions.length} (${pct}%) - ${grade}`;
+}
+
+let quiz = createQuiz([
+  { q: "2 + 2?", choices: ["3", "4"], answer: 1 },
+  { q: "Capital of Kenya?", choices: ["Nairobi", "Nakuru"], answer: 0 },
+  { q: "CSS stands for?", choices: ["Cascading Style Sheets", "Computer Style System"], answer: 0 },
+]);
+for (const pick of [1, 1, 0]) quiz = answer(quiz, pick);
+console.log(isFinished(quiz), summary(quiz));
+quiz.answers.filter(a => !a.correct).forEach(a => console.log("Review:", a.q));
+```
+
+Because `answer` returns a new object instead of changing the old one, you could even add an "undo" button by keeping the previous states.
+
+## Shuffling questions and answers fairly
+
+The common shortcut `arr.sort(() => Math.random() - 0.5)` gives biased results. Use the **Fisher–Yates shuffle**:
+
+```try-javascript
+function shuffle(array) {
+  const a = [...array];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function shuffleChoices(q) {
+  const order = shuffle(q.choices.map((_, i) => i));
+  return { ...q, choices: order.map(i => q.choices[i]), answer: order.indexOf(q.answer) };
+}
+
+const q = { q: "Which tag makes a link?", choices: ["<a>", "<p>", "<img>", "<div>"], answer: 0 };
+const s = shuffleChoices(q);
+console.log(s.choices, "correct:", s.choices[s.answer]);
+```
+
+When you shuffle choices, the index of the correct answer moves, so it must be recalculated, as `shuffleChoices` does.
+
+## Loading questions from JSON
+
+In real apps, questions live in a file or database so teachers can edit them without touching code:
+
+```javascript
+async function loadQuestions() {
+  try {
+    const res = await fetch("questions.json");
+    if (!res.ok) throw new Error(res.status);
+    return await res.json();
+  } catch (e) {
+    box.textContent = "Couldn't load questions. Check your connection and refresh.";
+    return [];
+  }
+}
+loadQuestions().then(qs => { questions = shuffle(qs).slice(0, 10); render(); });
+```
+
+Picking 10 random questions from a bank of 100 gives a different test each time.
+
+## Keyboard and accessibility improvements
+
+```javascript
+document.addEventListener("keydown", e => {
+  const n = Number(e.key);                        // keys 1, 2, 3...
+  const buttons = box.querySelectorAll(".choices button:not(:disabled)");
+  if (n >= 1 && n <= buttons.length) buttons[n - 1].click();
+  if (e.key === "Enter") box.querySelector(".next")?.click();
+});
+```
+
+- Use real `<button>` elements so they work with Tab and Enter.
+- Don't rely on colour alone: add "✓ Correct" / "✗ Wrong" text for colour-blind users.
+- Announce results with an `aria-live="polite"` region.
+- Respect `prefers-reduced-motion` for animations.
+
+## Preventing cheating (and its limits)
+
+Everything in front-end JavaScript, including the answers array, can be seen in DevTools. For practice quizzes that's fine. For exams or certificates:
+
+- Keep answers on the **server**; the browser sends the chosen option and the server marks it.
+- Time limits must be checked on the server too (record the start time server-side).
+- Randomise question order and choices per student.
+
+## Ideas to extend the project
+
+1. Categories (HTML, CSS, JavaScript) chosen on a start screen.
+2. A review screen showing each question, your answer and the correct one.
+3. Different points for faster answers (time bonus).
+4. A leaderboard stored in localStorage (top 5 names and scores).
+5. Kiswahili and English versions of questions.
+6. Turn it into a PWA so it works offline on phones.
+
+:::think Why is `array.sort(() => Math.random() - 0.5)` a poor way to shuffle quiz questions?
+Sorting algorithms assume the comparison is consistent; random answers make some orders far more likely than others, so the shuffle is biased (and results depend on the browser's sort algorithm). Fisher–Yates swaps each position with a random earlier one, giving every order an equal chance in a single pass.
+:::
+
 ```quiz
 Q: Which function repeats code every second in the timer?
 A: setInterval | setInterval()
@@ -150,4 +295,10 @@ Q: Where is the best score saved so it survives a page reload?
 A: localStorage | local storage
 Q: Which attribute stores the choice number on each button? (the data- name)
 A: data-i | i
+Q: What is the name of the fair shuffling algorithm? (hyphenated names)
+A: Fisher-Yates | Fisher Yates | Fisher–Yates | Knuth shuffle
+Q: For a graded exam, where should the correct answers be kept: browser or server?
+A: server | the server
+Q: Which pattern describes drawing the screen from a state object after every change? (two words, arrow optional)
+A: state render | state -> render | state to render
 ```
