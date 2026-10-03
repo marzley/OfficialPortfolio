@@ -133,6 +133,145 @@ try {
 | Multiple staff | Add a `staff` table and make the unique key `(staff_id, starts_at)` |
 | Calendar view | FullCalendar (JavaScript) fed by a JSON API |
 
+## Why booking systems are great projects
+
+Salons, clinics, driving schools, tutors, car washes, event venues, photographers and consultants all need bookings. A working booking system combines the core skills of web development: database design, business logic (free slots), validation, preventing double bookings, notifications, payments and an admin dashboard. Built well, it's both a strong portfolio piece and a product you can sell to local businesses.
+
+## Handling business rules
+
+Real businesses have rules that your slot logic must respect:
+
+| Rule | Example | Implementation idea |
+|---|---|---|
+| Opening hours by day | Mon–Fri 8:00–18:00, Sat 9:00–14:00, closed Sunday | `opening_hours` table (weekday, open, close) |
+| Service durations | Haircut 30 min, braiding 3 hours | `services.duration_minutes`; check consecutive slots |
+| Breaks | Lunch 13:00–14:00 | Blocked times table |
+| Holidays/closures | Public holidays, staff leave | `closures` table with dates |
+| Lead time | Bookings at least 2 hours ahead | Compare with current time |
+| Booking window | Up to 30 days ahead | Date range validation |
+| Several staff | Each stylist has their own calendar | Bookings linked to `staff_id` |
+
+## Generating slots that fit a service's duration
+
+```try-php
+<?php
+function slotsForDay(string $open, string $close, int $stepMinutes, int $durationMinutes, array $booked, array $breaks = []): array {
+    $slots = [];
+    $start = strtotime("2026-10-05 $open");
+    $end = strtotime("2026-10-05 $close");
+    for ($t = $start; $t + $durationMinutes * 60 <= $end; $t += $stepMinutes * 60) {
+        $slotStart = $t;
+        $slotEnd = $t + $durationMinutes * 60;
+        $clash = false;
+        foreach (array_merge($booked, $breaks) as [$bStart, $bEnd]) {
+            $bs = strtotime("2026-10-05 $bStart");
+            $be = strtotime("2026-10-05 $bEnd");
+            if ($slotStart < $be && $slotEnd > $bs) { $clash = true; break; }   // overlap test
+        }
+        if (!$clash) $slots[] = date('H:i', $slotStart);
+    }
+    return $slots;
+}
+
+$booked = [['09:00', '10:30'], ['14:00', '15:00']];
+$breaks = [['13:00', '14:00']];
+echo "60-minute service: ", implode(', ', slotsForDay('08:00', '17:00', 30, 60, $booked, $breaks)), "\n";
+echo "2-hour service:    ", implode(', ', slotsForDay('08:00', '17:00', 30, 120, $booked, $breaks)), "\n";
+```
+
+The key line is the **overlap test**: two time ranges overlap when `startA < endB` and `endA > startB`. This one rule handles services of any length, breaks and existing bookings.
+
+## Preventing double bookings under pressure
+
+Two customers may pick the same slot at the same moment. Protect it at the database level:
+
+```sql
+-- One booking per staff member per start time
+ALTER TABLE bookings ADD UNIQUE KEY uniq_staff_slot (staff_id, booking_date, start_time);
+```
+
+For variable-length services, check overlaps inside a transaction with a row lock:
+
+```php
+$pdo->beginTransaction();
+$stmt = $pdo->prepare(
+    'SELECT COUNT(*) FROM bookings
+     WHERE staff_id = ? AND booking_date = ? AND status <> "cancelled"
+       AND start_time < ? AND end_time > ? FOR UPDATE'
+);
+$stmt->execute([$staffId, $date, $newEnd, $newStart]);
+if ($stmt->fetchColumn() > 0) {
+    $pdo->rollBack();
+    exit('Sorry, that time was just taken. Please choose another slot.');
+}
+$pdo->prepare('INSERT INTO bookings (staff_id, booking_date, start_time, end_time, customer_name, phone, status) VALUES (?, ?, ?, ?, ?, ?, "pending")')
+    ->execute([$staffId, $date, $newStart, $newEnd, $name, $phone]);
+$pdo->commit();
+```
+
+## Booking statuses and their lifecycle
+
+```
+pending  →  confirmed (deposit paid or owner approves)  →  completed
+    ↘ cancelled (by customer or owner)          ↘ no_show
+```
+
+Store status changes with timestamps; the owner can see no-show patterns and you can automatically release unpaid pending bookings after, say, 30 minutes.
+
+## Deposits with M-Pesa (flow)
+
+1. Customer chooses a slot; booking saved as `pending` with an expiry time.
+2. Your server starts an M-Pesa payment request for the deposit (through Daraja or a payment provider), using credentials stored in configuration outside `public_html`.
+3. The callback confirms payment; after verifying it, mark the booking `confirmed` and store the receipt number (unique).
+4. If no payment arrives before expiry, mark it `cancelled` and free the slot.
+5. Send confirmation by SMS, WhatsApp or email.
+
+Never mark a booking paid based only on the customer's screenshot or the browser saying "done": rely on the verified callback or a status query.
+
+## Reminders and notifications
+
+- Confirmation immediately after booking.
+- Reminder the day before (a cron job runs every morning to send reminders for tomorrow's bookings).
+- Optional reminder 1 hour before.
+- A link to cancel or reschedule (with a secure random token), which reduces no-shows.
+
+```bash
+# cron: send tomorrow's reminders at 8:15 every morning
+15 8 * * * /usr/bin/php /home/username/app/cron/send_reminders.php >> /home/username/logs/reminders.log 2>&1
+```
+
+## The owner's dashboard: useful views
+
+| View | Shows |
+|---|---|
+| Today | Time-ordered list with customer, service, status, phone (tap to call/WhatsApp) |
+| Calendar | Week view per staff member |
+| Pending payments | Bookings awaiting deposits |
+| Reports | Bookings per service, revenue, no-show rate, busiest days and hours |
+| Customers | History per customer, repeat visit count |
+
+Protect the dashboard with secure login (hashed passwords, session regeneration, HTTPS), and record who changed what.
+
+## Testing the system
+
+- Book the same slot from two browsers at once and confirm only one succeeds.
+- Try booking in the past, outside opening hours, during breaks and on closure days.
+- Test services that cross a break (a 2-hour service starting at 12:30 should not be offered if lunch is 13:00–14:00).
+- Test time zone handling (server in UTC, business in EAT): set `date_default_timezone_set('Africa/Nairobi')` or store UTC consistently.
+- Test on a phone over a slow connection.
+
+## Practice
+
+1. Add an `opening_hours` table and generate slots using each weekday's hours.
+2. Extend `slotsForDay` to skip slots that start less than 2 hours from "now".
+3. Add per-staff calendars and show each staff member's free slots.
+4. Implement automatic cancellation of unpaid pending bookings after 30 minutes with a cron job.
+5. Build a "reschedule" link using a random token stored with the booking.
+
+:::think A salon offers 30-minute and 3-hour services. A customer books braiding (3 hours) at 10:00, and the system still shows 11:00 as free for a haircut with the same stylist. What's wrong in the logic, and how is it fixed?
+The availability check only compares start times (10:00 vs 11:00) instead of time ranges. Each booking must store an end time (start + duration), and slots should be rejected if they overlap any booking: `newStart < existingEnd AND newEnd > existingStart`. Then 11:00 clashes with 10:00–13:00 and is hidden.
+:::
+
 ```quiz
 Q: What database feature prevents two bookings for the same time slot? (one word)
 A: unique | UNIQUE key | unique key
@@ -142,4 +281,10 @@ Q: Which PHP function returns the values in one array that are not in another?
 A: array_diff | array_diff()
 Q: Which function gives secure random numbers for codes?
 A: random_int | random_int()
+Q: Two time ranges overlap when startA < endB and endA > ...?
+A: startB | start B
+Q: Which SQL clause locks the selected rows inside a transaction? (two words)
+A: FOR UPDATE
+Q: Which PHP function sets the default time zone, e.g. Africa/Nairobi?
+A: date_default_timezone_set
 ```

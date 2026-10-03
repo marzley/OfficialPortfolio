@@ -139,6 +139,181 @@ Put database passwords and API keys in a config file **outside** `public_html` (
 $config = require dirname(__DIR__) . '/private/config.php';
 ```
 
+## Why functions and includes matter in PHP
+
+Most websites in Kenya run on PHP: WordPress sites, custom school and SACCO portals, booking systems and M-Pesa integrations on cPanel hosting. Real PHP projects are split into many files and functions: one file for the database connection, one for helper functions, a header and footer shared by every page, and separate files for each feature. Organising code this way makes it easier to fix bugs, add features and keep secrets safe.
+
+## Type declarations and strict types
+
+```try-php
+<?php
+declare(strict_types=1);
+
+function vat(float $amount, float $rate = 0.16): float {
+    return round($amount * $rate, 2);
+}
+
+function formatKsh(float $amount): string {
+    return 'KSh ' . number_format($amount, 2);
+}
+
+function findStudent(array $students, string $adm): ?array {   // ?array: array or null
+    foreach ($students as $s) {
+        if ($s['adm'] === $adm) return $s;
+    }
+    return null;
+}
+
+echo formatKsh(vat(2500)) . "\n";
+$students = [['adm' => 'ADM001', 'name' => 'Baraka'], ['adm' => 'ADM002', 'name' => 'Neema']];
+$s = findStudent($students, 'ADM002');
+echo $s ? $s['name'] : 'Not found', "\n";
+echo findStudent($students, 'ADM999')['name'] ?? 'Not found', "\n";
+
+try {
+    echo vat("2500");          // a string is rejected in strict mode
+} catch (TypeError $e) {
+    echo "TypeError: wrong argument type\n";
+}
+```
+
+`declare(strict_types=1);` at the top of a file stops PHP from silently converting types (like the string `"2500"` into a number), catching bugs early.
+
+## Named arguments and nullsafe operator
+
+```try-php
+<?php
+function createInvoice(string $customer, float $amount, float $vatRate = 0.16, string $currency = 'KSh', bool $paid = false): string {
+    $total = $amount * (1 + $vatRate);
+    return sprintf("%s: %s %s (%s)", $customer, $currency, number_format($total, 2), $paid ? 'paid' : 'unpaid');
+}
+
+echo createInvoice('Kamau Hardware', 10000), "\n";
+echo createInvoice(customer: 'School', amount: 5000, paid: true, vatRate: 0), "\n";
+
+$order = ['customer' => ['address' => null]];
+echo $order['customer']['address']['town'] ?? 'No town given', "\n";
+```
+
+Named arguments make calls with many optional parameters readable and order-independent.
+
+## Closures and array functions
+
+```try-php
+<?php
+$products = [
+    ['name' => 'Unga 2kg', 'price' => 180, 'stock' => 12],
+    ['name' => 'Sugar 1kg', 'price' => 210, 'stock' => 0],
+    ['name' => 'Cooking oil 1L', 'price' => 350, 'stock' => 7],
+];
+
+$inStock = array_filter($products, fn($p) => $p['stock'] > 0);
+$names = array_map(fn($p) => strtoupper($p['name']), $inStock);
+$stockValue = array_reduce($products, fn($sum, $p) => $sum + $p['price'] * $p['stock'], 0);
+usort($products, fn($a, $b) => $b['price'] <=> $a['price']);    // most expensive first
+
+print_r(array_values($names));
+echo "Stock value: KSh ", number_format($stockValue), "\n";
+echo "Most expensive: ", $products[0]['name'], "\n";
+
+$discount = 10;
+$applyDiscount = function (float $price) use ($discount): float {   // use: capture a variable
+    return $price * (1 - $discount / 100);
+};
+echo $applyDiscount(1000), "\n";
+```
+
+| Function | Purpose |
+|---|---|
+| `array_map` | Transform every item |
+| `array_filter` | Keep matching items (keys are preserved; use `array_values` to reindex) |
+| `array_reduce` | Combine into one value |
+| `usort` | Sort with your own comparison (`<=>` is the "spaceship" operator) |
+| `array_column` | Pull one column from a list of rows |
+| `in_array`, `array_search` | Find values |
+
+## A helpers file used by every page
+
+```php
+<?php
+// includes/helpers.php
+declare(strict_types=1);
+
+function e(?string $value): string {               // escape output to prevent XSS
+    return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
+}
+
+function redirect(string $path): never {
+    header('Location: ' . $path);
+    exit;
+}
+
+function old(string $field): string {               // refill forms after validation errors
+    return e($_POST[$field] ?? '');
+}
+
+function flash(string $message): void {
+    $_SESSION['flash'] = $message;
+}
+```
+
+```php
+<?php
+// contact.php
+session_start();
+require_once __DIR__ . '/includes/helpers.php';
+require_once __DIR__ . '/includes/db.php';          // database connection
+include __DIR__ . '/partials/header.php';
+?>
+<h1>Contact us</h1>
+<input name="name" value="<?= old('name') ?>">
+<?php include __DIR__ . '/partials/footer.php'; ?>
+```
+
+Every page escapes output with `e()` and shares the same header and footer, so a design change happens in one place.
+
+## Organising a small PHP project
+
+```text
+/home/username/
+├── config/
+│   └── config.php          ← database password, API keys (outside public_html)
+└── public_html/
+    ├── index.php
+    ├── contact.php
+    ├── includes/
+    │   ├── helpers.php
+    │   └── db.php           ← requires ../config/config.php
+    ├── partials/
+    │   ├── header.php
+    │   └── footer.php
+    └── assets/ (css, js, images)
+```
+
+Keeping configuration with passwords **outside** `public_html` means it can never be downloaded through a browser, even if the server is misconfigured.
+
+## Common mistakes
+
+| Mistake | Fix |
+|---|---|
+| `include 'header.php'` with relative paths breaking in subfolders | Use `__DIR__ . '/partials/header.php'` |
+| Echoing user input directly | Escape with `htmlspecialchars` (an `e()` helper) |
+| Global variables everywhere | Pass values as function parameters |
+| Database password in a file inside `public_html` | Move config outside the web root |
+| Using `==` for comparisons | Use `===` to compare value and type |
+
+## Practice
+
+1. Write `formatPhone(string $phone): ?string` that returns 2547XXXXXXXX or null.
+2. Use `array_filter` and `array_map` to list the names of products under KSh 300.
+3. Create a header and footer partial and include them in three pages.
+4. Write an `e()` helper and use it to display a comment containing `<script>`.
+5. Rewrite a function call with five parameters using named arguments.
+
+:::think Why use `require_once __DIR__ . '/includes/db.php'` instead of `include 'includes/db.php'`?
+`require_once` stops with a clear error if the database file is missing (the page can't work without it) and prevents loading it twice. `__DIR__` builds an absolute path from the current file's folder, so the include works no matter which page or subfolder runs it.
+:::
+
 ```quiz
 Q: Which statement stops the page with a fatal error if the file is missing?
 A: require | require_once
@@ -150,4 +325,12 @@ Q: Which function formats 1500 as 1,500.00 when given 2 decimals?
 A: number_format | number_format()
 Q: What does fn($x) => $x * 2 create? (two words)
 A: arrow function | an arrow function
+Q: Which declaration stops PHP from silently converting argument types?
+A: strict_types | declare(strict_types=1)
+Q: What is the <=> operator called?
+A: spaceship | spaceship operator
+Q: Which keyword makes a closure capture an outside variable?
+A: use
+Q: Which function escapes text for safe HTML output?
+A: htmlspecialchars
 ```
