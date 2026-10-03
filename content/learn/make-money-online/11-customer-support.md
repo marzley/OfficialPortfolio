@@ -61,6 +61,119 @@ Good support replies **thank, solve and confirm**:
 
 > Hi Amina, thank you for reaching out, and sorry your order is late. I've checked: it left our Nairobi warehouse this morning and the rider will deliver by 4 pm today. I've also added free delivery to your next order for the trouble. Is there anything else I can help with?
 
+## Why customer support is a solid career entry
+
+Companies around the world need people to answer customer questions by chat, email, phone and social media. Kenya has a growing business process outsourcing (BPO) sector and many remote support roles, valued for English fluency and customer-service skills. Support jobs teach communication, problem solving, product knowledge and working with software, and they can lead to team lead, quality assurance, training, customer success and operations roles.
+
+## Channels and what they require
+
+| Channel | Skills | Typical metrics |
+|---|---|---|
+| Phone (voice) | Clear speech, active listening, calm under pressure | Average handle time, first-call resolution |
+| Live chat | Fast, accurate typing; handling several chats at once | First response time, customer satisfaction (CSAT) |
+| Email/tickets | Clear writing, thorough answers, organisation | Resolution time, ticket backlog |
+| Social media | Brand voice, public tact, escalation judgement | Response time, sentiment |
+
+## Key metrics explained
+
+| Metric | Meaning |
+|---|---|
+| CSAT | Customer satisfaction score from post-interaction surveys |
+| NPS | Net Promoter Score: how likely customers are to recommend the company |
+| FCR | First contact resolution: solved without follow-up |
+| AHT | Average handle time per interaction |
+| FRT | First response time |
+| QA score | Internal review of quality against a checklist |
+
+Good agents balance speed with quality: rushing to reduce handle time while leaving problems unsolved hurts FCR and CSAT.
+
+## The structure of an excellent support reply
+
+```text
+Hi Wanjiru,
+
+Thank you for reaching out, and I'm sorry your order arrived late. I understand how
+frustrating that is, especially for a birthday.
+
+I've checked your order #1024: the delay happened at our courier's depot. I've refunded
+the KSh 250 delivery fee to your M-Pesa (it should reflect within 24 hours), and I've
+added a 10% discount code (SORRY10) for your next order.
+
+If there's anything else I can help with, just reply to this email.
+
+Best regards,
+Brian, Customer Care
+```
+
+| Part | Purpose |
+|---|---|
+| Greeting with name | Personal and respectful |
+| Acknowledge and empathise | Shows you understand the problem |
+| Explain what you found and did | Builds trust |
+| Clear next steps and timelines | Sets expectations |
+| Offer further help | Leaves the door open |
+
+## Handling difficult customers (the HEARD method)
+
+1. **Hear**: let them explain without interrupting.
+2. **Empathise**: "I understand why that's frustrating."
+3. **Apologise**: for the experience, even if the company isn't fully at fault.
+4. **Resolve**: offer a solution or clear options.
+5. **Diagnose**: afterwards, note the root cause so it can be fixed for others.
+
+Stay calm, don't take anger personally, follow policy, and escalate to a supervisor when needed (threats, legal issues, requests beyond your authority).
+
+## Tools you'll use
+
+| Tool type | Examples |
+|---|---|
+| Help desk / ticketing | Zendesk, Freshdesk, Help Scout, Zoho Desk |
+| CRM | Salesforce, HubSpot |
+| Live chat | Intercom, LiveChat, Zendesk Chat |
+| Knowledge base | Internal wikis, Notion, Confluence |
+| Communication | Slack, Microsoft Teams |
+
+Free trials and tutorials help you learn the basics; mention specific tools on your CV when you've practised them.
+
+## Preparing for assessments and interviews
+
+- **Typing test**: practise to reach a good speed with high accuracy (many chat roles test this).
+- **English and writing tests**: grammar, spelling, comprehension; proofread carefully.
+- **Role plays**: practise with a friend acting as an angry customer.
+- **Situational questions**: use STAR (Situation, Task, Action, Result).
+- **Technical setup checks** for remote roles: internet speed, backup connection, headset, quiet space, computer specifications.
+
+## Remote support work setup
+
+- A reliable computer meeting the employer's specifications.
+- Primary internet plus a backup connection; a UPS for power outages.
+- A noise-cancelling headset with a microphone.
+- A quiet, professional workspace.
+- Understanding of shift schedules and time zones (many roles serve customers in Europe or North America).
+
+## Career growth
+
+| Next step | What it involves |
+|---|---|
+| Senior agent / specialist | Complex cases, mentoring new agents |
+| Quality assurance analyst | Reviewing interactions, scoring, coaching |
+| Team lead / supervisor | Managing a team, schedules, metrics |
+| Trainer | Onboarding new agents, creating materials |
+| Customer success manager | Proactive relationship management with key customers |
+| Workforce management / operations | Forecasting, scheduling, process improvement |
+
+## Practice
+
+1. Rewrite three blunt replies into empathetic, solution-focused responses.
+2. Role-play an angry customer call using the HEARD method.
+3. Take a typing test and set a 4-week improvement goal.
+4. Write a knowledge base article answering a common question for a fictional company.
+5. Prepare STAR answers for three common customer service interview questions.
+
+:::think A customer angrily demands a refund that company policy doesn't allow. How do you respond professionally?
+Listen, acknowledge their frustration, and explain the policy clearly and politely without blaming them. Offer the alternatives you can provide (replacement, credit, repair, escalation to a supervisor for review), set clear expectations, and document the conversation. Staying calm and offering options often resolves the situation even when the exact request isn't possible.
+:::
+
 ```quiz
 Q: What does BPO stand for? Write the three words.
 A: business process outsourcing
@@ -72,4 +185,10 @@ Q: A good support reply should thank, solve and ...?
 A: confirm
 Q: Name one help-desk tool used in customer support.
 A: Zendesk | Freshdesk | HubSpot
+Q: What does CSAT measure? (two words)
+A: customer satisfaction
+Q: What does FCR stand for? (three words)
+A: first contact resolution | first call resolution
+Q: In the HEARD method, what does the R stand for?
+A: resolve
 ```

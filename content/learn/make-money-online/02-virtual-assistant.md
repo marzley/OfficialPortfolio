@@ -72,6 +72,110 @@ Common options include payment through the platform to your bank or **M-Pesa** (
 - Be careful with "clients" who want you to receive money and forward it, or to buy gift cards.
 - Keep communication and payment on the platform until trust is established.
 
+## Why virtual assistance is a strong starting point
+
+Business owners, coaches, consultants, real estate agents and e-commerce sellers around the world need help with emails, scheduling, research, social media, customer support and admin. Virtual assistants (VAs) provide this remotely. Kenya's strong English skills, mobile-money culture and growing digital workforce make VA work a practical entry point into online work, with room to specialise and earn more over time.
+
+## Specialisations that pay more
+
+| Specialisation | Tasks | Skills to learn |
+|---|---|---|
+| Executive / admin VA | Inbox management, calendar, travel booking, documents | Google Workspace or Microsoft 365, professional writing |
+| Social media VA | Content scheduling, community replies, simple graphics | Canva, Meta Business Suite, analytics basics |
+| E-commerce VA | Product listings, order processing, customer emails | Shopify/WooCommerce basics, Excel/Sheets |
+| Real estate VA | Lead follow-up, CRM updates, listing descriptions | CRM tools, persuasive writing |
+| Bookkeeping VA | Recording expenses, invoicing, reconciliation | QuickBooks/Xero/Wave basics, Excel |
+| Customer support VA | Tickets, live chat, refunds | Help desk tools, empathy, clear writing |
+| Tech VA | Website updates, email automation, integrations | WordPress, automation tools |
+
+Specialised VAs can charge more because they deliver measurable business results.
+
+## Creating a portfolio of proof
+
+Even without clients, you can show skills:
+
+1. **Sample inbox clean-up**: describe how you'd organise a messy inbox with labels, filters and templates.
+2. **Calendar plan**: a sample week for a busy consultant with meetings, focus time and travel.
+3. **Research report**: "Top 10 co-working spaces in Nairobi with prices and contacts" in a neat Google Doc.
+4. **Social media calendar**: two weeks of posts for a sample business with captions and Canva graphics.
+5. **SOP (standard operating procedure)**: step-by-step instructions for a task, with screenshots.
+
+Put these in a simple portfolio (Google Drive folder, Notion page or website) and link it in applications.
+
+## Writing proposals that win
+
+```text
+Hi Sarah,
+
+I saw you need help managing your inbox and calendar for your coaching business.
+I've organised busy inboxes using Gmail labels, filters and reply templates, and kept
+calendars for clients across time zones (I'm in Kenya, GMT+3, and available 9am–2pm
+your time).
+
+For your first week, I would:
+1. Sort and label your inbox and create templates for your 5 most common emails.
+2. Set up booking links so clients schedule calls without back-and-forth.
+3. Send you a short daily summary of anything needing your decision.
+
+Here's a sample of an inbox system I designed: [link]
+Happy to do a short call this week.
+
+Best regards,
+Grace
+```
+
+Personalise each proposal: show you read the post, explain how you'd solve their problem, and keep it short.
+
+## Working professionally with clients
+
+| Area | Good practice |
+|---|---|
+| Communication | Reply within agreed hours; send daily or weekly updates |
+| Time zones | Confirm working hours overlap; use calendar tools that show both time zones |
+| Passwords | Use password managers or shared vaults; never ask clients to send passwords by chat |
+| Confidentiality | Treat client information as private; sign NDAs when asked |
+| Tracking time | Use a time tracker for hourly work; be honest |
+| Documentation | Write SOPs for recurring tasks so work is consistent |
+
+## Internet and power reliability
+
+Remote clients expect reliability:
+
+- Main internet (fibre or reliable 4G) plus a backup (mobile data bundle or second provider).
+- A UPS or power bank for your router and laptop during outages.
+- A quiet space and a headset with a microphone for calls.
+- Communicate early if an outage affects work.
+
+## Pricing and growing income
+
+- Start with competitive rates to build reviews, then raise rates as you gain experience and testimonials.
+- Offer packages (e.g. 20 hours/month of inbox and calendar management) for predictable income.
+- Upsell related services (social media, bookkeeping) once you've earned trust.
+- Aim for long-term retainer clients rather than many small one-off tasks.
+
+## Getting paid
+
+Common methods include freelance platform payments, PayPal, Payoneer, Wise or direct bank transfers, with withdrawals to Kenyan bank accounts or M-Pesa where supported. Compare fees and exchange rates, keep records of income, and understand your tax obligations with KRA.
+
+## Avoiding VA scams
+
+- Fake "clients" who send cheques or ask you to forward money.
+- Requests to pay for "training" or "equipment" before starting.
+- Asking you to use your own accounts or identity for their activities.
+- Jobs moving you off platforms immediately to avoid platform protections.
+
+## Practice
+
+1. Choose a VA specialisation and list the tools you'll learn first.
+2. Create two portfolio samples (e.g. a research report and a social media calendar).
+3. Write a personalised proposal for a real VA job post.
+4. Write an SOP with screenshots for a task you know well.
+5. Set up a backup internet option and test it.
+
+:::think A client in the US wants daily calls at 9am their time. How would you handle the time difference professionally?
+Convert the time (US Eastern 9am is about 4pm or 5pm in Kenya depending on daylight saving), confirm whether it fits your schedule, put it in a shared calendar that shows both time zones, and agree on regular working hours. If the time doesn't work every day, propose alternatives like asynchronous updates or fewer calls.
+:::
+
 ```quiz
 Q: What does VA stand for? (two words)
 A: virtual assistant
@@ -83,4 +187,10 @@ Q: What should you send clients each week to show your progress? (two words)
 A: weekly report | report | a report
 Q: Should clients send you passwords in plain chat messages? (yes or no)
 A: no
+Q: What document explains step-by-step how to perform a recurring task? (abbreviation)
+A: SOP | standard operating procedure
+Q: How should clients share passwords with a VA? (use a password ...)
+A: manager | password manager
+Q: What kind of longer-term monthly arrangement gives VAs predictable income?
+A: retainer | package
 ```

@@ -61,6 +61,93 @@ These are **not** real jobs:
 
 **Rule:** if you must pay money to earn money from simple tasks, it's a scam. See [Avoiding online money scams](./?track=make-money-online&lesson=avoid-scams).
 
+## What micro-tasks are good for
+
+Micro-tasks are small online jobs: surveys, data labelling, transcription snippets, image tagging, search result evaluation, website testing and AI response rating. They require little experience and can be done from a phone or computer, which makes them accessible. But pay per task is usually low, availability varies by country, and the space is full of scams. Treat micro-tasks as a way to learn, earn some extra money and build towards better-paying skills.
+
+## Comparing types of micro-work
+
+| Type | Typical pay | Skills built | Growth path |
+|---|---|---|---|
+| Surveys | Low | Little | Limited |
+| Image/text labelling | Low to moderate | Attention to detail, following guidelines | Data annotation specialist |
+| Transcription snippets | Low to moderate | Listening, typing, accuracy | Full transcription, captioning |
+| Search/ad evaluation | Moderate (when available) | Research, judgement, guidelines | Rater and quality roles |
+| Website/app testing | Moderate per test | Bug reporting, QA thinking | Software tester (QA) career |
+| AI training and evaluation | Varies; specialised tasks pay more | Writing, reasoning, domain knowledge | AI trainer, domain expert roles |
+
+Website testing and AI evaluation tend to teach more valuable skills than surveys.
+
+## How to succeed on micro-task platforms
+
+1. **Read guidelines carefully**: quality scores decide whether you keep getting work.
+2. **Take qualification tests seriously**: many platforms test before giving access.
+3. **Track your time and earnings**: calculate your real hourly rate.
+4. **Work consistently**: some platforms give more tasks to reliable, accurate workers.
+5. **Follow platform rules**: one account per person, accurate personal information, no VPN tricks to fake location (these lead to bans and lost earnings).
+
+## Calculate your real hourly rate
+
+```text
+Week's work: 120 tasks, total earned USD 18, time spent 9 hours (including qualification and waiting)
+Hourly rate: 18 ÷ 9 = USD 2 per hour
+```
+
+If the hourly rate is very low, use the time to learn a skill that pays better (software testing, transcription, data annotation, VA work).
+
+## From micro-tasks to software testing (a strong path)
+
+| Step | Action |
+|---|---|
+| 1 | Learn testing basics: test cases, bug reports, severity, exploratory testing |
+| 2 | Join crowdtesting platforms and complete their training/academy where available |
+| 3 | Practise writing excellent bug reports (steps, expected vs actual, environment, screenshots/video) |
+| 4 | Test on different devices and browsers; specialise in mobile testing |
+| 5 | Learn tools: browser DevTools, screen recorders, basic test management tools |
+| 6 | Apply for QA roles or freelance testing contracts with your track record |
+
+```text
+Example bug report
+Title: Checkout button does nothing after entering M-Pesa number (Android, Chrome)
+Steps: 1. Add any item to cart 2. Go to checkout 3. Enter 0712345678 4. Tap "Pay now"
+Expected: STK push prompt appears
+Actual: Button shows a spinner for 2 seconds then nothing happens; no error message
+Environment: Samsung Galaxy A14, Android 14, Chrome 12x, mobile data
+Attachments: screen recording (20 s)
+```
+
+Clear bug reports are what testing clients value most.
+
+## Spotting micro-task scams
+
+| Scam pattern | Why it's a scam |
+|---|---|
+| "Like videos and earn; deposit to unlock withdrawals" | Legitimate work doesn't require deposits; these are often pyramid/task scams |
+| "Recruit friends to earn more tasks" | Income from recruitment, not work |
+| Telegram/WhatsApp "task managers" asking for money | Common fraud technique |
+| Guaranteed high daily income for simple clicks | Unrealistic |
+| Selling "verified accounts" for platforms | Violates platform rules; accounts get banned, money lost |
+
+Never pay to get work, never share your M-Pesa PIN, OTPs or account logins, and research platform reviews before signing up.
+
+## Getting paid safely
+
+- Use the platform's official payout methods (PayPal, Payoneer, bank, M-Pesa where offered).
+- Check minimum payout thresholds and fees.
+- Keep records of earnings for your own budgeting and tax obligations.
+
+## Practice
+
+1. Sign up for one legitimate testing or annotation platform and complete its training.
+2. Track one week of micro-task work and calculate your hourly rate.
+3. Write three bug reports for problems you find on websites or apps you use.
+4. Identify the scam signs in a "task job" message (from a real example or a description).
+5. Create a 3-month plan to move from micro-tasks to a higher-paying skill.
+
+:::think A "task platform" shows your earnings growing quickly for liking videos, but says you must deposit KSh 2,000 to "upgrade your level" before withdrawing. What should you do?
+Stop and don't deposit anything. Requiring deposits to withdraw earnings is a classic task scam: the displayed earnings are fake and deposits are taken. Report the account or group, warn friends, and if you already paid, contact your mobile money provider or bank and report to the authorities.
+:::
+
 ```quiz
 Q: Do micro-tasks usually pay a lot or a little?
 A: a little | little
@@ -72,4 +159,10 @@ Q: A bug report lists steps, expected result, actual result and the ...?
 A: device | device details
 Q: An app asks you to deposit KSh 1,000 to unlock withdrawals from "liking videos". Is it legitimate? (yes or no)
 A: no
+Q: Which type of micro-work builds a strong career path into QA? (two words)
+A: website testing | app testing | software testing | testing
+Q: Should you deposit money to unlock withdrawals on a task platform? (yes or no)
+A: no
+Q: In a bug report, what two results should you compare? (expected and ...)
+A: actual | actual result
 ```

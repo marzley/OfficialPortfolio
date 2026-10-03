@@ -68,6 +68,80 @@ Most businesses need a **county single business permit** from their county gover
 | Mixing personal and business money | Separate accounts and records |
 | Ignoring county permits | Check your county's requirements early |
 
+## Why formal registration helps a business grow
+
+Many businesses in Kenya start informally, which is fine for testing an idea. But registration opens doors: business bank accounts, M-Pesa Paybill/Till numbers in the business name, government tenders (including AGPO for youth, women and persons with disabilities), supplier contracts with larger companies, loans, and customer trust. Knowing the steps helps entrepreneurs, and helping others register is a service cyber cafés and consultants offer.
+
+(Procedures, fees and requirements change; always confirm current details on the official eCitizen, Business Registration Service and KRA websites.)
+
+## Comparing business structures
+
+| Structure | Owners | Liability | Good for | Things to know |
+|---|---|---|---|---|
+| Sole proprietorship (business name) | One person | Owner personally liable for debts | Small shops, freelancers, consultants | Simple and cheap; business isn't separate from owner |
+| Partnership | Two or more people | Partners personally liable (in a general partnership) | Small firms run by friends/family | Write a partnership agreement |
+| Private limited company | One or more shareholders | Limited to shares (company is a separate legal person) | Growing businesses, tenders, investors | More compliance: annual returns, records |
+| Limited Liability Partnership (LLP) | Partners | Limited liability for partners | Professional firms | Combination of partnership flexibility and limited liability |
+| Cooperative / community group / self-help group | Members | Depends on registration | Chamas, farmer groups | Registered with the relevant department |
+
+If you plan to bid for big contracts, raise investment or employ staff, a limited company is often worth the extra compliance work. Get professional advice for complex situations.
+
+## Preparing before you register
+
+- **Name ideas**: have 2–3 options; avoid names too similar to existing businesses or trademarks.
+- **Documents**: national ID/passport, KRA PIN, passport photo (as required), contact details, physical address.
+- **Business activity description**: what you'll do (e.g. "web design and IT support services").
+- **For companies**: details of directors and shareholders, share allocation, and registered office address.
+
+## After registration: a compliance checklist
+
+| Task | Why |
+|---|---|
+| KRA PIN for the business (companies) and tax obligations registered correctly | Filing returns on time avoids penalties |
+| File tax returns (even nil returns where required) by deadlines | Late filing attracts penalties |
+| County single business permit (or equivalent) | Required to operate in many counties |
+| Sector licences (food handling, pharmacy, transport, etc.) | Some businesses need extra permits |
+| Business bank account | Separates business and personal money |
+| M-Pesa Till/Paybill in the business name | Professional payments and records |
+| Keep records: receipts, invoices, payroll | Needed for tax, loans and audits |
+| Annual returns (companies) | Keeps the company in good standing |
+| Data protection compliance | If you process personal data, follow the Data Protection Act (registration with the ODPC may apply) |
+| NSSF/SHIF and PAYE if you employ staff | Legal obligations for employers |
+
+Set calendar reminders for every deadline.
+
+## Getting paid and looking professional
+
+- Invoices and receipts with the business name, KRA PIN (where relevant), contact details and payment instructions.
+- eTIMS / electronic tax invoices where required by KRA for your type of business (check current KRA guidance).
+- A professional email (name@yourbusiness.co.ke) and a simple website or Google Business Profile.
+- Written agreements with clients for larger jobs.
+
+## Government opportunities
+
+- **AGPO** (Access to Government Procurement Opportunities): a share of public procurement is reserved for youth, women and persons with disabilities; registered businesses can apply for certification.
+- **Tenders**: published on official procurement portals; read requirements carefully (tax compliance certificate, registration documents, experience).
+- **Youth and enterprise funds**: various government and county programmes offer training and financing; verify through official channels.
+
+## Avoiding registration scams
+
+- Use only official government portals (look for the correct domain and HTTPS).
+- Be careful with agents who ask for your eCitizen password or unusually high fees; if you use an agent, keep control of your accounts.
+- Pay fees through official payment channels shown on the portal.
+- Don't share OTPs or passwords; log out on shared computers in cyber cafés.
+
+## Practice
+
+1. Choose a business idea and decide which structure suits it, with reasons.
+2. List the documents you'd need to register it.
+3. Create a compliance calendar with tax filing and permit renewal reminders.
+4. Design a simple invoice template with business details and payment instructions.
+5. Read the official requirements for AGPO certification and list them.
+
+:::think A freelancer earning steadily from web design clients wants to bid for a county government website tender. What business steps should they take first?
+Register a business (often a limited company for tenders), get the business KRA PIN and stay tax compliant (tender documents commonly require a tax compliance certificate), obtain any required permits, prepare a company profile with past work and references, and if eligible, register for AGPO. Then read the tender documents carefully and submit all required documents before the deadline.
+:::
+
 ```quiz
 Q: Which government portal is used to register a business name or company online?
 A: eCitizen | ecitizen.go.ke
@@ -79,4 +153,10 @@ Q: Should you file tax returns even when there was no income? (yes or no)
 A: yes
 Q: Which county document do most businesses need to operate? (three words)
 A: single business permit | business permit
+Q: Which business structure is a separate legal person with limited liability for shareholders? (three words)
+A: private limited company | limited company | company
+Q: What programme reserves a share of government procurement for youth, women and persons with disabilities? (abbreviation)
+A: AGPO
+Q: Should you give an agent your eCitizen password? (yes or no)
+A: no
 ```
