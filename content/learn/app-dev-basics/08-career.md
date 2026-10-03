@@ -64,6 +64,109 @@ These are typical market ranges, not fixed prices. Always quote from a **written
 
 Continue with the **Flutter**, **Android with Kotlin**, **React Native** and **APIs & backends** subjects.
 
+## The app developer career landscape
+
+App developers work in startups, banks and fintechs, telecoms, agencies, NGOs and government digital services, or independently as freelancers for local and international clients. Demand comes from businesses wanting to sell online, accept M-Pesa, manage customers, digitise records and serve users on their phones. Skills compound: once you can build and publish an app with payments, you can serve many types of clients.
+
+## Career paths
+
+| Path | What you do | How to prepare |
+|---|---|---|
+| Employed developer (startup, bank, agency) | Build features in a team, code reviews, sprints | Portfolio, Git skills, teamwork, interview practice |
+| Freelancer (local clients) | Build apps/websites for businesses, schools, churches | Portfolio, communication, contracts, reliable delivery |
+| Remote/international freelancing | Work through platforms or direct clients abroad | Strong portfolio, English communication, time-zone management |
+| Product builder (your own app) | Solve a problem and earn from users | Market research, MVP, marketing, persistence |
+| Specialist | Payments, security, performance, mobile DevOps | Deep knowledge in one area |
+
+## Writing a strong proposal for a client
+
+```text
+Project: Online ordering app for Mama's Kitchen (Nakuru)
+
+Understanding: Customers currently order by phone; orders get mixed up at lunch time.
+Solution: A simple ordering app (Android + web) with menu, cart, M-Pesa payment and an
+order dashboard for the kitchen.
+
+Scope (version 1):
+- Menu with photos and prices (owner can edit)
+- Cart and M-Pesa STK checkout
+- Order dashboard with status updates and SMS confirmation
+Not included in v1: delivery tracking, loyalty points (can be added later)
+
+Timeline: 6 weeks (design 1 week, build 4 weeks, testing and launch 1 week)
+Investment: KSh ___ (40% deposit, 30% at beta, 30% at launch)
+After launch: optional support plan at KSh ___/month (updates, backups, small changes)
+Accounts: Google Play and payment accounts registered in the business's name
+```
+
+A clear proposal shows you understand the business, defines scope, and protects both sides.
+
+## Pricing your work
+
+Consider:
+
+- Hours needed (with buffer), your hourly/day rate, and project complexity.
+- Third-party costs (store fees, hosting, SMS, design assets) charged separately and transparently.
+- Ongoing maintenance as a separate monthly or yearly agreement.
+- The value to the client (an app that processes thousands of orders is worth more than a simple brochure).
+
+Avoid racing to the bottom on price; reliable delivery and good communication justify fair rates.
+
+## Contracts and protecting yourself
+
+| Clause | Purpose |
+|---|---|
+| Scope and deliverables | What's included and excluded |
+| Milestones and payments | Deposit and payments tied to deliverables |
+| Change requests | Extra work is quoted and approved in writing |
+| Ownership | Code and accounts transfer to the client after full payment |
+| Timeline responsibilities | Client provides content and feedback on time |
+| Support and warranty | Bug fixes for a period after launch; new features are separate |
+| Confidentiality and data | How client and user data are handled |
+
+Keep communication in writing (email or a project channel), and send summaries after calls.
+
+## Interview preparation for developer jobs
+
+1. **Portfolio walkthrough**: be ready to explain one project in depth: problem, architecture, challenges, what you'd improve.
+2. **Fundamentals**: your language, data structures, APIs and HTTP, Git, basic SQL.
+3. **Practical tasks**: small take-home or live coding exercises; practise building a screen that fetches and displays data.
+4. **System design (junior level)**: how would you design a simple booking or ordering app (screens, API, database, payments)?
+5. **Behavioural questions**: teamwork, handling feedback, a bug you struggled with and how you solved it.
+
+Ask questions too: how the team reviews code, how releases work, what you'd learn in the first months.
+
+## Building a reputation
+
+- Publish projects on GitHub with good READMEs and screenshots.
+- Write short posts on LinkedIn about what you're building and learning.
+- Contribute to open source or community projects.
+- Join developer communities (meetups, tech hubs, online groups) and help others.
+- Ask satisfied clients for testimonials and referrals.
+
+## A learning plan for the next 12 months
+
+| Months | Focus | Output |
+|---|---|---|
+| 1–3 | One stack deeply (e.g. Flutter or Kotlin), Git, APIs | 2 small apps on GitHub |
+| 4–6 | Back end basics, databases, authentication, M-Pesa sandbox | A full app with login and payments (sandbox) |
+| 7–9 | Testing, publishing, analytics, performance | A published app on Google Play (even a simple one) |
+| 10–12 | Freelance or internship experience, specialisation | Real client project or job, strong portfolio |
+
+Consistency (an hour or two daily) beats occasional long sessions.
+
+## Practice
+
+1. Write a proposal for an app for a local business using the template above.
+2. Draft a simple contract checklist for your freelance projects.
+3. Prepare a 3-minute walkthrough of your best project.
+4. Practise three behavioural interview answers using situation, task, action and result.
+5. Create a 12-month learning plan with monthly goals.
+
+:::think A client asks you to publish their app under your personal Google Play developer account "to save time and money". What are the risks, and what should you advise?
+The app would legally belong to your account: the client depends on you for every update, transferring it later is extra work, and any policy problem affects your whole account (and your other apps). Advise the client to create their own developer account (in the business name), invite you as a user with the right permissions, and keep payment and store accounts under their ownership.
+:::
+
 ```quiz
 Q: What part of the project price is usually taken as a deposit? Give a percentage, like 40.
 A: 40 | 50 | 40% | 50%
@@ -75,4 +178,10 @@ Q: Payments tied to design, prototype, beta and launch are called ...?
 A: milestones
 Q: Where should your code be published for employers to see?
 A: GitHub
+Q: In whose name should the client's Google Play account be registered: the developer's or the business's?
+A: business | the business | client | the client's
+Q: What document describes understanding, scope, timeline and price for a client?
+A: proposal
+Q: What should extra work outside the agreed scope be handled as? (two words)
+A: change request | change requests
 ```

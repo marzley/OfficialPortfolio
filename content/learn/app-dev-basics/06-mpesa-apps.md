@@ -77,6 +77,115 @@ Daraja has a **sandbox** with test credentials: build and test the whole flow th
 
 Marzley Tech Solutions integrates M-Pesa into websites, apps and systems. Read [how to add M-Pesa payments to your website](../how-to-add-mpesa-payments-to-your-website).
 
+## Why M-Pesa integration is a valuable skill
+
+M-Pesa is how most Kenyans pay for goods and services, so businesses want apps and websites that accept it smoothly: shops, schools, SACCOs, landlords, event organisers, delivery services and subscription businesses. Developers who can integrate payments securely and reliably are in high demand. Payment code must be correct, because mistakes cost real money and customer trust.
+
+## Ways to accept M-Pesa
+
+| Option | How it works | Good for |
+|---|---|---|
+| STK Push (Lipa na M-Pesa Online) | Your server asks Safaricom to send a PIN prompt to the customer's phone | Apps and websites with a checkout |
+| Customer pays Till/Paybill manually + C2B confirmation | Customer pays from their phone menu; your server receives confirmation | Simple shops, recurring payments with account numbers |
+| Payment aggregators / gateways | A third party provides one API for M-Pesa, cards and other methods | Faster integration, multiple payment methods |
+| B2C (business to customer) | Business sends money to customers (refunds, payouts, salaries) | Requires extra approval and strong controls |
+
+Integrations use Safaricom's Daraja API (sandbox for testing, then production approval for live credentials) or a licensed payment provider.
+
+## Designing the orders and payments tables
+
+```text
+orders
+  id, customer_id, total_amount, status (pending | awaiting_payment | paid | failed | cancelled),
+  created_at
+
+payments
+  id, order_id, phone, amount, checkout_request_id (UNIQUE), mpesa_receipt (UNIQUE, nullable),
+  status (initiated | success | failed | timeout), result_code, result_desc, raw_callback, created_at
+```
+
+- `checkout_request_id` links the STK request to its callback.
+- `mpesa_receipt` is UNIQUE, so the same payment can never be recorded twice.
+- Storing the raw callback (securely) helps investigate disputes.
+
+## The full payment lifecycle
+
+1. App sends `order_id` and phone number to **your server** (never the amount alone).
+2. Server loads the order, calculates the amount from the database, and creates a `payments` row (`initiated`).
+3. Server requests an STK push with its credentials and a **callback URL** on your server (HTTPS).
+4. The customer sees the prompt and enters their PIN (or cancels).
+5. Safaricom calls your callback with the result.
+6. The callback handler: finds the payment by `checkout_request_id`, checks the result code and amount, records the receipt, marks the order `paid` (in a transaction), and ignores duplicates.
+7. The app polls your server (or receives a push notification) and shows success or failure.
+8. If no callback arrives within a timeout, the server can **query the transaction status** and update accordingly.
+
+## Callback handler essentials (pseudo-code)
+
+```text
+receive POST /mpesa/callback
+log raw body (no secrets) with timestamp
+parse JSON safely
+find payment by CheckoutRequestID → if not found: log and return OK
+if payment already final (success/failed): return OK            # idempotency
+if ResultCode == 0:
+    read Amount, MpesaReceiptNumber, PhoneNumber from metadata
+    verify Amount == expected order amount
+    in one DB transaction: payment.status = success, store receipt (unique), order.status = paid
+    queue receipt SMS/email (don't block the response)
+else:
+    payment.status = failed, store ResultDesc
+return the acknowledgement Safaricom expects, quickly
+```
+
+## Common result scenarios to handle
+
+| Scenario | What the user should see |
+|---|---|
+| Success | "Payment received. Receipt QJK..." |
+| Cancelled by user | "You cancelled the payment. Try again?" |
+| Wrong PIN / insufficient funds | "Payment didn't go through. Check your balance and try again." |
+| Phone unreachable / no response | "We didn't get a response. Make sure your phone is on and try again." |
+| Timeout with no callback | "We're confirming your payment..." then status query; never charge twice |
+
+Use the result codes from the official documentation rather than guessing their meanings.
+
+## Reconciliation: matching money to records
+
+Even with callbacks, reconcile regularly:
+
+- Download the M-Pesa statement (business portal) daily or weekly.
+- Match receipts to `payments.mpesa_receipt`.
+- Investigate statement entries with no matching order (e.g. manual Paybill payments with wrong account numbers) and orders marked paid with no statement entry.
+- Keep an audit log of manual adjustments (who, when, why).
+
+## Security and compliance
+
+- Consumer key, secret and passkey live only on the server (environment variables or a secret manager), never in the app or Git.
+- The callback URL must be HTTPS; consider allow-listing the provider's IP addresses if documented, and verify by querying status for high-value payments.
+- Validate phone numbers and amounts; set sensible limits.
+- Protect admin dashboards that can refund or mark orders paid with strong authentication and audit logs.
+- Personal data (phone numbers, names) falls under the Data Protection Act; restrict access and retention.
+
+## Testing payments
+
+1. Use the Daraja **sandbox** with test credentials and test numbers from the documentation.
+2. Expose your local server for callbacks with a tunnelling tool (e.g. ngrok or Cloudflare Tunnel) during development.
+3. Test success, cancellation, timeout, duplicate callbacks and server restarts mid-payment.
+4. Before going live, test small real transactions in production with your own phone.
+5. Monitor logs closely for the first days after launch.
+
+## Practice
+
+1. Design the `orders` and `payments` tables with the right unique constraints.
+2. Write pseudo-code for an idempotent callback handler.
+3. List user-facing messages for five payment outcomes.
+4. Plan a weekly reconciliation process for a small shop.
+5. Set up a sandbox project and trigger a test STK push from a small server script (keeping credentials in environment variables).
+
+:::think A customer complains they paid but the app still shows "awaiting payment". The M-Pesa SMS shows a receipt. What could have happened, and how would you investigate?
+Possibly the callback didn't reach your server (wrong URL, server down, HTTPS issue), arrived but failed to process (an error in the handler, amount mismatch), or the order lookup failed. Check server logs and the payments table for the CheckoutRequestID, query the transaction status via the API, confirm the receipt in the business statement, then update the order (with an audit log) and fix the root cause.
+:::
+
 ```quiz
 Q: Should an app call the Daraja API directly with the consumer secret? (yes or no)
 A: no
@@ -90,4 +199,10 @@ Q: Making sure a duplicate callback can't record a payment twice is called makin
 A: idempotent
 Q: Which M-Pesa API sends money from a business to customers?
 A: B2C
+Q: Which column should be UNIQUE to stop recording the same M-Pesa payment twice? (the receipt...)
+A: mpesa_receipt | receipt | receipt number
+Q: What should the server do if the same callback arrives twice?
+A: ignore it | ignore | nothing | return OK
+Q: What is matching statement entries to your payment records called?
+A: reconciliation
 ```
