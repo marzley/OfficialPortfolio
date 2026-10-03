@@ -116,6 +116,143 @@ When data changes, React re-runs your component functions, compares the new resu
 | Mobile apps | **React Native** |
 | Desktop apps | Electron apps like VS Code's UI ideas, Slack |
 
+## Why React is so widely used
+
+React (created at Meta) is one of the most popular libraries for building user interfaces. Facebook, Instagram, WhatsApp Web, Netflix, Airbnb and countless startups, fintechs and agencies use it. Its component model means you build small, reusable pieces (a product card, a navbar, a payment form) and combine them into whole apps. React skills are among the most requested in front-end job adverts, and the same knowledge carries over to React Native for mobile apps.
+
+## Thinking in components
+
+Look at a typical shop page and break it into components:
+
+```text
+App
+├── Header (logo, search box, cart icon with count)
+├── CategoryTabs
+├── ProductGrid
+│   └── ProductCard × many (image, name, price, "Add" button)
+├── CartSummary (items, total, checkout button)
+└── Footer
+```
+
+Each component has one job. If `ProductCard` changes design, you edit one place and every card updates.
+
+## A small interactive example
+
+```try-react
+const { useState } = React;
+
+const products = [
+  { id: 1, name: "Unga 2kg", price: 180 },
+  { id: 2, name: "Sugar 1kg", price: 210 },
+  { id: 3, name: "Milk 500ml", price: 60 },
+];
+
+function ProductCard({ product, onAdd }) {
+  return (
+    <div style={{ border: "1px solid #e2e8f0", borderRadius: 10, padding: 10, marginBottom: 8 }}>
+      <strong>{product.name}</strong> <span>KSh {product.price}</span>{" "}
+      <button onClick={() => onAdd(product)}>Add</button>
+    </div>
+  );
+}
+
+function App() {
+  const [cart, setCart] = useState([]);
+  const total = cart.reduce((sum, p) => sum + p.price, 0);
+  return (
+    <div style={{ fontFamily: "system-ui", maxWidth: 360 }}>
+      <h2>Duka Bora</h2>
+      {products.map((p) => (
+        <ProductCard key={p.id} product={p} onAdd={(item) => setCart([...cart, item])} />
+      ))}
+      <p>{cart.length} items · Total KSh {total}</p>
+      {cart.length > 0 && <button onClick={() => setCart([])}>Clear cart</button>}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+```
+
+Click "Add": React re-renders with the new state, and the total updates automatically. You describe **what** the UI should look like for the current data; React works out **how** to update the page.
+
+## JSX rules to remember
+
+| Rule | Example |
+|---|---|
+| Return one parent element (or a fragment) | `<>...</>` wraps siblings without adding a div |
+| Close every tag | `<img />`, `<br />`, `<input />` |
+| `className` instead of `class` | `<div className="card">` |
+| `htmlFor` instead of `for` on labels | `<label htmlFor="email">` |
+| camelCase attributes and events | `onClick`, `onChange`, `tabIndex` |
+| Inline styles are objects | `style={{ color: "red", fontSize: 18 }}` |
+| JavaScript expressions in `{}` | `{price * qty}`, `{isOpen ? "Open" : "Closed"}` |
+| Comments inside JSX | `{/* comment */}` |
+
+## Declarative vs imperative UI
+
+```javascript
+// Imperative (plain DOM): you describe every step
+const li = document.createElement("li");
+li.textContent = product.name;
+list.appendChild(li);
+counter.textContent = items.length;
+
+// Declarative (React): you describe the result for the current data
+<ul>{items.map((p) => <li key={p.id}>{p.name}</li>)}</ul>
+<p>{items.length} items</p>
+```
+
+As apps grow, keeping many manual DOM updates in sync becomes error-prone; declarative rendering avoids that class of bugs.
+
+## Setting up a real React project
+
+```bash
+npm create vite@latest duka-app -- --template react      # or react-ts for TypeScript
+cd duka-app
+npm install
+npm run dev          # local development server with instant updates
+npm run build        # optimised files in dist/ ready to deploy
+```
+
+| Option | Use when |
+|---|---|
+| **Vite + React** | Single-page apps, dashboards, learning; deploy `dist/` to Netlify, Cloudflare Pages or any static host |
+| **Next.js** | SEO-friendly websites, server rendering, API routes, full-stack apps |
+| **React Native / Expo** | Mobile apps for Android and iOS |
+
+## React developer tools
+
+- **React Developer Tools** browser extension: inspect the component tree, props and state.
+- **ESLint** with React rules (`eslint-plugin-react-hooks`) catches common hook mistakes.
+- **Prettier** formats code consistently.
+- **TypeScript** adds types for props and state, increasingly standard in jobs.
+
+## The React ecosystem (what you'll meet later)
+
+| Need | Common choices |
+|---|---|
+| Routing (pages) | React Router, Next.js routing |
+| Server data fetching and caching | TanStack Query, SWR, Next.js data fetching |
+| Forms | React Hook Form + Zod validation |
+| Styling | CSS Modules, Tailwind CSS, component libraries (MUI, shadcn/ui, Chakra) |
+| Global state | Context, Zustand, Redux Toolkit |
+| Testing | Vitest/Jest + React Testing Library, Playwright for end-to-end |
+
+Learn core React (components, props, state, effects) well before adding libraries.
+
+## Practice
+
+1. Break the homepage of a site you use into a component tree on paper.
+2. Build a `Greeting` component that shows "Habari za asubuhi" before noon and "Habari za jioni" after.
+3. Create a `PriceTag` component that formats numbers as KSh with commas.
+4. Build a simple counter with "+" and "−" buttons that never goes below zero.
+5. Create a Vite React project and replace the starter page with your own components.
+
+:::think Why does React need you to call `setCart(...)` instead of just doing `cart.push(item)`?
+React re-renders when state is updated through its setter function. `cart.push` changes the array in place without telling React, so the screen doesn't update (and React may not detect the change because the array reference stays the same). Calling `setCart([...cart, item])` creates a new array and schedules a re-render with the new data.
+:::
+
 ```quiz
 Q: What do we call the reusable pieces a React UI is built from?
 A: components | component
@@ -129,4 +266,10 @@ Q: Which brackets insert a JavaScript expression into JSX?
 A: {} | curly braces | { }
 Q: Which React framework adds server rendering and routing for SEO-friendly sites?
 A: Next.js | Next | nextjs
+Q: What empty tag pair groups elements without adding a div? (write it)
+A: <></> | fragment | <> </>
+Q: Which command creates a new React project with Vite? (npm create ...)
+A: npm create vite@latest | vite
+Q: Which browser extension inspects React components, props and state? (three words)
+A: React Developer Tools | React DevTools
 ```
