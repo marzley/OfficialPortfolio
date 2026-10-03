@@ -78,6 +78,110 @@ Click **Share**:
 | Ctrl + Shift + V | Paste without formatting |
 | Ctrl + Enter | Page break (Docs) / Present (Slides) |
 
+## Who uses Google Workspace
+
+Google Docs, Sheets and Slides are free with any Gmail account and work on phones, cheap laptops and in cyber cafés without installing anything. Schools use them for assignments and class lists, chamas and SACCOs for contribution records, small businesses for invoices and stock, NGOs for reports, and remote teams for everything. Many Kenyan startups and organisations use Google Workspace (the paid business version with custom email like `name@business.co.ke`) as their main office system.
+
+## Organising Google Drive
+
+- Create a clear folder structure: `Business / Clients / 2026 / ClientName`.
+- Use **Shared drives** (Workspace accounts) for team files so files stay with the organisation when someone leaves.
+- **Star** important files and use **Recent** and **Search** (Drive search can find text inside PDFs and even images).
+- Colour-code folders (right-click → Organise → Folder colour).
+- Upload Office files and choose whether to convert them to Google format (Settings → Convert uploads).
+
+## Docs power features
+
+| Feature | How | Use |
+|---|---|---|
+| Voice typing | Tools → Voice typing (in Chrome) | Dictate notes or drafts |
+| Explore / research | Tools → Explore (where available) | Find images and sources |
+| Smart chips | Type `@` | Insert people, files, dates, dropdowns, meeting notes |
+| Document outline | View → Show outline | Navigate by headings |
+| Templates | File → New → From template | CVs, letters, reports, meeting notes |
+| Pageless format | File → Page setup → Pageless | Easier reading on screens |
+| Translate document | Tools → Translate document | English ↔ Kiswahili drafts (check the result) |
+| Equation editor | Insert → Equation | Maths and science notes |
+| Word count | Ctrl + Shift + C | Essays with word limits |
+
+`@` smart chips are very useful: `@date` inserts a date, `@Kamau` mentions a colleague, `@dropdown` creates a status selector (Not started / In progress / Done).
+
+## Sheets formulas that are especially useful
+
+```
+=GOOGLEFINANCE("CURRENCY:USDKES")                 live exchange rate (may be delayed)
+=GOOGLETRANSLATE(A2, "en", "sw")                  translate text to Kiswahili
+=IMPORTRANGE("sheet_url", "Sheet1!A1:D100")       pull data from another spreadsheet
+=QUERY(A1:E100, "select B, sum(E) where C = 'Nakuru' group by B", 1)   SQL-like summaries
+=UNIQUE(B2:B), =SORT(...), =FILTER(...)           dynamic lists
+=SPARKLINE(B2:M2)                                  tiny chart inside a cell
+=IMAGE("https://example.com/logo.png")             show an image in a cell
+=DETECTLANGUAGE(A2)                                detect the language of text
+```
+
+`QUERY` is powerful for reports: it filters, groups and sorts data in one formula using a language similar to SQL.
+
+## Sheets for small business tasks
+
+| Task | Features to use |
+|---|---|
+| Daily sales record | Data validation drop-downs, SUMIFS, a Form feeding the sheet |
+| Stock tracking | Conditional formatting for low stock, checkboxes |
+| Chama contributions | One row per payment; pivot table by member and month |
+| Invoices | A template sheet with formulas; File → Download → PDF |
+| Attendance | Checkboxes (Insert → Checkbox), COUNTIF |
+
+**Insert → Checkbox** creates tick boxes that count as TRUE/FALSE: `=COUNTIF(C2:C40, TRUE)` counts how many are ticked.
+
+## Protecting ranges and sheets
+
+**Data → Protect sheets and ranges** lets you lock formulas or a whole sheet so only certain people can edit them. Collaborators can still edit other areas. Use it in shared sheets so nobody accidentally deletes the totals.
+
+## Slides power features
+
+- **Explore/Assist** suggestions and templates for quick designs.
+- **Speaker notes** and **Presenter view**.
+- **Q&A** (Slideshow → Presenter view → Audience tools) lets the audience submit questions from their phones during a talk.
+- **Linked charts** from Sheets update with one click.
+- **Publish to the web** (File → Share → Publish to web) for a self-advancing slideshow on a website.
+- Download as PowerPoint (.pptx) or PDF for offline presenting.
+
+## Working offline
+
+1. In Chrome, go to Drive → Settings → turn on **Offline**.
+2. Right-click important files → **Available offline**.
+3. Edit without internet; changes sync when you reconnect.
+
+Useful for areas with unreliable internet or when your data bundle runs out.
+
+## Collaboration best practices
+
+- Share with specific people; avoid "Anyone with the link can edit" for important files.
+- Use comments with `@mentions` and assign tasks ("Assign to" in a comment).
+- Use **Suggesting** mode in Docs when reviewing someone else's work.
+- Name important versions in Version history.
+- Agree on one master file; don't download, edit and re-upload copies.
+- Check **Activity dashboard** (Workspace) to see who has viewed a file.
+
+## Security of your Google account
+
+- Turn on 2-Step Verification with an authenticator app or prompts.
+- Run the **Security Checkup** (myaccount.google.com/security-checkup) regularly.
+- Remove access for third-party apps you no longer use.
+- Be careful with files shared by strangers: phishing links often look like "shared documents".
+
+## Practice
+
+1. Create a folder structure in Drive for a small business and share one folder with a "colleague" as a commenter.
+2. Build a sales sheet with checkboxes, data validation and a QUERY summary by branch.
+3. Use `=GOOGLEFINANCE("CURRENCY:USDKES")` to convert a price list from USD to KES.
+4. Write a document using `@` smart chips for dates, people and a status dropdown.
+5. Turn on offline mode and edit a document with Wi-Fi off.
+
+:::think Your organisation's shared files are all in a former employee's personal "My Drive", and their account is about to be deleted. What's the risk, and how should files be stored?
+When the account is deleted, files they own can be lost or become inaccessible. Ownership should be transferred to someone else (or the files moved) before deletion. For the future, keep organisational files in Shared drives owned by the organisation, not individuals' My Drive.
+:::
+
 ```quiz
 Q: Do Google Docs need a Save button? (yes or no)
 A: no
@@ -89,4 +193,12 @@ Q: Where can you restore an earlier version of a Google file? (two words)
 A: Version history | version history
 Q: Which sharing role can add comments but not edit?
 A: Commenter
+Q: Which Sheets function summarises data using SQL-like statements?
+A: QUERY
+Q: Which Sheets function pulls data from another spreadsheet?
+A: IMPORTRANGE
+Q: Which symbol inserts smart chips like people, dates and dropdowns in Google Docs?
+A: @
+Q: Which Workspace feature keeps team files owned by the organisation? (two words)
+A: Shared drives | shared drive
 ```
