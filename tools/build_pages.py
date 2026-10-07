@@ -21,6 +21,7 @@ POSTS_DIR = ROOT / "content" / "blog"
 CASES_DIR = ROOT / "content" / "case-studies"
 EXTRA_SECTIONS = ROOT / "content" / "sections.html"
 KISWAHILI = ROOT / "content" / "kiswahili.html"
+AUTHOR = ROOT / "content" / "kelvin-wanyoike.html"
 SITE = "https://marzleytechsolutions.co.ke/"
 
 PAGES = [
@@ -256,6 +257,7 @@ def read_posts(folder=POSTS_DIR):
         assert m, "%s needs a header comment" % path.name
         info = dict(line.split(":", 1) for line in m.group(1).strip().splitlines() if ":" in line)
         info = {k.strip(): v.strip() for k, v in info.items()}
+        info = {k: v[1:-1] if len(v) >= 2 and v[0] == v[-1] and v[0] in "\"'" else v for k, v in info.items()}   # title: "A: B" is allowed
         for key in ("title", "description", "date"):
             assert info.get(key), "%s is missing %s" % (path.name, key)
         words = len(re.sub(r"<[^>]+>", " ", m.group(2)).split())
@@ -378,7 +380,7 @@ def build_post(html, post, posts, kind="blog"):
         '                        <p class="label">{tag}</p>\n'
         '                        <h1 id="post-title">{h1}</h1>\n'
         '                        <p class="post-meta"><img src="img/kelvin/headshot.jpg" alt="" width="36" height="36" loading="lazy" />'
-        '<span>By <strong>Kelvin Wanyoike</strong> · <time datetime="{iso}">{date}</time> · {mins} min read</span></p>\n'
+        '<span>By <a href="kelvin-wanyoike" rel="author"><strong>Kelvin Wanyoike</strong></a> · <time datetime="{iso}">{date}</time> · {mins} min read</span></p>\n'
         '{hero}'
         '                    </header>\n'
         '                    <div class="post-body">\n{body}\n                    </div>\n'
@@ -414,7 +416,7 @@ def build_post(html, post, posts, kind="blog"):
         "description": post["description"],
         "datePublished": post["date"].isoformat(),
         "dateModified": post["date"].isoformat(),
-        "author": {"@id": SITE + "#kelvin", "@type": "Person", "name": "Kelvin Wanyoike", "url": SITE + "about"},
+        "author": {"@id": SITE + "#kelvin", "@type": "Person", "name": "Kelvin Wanyoike", "url": SITE + "kelvin-wanyoike"},
         "publisher": {"@id": SITE + "#business"},
         "image": [SITE + x for x in (og_image(post["slug"]), post.get("image")) if x] or [SITE + "img/brand/og-image.jpg"],
         "mainEntityOfPage": url,
@@ -431,6 +433,70 @@ def build_post(html, post, posts, kind="blog"):
     page = make_page(html, post["slug"], fit_title(post.get("seo_title") or post["title"]), post["description"],
                      body, nodes, parent_slug, ["post"])
     return page.replace('<meta property="og:type" content="website" />', '<meta property="og:type" content="article" />', 1)
+
+
+# ---------- author hub ----------
+
+def build_author(html, posts, cases):
+    """/kelvin-wanyoike: who Kelvin is, his live projects and every article he has written, grouped by topic."""
+    e = htmllib.escape
+    text = AUTHOR.read_text(encoding="utf-8")
+    m = re.match(r"\s*<!--(.*?)-->\s*(.*)", text, re.S)
+    info = {k.strip(): v.strip() for k, v in (line.split(":", 1) for line in m.group(1).strip().splitlines() if ":" in line)}
+    groups = {}
+    for p in posts:
+        groups.setdefault(p["tag"], []).append(p)
+    order = sorted(groups, key=lambda g: (-len(groups[g]), g))
+    articles = (
+        '<h2 id="articles">Articles by Kelvin <span class="author-count">%d</span></h2>\n'
+        '<p>Every guide on the <a href="blog">Marzley Tech blog</a> is written by Kelvin, grouped by topic.</p>\n'
+        '<div class="author-topics">\n' % len(posts) +
+        "".join('<section class="author-topic"><h3>%s <span class="author-count">%d</span></h3><ul>%s</ul></section>\n' % (
+            e(g), len(groups[g]), "".join('<li><a href="%s">%s</a> <time datetime="%s">%s</time></li>' % (
+                p["slug"], keep_together(e(p["title"])), p["date"].isoformat(), nice_date(p["date"])) for p in groups[g]))
+            for g in order) +
+        "</div>\n"
+    )
+    content = m.group(2).replace("<!--ARTICLES-->", articles)
+    body = (
+        '        <section class="section post-section author-page" id="author" aria-labelledby="author-title">\n'
+        '            <div class="wrap">\n'
+        '                <nav class="crumbs" aria-label="Breadcrumb"><a href="./">Home</a><span aria-hidden="true">/</span>'
+        '<a href="about">About</a><span aria-hidden="true">/</span><span aria-current="page">Kelvin Wanyoike</span></nav>\n'
+        '                <article class="post author"><div class="post-body">\n' + content + '\n                </div></article>\n'
+        '            </div>\n'
+        '        </section>\n'
+    )
+    slug = "kelvin-wanyoike"
+    url = SITE + slug
+    profile = {
+        "@type": "ProfilePage",
+        "@id": url + "#webpage",
+        "url": url,
+        "name": info["title"],
+        "description": info["description"],
+        "isPartOf": {"@id": SITE + "#website"},
+        "mainEntity": {"@id": SITE + "#kelvin"},
+        "inLanguage": "en-KE",
+    }
+    person = {
+        "@type": "Person",
+        "@id": SITE + "#kelvin",
+        "name": "Kelvin Wanyoike",
+        "alternateName": ["Marzley", "Kelvin G. Wanyoike"],
+        "url": url,
+        "image": SITE + "img/kelvin/office.jpg",
+        "jobTitle": "Web and app developer, SEO specialist, digital skills facilitator and trainer",
+        "homeLocation": {"@type": "Place", "name": "Gatanga and Kenol, Murang'a County, Kenya"},
+        "worksFor": {"@id": SITE + "#business"},
+        "knowsAbout": ["Web development", "Mobile app development", "Search engine optimisation", "M-Pesa integration",
+                       "Digital skills facilitation", "ICT training"],
+        "sameAs": ["https://github.com/marzley", "https://www.linkedin.com/in/kelvin-wanyoike-marzley"],
+        "subjectOf": [{"@type": "CreativeWork", "name": c["title"], "url": SITE + c["slug"]} for c in cases],
+    }
+    nodes = [profile, person, breadcrumbs(("About", "about"), ("Kelvin Wanyoike", slug))]
+    page = make_page(html, slug, fit_title(info["seo_title"]), info["description"], body, nodes, "about", ["author", "articles"])
+    return page.replace('<meta property="og:type" content="website" />', '<meta property="og:type" content="profile" />', 1)
 
 
 def post_faq(body):
@@ -605,7 +671,7 @@ def write_sitemap(posts, cases=()):
     urls = [
         ("", "weekly", "1.0", ["img/brand/og-image.jpg", "img/kelvin/office.jpg", "img/kelvin/office-square.jpg"]),
         ("work", "weekly", "0.9", []), ("services", "monthly", "0.9", []), ("pricing", "monthly", "0.9", []),
-        ("about", "monthly", "0.8", []), ("contact", "monthly", "0.8", []), ("process", "monthly", "0.7", []),
+        ("about", "monthly", "0.8", []), ("kelvin-wanyoike", "weekly", "0.8", ["img/kelvin/office.jpg"]), ("contact", "monthly", "0.8", []), ("process", "monthly", "0.7", []),
         ("training", "monthly", "0.8", []), ("learn/", "weekly", "0.8", []), ("website-check", "monthly", "0.9", []), ("faq", "monthly", "0.7", []), ("user-guide", "monthly", "0.6", ["img/guide/p01.webp"]), ("referrals", "monthly", "0.6", []), ("blog", "weekly", "0.8", []), ("kiswahili", "monthly", "0.7", []),
         ("privacy", "yearly", "0.3", []), ("terms", "yearly", "0.3", []),
     ] + [(p["slug"], "monthly", "0.8", [], p["date"].isoformat()) for p in cases] + [(p["slug"], "monthly", "0.7", [], p["date"].isoformat()) for p in posts]
@@ -691,6 +757,7 @@ def write_llms_txt(posts):
         "- [Pricing](%spricing): website packages and care plans in KSh" % SITE,
         "- [Work](%swork): projects and case studies" % SITE,
         "- [About](%sabout): Kelvin Wanyoike (Marzley) and the company" % SITE,
+        "- [Kelvin Wanyoike](%skelvin-wanyoike): author and founder profile: based in Gatanga and Kenol, Murang'a County; live projects, skills and all articles" % SITE,
         "- [Training](%straining): courses with verifiable certificates" % SITE,
         "- [FAQ](%sfaq)" % SITE,
         "- [Free website check](%swebsite-check)" % SITE,
@@ -894,6 +961,7 @@ def main():
     cases = read_posts(CASES_DIR)
     for case in cases:
         write(case["slug"] + ".html", build_post(home, case, cases, kind="case"))
+    write("kelvin-wanyoike.html", build_author(home, posts, cases))
     write("kiswahili.html", build_kiswahili(home))
     write("404.html", build_404(home))
     write("user-guide.html", build_user_guide(home))

@@ -370,7 +370,7 @@ def build():
                    'answer the questions with instant marking, watch the video and save your progress. It’s free.</p>'
                    '<p><a class="btn btn-solid" href="%s"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside>') % live
             main = ('<article class="lesson static-lesson">%s<div class="lesson-body">%s</div>%s'
-                    '<p class="static-meta">Lesson %d of %d in <a href="%s">%s</a> · <a href="/learn/?book=%s">Printable course notes</a></p>%s</article>') % (
+                    '<p class="static-meta">Lesson %d of %d in <a href="%s">%s</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=%s">Course notes</a></p>%s</article>') % (
                 cta, body, exercise, n + 1, len(lessons), e(lesson_url(t)), e(track["title"]), e(t), pager)
             crumbs = [("Home", "/"), ("Learn", "/learn/"), (track["title"], lesson_url(t)), (l["title"], lesson_url(t, l["slug"]))]
             desc = description(l, track)
@@ -378,7 +378,7 @@ def build():
                 {"@type": "LearningResource", "@id": url + "#lesson", "name": l["title"], "description": desc, "url": url,
                  "learningResourceType": "Lesson", "isAccessibleForFree": True, "inLanguage": "en", "educationalUse": "self-study",
                  "isPartOf": {"@type": "Course", "@id": course_url + "#course", "name": track["title"], "url": course_url},
-                 "author": {"@type": "Person", "@id": SITE + "#kelvin", "name": "Kelvin Wanyoike"},
+                 "author": {"@type": "Person", "@id": SITE + "#kelvin", "name": "Kelvin Wanyoike", "url": SITE + "kelvin-wanyoike"},
                  "publisher": {"@type": "Organization", "@id": SITE + "#business", "name": "Marzley Tech Solutions"}},
                 breadcrumbs(crumbs)]}
             d = tdir / l["slug"]
