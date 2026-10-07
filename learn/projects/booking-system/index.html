@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Project 8: Booking system with staff, durations,…</title>
+    <meta name="description" content="Salons, barbershops, clinics, dentists, physiotherapists, car washes, driving schools, photographers, tutors, event venues and Airbnb hosts all need…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/projects/booking-system/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Project 8: Booking system with staff, durations,…" />
+    <meta property="og:description" content="Salons, barbershops, clinics, dentists, physiotherapists, car washes, driving schools, photographers, tutors, event venues and Airbnb hosts all need…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/projects/booking-system/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Project 8: Booking system with staff, durations,…" />
+    <meta name="twitter:description" content="Salons, barbershops, clinics, dentists, physiotherapists, car washes, driving schools, photographers, tutors, event venues and Airbnb hosts all need…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/projects/booking-system/#lesson","name":"Project 8: Booking system with staff, durations, deposits and reminders","description":"Salons, barbershops, clinics, dentists, physiotherapists, car washes, driving schools, photographers, tutors, event venues and Airbnb hosts all need…","url":"https://marzleytechsolutions.co.ke/learn/projects/booking-system/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/projects/#course","name":"Build real projects (portfolio projects, step by step)","url":"https://marzleytechsolutions.co.ke/learn/projects/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Build real projects (portfolio projects, step by step)","item":"https://marzleytechsolutions.co.ke/learn/projects/"},{"@type":"ListItem","position":4,"name":"Project 8: Booking system with staff, durations, deposits and reminders","item":"https://marzleytechsolutions.co.ke/learn/projects/booking-system/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=96f5d2aab6" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=afcdb5f51a" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/projects/">Build real projects (portfolio projects, step by step)</a> / <span>Project 8: Booking system with staff, durations, deposits and reminders</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=projects&amp;lesson=booking-system"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Project 8: Booking system with staff, durations, deposits and reminders</h1>
+<p>Salons, barbershops, clinics, dentists, physiotherapists, car washes, driving schools, photographers, tutors, event venues and Airbnb hosts all need bookings. The <a href="/learn/php/project-booking-system/">PHP booking lesson</a> builds a simple version with fixed 30-minute slots and one person. This project goes further, the way real businesses work:</p>
+<ul><li><strong>Several staff members</strong>, each with their own working hours and days off</li><li><strong>Services of different lengths</strong> (a haircut is 30 minutes, braids are 3 hours)</li><li><strong>No overlaps</strong>, not just no identical start times</li><li>A <strong>deposit</strong> paid with M-Pesa to reduce no-shows</li><li><strong>Reminders</strong>, cancellations and rescheduling</li><li>An owner <strong>calendar</strong> view</li></ul>
+<p><strong>Lessons you need:</strong> <a href="/learn/php/project-booking-system/">project booking system (PHP)</a>, <a href="/learn/projects/mpesa-payment-system/">M-Pesa payment project</a>, <a href="/learn/sql/indexes-transactions/">indexes and transactions</a>, <a href="/learn/javascript/math-dates-numbers/">dates in JavaScript</a>, <a href="/learn/php/sessions-login/">sessions and login</a>.</p>
+<h2>Step 1: User stories</h2>
+<p><strong>Customer:</strong> choose a service → choose a staff member (or "anyone") → choose a date → see only times that actually fit → enter name and phone → pay a deposit → get a confirmation with a booking code → can cancel or reschedule using the code.</p>
+<p><strong>Staff:</strong> see their own schedule for today and this week; block off time (lunch, leave).</p>
+<p><strong>Owner:</strong> calendar of everyone's bookings; mark bookings done, no-show or cancelled; manage services, prices, staff and hours; see deposits received.</p>
+<h2>Step 2: Database design</h2>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">CREATE TABLE staff (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(80) NOT NULL, phone VARCHAR(15), active TINYINT NOT NULL DEFAULT 1);
+CREATE TABLE services (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(80) NOT NULL, minutes INT NOT NULL, price INT NOT NULL, deposit INT NOT NULL DEFAULT 0);
+CREATE TABLE staff_services (staff_id INT, service_id INT, PRIMARY KEY (staff_id, service_id));   -- who can do what
+CREATE TABLE working_hours (staff_id INT, weekday TINYINT, opens TIME, closes TIME, PRIMARY KEY (staff_id, weekday));  -- 1 = Monday
+CREATE TABLE time_off (id INT AUTO_INCREMENT PRIMARY KEY, staff_id INT, starts_at DATETIME, ends_at DATETIME, reason VARCHAR(100));
+CREATE TABLE bookings (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  code CHAR(6) NOT NULL UNIQUE,
+  staff_id INT NOT NULL, service_id INT NOT NULL,
+  customer VARCHAR(100) NOT NULL, phone VARCHAR(15) NOT NULL,
+  starts_at DATETIME NOT NULL, ends_at DATETIME NOT NULL,
+  status ENUM(&#x27;awaiting_deposit&#x27;,&#x27;confirmed&#x27;,&#x27;done&#x27;,&#x27;no_show&#x27;,&#x27;cancelled&#x27;) NOT NULL DEFAULT &#x27;awaiting_deposit&#x27;,
+  deposit_receipt VARCHAR(20) NULL UNIQUE,
+  reminder_sent TINYINT NOT NULL DEFAULT 0,
+  created_at DATETIME NOT NULL,
+  INDEX (staff_id, starts_at)
+);</code></pre></figure>
+<p>Storing <code>ends_at</code> (start + service minutes) makes overlap checks simple and fast.</p>
+<h2>Step 3: The core algorithm: free times that fit</h2>
+<p>Two time ranges overlap when <strong>each starts before the other ends</strong>:</p>
+<blockquote><p><code>newStart &lt; existingEnd AND existingStart &lt; newEnd</code></p></blockquote>
+<p>This one rule handles every case (inside, around, overlapping the start, overlapping the end). Here's the full availability calculation for one staff member on one day. Run it, then try changing the service length to 120 minutes:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">function toMin(hhmm) { const [h, m] = hhmm.split(&quot;:&quot;).map(Number); return h * 60 + m; }
+function toHHMM(min) { return String(Math.floor(min / 60)).padStart(2, &quot;0&quot;) + &quot;:&quot; + String(min % 60).padStart(2, &quot;0&quot;); }
+function overlaps(aStart, aEnd, bStart, bEnd) { return aStart &lt; bEnd &amp;&amp; bStart &lt; aEnd; }
+
+function freeStarts(opens, closes, busy, serviceMinutes, step = 15) {
+  const out = [];
+  const busyMin = busy.map(b =&gt; [toMin(b[0]), toMin(b[1])]);
+  for (let start = toMin(opens); start + serviceMinutes &lt;= toMin(closes); start += step) {
+    const end = start + serviceMinutes;
+    if (!busyMin.some(([bs, be]) =&gt; overlaps(start, end, bs, be))) out.push(toHHMM(start));
+  }
+  return out;
+}
+
+// Wanjiru works 08:00-17:00. Existing bookings and her lunch break:
+const busy = [[&quot;09:00&quot;, &quot;12:00&quot;], [&quot;13:00&quot;, &quot;13:45&quot;], [&quot;15:30&quot;, &quot;16:00&quot;]];
+console.log(&quot;30-min haircut:&quot;, freeStarts(&quot;08:00&quot;, &quot;17:00&quot;, busy, 30).join(&quot; &quot;));
+console.log(&quot;3-hour braids: &quot;, freeStarts(&quot;08:00&quot;, &quot;17:00&quot;, busy, 180).join(&quot; &quot;) || &quot;no free time today&quot;);</code></pre></figure>
+<p>Notice how a 3-hour service can't start at 12:00 (it would clash with 13:00) even though 12:00 is free. That's the bug simple slot systems have.</p>
+<p>In PHP the logic is identical. Load <code>busy</code> from the database:</p>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">SELECT TIME(starts_at), TIME(ends_at) FROM bookings
+WHERE staff_id = ? AND DATE(starts_at) = ? AND status IN (&#x27;awaiting_deposit&#x27;,&#x27;confirmed&#x27;)
+UNION ALL
+SELECT TIME(starts_at), TIME(ends_at) FROM time_off WHERE staff_id = ? AND DATE(starts_at) = ?;</code></pre></figure>
+<p>For "anyone available", run the calculation for each staff member who offers the service and merge the results (remember which staff member each time belongs to).</p>
+<p>Also hide times in the past, and times too soon to prepare (e.g. not within the next hour).</p>
+<h2>Step 4: Preventing double bookings for real</h2>
+<p>Two customers can load the same free time and both click "Book". The availability check in the browser isn't enough. On the server, <strong>inside a transaction</strong>:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">$pdo-&gt;beginTransaction();
+// Lock this staff member&#x27;s row: other booking attempts for the same staff wait here
+$pdo-&gt;prepare(&#x27;SELECT id FROM staff WHERE id = ? FOR UPDATE&#x27;)-&gt;execute([$staffId]);
+$clash = $pdo-&gt;prepare(&quot;SELECT COUNT(*) FROM bookings WHERE staff_id = ? AND status IN (&#x27;awaiting_deposit&#x27;,&#x27;confirmed&#x27;)
+                        AND starts_at &lt; ? AND ? &lt; ends_at&quot;);
+$clash-&gt;execute([$staffId, $endsAt, $startsAt]);
+if ($clash-&gt;fetchColumn() &gt; 0) { $pdo-&gt;rollBack(); exit(&#x27;Sorry, that time was just taken. Please choose another.&#x27;); }
+$pdo-&gt;prepare(&#x27;INSERT INTO bookings (code, staff_id, service_id, customer, phone, starts_at, ends_at, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())&#x27;)
+    -&gt;execute([$code, $staffId, $serviceId, $name, $phone, $startsAt, $endsAt]);
+$pdo-&gt;commit();</code></pre></figure>
+<p>Locking the staff row serialises bookings for that person, so the overlap check and the insert happen as one step.</p>
+<h2>Step 5: Deposits with M-Pesa</h2>
+<p>No-shows cost small businesses real money. A deposit fixes most of it:</p>
+<ol><li>The booking is created as <code>awaiting_deposit</code> and holds the time for, say, <strong>10 minutes</strong>.</li><li>The customer gets an STK push for the deposit (reuse your <a href="/learn/projects/mpesa-payment-system/">M-Pesa project</a> code; the amount comes from <code>services.deposit</code>).</li><li>The callback marks the booking <code>confirmed</code> and stores the receipt.</li><li>A cron job every few minutes cancels <code>awaiting_deposit</code> bookings older than 10 minutes, freeing the time.</li></ol>
+<p>Write the cancellation and refund policy clearly on the booking page (for example: "Deposit refundable if you cancel at least 24 hours before"). Let the owner decide the rules.</p>
+<h2>Step 6: Confirmation, reminders and self-service</h2>
+<ul><li><strong>Booking code</strong>: 6 characters without confusing ones (no 0/O, 1/I). Show it on screen and send it.</li><li><strong>Messages</strong>: email is free; SMS costs a little through providers such as Africa's Talking; a WhatsApp click-to-chat link with a pre-filled message costs nothing. Send a confirmation immediately and a <strong>reminder</strong> the day before (a cron job finds tomorrow's confirmed bookings where <code>reminder_sent = 0</code>).</li><li><strong>Manage booking page</strong>: enter phone + code → see the booking → cancel or reschedule (rescheduling = check availability again, then update in a transaction).</li><li>Add an <strong>"Add to calendar"</strong> link by generating a small <code>.ics</code> file.</li></ul>
+<h2>Step 7: Owner calendar</h2>
+<p>A day view with one column per staff member and a row per 15 minutes is the most useful screen for a busy salon. Build it with CSS Grid: each booking is a block placed with <code>grid-row: start / span length</code>. Colour by status. On phones, show a simple list per staff member instead.</p>
+<figure class="static-code"><figcaption>CSS</figcaption><pre><code class="language-css">.day { display: grid; grid-template-columns: 60px repeat(var(--staff), 1fr); grid-auto-rows: 18px; }
+.booking { grid-column: var(--col); grid-row: var(--row) / span var(--span); border-radius: 6px; padding: 2px 6px; font-size: .8rem; }
+.booking.confirmed { background: #dcfce7; } .booking.awaiting_deposit { background: #fef9c3; }</code></pre></figure>
+<h2>Step 8: Time zones and dates</h2>
+<p>Store all times in one time zone (Kenya: <code>Africa/Nairobi</code>, UTC+3, no daylight saving). Set it in PHP (<code>date_default_timezone_set</code>) and in MySQL (<code>SET time_zone = &#x27;+03:00&#x27;</code>), or store UTC and convert for display. Mixing them leads to bookings that appear three hours off.</p>
+<h2>Step 9: Tests that matter</h2>
+<ul><li>3-hour service near closing time: must not be offered if it would finish after closing.</li><li>Staff on leave: no times offered.</li><li>Two simultaneous bookings for the same time: one succeeds, one gets the friendly error.</li><li>Deposit not paid within 10 minutes: time becomes free again.</li><li>Cancel with the wrong code: refused.</li><li>Booking in the past (by editing the form): refused on the server.</li></ul>
+<h2>Stretch goals</h2>
+<ul><li>Buffer time between appointments (e.g. 10 minutes to clean up).</li><li>Recurring bookings (a weekly tutoring session).</li><li>Packages and loyalty ("5th haircut free").</li><li>Online reviews after the appointment.</li><li>A <strong>Google Calendar</strong> sync for staff.</li></ul>
+<h2>Summary</h2>
+<ul><li>Store start <strong>and</strong> end; two ranges overlap when each starts before the other ends.</li><li>Compute free start times per staff member from working hours, bookings and time off.</li><li>Prevent double bookings on the server with a transaction and a row lock.</li><li>Deposits via M-Pesa, automatic expiry, reminders and self-service cancellation reduce no-shows.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Complete the overlap rule: aStart &lt; bEnd AND bStart &lt; ___</p><details><summary>Show answer</summary><p>aEnd</p></details></li><li><p>Which booking status holds a time while the customer pays? (as in the table)</p><details><summary>Show answer</summary><p>awaiting_deposit</p></details></li><li><p>What is Kenya's UTC offset? (write like +3)</p><details><summary>Show answer</summary><p>+3</p></details></li><li><p>Which tool runs the job that cancels unpaid bookings every few minutes? (one word)</p><details><summary>Show answer</summary><p>cron</p></details></li></ol></section></div><p class="static-meta">Lesson 9 of 15 in <a href="/learn/projects/">Build real projects (portfolio projects, step by step)</a> · <a href="/learn/?book=projects">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/projects/mpesa-payment-system/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Project 7: M-Pesa payment system (Daraja STK push, callbacks, status checks, receipts)</a><a class="btn btn-solid btn-sm" href="/learn/projects/ecommerce-store/">Project 9: E-commerce store with cart, M-Pesa checkout, orders and admin <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Project 10: Job board with employers, applicants, CV…</title>
+    <meta name="description" content="A job board connects two kinds of users: employers who post jobs and job seekers who search and apply. It&#x27;s a great portfolio project because it has…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/projects/job-board/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Project 10: Job board with employers, applicants, CV…" />
+    <meta property="og:description" content="A job board connects two kinds of users: employers who post jobs and job seekers who search and apply. It&#x27;s a great portfolio project because it has…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/projects/job-board/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Project 10: Job board with employers, applicants, CV…" />
+    <meta name="twitter:description" content="A job board connects two kinds of users: employers who post jobs and job seekers who search and apply. It&#x27;s a great portfolio project because it has…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/projects/job-board/#lesson","name":"Project 10: Job board with employers, applicants, CV uploads and search","description":"A job board connects two kinds of users: employers who post jobs and job seekers who search and apply. It's a great portfolio project because it has…","url":"https://marzleytechsolutions.co.ke/learn/projects/job-board/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/projects/#course","name":"Build real projects (portfolio projects, step by step)","url":"https://marzleytechsolutions.co.ke/learn/projects/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Build real projects (portfolio projects, step by step)","item":"https://marzleytechsolutions.co.ke/learn/projects/"},{"@type":"ListItem","position":4,"name":"Project 10: Job board with employers, applicants, CV uploads and search","item":"https://marzleytechsolutions.co.ke/learn/projects/job-board/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=96f5d2aab6" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=afcdb5f51a" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/projects/">Build real projects (portfolio projects, step by step)</a> / <span>Project 10: Job board with employers, applicants, CV uploads and search</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=projects&amp;lesson=job-board"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Project 10: Job board with employers, applicants, CV uploads and search</h1>
+<p>A job board connects two kinds of users: <strong>employers</strong> who post jobs and <strong>job seekers</strong> who search and apply. It's a great portfolio project because it has two user roles with different permissions, search with filters, file uploads (CVs), notifications and moderation. You could build a niche board that's genuinely useful: attachments and internships for students, casual jobs in one town, remote tech jobs, NGO jobs, or hospitality jobs.</p>
+<p><strong>You'll practise:</strong> multi-role authentication, authorisation (who can see what), search and filtering with SQL, secure file uploads, email notifications, pagination and SEO for listings.</p>
+<p><strong>Lessons you need:</strong> <a href="/learn/projects/blog-cms/">the blog project</a>, <a href="/learn/php/file-uploads/">file uploads</a>, <a href="/learn/php/sessions-login/">sessions and login</a>, <a href="/learn/sql/where-order/">WHERE and ORDER BY</a>, <a href="/learn/sql/joins/">JOINs</a>, <a href="/learn/cybersecurity/web-security/">web security</a>.</p>
+<h2>Step 1: Roles and what they can do</h2>
+<div class="static-table"><table><thead><tr><th>Action</th><th>Visitor</th><th>Job seeker</th><th>Employer</th><th>Admin</th></tr></thead><tbody><tr><td>Search and view open jobs</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr><tr><td>Apply with CV and cover letter</td><td></td><td>Yes</td><td></td><td></td></tr><tr><td>See own applications and their status</td><td></td><td>Yes</td><td></td><td></td></tr><tr><td>Post, edit and close jobs</td><td></td><td></td><td>Yes (own only)</td><td>Yes</td></tr><tr><td>See applicants for a job and download CVs</td><td></td><td></td><td>Yes (own jobs only)</td><td>Yes</td></tr><tr><td>Approve employers, remove fake jobs</td><td></td><td></td><td></td><td>Yes</td></tr></tbody></table></div>
+<p>The phrase <strong>"own only"</strong> is where most security bugs in job boards hide. Every query that loads a job's applicants must check that the job belongs to the logged-in employer.</p>
+<h2>Step 2: Database</h2>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(190) NOT NULL UNIQUE, password_hash VARCHAR(255) NOT NULL,
+  name VARCHAR(100) NOT NULL, role ENUM(&#x27;seeker&#x27;,&#x27;employer&#x27;,&#x27;admin&#x27;) NOT NULL, created_at DATETIME NOT NULL
+);
+CREATE TABLE companies (
+  id INT AUTO_INCREMENT PRIMARY KEY, owner_id INT NOT NULL UNIQUE, name VARCHAR(150) NOT NULL, website VARCHAR(255),
+  verified TINYINT NOT NULL DEFAULT 0, FOREIGN KEY (owner_id) REFERENCES users(id)
+);
+CREATE TABLE jobs (
+  id INT AUTO_INCREMENT PRIMARY KEY, company_id INT NOT NULL, title VARCHAR(150) NOT NULL, slug VARCHAR(170) NOT NULL UNIQUE,
+  county VARCHAR(50) NOT NULL, type ENUM(&#x27;full-time&#x27;,&#x27;part-time&#x27;,&#x27;contract&#x27;,&#x27;internship&#x27;,&#x27;attachment&#x27;,&#x27;remote&#x27;) NOT NULL,
+  category VARCHAR(60) NOT NULL, salary_min INT NULL, salary_max INT NULL, description TEXT NOT NULL,
+  closes_on DATE NOT NULL, status ENUM(&#x27;pending&#x27;,&#x27;open&#x27;,&#x27;closed&#x27;,&#x27;rejected&#x27;) NOT NULL DEFAULT &#x27;pending&#x27;, created_at DATETIME NOT NULL,
+  FOREIGN KEY (company_id) REFERENCES companies(id), INDEX (status, closes_on), FULLTEXT (title, description)
+);
+CREATE TABLE applications (
+  id INT AUTO_INCREMENT PRIMARY KEY, job_id INT NOT NULL, seeker_id INT NOT NULL, cv_file VARCHAR(100) NOT NULL,
+  cover_letter TEXT, status ENUM(&#x27;received&#x27;,&#x27;shortlisted&#x27;,&#x27;interview&#x27;,&#x27;rejected&#x27;,&#x27;hired&#x27;) NOT NULL DEFAULT &#x27;received&#x27;,
+  created_at DATETIME NOT NULL, UNIQUE (job_id, seeker_id),
+  FOREIGN KEY (job_id) REFERENCES jobs(id), FOREIGN KEY (seeker_id) REFERENCES users(id)
+);</code></pre></figure>
+<p><code>UNIQUE (job_id, seeker_id)</code> stops someone applying twice to the same job.</p>
+<h2>Step 3: Search with filters</h2>
+<p>The search page combines optional filters: keyword, county, type, category and minimum salary. Try the queries on a small dataset here:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE TABLE jobs (id INTEGER PRIMARY KEY, title TEXT, company TEXT, county TEXT, type TEXT, category TEXT,
+                   salary_min INTEGER, closes_on TEXT, status TEXT);
+INSERT INTO jobs VALUES
+ (1, &#x27;Junior Web Developer&#x27;, &#x27;Duka Digital&#x27;, &#x27;Nairobi&#x27;, &#x27;full-time&#x27;, &#x27;ICT&#x27;, 45000, &#x27;2026-11-30&#x27;, &#x27;open&#x27;),
+ (2, &#x27;ICT Attachment (3 months)&#x27;, &#x27;County Government&#x27;, &#x27;Nakuru&#x27;, &#x27;attachment&#x27;, &#x27;ICT&#x27;, NULL, &#x27;2026-10-31&#x27;, &#x27;open&#x27;),
+ (3, &#x27;Data Clerk&#x27;, &#x27;Afya Clinic&#x27;, &#x27;Kisumu&#x27;, &#x27;contract&#x27;, &#x27;Data&#x27;, 30000, &#x27;2026-10-20&#x27;, &#x27;open&#x27;),
+ (4, &#x27;Accounts Assistant&#x27;, &#x27;Mavuno SACCO&#x27;, &#x27;Nakuru&#x27;, &#x27;full-time&#x27;, &#x27;Finance&#x27;, 35000, &#x27;2026-09-30&#x27;, &#x27;open&#x27;),
+ (5, &#x27;Remote Customer Support Agent&#x27;, &#x27;HelpCo&#x27;, &#x27;Remote&#x27;, &#x27;remote&#x27;, &#x27;Support&#x27;, 40000, &#x27;2026-12-15&#x27;, &#x27;open&#x27;),
+ (6, &#x27;IT Support Technician&#x27;, &#x27;Shule Bora&#x27;, &#x27;Nakuru&#x27;, &#x27;full-time&#x27;, &#x27;ICT&#x27;, NULL, &#x27;2026-11-15&#x27;, &#x27;pending&#x27;);
+
+-- Open ICT jobs in Nakuru that haven&#x27;t closed (pretend today is 2026-10-07)
+SELECT title, company, type, COALESCE(salary_min, &#x27;Not stated&#x27;) AS salary_from, closes_on
+FROM jobs
+WHERE status = &#x27;open&#x27; AND closes_on &gt;= &#x27;2026-10-07&#x27;
+  AND category = &#x27;ICT&#x27; AND county = &#x27;Nakuru&#x27;
+ORDER BY closes_on;</code></pre></figure>
+<p>Notice job 4 (closed date passed) and job 6 (pending approval) are correctly hidden. Try changing the filters: remove the county condition, or search titles with <code>title LIKE &#x27;%support%&#x27;</code>.</p>
+<p>In PHP, build the WHERE clause from only the filters the user chose, <strong>still using placeholders</strong>:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">$where = [&quot;status = &#x27;open&#x27;&quot;, &#x27;closes_on &gt;= CURDATE()&#x27;];
+$params = [];
+if (($q = trim($_GET[&#x27;q&#x27;] ?? &#x27;&#x27;)) !== &#x27;&#x27;) { $where[] = &#x27;MATCH(title, description) AGAINST (?)&#x27;; $params[] = $q; }
+if (!empty($_GET[&#x27;county&#x27;])) { $where[] = &#x27;county = ?&#x27;; $params[] = $_GET[&#x27;county&#x27;]; }
+if (in_array($_GET[&#x27;type&#x27;] ?? &#x27;&#x27;, [&#x27;full-time&#x27;,&#x27;part-time&#x27;,&#x27;contract&#x27;,&#x27;internship&#x27;,&#x27;attachment&#x27;,&#x27;remote&#x27;], true)) { $where[] = &#x27;type = ?&#x27;; $params[] = $_GET[&#x27;type&#x27;]; }
+if (($min = (int)($_GET[&#x27;min_salary&#x27;] ?? 0)) &gt; 0) { $where[] = &#x27;salary_max &gt;= ?&#x27;; $params[] = $min; }
+$sql = &#x27;SELECT j.*, c.name AS company FROM jobs j JOIN companies c ON c.id = j.company_id WHERE &#x27; . implode(&#x27; AND &#x27;, $where)
+     . &#x27; ORDER BY j.created_at DESC LIMIT 20 OFFSET &#x27; . max(0, ((int)($_GET[&#x27;page&#x27;] ?? 1) - 1) * 20);
+$stmt = $pdo-&gt;prepare($sql);
+$stmt-&gt;execute($params);</code></pre></figure>
+<p>Only fixed strings you wrote go into the SQL text; every user value goes through <code>?</code>. The OFFSET is safe because it's forced to an integer.</p>
+<p>Keep the filters in the URL (<code>?q=developer&amp;county=Nakuru&amp;type=internship</code>) so searches can be shared and bookmarked.</p>
+<h2>Step 4: Applying with a CV (secure uploads)</h2>
+<p>CV uploads are an attack route: someone could upload a PHP file disguised as a PDF. Rules:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">$f = $_FILES[&#x27;cv&#x27;] ?? null;
+if (!$f || $f[&#x27;error&#x27;] !== UPLOAD_ERR_OK) exit(&#x27;Please attach your CV.&#x27;);
+if ($f[&#x27;size&#x27;] &gt; 2 * 1024 * 1024) exit(&#x27;CV must be under 2 MB.&#x27;);
+$type = (new finfo(FILEINFO_MIME_TYPE))-&gt;file($f[&#x27;tmp_name&#x27;]);
+$allowed = [&#x27;application/pdf&#x27; =&gt; &#x27;pdf&#x27;, &#x27;application/vnd.openxmlformats-officedocument.wordprocessingml.document&#x27; =&gt; &#x27;docx&#x27;];
+if (!isset($allowed[$type])) exit(&#x27;Upload a PDF or Word (.docx) file.&#x27;);
+$name = bin2hex(random_bytes(16)) . &#x27;.&#x27; . $allowed[$type];
+move_uploaded_file($f[&#x27;tmp_name&#x27;], &#x27;/home/youruser/cv-uploads/&#x27; . $name);   // OUTSIDE the public web folder</code></pre></figure>
+<ul><li>Check the <strong>real type</strong> with <code>finfo</code>, not the filename.</li><li><strong>Rename</strong> to a random name; never use the uploaded filename on disk.</li><li>Store CVs <strong>outside</strong> <code>public_html</code>, and serve them through a PHP script that checks permission:</li></ul>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">// download-cv.php?application=123
+$stmt = $pdo-&gt;prepare(&#x27;SELECT a.cv_file FROM applications a JOIN jobs j ON j.id = a.job_id JOIN companies c ON c.id = j.company_id
+                       WHERE a.id = ? AND c.owner_id = ?&#x27;);
+$stmt-&gt;execute([(int)$_GET[&#x27;application&#x27;], $_SESSION[&#x27;user_id&#x27;]]);
+$file = $stmt-&gt;fetchColumn() ?: exit(&#x27;Not found&#x27;);
+header(&#x27;Content-Type: &#x27; . (str_ends_with($file, &#x27;.pdf&#x27;) ? &#x27;application/pdf&#x27; : &#x27;application/octet-stream&#x27;));
+header(&#x27;Content-Disposition: attachment; filename=&quot;cv-&#x27; . (int)$_GET[&#x27;application&#x27;] . substr($file, strrpos($file, &#x27;.&#x27;)) . &#x27;&quot;&#x27;);
+readfile(&#x27;/home/youruser/cv-uploads/&#x27; . $file);</code></pre></figure>
+<p>The JOIN with <code>c.owner_id = ?</code> is the "own jobs only" rule in action: an employer who changes the number in the URL gets "Not found".</p>
+<h2>Step 5: Employer dashboard</h2>
+<ul><li>Post a job (status <code>pending</code> until an admin approves, to stop scams).</li><li>My jobs: views count, number of applicants, close early, duplicate.</li><li>Applicants list per job with status buttons (shortlist, interview, reject, hire). Changing status can email the applicant.</li></ul>
+<h2>Step 6: Job seeker dashboard</h2>
+<ul><li>Profile with a default CV.</li><li>My applications with live status.</li><li>Saved jobs and <strong>job alerts</strong>: "email me new ICT jobs in Nakuru". A daily cron job runs each saved search and emails new matches.</li></ul>
+<h2>Step 7: Fighting fake jobs</h2>
+<p>Fake job adverts are a serious problem in Kenya. Build protections in:</p>
+<ul><li>New employers start <strong>unverified</strong>; their jobs need admin approval.</li><li>Block words like "registration fee", "pay to apply" and "training fee" in job descriptions and flag them for review.</li><li>A <strong>Report this job</strong> button.</li><li>A clear notice on every job page: <em>"Never pay to apply for a job. Report any employer who asks for money."</em></li></ul>
+<h2>Step 8: SEO for job listings</h2>
+<p>Google can show jobs in a special search feature if you add <strong>JobPosting</strong> structured data:</p>
+<figure class="static-code"><figcaption>HTML</figcaption><pre><code class="language-html">&lt;script type=&quot;application/ld+json&quot;&gt;
+{
+  &quot;@context&quot;: &quot;https://schema.org/&quot;,
+  &quot;@type&quot;: &quot;JobPosting&quot;,
+  &quot;title&quot;: &quot;Junior Web Developer&quot;,
+  &quot;description&quot;: &quot;&lt;p&gt;Build and maintain websites for our clients…&lt;/p&gt;&quot;,
+  &quot;datePosted&quot;: &quot;2026-10-01&quot;,
+  &quot;validThrough&quot;: &quot;2026-11-30T23:59&quot;,
+  &quot;employmentType&quot;: &quot;FULL_TIME&quot;,
+  &quot;hiringOrganization&quot;: { &quot;@type&quot;: &quot;Organization&quot;, &quot;name&quot;: &quot;Duka Digital&quot; },
+  &quot;jobLocation&quot;: { &quot;@type&quot;: &quot;Place&quot;, &quot;address&quot;: { &quot;@type&quot;: &quot;PostalAddress&quot;, &quot;addressLocality&quot;: &quot;Nairobi&quot;, &quot;addressCountry&quot;: &quot;KE&quot; } }
+}
+&lt;/script&gt;</code></pre></figure>
+<p>Remove or mark closed jobs promptly; expired listings with structured data can hurt your site.</p>
+<h2>Step 9: Tests</h2>
+<ul><li>Employer A tries to view applicants for employer B's job: refused</li><li>Seeker uploads <code>cv.pdf.php</code> or a renamed <code>.exe</code>: refused</li><li>Apply twice: refused with a friendly message</li><li>Closed and pending jobs never appear in search</li><li>Search with a quote or <code>%</code> character works and doesn't break the SQL</li></ul>
+<h2>Stretch goals</h2>
+<ul><li>One-click apply using the profile CV; application tracking with notes for employers.</li><li>Salary insights page (average advertised salary by category, with honest caveats).</li><li>An API for jobs (combine with the <a href="/learn/projects/rest-api/">REST API project</a>).</li><li>M-Pesa payment for "featured" job posts.</li></ul>
+<h2>Summary</h2>
+<ul><li>Two roles with different powers; "own only" checks on every query.</li><li>Search with optional filters built safely with placeholders; filters kept in the URL.</li><li>CVs: real type check, random names, stored outside the web root, served through a permission check.</li><li>Moderation and clear warnings protect users from fake jobs; JobPosting markup helps SEO.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which constraint stops a seeker applying twice to the same job? (one word)</p><details><summary>Show answer</summary><p>UNIQUE</p></details></li><li><p>Which PHP class checks a file's real type? (name the class)</p><details><summary>Show answer</summary><p>finfo</p></details></li><li><p>Should uploaded CVs be stored inside or outside public_html?</p><details><summary>Show answer</summary><p>outside</p></details></li><li><p>Which schema.org type describes a job advert for Google?</p><details><summary>Show answer</summary><p>JobPosting</p></details></li></ol></section></div><p class="static-meta">Lesson 11 of 15 in <a href="/learn/projects/">Build real projects (portfolio projects, step by step)</a> · <a href="/learn/?book=projects">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/projects/ecommerce-store/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Project 9: E-commerce store with cart, M-Pesa checkout, orders and admin</a><a class="btn btn-solid btn-sm" href="/learn/projects/school-management-system/">Project 11: School management system (students, classes, marks, report cards, fees) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

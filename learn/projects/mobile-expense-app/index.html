@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Project 13: Mobile expense tracker app with Flutter…</title>
+    <meta name="description" content="Where does the money go? Fare, lunch, airtime, data bundles, rent, chama contributions, M-Pesa charges… An expense tracker is a perfect first real app…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/projects/mobile-expense-app/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Project 13: Mobile expense tracker app with Flutter…" />
+    <meta property="og:description" content="Where does the money go? Fare, lunch, airtime, data bundles, rent, chama contributions, M-Pesa charges… An expense tracker is a perfect first real app…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/projects/mobile-expense-app/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Project 13: Mobile expense tracker app with Flutter…" />
+    <meta name="twitter:description" content="Where does the money go? Fare, lunch, airtime, data bundles, rent, chama contributions, M-Pesa charges… An expense tracker is a perfect first real app…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/projects/mobile-expense-app/#lesson","name":"Project 13: Mobile expense tracker app with Flutter (offline storage, categories, budget, charts)","description":"Where does the money go? Fare, lunch, airtime, data bundles, rent, chama contributions, M-Pesa charges… An expense tracker is a perfect first real app…","url":"https://marzleytechsolutions.co.ke/learn/projects/mobile-expense-app/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/projects/#course","name":"Build real projects (portfolio projects, step by step)","url":"https://marzleytechsolutions.co.ke/learn/projects/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Build real projects (portfolio projects, step by step)","item":"https://marzleytechsolutions.co.ke/learn/projects/"},{"@type":"ListItem","position":4,"name":"Project 13: Mobile expense tracker app with Flutter (offline storage, categories, budget, charts)","item":"https://marzleytechsolutions.co.ke/learn/projects/mobile-expense-app/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=96f5d2aab6" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=afcdb5f51a" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/projects/">Build real projects (portfolio projects, step by step)</a> / <span>Project 13: Mobile expense tracker app with Flutter (offline storage, categories, budget, charts)</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=projects&amp;lesson=mobile-expense-app"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Project 13: Mobile expense tracker app with Flutter</h1>
+<p>Where does the money go? Fare, lunch, airtime, data bundles, rent, chama contributions, M-Pesa charges… An expense tracker is a perfect first real app: useful every day, works <strong>offline</strong>, and teaches the core of mobile development (screens, forms, lists, state, local storage and simple charts). Kenyan touches such as M-Pesa transaction costs and a monthly budget make it stand out from generic tutorials.</p>
+<p><strong>You'll practise:</strong> Dart classes and JSON, Flutter widgets and layout, forms with validation, state with <code>setState</code> (then Provider), saving data on the device, totals and a simple bar chart, and publishing.</p>
+<p><strong>Lessons you need:</strong> <a href="/learn/dart-flutter/dart-classes-async/">Dart classes and async</a>, <a href="/learn/flutter/widgets-stateless-stateful/">Flutter widgets</a>, <a href="/learn/flutter/lists-grids/">lists and grids</a>, <a href="/learn/flutter/forms-validation/">forms and validation</a>, <a href="/learn/flutter/state-management/">state management</a>, <a href="/learn/flutter/local-storage-offline/">local storage and offline</a>, <a href="/learn/flutter/testing-release/">testing and release</a>. See the <a href="/learn/career-roadmaps/mobile-app-developer-roadmap/">mobile app developer roadmap</a>.</p>
+<h2>Step 1: Plan the app</h2>
+<p><strong>Screens:</strong></p>
+<ol><li><strong>Home</strong>: this month's total, budget progress bar, spending by category (bar chart), list of recent expenses.</li><li><strong>Add/edit expense</strong>: amount, category, note, date, payment method (M-Pesa / cash / card).</li><li><strong>Settings</strong> (could): monthly budget, export to CSV.</li></ol>
+<p><strong>Data:</strong> an <code>Expense</code> has an id, amount (whole shillings), category, note, date and method.</p>
+<p><strong>Categories:</strong> Food, Transport, Airtime &amp; data, Rent &amp; bills, Shopping, Chama &amp; savings, Entertainment, Other.</p>
+<h2>Step 2: The model and the logic in pure Dart</h2>
+<p>Start with the logic, without any UI. It's easier to test, and you can run this with <code>dart run</code> (or paste it into DartPad):</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">class Expense {
+  final String id;
+  final int amount; // whole shillings
+  final String category;
+  final String note;
+  final DateTime date;
+  final String method; // mpesa, cash, card
+
+  Expense({required this.id, required this.amount, required this.category, this.note = &#x27;&#x27;, required this.date, this.method = &#x27;mpesa&#x27;});
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+        &#x27;id&#x27;: id, &#x27;amount&#x27;: amount, &#x27;category&#x27;: category, &#x27;note&#x27;: note,
+        &#x27;date&#x27;: date.toIso8601String(), &#x27;method&#x27;: method,
+      };
+
+  factory Expense.fromJson(Map&lt;String, dynamic&gt; j) =&gt; Expense(
+        id: j[&#x27;id&#x27;] as String,
+        amount: j[&#x27;amount&#x27;] as int,
+        category: j[&#x27;category&#x27;] as String,
+        note: (j[&#x27;note&#x27;] ?? &#x27;&#x27;) as String,
+        date: DateTime.parse(j[&#x27;date&#x27;] as String),
+        method: (j[&#x27;method&#x27;] ?? &#x27;mpesa&#x27;) as String,
+      );
+}
+
+/// Total for one month.
+int monthTotal(List&lt;Expense&gt; all, int year, int month) =&gt;
+    all.where((e) =&gt; e.date.year == year &amp;&amp; e.date.month == month).fold(0, (sum, e) =&gt; sum + e.amount);
+
+/// Totals by category for one month, biggest first.
+List&lt;MapEntry&lt;String, int&gt;&gt; byCategory(List&lt;Expense&gt; all, int year, int month) {
+  final totals = &lt;String, int&gt;{};
+  for (final e in all.where((e) =&gt; e.date.year == year &amp;&amp; e.date.month == month)) {
+    totals[e.category] = (totals[e.category] ?? 0) + e.amount;
+  }
+  return totals.entries.toList()..sort((a, b) =&gt; b.value.compareTo(a.value));
+}
+
+String ksh(int n) {
+  final s = n.toString();
+  final buf = StringBuffer();
+  for (var i = 0; i &lt; s.length; i++) {
+    if (i &gt; 0 &amp;&amp; (s.length - i) % 3 == 0) buf.write(&#x27;,&#x27;);
+    buf.write(s[i]);
+  }
+  return &#x27;KSh $buf&#x27;;
+}
+
+void main() {
+  final list = [
+    Expense(id: &#x27;1&#x27;, amount: 150, category: &#x27;Transport&#x27;, note: &#x27;Matatu to town&#x27;, date: DateTime(2026, 10, 1)),
+    Expense(id: &#x27;2&#x27;, amount: 1000, category: &#x27;Airtime &amp; data&#x27;, note: &#x27;Monthly bundle&#x27;, date: DateTime(2026, 10, 2)),
+    Expense(id: &#x27;3&#x27;, amount: 350, category: &#x27;Food&#x27;, note: &#x27;Lunch&#x27;, date: DateTime(2026, 10, 2), method: &#x27;cash&#x27;),
+    Expense(id: &#x27;4&#x27;, amount: 12500, category: &#x27;Rent &amp; bills&#x27;, note: &#x27;Rent&#x27;, date: DateTime(2026, 10, 5)),
+    Expense(id: &#x27;5&#x27;, amount: 2000, category: &#x27;Chama &amp; savings&#x27;, date: DateTime(2026, 10, 6)),
+    Expense(id: &#x27;6&#x27;, amount: 900, category: &#x27;Food&#x27;, note: &#x27;Groceries&#x27;, date: DateTime(2026, 9, 28)),
+  ];
+  print(&#x27;October total: ${ksh(monthTotal(list, 2026, 10))}&#x27;);
+  for (final e in byCategory(list, 2026, 10)) {
+    print(&#x27;  ${e.key.padRight(16)} ${ksh(e.value)}&#x27;);
+  }
+  final budget = 20000;
+  final spent = monthTotal(list, 2026, 10);
+  print(&#x27;Budget used: ${(100 * spent / budget).toStringAsFixed(0)}%&#x27;);
+
+  // JSON round trip, exactly what we will save on the phone
+  final saved = list.map((e) =&gt; e.toJson()).toList();
+  final loaded = saved.map(Expense.fromJson).toList();
+  print(&#x27;Saved and loaded ${loaded.length} expenses; first note: ${loaded.first.note}&#x27;);
+}</code></pre></figure>
+<h2>Step 3: Create the Flutter project</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">flutter create expense_tracker
+cd expense_tracker
+flutter pub add shared_preferences
+flutter run</code></pre></figure>
+<p><code>shared_preferences</code> stores small amounts of data (we'll save the expense list as JSON). For thousands of records or complex queries, move to <code>sqflite</code> (SQLite) later; see <a href="/learn/flutter/local-storage-offline/">local storage and offline</a>.</p>
+<h2>Step 4: The app (version 1)</h2>
+<p>Put the <code>Expense</code> class and helper functions from Step 2 in <code>lib/expense.dart</code> (without <code>main</code>). Then this is a complete, working <code>lib/main.dart</code>: home screen with total, budget bar, category bars and a list; an add form; swipe to delete; data saved on the phone.</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;dart:convert&#x27;;
+import &#x27;package:flutter/material.dart&#x27;;
+import &#x27;package:shared_preferences/shared_preferences.dart&#x27;;
+
+class Expense {
+  final String id;
+  final int amount;
+  final String category;
+  final String note;
+  final DateTime date;
+
+  Expense({required this.id, required this.amount, required this.category, this.note = &#x27;&#x27;, required this.date});
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {&#x27;id&#x27;: id, &#x27;amount&#x27;: amount, &#x27;category&#x27;: category, &#x27;note&#x27;: note, &#x27;date&#x27;: date.toIso8601String()};
+
+  factory Expense.fromJson(Map&lt;String, dynamic&gt; j) =&gt; Expense(
+        id: j[&#x27;id&#x27;] as String,
+        amount: j[&#x27;amount&#x27;] as int,
+        category: j[&#x27;category&#x27;] as String,
+        note: (j[&#x27;note&#x27;] ?? &#x27;&#x27;) as String,
+        date: DateTime.parse(j[&#x27;date&#x27;] as String),
+      );
+}
+
+const categories = [&#x27;Food&#x27;, &#x27;Transport&#x27;, &#x27;Airtime &amp; data&#x27;, &#x27;Rent &amp; bills&#x27;, &#x27;Shopping&#x27;, &#x27;Chama &amp; savings&#x27;, &#x27;Entertainment&#x27;, &#x27;Other&#x27;];
+
+void main() =&gt; runApp(const ExpenseApp());
+
+class ExpenseApp extends StatelessWidget {
+  const ExpenseApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: &#x27;Expense Tracker&#x27;,
+      theme: ThemeData(colorSchemeSeed: Colors.green, useMaterial3: true),
+      darkTheme: ThemeData(colorSchemeSeed: Colors.green, brightness: Brightness.dark, useMaterial3: true),
+      home: const HomeScreen(),
+    );
+  }
+}
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State&lt;HomeScreen&gt; createState() =&gt; _HomeScreenState();
+}
+
+class _HomeScreenState extends State&lt;HomeScreen&gt; {
+  static const _key = &#x27;expenses_v1&#x27;;
+  final int budget = 20000;
+  List&lt;Expense&gt; expenses = [];
+  bool loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future&lt;void&gt; _load() async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString(_key);
+    final list = raw == null ? &lt;Expense&gt;[] : (jsonDecode(raw) as List).map((j) =&gt; Expense.fromJson(j as Map&lt;String, dynamic&gt;)).toList();
+    setState(() {
+      expenses = list..sort((a, b) =&gt; b.date.compareTo(a.date));
+      loading = false;
+    });
+  }
+
+  Future&lt;void&gt; _save() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_key, jsonEncode(expenses.map((e) =&gt; e.toJson()).toList()));
+  }
+
+  void _add(Expense e) {
+    setState(() =&gt; expenses = [e, ...expenses]..sort((a, b) =&gt; b.date.compareTo(a.date)));
+    _save();
+  }
+
+  void _delete(Expense e) {
+    setState(() =&gt; expenses.remove(e));
+    _save();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(&#x27;Deleted ${e.category} expense&#x27;),
+      action: SnackBarAction(label: &#x27;UNDO&#x27;, onPressed: () =&gt; _add(e)),
+    ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final thisMonth = expenses.where((e) =&gt; e.date.year == now.year &amp;&amp; e.date.month == now.month).toList();
+    final total = thisMonth.fold&lt;int&gt;(0, (s, e) =&gt; s + e.amount);
+    final totals = &lt;String, int&gt;{};
+    for (final e in thisMonth) {
+      totals[e.category] = (totals[e.category] ?? 0) + e.amount;
+    }
+    final sorted = totals.entries.toList()..sort((a, b) =&gt; b.value.compareTo(a.value));
+    final used = budget == 0 ? 0.0 : (total / budget).clamp(0.0, 1.0);
+
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;My expenses&#x27;)),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () async {
+          final e = await Navigator.push&lt;Expense&gt;(context, MaterialPageRoute(builder: (_) =&gt; const AddExpenseScreen()));
+          if (e != null) _add(e);
+        },
+        icon: const Icon(Icons.add),
+        label: const Text(&#x27;Add&#x27;),
+      ),
+      body: loading
+          ? const Center(child: CircularProgressIndicator())
+          : ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                Text(&#x27;This month&#x27;, style: Theme.of(context).textTheme.titleMedium),
+                Text(&#x27;KSh $total&#x27;, style: Theme.of(context).textTheme.displaySmall),
+                const SizedBox(height: 8),
+                LinearProgressIndicator(value: used, minHeight: 10, color: used &gt; 0.9 ? Colors.red : null),
+                Text(&#x27;${(used * 100).round()}% of KSh $budget budget&#x27;),
+                const SizedBox(height: 24),
+                for (final c in sorted) _CategoryBar(name: c.key, amount: c.value, max: sorted.first.value),
+                const Divider(height: 32),
+                if (expenses.isEmpty) const Text(&#x27;No expenses yet. Tap Add to record your first one.&#x27;),
+                for (final e in expenses)
+                  Dismissible(
+                    key: ValueKey(e.id),
+                    background: Container(color: Colors.red, alignment: Alignment.centerRight, padding: const EdgeInsets.only(right: 16), child: const Icon(Icons.delete, color: Colors.white)),
+                    direction: DismissDirection.endToStart,
+                    onDismissed: (_) =&gt; _delete(e),
+                    child: ListTile(
+                      title: Text(e.note.isEmpty ? e.category : e.note),
+                      subtitle: Text(&#x27;${e.category} · ${e.date.day}/${e.date.month}/${e.date.year}&#x27;),
+                      trailing: Text(&#x27;KSh ${e.amount}&#x27;, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  ),
+              ],
+            ),
+    );
+  }
+}
+
+class _CategoryBar extends StatelessWidget {
+  final String name;
+  final int amount;
+  final int max;
+  const _CategoryBar({required this.name, required this.amount, required this.max});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(children: [
+        SizedBox(width: 120, child: Text(name, overflow: TextOverflow.ellipsis)),
+        Expanded(
+          child: FractionallySizedBox(
+            alignment: Alignment.centerLeft,
+            widthFactor: max == 0 ? 0 : amount / max,
+            child: Container(height: 14, decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary, borderRadius: BorderRadius.circular(4))),
+          ),
+        ),
+        SizedBox(width: 80, child: Text(&#x27;KSh $amount&#x27;, textAlign: TextAlign.right)),
+      ]),
+    );
+  }
+}
+
+class AddExpenseScreen extends StatefulWidget {
+  const AddExpenseScreen({super.key});
+
+  @override
+  State&lt;AddExpenseScreen&gt; createState() =&gt; _AddExpenseScreenState();
+}
+
+class _AddExpenseScreenState extends State&lt;AddExpenseScreen&gt; {
+  final _form = GlobalKey&lt;FormState&gt;();
+  final _amount = TextEditingController();
+  final _note = TextEditingController();
+  String _category = categories.first;
+  DateTime _date = DateTime.now();
+
+  @override
+  void dispose() {
+    _amount.dispose();
+    _note.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;Add expense&#x27;)),
+      body: Form(
+        key: _form,
+        child: ListView(padding: const EdgeInsets.all(16), children: [
+          TextFormField(
+            controller: _amount,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(labelText: &#x27;Amount (KSh)&#x27;, border: OutlineInputBorder()),
+            validator: (v) {
+              final n = int.tryParse((v ?? &#x27;&#x27;).replaceAll(&#x27;,&#x27;, &#x27;&#x27;));
+              if (n == null || n &lt;= 0) return &#x27;Enter an amount greater than 0&#x27;;
+              if (n &gt; 10000000) return &#x27;That looks too large&#x27;;
+              return null;
+            },
+          ),
+          const SizedBox(height: 16),
+          DropdownButtonFormField&lt;String&gt;(
+            value: _category,
+            decoration: const InputDecoration(labelText: &#x27;Category&#x27;, border: OutlineInputBorder()),
+            items: [for (final c in categories) DropdownMenuItem(value: c, child: Text(c))],
+            onChanged: (v) =&gt; setState(() =&gt; _category = v ?? _category),
+          ),
+          const SizedBox(height: 16),
+          TextFormField(controller: _note, decoration: const InputDecoration(labelText: &#x27;Note (optional)&#x27;, border: OutlineInputBorder())),
+          const SizedBox(height: 16),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(&#x27;Date: ${_date.day}/${_date.month}/${_date.year}&#x27;),
+            trailing: const Icon(Icons.calendar_today),
+            onTap: () async {
+              final d = await showDatePicker(context: context, initialDate: _date, firstDate: DateTime(2020), lastDate: DateTime.now());
+              if (d != null) setState(() =&gt; _date = d);
+            },
+          ),
+          const SizedBox(height: 24),
+          FilledButton(
+            onPressed: () {
+              if (!_form.currentState!.validate()) return;
+              Navigator.pop(context, Expense(
+                id: DateTime.now().microsecondsSinceEpoch.toString(),
+                amount: int.parse(_amount.text.replaceAll(&#x27;,&#x27;, &#x27;&#x27;)),
+                category: _category,
+                note: _note.text.trim(),
+                date: _date,
+              ));
+            },
+            child: const Text(&#x27;Save&#x27;),
+          ),
+        ]),
+      ),
+    );
+  }
+}</code></pre></figure>
+<p>Read through it slowly and match each part to the lessons: <code>StatefulWidget</code> and <code>setState</code>, <code>Navigator.push</code> returning a value, <code>Form</code> with validators, <code>Dismissible</code> with undo, and JSON saved with <code>SharedPreferences</code>.</p>
+<h2>Step 5: Improve the structure (Provider)</h2>
+<p>As the app grows, keeping everything in one <code>State</code> class gets messy. Move the list and its logic into a <code>ChangeNotifier</code> class (<code>ExpenseStore</code>) with <code>add</code>, <code>remove</code>, <code>load</code>, <code>save</code> and computed totals, and provide it with the <code>provider</code> package. Screens then only display data and call methods. See <a href="/learn/flutter/state-management/">state management</a>.</p>
+<h2>Step 6: Kenyan features that make it yours</h2>
+<ul><li><strong>M-Pesa charges helper</strong>: when the method is M-Pesa and the type is "Send money" or "Withdraw", show the estimated transaction cost from a tariff table you keep in the app, so users see what fees cost them each month. Tariffs change: keep the table in one place and show "last updated" text, or let users enter the actual cost from the SMS.</li><li><strong>Chama &amp; savings</strong> tracked separately as "money set aside", not spending.</li><li><strong>Weekly summary notification</strong> (with the <code>flutter_local_notifications</code> package).</li><li><strong>Kiswahili</strong> translation of the interface.</li></ul>
+<h2>Step 7: Test it</h2>
+<p>Write unit tests for the pure functions (<code>monthTotal</code>, <code>byCategory</code>, JSON round trip) in <code>test/</code>, and a widget test that adds an expense and checks the total appears:</p>
+<figure class="static-code"><figcaption>Dart</figcaption><pre><code class="language-dart">import &#x27;package:flutter_test/flutter_test.dart&#x27;;
+
+int monthTotal(List&lt;int&gt; amounts) =&gt; amounts.fold(0, (s, a) =&gt; s + a);
+
+void main() {
+  test(&#x27;month total adds all amounts&#x27;, () {
+    expect(monthTotal([150, 350, 1000]), 1500);
+    expect(monthTotal([]), 0);
+  });
+}</code></pre></figure>
+<p>Run with <code>flutter test</code>. Also test by hand on a small, old Android phone: big fonts setting on, dark mode on, airplane mode on (it must work offline).</p>
+<h2>Step 8: Publish</h2>
+<p>Follow <a href="/learn/flutter/testing-release/">testing and release</a> and <a href="/learn/dart-flutter/publish-app/">publish an app</a>: app icon (<code>flutter_launcher_icons</code>), app name, version, a signed release build (<code>flutter build appbundle</code>), a privacy policy page (state that data stays on the device), screenshots and a short description. New personal Google Play developer accounts must run a closed test with testers before production; recruit friends and classmates early.</p>
+<h2>Stretch goals</h2>
+<ul><li>Move storage to <code>sqflite</code>; add search and filters by month and category.</li><li>Export to CSV and share it (<code>share_plus</code>).</li><li>A proper chart library (e.g. <code>fl_chart</code>) with a monthly trend line.</li><li>Cloud backup and sync with Firebase (<a href="/learn/flutter/firebase-auth-firestore/">Firebase auth and Firestore</a>) or your own <a href="/learn/projects/rest-api/">REST API</a>.</li><li>Read M-Pesa SMS messages automatically (needs SMS permission; the Play Store restricts this heavily, so research the policy before trying).</li></ul>
+<h2>Summary</h2>
+<ul><li>Write and test the logic in pure Dart first, then build the UI.</li><li>A complete v1: home with totals, budget and category bars; add form with validation; swipe to delete with undo; offline storage as JSON.</li><li>Refactor to Provider as it grows; add Kenyan features; test; publish to the Play Store.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which Flutter package stores small key-value data on the device in this project?</p><details><summary>Show answer</summary><p>shared_preferences</p></details></li><li><p>Which widget lets the user swipe a list item away?</p><details><summary>Show answer</summary><p>Dismissible</p></details></li><li><p>Which method rebuilds a StatefulWidget after data changes?</p><details><summary>Show answer</summary><p>setState</p></details></li><li><p>Which command builds the file you upload to Google Play? (flutter build ___)</p><details><summary>Show answer</summary><p>appbundle</p></details></li></ol></section></div><p class="static-meta">Lesson 14 of 15 in <a href="/learn/projects/">Build real projects (portfolio projects, step by step)</a> · <a href="/learn/?book=projects">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/projects/student-portal/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Project 12: Student portal (secure login, unit registration, results, fee statement)</a><a class="btn btn-solid btn-sm" href="/learn/projects/showcase-your-projects/">Show your projects: portfolio, GitHub profile, CV, case studies and interviews <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

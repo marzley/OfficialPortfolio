@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Project 5: Inventory and sales system for a shop (stock,…</title>
+    <meta name="description" content="Hardware shops, chemists, agro-vets, spare-parts dealers, cosmetics shops and mini-marts all struggle with the same questions: How much stock do we…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/projects/inventory-system/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Project 5: Inventory and sales system for a shop (stock,…" />
+    <meta property="og:description" content="Hardware shops, chemists, agro-vets, spare-parts dealers, cosmetics shops and mini-marts all struggle with the same questions: How much stock do we…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/projects/inventory-system/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Project 5: Inventory and sales system for a shop (stock,…" />
+    <meta name="twitter:description" content="Hardware shops, chemists, agro-vets, spare-parts dealers, cosmetics shops and mini-marts all struggle with the same questions: How much stock do we…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/projects/inventory-system/#lesson","name":"Project 5: Inventory and sales system for a shop (stock, sales, low-stock alerts, reports)","description":"Hardware shops, chemists, agro-vets, spare-parts dealers, cosmetics shops and mini-marts all struggle with the same questions: How much stock do we…","url":"https://marzleytechsolutions.co.ke/learn/projects/inventory-system/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/projects/#course","name":"Build real projects (portfolio projects, step by step)","url":"https://marzleytechsolutions.co.ke/learn/projects/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Build real projects (portfolio projects, step by step)","item":"https://marzleytechsolutions.co.ke/learn/projects/"},{"@type":"ListItem","position":4,"name":"Project 5: Inventory and sales system for a shop (stock, sales, low-stock alerts, reports)","item":"https://marzleytechsolutions.co.ke/learn/projects/inventory-system/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=96f5d2aab6" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=afcdb5f51a" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/projects/">Build real projects (portfolio projects, step by step)</a> / <span>Project 5: Inventory and sales system for a shop (stock, sales, low-stock alerts, reports)</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=projects&amp;lesson=inventory-system"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Project 5: Inventory and sales system for a shop</h1>
+<p>Hardware shops, chemists, agro-vets, spare-parts dealers, cosmetics shops and mini-marts all struggle with the same questions: <em>How much stock do we have? What's running out? What sold today? Is anyone stealing?</em> An inventory system answers them. It's one of the most useful systems you can build for Kenyan small businesses, and one of the best for learning <strong>database design and transactions</strong>.</p>
+<p><strong>You'll practise:</strong> relational design, stock movements, SQL transactions, roles (owner vs cashier), reports with GROUP BY, CSV export.</p>
+<p><strong>Lessons you need:</strong> <a href="/learn/sql/keys-design/">keys and design</a>, <a href="/learn/sql/indexes-transactions/">indexes and transactions</a>, <a href="/learn/sql/joins/">JOINs</a>, <a href="/learn/sql/functions-group/">GROUP BY</a>, <a href="/learn/php/crud-app/">CRUD app</a>, <a href="/learn/php/sessions-login/">sessions and login</a>. The <a href="/learn/cpp/project-inventory/">C++ inventory project</a> shows the same ideas in a console program.</p>
+<h2>Step 1: Features</h2>
+<p><strong>Owner (admin):</strong> add products and suppliers, record stock received, see stock levels, low-stock list, daily/monthly sales reports, profit per product, manage users.</p>
+<p><strong>Cashier:</strong> search a product, record a sale (several items), choose payment method (cash / M-Pesa), print or share a receipt.</p>
+<p><strong>System:</strong> never let stock go below zero; keep a full history of every stock change (who, what, when, why).</p>
+<h2>Step 2: The key design idea: stock movements</h2>
+<p>A beginner design stores <code>quantity</code> in the products table and changes it directly. The problem: when the number is wrong, you have <strong>no idea why</strong>.</p>
+<p>Professional systems record every change as a <strong>stock movement</strong>: +50 received from a supplier, −3 sold, −1 damaged, +2 returned. The current stock is the <strong>sum of movements</strong>. You can also keep a cached <code>stock</code> column for speed, as long as it's always updated in the same transaction as the movement.</p>
+<figure class="static-code"><figcaption>TEXT</figcaption><pre><code class="language-text">products 1───* stock_movements *───1 users
+    │
+    *───1 suppliers
+sales 1───* sale_items *───1 products</code></pre></figure>
+<h2>Step 3: Tables</h2>
+<p>Here is a SQLite version you can run right now. It creates the tables, adds products, records stock received and two sales, then answers the questions an owner asks:</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE TABLE suppliers (id INTEGER PRIMARY KEY, name TEXT NOT NULL, phone TEXT);
+CREATE TABLE items (
+  id INTEGER PRIMARY KEY, sku TEXT UNIQUE NOT NULL, name TEXT NOT NULL,
+  supplier_id INTEGER REFERENCES suppliers(id),
+  cost INTEGER NOT NULL, price INTEGER NOT NULL, reorder_level INTEGER NOT NULL DEFAULT 5
+);
+CREATE TABLE stock_moves (
+  id INTEGER PRIMARY KEY, item_id INTEGER NOT NULL REFERENCES items(id),
+  change INTEGER NOT NULL, reason TEXT NOT NULL CHECK (reason IN (&#x27;received&#x27;,&#x27;sold&#x27;,&#x27;damaged&#x27;,&#x27;returned&#x27;,&#x27;count&#x27;)),
+  moved_at TEXT NOT NULL
+);
+CREATE TABLE sales (id INTEGER PRIMARY KEY, sold_at TEXT NOT NULL, payment TEXT NOT NULL);
+CREATE TABLE sale_lines (sale_id INTEGER REFERENCES sales(id), item_id INTEGER REFERENCES items(id), qty INTEGER NOT NULL, price INTEGER NOT NULL);
+
+INSERT INTO suppliers VALUES (1, &#x27;Kamili Hardware Distributors&#x27;, &#x27;0700000001&#x27;);
+INSERT INTO items VALUES
+ (1, &#x27;CEM-50&#x27;, &#x27;Cement 50kg&#x27;, 1, 720, 820, 10),
+ (2, &#x27;NAIL-3&#x27;, &#x27;Nails 3 inch (1kg)&#x27;, 1, 180, 250, 5),
+ (3, &#x27;PNT-4L&#x27;, &#x27;Paint white 4L&#x27;, 1, 1900, 2400, 3);
+INSERT INTO stock_moves (item_id, change, reason, moved_at) VALUES
+ (1, 40, &#x27;received&#x27;, &#x27;2026-03-01&#x27;), (2, 20, &#x27;received&#x27;, &#x27;2026-03-01&#x27;), (3, 6, &#x27;received&#x27;, &#x27;2026-03-01&#x27;);
+INSERT INTO sales VALUES (1, &#x27;2026-03-02&#x27;, &#x27;M-Pesa&#x27;), (2, &#x27;2026-03-02&#x27;, &#x27;Cash&#x27;);
+INSERT INTO sale_lines VALUES (1, 1, 25, 820), (1, 2, 4, 250), (2, 3, 4, 2400), (2, 2, 13, 250);
+INSERT INTO stock_moves (item_id, change, reason, moved_at) VALUES
+ (1, -25, &#x27;sold&#x27;, &#x27;2026-03-02&#x27;), (2, -4, &#x27;sold&#x27;, &#x27;2026-03-02&#x27;), (3, -4, &#x27;sold&#x27;, &#x27;2026-03-02&#x27;), (2, -13, &#x27;sold&#x27;, &#x27;2026-03-02&#x27;),
+ (3, -1, &#x27;damaged&#x27;, &#x27;2026-03-03&#x27;);
+
+-- Current stock and what needs re-ordering
+SELECT i.name, SUM(m.change) AS in_stock, i.reorder_level,
+       CASE WHEN SUM(m.change) &lt;= i.reorder_level THEN &#x27;REORDER&#x27; ELSE &#x27;ok&#x27; END AS status
+FROM items i JOIN stock_moves m ON m.item_id = i.id
+GROUP BY i.id
+ORDER BY status DESC, i.name;</code></pre></figure>
+<p>Now the sales report: revenue and profit per product. Paste this under the code above (all of it must run together, because each run starts with a fresh database):</p>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">SELECT i.name, SUM(l.qty) AS units, SUM(l.qty * l.price) AS revenue,
+       SUM(l.qty * (l.price - i.cost)) AS profit
+FROM sale_lines l JOIN items i ON i.id = l.item_id
+GROUP BY i.id
+ORDER BY profit DESC;</code></pre></figure>
+<p>In MySQL for the real app, use <code>INT AUTO_INCREMENT PRIMARY KEY</code>, <code>DECIMAL(10,2)</code> for money (or store whole shillings as integers, as here), <code>DATETIME</code> and a <code>user_id</code> column on movements and sales.</p>
+<h2>Step 4: Recording a sale safely (transactions)</h2>
+<p>A sale touches several tables: one <code>sales</code> row, several <code>sale_items</code>, and a stock movement for each item. If the power goes off half-way, you must not end up with a sale but no stock change. That's what <strong>transactions</strong> are for: all the statements succeed, or none of them do.</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+function record_sale(PDO $pdo, int $userId, string $payment, array $cart): int {
+    // $cart = [[&#x27;item_id&#x27; =&gt; 1, &#x27;qty&#x27; =&gt; 2], ...]
+    $pdo-&gt;beginTransaction();
+    try {
+        $pdo-&gt;prepare(&#x27;INSERT INTO sales (user_id, payment, sold_at) VALUES (?, ?, NOW())&#x27;)-&gt;execute([$userId, $payment]);
+        $saleId = (int)$pdo-&gt;lastInsertId();
+        foreach ($cart as $line) {
+            // Lock the product row so two cashiers can&#x27;t sell the last item twice
+            $stmt = $pdo-&gt;prepare(&#x27;SELECT price, stock FROM items WHERE id = ? FOR UPDATE&#x27;);
+            $stmt-&gt;execute([$line[&#x27;item_id&#x27;]]);
+            $item = $stmt-&gt;fetch();
+            if (!$item || $item[&#x27;stock&#x27;] &lt; $line[&#x27;qty&#x27;]) throw new RuntimeException(&#x27;Not enough stock&#x27;);
+            $pdo-&gt;prepare(&#x27;INSERT INTO sale_items (sale_id, item_id, qty, price) VALUES (?, ?, ?, ?)&#x27;)
+                -&gt;execute([$saleId, $line[&#x27;item_id&#x27;], $line[&#x27;qty&#x27;], $item[&#x27;price&#x27;]]);
+            $pdo-&gt;prepare(&#x27;INSERT INTO stock_moves (item_id, user_id, `change`, reason, moved_at) VALUES (?, ?, ?, &quot;sold&quot;, NOW())&#x27;)
+                -&gt;execute([$line[&#x27;item_id&#x27;], $userId, -$line[&#x27;qty&#x27;]]);
+            $pdo-&gt;prepare(&#x27;UPDATE items SET stock = stock - ? WHERE id = ?&#x27;)-&gt;execute([$line[&#x27;qty&#x27;], $line[&#x27;item_id&#x27;]]);
+        }
+        $pdo-&gt;commit();
+        return $saleId;
+    } catch (Throwable $e) {
+        $pdo-&gt;rollBack();
+        throw $e;
+    }
+}</code></pre></figure>
+<p>Notes:</p>
+<ul><li>The **price is copied into <code>sale_items</code>** at the time of sale. If the price changes next month, old receipts still show what the customer actually paid.</li><li><code>FOR UPDATE</code> locks the row inside the transaction (MySQL InnoDB), preventing two simultaneous sales of the last bag of cement.</li><li><code>change</code> is a reserved word in MySQL, hence the backticks. Calling the column <code>qty_change</code> avoids that.</li></ul>
+<h2>Step 5: Roles and permissions</h2>
+<p>Add <code>role ENUM(&#x27;owner&#x27;,&#x27;cashier&#x27;)</code> to users. Check it on the <strong>server</strong> for every protected page and action:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">function require_role(string $role): void {
+    if (($_SESSION[&#x27;role&#x27;] ?? &#x27;&#x27;) !== $role) { http_response_code(403); exit(&#x27;Not allowed&#x27;); }
+}
+// reports.php
+require_role(&#x27;owner&#x27;);</code></pre></figure>
+<p>Hiding a button in the HTML is not security; a cashier could still type the URL. The server must check.</p>
+<h2>Step 6: The cashier screen</h2>
+<p>Make it fast to use on a cheap tablet or phone:</p>
+<ul><li>A search box that filters products as you type (JavaScript <code>fetch</code> to <code>search.php?q=cem</code> returning JSON).</li><li>A cart list with + / − buttons and a running total.</li><li>Payment buttons: <strong>Cash</strong> and <strong>M-Pesa</strong> (record the M-Pesa transaction code the customer shows, or integrate STK push later: see the <a href="/learn/projects/mpesa-payment-system/">M-Pesa project</a>).</li><li>After saving: a receipt page that prints on a small thermal printer (CSS <code>@media print</code> with <code>width: 58mm</code> or <code>80mm</code>) or can be shared on WhatsApp.</li></ul>
+<h2>Step 7: Reports for the owner</h2>
+<div class="static-table"><table><thead><tr><th>Report</th><th>SQL idea</th></tr></thead><tbody><tr><td>Today's sales by payment method</td><td><code>SUM(qty*price) ... WHERE DATE(sold_at)=CURDATE() GROUP BY payment</code></td></tr><tr><td>Best sellers this month</td><td><code>GROUP BY item_id ORDER BY SUM(qty) DESC LIMIT 10</code></td></tr><tr><td>Profit per product</td><td><code>SUM(qty*(price-cost))</code> (as above)</td></tr><tr><td>Low stock</td><td><code>WHERE stock &lt;= reorder_level</code></td></tr><tr><td>Dead stock (no sales in 60 days)</td><td><code>LEFT JOIN</code> recent sales, <code>WHERE sale is NULL</code></td></tr><tr><td>Cashier summary</td><td><code>GROUP BY user_id</code> per day: helps spot problems</td></tr><tr><td>Stock-take differences</td><td>Movements with reason <code>count</code></td></tr></tbody></table></div>
+<p>Add <strong>Export to CSV</strong> so the owner can open reports in Excel:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">header(&#x27;Content-Type: text/csv&#x27;);
+header(&#x27;Content-Disposition: attachment; filename=&quot;sales-&#x27; . date(&#x27;Y-m-d&#x27;) . &#x27;.csv&quot;&#x27;);
+$out = fopen(&#x27;php://output&#x27;, &#x27;w&#x27;);
+fputcsv($out, [&#x27;Product&#x27;, &#x27;Units&#x27;, &#x27;Revenue&#x27;]);
+foreach ($rows as $r) fputcsv($out, [$r[&#x27;name&#x27;], $r[&#x27;units&#x27;], $r[&#x27;revenue&#x27;]]);</code></pre></figure>
+<h2>Step 8: Stock-take</h2>
+<p>Once a month the owner counts everything physically. Build a page listing each product with the system quantity and a box for the counted quantity. Saving records a <code>count</code> movement for the difference (e.g. −2) so stock matches reality and the history shows the loss.</p>
+<h2>Step 9: Test it like a shop would</h2>
+<ul><li>Sell more than is in stock: must be refused.</li><li>Two browser windows selling the last item at the same time.</li><li>Cashier tries to open <code>reports.php</code>: must get 403.</li><li>Change a price, then check an old receipt still shows the old price.</li><li>1,000 products: is search still fast? (Add an index on <code>name</code> and <code>sku</code>.)</li></ul>
+<h2>Stretch goals</h2>
+<ul><li>Barcode scanning: USB barcode scanners type like a keyboard, so focus the search box and press Enter.</li><li>Purchase orders to suppliers generated from the low-stock list.</li><li>Multiple branches (<code>branch_id</code> on stock movements and sales).</li><li>Daily summary sent to the owner by email or SMS.</li><li>An offline-first version (PWA) for shops with unreliable internet.</li></ul>
+<h2>Summary</h2>
+<ul><li>Record every stock change as a movement; current stock is their sum.</li><li>Use transactions so a sale is all-or-nothing, and row locks to avoid selling the same item twice.</li><li>Copy the price into sale lines; check roles on the server.</li><li>Reports with GROUP BY and CSV export make the system valuable to owners.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which SQL feature makes several statements succeed or fail together?</p><details><summary>Show answer</summary><p>transaction</p></details></li><li><p>Which MySQL clause locks the selected rows until the transaction ends? (two words)</p><details><summary>Show answer</summary><p>FOR UPDATE</p></details></li><li><p>Why copy the price into the sale lines table? So old receipts keep the price the customer actually ___ (one word)</p><details><summary>Show answer</summary><p>paid</p></details></li><li><p>Where must role checks happen: in the browser or on the server?</p><details><summary>Show answer</summary><p>server</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 15 in <a href="/learn/projects/">Build real projects (portfolio projects, step by step)</a> · <a href="/learn/?book=projects">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/projects/blog-cms/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Project 4: Blog with an admin panel (PHP, MySQL, login, CRUD)</a><a class="btn btn-solid btn-sm" href="/learn/projects/rest-api/">Project 6: REST API with Node.js and Express (CRUD, validation, JWT auth, tests, deploy) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

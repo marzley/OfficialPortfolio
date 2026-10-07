@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Project 6: REST API with Node.js and Express (CRUD,…</title>
+    <meta name="description" content="An API lets other programs use your data and features: a mobile app, a React website, a partner&#x27;s system, a USSD menu. Almost every modern product is…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/projects/rest-api/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Project 6: REST API with Node.js and Express (CRUD,…" />
+    <meta property="og:description" content="An API lets other programs use your data and features: a mobile app, a React website, a partner&#x27;s system, a USSD menu. Almost every modern product is…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/projects/rest-api/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Project 6: REST API with Node.js and Express (CRUD,…" />
+    <meta name="twitter:description" content="An API lets other programs use your data and features: a mobile app, a React website, a partner&#x27;s system, a USSD menu. Almost every modern product is…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/projects/rest-api/#lesson","name":"Project 6: REST API with Node.js and Express (CRUD, validation, JWT auth, tests, deploy)","description":"An API lets other programs use your data and features: a mobile app, a React website, a partner's system, a USSD menu. Almost every modern product is…","url":"https://marzleytechsolutions.co.ke/learn/projects/rest-api/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/projects/#course","name":"Build real projects (portfolio projects, step by step)","url":"https://marzleytechsolutions.co.ke/learn/projects/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Build real projects (portfolio projects, step by step)","item":"https://marzleytechsolutions.co.ke/learn/projects/"},{"@type":"ListItem","position":4,"name":"Project 6: REST API with Node.js and Express (CRUD, validation, JWT auth, tests, deploy)","item":"https://marzleytechsolutions.co.ke/learn/projects/rest-api/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=96f5d2aab6" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=afcdb5f51a" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/projects/">Build real projects (portfolio projects, step by step)</a> / <span>Project 6: REST API with Node.js and Express (CRUD, validation, JWT auth, tests, deploy)</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=projects&amp;lesson=rest-api"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Project 6: REST API with Node.js and Express</h1>
+<p>An <strong>API</strong> lets other programs use your data and features: a mobile app, a React website, a partner's system, a USSD menu. Almost every modern product is "an API plus some front-ends". In this project you build a REST API for a <strong>matatu SACCO's vehicles and trips</strong> (or any topic you like: books, events, products) with proper validation, authentication, error handling, tests and deployment.</p>
+<p><strong>You'll practise:</strong> Node.js, Express, JSON, HTTP methods and status codes, a database, JWT authentication, input validation, automated tests, environment variables and deployment.</p>
+<p><strong>Lessons you need:</strong> <a href="/learn/apis-backend/how-backends-work/">how backends work</a>, <a href="/learn/apis-backend/designing-rest-apis/">designing REST APIs</a>, <a href="/learn/apis-backend/node-express-api/">Node and Express API</a>, <a href="/learn/apis-backend/auth-passwords-tokens/">auth: passwords and tokens</a>, <a href="/learn/javascript/async-await/">async/await</a>, <a href="/learn/javascript/modules-npm-tooling/">modules and npm</a>. Prefer PHP? The <a href="/learn/apis-backend/php-json-api/">PHP JSON API lesson</a> covers the same ideas, and every step here translates directly.</p>
+<h2>Step 1: Design the API before coding</h2>
+<p>Write the endpoints in a table. This <em>is</em> your documentation's first draft.</p>
+<div class="static-table"><table><thead><tr><th>Method</th><th>Path</th><th>Does</th><th>Auth</th><th>Success code</th></tr></thead><tbody><tr><td>POST</td><td><code>/api/auth/register</code></td><td>Create an account</td><td>–</td><td>201</td></tr><tr><td>POST</td><td><code>/api/auth/login</code></td><td>Get a token</td><td>–</td><td>200</td></tr><tr><td>GET</td><td><code>/api/vehicles</code></td><td>List vehicles (with <code>?route=</code> filter and pagination)</td><td>–</td><td>200</td></tr><tr><td>GET</td><td><code>/api/vehicles/:id</code></td><td>One vehicle</td><td>–</td><td>200 / 404</td></tr><tr><td>POST</td><td><code>/api/vehicles</code></td><td>Add a vehicle</td><td>admin</td><td>201</td></tr><tr><td>PATCH</td><td><code>/api/vehicles/:id</code></td><td>Update some fields</td><td>admin</td><td>200</td></tr><tr><td>DELETE</td><td><code>/api/vehicles/:id</code></td><td>Remove a vehicle</td><td>admin</td><td>204</td></tr><tr><td>POST</td><td><code>/api/vehicles/:id/trips</code></td><td>Record a trip</td><td>logged in</td><td>201</td></tr></tbody></table></div>
+<p>Rules of good REST design: <strong>nouns</strong> in URLs (<code>/vehicles</code>, not <code>/getVehicles</code>), HTTP <strong>methods</strong> for actions, plural collection names, correct <strong>status codes</strong>, and consistent JSON error responses like <code>{ &quot;error&quot;: &quot;Plate number is required&quot; }</code>.</p>
+<h2>Step 2: Set up the project</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">mkdir sacco-api &amp;&amp; cd sacco-api
+npm init -y
+npm install express better-sqlite3 bcryptjs jsonwebtoken dotenv
+npm install --save-dev vitest supertest
+echo &quot;node_modules/&quot; &gt;&gt; .gitignore
+echo &quot;.env&quot; &gt;&gt; .gitignore
+echo &quot;*.db&quot; &gt;&gt; .gitignore</code></pre></figure>
+<p>In <code>package.json</code>, set <code>&quot;type&quot;: &quot;module&quot;</code> and add scripts: <code>&quot;start&quot;: &quot;node src/server.js&quot;</code>, <code>&quot;test&quot;: &quot;vitest run&quot;</code>.</p>
+<p><code>.env</code> (never committed):</p>
+<figure class="static-code"><figcaption>TEXT</figcaption><pre><code class="language-text">PORT=3000
+JWT_SECRET=paste-a-long-random-string-here
+DB_FILE=sacco.db</code></pre></figure>
+<p>Generate a strong secret with <code>node -e &quot;console.log(require(&#x27;crypto&#x27;).randomBytes(48).toString(&#x27;hex&#x27;))&quot;</code>.</p>
+<h2>Step 3: Validation (pure functions you can test)</h2>
+<p>Validate <strong>every</strong> input on the server. Keep validation in small pure functions: easy to test and reuse. Try this one; it validates a Kenyan number plate and a vehicle payload:</p>
+<figure class="static-code"><figcaption>JavaScript · runs live in the interactive lesson</figcaption><pre><code class="language-javascript">function validPlate(plate) {
+  // Kenyan plates such as KDA 123A or KCB 456Z: K + two letters, space optional, 3 digits, a letter
+  return /^K[A-Z]{2}\s?\d{3}[A-Z]$/.test(String(plate).toUpperCase().trim());
+}
+
+function validateVehicle(body) {
+  const errors = [];
+  if (!body || typeof body !== &quot;object&quot;) return [&quot;Send a JSON object&quot;];
+  if (!validPlate(body.plate || &quot;&quot;)) errors.push(&quot;plate must look like KDA 123A&quot;);
+  const seats = Number(body.seats);
+  if (!Number.isInteger(seats) || seats &lt; 4 || seats &gt; 70) errors.push(&quot;seats must be a whole number from 4 to 70&quot;);
+  if (!body.route || String(body.route).trim().length &lt; 3) errors.push(&quot;route is required&quot;);
+  return errors;
+}
+
+console.log(validPlate(&quot;KDA 123A&quot;), validPlate(&quot;kcb456z&quot;), validPlate(&quot;KA 12&quot;));
+console.log(validateVehicle({ plate: &quot;KDE 001Q&quot;, seats: 14, route: &quot;Nairobi - Thika&quot; }));
+console.log(validateVehicle({ plate: &quot;123&quot;, seats: 200 }));</code></pre></figure>
+<p>An empty array means valid. In the project, save these in <code>src/validate.js</code> with <code>export</code> in front of each <code>function</code>. For bigger projects, libraries like <strong>zod</strong> or <strong>joi</strong> do the same with less code.</p>
+<h2>Step 4: Database</h2>
+<figure class="static-code"><figcaption>JavaScript</figcaption><pre><code class="language-javascript">// src/db.js
+import Database from &quot;better-sqlite3&quot;;
+
+export function openDb(file = process.env.DB_FILE || &quot;:memory:&quot;) {
+  const db = new Database(file);
+  db.pragma(&quot;foreign_keys = ON&quot;);
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY, email TEXT UNIQUE NOT NULL, password_hash TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT &#x27;member&#x27; CHECK (role IN (&#x27;member&#x27;,&#x27;admin&#x27;)));
+    CREATE TABLE IF NOT EXISTS vehicles (
+      id INTEGER PRIMARY KEY, plate TEXT UNIQUE NOT NULL, seats INTEGER NOT NULL, route TEXT NOT NULL);
+    CREATE TABLE IF NOT EXISTS trips (
+      id INTEGER PRIMARY KEY, vehicle_id INTEGER NOT NULL REFERENCES vehicles(id) ON DELETE CASCADE,
+      passengers INTEGER NOT NULL, fare_total INTEGER NOT NULL, created_at TEXT NOT NULL DEFAULT (datetime(&#x27;now&#x27;)));
+  `);
+  return db;
+}</code></pre></figure>
+<p>SQLite is perfect for learning and small apps. For production with many users, PostgreSQL or MySQL is common; the SQL is almost the same.</p>
+<h2>Step 5: The Express app</h2>
+<p>Export the app separately from <code>listen()</code> so tests can use it without opening a port:</p>
+<figure class="static-code"><figcaption>JavaScript</figcaption><pre><code class="language-javascript">// src/app.js
+import express from &quot;express&quot;;
+import bcrypt from &quot;bcryptjs&quot;;
+import jwt from &quot;jsonwebtoken&quot;;
+import { validateVehicle } from &quot;./validate.js&quot;;
+
+export function makeApp(db, secret) {
+  const app = express();
+  app.use(express.json({ limit: &quot;100kb&quot; }));
+
+  // --- auth helpers ---
+  function auth(req, res, next) {
+    const token = (req.headers.authorization || &quot;&quot;).replace(/^Bearer /, &quot;&quot;);
+    try {
+      req.user = jwt.verify(token, secret);
+      next();
+    } catch {
+      res.status(401).json({ error: &quot;Log in first&quot; });
+    }
+  }
+  const admin = (req, res, next) =&gt; (req.user.role === &quot;admin&quot; ? next() : res.status(403).json({ error: &quot;Admins only&quot; }));
+
+  app.post(&quot;/api/auth/register&quot;, async (req, res) =&gt; {
+    const { email, password } = req.body || {};
+    if (!/^\S+@\S+\.\S+$/.test(email || &quot;&quot;) || String(password || &quot;&quot;).length &lt; 8) {
+      return res.status(422).json({ error: &quot;A valid email and a password of 8+ characters are required&quot; });
+    }
+    try {
+      const hash = await bcrypt.hash(password, 12);
+      const r = db.prepare(&quot;INSERT INTO users (email, password_hash) VALUES (?, ?)&quot;).run(email.toLowerCase(), hash);
+      res.status(201).json({ id: r.lastInsertRowid, email: email.toLowerCase() });
+    } catch {
+      res.status(409).json({ error: &quot;That email is already registered&quot; });
+    }
+  });
+
+  app.post(&quot;/api/auth/login&quot;, async (req, res) =&gt; {
+    const { email, password } = req.body || {};
+    const user = db.prepare(&quot;SELECT * FROM users WHERE email = ?&quot;).get(String(email || &quot;&quot;).toLowerCase());
+    if (!user || !(await bcrypt.compare(String(password || &quot;&quot;), user.password_hash))) {
+      return res.status(401).json({ error: &quot;Wrong email or password&quot; });
+    }
+    const token = jwt.sign({ sub: user.id, role: user.role }, secret, { expiresIn: &quot;2h&quot; });
+    res.json({ token });
+  });
+
+  // --- vehicles ---
+  app.get(&quot;/api/vehicles&quot;, (req, res) =&gt; {
+    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit, 10) || 20));
+    const offset = Math.max(0, parseInt(req.query.offset, 10) || 0);
+    const rows = req.query.route
+      ? db.prepare(&quot;SELECT * FROM vehicles WHERE route LIKE ? ORDER BY id LIMIT ? OFFSET ?&quot;).all(&quot;%&quot; + req.query.route + &quot;%&quot;, limit, offset)
+      : db.prepare(&quot;SELECT * FROM vehicles ORDER BY id LIMIT ? OFFSET ?&quot;).all(limit, offset);
+    res.json({ data: rows, limit, offset });
+  });
+
+  app.get(&quot;/api/vehicles/:id&quot;, (req, res) =&gt; {
+    const v = db.prepare(&quot;SELECT * FROM vehicles WHERE id = ?&quot;).get(req.params.id);
+    v ? res.json(v) : res.status(404).json({ error: &quot;Vehicle not found&quot; });
+  });
+
+  app.post(&quot;/api/vehicles&quot;, auth, admin, (req, res) =&gt; {
+    const errors = validateVehicle(req.body);
+    if (errors.length) return res.status(422).json({ error: errors.join(&quot;; &quot;) });
+    const plate = req.body.plate.toUpperCase().replace(/\s+/g, &quot;&quot;).replace(/^(K[A-Z]{2})/, &quot;$1 &quot;);   // always stored as &quot;KDE 001Q&quot;
+    try {
+      const r = db.prepare(&quot;INSERT INTO vehicles (plate, seats, route) VALUES (?, ?, ?)&quot;).run(plate, Number(req.body.seats), req.body.route.trim());
+      res.status(201).json({ id: r.lastInsertRowid, plate, seats: Number(req.body.seats), route: req.body.route.trim() });
+    } catch {
+      res.status(409).json({ error: &quot;That plate is already registered&quot; });
+    }
+  });
+
+  app.delete(&quot;/api/vehicles/:id&quot;, auth, admin, (req, res) =&gt; {
+    const r = db.prepare(&quot;DELETE FROM vehicles WHERE id = ?&quot;).run(req.params.id);
+    r.changes ? res.status(204).end() : res.status(404).json({ error: &quot;Vehicle not found&quot; });
+  });
+
+  // Unknown routes and unexpected errors: always JSON, never a stack trace
+  app.use((req, res) =&gt; res.status(404).json({ error: &quot;Not found&quot; }));
+  app.use((err, req, res, next) =&gt; {
+    console.error(err);
+    res.status(err.type === &quot;entity.parse.failed&quot; ? 400 : 500).json({ error: err.type === &quot;entity.parse.failed&quot; ? &quot;Invalid JSON&quot; : &quot;Server error&quot; });
+  });
+  return app;
+}</code></pre></figure>
+<figure class="static-code"><figcaption>JavaScript</figcaption><pre><code class="language-javascript">// src/server.js
+import &quot;dotenv/config&quot;;
+import { openDb } from &quot;./db.js&quot;;
+import { makeApp } from &quot;./app.js&quot;;
+
+if (!process.env.JWT_SECRET) throw new Error(&quot;Set JWT_SECRET in .env&quot;);
+makeApp(openDb(), process.env.JWT_SECRET).listen(process.env.PORT || 3000, () =&gt; console.log(&quot;API running&quot;));</code></pre></figure>
+<p>Add <code>PATCH /api/vehicles/:id</code> and the trips endpoints yourself, using the same patterns. That's the real learning.</p>
+<p>To make your first admin, register normally, then run <code>UPDATE users SET role = &#x27;admin&#x27; WHERE email = &#x27;...&#x27;</code> in the database.</p>
+<h2>Step 6: Try it with curl or Thunder Client</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">curl -X POST localhost:3000/api/auth/register -H &quot;Content-Type: application/json&quot; -d &#x27;{&quot;email&quot;:&quot;me@example.com&quot;,&quot;password&quot;:&quot;long-password-1&quot;}&#x27;
+curl -X POST localhost:3000/api/auth/login -H &quot;Content-Type: application/json&quot; -d &#x27;{&quot;email&quot;:&quot;me@example.com&quot;,&quot;password&quot;:&quot;long-password-1&quot;}&#x27;
+curl -X POST localhost:3000/api/vehicles -H &quot;Authorization: Bearer PASTE_TOKEN&quot; -H &quot;Content-Type: application/json&quot; -d &#x27;{&quot;plate&quot;:&quot;KDE 001Q&quot;,&quot;seats&quot;:14,&quot;route&quot;:&quot;Nairobi - Thika&quot;}&#x27;
+curl &quot;localhost:3000/api/vehicles?route=Thika&quot;</code></pre></figure>
+<p>Thunder Client (a VS Code extension), Postman or Bruno give you a visual way to do the same.</p>
+<h2>Step 7: Automated tests</h2>
+<p>Tests prove your API works and keeps working after changes. With Vitest and Supertest:</p>
+<figure class="static-code"><figcaption>JavaScript</figcaption><pre><code class="language-javascript">// test/api.test.js
+import { describe, it, expect } from &quot;vitest&quot;;
+import request from &quot;supertest&quot;;
+import { openDb } from &quot;../src/db.js&quot;;
+import { makeApp } from &quot;../src/app.js&quot;;
+
+const db = openDb(&quot;:memory:&quot;);
+const app = makeApp(db, &quot;test-secret&quot;);
+
+describe(&quot;vehicles API&quot;, () =&gt; {
+  it(&quot;lists vehicles (empty at first)&quot;, async () =&gt; {
+    const res = await request(app).get(&quot;/api/vehicles&quot;);
+    expect(res.status).toBe(200);
+    expect(res.body.data).toEqual([]);
+  });
+
+  it(&quot;refuses to create a vehicle without a token&quot;, async () =&gt; {
+    const res = await request(app).post(&quot;/api/vehicles&quot;).send({ plate: &quot;KDE 001Q&quot;, seats: 14, route: &quot;Thika&quot; });
+    expect(res.status).toBe(401);
+  });
+
+  it(&quot;lets an admin create a vehicle and rejects bad input&quot;, async () =&gt; {
+    await request(app).post(&quot;/api/auth/register&quot;).send({ email: &quot;a@b.co&quot;, password: &quot;password123&quot; });
+    db.prepare(&quot;UPDATE users SET role = &#x27;admin&#x27; WHERE email = &#x27;a@b.co&#x27;&quot;).run();
+    const { body } = await request(app).post(&quot;/api/auth/login&quot;).send({ email: &quot;a@b.co&quot;, password: &quot;password123&quot; });
+    const ok = await request(app).post(&quot;/api/vehicles&quot;).set(&quot;Authorization&quot;, &quot;Bearer &quot; + body.token)
+      .send({ plate: &quot;kde 001q&quot;, seats: 14, route: &quot;Nairobi - Thika&quot; });
+    expect(ok.status).toBe(201);
+    expect(ok.body.plate).toBe(&quot;KDE 001Q&quot;);
+    const bad = await request(app).post(&quot;/api/vehicles&quot;).set(&quot;Authorization&quot;, &quot;Bearer &quot; + body.token).send({ plate: &quot;x&quot;, seats: 900 });
+    expect(bad.status).toBe(422);
+  });
+});</code></pre></figure>
+<p>Run <code>npm test</code>. Then add a GitHub Actions workflow so tests run on every push (<a href="/learn/git/github-actions-ci/">GitHub Actions CI</a>).</p>
+<h2>Step 8: Security checklist</h2>
+<ul><li>Passwords hashed with bcrypt (cost 10–12); never returned in responses</li><li>JWT secret long and random, from an environment variable; tokens expire</li><li>Every input validated; prepared statements everywhere</li><li>Request size limit (<code>express.json({ limit })</code>); login rate limiting (e.g. <code>express-rate-limit</code>)</li><li><code>helmet</code> middleware for security headers; CORS allowed only for your own front-end's domain</li><li>Errors return JSON without stack traces in production</li><li>HTTPS in production</li></ul>
+<h2>Step 9: Document and deploy</h2>
+<ul><li>Write the endpoint table, example requests and responses in the README, or generate interactive docs with an <strong>OpenAPI</strong> (Swagger) file.</li><li>Deploy to a Node-friendly platform (Render, Railway, Fly.io and similar have free or cheap tiers; terms change, so check) or a VPS with a process manager and a reverse proxy (<a href="/learn/hosting/deploy-node-python-apps/">deploying Node and Python apps</a>). Set environment variables in the platform dashboard, never in the code.</li><li>Note: SQLite on many free platforms is wiped on every deploy; use the platform's PostgreSQL for real data.</li></ul>
+<h2>Stretch goals</h2>
+<ul><li>Connect a front-end: a React page (<a href="/learn/react/react-effects-data/">React effects and data</a>) or your <a href="/learn/projects/mobile-expense-app/">Flutter app</a>.</li><li>Refresh tokens and logout; password reset by email.</li><li>Move to PostgreSQL; add database migrations.</li><li>Package it with <strong>Docker</strong> so it runs the same everywhere.</li><li>Add M-Pesa fare payments (<a href="/learn/projects/mpesa-payment-system/">M-Pesa project</a>).</li></ul>
+<h2>Summary</h2>
+<ul><li>Design endpoints first: nouns, methods, status codes, consistent JSON errors.</li><li>Validate everything on the server; hash passwords; protect routes with JWT and roles.</li><li>Export the app separately so it can be tested; write automated tests and run them in CI.</li><li>Keep secrets in environment variables; document and deploy.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which HTTP status code means "created"?</p><details><summary>Show answer</summary><p>201</p></details></li><li><p>Which status code means "you are logged in but not allowed"?</p><details><summary>Show answer</summary><p>403</p></details></li><li><p>Which HTTP method is used to update only some fields of a resource?</p><details><summary>Show answer</summary><p>PATCH</p></details></li><li><p>In "Authorization: Bearer &lt;token&gt;", what kind of token does this project use? (three letters)</p><details><summary>Show answer</summary><p>JWT</p></details></li><li><p>Where should the JWT secret be stored? (two words, or the file name)</p><details><summary>Show answer</summary><p>environment variable</p></details></li></ol></section></div><p class="static-meta">Lesson 7 of 15 in <a href="/learn/projects/">Build real projects (portfolio projects, step by step)</a> · <a href="/learn/?book=projects">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/projects/inventory-system/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Project 5: Inventory and sales system for a shop (stock, sales, low-stock alerts, reports)</a><a class="btn btn-solid btn-sm" href="/learn/projects/mpesa-payment-system/">Project 7: M-Pesa payment system (Daraja STK push, callbacks, status checks, receipts) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

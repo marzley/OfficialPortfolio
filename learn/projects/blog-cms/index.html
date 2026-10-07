@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Project 4: Blog with an admin panel (PHP, MySQL, login,…</title>
+    <meta name="description" content="A blog is the classic first database project because it has everything real web apps have: public pages, an admin login…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/projects/blog-cms/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Project 4: Blog with an admin panel (PHP, MySQL, login,…" />
+    <meta property="og:description" content="A blog is the classic first database project because it has everything real web apps have: public pages, an admin login…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/projects/blog-cms/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Project 4: Blog with an admin panel (PHP, MySQL, login,…" />
+    <meta name="twitter:description" content="A blog is the classic first database project because it has everything real web apps have: public pages, an admin login…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/projects/blog-cms/#lesson","name":"Project 4: Blog with an admin panel (PHP, MySQL, login, CRUD)","description":"A blog is the classic first database project because it has everything real web apps have: public pages, an admin login…","url":"https://marzleytechsolutions.co.ke/learn/projects/blog-cms/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/projects/#course","name":"Build real projects (portfolio projects, step by step)","url":"https://marzleytechsolutions.co.ke/learn/projects/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Build real projects (portfolio projects, step by step)","item":"https://marzleytechsolutions.co.ke/learn/projects/"},{"@type":"ListItem","position":4,"name":"Project 4: Blog with an admin panel (PHP, MySQL, login, CRUD)","item":"https://marzleytechsolutions.co.ke/learn/projects/blog-cms/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=96f5d2aab6" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=afcdb5f51a" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/projects/">Build real projects (portfolio projects, step by step)</a> / <span>Project 4: Blog with an admin panel (PHP, MySQL, login, CRUD)</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=projects&amp;lesson=blog-cms"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Project 4: Blog with an admin panel (PHP, MySQL, login, CRUD)</h1>
+<p>A blog is the classic first database project because it has everything real web apps have: public pages, an admin login, creating/reading/updating/deleting records (<strong>CRUD</strong>), forms, images, friendly URLs and security. Once you can build a blog, you can build most content sites: a church news page, a school notice board, a company "news and updates" section.</p>
+<p><strong>You'll practise:</strong> PHP, MySQL with PDO, password hashing, sessions, CSRF protection, escaping output, slugs, pagination and file uploads.</p>
+<p><strong>Lessons you need:</strong> <a href="/learn/php/forms-security/">forms and security</a>, <a href="/learn/php/mysql-pdo/">MySQL with PDO</a>, <a href="/learn/php/crud-app/">the CRUD app</a>, <a href="/learn/php/sessions-login/">sessions and login</a>, <a href="/learn/php/file-uploads/">file uploads</a>, <a href="/learn/sql/keys-design/">keys and design</a>.</p>
+<h2>Step 1: Features (MoSCoW)</h2>
+<div class="static-table"><table><thead><tr><th>Priority</th><th>Feature</th></tr></thead><tbody><tr><td>Must</td><td>Public list of published posts, newest first, with pagination</td></tr><tr><td>Must</td><td>Single post page at a friendly URL: <code>/post.php?slug=how-to-register-kra-pin</code></td></tr><tr><td>Must</td><td>Admin login (one or more admin users)</td></tr><tr><td>Must</td><td>Admin: create, edit, delete, publish/unpublish posts</td></tr><tr><td>Should</td><td>Categories; a cover image per post</td></tr><tr><td>Should</td><td>Search</td></tr><tr><td>Could</td><td>Comments with moderation; RSS feed; view counter</td></tr></tbody></table></div>
+<h2>Step 2: Database design</h2>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(190) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE categories (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(80) NOT NULL,
+  slug VARCHAR(80) NOT NULL UNIQUE
+);
+
+CREATE TABLE posts (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  author_id INT NOT NULL,
+  category_id INT NULL,
+  title VARCHAR(200) NOT NULL,
+  slug VARCHAR(200) NOT NULL UNIQUE,
+  excerpt VARCHAR(300) NOT NULL DEFAULT &#x27;&#x27;,
+  body MEDIUMTEXT NOT NULL,
+  cover VARCHAR(255) NULL,
+  status ENUM(&#x27;draft&#x27;,&#x27;published&#x27;) NOT NULL DEFAULT &#x27;draft&#x27;,
+  published_at DATETIME NULL,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (author_id) REFERENCES users(id),
+  FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
+  INDEX (status, published_at)
+);</code></pre></figure>
+<p>Why these choices:</p>
+<ul><li><code>slug UNIQUE</code>: no two posts can share a URL.</li><li><code>ON DELETE SET NULL</code>: deleting a category doesn't delete its posts.</li><li>The index on <code>(status, published_at)</code> makes "latest published posts" fast even with thousands of posts.</li></ul>
+<h2>Step 3: Folder structure</h2>
+<figure class="static-code"><figcaption>TEXT</figcaption><pre><code class="language-text">blog/
+├── config.php          (database password: in .gitignore)
+├── config.example.php
+├── db.php              (PDO connection + helper functions)
+├── index.php           (public post list)
+├── post.php            (single post)
+├── uploads/            (cover images: in .gitignore)
+└── admin/
+    ├── login.php
+    ├── logout.php
+    ├── index.php       (list of all posts)
+    ├── edit.php        (create + edit)
+    └── delete.php</code></pre></figure>
+<h2>Step 4: Connection and helpers</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+// db.php
+$config = require __DIR__ . &#x27;/config.php&#x27;;   // returns [&#x27;dsn&#x27; =&gt; ..., &#x27;user&#x27; =&gt; ..., &#x27;pass&#x27; =&gt; ...]
+$pdo = new PDO($config[&#x27;dsn&#x27;], $config[&#x27;user&#x27;], $config[&#x27;pass&#x27;], [
+    PDO::ATTR_ERRMODE =&gt; PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE =&gt; PDO::FETCH_ASSOC,
+]);
+session_start();
+
+function e(?string $s): string { return htmlspecialchars($s ?? &#x27;&#x27;, ENT_QUOTES, &#x27;UTF-8&#x27;); }
+
+function csrf_token(): string {
+    if (empty($_SESSION[&#x27;csrf&#x27;])) $_SESSION[&#x27;csrf&#x27;] = bin2hex(random_bytes(32));
+    return $_SESSION[&#x27;csrf&#x27;];
+}
+function check_csrf(): void {
+    if (!hash_equals($_SESSION[&#x27;csrf&#x27;] ?? &#x27;&#x27;, $_POST[&#x27;csrf&#x27;] ?? &#x27;&#x27;)) { http_response_code(400); exit(&#x27;Invalid form. Please go back and try again.&#x27;); }
+}
+function require_login(): void {
+    if (empty($_SESSION[&#x27;user_id&#x27;])) { header(&#x27;Location: login.php&#x27;); exit; }
+}</code></pre></figure>
+<p>Three security habits are already here: <strong>prepared statements</strong> (coming next) against SQL injection, <code>e()</code> against XSS whenever you print user content, and <strong>CSRF tokens</strong> on every form that changes data.</p>
+<h2>Step 5: Slugs (friendly URLs)</h2>
+<p>A slug turns "How to Register a KRA PIN (2026)" into <code>how-to-register-a-kra-pin-2026</code>. Try it:</p>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+function slugify(string $title): string {
+    $s = strtolower(trim($title));
+    $s = preg_replace(&#x27;/[^a-z0-9]+/&#x27;, &#x27;-&#x27;, $s);   // anything that isn&#x27;t a letter or digit becomes -
+    return trim($s, &#x27;-&#x27;) ?: &#x27;post&#x27;;
+}
+
+function uniqueSlug(string $title, array $taken): string {
+    $base = slugify($title);
+    $slug = $base;
+    $n = 2;
+    while (in_array($slug, $taken, true)) {
+        $slug = $base . &#x27;-&#x27; . $n++;
+    }
+    return $slug;
+}
+
+echo slugify(&quot;How to Register a KRA PIN (2026)&quot;), &quot;\n&quot;;
+echo slugify(&quot;  Unga prices: what&#x27;s next?  &quot;), &quot;\n&quot;;
+$taken = [&#x27;ajira-digital-guide&#x27;, &#x27;ajira-digital-guide-2&#x27;];
+echo uniqueSlug(&quot;Ajira Digital guide&quot;, $taken), &quot;\n&quot;;</code></pre></figure>
+<p>Put both functions in <code>db.php</code> so every page can use them. In the real app, <code>$taken</code> comes from <code>SELECT slug FROM posts WHERE slug LIKE ?</code>, and the <code>UNIQUE</code> key is the final safety net.</p>
+<h2>Step 6: Admin login</h2>
+<p>Create the first admin with a one-off script (then delete it), so the password is hashed:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+// make-admin.php: run once from the command line: php make-admin.php, then delete this file
+require &#x27;db.php&#x27;;
+$stmt = $pdo-&gt;prepare(&#x27;INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)&#x27;);
+$stmt-&gt;execute([&#x27;Admin&#x27;, &#x27;admin@example.com&#x27;, password_hash(&#x27;choose-a-long-password&#x27;, PASSWORD_DEFAULT)]);
+echo &quot;Admin created\n&quot;;</code></pre></figure>
+<p>The login page:</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+// admin/login.php
+require __DIR__ . &#x27;/../db.php&#x27;;
+$error = &#x27;&#x27;;
+if ($_SERVER[&#x27;REQUEST_METHOD&#x27;] === &#x27;POST&#x27;) {
+    check_csrf();
+    $stmt = $pdo-&gt;prepare(&#x27;SELECT id, password_hash FROM users WHERE email = ?&#x27;);
+    $stmt-&gt;execute([trim($_POST[&#x27;email&#x27;] ?? &#x27;&#x27;)]);
+    $user = $stmt-&gt;fetch();
+    if ($user &amp;&amp; password_verify($_POST[&#x27;password&#x27;] ?? &#x27;&#x27;, $user[&#x27;password_hash&#x27;])) {
+        session_regenerate_id(true);          // stops session fixation attacks
+        $_SESSION[&#x27;user_id&#x27;] = $user[&#x27;id&#x27;];
+        header(&#x27;Location: index.php&#x27;);
+        exit;
+    }
+    $error = &#x27;Wrong email or password.&#x27;;      // same message for both: don&#x27;t reveal which emails exist
+}
+?&gt;
+&lt;form method=&quot;post&quot;&gt;
+  &lt;input type=&quot;hidden&quot; name=&quot;csrf&quot; value=&quot;&lt;?= e(csrf_token()) ?&gt;&quot;&gt;
+  &lt;label&gt;Email &lt;input type=&quot;email&quot; name=&quot;email&quot; required&gt;&lt;/label&gt;
+  &lt;label&gt;Password &lt;input type=&quot;password&quot; name=&quot;password&quot; required&gt;&lt;/label&gt;
+  &lt;button&gt;Log in&lt;/button&gt;
+  &lt;p&gt;&lt;?= e($error) ?&gt;&lt;/p&gt;
+&lt;/form&gt;</code></pre></figure>
+<p>Add login rate limiting later (e.g. lock for 15 minutes after 5 failures from the same IP) so passwords can't be guessed by bots.</p>
+<h2>Step 7: Create and edit posts</h2>
+<p>One page handles both: if there's an <code>id</code>, load the post and <code>UPDATE</code>; otherwise <code>INSERT</code>.</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+// admin/edit.php (core logic)
+require __DIR__ . &#x27;/../db.php&#x27;;
+require_login();
+$id = (int)($_GET[&#x27;id&#x27;] ?? 0);
+$post = [&#x27;title&#x27; =&gt; &#x27;&#x27;, &#x27;body&#x27; =&gt; &#x27;&#x27;, &#x27;excerpt&#x27; =&gt; &#x27;&#x27;, &#x27;status&#x27; =&gt; &#x27;draft&#x27;, &#x27;category_id&#x27; =&gt; null];
+if ($id) {
+    $stmt = $pdo-&gt;prepare(&#x27;SELECT * FROM posts WHERE id = ?&#x27;);
+    $stmt-&gt;execute([$id]);
+    $post = $stmt-&gt;fetch() ?: exit(&#x27;Post not found&#x27;);
+}
+if ($_SERVER[&#x27;REQUEST_METHOD&#x27;] === &#x27;POST&#x27;) {
+    check_csrf();
+    $title = trim($_POST[&#x27;title&#x27;] ?? &#x27;&#x27;);
+    $body = trim($_POST[&#x27;body&#x27;] ?? &#x27;&#x27;);
+    $status = ($_POST[&#x27;status&#x27;] ?? &#x27;&#x27;) === &#x27;published&#x27; ? &#x27;published&#x27; : &#x27;draft&#x27;;   // never trust the value: whitelist it
+    if ($title === &#x27;&#x27; || $body === &#x27;&#x27;) {
+        $error = &#x27;Title and body are required.&#x27;;
+    } elseif ($id) {
+        $pdo-&gt;prepare(&#x27;UPDATE posts SET title = ?, body = ?, excerpt = ?, status = ?,
+                       published_at = IF(? = &quot;published&quot; AND published_at IS NULL, NOW(), published_at) WHERE id = ?&#x27;)
+            -&gt;execute([$title, $body, mb_substr(trim($_POST[&#x27;excerpt&#x27;] ?? &#x27;&#x27;), 0, 300), $status, $status, $id]);
+    } else {
+        $taken = $pdo-&gt;query(&#x27;SELECT slug FROM posts&#x27;)-&gt;fetchAll(PDO::FETCH_COLUMN);
+        $pdo-&gt;prepare(&#x27;INSERT INTO posts (author_id, title, slug, excerpt, body, status, published_at) VALUES (?, ?, ?, ?, ?, ?, ?)&#x27;)
+            -&gt;execute([$_SESSION[&#x27;user_id&#x27;], $title, uniqueSlug($title, $taken), mb_substr(trim($_POST[&#x27;excerpt&#x27;] ?? &#x27;&#x27;), 0, 300),
+                       $body, $status, $status === &#x27;published&#x27; ? date(&#x27;Y-m-d H:i:s&#x27;) : null]);
+        $id = (int)$pdo-&gt;lastInsertId();
+    }
+    if (empty($error)) { header(&#x27;Location: index.php?saved=&#x27; . $id); exit; }
+}</code></pre></figure>
+<p><strong>Delete</strong> must be a POST form with a CSRF token and a confirmation, never a plain link like <code>delete.php?id=5</code>. Links can be triggered by crawlers, prefetching or a malicious page.</p>
+<h2>Step 8: Public pages and pagination</h2>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">&lt;?php
+// index.php
+require &#x27;db.php&#x27;;
+$perPage = 10;
+$page = max(1, (int)($_GET[&#x27;page&#x27;] ?? 1));
+$total = (int)$pdo-&gt;query(&quot;SELECT COUNT(*) FROM posts WHERE status = &#x27;published&#x27;&quot;)-&gt;fetchColumn();
+$stmt = $pdo-&gt;prepare(&quot;SELECT title, slug, excerpt, published_at FROM posts
+                       WHERE status = &#x27;published&#x27; ORDER BY published_at DESC LIMIT ? OFFSET ?&quot;);
+$stmt-&gt;bindValue(1, $perPage, PDO::PARAM_INT);
+$stmt-&gt;bindValue(2, ($page - 1) * $perPage, PDO::PARAM_INT);
+$stmt-&gt;execute();
+foreach ($stmt as $p) {
+    echo &#x27;&lt;article&gt;&lt;h2&gt;&lt;a href=&quot;post.php?slug=&#x27; . urlencode($p[&#x27;slug&#x27;]) . &#x27;&quot;&gt;&#x27; . e($p[&#x27;title&#x27;]) . &#x27;&lt;/a&gt;&lt;/h2&gt;&#x27;;
+    echo &#x27;&lt;p&gt;&#x27; . e($p[&#x27;excerpt&#x27;]) . &#x27;&lt;/p&gt;&lt;small&gt;&#x27; . e(date(&#x27;j M Y&#x27;, strtotime($p[&#x27;published_at&#x27;]))) . &#x27;&lt;/small&gt;&lt;/article&gt;&#x27;;
+}
+$pages = (int)ceil($total / $perPage);
+if ($page &lt; $pages) echo &#x27;&lt;a href=&quot;?page=&#x27; . ($page + 1) . &#x27;&quot;&gt;Older posts →&lt;/a&gt;&#x27;;</code></pre></figure>
+<p><code>post.php</code> loads one post with <code>WHERE slug = ? AND status = &#x27;published&#x27;</code> and returns a proper <strong>404</strong> if it isn't found (<code>http_response_code(404)</code>). Drafts must never be visible to the public.</p>
+<p>For the post body, the safest beginner approach is to store <strong>plain text or Markdown</strong> and convert it on display, rather than allowing raw HTML from the editor. If you allow HTML, you must sanitise it with a library such as HTML Purifier.</p>
+<h2>Step 9: Cover images (safely)</h2>
+<p>Follow <a href="/learn/php/file-uploads/">file uploads</a>: check the upload error code and size (e.g. under 2 MB), verify it's really an image with <code>finfo</code> (not just the file extension), give it a random new name (<code>bin2hex(random_bytes(16)) . &#x27;.webp&#x27;</code>), and store only the file name in the database. Make sure the uploads folder can't run PHP files.</p>
+<h2>Step 10: SEO</h2>
+<p>Each post page gets its own <code>&lt;title&gt;</code>, meta description (the excerpt), an <code>og:image</code> (the cover), and <code>Article</code> structured data. Generate <code>sitemap.xml</code> from the posts table. See <a href="/learn/marketing/seo-basics/">SEO basics</a>.</p>
+<h2>Step 11: Deploy</h2>
+<p>Create the database in cPanel, import the SQL, upload the files, set <code>config.php</code> on the server only, and turn on HTTPS (<a href="/learn/hosting/cpanel-deploy/">cPanel deployment</a>, <a href="/learn/php/deploy-php-hosting/">PHP deployment</a>). Set <code>display_errors = Off</code> in production so visitors never see error messages with file paths.</p>
+<h2>Security checklist</h2>
+<ul><li>Every query uses prepared statements, with no user input glued into SQL</li><li>Every user-supplied value printed with <code>e()</code></li><li>Every form that changes data has a CSRF token; deletes are POST</li><li>Passwords hashed with <code>password_hash</code>, checked with <code>password_verify</code></li><li><code>session_regenerate_id(true)</code> after login; admin pages call <code>require_login()</code></li><li>Uploads checked by real file type, renamed, size-limited</li><li><code>config.php</code> and <code>uploads/</code> are not in Git</li></ul>
+<h2>Stretch goals</h2>
+<ul><li>Comments with moderation (status pending/approved) and a honeypot.</li><li>Categories and tags pages; search with <code>LIKE</code> or MySQL <code>FULLTEXT</code>.</li><li>An RSS feed (<code>feed.xml</code>).</li><li>Roles: <em>editor</em> can write, only <em>admin</em> can publish.</li><li>Rewrite it in Laravel, then compare (<a href="/learn/php/composer-frameworks/">Composer and frameworks</a>).</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does CRUD stand for? (four words)</p><details><summary>Show answer</summary><p>Create Read Update Delete</p></details></li><li><p>Which PHP function checks a password against its stored hash?</p><details><summary>Show answer</summary><p>password_verify</p></details></li><li><p>Which PHP function escapes text before printing it in HTML?</p><details><summary>Show answer</summary><p>htmlspecialchars</p></details></li><li><p>Should a delete action be a GET link or a POST form?</p><details><summary>Show answer</summary><p>POST</p></details></li><li><p>What do we call the URL-friendly version of a title, like how-to-register-a-kra-pin?</p><details><summary>Show answer</summary><p>slug</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 15 in <a href="/learn/projects/">Build real projects (portfolio projects, step by step)</a> · <a href="/learn/?book=projects">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/projects/data-analysis-report/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Project 3: Data analysis report (Excel, SQL or Python): from raw data to findings</a><a class="btn btn-solid btn-sm" href="/learn/projects/inventory-system/">Project 5: Inventory and sales system for a shop (stock, sales, low-stock alerts, reports) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -695,3 +695,14 @@ html.js .learn-static { display: none; }
   body.no-print::before { content: "Printing is turned off for course notes. Please use the “Save as PDF” button on the page to download them."; display: block; padding: 48px 32px; font: 600 16px/1.5 system-ui, sans-serif; color: #000; }
 }
 .pay-dialog .spinner { display: inline-block; flex: none; width: 18px; height: 18px; border-width: 3px; border-color: rgba(79, 70, 229, .22); border-top-color: #4f46e5; }
+
+/* Career roadmaps on the hub home page */
+.path-steps { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 1rem; padding: 0; font-weight: 700; font-size: .95rem; letter-spacing: .02em; text-transform: uppercase; color: var(--heading); }
+.path-steps span + span::before { content: "→"; margin-right: .5rem; color: var(--amber); }
+.path-grid { display: grid; gap: .9rem; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.path-card { display: flex; flex-direction: column; gap: .3rem; padding: 1rem 1.1rem; border: 1px solid var(--line); border-radius: 12px; text-decoration: none; color: inherit; background: var(--card); box-shadow: var(--shadow); transition: border-color .15s, transform .15s; }
+.path-card:hover, .path-card:focus-visible { border-color: var(--amber); transform: translateY(-2px); }
+.path-card i { font-size: 1.4rem; color: var(--amber); }
+.path-card strong { color: var(--heading); }
+.path-card small { color: var(--fg-muted); line-height: 1.4; }
+@media (prefers-reduced-motion: reduce) { .path-card { transition: none; } .path-card:hover { transform: none; } }

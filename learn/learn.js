@@ -13,8 +13,10 @@
     java: "fa-brands fa-java", "c-programming": "fa-solid fa-microchip", cpp: "fa-solid fa-gears", csharp: "fa-brands fa-microsoft", "dart-flutter": "fa-solid fa-mobile-screen",
     go: "fa-brands fa-golang", "digital-literacy": "fa-solid fa-user-shield", "ms-word": "fa-solid fa-file-word", excel: "fa-solid fa-table",
     powerpoint: "fa-solid fa-person-chalkboard", "google-workspace": "fa-solid fa-cloud", "ai-tools": "fa-solid fa-robot", "e-services-kenya": "fa-solid fa-landmark",
-    "computer-maintenance": "fa-solid fa-screwdriver-wrench", "earn-online": "fa-solid fa-hand-holding-dollar" };
+    "computer-maintenance": "fa-solid fa-screwdriver-wrench", "earn-online": "fa-solid fa-hand-holding-dollar",
+    projects: "fa-solid fa-hammer", "career-roadmaps": "fa-solid fa-route" };
   var TRACK_GROUPS = [
+    { title: "Career roadmaps & projects", icon: "fa-solid fa-route", slugs: ["career-roadmaps", "projects"] },
     { title: "Web & coding", icon: "fa-solid fa-code", slugs: ["html", "css", "javascript", "python", "sql", "php", "typescript", "algorithms", "git"] },
     { title: "App development", icon: "fa-solid fa-mobile-screen-button", slugs: ["app-dev-basics", "dart-flutter", "flutter", "kotlin-android", "react", "react-native", "apis-backend"] },
     { title: "Artificial intelligence (AI)", icon: "fa-solid fa-brain", slugs: ["artificial-intelligence", "ai-tools"] },
@@ -23,6 +25,15 @@
     { title: "ICT & digital skills", icon: "fa-solid fa-computer", slugs: ["earn-online", "it-basics", "digital-literacy", "ms-word", "excel", "powerpoint", "google-workspace", "e-services-kenya", "computer-maintenance"] },
     { title: "Networking, systems & security", icon: "fa-solid fa-network-wired", slugs: ["networking", "linux", "cybersecurity", "hosting"] },
     { title: "Business & earning online", icon: "fa-solid fa-sack-dollar", slugs: ["make-money-online", "marketing"] }
+  ];
+  // Career roadmaps and the projects subject, shown on the hub home page
+  var PATHS = [
+    ["career-roadmaps", "web-developer-roadmap", "fa-solid fa-code", "Web developer", "HTML, CSS, JavaScript, PHP or Node, SQL, M-Pesa, deployment"],
+    ["career-roadmaps", "data-analyst-roadmap", "fa-solid fa-chart-column", "Data analyst", "Excel, SQL, dashboards, Python, real data projects"],
+    ["career-roadmaps", "cybersecurity-roadmap", "fa-solid fa-shield-halved", "Cybersecurity", "Networking, Linux, security skills, labs, certifications"],
+    ["career-roadmaps", "mobile-app-developer-roadmap", "fa-solid fa-mobile-screen-button", "Mobile app developer", "Flutter, Kotlin or React Native to the Play Store"],
+    ["career-roadmaps", "it-support-networking-roadmap", "fa-solid fa-screwdriver-wrench", "IT support & networking", "Hardware, Windows, networks, helpdesk jobs"],
+    ["projects", "how-to-build-projects", "fa-solid fa-hammer", "Build real projects", "14 step-by-step portfolio projects: shop, M-Pesa, school system, API, app"]
   ];
   /** Subjects sorted into TRACK_GROUPS (plus "More subjects" for any new ones), empty groups left out. */
   function groupTracks(tracks) {
@@ -776,10 +787,13 @@
     showSide(false);
     setTitle("");
     main.innerHTML = '<section class="hero-learn"><div><p class="eyebrow">Marzley Tech Learning Hub</p><h1>Learn tech skills free, right in your browser</h1>' +
-      '<p class="lead" id="hub-lead">40 subjects and 465+ lessons: coding in 13 languages with a live editor, app development (Flutter, Kotlin, React Native, APIs), web and graphic design, Excel, Word and everyday ICT skills, networking and subnetting, cybersecurity, AI tools and how to make money online. Practise with questions that check themselves. Works on your phone.</p>' +
+      '<p class="lead" id="hub-lead">42 subjects and 485+ lessons: coding in 13 languages with a live editor, app development (Flutter, Kotlin, React Native, APIs), web and graphic design, Excel, Word and everyday ICT skills, networking and subnetting, cybersecurity, AI tools and how to make money online. Practise with questions that check themselves. Works on your phone.</p>' +
       '<div id="hub-search"></div><ul class="free-badges"><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Tutorials: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Notes: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Practice: free</li><li><i class="fa-solid fa-user" aria-hidden="true"></i> No account needed</li></ul>' +
-      '<p class="hero-ctas"><a class="btn btn-solid" href="./?track=html">Start with HTML</a><a class="btn btn-line" href="./?page=practice">Open the code editor</a></p></div>' +
+      '<p class="hero-ctas"><a class="btn btn-solid" href="./?track=html">Start with HTML</a><a class="btn btn-line" href="./?track=career-roadmaps&amp;lesson=choose-a-tech-career">Find your career path</a></p></div>' +
       '<div class="hero-code" aria-hidden="true"><pre><span class="c-k">print</span>(<span class="c-s">"Habari, Kenya!"</span>)\n<span class="c-t">&lt;h1&gt;</span>Hello<span class="c-t">&lt;/h1&gt;</span>\n<span class="c-k">SELECT</span> * <span class="c-k">FROM</span> Customers;</pre></div></section>' +
+      '<section class="home-sec path-sec"><div class="sec-head"><h2>Choose your path</h2><a href="./?track=projects&amp;lesson=how-to-build-projects">Build real projects</a></div>' +
+      '<p class="path-steps" aria-label="How the roadmaps work"><span>Learn</span><span>Practise</span><span>Build</span><span>Show</span><span>Work</span><span>Earn</span></p><div class="path-grid">' +
+      PATHS.map(function (r) { return '<a class="path-card" href="./?track=' + r[0] + "&amp;lesson=" + r[1] + '"><i class="' + r[2] + '" aria-hidden="true"></i><strong>' + esc(r[3]) + "</strong><small>" + esc(r[4]) + "</small></a>"; }).join("") + "</div></section>" +
       '<section class="home-sec"><h2>Tutorials</h2><div class="track-grid" id="track-grid"><p class="muted">Loading…</p></div></section>' +
       '<section class="home-sec"><div class="sec-head"><h2>Latest videos</h2><a href="./?page=videos">All videos</a></div><div class="video-grid" id="home-videos"></div></section>' +
       '<section class="home-sec"><div class="sec-head"><h2>Free notes &amp; books</h2><a href="./?page=notes">All notes</a></div><div class="note-grid" id="home-notes"></div></section>';

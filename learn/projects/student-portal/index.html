@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Project 12: Student portal (secure login, unit…</title>
+    <meta name="description" content="Every Kenyan university and college student knows the student portal: log in with your registration number, register for units, check your fee balance…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/projects/student-portal/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Project 12: Student portal (secure login, unit…" />
+    <meta property="og:description" content="Every Kenyan university and college student knows the student portal: log in with your registration number, register for units, check your fee balance…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/projects/student-portal/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Project 12: Student portal (secure login, unit…" />
+    <meta name="twitter:description" content="Every Kenyan university and college student knows the student portal: log in with your registration number, register for units, check your fee balance…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/projects/student-portal/#lesson","name":"Project 12: Student portal (secure login, unit registration, results, fee statement)","description":"Every Kenyan university and college student knows the student portal: log in with your registration number, register for units, check your fee balance…","url":"https://marzleytechsolutions.co.ke/learn/projects/student-portal/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/projects/#course","name":"Build real projects (portfolio projects, step by step)","url":"https://marzleytechsolutions.co.ke/learn/projects/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Build real projects (portfolio projects, step by step)","item":"https://marzleytechsolutions.co.ke/learn/projects/"},{"@type":"ListItem","position":4,"name":"Project 12: Student portal (secure login, unit registration, results, fee statement)","item":"https://marzleytechsolutions.co.ke/learn/projects/student-portal/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=96f5d2aab6" />
+    <link rel="stylesheet" href="/css/home.min.css?v=eb7432ef00" />
+    <link rel="stylesheet" href="/learn/learn.css?v=afcdb5f51a" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/projects/">Build real projects (portfolio projects, step by step)</a> / <span>Project 12: Student portal (secure login, unit registration, results, fee statement)</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=projects&amp;lesson=student-portal"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Project 12: Student portal</h1>
+<p>Every Kenyan university and college student knows the student portal: log in with your registration number, register for units, check your fee balance, see exam results, print an exam card. In this project you build one, focusing on what makes portals hard: <strong>secure authentication, account recovery, rules that depend on data (fee clearance, prerequisites, deadlines), and a fast, clear dashboard</strong> that survives thousands of students logging in on results day.</p>
+<p>It pairs naturally with the <a href="/learn/projects/school-management-system/">school management system</a> (the staff side); this project is the <strong>student side</strong> for a college or university.</p>
+<p><strong>You'll practise:</strong> authentication done properly (hashing, rate limiting, password reset tokens, sessions), authorisation, business rules, PDF documents, performance and caching.</p>
+<p><strong>Lessons you need:</strong> <a href="/learn/php/sessions-login/">sessions and login</a>, <a href="/learn/apis-backend/auth-passwords-tokens/">auth: passwords and tokens</a>, <a href="/learn/cybersecurity/passwords-2fa/">passwords and 2FA</a>, <a href="/learn/sql/indexes-transactions/">indexes and transactions</a>, <a href="/learn/projects/blog-cms/">the blog project</a>.</p>
+<h2>Step 1: Features</h2>
+<div class="static-table"><table><thead><tr><th>Feature</th><th>Rule</th></tr></thead><tbody><tr><td>Log in with registration number + password</td><td>Lock out after repeated failures; generic error messages</td></tr><tr><td>First login / forgot password</td><td>One-time reset link or code sent to the student's registered email or phone</td></tr><tr><td>Dashboard</td><td>Name, programme, year/semester, fee balance, registration status, announcements</td></tr><tr><td>Unit registration</td><td>Only during the registration window; only units offered for their programme and semester; prerequisites passed; maximum credit load; fee threshold met</td></tr><tr><td>Results</td><td>Only published results; per semester; GPA or weighted average</td></tr><tr><td>Fee statement</td><td>Invoices and payments with running balance; download PDF</td></tr><tr><td>Exam card</td><td>Only if registered for units and fees cleared to the required level</td></tr><tr><td>Profile</td><td>Update phone, email and photo; change password</td></tr></tbody></table></div>
+<h2>Step 2: Database (core tables)</h2>
+<figure class="static-code"><figcaption>SQL</figcaption><pre><code class="language-sql">CREATE TABLE students (
+  id INT AUTO_INCREMENT PRIMARY KEY, reg_no VARCHAR(30) NOT NULL UNIQUE, name VARCHAR(120) NOT NULL,
+  email VARCHAR(190) NOT NULL UNIQUE, phone VARCHAR(15), programme_id INT NOT NULL, year_of_study TINYINT NOT NULL,
+  password_hash VARCHAR(255) NULL, failed_logins INT NOT NULL DEFAULT 0, locked_until DATETIME NULL
+);
+CREATE TABLE units (id INT AUTO_INCREMENT PRIMARY KEY, code VARCHAR(15) NOT NULL UNIQUE, title VARCHAR(150) NOT NULL, credits TINYINT NOT NULL);
+CREATE TABLE unit_offerings (id INT AUTO_INCREMENT PRIMARY KEY, unit_id INT NOT NULL, programme_id INT NOT NULL, semester_id INT NOT NULL, year_of_study TINYINT NOT NULL);
+CREATE TABLE prerequisites (unit_id INT NOT NULL, requires_unit_id INT NOT NULL, PRIMARY KEY (unit_id, requires_unit_id));
+CREATE TABLE registrations (student_id INT NOT NULL, offering_id INT NOT NULL, registered_at DATETIME NOT NULL, PRIMARY KEY (student_id, offering_id));
+CREATE TABLE results (student_id INT NOT NULL, unit_id INT NOT NULL, semester_id INT NOT NULL, score TINYINT NOT NULL, grade CHAR(2) NOT NULL, published TINYINT NOT NULL DEFAULT 0, PRIMARY KEY (student_id, unit_id, semester_id));
+CREATE TABLE semesters (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(40) NOT NULL, reg_opens DATETIME NOT NULL, reg_closes DATETIME NOT NULL, fee_threshold_pct TINYINT NOT NULL DEFAULT 50);
+CREATE TABLE fee_entries (id INT AUTO_INCREMENT PRIMARY KEY, student_id INT NOT NULL, semester_id INT NULL, kind ENUM(&#x27;invoice&#x27;,&#x27;payment&#x27;) NOT NULL, amount INT NOT NULL, reference VARCHAR(40) NULL UNIQUE, created_at DATETIME NOT NULL);
+CREATE TABLE password_resets (student_id INT NOT NULL, token_hash CHAR(64) NOT NULL UNIQUE, expires_at DATETIME NOT NULL, used TINYINT NOT NULL DEFAULT 0);</code></pre></figure>
+<p>Fees as a <strong>ledger</strong> (invoices and payments as rows) give you a full statement and a correct balance: <code>SUM(invoices) − SUM(payments)</code>.</p>
+<h2>Step 3: Authentication done properly</h2>
+<h3>Login with lockout</h3>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">$stmt = $pdo-&gt;prepare(&#x27;SELECT * FROM students WHERE reg_no = ?&#x27;);
+$stmt-&gt;execute([strtoupper(trim($_POST[&#x27;reg_no&#x27;] ?? &#x27;&#x27;))]);
+$s = $stmt-&gt;fetch();
+if ($s &amp;&amp; $s[&#x27;locked_until&#x27;] &amp;&amp; strtotime($s[&#x27;locked_until&#x27;]) &gt; time()) {
+    exit(&#x27;Too many attempts. Try again in 15 minutes or reset your password.&#x27;);
+}
+if ($s &amp;&amp; $s[&#x27;password_hash&#x27;] &amp;&amp; password_verify($_POST[&#x27;password&#x27;] ?? &#x27;&#x27;, $s[&#x27;password_hash&#x27;])) {
+    $pdo-&gt;prepare(&#x27;UPDATE students SET failed_logins = 0, locked_until = NULL WHERE id = ?&#x27;)-&gt;execute([$s[&#x27;id&#x27;]]);
+    if (password_needs_rehash($s[&#x27;password_hash&#x27;], PASSWORD_DEFAULT)) { /* re-hash and save */ }
+    session_regenerate_id(true);
+    $_SESSION[&#x27;student_id&#x27;] = $s[&#x27;id&#x27;];
+    header(&#x27;Location: dashboard.php&#x27;); exit;
+}
+if ($s) {
+    $pdo-&gt;prepare(&#x27;UPDATE students SET failed_logins = failed_logins + 1,
+                   locked_until = IF(failed_logins + 1 &gt;= 5, NOW() + INTERVAL 15 MINUTE, NULL) WHERE id = ?&#x27;)-&gt;execute([$s[&#x27;id&#x27;]]);
+}
+$error = &#x27;Wrong registration number or password.&#x27;;</code></pre></figure>
+<h3>Password reset tokens</h3>
+<p>The secure pattern, used by most big websites:</p>
+<ol><li>Student enters their registration number. <strong>Always</strong> show the same message ("If that account exists, we've sent a reset link to its registered email"), so attackers can't discover which numbers exist.</li><li>Generate a random token, email/SMS it, and store only its <strong>hash</strong> with a short expiry (30 minutes).</li><li>When the link is opened, hash the token from the URL, find an unused, unexpired match, let them set a new password, mark the token used, and end other sessions.</li></ol>
+<p>Here's the token logic. Run it to see why we store a hash: even someone who steals the database can't use the tokens.</p>
+<figure class="static-code"><figcaption>PHP · runs live in the interactive lesson</figcaption><pre><code class="language-php">&lt;?php
+function make_reset_token(): array {
+    $token = bin2hex(random_bytes(32));             // goes in the email link, never stored
+    return [$token, hash(&#x27;sha256&#x27;, $token)];        // only the hash is saved in the database
+}
+
+[$token, $hash] = make_reset_token();
+echo &quot;Link:   https://portal.example.ac.ke/reset.php?token=&quot; . substr($token, 0, 16) . &quot;...\n&quot;;
+echo &quot;Stored: &quot; . substr($hash, 0, 16) . &quot;...\n&quot;;
+
+// Later, when the student clicks the link:
+$fromUrl = $token;
+echo hash_equals($hash, hash(&#x27;sha256&#x27;, $fromUrl)) ? &quot;Token matches: allow a new password\n&quot; : &quot;Invalid token\n&quot;;
+echo hash_equals($hash, hash(&#x27;sha256&#x27;, &#x27;guessed-token&#x27;)) ? &quot;matches\n&quot; : &quot;A guessed token fails\n&quot;;
+
+// Password rules: length beats complexity. Check against common passwords too.
+function password_ok(string $p): bool {
+    $common = [&#x27;password&#x27;, &#x27;12345678&#x27;, &#x27;qwerty123&#x27;, &#x27;kenya2026&#x27;, &#x27;password1&#x27;];
+    return strlen($p) &gt;= 10 &amp;&amp; !in_array(strtolower($p), $common, true);
+}
+var_dump(password_ok(&#x27;kenya2026&#x27;), password_ok(&#x27;Mt Kenya sunrise 4 me&#x27;));</code></pre></figure>
+<p>Optional but excellent: <strong>two-factor authentication</strong> for students (an authenticator app code) and mandatory 2FA for staff accounts.</p>
+<h2>Step 4: Unit registration rules</h2>
+<p>All rules checked on the server, in one place, when the student clicks "Register":</p>
+<figure class="static-code"><figcaption>PHP</figcaption><pre><code class="language-php">function can_register(PDO $pdo, array $student, array $semester, array $offeringIds): array {
+    $errors = [];
+    $now = time();
+    if ($now &lt; strtotime($semester[&#x27;reg_opens&#x27;]) || $now &gt; strtotime($semester[&#x27;reg_closes&#x27;])) $errors[] = &#x27;Registration is closed.&#x27;;
+    // fee threshold: paid at least X% of this semester&#x27;s invoice
+    $f = $pdo-&gt;prepare(&quot;SELECT SUM(CASE WHEN kind = &#x27;invoice&#x27; AND semester_id = ? THEN amount ELSE 0 END) AS inv_this,
+                               SUM(CASE WHEN kind = &#x27;invoice&#x27; AND NOT (semester_id &lt;=&gt; ?) THEN amount ELSE 0 END) AS inv_other,
+                               SUM(CASE WHEN kind = &#x27;payment&#x27; THEN amount ELSE 0 END) AS paid
+                        FROM fee_entries WHERE student_id = ?&quot;);
+    $f-&gt;execute([$semester[&#x27;id&#x27;], $semester[&#x27;id&#x27;], $student[&#x27;id&#x27;]]);
+    $fees = $f-&gt;fetch();
+    $paidForThis = $fees[&#x27;paid&#x27;] - $fees[&#x27;inv_other&#x27;];          // payments clear older invoices first
+    $needed = $fees[&#x27;inv_this&#x27;] * $semester[&#x27;fee_threshold_pct&#x27;] / 100;
+    if ($fees[&#x27;inv_this&#x27;] &gt; 0 &amp;&amp; $paidForThis &lt; $needed) {
+        $errors[] = &#x27;Pay at least &#x27; . $semester[&#x27;fee_threshold_pct&#x27;] . &#x27;% of this semester\&#x27;s fees to register (KSh &#x27;
+                  . number_format($needed - $paidForThis) . &#x27; more).&#x27;;
+    }
+    // ... offered for this programme/semester/year, prerequisites passed (score &gt;= 40), total credits &lt;= maximum
+    return $errors;
+}</code></pre></figure>
+<p>Then insert all registrations in a <strong>transaction</strong>. Show the student exactly which rule failed and what to do about it ("Pay KSh 12,500 more", "You need to pass COM 1101 first").</p>
+<h2>Step 5: Results and GPA</h2>
+<p>Only show <code>published = 1</code> results. Calculate a weighted average or GPA with credits as weights:</p>
+<blockquote><p>weighted average = Σ(score × credits) ÷ Σ(credits)</p></blockquote>
+<p>Results day brings a traffic spike: thousands of students log in within minutes. Prepare:</p>
+<ul><li>Indexes on every column used in WHERE and JOIN (<code>results(student_id, semester_id)</code>).</li><li>Cache each student's results summary after publication (results don't change often).</li><li>Keep the dashboard light: no huge images, few queries per page.</li><li>Load-test before results day (tools like <code>ab</code> or k6) on a copy of the server.</li></ul>
+<h2>Step 6: Documents: fee statement and exam card</h2>
+<p>Generate PDFs on the server (Dompdf or TCPDF with Composer) so they can't be edited in the browser:</p>
+<ul><li><strong>Fee statement</strong>: ledger rows with running balance (<code>SUM(...) OVER (ORDER BY created_at)</code> window function).</li><li><strong>Exam card</strong>: student photo, registered units, a unique serial number and a <strong>QR code</strong> linking to a verification page (<code>verify.php?serial=...</code>) so invigilators can confirm it's genuine.</li></ul>
+<h2>Step 7: Paying fees (optional)</h2>
+<p>Add "Pay with M-Pesa": STK push with the registration number as the account reference, recorded as a <code>payment</code> row on confirmation (<a href="/learn/projects/mpesa-payment-system/">M-Pesa project</a>). Many institutions use bank paybills; a real integration would reconcile bank and M-Pesa records daily.</p>
+<h2>Step 8: Security checklist</h2>
+<ul><li>Registration numbers are not secret: the password and lockout protect accounts</li><li>Generic error messages for login and password reset</li><li>Reset tokens random, hashed, single-use, expiring</li><li>Every page loads data by <code>$_SESSION[&#x27;student_id&#x27;]</code>, never by an ID from the URL</li><li>Session cookies: <code>HttpOnly</code>, <code>Secure</code>, <code>SameSite=Lax</code>; sessions expire after inactivity</li><li>CSRF tokens on all forms; HTTPS everywhere</li><li>Audit log of logins, password changes and registrations</li></ul>
+<h2>Step 9: Tests</h2>
+<ul><li>5 wrong passwords → locked for 15 minutes; correct password during the lock → still refused</li><li>Reset link used twice or after 30 minutes → refused</li><li>Registration outside the window, without fees, without prerequisites, or above the credit limit → clear error each</li><li>Change <code>?student=</code> style parameters in any URL → no access to other students' data</li><li>Unpublished results never appear</li></ul>
+<h2>Stretch goals</h2>
+<ul><li>Hostel booking with room capacity (overlap logic from the <a href="/learn/projects/booking-system/">booking project</a>).</li><li>Lecturer evaluation forms (anonymous, one per unit).</li><li>Push notifications or SMS when results are published.</li><li>A mobile app version using an API (<a href="/learn/projects/rest-api/">REST API project</a>).</li></ul>
+<h2>Summary</h2>
+<ul><li>Authentication: hashing, lockout, generic errors, hashed one-time reset tokens, regenerated sessions.</li><li>Business rules (window, fees, prerequisites, credits) checked on the server, with clear messages.</li><li>Fees as a ledger; documents as server-generated PDFs with verification codes.</li><li>Prepare for results-day traffic with indexes and caching.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>When a reset token is created, what is stored in the database: the token or its hash?</p><details><summary>Show answer</summary><p>hash</p></details></li><li><p>After how many failed logins does this portal lock the account?</p><details><summary>Show answer</summary><p>5</p></details></li><li><p>Which PHP function prevents session fixation after login?</p><details><summary>Show answer</summary><p>session_regenerate_id</p></details></li><li><p>Fees stored as invoice and payment rows form a what? (one word)</p><details><summary>Show answer</summary><p>ledger</p></details></li></ol></section></div><p class="static-meta">Lesson 13 of 15 in <a href="/learn/projects/">Build real projects (portfolio projects, step by step)</a> · <a href="/learn/?book=projects">Printable course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/projects/school-management-system/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Project 11: School management system (students, classes, marks, report cards, fees)</a><a class="btn btn-solid btn-sm" href="/learn/projects/mobile-expense-app/">Project 13: Mobile expense tracker app with Flutter (offline storage, categories, budget, charts) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>
