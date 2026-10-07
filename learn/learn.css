@@ -657,3 +657,41 @@ html.js .learn-static { display: none; }
 .lesson-toc .toc-sub a { padding: 3px 8px; font-size: 13px; }
 .lsec-sub { scroll-margin-top: 84px; }
 .lesson-body hr { border: 0; border-top: 1px solid var(--line); margin: 28px 0; }
+
+/* ---------- Paid PDF download of course notes (M-Pesa) ---------- */
+.pay-dialog { width: min(460px, calc(100vw - 32px)); text-align: center; padding: 30px 28px 22px; }
+.pay-dialog .pay-title, .pay-dialog h2 { padding: 0 28px; font-size: 26px; font-weight: 800; }
+.pay-sub { margin: 6px 0 20px; color: var(--fg-muted); line-height: 1.5; }
+.pay-sub strong { color: var(--heading); }
+.pay-form { display: grid; gap: 8px; text-align: left; }
+.pay-form label { font-size: 13px; font-weight: 800; letter-spacing: .04em; color: var(--fg-muted); }
+.pay-phone { display: flex; align-items: center; min-height: 52px; border: 1px solid var(--field-border); border-radius: 12px; background: var(--field-bg); overflow: hidden; }
+.pay-phone:focus-within, .pay-input:focus { outline: 2px solid #16a34a; outline-offset: 1px; }
+.pay-phone span { padding: 0 6px 0 14px; font-weight: 700; color: var(--fg-muted); }
+.pay-phone input { flex: 1; min-width: 0; height: 52px; border: 0; background: transparent; color: var(--fg); font: inherit; font-size: 17px; padding: 0 12px 0 4px; outline: none; }
+.pay-input { min-height: 52px; border: 1px solid var(--field-border); border-radius: 12px; background: var(--field-bg); color: var(--fg); font: inherit; font-size: 17px; padding: 0 14px; text-transform: uppercase; }
+.pay-err { color: #dc2626; text-align: left; }
+.pay-dialog .pay-btn { width: 100%; min-height: 54px; border: 0; border-radius: 12px; background: #16a34a; color: #fff; font-size: 17px; font-weight: 800; box-shadow: 0 10px 22px rgba(22, 163, 74, .25); cursor: pointer; justify-content: center; }
+.pay-dialog .pay-btn:hover, .pay-btn:focus-visible { background: #15803d; color: #fff; }
+.pay-dialog .pay-btn:disabled { opacity: .7; cursor: wait; }
+.pay-dialog .pay-check { width: 100%; min-height: 50px; margin-top: 6px; border: 2px solid #4f46e5; border-radius: 12px; background: transparent; color: #4338ca; font-size: 16px; font-weight: 800; cursor: pointer; justify-content: center; }
+[data-theme=dark] .pay-dialog .pay-check { color: #a5b4fc; border-color: #818cf8; }
+.pay-link { display: block; margin: 14px auto 0; border: 0; background: none; color: var(--fg-muted); font: inherit; font-weight: 600; cursor: pointer; }
+.pay-small { display: block; margin: 12px auto 0; border: 0; background: none; color: var(--fg-muted); font-size: 13px; text-decoration: underline; cursor: pointer; }
+.pay-link:hover, .pay-small:hover { color: var(--heading); }
+.pay-note { margin: 14px 0 0; font-size: 12.5px; color: var(--fg-faint); line-height: 1.45; }
+.pay-center { display: grid; justify-items: center; gap: 4px; }
+.pay-phone-ico { display: grid; place-items: center; width: 46px; height: 58px; margin-bottom: 8px; border: 3px solid #4ade80; border-radius: 10px; color: #4ade80; font-size: 22px; }
+.pay-phone-ico i { font-size: 0; }
+.pay-phone-ico::after { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #4ade80; align-self: end; margin-bottom: 7px; }
+.pay-ok-ico { color: #16a34a; font-size: 46px; margin-bottom: 4px; }
+.pay-wait { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 2px 0 10px; color: #4f46e5; font-weight: 700; line-height: 1.45; }
+[data-theme=dark] .pay-wait { color: #a5b4fc; }
+.pay-center .pay-sub { margin-bottom: 10px; }
+
+/* Course notes can't be printed: the PDF download is the way to keep them */
+@media print {
+  body.no-print > * { display: none !important; }
+  body.no-print::before { content: "Printing is turned off for course notes. Please use the “Save as PDF” button on the page to download them."; display: block; padding: 48px 32px; font: 600 16px/1.5 system-ui, sans-serif; color: #000; }
+}
+.pay-dialog .spinner { display: inline-block; flex: none; width: 18px; height: 18px; border-width: 3px; border-color: rgba(79, 70, 229, .22); border-top-color: #4f46e5; }

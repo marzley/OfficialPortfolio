@@ -5,7 +5,7 @@ if (!defined('MARZLEY_PORTAL')) {
     exit;
 }
 
-const SCHEMA_VERSION = 8;
+const SCHEMA_VERSION = 9;
 const STAFF_PERMS = ['projects' => 'Projects & files', 'clients' => 'People', 'support' => 'Support', 'courses' => 'Courses', 'money' => 'Invoices, payments & quotes', 'leads' => 'Leads'];
 const PROJECT_STATUSES = ['planning', 'design', 'build', 'review', 'live', 'on_hold'];
 const INVOICE_STATUSES = ['unpaid', 'paid', 'cancelled'];
@@ -117,6 +117,8 @@ function migrate(PDO $pdo): void {
         "CREATE TABLE IF NOT EXISTS learn_lesson_likes (id $id, lesson_id $uint NOT NULL, learner_id $uint NOT NULL, created_at DATETIME NOT NULL, UNIQUE (lesson_id, learner_id))$end",
         "CREATE TABLE IF NOT EXISTS learn_reviews (id $id, lesson_id $uint NOT NULL, learner_id $uint NOT NULL, parent_id $uint NULL, rating $uint NULL, body TEXT NOT NULL, is_staff $uint NOT NULL DEFAULT 0, hidden $uint NOT NULL DEFAULT 0, created_at DATETIME NOT NULL)$end",
         "CREATE TABLE IF NOT EXISTS learn_progress (id $id, learner_id $uint NOT NULL, lesson_id $uint NOT NULL, created_at DATETIME NOT NULL, UNIQUE (learner_id, lesson_id))$end",
+        // v9: course notes downloaded as PDF after an M-Pesa payment (no account needed; the token is the proof of purchase)
+        "CREATE TABLE IF NOT EXISTS learn_note_payments (id $id, checkout_id VARCHAR(100) NOT NULL UNIQUE, track_id $uint NOT NULL, amount $uint NOT NULL, phone VARCHAR(30) NOT NULL, token VARCHAR(64) NOT NULL UNIQUE, status VARCHAR(20) NOT NULL DEFAULT 'pending', receipt VARCHAR(30) NULL, paid_amount $uint NULL, downloads $uint NOT NULL DEFAULT 0, created_at DATETIME NOT NULL, paid_at DATETIME NULL)$end",
         "CREATE TABLE IF NOT EXISTS learn_uploads (id $id, token VARCHAR(64) NOT NULL UNIQUE, kind VARCHAR(10) NOT NULL, name VARCHAR(200) NOT NULL, size $uint NOT NULL, received $uint NOT NULL DEFAULT 0, meta TEXT NOT NULL, created_by VARCHAR(190) NOT NULL, created_at DATETIME NOT NULL)$end",
         // v4
         "CREATE TABLE IF NOT EXISTS site_payments (id $id, checkout_id VARCHAR(100) NOT NULL UNIQUE, purpose VARCHAR(20) NOT NULL, plan VARCHAR(60) NOT NULL DEFAULT '', amount $uint NOT NULL, phone VARCHAR(30) NOT NULL, name VARCHAR(120) NOT NULL DEFAULT '', referred_by VARCHAR(20) NOT NULL DEFAULT '', status VARCHAR(20) NOT NULL DEFAULT 'pending', receipt VARCHAR(30) NULL, paid_amount $uint NULL, invoice_id $uint NULL, created_at DATETIME NOT NULL, paid_at DATETIME NULL)$end",
@@ -155,7 +157,7 @@ function migrate(PDO $pdo): void {
         try { $pdo->exec("ALTER TABLE $table ADD COLUMN $col $def"); } catch (PDOException $e) { /* already there */ }
     }
     foreach (['CREATE INDEX audit_created ON audit_log (created_at)', 'CREATE INDEX payments_invoice ON payments (invoice_id)', 'CREATE INDEX payments_ref ON payments (reference)', 'CREATE UNIQUE INDEX payments_checkout ON payments (checkout_id)', 'CREATE INDEX queue_pending ON campaign_queue (sent_at)', 'CREATE UNIQUE INDEX referral_once ON referrals (code, referred_phone, client_id)',
-              'CREATE INDEX checks_domain ON site_checks (domain_id, checked_at)', 'CREATE INDEX learn_comments_video ON learn_comments (video_id)', 'CREATE INDEX learn_codes_email ON learn_codes (email)', 'CREATE INDEX learn_reviews_lesson ON learn_reviews (lesson_id)'] as $sql) {
+              'CREATE INDEX checks_domain ON site_checks (domain_id, checked_at)', 'CREATE INDEX learn_comments_video ON learn_comments (video_id)', 'CREATE INDEX learn_codes_email ON learn_codes (email)', 'CREATE INDEX learn_reviews_lesson ON learn_reviews (lesson_id)', 'CREATE INDEX learn_note_pay_phone ON learn_note_payments (phone, track_id)'] as $sql) {
         try { $pdo->exec($sql); } catch (PDOException $e) { /* already there */ }
     }
     if ($v < 3) {
@@ -1291,7 +1293,8 @@ function settle_learn_payment(string $checkoutId, array $r): string {
     $amount = (int)($r['amount'] ?? 0);
     $receipt = strtoupper(preg_replace('/[^A-Z0-9]/i', '', (string)($r['receipt'] ?? '')));
     if ($amount < (int)$lp['amount'] || $receipt === '' || reference_used($receipt)
-        || q('SELECT id FROM site_payments WHERE receipt = ?', [$receipt])->fetch() || q('SELECT id FROM learn_payments WHERE receipt = ?', [$receipt])->fetch()) {
+        || q('SELECT id FROM site_payments WHERE receipt = ?', [$receipt])->fetch() || q('SELECT id FROM learn_payments WHERE receipt = ?', [$receipt])->fetch()
+        || q('SELECT id FROM learn_note_payments WHERE receipt = ?', [$receipt])->fetch()) {
         audit('payment_rejected', "Video unlock: amount $amount, receipt '$receipt'", 'M-Pesa');
         q("UPDATE learn_payments SET status = 'failed' WHERE id = ?", [$lp['id']]);   // so the learner is told, and can try again
         return 'mismatch';
@@ -1306,5 +1309,38 @@ function settle_learn_payment(string $checkoutId, array $r): string {
         q('INSERT INTO learn_unlocks (video_id, learner_id, amount, receipt, created_at) VALUES (?, ?, ?, ?, ?)', [$lp['video_id'], $lp['learner_id'], $amount, $receipt, now()]);
     }
     audit('video_unlocked', "Video {$lp['video_id']} KSh $amount M-Pesa $receipt", 'M-Pesa');
+    return 'paid';
+}
+
+/** Price of one subject's course notes as a PDF download (KSh). Staff change it in the portal's Learning hub tab. */
+function notes_pdf_price(): int {
+    return max(1, min(100000, (int)setting('notes_pdf_price', '50')));
+}
+
+/**
+ * A course-notes PDF payment result arrived: the same checks as other payments (full amount, receipt
+ * not used before, Safaricom confirms). Once paid, the buyer's download token works. Returns the status.
+ */
+function settle_note_payment(string $checkoutId, array $r): string {
+    $np = q('SELECT * FROM learn_note_payments WHERE checkout_id = ?', [$checkoutId])->fetch();
+    if (!$np) return 'mismatch';
+    if ($np['status'] !== 'pending') return $np['status'];
+    if ((int)($r['result_code'] ?? -1) !== 0) { q("UPDATE learn_note_payments SET status = 'failed' WHERE id = ?", [$np['id']]); return 'failed'; }
+    $amount = (int)($r['amount'] ?? 0);
+    $receipt = strtoupper(preg_replace('/[^A-Z0-9]/i', '', (string)($r['receipt'] ?? '')));
+    if ($amount < (int)$np['amount'] || $receipt === '' || reference_used($receipt)
+        || q('SELECT id FROM site_payments WHERE receipt = ?', [$receipt])->fetch() || q('SELECT id FROM learn_payments WHERE receipt = ?', [$receipt])->fetch()
+        || q('SELECT id FROM learn_note_payments WHERE receipt = ?', [$receipt])->fetch()) {
+        audit('payment_rejected', "Notes PDF: amount $amount, receipt '$receipt'", 'M-Pesa');
+        q("UPDATE learn_note_payments SET status = 'failed' WHERE id = ?", [$np['id']]);
+        return 'mismatch';
+    }
+    if (empty(mpesa_config()['skip_confirm'])) {
+        $code = stk_query($checkoutId);
+        if ($code === null) return 'pending';
+        if ($code !== '0') { q("UPDATE learn_note_payments SET status = 'failed' WHERE id = ?", [$np['id']]); return 'failed'; }
+    }
+    if (!q("UPDATE learn_note_payments SET status = 'paid', receipt = ?, paid_amount = ?, paid_at = ? WHERE id = ? AND status = 'pending'", [$receipt, $amount, now(), $np['id']])->rowCount()) return 'paid';
+    audit('notes_pdf_paid', "Track {$np['track_id']} KSh $amount M-Pesa $receipt", 'M-Pesa');
     return 'paid';
 }

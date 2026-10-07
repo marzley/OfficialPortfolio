@@ -75,6 +75,12 @@ function run_daily(callable $log): void {
         if ($r) settle_learn_payment($p['checkout_id'], $r);
     }
 
+    // 2d. Course-notes PDF payments whose result came in but wasn't processed
+    foreach (q("SELECT checkout_id FROM learn_note_payments WHERE status = 'pending' AND created_at > ?", [date('Y-m-d H:i:s', time() - 3 * 86400)])->fetchAll() as $p) {
+        $r = mpesa_result($p['checkout_id']);
+        if ($r) settle_note_payment($p['checkout_id'], $r);
+    }
+
     // 3. Payment reminders: 3 days before, on the day, then 3, 7 and 14 days late
     $overdue = [];
     foreach (q("SELECT i.*, c.name FROM invoices i JOIN clients c ON c.id = i.client_id WHERE i.status = 'unpaid' AND i.due_date IS NOT NULL")->fetchAll() as $inv) {

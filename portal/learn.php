@@ -10,7 +10,7 @@ install_error_alerts('learning hub');
 start_session();
 $action = $_GET['action'] ?? '';
 $method = $_SERVER['REQUEST_METHOD'];
-const LEARN_GET = ['me', 'catalog', 'lesson', 'lesson_social', 'videos', 'video', 'notes', 'note', 'poster', 'stream', 'unlock_status', 'admin'];
+const LEARN_GET = ['me', 'catalog', 'lesson', 'lesson_social', 'videos', 'video', 'notes', 'note', 'poster', 'stream', 'unlock_status', 'notes_pay_status', 'notes_access', 'admin'];
 const VIDEO_TYPES = ['mp4' => 'video/mp4', 'm4v' => 'video/mp4', 'webm' => 'video/webm'];
 const VIDEO_MAX = 2048 * 1024 * 1024;   // 2 GB
 const NOTE_MAX = 100 * 1024 * 1024;     // 100 MB
@@ -120,7 +120,7 @@ switch ($action) {
     case 'me':
         $progress = $me ? array_map('intval', array_column(q('SELECT lesson_id FROM learn_progress WHERE learner_id = ?', [$me['id']])->fetchAll(), 'lesson_id')) : [];
         out(['learner' => $me, 'csrf' => csrf_token(), 'editor' => $editor, 'progress' => $progress,
-             'google_client_id' => config()['google_client_id'], 'mpesa' => (bool)mpesa_config()]);
+             'google_client_id' => config()['google_client_id'], 'mpesa' => (bool)mpesa_config(), 'notes_price' => notes_pdf_price()]);
 
     case 'google':
         $token = (string)(body()['credential'] ?? '');
@@ -214,6 +214,75 @@ switch ($action) {
         $dl = !empty($_GET['dl']);
         if ($dl) q('UPDATE learn_notes SET downloads = downloads + 1 WHERE id = ?', [$n['id']]);
         send_file(learn_dir('notes') . '/' . $n['stored_name'], 'application/pdf', $n['original_name'], $dl);
+
+    // ---------- course notes as a PDF (paid with M-Pesa; reading online stays free) ----------
+    // No account is needed: the buyer gets a secret token once Safaricom confirms the payment.
+    // The token is kept in their browser, and can be recovered with the phone number and M-Pesa receipt.
+
+    case 'notes_pay':
+        $d = body();
+        $t = q('SELECT id, slug, title FROM learn_tracks WHERE slug = ? AND published = 1', [(string)($d['track'] ?? '')])->fetch();
+        if (!$t) fail(404, 'Those notes were not found.');
+        $msisdn = normalise_phone((string)($d['phone'] ?? ''));
+        if (!$msisdn) fail(400, 'Enter your M-Pesa number, for example 0712 345 678.');
+        if (!rate_ok('notes_pay', 6, 900)) fail(429, 'Too many payment prompts. Please wait a few minutes and try again.');
+        $price = notes_pdf_price();
+        $checkout = stk_push($msisdn, $price, 'NOTES' . $t['id'], 'Notes PDF');
+        q('INSERT INTO learn_note_payments (checkout_id, track_id, amount, phone, token, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [$checkout, $t['id'], $price, $msisdn, bin2hex(random_bytes(24)), 'pending', now()]);
+        $_SESSION['note_checkouts'] = array_slice(array_merge($_SESSION['note_checkouts'] ?? [], [$checkout]), -20);
+        out(['ok' => true, 'checkout_id' => $checkout, 'amount' => $price, 'status' => 'pending']);
+
+    case 'notes_pay_status':
+        $checkout = (string)($_GET['checkout'] ?? '');
+        // Only the browser that started the payment can collect its download token
+        if (!in_array($checkout, $_SESSION['note_checkouts'] ?? [], true)) fail(404, 'Payment not found.');
+        $np = q('SELECT p.*, t.slug FROM learn_note_payments p JOIN learn_tracks t ON t.id = p.track_id WHERE p.checkout_id = ?', [$checkout])->fetch();
+        if (!$np) fail(404, 'Payment not found.');
+        $status = $np['status'];
+        if ($status === 'pending' && ($r = mpesa_result($checkout))) $status = settle_note_payment($checkout, $r);
+        // "Check now": if Safaricom says the prompt was cancelled or failed, say so instead of waiting
+        if ($status === 'pending' && !empty($_GET['check']) && strtotime($np['created_at']) < time() - 15 && rate_ok('notes_check', 30, 600)) {
+            $code = stk_query($checkout);
+            if ($code !== null && $code !== '0' && $code !== '4999') {
+                q("UPDATE learn_note_payments SET status = 'failed' WHERE id = ? AND status = 'pending'", [$np['id']]);
+                $status = 'failed';
+            }
+        }
+        if ($status === 'mismatch') $status = 'failed';
+        out(['status' => $status] + ($status === 'paid' ? ['token' => $np['token'], 'track' => $np['slug']] : []));
+
+    case 'notes_access':
+        $token = (string)($_GET['token'] ?? '');
+        $np = preg_match('/^[a-f0-9]{48}$/', $token) ? q("SELECT p.*, t.slug FROM learn_note_payments p JOIN learn_tracks t ON t.id = p.track_id WHERE p.token = ? AND p.status = 'paid'", [$token])->fetch() : null;
+        if (!$np || $np['slug'] !== (string)($_GET['track'] ?? '')) fail(403, 'This download is not unlocked yet.');
+        if (!empty($_GET['dl'])) q('UPDATE learn_note_payments SET downloads = downloads + 1 WHERE id = ?', [$np['id']]);
+        out(['ok' => true, 'receipt' => $np['receipt'], 'phone' => substr($np['phone'], 0, 6) . '***' . substr($np['phone'], -3), 'paid_at' => $np['paid_at']]);
+
+    case 'notes_recover':
+        $d = body();
+        if (!rate_ok('notes_recover', 10, 3600)) fail(429, 'Too many tries. Please wait an hour, or WhatsApp us on 0745 789 590.');
+        $t = q('SELECT id, slug FROM learn_tracks WHERE slug = ?', [(string)($d['track'] ?? '')])->fetch();
+        $msisdn = normalise_phone((string)($d['phone'] ?? ''));
+        $receipt = strtoupper(preg_replace('/[^A-Z0-9]/i', '', (string)($d['receipt'] ?? '')));
+        if (!$t || !$msisdn) fail(400, 'Enter the M-Pesa number you paid with.');
+        if (strlen($receipt) < 8) fail(400, 'Enter the M-Pesa receipt code from your confirmation SMS, for example SJK4H2L9XA.');
+        // A payment whose result arrived but wasn't processed yet is settled now
+        foreach (q("SELECT checkout_id FROM learn_note_payments WHERE track_id = ? AND phone = ? AND status = 'pending' AND created_at > ?", [$t['id'], $msisdn, date('Y-m-d H:i:s', time() - 7 * 86400)])->fetchAll() as $p) {
+            if ($r = mpesa_result($p['checkout_id'])) settle_note_payment($p['checkout_id'], $r);
+        }
+        $np = q("SELECT token FROM learn_note_payments WHERE track_id = ? AND phone = ? AND receipt = ? AND status = 'paid'", [$t['id'], $msisdn, $receipt])->fetch();
+        if (!$np) fail(404, 'We couldn’t match that payment to these notes yet. Check the number and receipt code, or WhatsApp us your M-Pesa message on 0745 789 590 and we’ll sort it out.');
+        audit('notes_pdf_recovered', "Track {$t['id']} receipt $receipt", 'visitor');
+        out(['ok' => true, 'token' => $np['token'], 'track' => $t['slug']]);
+
+    case 'notes_price_set':
+        need_editor();
+        $price = (int)(body()['price'] ?? 0);
+        if ($price < 1 || $price > 100000) fail(400, 'Enter a price between KSh 1 and KSh 100,000.');
+        set_setting('notes_pdf_price', (string)$price);
+        audit('notes_pdf_price', "KSh $price");
+        out(['ok' => true]);
 
     // ---------- videos (unlocked with M-Pesa) ----------
 
@@ -403,7 +472,8 @@ switch ($action) {
             'lessons' => q('SELECT * FROM learn_lessons ORDER BY track_id, position, id')->fetchAll(),
             'videos' => $videos,
             'notes' => q('SELECT id, title, summary, track_id, original_name, size, downloads, published, created_at FROM learn_notes ORDER BY created_at DESC')->fetchAll(),
-            'comments' => $comments, 'payments' => $payments,
+            'comments' => $comments, 'payments' => $payments, 'notes_price' => notes_pdf_price(),
+            'note_payments' => q('SELECT p.id, p.amount, p.phone, p.status, p.receipt, p.downloads, p.created_at, p.paid_at, t.title FROM learn_note_payments p JOIN learn_tracks t ON t.id = p.track_id ORDER BY p.id DESC LIMIT 100')->fetchAll(),
             'reviews' => q('SELECT r.id, r.lesson_id, r.parent_id, r.rating, r.body, r.is_staff, r.hidden, r.created_at, l.name, l.email, s.title AS lesson, s.slug, t.slug AS track, t.title AS track_title
                 FROM learn_reviews r JOIN learners l ON l.id = r.learner_id JOIN learn_lessons s ON s.id = r.lesson_id JOIN learn_tracks t ON t.id = s.track_id ORDER BY r.id DESC LIMIT 300')->fetchAll(),
             'top_lessons' => q('SELECT s.title, t.title AS track_title, COUNT(k.id) AS likes FROM learn_lesson_likes k JOIN learn_lessons s ON s.id = k.lesson_id JOIN learn_tracks t ON t.id = s.track_id GROUP BY s.id, s.title, t.title ORDER BY likes DESC LIMIT 10')->fetchAll(),
@@ -413,6 +483,9 @@ switch ($action) {
                 'revenue' => (int)q('SELECT COALESCE(SUM(amount), 0) AS n FROM learn_unlocks')->fetch()['n'],
                 'revenue_30' => (int)q('SELECT COALESCE(SUM(amount), 0) AS n FROM learn_unlocks WHERE created_at >= ?', [date('Y-m-d H:i:s', time() - 30 * 86400)])->fetch()['n'],
                 'unlocks' => (int)q('SELECT COUNT(*) AS n FROM learn_unlocks')->fetch()['n'],
+                'notes_revenue' => (int)q("SELECT COALESCE(SUM(paid_amount), 0) AS n FROM learn_note_payments WHERE status = 'paid'")->fetch()['n'],
+                'notes_revenue_30' => (int)q("SELECT COALESCE(SUM(paid_amount), 0) AS n FROM learn_note_payments WHERE status = 'paid' AND paid_at >= ?", [date('Y-m-d H:i:s', time() - 30 * 86400)])->fetch()['n'],
+                'notes_sold' => (int)q("SELECT COUNT(*) AS n FROM learn_note_payments WHERE status = 'paid'")->fetch()['n'],
                 'lessons_done' => (int)q('SELECT COUNT(*) AS n FROM learn_progress')->fetch()['n'],
                 'lesson_likes' => (int)q('SELECT COUNT(*) AS n FROM learn_lesson_likes')->fetch()['n'],
                 'reviews' => (int)q('SELECT COUNT(*) AS n FROM learn_reviews WHERE parent_id IS NULL')->fetch()['n'],

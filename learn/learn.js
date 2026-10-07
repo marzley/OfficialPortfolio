@@ -72,7 +72,7 @@
     "prolog": "% Facts\nparent(kamau, wanjiku).\nparent(kamau, otieno).\nparent(wanjiku, amina).\n\n% Rules\ngrandparent(X, Z) :- parent(X, Y), parent(Y, Z).\nsibling(X, Y) :- parent(P, X), parent(P, Y), X \\= Y.\n\n% Queries (lines starting with ?-)\n?- grandparent(kamau, Who).\n?- sibling(wanjiku, S)."
   });
 
-  var state = { me: null, csrf: null, editor: false, progress: [], catalog: null, gsiLoaded: false, mpesa: false };
+  var state = { me: null, csrf: null, editor: false, progress: [], catalog: null, gsiLoaded: false, mpesa: false, notesPrice: 50 };
   var main = document.getElementById("learn-main");
   var side = document.getElementById("learn-side");
   var sideToggle = document.getElementById("side-toggle");
@@ -83,6 +83,7 @@
   var $ = function (sel, root) { return (root || document).querySelector(sel); };
   var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
   var ksh = function (n) { return "KSh " + Number(n || 0).toLocaleString("en-KE"); };
+  var kes = function (n) { return "KES " + Number(n || 0).toLocaleString("en-KE"); };
   var isDark = function () { return document.documentElement.getAttribute("data-theme") === "dark"; };
   var store = {
     get: function (k) { try { return localStorage.getItem("learn:" + k); } catch (e) { return null; } },
@@ -1514,22 +1515,22 @@
   function pageNotes() {
     setNav("notes");
     showSide(false);
-    setTitle("Free notes and books", "Free course notes for every subject, from the basics up: read online, print or save as PDF. Plus free programming notes and books.");
-    main.innerHTML = '<section class="list-page"><h1>Notes &amp; books</h1><p class="lead">Complete course notes for every subject, from the basics all the way up. Read them online, print them or save them as a PDF. Free, no account needed.</p>' +
+    setTitle("Notes and books", "Course notes for every subject, from the basics up: read free online or download the whole subject as a PDF. Plus free programming notes and books.");
+    main.innerHTML = '<section class="list-page"><h1>Notes &amp; books</h1><p class="lead">Complete course notes for every subject, from the basics all the way up. Read them free online, no account needed, or download a whole subject as a PDF for ' + esc(kes(state.notesPrice)) + ' with M-Pesa.</p>' +
       '<h2 class="notes-h">Course notes</h2><div class="book-grid" id="book-grid"><p class="muted">Loading…</p></div>' +
       '<h2 class="notes-h">PDF notes &amp; books</h2><div class="note-grid" id="note-grid"><p class="muted">Loading…</p></div></section>';
     getCatalog().then(function (tracks) {
       $("#book-grid").innerHTML = tracks.map(function (t) {
         return '<a class="book-card" href="./?book=' + esc(t.slug) + '"><i class="' + (TRACK_ICONS[t.slug] || TRACK_ICONS[t.lang] || "fa-solid fa-book") + '" aria-hidden="true"></i><span><strong>' + esc(t.title) + " notes</strong>" +
-          '<span class="muted">' + t.lessons.length + " topics · read, print or save as PDF</span></span></a>";
+          '<span class="muted">' + t.lessons.length + " topics · read free · PDF " + esc(kes(state.notesPrice)) + "</span></span></a>";
       }).join("") || '<p class="muted">Course notes are coming soon.</p>';
     }).catch(function (e) { $("#book-grid").innerHTML = '<p class="muted">' + esc(e.message) + "</p>"; });
     api("notes").then(function (j) {
-      $("#note-grid").innerHTML = (j.notes || []).map(function (n) { return noteCard(n, "h2"); }).join("") || '<p class="muted">More downloadable PDF notes are coming soon. Meanwhile, every course above can be saved as a PDF.</p>';
+      $("#note-grid").innerHTML = (j.notes || []).map(function (n) { return noteCard(n, "h2"); }).join("") || '<p class="muted">More downloadable PDF notes are coming soon. Meanwhile, every course above can be downloaded as a PDF.</p>';
     }).catch(function (e) { $("#note-grid").innerHTML = '<p class="muted">' + esc(e.message) + "</p>"; });
   }
 
-  /** A whole subject as one notes book: every lesson in order, with code, questions and answers, ready to print or save as PDF. */
+  /** A whole subject as one notes book: every lesson in order, with code, questions and answers. Free to read; the PDF download is paid with M-Pesa. */
   function pageBook(slug) {
     setNav("notes");
     showSide(false);
@@ -1537,7 +1538,7 @@
     getCatalog().then(function (tracks) {
       var track = tracks.filter(function (t) { return t.slug === slug; })[0];
       if (!track) return errorBox("Those notes were not found.");
-      setTitle(track.title + " notes", "Free " + track.title + " course notes: all " + track.lessons.length + " topics from the basics up, with examples and practice questions. Read online or save as PDF.");
+      setTitle(track.title + " notes", "Free " + track.title + " course notes: all " + track.lessons.length + " topics from the basics up, with examples and practice questions. Read free online or download them as a PDF.");
       var queue = track.lessons.slice(), done = {}, loaded = 0;
       var fetchOne = function () {
         var item = queue.shift();
@@ -1557,12 +1558,12 @@
         }).join("");
         main.innerHTML = '<article class="book"><p class="crumbs"><a href="./?page=notes">Notes</a></p>' +
           '<header class="book-head"><p class="eyebrow">Marzley Tech Learning Hub · Course notes</p><h1>' + esc(track.title) + " notes</h1><p class=\"lead\">" + esc(track.summary || "") + "</p>" +
-          '<p class="book-tools"><button type="button" class="btn btn-solid btn-sm" id="book-print"><i class="fa-solid fa-print" aria-hidden="true"></i> Print or save as PDF</button>' +
+          '<p class="book-tools"><button type="button" class="btn btn-solid btn-sm" id="book-pdf"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> <span id="book-pdf-label">Save as PDF · ' + esc(kes(state.notesPrice)) + "</span></button>" +
           '<a class="btn btn-line btn-sm" href="./?track=' + esc(track.slug) + '"><i class="fa-solid fa-play" aria-hidden="true"></i> Start the interactive course</a></p>' +
-          '<p class="muted book-meta">' + track.lessons.length + " topics · free to read, print and share · marzleytechsolutions.co.ke/learn</p></header>" +
+          '<p class="muted book-meta">' + track.lessons.length + " topics · free to read online · PDF download " + esc(kes(state.notesPrice)) + " via M-Pesa · marzleytechsolutions.co.ke/learn</p></header>" +
           '<nav class="book-toc" aria-label="Contents"><h2>Contents</h2><ol>' + toc + "</ol></nav>" + parts +
           '<footer class="book-foot">© Marzley Tech Solutions · Free learning hub: marzleytechsolutions.co.ke/learn · Questions? WhatsApp 0745 789 590</footer></article>';
-        $("#book-print").addEventListener("click", function () { window.print(); });
+        bookPdfSetup(track);
       });
     }).catch(function (e) { errorBox(e.message); });
   }
@@ -1592,6 +1593,408 @@
     box.querySelectorAll("[data-tool]").forEach(function (h) { h.outerHTML = '<p class="muted"><i class="fa-solid fa-calculator" aria-hidden="true"></i> An interactive tool is available in the online lesson.</p>'; });
     var ex = l.exercise ? '<section class="book-ex"><h3><i class="fa-solid fa-dumbbell" aria-hidden="true"></i> Exercise</h3>' + markdown(l.exercise).html + "</section>" : "";
     return box.innerHTML + ex;
+  }
+
+  // ---------- course notes as a PDF: paid once with M-Pesa, then downloaded (not printed) ----------
+  // Reading online stays free. The PDF is made in the browser from the notes on the page, after the
+  // server confirms the payment and gives this browser a download token (kept for free re-downloads).
+  var payDlg = null, payPoll = null;
+  function pdfTokenKey(slug) { return "notes-pdf:" + slug; }
+  function stopPayPoll() { if (payPoll) { clearInterval(payPoll); payPoll = null; } }
+
+  function bookPdfSetup(track) {
+    var btn = $("#book-pdf");
+    if (store.get(pdfTokenKey(track.slug))) $("#book-pdf-label").textContent = "Download PDF";
+    btn.addEventListener("click", function () { startNotesPdf(track); });
+    // Printing is turned off for course notes: Ctrl+P opens the PDF download instead
+    var onKey = function (e) {
+      if ((e.ctrlKey || e.metaKey) && !e.altKey && String(e.key).toLowerCase() === "p") { e.preventDefault(); startNotesPdf(track); }
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.classList.add("no-print");
+    cleanup.push(function () { document.removeEventListener("keydown", onKey); document.body.classList.remove("no-print"); stopPayPoll(); if (payDlg && payDlg.open) payDlg.close(); });
+  }
+
+  function payDialog() {
+    if (payDlg) return payDlg;
+    payDlg = el('<dialog class="learn-dialog pay-dialog" aria-labelledby="pay-title"><form method="dialog" class="dialog-close"><button class="icon-btn" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></form><div id="pay-body"></div></dialog>');
+    document.body.appendChild(payDlg);
+    payDlg.addEventListener("close", stopPayPoll);
+    return payDlg;
+  }
+  function openPay(html) {
+    var d = payDialog();
+    $("#pay-body", d).innerHTML = html;
+    if (!d.open) { if (typeof d.showModal === "function") d.showModal(); else d.setAttribute("open", ""); }
+    return d;
+  }
+  function closePay() { stopPayPoll(); if (payDlg && payDlg.open) payDlg.close(); }
+
+  function startNotesPdf(track) {
+    var token = store.get(pdfTokenKey(track.slug));
+    if (token) {
+      openPay('<div class="pay-center"><span class="spinner" aria-hidden="true"></span><h2 id="pay-title">Checking your download…</h2></div>');
+      api("notes_access", undefined, "&track=" + encodeURIComponent(track.slug) + "&token=" + encodeURIComponent(token)).then(function (info) {
+        makeNotesPdf(track, token, info);
+      }).catch(function (e) {
+        if (e.status === 403) { try { localStorage.removeItem("learn:" + pdfTokenKey(track.slug)); } catch (x) {} return payForm(track); }
+        payMessage("Couldn’t check your download", e.message, track);
+      });
+      return;
+    }
+    payForm(track);
+  }
+
+  function payForm(track, err) {
+    var price = kes(state.notesPrice);
+    if (!state.mpesa) {
+      openPay('<h2 id="pay-title">Unlock PDF download</h2><p class="muted">Online payment is being set up. WhatsApp us and we’ll send you the ' + esc(track.title) + ' notes PDF.</p>' +
+        '<p><a class="btn btn-solid pay-btn" href="https://wa.me/254745789590?text=' + encodeURIComponent("Hello Marzley, I'd like the " + track.title + " notes as a PDF.") + '" target="_blank" rel="noopener noreferrer">WhatsApp us</a></p>');
+      return;
+    }
+    var d = openPay('<h2 id="pay-title" class="pay-title">Unlock PDF Download</h2><p class="pay-sub">A payment of <strong>' + esc(price) + '</strong> is required to download the <strong>' + esc(track.title) + '</strong> notes (' + track.lessons.length + ' topics) as a PDF.</p>' +
+      '<form id="pay-form" class="pay-form" novalidate><label for="pay-phone">M-PESA PHONE NUMBER</label><div class="pay-phone"><span>+254</span><input id="pay-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="712345678" maxlength="13" value="' + esc((store.get("phone") || "").replace(/^(\+?254|0)/, "")) + '" required /></div>' +
+      '<p class="form-msg pay-err" id="pay-msg" role="status" aria-live="polite">' + esc(err || "") + '</p><button type="submit" class="btn pay-btn" id="pay-go">Pay ' + esc(price) + '</button></form>' +
+      '<button type="button" class="pay-link" id="pay-cancel">Cancel</button><button type="button" class="pay-small" id="pay-recover">Already paid but didn’t get your document?</button>' +
+      '<p class="pay-note">Reading the notes online stays free. The PDF is for your personal use and works on this device whenever you come back.</p>');
+    $("#pay-cancel", d).addEventListener("click", closePay);
+    $("#pay-recover", d).addEventListener("click", function () { recoverForm(track); });
+    setTimeout(function () { var i = $("#pay-phone", d); if (i && !i.value) i.focus(); }, 50);
+    $("#pay-form", d).addEventListener("submit", function (e) {
+      e.preventDefault();
+      var raw = $("#pay-phone", d).value.replace(/\s+/g, "");
+      var phone = /^(0|254|\+254)/.test(raw) ? raw.replace(/^\+/, "") : "0" + raw;
+      if (!/^(0[17]\d{8}|254[17]\d{8})$/.test(phone)) { $("#pay-msg", d).textContent = "Enter your M-Pesa number, for example 712 345 678."; return; }
+      var go = $("#pay-go", d);
+      go.disabled = true; go.textContent = "Sending request…";
+      store.set("phone", phone);
+      api("notes_pay", { track: track.slug, phone: phone }).then(function (r) { payWaiting(track, r.checkout_id, r.amount || state.notesPrice); })
+        .catch(function (er) { go.disabled = false; go.textContent = "Pay " + price; $("#pay-msg", d).textContent = er.message; });
+    });
+  }
+
+  function payWaiting(track, checkout, amount) {
+    var d = openPay('<div class="pay-center"><span class="pay-phone-ico" aria-hidden="true"><i class="fa-solid fa-mobile-screen"></i></span><h2 id="pay-title">Request Sent!</h2>' +
+      '<p class="pay-sub">Please check your phone and enter your M-PESA PIN to complete the payment of ' + esc(kes(amount)) + '.</p>' +
+      '<p class="pay-wait" id="pay-wait" role="status" aria-live="polite"><span class="spinner" aria-hidden="true"></span> Waiting to auto-detect payment…</p>' +
+      '<button type="button" class="btn pay-check" id="pay-check">Check Now</button><button type="button" class="pay-link" id="pay-cancel">Cancel</button></div>');
+    var tries = 0, busy = false;
+    var check = function (manual) {
+      if (busy) return;
+      busy = true;
+      api("notes_pay_status", undefined, "&checkout=" + encodeURIComponent(checkout) + (manual ? "&check=1" : "")).then(function (s) {
+        busy = false;
+        if (s.status === "paid" && s.token) {
+          stopPayPoll();
+          store.set(pdfTokenKey(track.slug), s.token);
+          var lbl = $("#book-pdf-label"); if (lbl) lbl.textContent = "Download PDF";
+          makeNotesPdf(track, s.token, null);
+        } else if (s.status === "failed") {
+          stopPayPoll();
+          payForm(track, "The payment didn’t go through (it may have been cancelled or timed out). You can try again.");
+        } else if (manual) {
+          $("#pay-wait", d).innerHTML = '<span class="spinner" aria-hidden="true"></span> Not received yet. Enter your PIN on the M-Pesa prompt, then tap Check Now.';
+        }
+      }).catch(function (e) { busy = false; if (manual) $("#pay-wait", d).textContent = e.message; });
+    };
+    stopPayPoll();
+    payPoll = setInterval(function () {
+      if (++tries > 60) { stopPayPoll(); $("#pay-wait", d).textContent = "Still waiting. If you paid, tap Check Now, or use “Already paid” with your M-Pesa receipt."; return; }
+      check(false);
+    }, 3000);
+    $("#pay-check", d).addEventListener("click", function () { check(true); });
+    $("#pay-cancel", d).addEventListener("click", closePay);
+  }
+
+  function recoverForm(track) {
+    var d = openPay('<h2 id="pay-title" class="pay-title">Get your PDF</h2><p class="pay-sub">Enter the number you paid with and the M-Pesa receipt code from your confirmation SMS.</p>' +
+      '<form id="rec-form" class="pay-form" novalidate><label for="rec-phone">M-PESA PHONE NUMBER</label><div class="pay-phone"><span>+254</span><input id="rec-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="712345678" value="' + esc((store.get("phone") || "").replace(/^(\+?254|0)/, "")) + '" required /></div>' +
+      '<label for="rec-code">M-PESA RECEIPT CODE</label><input id="rec-code" class="pay-input" autocapitalize="characters" placeholder="e.g. SJK4H2L9XA" maxlength="20" required />' +
+      '<p class="form-msg pay-err" id="rec-msg" role="status" aria-live="polite"></p><button type="submit" class="btn pay-btn" id="rec-go">Get my PDF</button></form>' +
+      '<button type="button" class="pay-link" id="rec-back">Back</button><p class="pay-note">Still stuck? <a href="https://wa.me/254745789590?text=' + encodeURIComponent("Hello Marzley, I paid for the " + track.title + " notes PDF but didn't get it.") + '" target="_blank" rel="noopener noreferrer">WhatsApp us</a> your M-Pesa message.</p>');
+    $("#rec-back", d).addEventListener("click", function () { payForm(track); });
+    $("#rec-form", d).addEventListener("submit", function (e) {
+      e.preventDefault();
+      var raw = $("#rec-phone", d).value.replace(/\s+/g, "");
+      var phone = /^(0|254|\+254)/.test(raw) ? raw.replace(/^\+/, "") : "0" + raw;
+      var go = $("#rec-go", d);
+      go.disabled = true; go.textContent = "Checking…";
+      api("notes_recover", { track: track.slug, phone: phone, receipt: $("#rec-code", d).value }).then(function (r) {
+        store.set(pdfTokenKey(track.slug), r.token);
+        var lbl = $("#book-pdf-label"); if (lbl) lbl.textContent = "Download PDF";
+        makeNotesPdf(track, r.token, null);
+      }).catch(function (er) { go.disabled = false; go.textContent = "Get my PDF"; $("#rec-msg", d).textContent = er.message; });
+    });
+  }
+
+  function payMessage(title, text, track) {
+    var d = openPay('<h2 id="pay-title" class="pay-title">' + esc(title) + '</h2><p class="pay-sub">' + esc(text) + '</p><button type="button" class="btn pay-btn" id="pay-retry">Try again</button>');
+    $("#pay-retry", d).addEventListener("click", function () { startNotesPdf(track); });
+  }
+
+  // pdfmake and its fonts load only when someone downloads a PDF
+  var pdfMakeReady = null;
+  var PDF_FONT_FILES = ["Roboto-Regular.ttf", "Roboto-Medium.ttf", "Roboto-Italic.ttf", "Roboto-MediumItalic.ttf", "DejaVuSansMono.ttf", "DejaVuSansMono-Bold.ttf"];
+  function loadPdfMake() {
+    if (pdfMakeReady) return pdfMakeReady;
+    var base = "../vendor/pdfmake/";
+    var script = new Promise(function (res, rej) {
+      if (window.pdfMake) return res();
+      var s = document.createElement("script");
+      s.src = base + "pdfmake.min.js";
+      s.onload = function () { res(); };
+      s.onerror = function () { rej(new Error("The PDF maker could not load. Check your connection and try again.")); };
+      document.head.appendChild(s);
+    });
+    var toB64 = function (buf) {
+      var bytes = new Uint8Array(buf), out = "", step = 0x8000;
+      for (var i = 0; i < bytes.length; i += step) out += String.fromCharCode.apply(null, bytes.subarray(i, i + step));
+      return btoa(out);
+    };
+    var fonts = Promise.all(PDF_FONT_FILES.map(function (f) {
+      return fetch(base + f).then(function (r) { if (!r.ok) throw new Error("A font for the PDF could not load."); return r.arrayBuffer(); }).then(function (b) { return [f, toB64(b)]; });
+    })).then(function (pairs) { var vfs = {}; pairs.forEach(function (p) { vfs[p[0]] = p[1]; }); return vfs; });
+    pdfMakeReady = Promise.all([script, fonts]).then(function (r) { return r[1]; });
+    pdfMakeReady.catch(function () { pdfMakeReady = null; });
+    return pdfMakeReady;
+  }
+
+  function makeNotesPdf(track, token, info) {
+    var d = openPay('<div class="pay-center"><span class="pay-ok-ico" aria-hidden="true"><i class="fa-solid fa-circle-check"></i></span><h2 id="pay-title">' + (info ? "Preparing your PDF" : "Payment received!") + '</h2>' +
+      '<p class="pay-wait" id="pdf-state" role="status" aria-live="polite"><span class="spinner" aria-hidden="true"></span> Making your PDF… this takes a few seconds.</p></div>');
+    var lic = info ? Promise.resolve(info) : api("notes_access", undefined, "&track=" + encodeURIComponent(track.slug) + "&token=" + encodeURIComponent(token));
+    var book = main.querySelector("article.book");
+    Promise.all([lic, loadPdfMake()]).then(function (r) {
+      if (!book) throw new Error("Open the notes page, then tap Download PDF.");
+      var licence = r[0], vfs = r[1];
+      return new Promise(function (res) { setTimeout(res, 30); }).then(function () {
+        var doc = notesPdfDoc(track, book, licence);
+        var fonts = {
+          Roboto: { normal: "Roboto-Regular.ttf", bold: "Roboto-Medium.ttf", italics: "Roboto-Italic.ttf", bolditalics: "Roboto-MediumItalic.ttf" },
+          Mono: { normal: "DejaVuSansMono.ttf", bold: "DejaVuSansMono-Bold.ttf", italics: "DejaVuSansMono.ttf", bolditalics: "DejaVuSansMono-Bold.ttf" }
+        };
+        var name = "Marzley-Tech-" + track.title.replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "") + "-notes.pdf";
+        return new Promise(function (res, rej) {
+          try {
+            var pdf = window.pdfMake.createPdf(doc, null, fonts, vfs);
+            pdf.getBlob(function (blob) {
+              var url = URL.createObjectURL(blob);
+              var a = document.createElement("a");
+              a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+              setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+              res({ name: name, size: blob.size });
+            });
+          } catch (e) { rej(e); }
+        });
+      });
+    }).then(function (f) {
+      api("notes_access", undefined, "&track=" + encodeURIComponent(track.slug) + "&token=" + encodeURIComponent(token) + "&dl=1").catch(function () {});
+      $("#pay-title", d).textContent = "Your PDF is ready";
+      $("#pdf-state", d).innerHTML = '<i class="fa-solid fa-download" aria-hidden="true"></i> ' + esc(f.name) + " (" + fmtSize(f.size) + ") has been downloaded. Check your Downloads folder.";
+      d.querySelector(".pay-center").appendChild(el('<button type="button" class="btn pay-check" id="pdf-again">Download again</button>'));
+      $("#pdf-again", d).addEventListener("click", function () { makeNotesPdf(track, token, null); });
+    }).catch(function (e) {
+      $("#pay-title", d).textContent = "The PDF couldn’t be made";
+      $("#pdf-state", d).textContent = (e && e.message ? e.message : "Something went wrong.") + " Your payment is saved: tap Download PDF again in a moment.";
+    });
+  }
+
+  /** Turns the notes on the page into a pdfmake document: headings, text, lists, code, tables and boxes. */
+  function notesPdfDoc(track, book, licence) {
+    var EMOJI = /[\u{1F000}-\u{1FAFF}\u{FE0F}\u{200D}\u{20E3}]/gu;
+    var SYMBOLS = /[\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}]/gu;
+    var clean = function (t) { return String(t).replace(EMOJI, "").replace(SYMBOLS, ""); };
+    var cleanCode = function (t) {
+      return String(t).replace(EMOJI, "").replace(/\t/g, "    ").split("\n").map(function (line) {
+        var out = [];
+        while (line.length > 92) { out.push(line.slice(0, 92)); line = "  " + line.slice(92); }
+        out.push(line);
+        return out.join("\n");
+      }).join("\n").replace(/\s+$/, "");
+    };
+    var isIcon = function (n) { return n.tagName === "I" && /\bfa-/.test(n.className); };
+
+    function inline(node, st) {
+      st = st || {};
+      var runs = [];
+      node.childNodes.forEach(function (c) {
+        if (c.nodeType === 3) {
+          var t = clean(c.nodeValue.replace(/\s+/g, " "));
+          if (t) runs.push(Object.assign({ text: t }, st));
+          return;
+        }
+        if (c.nodeType !== 1 || isIcon(c)) return;
+        var tag = c.tagName;
+        if (tag === "BR") runs.push({ text: "\n" });
+        else if (tag === "STRONG" || tag === "B") runs = runs.concat(inline(c, Object.assign({}, st, { bold: true })));
+        else if (tag === "EM" || tag === "I") runs = runs.concat(inline(c, Object.assign({}, st, { italics: true })));
+        else if (tag === "CODE" || tag === "KBD") runs.push(Object.assign({}, st, { text: c.textContent.replace(EMOJI, ""), font: "Mono", fontSize: 8.6, color: "#9a3412" }));
+        else if (tag === "A") runs = runs.concat(inline(c, Object.assign({}, st, { color: "#1d4ed8" })));
+        else if (tag === "DETAILS") {
+          runs.push(Object.assign({}, st, { text: "  Answer: ", bold: true, color: "#166534" }));
+          c.childNodes.forEach(function (k) {
+            if (k.nodeType === 1 && k.tagName === "SUMMARY") return;
+            var wrap = document.createElement("span"); wrap.appendChild(k.cloneNode(true));
+            runs = runs.concat(inline(wrap, Object.assign({}, st, { color: "#166534" })));
+          });
+        }
+        else if (tag === "BUTTON" || tag === "SCRIPT" || tag === "STYLE") return;
+        else runs = runs.concat(inline(c, st));
+      });
+      return runs;
+    }
+    function hasText(runs) { return runs.some(function (r) { return typeof r === "object" && /\S/.test(r.text || ""); }); }
+
+    function codeBlock(text) {
+      return { table: { widths: ["*"], body: [[{ text: cleanCode(text), font: "Mono", fontSize: 8, lineHeight: 1.18, preserveLeadingSpaces: true, color: "#0f172a" }]] },
+        layout: { fillColor: function () { return "#f3f5f8"; }, hLineColor: function () { return "#d8dee6"; }, vLineColor: function () { return "#d8dee6"; },
+          paddingLeft: function () { return 8; }, paddingRight: function () { return 8; }, paddingTop: function () { return 6; }, paddingBottom: function () { return 6; } },
+        margin: [0, 2, 0, 10] };
+    }
+    function boxBlock(title, body, color, fill) {
+      var stack = [];
+      if (title && hasText(title)) stack.push({ text: title, bold: true, color: color, margin: [0, 0, 0, 4] });
+      stack = stack.concat(body);
+      return { table: { widths: ["*"], body: [[{ stack: stack }]] }, headlineLevel: 1,
+        layout: { fillColor: function () { return fill; }, hLineWidth: function () { return 0; }, vLineWidth: function (i) { return i === 0 ? 3 : 0; }, vLineColor: function () { return color; },
+          paddingLeft: function () { return 10; }, paddingRight: function () { return 10; }, paddingTop: function () { return 8; }, paddingBottom: function () { return 6; } },
+        margin: [0, 4, 0, 10] };
+    }
+    function tableBlock(t) {
+      var rows = [];
+      t.querySelectorAll("tr").forEach(function (tr, ri) {
+        var cells = [];
+        tr.querySelectorAll("th, td").forEach(function (c) {
+          var runs = inline(c);
+          cells.push({ text: runs.length ? runs : " ", bold: c.tagName === "TH", fontSize: 8.6, fillColor: c.tagName === "TH" ? "#e8edf4" : (ri % 2 ? null : "#fafbfc") });
+        });
+        if (cells.length) rows.push(cells);
+      });
+      if (!rows.length) return null;
+      var n = Math.max.apply(null, rows.map(function (r) { return r.length; }));
+      rows = rows.map(function (r) { while (r.length < n) r.push({ text: " " }); return r; });
+      var widths = []; for (var i = 0; i < n; i++) widths.push("*");
+      return { table: { headerRows: 1, keepWithHeaderRows: 1, dontBreakRows: true, widths: widths, body: rows }, layout: { hLineColor: function () { return "#d8dee6"; }, vLineColor: function () { return "#d8dee6"; },
+        paddingLeft: function () { return 5; }, paddingRight: function () { return 5; }, paddingTop: function () { return 3; }, paddingBottom: function () { return 3; } }, margin: [0, 2, 0, 10] };
+    }
+    function listItem(li) {
+      var blockKids = li.querySelector(":scope > ul, :scope > ol, :scope > pre, :scope > p, :scope > div, :scope > table");
+      if (!blockKids) return { text: inline(li), margin: [0, 1, 0, 2] };
+      var stack = [], buf = document.createElement("span");
+      li.childNodes.forEach(function (k) {
+        if (k.nodeType === 1 && /^(UL|OL|PRE|P|DIV|TABLE)$/.test(k.tagName)) {
+          if (buf.childNodes.length) { var r = inline(buf); if (hasText(r)) stack.push({ text: r }); buf = document.createElement("span"); }
+          var holder = document.createElement("div"); holder.appendChild(k.cloneNode(true));
+          stack = stack.concat(blocks(holder));
+        } else buf.appendChild(k.cloneNode(true));
+      });
+      if (buf.childNodes.length) { var r2 = inline(buf); if (hasText(r2)) stack.push({ text: r2 }); }
+      return { stack: stack, margin: [0, 1, 0, 2] };
+    }
+    var SKIP = /\b(book-open|book-tools|crumbs|book-toc|sr-only|book-foot|book-meta)\b/;
+    var CALLOUT_COLORS = { note: ["#1d4ed8", "#eef4ff"], tip: ["#15803d", "#effaf2"], warning: ["#b45309", "#fff7e8"], example: ["#7c3aed", "#f5f1ff"],
+      define: ["#0e7490", "#ecfbfe"], kenya: ["#166534", "#effaf2"], career: ["#9d174d", "#fdf0f6"], think: ["#6d28d9", "#f5f1ff"] };
+
+    function blocks(node) {
+      var out = [];
+      node.childNodes.forEach(function (c) {
+        if (c.nodeType === 3) { var t = clean(c.nodeValue.replace(/\s+/g, " ")).trim(); if (t) out.push({ text: t, style: "p" }); return; }
+        if (c.nodeType !== 1 || isIcon(c) || SKIP.test(c.className || "")) return;
+        var tag = c.tagName, cls = c.className || "";
+        if (/^H[1-6]$/.test(tag)) { var hr = inline(c); if (hasText(hr)) out.push({ text: hr, style: tag === "H1" ? "h1" : tag === "H2" ? "h2" : tag === "H3" ? "h3" : "h4", headlineLevel: 1 }); }
+        else if (tag === "P") {
+          var pr = inline(c);
+          if (!hasText(pr)) return;
+          if (/\bbook-num\b/.test(cls)) out.push({ text: pr, style: "eyebrow" });
+          else if (/\bcallout-title\b/.test(cls)) out.push({ text: pr, bold: true });
+          else out.push({ text: pr, style: "p" });
+        }
+        else if (tag === "UL" || tag === "OL") {
+          var items = []; c.querySelectorAll(":scope > li").forEach(function (li) { items.push(listItem(li)); });
+          if (items.length) { var lst = { style: "list" }; lst[tag === "UL" ? "ul" : "ol"] = items; out.push(lst); }
+        }
+        else if (tag === "PRE") out.push(codeBlock(c.textContent));
+        else if (tag === "TABLE") { var tb = tableBlock(c); if (tb) out.push(tb); }
+        else if (tag === "HR") out.push({ canvas: [{ type: "line", x1: 0, y1: 4, x2: 495, y2: 4, lineWidth: 0.6, lineColor: "#cbd5e1" }], margin: [0, 4, 0, 10] });
+        else if (tag === "DETAILS" && /\bcallout-think\b/.test(cls)) {
+          var span = c.querySelector("summary span"), body = c.querySelector(".callout-body");
+          var col = CALLOUT_COLORS.think;
+          out.push(boxBlock(span ? inline(span) : [{ text: "Think about it" }], [{ text: "Answer:", bold: true, color: col[0], margin: [0, 2, 0, 2] }].concat(body ? blocks(body) : []), col[0], col[1]));
+        }
+        else if (tag === "DETAILS") {
+          var sm = c.querySelector("summary"), rest = document.createElement("div");
+          c.childNodes.forEach(function (k) { if (!(k.nodeType === 1 && k.tagName === "SUMMARY")) rest.appendChild(k.cloneNode(true)); });
+          out.push({ stack: [{ text: sm ? inline(sm) : "", bold: true }].concat(blocks(rest)), margin: [0, 2, 0, 8] });
+        }
+        else if (tag === "ASIDE" || tag === "BLOCKQUOTE" || /\bbook-quiz\b|\bbook-ex\b/.test(cls)) {
+          var kind = (cls.match(/callout-(\w+)/) || [])[1] || (/\bbook-quiz\b/.test(cls) ? "think" : /\bbook-ex\b/.test(cls) ? "tip" : /\btip\b/.test(cls) ? "tip" : "note");
+          var colr = CALLOUT_COLORS[kind] || CALLOUT_COLORS.note;
+          var titleEl = c.querySelector(":scope > .callout-title, :scope > h3");
+          var rest2 = document.createElement("div");
+          c.childNodes.forEach(function (k) { if (k !== titleEl) rest2.appendChild(k.cloneNode(true)); });
+          out.push(boxBlock(titleEl ? inline(titleEl) : null, blocks(rest2), colr[0], colr[1]));
+        }
+        else if (/^(IMG|SVG|IFRAME|VIDEO|AUDIO|BUTTON|FORM|INPUT|SELECT|TEXTAREA|SCRIPT|STYLE|CANVAS|NOSCRIPT)$/.test(tag)) return;
+        else if (/^(DIV|SECTION|ARTICLE|HEADER|FOOTER|MAIN|NAV|FIGURE|SPAN|DL)$/.test(tag)) {
+          var inner = blocks(c);
+          if (inner.length) out = out.concat(inner);
+          else { var ir = inline(c); if (hasText(ir)) out.push({ text: ir, style: "p" }); }
+        }
+        else { var other = inline(c); if (hasText(other)) out.push({ text: other, style: "p" }); }
+      });
+      return out;
+    }
+
+    var today = new Date().toLocaleDateString("en-KE", { day: "numeric", month: "long", year: "numeric" });
+    var lic = licence && licence.receipt ? "Licensed to " + licence.phone + " · M-Pesa " + licence.receipt : "Licensed copy";
+    var lead = book.querySelector(".book-head .lead");
+    var content = [
+      { text: "MARZLEY TECH LEARNING HUB · COURSE NOTES", style: "eyebrow", margin: [0, 120, 0, 10] },
+      { text: track.title + " notes", fontSize: 34, bold: true, color: "#0b1b35", margin: [0, 0, 0, 12] },
+      { text: clean(lead ? lead.textContent : (track.summary || "")), fontSize: 13, color: "#475569", lineHeight: 1.35, margin: [0, 0, 0, 24] },
+      { canvas: [{ type: "rect", x: 0, y: 0, w: 90, h: 4, color: "#f5b400" }], margin: [0, 0, 0, 18] },
+      { text: track.lessons.length + " topics, from the basics up, with examples, practice questions and answers.", fontSize: 11, color: "#334155", margin: [0, 0, 0, 6] },
+      { text: "Downloaded " + today + " · " + lic, fontSize: 9.5, color: "#64748b", margin: [0, 0, 0, 4] },
+      { text: "Interactive lessons, live code and videos: marzleytechsolutions.co.ke/learn", fontSize: 9.5, color: "#64748b" },
+      { text: "This PDF is for your personal use. Please don’t share or resell it. © Marzley Tech Solutions.", fontSize: 8.5, color: "#94a3b8", margin: [0, 140, 0, 0] },
+      { toc: { title: { text: "Contents", style: "h1" }, numberStyle: { color: "#64748b" }, textStyle: { fontSize: 10.5 } }, pageBreak: "before" }
+    ];
+    book.querySelectorAll("section.book-part").forEach(function (part) {
+      var b = blocks(part);
+      if (!b.length) return;
+      b[0].pageBreak = "before";
+      for (var i = 0; i < b.length; i++) { if (b[i].style === "h1" || b[i].style === "h2") { b[i].tocItem = true; b[i].tocMargin = [0, 3, 0, 0]; break; } }
+      content = content.concat(b);
+    });
+    content.push({ text: "Keep learning", style: "h2", pageBreak: "before" });
+    content.push({ text: "Practise every topic with live code, quizzes and videos at marzleytechsolutions.co.ke/learn. Questions? WhatsApp 0745 789 590.", style: "p" });
+
+    return {
+      pageSize: "A4",
+      pageMargins: [50, 58, 50, 58],
+      info: { title: track.title + " notes · Marzley Tech", author: "Marzley Tech Solutions", subject: track.title + " course notes", creator: "Marzley Tech Learning Hub" },
+      header: function (page) {
+        if (page === 1) return null;
+        return { columns: [{ text: track.title + " notes" }, { text: "Marzley Tech Learning Hub", alignment: "right" }], margin: [50, 26, 50, 0], fontSize: 8, color: "#94a3b8" };
+      },
+      footer: function (page, pages) {
+        if (page === 1) return null;
+        return { columns: [{ text: lic + " · personal use only", width: "*" }, { text: page + " / " + pages, alignment: "right", width: 60 }], margin: [50, 22, 50, 0], fontSize: 7.5, color: "#94a3b8" };
+      },
+      content: content,
+      // A heading never sits alone at the bottom of a page
+      pageBreakBefore: function (node, followingOnPage) { return !!node.headlineLevel && node.pageBreak !== "before" && followingOnPage.length < 2; },
+      defaultStyle: { font: "Roboto", fontSize: 10, lineHeight: 1.3, color: "#1f2937" },
+      styles: {
+        h1: { fontSize: 19, bold: true, color: "#0b1b35", margin: [0, 2, 0, 10], lineHeight: 1.15 },
+        h2: { fontSize: 14.5, bold: true, color: "#0b1b35", margin: [0, 12, 0, 6], lineHeight: 1.15 },
+        h3: { fontSize: 12, bold: true, color: "#1e293b", margin: [0, 10, 0, 4] },
+        h4: { fontSize: 10.5, bold: true, color: "#1e293b", margin: [0, 8, 0, 3] },
+        p: { margin: [0, 0, 0, 7] },
+        list: { margin: [0, 0, 0, 8] },
+        eyebrow: { fontSize: 8.5, bold: true, color: "#a16207", characterSpacing: 0.6, margin: [0, 0, 0, 4] }
+      }
+    };
   }
 
   var pdfLib = null;
@@ -1734,6 +2137,7 @@
       state.me = j.learner;
       state.editor = !!j.editor;
       state.mpesa = !!j.mpesa;
+      state.notesPrice = Number(j.notes_price) || state.notesPrice;
       state.googleClientId = j.google_client_id;
       state.progress = j.learner ? (j.progress || []).map(Number) : loadLocalProgress();
       updateUser();

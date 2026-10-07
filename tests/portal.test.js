@@ -62,7 +62,7 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   const cid = one("SELECT id FROM clients WHERE email = 'client@example.com'").id;
 
   // ---------- database upgrade ----------
-  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "8");
+  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "9");
 
   // ---------- sequential invoice numbers ----------
   r = await admin("invoice_save", { client_id: cid, description: "Website build", amount: 10000, status: "unpaid" });
@@ -642,6 +642,60 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
     await sleep(300);
     r = await lget(stu2, "unlock_status", "&checkout=" + r.j.checkout_id);
     ok("an M-Pesa code can’t unlock twice", r.j.unlocked === false);
+
+    // course notes as a PDF: free to read, paid with M-Pesa to download, no account needed
+    {
+      const buyer = session();
+      r = await lget(buyer, "me");
+      ok("the notes PDF price is published (default KSh 50)", r.j.notes_price === 50);
+      r = await lpost(boss, "notes_price_set", { price: 80 });
+      r = await lget(buyer, "me");
+      ok("staff can change the notes PDF price", r.j.notes_price === 80);
+      r = await lpost(stu, "notes_price_set", { price: 1 });
+      ok("learners can’t change the price", r.s === 403 || r.s === 401);
+      r = await lpost(buyer, "notes_pay", { track: "html", phone: "0712" });
+      ok("a wrong phone number is refused", r.s === 400);
+      r = await lpost(buyer, "notes_pay", { track: "html", phone: "0712 345 678" });
+      const stkN = JSON.parse(fs.readFileSync(WORK + "/fake/stk-last.json", "utf8"));
+      ok("buying a notes PDF sends an M-Pesa prompt for the price", r.s === 200 && r.j.checkout_id === stkN.id && stkN.body.Amount === 80 && stkN.body.PhoneNumber === "254712345678");
+      const nco = r.j.checkout_id;
+      r = await lget(buyer, "notes_pay_status", "&checkout=" + nco);
+      ok("before payment the status is waiting, with no token", r.j.status === "pending" && !r.j.token);
+      r = await lget(guest, "notes_pay_status", "&checkout=" + nco);
+      ok("another browser can’t collect the download token", r.s === 404);
+      await callback(nco, 80, "NOTESPDF01");
+      await sleep(300);
+      r = await lget(buyer, "notes_pay_status", "&checkout=" + nco);
+      const tok = r.j.token;
+      ok("after payment the buyer gets a download token", r.j.status === "paid" && /^[a-f0-9]{48}$/.test(tok || "") && r.j.track === "html", r.j);
+      r = await lget(guest, "notes_access", "&track=html&token=" + tok + "&dl=1");
+      ok("the token unlocks that subject’s PDF and shows a masked licence", r.s === 200 && r.j.receipt === "NOTESPDF01" && r.j.phone === "254712***678");
+      r = await lget(guest, "notes_access", "&track=css&token=" + tok);
+      ok("the token doesn’t unlock other subjects", r.s === 403);
+      r = await lget(guest, "notes_access", "&track=html&token=" + "0".repeat(48));
+      ok("a made-up token is refused", r.s === 403);
+      const rec = session();
+      await lget(rec, "me");
+      r = await lpost(rec, "notes_recover", { track: "html", phone: "0712345678", receipt: "WRONG00001" });
+      ok("recovery needs the right M-Pesa receipt", r.s === 404);
+      r = await lpost(rec, "notes_recover", { track: "html", phone: "+254 712 345 678", receipt: "notespdf01" });
+      ok("“already paid”: the phone number and receipt bring the download back", r.s === 200 && r.j.token === tok);
+      r = await lpost(buyer, "notes_pay", { track: "css", phone: "0712345678" });
+      const lowCo = r.j.checkout_id;
+      await callback(lowCo, 10, "NOTESLOW01");
+      await sleep(300);
+      r = await lget(buyer, "notes_pay_status", "&checkout=" + lowCo);
+      ok("paying less doesn’t unlock the PDF", r.j.status === "failed" && !r.j.token, r.j);
+      r = await lpost(buyer, "notes_pay", { track: "css", phone: "0712345678" });
+      const dupCo = r.j.checkout_id;
+      await callback(dupCo, 80, "NOTESPDF01");
+      await sleep(300);
+      r = await lget(buyer, "notes_pay_status", "&checkout=" + dupCo);
+      ok("an M-Pesa receipt can’t pay for two PDFs", r.j.status === "failed");
+      r = await lget(boss, "admin");
+      ok("PDF sales show in the Learning hub admin", r.j.stats.notes_sold === 1 && r.j.stats.notes_revenue === 80 && r.j.notes_price === 80 && r.j.note_payments.length === 3);
+      r = await lpost(boss, "notes_price_set", { price: 50 });
+    }
 
     // likes and comments (only for people who unlocked)
     r = await lpost(stu, "like", { id: vid });

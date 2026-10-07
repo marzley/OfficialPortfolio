@@ -1430,7 +1430,7 @@
     if (!learnData) { panel.appendChild(h("p", { className: "portal-meta", text: "Loading…" })); return; }
     var d = learnData, st = d.stats;
     var cards = [["Learners", st.learners, "fa-user-graduate", st.new_learners_30 + " new in 30 days"], ["Video income", ksh(st.revenue), "fa-sack-dollar", ksh(st.revenue_30) + " in 30 days"],
-      ["Videos unlocked", st.unlocks, "fa-lock-open", (d.videos || []).length + " videos"], ["Lessons completed", st.lessons_done, "fa-circle-check", (d.lessons || []).length + " lessons · " + (d.notes || []).length + " notes"]];
+      ["Videos unlocked", st.unlocks, "fa-lock-open", (d.videos || []).length + " videos"], ["Notes PDF income", ksh(st.notes_revenue), "fa-file-pdf", st.notes_sold + " sold · " + ksh(st.notes_revenue_30) + " in 30 days"], ["Lessons completed", st.lessons_done, "fa-circle-check", (d.lessons || []).length + " lessons · " + (d.notes || []).length + " notes"]];
     panel.appendChild(h("section", { className: "admin-panel" },
       h("div", { className: "admin-panel-head" }, h("h2", { text: "Learning hub" }), h("a", { className: "btn btn-ghost", href: "../learn/", target: "_blank", rel: "noopener" }, h("i", { className: "fa-solid fa-arrow-up-right-from-square", "aria-hidden": "true" }), " Open the hub")),
       h("p", { className: "portal-meta", text: "Free tutorials with live code and free notes for everyone; videos unlocked per person with M-Pesa. Learners sign up themselves with Google or an email code." }),
@@ -1525,6 +1525,18 @@
     });
     panel.appendChild(h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: "Video payments" })),
       pl.length ? h("ul", { className: "admin-list" }, pl) : h("p", { className: "portal-empty", text: "No video payments yet." })));
+
+    // Course notes downloaded as PDF (paid with M-Pesa; reading online stays free)
+    var priceIn = h("input", { type: "number", min: "1", max: "100000", step: "1", value: String(d.notes_price || 50), "aria-label": "Price in KSh", className: "notes-price-in" });
+    var npl = (d.note_payments || []).map(function (p) {
+      return h("li", null, h("div", null, h("strong", { text: ksh(p.amount) + " · " + p.title + " notes PDF" }), h("span", { className: "portal-meta", text: p.phone + " · " + day(p.created_at) + (p.receipt ? " · M-Pesa " + p.receipt : "") + (+p.downloads ? " · " + p.downloads + " download" + (+p.downloads === 1 ? "" : "s") : "") })),
+        h("span", { className: "pill pill-" + (p.status === "paid" ? "paid" : p.status === "pending" ? "review" : "unpaid"), text: p.status === "paid" ? "Paid" : p.status === "pending" ? "Waiting" : "Not paid" }));
+    });
+    panel.appendChild(h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: "Course notes PDF sales" })),
+      h("p", { className: "portal-meta", text: "Everyone can read the course notes online for free. Downloading a whole subject as a PDF costs this amount, paid with M-Pesa. Printing the notes page is turned off." }),
+      h("form", { className: "inline-form", onsubmit: function (e) { e.preventDefault(); lsave("notes_price_set", { price: Number(priceIn.value) }, "PDF price saved."); } },
+        h("label", null, h("span", { text: "PDF price per subject (KSh) " }), priceIn), h("button", { type: "submit", className: "btn btn-solid", text: "Save price" })),
+      npl.length ? h("ul", { className: "admin-list" }, npl) : h("p", { className: "portal-empty", text: "No PDF sales yet." })));
   }
 
   // ---------- client dashboard ----------
