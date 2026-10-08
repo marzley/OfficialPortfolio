@@ -53,7 +53,13 @@ These are general patterns, not guarantees. Two people doing the same method can
 | 2 | [Microtasking: surveys, testing, research and local tasks](./?track=earn-directory&lesson=microtasks-surveys-testing-local) | Available |
 | 3 | [Graphic design: branding, print and digital](./?track=earn-directory&lesson=graphic-design-branding-print) | Available |
 | 4 | [Graphic design: digital products, social media, illustration and specialist work](./?track=earn-directory&lesson=graphic-design-digital-specialist) | Available |
-| 5+ | Writing and language, transcription and audio, video and animation, social media and marketing, web and tech, teaching, selling online, virtual assistance, photography, local digital services and more | Coming in future updates |
+| 5 | [Writing and language](./?track=earn-directory&lesson=writing-language-methods) | Available |
+| 6 | [Transcription, audio and voice](./?track=earn-directory&lesson=transcription-audio-voice-methods) | Available |
+| 7 | [Video, photography and animation](./?track=earn-directory&lesson=video-animation-methods) | Available |
+| 8 | [Social media and digital marketing](./?track=earn-directory&lesson=social-media-marketing-methods) | Available |
+| 9 | [Web, software and tech services](./?track=earn-directory&lesson=web-tech-services-methods) | Available |
+| 10 | [Virtual assistance, admin and remote support](./?track=earn-directory&lesson=virtual-assistance-remote-support-methods) | Available |
+| 11+ | Teaching and tutoring, selling online and e-commerce, local digital services, creative products, agriculture and offline businesses with online tools, and more | Coming in future updates |
 
 ## Universal safety rules
 
