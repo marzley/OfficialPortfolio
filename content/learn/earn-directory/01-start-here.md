@@ -59,7 +59,14 @@ These are general patterns, not guarantees. Two people doing the same method can
 | 8 | [Social media and digital marketing](./?track=earn-directory&lesson=social-media-marketing-methods) | Available |
 | 9 | [Web, software and tech services](./?track=earn-directory&lesson=web-tech-services-methods) | Available |
 | 10 | [Virtual assistance, admin and remote support](./?track=earn-directory&lesson=virtual-assistance-remote-support-methods) | Available |
-| 11+ | Teaching and tutoring, selling online and e-commerce, local digital services, creative products, agriculture and offline businesses with online tools, and more | Coming in future updates |
+| 11 | [Teaching, tutoring and training](./?track=earn-directory&lesson=teaching-tutoring-methods) | Available |
+| 12 | [Selling online and e-commerce](./?track=earn-directory&lesson=selling-online-ecommerce-methods) | Available |
+| 13 | [Local digital services](./?track=earn-directory&lesson=local-digital-services-methods) | Available |
+| 14 | [Creative products, crafts and making](./?track=earn-directory&lesson=creative-crafts-products-methods) | Available |
+| 15 | [Agriculture and agribusiness with online tools](./?track=earn-directory&lesson=agriculture-online-tools-methods) | Available |
+| 16 | [Delivery, transport and local gig work](./?track=earn-directory&lesson=gig-delivery-transport-methods) | Available |
+| 17 | [Events, hospitality, health and wellness](./?track=earn-directory&lesson=events-hospitality-wellness-methods) | Available |
+| 18+ | More categories in future updates | Coming |
 
 ## Universal safety rules
 
