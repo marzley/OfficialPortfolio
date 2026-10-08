@@ -78,7 +78,13 @@ These are general patterns, not guarantees. Two people doing the same method can
 | 27 | [Sports, gaming and entertainment](./?track=earn-directory&lesson=sports-gaming-entertainment-methods) | Available |
 | 28 | [Tourism and hospitality businesses](./?track=earn-directory&lesson=tourism-hospitality-business-methods) | Available |
 | 29 | [Logistics, import, export and trade](./?track=earn-directory&lesson=logistics-trade-methods) | Available |
-| 30+ | More categories in future updates | Coming |
+| 30 | [Repair and home-service trades](./?track=earn-directory&lesson=repair-home-service-trades-methods) | Available |
+| 31 | [Health and medical businesses (licensed)](./?track=earn-directory&lesson=health-medical-business-methods) | Available |
+| 32 | [Education businesses](./?track=earn-directory&lesson=education-business-methods) | Available |
+| 33 | [Media and publishing businesses](./?track=earn-directory&lesson=media-publishing-business-methods) | Available |
+| 34 | [Livestock and animal enterprises](./?track=earn-directory&lesson=livestock-animal-enterprises-methods) | Available |
+| 35 | [Digital products, software and online assets](./?track=earn-directory&lesson=digital-products-software-methods) | Available |
+| 36+ | More categories in future updates | Coming |
 
 ## Universal safety rules
 
