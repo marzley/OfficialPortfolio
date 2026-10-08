@@ -21,7 +21,7 @@ if ($method === 'POST' && !in_array($action, ['login', 'dev_login', 'logout', 'l
 }
 
 // Every change needs POST with the session's CSRF token (sign-in gets one afterwards).
-if ($method === 'POST' && !in_array($action, ['login', 'dev_login', 'code_request', 'code_verify'], true)) check_csrf();
+if ($method === 'POST' && !in_array($action, ['login', 'dev_login', 'code_request', 'code_verify', 'password_login'], true)) check_csrf();
 if ($method !== 'POST' && !in_array($action, ['me', 'data', 'download', 'payment_status', 'export', 'proof'], true)) fail(405, 'Use POST.');
 
 switch ($action) {
@@ -31,7 +31,7 @@ switch ($action) {
     case 'me':
         $u = current_user();
         $av = $u ? q('SELECT id, avatar FROM learners WHERE email = ?', [strtolower($u['email'])])->fetch() : null;
-        out(['user' => $u, 'avatar' => $av ? avatar_url($av) : null, 'csrf' => $u ? csrf_token() : null, 'google_client_id' => config()['google_client_id'],
+        out(['user' => $u, 'avatar' => $av ? avatar_url($av) : null, 'password' => $u ? password_status($u['email']) + ['fresh' => fresh_sign_in()] : null, 'csrf' => $u ? csrf_token() : null, 'google_client_id' => config()['google_client_id'],
             'staging' => is_staging(), 'expired' => $u ? null : expired_message()]);
 
     case 'login':
@@ -39,7 +39,23 @@ switch ($action) {
         if ($token === '') fail(400, 'Missing Google sign-in.');
         $claims = verify_google_token($token);
         $user = sign_in($claims['email'], $claims['name'] ?? '', (string)(body()['ref'] ?? ''));
+        mark_fresh_sign_in();
         out(['user' => $user, 'csrf' => csrf_token()]);
+
+    case 'password_login':
+        // Username or email + password (added in Profile; "Forgot password" = sign in with an emailed code, then set a new one)
+        $d = body();
+        $login = strtolower(trim((string)($d['login'] ?? '')));
+        if ($login === '' || (string)($d['password'] ?? '') === '') fail(400, 'Enter your username or email and your password.');
+        if (!rate_ok('pw_ip', 20, 900) || !rate_ok('pw_who:' . $login, 6, 900)) fail(429, 'Too many tries. Please wait 15 minutes, or use “Forgot password?”.');
+        $email = password_check($login, (string)$d['password']);
+        if (!$email) { audit('password_failed', mb_substr($login, 0, 60), 'visitor'); fail(401, 'Wrong username/email or password.'); }
+        $user = sign_in($email, '');
+        out(['user' => $user, 'csrf' => csrf_token()]);
+
+    case 'password_set':
+        $u = require_user();
+        out(['ok' => true, 'password' => password_save($u['email'], (string)($u['name'] ?? ''), body())]);
 
     case 'dev_login':
         // Local testing only: needs dev_login in the config AND PHP's built-in server on this computer.
@@ -788,6 +804,7 @@ switch ($action) {
         }
         q('UPDATE login_codes SET used_at = ? WHERE id = ?', [now(), $row['id']]);
         $user = $client ? sign_in($client['email'], $client['name']) : sign_in($who, (string)($d['name'] ?? ''), (string)($d['ref'] ?? ''));
+        mark_fresh_sign_in();
         out(['user' => $user, 'csrf' => csrf_token()]);
 
     // ---------- growth: website payments, referrals, reviews, chat questions, mailing list ----------

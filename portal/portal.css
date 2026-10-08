@@ -1562,3 +1562,29 @@ a.stat-card { text-decoration: none; }
 a.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
 .stat-card strong.stat-small { font-size: 17px; line-height: 1.3; }
 .learn-summary { margin-top: 20px; }
+
+/* Sign-in card: Google, OR, username or email + password */
+.login-card { display: grid; gap: 14px; width: min(400px, 100%); text-align: left; }
+.google-signin { display: flex; justify-content: center; min-height: 44px; }
+.or-sep { display: flex; align-items: center; gap: 12px; margin: 0; color: var(--fg-muted); font-size: 12px; font-weight: 700; letter-spacing: 0.12em; }
+.or-sep::before, .or-sep::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.portal-signin .or-sep { color: var(--fg-muted); }
+.pw-form { display: grid; gap: 8px; }
+.pw-form label { margin-top: 4px; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--heading); }
+.pw-form input { width: 100%; min-height: 50px; padding: 0 16px; border: 1px solid var(--field-border); border-radius: 12px; background: var(--field-bg); color: var(--fg); font: inherit; }
+.pw-form input:focus { outline: 3px solid rgba(37, 99, 235, 0.25); border-color: #2563eb; }
+.pw-wrap { position: relative; }
+.pw-wrap input { padding-right: 52px; }
+.pw-eye { position: absolute; top: 50%; right: 6px; transform: translateY(-50%); width: 40px; height: 40px; border: 0; border-radius: 10px; background: none; color: var(--fg-muted); cursor: pointer; }
+.pw-eye:hover { color: var(--heading); }
+.pw-msg { min-height: 1em; margin: 2px 0 0; color: #dc2626 !important; font-weight: 600; }
+.pw-msg:empty { display: none; }
+.pw-btn { min-height: 50px; margin-top: 8px; border: 0; border-radius: 12px; background: #2563eb; color: #fff; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; box-shadow: 0 8px 18px rgba(37, 99, 235, 0.28); }
+.pw-btn:hover { background: #1d4ed8; }
+.pw-btn:disabled { opacity: 0.7; }
+.pw-forgot { justify-self: center; margin-top: 4px; color: #2563eb; font-weight: 600; }
+.pw-dialog { width: min(460px, calc(100% - 32px)); }
+.pw-dialog form { display: grid; gap: 12px; }
+.pw-dialog .field { display: grid; gap: 6px; }
+.pw-dialog input { width: 100%; min-height: 46px; padding: 0 14px; border: 1px solid var(--field-border); border-radius: 10px; background: var(--field-bg); color: var(--fg); font: inherit; }
+.pw-dialog .form-foot { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }

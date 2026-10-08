@@ -62,7 +62,7 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   const cid = one("SELECT id FROM clients WHERE email = 'client@example.com'").id;
 
   // ---------- database upgrade ----------
-  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "10");
+  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "11");
 
   // ---------- sequential invoice numbers ----------
   r = await admin("invoice_save", { client_id: cid, description: "Website build", amount: 10000, status: "unpaid" });
@@ -441,10 +441,8 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   clearMail();
   let sf = new FormData(); sf.append("email", "reader@example.com");
   let sj = await (await fetch(BASE + "/portal/subscribe.php", { method: "POST", body: sf })).json();
-  const conf = (fs.readFileSync(WORK + "/mail.txt", "utf8").match(/subscribe\.php\?c=([a-f0-9]{48})/) || [])[1];
-  ok("sign-up sends a confirmation link", sj.ok && conf && one("SELECT status FROM subscribers WHERE email = 'reader@example.com'").status === "pending");
-  await fetch(BASE + "/portal/subscribe.php?c=" + conf);
-  ok("confirming subscribes them", one("SELECT status FROM subscribers WHERE email = 'reader@example.com'").status === "subscribed");
+  ok("sign-up subscribes them straight away, no confirmation needed", sj.ok && one("SELECT status FROM subscribers WHERE email = 'reader@example.com'").status === "subscribed");
+  ok("they get a welcome email with an unsubscribe link", /Thanks for subscribing[\s\S]*subscribe\.php\?u=[a-f0-9]{48}/.test(fs.readFileSync(WORK + "/mail.txt", "utf8")));
   clearMail();
   r = await admin3("campaign_send", { subject: "November class", body: "A new class starts soon.", audience: ["clients"] });
   const sentTo = [...fs.readFileSync(WORK + "/mail.txt", "utf8").matchAll(/^To: <?([^>\s]+)>?/gm)].map((m) => m[1]);
@@ -827,6 +825,39 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
       ok("the portal overview has the client’s learning points", r.j.me.learning && r.j.me.learning.points >= 10 && /action=avatar/.test(r.j.me.learning.avatar || ""));
       r = await lget(cl, "me");
       ok("the same photo shows in the learning hub", /action=avatar/.test((r.j.learner || {}).avatar || ""));
+    }
+
+    // passwords: username or email + password, besides Google and emailed codes
+    {
+      r = await cl("password_set", { password: "short" });
+      ok("passwords need at least 8 characters", r.s === 400);
+      r = await cl("password_set", { password: "Mvua-Nyingi-2026", username: "Bad Name!" });
+      ok("usernames are checked", r.s === 400);
+      r = await cl("password_set", { password: "Mvua-Nyingi-2026", username: "amani.k" });
+      ok("a signed-in client can add a password and a username", r.s === 200 && r.j.password.has_password && r.j.password.username === "amani.k");
+      ok("the password is stored hashed, never as plain text", /^\$2y\$/.test(one("SELECT hash FROM passwords WHERE email = 'client@example.com'").hash) && !JSON.stringify(one("SELECT * FROM passwords WHERE email = 'client@example.com'")).includes("Mvua-Nyingi"));
+      r = await stu("password_set", { password: "Another-Pass-99", username: "amani.k" }, L);
+      ok("a username can only belong to one person", r.s === 409);
+      r = await cl("password_set", { password: "New-Pass-2027", current: "wrong-one" });
+      ok("changing a password later needs the current one", r.s === 403);
+      const fresh = session();
+      r = await fresh("password_login", { login: "amani.k", password: "nope-nope-nope" });
+      ok("a wrong password is refused", r.s === 401);
+      r = await fresh("password_login", { login: "AMANI.K", password: "Mvua-Nyingi-2026" });
+      ok("log in with the username and password", r.s === 200 && r.j.user.email === "client@example.com" && r.j.user.role === "client");
+      const fresh2 = session();
+      r = await fresh2("password_login", { login: "client@example.com", password: "Mvua-Nyingi-2026" });
+      ok("log in with the email and password", r.s === 200 && r.j.user.email === "client@example.com");
+      r = await lpost(session(), "password_login", { login: "amani.k", password: "Mvua-Nyingi-2026" });
+      ok("the same password works in the learning hub", r.s === 200 && r.j.learner.email === "client@example.com");
+      r = await fresh("me");
+      ok("the portal says a password is set", r.j.password.has_password === true && r.j.password.username === "amani.k" && r.j.password.fresh === false);
+      const brute = session();
+      let last;
+      for (let i = 0; i < 7; i++) last = await brute("password_login", { login: "amani.k", password: "guess-" + i + "-xxxx" });
+      ok("guessing passwords is slowed down", last.s === 429);
+      r = await session()("password_login", { login: "nobody.here", password: "whatever-123" });
+      ok("an unknown username gets the same answer", r.s === 401 && /Wrong username\/email or password/.test(r.j.error || ""));
     }
 
     // managing

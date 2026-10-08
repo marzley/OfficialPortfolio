@@ -5,7 +5,7 @@ if (!defined('MARZLEY_PORTAL')) {
     exit;
 }
 
-const SCHEMA_VERSION = 10;
+const SCHEMA_VERSION = 11;
 const STAFF_PERMS = ['projects' => 'Projects & files', 'clients' => 'People', 'support' => 'Support', 'courses' => 'Courses', 'money' => 'Invoices, payments & quotes', 'leads' => 'Leads'];
 const PROJECT_STATUSES = ['planning', 'design', 'build', 'review', 'live', 'on_hold'];
 const INVOICE_STATUSES = ['unpaid', 'paid', 'cancelled'];
@@ -117,6 +117,8 @@ function migrate(PDO $pdo): void {
         "CREATE TABLE IF NOT EXISTS learn_lesson_likes (id $id, lesson_id $uint NOT NULL, learner_id $uint NOT NULL, created_at DATETIME NOT NULL, UNIQUE (lesson_id, learner_id))$end",
         "CREATE TABLE IF NOT EXISTS learn_reviews (id $id, lesson_id $uint NOT NULL, learner_id $uint NOT NULL, parent_id $uint NULL, rating $uint NULL, body TEXT NOT NULL, is_staff $uint NOT NULL DEFAULT 0, hidden $uint NOT NULL DEFAULT 0, created_at DATETIME NOT NULL)$end",
         "CREATE TABLE IF NOT EXISTS learn_progress (id $id, learner_id $uint NOT NULL, lesson_id $uint NOT NULL, created_at DATETIME NOT NULL, UNIQUE (learner_id, lesson_id))$end",
+        // v11: passwords (optional): sign in with a username or email and a password, besides Google and email codes
+        "CREATE TABLE IF NOT EXISTS passwords (id $id, email VARCHAR(190) NOT NULL UNIQUE, username VARCHAR(40) NULL UNIQUE, hash VARCHAR(255) NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL)$end",
         // v10: learner points (each action pays once) and recently opened lessons
         "CREATE TABLE IF NOT EXISTS learn_points (id $id, learner_id $uint NOT NULL, kind VARCHAR(20) NOT NULL, ref VARCHAR(80) NOT NULL, points $uint NOT NULL, detail VARCHAR(200) NOT NULL DEFAULT '', link VARCHAR(200) NOT NULL DEFAULT '', created_at DATETIME NOT NULL, UNIQUE (learner_id, kind, ref))$end",
         "CREATE TABLE IF NOT EXISTS learn_visits (id $id, learner_id $uint NOT NULL, lesson_id $uint NOT NULL, visited_at DATETIME NOT NULL, UNIQUE (learner_id, lesson_id))$end",
@@ -1432,5 +1434,59 @@ function learning_summary(string $email): ?array {
     return ['points' => learner_points((int)$l['id']), 'avatar' => avatar_url($l),
             'completed' => (int)q('SELECT COUNT(*) FROM learn_progress WHERE learner_id = ?', [$l['id']])->fetchColumn(),
             'last' => $last ?: null];
+}
+
+// ---------- passwords (optional, for the portal and the learning hub) ----------
+// Every account is an email address. A password (and a username) can be added once the person has
+// proved the email is theirs with Google or an emailed code. "Forgot password" is the emailed code.
+
+function valid_username(string $u): bool { return (bool)preg_match('/^[a-z0-9][a-z0-9._]{2,29}$/', $u) && !preg_match('/\.\.|\.$/', $u); }
+
+/** The email for a username or email plus password, or null. Takes the same time whether or not the account exists. */
+function password_check(string $login, string $password): ?string {
+    $login = strtolower(trim($login));
+    $row = $login === '' ? null : q('SELECT * FROM passwords WHERE ' . (str_contains($login, '@') ? 'email' : 'username') . ' = ?', [$login])->fetch();
+    $hash = $row['hash'] ?? '$2y$12$k64xgCOIHIh7WwGXGjs9Buz1Dg0AG1Nb.fSZgTtOPXDOJCaXoa/o6';   // a dummy, so a missing account isn't faster
+    $ok = password_verify($password, $hash) && $row;
+    if (!$ok) return null;
+    if (password_needs_rehash($row['hash'], PASSWORD_DEFAULT)) q('UPDATE passwords SET hash = ? WHERE id = ?', [password_hash($password, PASSWORD_DEFAULT), $row['id']]);
+    return $row['email'];
+}
+
+function password_status(string $email): array {
+    $row = q('SELECT username, updated_at FROM passwords WHERE email = ?', [strtolower($email)])->fetch();
+    return ['has_password' => (bool)$row, 'username' => $row['username'] ?? null, 'password_changed' => $row['updated_at'] ?? null];
+}
+
+/** The person proved they own the email in the last 30 minutes (Google or a code), so they can set a password without the old one. */
+function mark_fresh_sign_in(): void { $_SESSION['fresh_sign_in'] = time(); }
+function fresh_sign_in(): bool { return ($_SESSION['fresh_sign_in'] ?? 0) > time() - 1800; }
+
+/** Sets (or changes) the password, and the username the first time. Body: password, current (when changing), username. */
+function password_save(string $email, string $name, array $d): array {
+    $email = strtolower($email);
+    if (!rate_ok('pw_set:' . $email, 10, 3600)) fail(429, 'Too many tries. Please wait an hour.');
+    $row = q('SELECT * FROM passwords WHERE email = ?', [$email])->fetch();
+    $pw = (string)($d['password'] ?? '');
+    if ($row && !fresh_sign_in() && !password_verify((string)($d['current'] ?? ''), $row['hash'])) fail(403, 'Your current password is wrong. Forgot it? Sign out, then use “Forgot password?”.');
+    if (mb_strlen($pw) < 8) fail(400, 'Use at least 8 characters for your password.');
+    if (mb_strlen($pw) > 200) fail(400, 'That password is too long.');
+    $username = $row['username'] ?? null;
+    $want = strtolower(trim((string)($d['username'] ?? '')));
+    if (!$username && $want !== '') {
+        if (!valid_username($want)) fail(400, 'Usernames are 3 to 30 letters, numbers, dots or underscores, starting with a letter or number.');
+        if (q('SELECT id FROM passwords WHERE username = ?', [$want])->fetch()) fail(409, 'That username is taken. Try another one.');
+        $username = $want;
+    }
+    if (($username && stripos($pw, $username) !== false) || (strlen(explode('@', $email)[0]) >= 4 && stripos($pw, explode('@', $email)[0]) !== false)) fail(400, 'Don’t use your username or email in your password.');
+    $hash = password_hash($pw, PASSWORD_DEFAULT);
+    if ($row) q('UPDATE passwords SET hash = ?, username = ?, updated_at = ? WHERE id = ?', [$hash, $username, now(), $row['id']]);
+    else q('INSERT INTO passwords (email, username, hash, created_at, updated_at) VALUES (?, ?, ?, ?, ?)', [$email, $username, $hash, now(), now()]);
+    unset($_SESSION['fresh_sign_in']);
+    audit($row ? 'password_changed' : 'password_set', $username ?? '', $email);
+    send_mail($email, $row ? 'Your Marzley Tech password was changed' : 'You added a password to your Marzley Tech account',
+        "Hello" . ($name !== '' ? " $name" : '') . ",\n\n" . ($row ? 'Your password was just changed.' : 'You can now sign in with ' . ($username ? "your username ($username) or " : '') . 'your email and a password, as well as with Google or an emailed code.') .
+        "\n\nIf this wasn't you, sign in with Google or an emailed code straight away, set a new password, and WhatsApp us on +254 745 789 590.\n\nMarzley Tech Solutions", false);
+    return password_status($email);
 }
 

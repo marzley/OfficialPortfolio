@@ -16,7 +16,7 @@ const VIDEO_MAX = 2048 * 1024 * 1024;   // 2 GB
 const NOTE_MAX = 100 * 1024 * 1024;     // 100 MB
 const CHUNK_MAX = 8 * 1024 * 1024;
 
-if ($method === 'POST' && !in_array($action, ['code_request', 'code_verify', 'google', 'dev_login'], true)) check_csrf();
+if ($method === 'POST' && !in_array($action, ['code_request', 'code_verify', 'google', 'dev_login', 'password_login'], true)) check_csrf();
 if ($method !== 'POST' && !in_array($action, LEARN_GET, true)) fail(405, 'Use POST.');
 
 learn_seed(db());   // adds any new tutorials shipped in data/learn-seed.json
@@ -123,7 +123,8 @@ switch ($action) {
             award_points((int)$me['id'], 'signup', 'signup', 'Created your account');   // accounts made before points existed
             $row = q('SELECT id, name, phone, avatar, created_at FROM learners WHERE id = ?', [$me['id']])->fetch();
             $me += ['phone' => $row['phone'] ?? '', 'avatar' => $row ? avatar_url($row) : null, 'since' => $row['created_at'] ?? '',
-                    'learner_code' => 'L-' . str_pad((string)$me['id'], 5, '0', STR_PAD_LEFT), 'points' => learner_points((int)$me['id'])];
+                    'learner_code' => 'L-' . str_pad((string)$me['id'], 5, '0', STR_PAD_LEFT), 'points' => learner_points((int)$me['id']),
+                    'password' => password_status($me['email']) + ['fresh' => fresh_sign_in()]];
         }
         out(['learner' => $me, 'csrf' => csrf_token(), 'editor' => $editor, 'progress' => $progress,
              'google_client_id' => config()['google_client_id'], 'mpesa' => (bool)mpesa_config(), 'notes_prices' => notes_pdf_prices()]);
@@ -133,7 +134,21 @@ switch ($action) {
         if ($token === '') fail(400, 'Missing Google sign-in.');
         $claims = verify_google_token($token);
         $l = learn_sign_in($claims['email'], $claims['name'] ?? '');
+        mark_fresh_sign_in();
         out(['learner' => $l, 'csrf' => csrf_token()]);
+
+    case 'password_login':
+        $d = body();
+        $login = strtolower(trim((string)($d['login'] ?? '')));
+        if ($login === '' || (string)($d['password'] ?? '') === '') fail(400, 'Enter your username or email and your password.');
+        if (!rate_ok('pw_ip', 20, 900) || !rate_ok('pw_who:' . $login, 6, 900)) fail(429, 'Too many tries. Please wait 15 minutes, or use “Forgot password?”.');
+        $email = password_check($login, (string)$d['password']);
+        if (!$email) { audit('password_failed', mb_substr($login, 0, 60), 'visitor'); fail(401, 'Wrong username/email or password.'); }
+        out(['learner' => learn_sign_in($email, ''), 'csrf' => csrf_token()]);
+
+    case 'password_set':
+        $l = need_learner();
+        out(['ok' => true, 'password' => password_save($l['email'], (string)$l['name'], body())]);
 
     case 'dev_login':
         if (empty(config()['dev_login']) || PHP_SAPI !== 'cli-server' || !in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1'], true)) fail(404, 'Not found.');
@@ -170,6 +185,7 @@ switch ($action) {
         $name = mb_substr(trim(preg_replace('/\s+/u', ' ', (string)($d['name'] ?? ''))), 0, 120);
         $l = learn_sign_in($email, $name);
         if ($name !== '' && $l['name'] === '') { q('UPDATE learners SET name = ? WHERE id = ?', [$name, $l['id']]); $_SESSION['learner']['name'] = $l['name'] = $name; }
+        mark_fresh_sign_in();
         out(['learner' => $l, 'csrf' => csrf_token()]);
 
     case 'logout':

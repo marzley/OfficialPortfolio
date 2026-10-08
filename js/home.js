@@ -1789,7 +1789,7 @@
         .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
         .then(function (r) {
           if (!r.ok) throw new Error(r.d.error || "");
-          msg.textContent = r.d.already ? "You’re already subscribed. Thank you!" : "Almost done: check your email and tap the confirm link.";
+          msg.textContent = r.d.already ? "You’re already subscribed. Thank you!" : "You’re subscribed. Thank you! Look out for our tips in your inbox.";
           newsForm.reset();
           track("sign_up", { method: "newsletter" });
         })

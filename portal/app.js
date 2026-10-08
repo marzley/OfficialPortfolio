@@ -18,7 +18,11 @@
   var SW = {
     "Client portal": "Lango la wateja", "Sign out": "Toka", "Loading…": "Inapakia…", "Hello, ": "Habari, ",
     "See your project’s progress, updates, files and invoices, and pay by M-Pesa. Sign in, or create your free account, with Google or your email.": "Ona maendeleo ya mradi wako, taarifa, faili na ankara, na ulipe kwa M-Pesa. Ingia, au fungua akaunti yako bure, kwa Google au barua pepe yako.",
-    "No Google account? Use your email instead": "Huna akaunti ya Google? Tumia barua pepe yako", "Your email (or the phone number you gave us)": "Barua pepe yako (au nambari ya simu uliyotupa)",
+    "No Google account? Use your email instead": "Huna akaunti ya Google? Tumia barua pepe yako",
+    "OR": "AU", "Username or email": "Jina la mtumiaji au barua pepe", "Password": "Nenosiri", "Log in": "Ingia", "Forgot password?": "Umesahau nenosiri?",
+    "New here, or no password yet? Get a sign-in code by email": "Mgeni, au huna nenosiri bado? Pata nambari ya kuingia kwa barua pepe",
+    "We’ll email you a 6-digit code. New accounts are created for free.": "Tutakutumia nambari ya tarakimu 6 kwa barua pepe. Akaunti mpya ni bure.",
+    "Sign-in and password": "Kuingia na nenosiri", "Set a password": "Weka nenosiri", "Change password": "Badilisha nenosiri", "Your email (or the phone number you gave us)": "Barua pepe yako (au nambari ya simu uliyotupa)",
     "Your name (new accounts only)": "Jina lako (kwa akaunti mpya tu)", "Need help?": "Unahitaji msaada?",
     "Welcome! Your account is ready.": "Karibu! Akaunti yako iko tayari.",
     "When we start a project for you, its progress, files and invoices will appear here. What would you like to do?": "Tukianza mradi wako, maendeleo yake, faili na ankara zitaonekana hapa. Ungependa kufanya nini?",
@@ -179,11 +183,11 @@
       callback: function (resp) {
         $("signin-error").textContent = "";
         api("login", { method: "POST", body: { credential: resp.credential, ref: refCode() } })
-          .then(function (d) { csrf = d.csrf; me = d.user; load(); })
+          .then(function (d) { csrf = d.csrf; me = d.user; pwInfo = { has_password: false, fresh: true }; refreshPw(); load(); })
           .catch(function (e) { $("signin-error").textContent = e.message; });
       }
     });
-    google.accounts.id.renderButton($("google-signin"), { theme: "filled_blue", size: "large", shape: "pill", text: "signin_with" });
+    google.accounts.id.renderButton($("google-signin"), { theme: "outline", size: "large", shape: "pill", text: "continue_with", logo_alignment: "left", width: Math.min(360, ($("google-signin").clientWidth || 360)) });
     googleReady = true;
   }
 
@@ -1822,6 +1826,16 @@
           h("p", { className: "welcome-actions" }, h("label", { className: "btn btn-solid btn-sm", for: "photo-in" }, h("i", { className: "fa-solid fa-camera", "aria-hidden": "true" }), " " + t(myAvatar ? "Change photo" : "Upload photo")), fileIn,
             myAvatar ? h("button", { type: "button", className: "btn btn-ghost btn-sm", onclick: function () { savePhoto({ remove: 1 }, t("Photo removed.")).catch(function (err) { toast(err.message, true); }); }, text: t("Remove") }) : null)))));
     panel.appendChild(form);
+    var pi = pwInfo || {};
+    panel.appendChild(h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: t("Sign-in and password") })),
+      h("div", { className: "ref-ids" },
+        h("div", null, h("small", { text: t("Username") }), h("strong", { text: pi.username || t("Not set yet") })),
+        h("div", null, h("small", { text: t("Password") }), h("strong", { text: pi.has_password ? t("Set") + (pi.password_changed ? " · " + day(pi.password_changed) : "") : t("Not set yet") })),
+        h("div", null, h("small", { text: t("Also sign in with") }), h("strong", { text: "Google · " + t("emailed code") }))),
+      h("p", { className: "portal-meta", text: pi.has_password ? t("Log in with your username or email and your password. Forgot it? Use “Forgot password?” on the sign-in page.")
+        : t("Add a password (and a username) to log in without Google or waiting for a code.") }),
+      h("button", { type: "button", className: "btn btn-solid btn-sm", onclick: function () { refreshPw().then(function () { openPassword(false); }); } },
+        h("i", { className: "fa-solid fa-key", "aria-hidden": "true" }), " " + (pi.has_password ? t("Change password") : t("Set a password")))));
     panel.appendChild(h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: t("Security") })),
       h("p", { className: "portal-meta", text: t("Member since") + " " + day(dm.since) + ". " + t("Lost a phone or used a shared computer? Sign out on every device.") }),
       h("button", { type: "button", className: "btn btn-ghost btn-sm", onclick: function () {
@@ -2384,11 +2398,93 @@
         }).catch(function (x) { msg.textContent = x.message; }).then(function () { btn.disabled = false; });
       } else {
         api("code_verify", { method: "POST", body: { who: who, code: $("code-code").value, name: $("code-name").value.trim(), ref: refCode() } })
-          .then(function (d) { csrf = d.csrf; me = d.user; load(); })
+          .then(function (d) {
+            csrf = d.csrf; me = d.user;
+            var reset = codeForm.getAttribute("data-mode") === "reset";
+            refreshPw().then(function () { load().then(function () { if (reset) openPassword(true); }); });
+          })
           .catch(function (x) { msg.textContent = x.message; btn.disabled = false; });
       }
     });
   }
+
+  // ---------- sign in with a username or email and a password ----------
+  var pwInfo = null;
+  function refreshPw() { return api("me").then(function (d) { pwInfo = d.password || null; myAvatar = d.avatar || myAvatar; }).catch(function () {}); }
+  var pwForm = $("pw-form");
+  if (pwForm) {
+    $("pw-eye").addEventListener("click", function () {
+      var i = $("pw-pass"), show = i.type === "password";
+      i.type = show ? "text" : "password";
+      this.setAttribute("aria-pressed", String(show));
+      this.setAttribute("aria-label", show ? "Hide password" : "Show password");
+      this.querySelector("i").className = "fa-solid " + (show ? "fa-eye-slash" : "fa-eye");
+    });
+    pwForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var login = $("pw-login").value.trim(), pass = $("pw-pass").value, msg = $("pw-msg"), btn = $("pw-btn");
+      if (!login || !pass) { msg.textContent = t("Enter your username or email and your password."); return; }
+      btn.disabled = true; msg.textContent = "";
+      api("password_login", { method: "POST", body: { login: login, password: pass } })
+        .then(function (d) { csrf = d.csrf; me = d.user; $("pw-pass").value = ""; refreshPw(); load(); })
+        .catch(function (x) { msg.textContent = x.message; })
+        .then(function () { btn.disabled = false; });
+    });
+    // Forgot password: sign in with an emailed code, then choose a new password
+    $("pw-forgot").addEventListener("click", function () {
+      codeForm.hidden = false;
+      codeForm.setAttribute("data-mode", "reset");
+      codeToggle.setAttribute("aria-expanded", "true");
+      $("code-intro").textContent = t("Forgot your password? Enter your email. We’ll send a 6-digit code, and once you’re in you can choose a new password.");
+      var who = $("pw-login").value.trim();
+      if (who.indexOf("@") > 0) $("code-who").value = who;
+      $("code-who").focus();
+    });
+    codeToggle.addEventListener("click", function () { codeForm.removeAttribute("data-mode"); $("code-intro").textContent = t("We’ll email you a 6-digit code. New accounts are created for free."); });
+  }
+
+  /** Add or change the password (and choose a username once). Shared by clients and the team. */
+  function openPassword(afterReset) {
+    var info = pwInfo || {};
+    var dlg = h("dialog", { className: "portal-dialog pw-dialog", "aria-labelledby": "pwd-title" });
+    var user = h("input", { id: "pwd-user", maxlength: "30", autocomplete: "username", autocapitalize: "none", spellcheck: "false", placeholder: t("for example kelvin.w") });
+    var cur = h("input", { id: "pwd-cur", type: "password", autocomplete: "current-password", maxlength: "200" });
+    var p1 = h("input", { id: "pwd-new", type: "password", autocomplete: "new-password", maxlength: "200", minlength: "8", required: true });
+    var p2 = h("input", { id: "pwd-new2", type: "password", autocomplete: "new-password", maxlength: "200", required: true });
+    var msg = h("p", { className: "portal-meta", role: "status", "aria-live": "polite" });
+    var needCur = info.has_password && !info.fresh;
+    var form = h("form", { onsubmit: function (e) {
+      e.preventDefault();
+      if (p1.value.length < 8) { msg.textContent = t("Use at least 8 characters for your password."); return; }
+      if (p1.value !== p2.value) { msg.textContent = t("The two passwords don’t match."); return; }
+      var body = { password: p1.value };
+      if (needCur) body.current = cur.value;
+      if (!info.username && user.value.trim()) body.username = user.value.trim();
+      api("password_set", { method: "POST", body: body }).then(function (r) {
+        pwInfo = r.password; dlg.close(); dlg.remove();
+        toast(t("Password saved. You can now log in with ") + (pwInfo.username ? t("your username or ") : "") + t("your email and password."));
+        if (data && me && !isTeam()) { renderClient(); selectClientTab("profile"); }
+      }).catch(function (x) { msg.textContent = x.message; });
+    } },
+      h("h2", { id: "pwd-title", text: info.has_password ? t("Change password") : t("Set a password") }),
+      h("p", { text: afterReset ? t("You’re signed in. Choose a new password now, so you can log in with it next time.")
+        : t("Log in with your username or email and a password, as well as with Google or an emailed code.") }),
+      info.username ? h("div", { className: "field" }, h("span", { className: "field-label", text: t("Username (can’t be changed)") }), h("strong", { text: info.username }))
+        : h("div", { className: "field" }, h("label", { for: "pwd-user", text: t("Choose a username (optional, can’t be changed later)") }), user),
+      needCur ? h("div", { className: "field" }, h("label", { for: "pwd-cur", text: t("Current password") }), cur) : null,
+      h("div", { className: "field" }, h("label", { for: "pwd-new", text: t("New password (at least 8 characters)") }), p1),
+      h("div", { className: "field" }, h("label", { for: "pwd-new2", text: t("Type it again") }), p2),
+      msg,
+      h("div", { className: "form-foot" }, h("button", { type: "button", className: "btn btn-ghost", onclick: function () { dlg.close(); dlg.remove(); }, text: t("Cancel") }),
+        h("button", { type: "submit", className: "btn btn-solid", text: t("Save password") })));
+    dlg.appendChild(form);
+    document.body.appendChild(dlg);
+    dlg.addEventListener("close", function () { if (dlg.isConnected) dlg.remove(); });
+    dlg.showModal();
+    (info.username ? (needCur ? cur : p1) : user).focus();
+  }
+  var adminPw = $("admin-password");
+  if (adminPw) adminPw.addEventListener("click", function () { refreshPw().then(function () { openPassword(false); }); });
 
   translateStatic();
   ["lang-toggle", "client-lang"].forEach(function (id) {
@@ -2412,6 +2508,7 @@
   api("me").then(function (d) {
     me = d.user;
     myAvatar = d.avatar || null;
+    pwInfo = d.password || null;
     csrf = d.csrf;
     googleClientId = d.google_client_id;
     if (d.staging) document.body.insertBefore(h("p", { className: "staging-banner", role: "note" },

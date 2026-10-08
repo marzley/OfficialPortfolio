@@ -1684,8 +1684,10 @@
         '<label>Learner ID (can’t be changed)</label><input value="' + esc(me.learner_code || "") + '" disabled />' +
         '<p class="u-msg" id="me-msg" role="status" aria-live="polite"></p><button type="submit" class="btn btn-solid">Save changes</button></form></div>' +
         '<p class="muted small">Your photo shows in your account menu, next to your comments, and in the client portal if you use the same email there.</p></section>' +
+        pwSection(me) +
         rulesHtml() + "</section>";
       main.innerHTML = html;
+      if (/^#me-[a-z-]+$/.test(location.hash) && $(location.hash)) setTimeout(function () { $(location.hash).scrollIntoView({ block: "start" }); }, 50);
 
       // Suggestions: the next lesson in subjects you've started, then good first lessons in new subjects
       var picks = [];
@@ -1725,6 +1727,35 @@
       });
     }).catch(function (e) { errorBox(e.message); });
   }
+  function pwSection(me) {
+    var pw = me.password || {}, needCur = pw.has_password && !pw.fresh;
+    return '<section class="me-card" id="me-password"><h2>Sign-in and password</h2>' +
+      '<p class="muted">' + (pw.has_password ? "You can log in with " + (pw.username ? "your username <strong>" + esc(pw.username) + "</strong> or " : "") + "your email and password, as well as Google or an emailed code."
+        : "Add a password (and a username) to log in without Google or waiting for an emailed code.") + "</p>" +
+      (pw.fresh && pw.has_password ? '<p class="me-note"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> You just signed in with a code or Google, so you can set a new password without the old one.</p>' : "") +
+      '<form class="me-form" id="pw-set-form" novalidate>' +
+      (pw.username ? '<label>Username (can’t be changed)</label><input value="' + esc(pw.username) + '" disabled />'
+        : '<label for="pw-user">Choose a username (optional, can’t be changed later)</label><input id="pw-user" maxlength="30" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="for example wanjiku.k" />') +
+      (needCur ? '<label for="pw-cur">Current password</label><input id="pw-cur" type="password" autocomplete="current-password" maxlength="200" />' : "") +
+      '<label for="pw-new">New password (at least 8 characters)</label><input id="pw-new" type="password" autocomplete="new-password" maxlength="200" />' +
+      '<label for="pw-new2">Type it again</label><input id="pw-new2" type="password" autocomplete="new-password" maxlength="200" />' +
+      '<p class="u-msg" id="pw-set-msg" role="status" aria-live="polite"></p><button type="submit" class="btn btn-solid">' + (pw.has_password ? "Change password" : "Save password") + "</button></form></section>";
+  }
+  document.addEventListener("submit", function (e) {
+    if (!e.target || e.target.id !== "pw-set-form") return;
+    e.preventDefault();
+    var msg = $("#pw-set-msg"), p1 = $("#pw-new").value, p2 = $("#pw-new2").value;
+    if (p1.length < 8) { msg.textContent = "Use at least 8 characters for your password."; return; }
+    if (p1 !== p2) { msg.textContent = "The two passwords don’t match."; return; }
+    var body = { password: p1 };
+    if ($("#pw-cur")) body.current = $("#pw-cur").value;
+    if ($("#pw-user") && $("#pw-user").value.trim()) body.username = $("#pw-user").value.trim();
+    api("password_set", body).then(function (r) {
+      if (state.me) state.me.password = Object.assign({}, r.password, { fresh: false });
+      $("#me-password").outerHTML = pwSection(state.me);
+      var m = $("#pw-set-msg"); if (m) m.textContent = "Password saved. Next time, log in with " + (r.password.username ? "your username or " : "") + "your email and this password.";
+    }).catch(function (err) { msg.textContent = err.message; });
+  });
   function rulesHtml() {
     return '<section class="me-card" id="me-rules"><h2>How to earn points</h2><p class="muted">Points add up as you learn. Each action counts once (each section, lesson, video, like or download). Code runs count up to 25 a day, and comments and replies up to 10 a day.</p><ul class="me-rules">' +
       POINT_RULES.map(function (r) { return '<li><i class="fa-solid ' + r[0] + '" aria-hidden="true"></i><span>' + esc(r[1]) + "</span><strong>" + r[2] + "</strong></li>"; }).join("") + "</ul></section>";
@@ -2364,7 +2395,7 @@
   var dlg = document.getElementById("signin-dialog");
   function openSignin(why) {
     $("#signin-why").textContent = why || "It’s free. Save your progress, unlock videos, like and comment.";
-    $("#c-msg").textContent = "";
+    $("#c-msg").textContent = ""; $("#pw-msg").textContent = "";
     if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open", "");
     loadGsi();
   }
@@ -2390,6 +2421,35 @@
     document.head.appendChild(s);
   }
   var codeSent = false;
+  // Username or email + password (set one on your dashboard); "Forgot password?" signs in with an emailed code
+  $("#pw-eye").addEventListener("click", function () {
+    var i = $("#pw-pass"), show = i.type === "password";
+    i.type = show ? "text" : "password";
+    this.setAttribute("aria-pressed", String(show));
+    this.setAttribute("aria-label", show ? "Hide password" : "Show password");
+    this.querySelector("i").className = "fa-solid " + (show ? "fa-eye-slash" : "fa-eye");
+  });
+  $("#pw-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var login = $("#pw-login").value.trim(), pass = $("#pw-pass").value, msg = $("#pw-msg"), btn = $("#pw-btn");
+    if (!login || !pass) { msg.textContent = "Enter your username or email and your password."; return; }
+    btn.disabled = true; msg.textContent = "";
+    api("password_login", { login: login, password: pass }).then(function (r) { btn.disabled = false; $("#pw-pass").value = ""; signedIn(r); })
+      .catch(function (err) { btn.disabled = false; msg.textContent = err.message; });
+  });
+  var showCode = function (reset) {
+    var f = $("#code-form");
+    f.hidden = false;
+    state.resetPw = !!reset;
+    $("#code-toggle").setAttribute("aria-expanded", "true");
+    $("#code-intro").textContent = reset ? "Forgot your password? Enter your email. We’ll send a 6-digit code; once you’re in, set a new password on your dashboard."
+      : "We’ll email you a 6-digit code. New accounts are free, and you get 10 points for joining.";
+    var who = $("#pw-login").value.trim();
+    if (who.indexOf("@") > 0 && !$("#c-email").value) $("#c-email").value = who;
+    $("#c-email").focus();
+  };
+  $("#pw-forgot").addEventListener("click", function () { showCode(true); });
+  $("#code-toggle").addEventListener("click", function () { showCode(false); });
   $("#code-form").addEventListener("submit", function (e) {
     e.preventDefault();
     var email = $("#c-email").value.trim(), msg = $("#c-msg"), btn = $("#c-btn");
@@ -2418,6 +2478,7 @@
     var local = loadLocalProgress();
     refreshMe().then(function () {
       local.filter(function (id) { return !isDone(id); }).forEach(function (id) { markDone(id); });
+      if (state.resetPw) { state.resetPw = false; go("./?page=me#me-password"); return; }
       route();
     });
   }

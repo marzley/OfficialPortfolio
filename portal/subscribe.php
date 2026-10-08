@@ -1,5 +1,6 @@
 <?php
-// Mailing list: sign up (POST email, name) → confirmation email → confirm (?c=token); unsubscribe (?u=token).
+// Mailing list: sign up (POST email, name) → subscribed straight away, with a welcome email; unsubscribe (?u=token).
+// Old confirmation links (?c=token) from before still work.
 define('MARZLEY_PORTAL', true);
 define('MARZLEY_NO_EXIT', true);
 $cfg = array_filter([getenv('PORTAL_CONFIG') ?: ($_SERVER['PORTAL_CONFIG'] ?? null), dirname(__DIR__, 2) . '/portal-config.php', dirname(__DIR__) . '/portal-config.php'], 'is_readable');
@@ -16,10 +17,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = mb_substr(trim((string)($_POST['name'] ?? '')), 0, 120);
     $row = q('SELECT * FROM subscribers WHERE email = ?', [$email])->fetch();
     if ($row && $row['status'] === 'subscribed') $reply(200, ['ok' => true, 'already' => true]);
-    if ($row) { $token = $row['token']; q("UPDATE subscribers SET status = 'pending', name = CASE WHEN ? <> '' THEN ? ELSE name END WHERE id = ?", [$name, $name, $row['id']]); }
-    else { $token = bin2hex(random_bytes(24)); q("INSERT INTO subscribers (email, name, source, status, token, created_at) VALUES (?, ?, 'website', 'pending', ?, ?)", [$email, $name, $token, now()]); }
-    send_mail($email, 'Please confirm: tips and offers from Marzley Tech', "Hello" . ($name ? " $name" : '') . ",\n\nPlease confirm you'd like occasional emails from Marzley Tech Solutions: practical website and M-Pesa tips, new courses and offers. At most two a month.\n\nConfirm: " .
-        portal_url() . "subscribe.php?c=$token\n\nIf you didn't ask for this, ignore this email and you won't hear from us.\n\nMarzley Tech Solutions · +254 745 789 590", false);
+    // No confirmation step: they're subscribed straight away. The welcome email has a one-click unsubscribe link.
+    if ($row) { $token = $row['token']; q("UPDATE subscribers SET status = 'subscribed', confirmed_at = COALESCE(confirmed_at, ?), name = CASE WHEN ? <> '' THEN ? ELSE name END WHERE id = ?", [now(), $name, $name, $row['id']]); }
+    else { $token = bin2hex(random_bytes(24)); q("INSERT INTO subscribers (email, name, source, status, token, created_at, confirmed_at) VALUES (?, ?, 'website', 'subscribed', ?, ?, ?)", [$email, $name, $token, now(), now()]); }
+    send_mail($email, 'Welcome: tips and offers from Marzley Tech', "Hello" . ($name ? " $name" : '') . ",\n\nThanks for subscribing. You'll get practical website and M-Pesa tips, new courses and offers from Marzley Tech Solutions, at most twice a month.\n\n" .
+        "Didn't sign up, or changed your mind? Unsubscribe with one click: " . portal_url() . "subscribe.php?u=$token\n\nMarzley Tech Solutions · +254 745 789 590", false);
     $reply(200, ['ok' => true]);
 }
 if (!$cfg) { http_response_code(404); exit; }

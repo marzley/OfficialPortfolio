@@ -8,12 +8,12 @@
     <meta name="robots" content="noindex, nofollow" />
     <meta name="theme-color" content="#0b1b35" />
     <link rel="icon" type="image/png" sizes="32x32" href="../img/brand/favicon-32.png" />
-    <link rel="stylesheet" href="../vendor/fontawesome/css/icons.min.css?v=87fc1f36e4" />
+    <link rel="stylesheet" href="../vendor/fontawesome/css/icons.min.css?v=c80c98ebc1" />
     <link rel="stylesheet" href="../css/home.min.css?v=2aecf7fa61" />
-    <link rel="stylesheet" href="portal.css?v=67b9ca8e8e" />
+    <link rel="stylesheet" href="portal.css?v=01b04eff39" />
     <script src="../js/theme-init.js?v=47e6e7558c"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="app.js?v=4e5b73d204" defer></script>
+    <script src="app.js?v=9306084eb8" defer></script>
 </head>
 
 <body class="portal-body">
@@ -36,12 +36,26 @@
             <img src="../img/brand/logo-256.webp" alt="" width="96" height="96" />
             <h1 id="signin-title" data-i18n>Client portal</h1>
             <p data-i18n>See your project’s progress, updates, files and invoices, and pay by M-Pesa. Sign in, or create your free account, with Google or your email.</p>
-            <div id="google-signin"></div>
+            <div class="login-card">
+                <div id="google-signin" class="google-signin"></div>
+                <p class="or-sep"><span data-i18n>OR</span></p>
+                <form class="pw-form" id="pw-form" novalidate>
+                    <label for="pw-login" data-i18n>Username or email</label>
+                    <input id="pw-login" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="190" required />
+                    <label for="pw-pass" data-i18n>Password</label>
+                    <div class="pw-wrap"><input id="pw-pass" type="password" autocomplete="current-password" maxlength="200" required />
+                        <button type="button" class="pw-eye" id="pw-eye" aria-label="Show password" aria-pressed="false"><i class="fa-solid fa-eye" aria-hidden="true"></i></button></div>
+                    <p class="portal-meta pw-msg" id="pw-msg" role="status" aria-live="polite"></p>
+                    <button type="submit" class="btn pw-btn" id="pw-btn"><span data-i18n>Log in</span> <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+                    <button type="button" class="linklike pw-forgot" id="pw-forgot" data-i18n>Forgot password?</button>
+                </form>
+            </div>
             <div class="code-signin">
-                <button type="button" class="linklike" id="code-toggle" aria-expanded="false" aria-controls="code-form" data-i18n>No Google account? Use your email instead</button>
+                <button type="button" class="linklike" id="code-toggle" aria-expanded="false" aria-controls="code-form" data-i18n>New here, or no password yet? Get a sign-in code by email</button>
                 <form class="code-form" id="code-form" hidden novalidate>
+                    <p class="portal-meta" id="code-intro" data-i18n>We’ll email you a 6-digit code. New accounts are created for free.</p>
                     <div class="field"><label for="code-who" data-i18n>Your email (or the phone number you gave us)</label>
-                        <input id="code-who" autocomplete="username" maxlength="190" required /></div>
+                        <input id="code-who" autocomplete="email" maxlength="190" required /></div>
                     <div class="field" id="code-step2" hidden><label for="code-code" data-i18n>6-digit code</label>
                         <input id="code-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" /></div>
                     <div class="field" id="code-name-row" hidden><label for="code-name" data-i18n>Your name (new accounts only)</label>
@@ -133,6 +147,7 @@
                     <div class="admin-user">
                         <span><strong id="admin-name"></strong><small><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Verified access</small></span>
                         <img src="../img/brand/logo-96.webp" alt="" width="42" height="42" />
+                        <button type="button" class="admin-signout" id="admin-password" aria-label="Password and sign-in" title="Password and sign-in"><i class="fa-solid fa-key" aria-hidden="true"></i></button>
                         <button type="button" class="admin-signout" id="admin-signout" aria-label="Sign out"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i></button>
                     </div>
                 </header>

@@ -32,3 +32,13 @@ CREATE TABLE IF NOT EXISTS learn_visits (
 
 -- Profile photo (shared by the client portal and the learning hub)
 ALTER TABLE learners ADD COLUMN avatar VARCHAR(80) NOT NULL DEFAULT '';
+
+-- v11: optional passwords (username or email + password). Passwords are stored hashed (bcrypt), never as plain text.
+CREATE TABLE IF NOT EXISTS passwords (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(190) NOT NULL UNIQUE,
+    username VARCHAR(40) NULL UNIQUE,
+    hash VARCHAR(255) NOT NULL,
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
