@@ -1603,12 +1603,24 @@
     ]));
     var brandNew = !data.projects.length && !data.invoices.length && !(data.courses || []).length && !(data.tickets || []).length;
     if (brandNew) panel.appendChild(h("div", { className: "welcome-card" },
-      h("h3", { text: t("Welcome! Your account is ready.") }),
+      h("h3", { text: t("Welcome") + ", " + (firstName(dm.name) || t("friend")) + "! " + t("Your account is ready.") }),
       h("p", { text: t("When we start a project for you, its progress, files and invoices will appear here. What would you like to do?") }),
       h("p", { className: "welcome-actions" },
         h("button", { type: "button", className: "btn btn-solid btn-sm", onclick: function () { selectClientTab("request"); } }, h("i", { className: "fa-solid fa-circle-plus", "aria-hidden": "true" }), " " + t("Request a project")),
         h("a", { className: "btn btn-ghost btn-sm", href: "../learn/" }, h("i", { className: "fa-solid fa-laptop-code", "aria-hidden": "true" }), " " + t("Learn to code (free)")),
         h("a", { className: "btn btn-ghost btn-sm", href: "https://wa.me/254745789590", target: "_blank", rel: "noopener noreferrer" }, h("i", { className: "fa-brands fa-whatsapp", "aria-hidden": "true" }), " " + t("Chat on WhatsApp")))));
+    // Learning hub: points, lessons done and where they stopped
+    var lr = dm.learning || { points: 0, completed: 0, last: null };
+    panel.appendChild(h("section", { className: "admin-panel learn-summary" },
+      h("div", { className: "admin-panel-head" }, h("h2", { text: (firstName(dm.name) ? firstName(dm.name) + t(", your learning") : t("Your learning")) }),
+        h("a", { className: "linklike", href: "../learn/?page=me", text: t("Open my learning dashboard") })),
+      h("div", { className: "stat-cards stat-cards-3" },
+        h("a", { className: "stat-card", href: "../learn/?page=me" }, h("span", { className: "stat-icon tone-amber" }, h("i", { className: "fa-solid fa-star", "aria-hidden": "true" })), h("strong", { text: String(lr.points) }), h("span", { text: t("Learning points") })),
+        h("a", { className: "stat-card", href: "../learn/?page=me" }, h("span", { className: "stat-icon tone-green" }, h("i", { className: "fa-solid fa-circle-check", "aria-hidden": "true" })), h("strong", { text: String(lr.completed) }), h("span", { text: t("Lessons completed") })),
+        h("a", { className: "stat-card", href: lr.last ? "../learn/?track=" + encodeURIComponent(lr.last.track) + "&lesson=" + encodeURIComponent(lr.last.slug) : "../learn/" },
+          h("span", { className: "stat-icon tone-blue" }, h("i", { className: "fa-solid fa-play", "aria-hidden": "true" })),
+          h("strong", { className: "stat-small", text: lr.last ? lr.last.title : t("Start learning") }),
+          h("span", { text: lr.last ? t("Continue where you stopped") + " · " + lr.last.track_title : t("Free lessons, notes and practice") })))));
     var cols = h("div", { className: "admin-columns" });
     // Project progress
     var prog = h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: t("Project progress") }),
@@ -1785,9 +1797,30 @@
     } },
       h("h2", { className: "full", text: t("Your details") }),
       field(t("Name"), name), field(t("M-Pesa phone number (payments and referral rewards)"), phone),
-      h("div", { className: "field" }, h("span", { className: "field-label", text: t("Email (sign-in)") }), h("strong", { text: dm.email || me.email })),
-      h("div", { className: "field" }, h("span", { className: "field-label", text: t("Client ID") }), h("strong", { text: dm.client_code || "" })),
+      h("div", { className: "field" }, h("span", { className: "field-label", text: t("Email (sign-in, can’t be changed)") }), h("strong", { text: dm.email || me.email })),
+      h("div", { className: "field" }, h("span", { className: "field-label", text: t("Client ID (can’t be changed)") }), h("strong", { text: dm.client_code || "" })),
       h("div", { className: "form-foot" }, h("button", { type: "submit", className: "btn btn-solid", text: t("Save") })));
+    // Profile photo: shows here and in the learning hub
+    var pic = h("span", { className: "profile-photo", "aria-hidden": "true" });
+    paintAvatar(pic, myAvatar || (dm.learning && dm.learning.avatar), dm.name || me.email);
+    var fileIn = h("input", { type: "file", accept: "image/jpeg,image/png,image/webp", className: "sr-only", id: "photo-in" });
+    var savePhoto = function (body, msg) {
+      return api("profile_photo", { method: "POST", body: body }).then(function (r) {
+        myAvatar = r.avatar || null;
+        if (data.me && data.me.learning) data.me.learning.avatar = myAvatar;
+        toast(msg); renderClient(); selectClientTab("profile");
+      });
+    };
+    fileIn.addEventListener("change", function () {
+      var f = fileIn.files[0];
+      if (!f) return;
+      photoData(f).then(function (img) { return savePhoto({ image: img }, t("Photo saved.")); }).catch(function (err) { toast(err.message, true); });
+    });
+    panel.appendChild(h("section", { className: "admin-panel profile-photo-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: t("Profile photo") })),
+      h("div", { className: "photo-row" }, pic,
+        h("div", null, h("p", { className: "portal-meta", text: t("Your photo shows in your account and next to your comments in the learning hub. Use a clear photo of your face or your logo.") }),
+          h("p", { className: "welcome-actions" }, h("label", { className: "btn btn-solid btn-sm", for: "photo-in" }, h("i", { className: "fa-solid fa-camera", "aria-hidden": "true" }), " " + t(myAvatar ? "Change photo" : "Upload photo")), fileIn,
+            myAvatar ? h("button", { type: "button", className: "btn btn-ghost btn-sm", onclick: function () { savePhoto({ remove: 1 }, t("Photo removed.")).catch(function (err) { toast(err.message, true); }); }, text: t("Remove") }) : null)))));
     panel.appendChild(form);
     panel.appendChild(h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: t("Security") })),
       h("p", { className: "portal-meta", text: t("Member since") + " " + day(dm.since) + ". " + t("Lost a phone or used a shared computer? Sign out on every device.") }),
@@ -1797,10 +1830,37 @@
       } }, h("i", { className: "fa-solid fa-right-from-bracket", "aria-hidden": "true" }), " " + t("Sign out everywhere"))));
   }
 
+  var myAvatar = null;
+  function firstName(n) { return String(n || "").trim().split(/\s+/)[0] || ""; }
+  function greeting() { var hr = new Date().getHours(); return hr < 12 ? t("Good morning") : hr < 17 ? t("Good afternoon") : t("Good evening"); }
+  function paintAvatar(box, url, name) {
+    box.textContent = "";
+    if (url) box.appendChild(h("img", { src: url, alt: "", width: "36", height: "36" }));
+    else box.textContent = String(name || "?").charAt(0).toUpperCase();
+  }
+  /** Shrinks a chosen photo in the browser (max 640 px) so uploads are small even on slow data. */
+  function photoData(file) {
+    return new Promise(function (res, rej) {
+      if (!file || !/^image\/(jpeg|png|webp)$/.test(file.type)) return rej(new Error(t("Choose a JPG, PNG or WebP photo.")));
+      if (file.size > 15 * 1024 * 1024) return rej(new Error(t("That photo is too big. Choose one under 15 MB.")));
+      var url = URL.createObjectURL(file), img = new Image();
+      img.onload = function () {
+        var k = Math.min(1, 640 / Math.max(img.naturalWidth, img.naturalHeight)), c = document.createElement("canvas");
+        c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        res(c.toDataURL("image/jpeg", 0.88));
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); rej(new Error(t("That file isn’t a photo we can use."))); };
+      img.src = url;
+    });
+  }
+
   function renderClient() {
     translateStatic();
     var dm = data.me || {};
-    $("client-title").textContent = t("Hello, ") + (dm.name || me.name || "there");
+    $("client-title").textContent = greeting() + ", " + (firstName(dm.name || me.name) || t("there"));
+    paintAvatar($("client-avatar"), myAvatar || (dm.learning && dm.learning.avatar), dm.name || me.name || me.email);
     $("client-name").textContent = dm.name || me.name || me.email;
     $("client-code").textContent = (dm.client_code ? t("Client ID") + " " + dm.client_code : "");
     var fbBox = $("client-feedback");
@@ -2351,6 +2411,7 @@
   }
   api("me").then(function (d) {
     me = d.user;
+    myAvatar = d.avatar || null;
     csrf = d.csrf;
     googleClientId = d.google_client_id;
     if (d.staging) document.body.insertBefore(h("p", { className: "staging-banner", role: "note" },

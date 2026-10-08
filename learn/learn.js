@@ -365,6 +365,7 @@
     var run = function () {
       runBtn.disabled = true;
       var code = ed.getValue();
+      earn("code", { lesson_id: state.lessonId || undefined }, "code run");
       return runner.run(lang, code).then(function (r) { runBtn.disabled = false; renderHelp(wrap.querySelector(".try-help"), runLang(lang, code), code, r, ed); return r; });
     };
     runBtn.addEventListener("click", run);
@@ -635,7 +636,37 @@
     var link = side.querySelector('[data-lesson="' + id + '"]');
     if (link) link.classList.add("done");
     updateUser();
-    if (state.me) api("progress", { lesson_id: id }).catch(function () {});
+    if (state.me) api("progress", { lesson_id: id }).then(function (r) { gotPoints(r, "lesson completed"); }).catch(function () {});
+  }
+
+  // ---------- points (signed-in learners) ----------
+  var POINT_RULES = [
+    ["fa-user-plus", "Creating your account", 10], ["fa-circle-check", "Each section you mark “I understand”", 1], ["fa-flag-checkered", "Each lesson you complete", 2],
+    ["fa-circle-play", "Watching a video to the end", 5], ["fa-comment", "Each comment or review", 3], ["fa-reply", "Replying to a comment", 2], ["fa-thumbs-up", "Liking a lesson or video", 2],
+    ["fa-code", "Each time you run code", 2], ["fa-file-pdf", "Downloading a notes PDF: 20 (KSh 200 subjects), 10 (KSh 100) or 5 (KSh 50)", "5–20"]
+  ];
+  function firstName(n) { return String(n || "").trim().split(/\s+/)[0] || ""; }
+  function avatarHtml(url, name, cls) {
+    return '<span class="avatar' + (cls ? " " + cls : "") + '" aria-hidden="true">' + (url ? '<img src="' + esc(url) + '" alt="" loading="lazy" />' : esc(String(name || "?").charAt(0).toUpperCase())) + "</span>";
+  }
+  var pointsTimer = null;
+  /** Shows "+2 points" for a moment and keeps the total in the account menu up to date. */
+  function gotPoints(r, what) {
+    if (!r || !state.me) return;
+    if (typeof r.total === "number") state.me.points = r.total;
+    else if (r.points) state.me.points = (state.me.points || 0) + r.points;
+    updateUser();
+    if (!r.points) return;
+    var t = $("#points-toast");
+    if (!t) { t = el('<div class="points-toast" id="points-toast" role="status" aria-live="polite"></div>'); document.body.appendChild(t); }
+    t.innerHTML = '<i class="fa-solid fa-star" aria-hidden="true"></i> <strong>+' + r.points + " point" + (r.points === 1 ? "" : "s") + "</strong>" + (what ? " · " + esc(what) : "") + ' <a href="./?page=me">' + (state.me.points || 0) + " total</a>";
+    t.classList.add("on");
+    clearTimeout(pointsTimer);
+    pointsTimer = setTimeout(function () { t.classList.remove("on"); }, 3200);
+  }
+  function earn(kind, extra, what) {
+    if (!state.me) return;
+    api("points", Object.assign({ kind: kind }, extra || {})).then(function (r) { gotPoints(r, what); }).catch(function () {});
   }
 
   function getCatalog() {
@@ -794,7 +825,9 @@
     setNav("");
     showSide(false);
     setTitle("");
-    main.innerHTML = '<section class="hero-learn"><div><p class="eyebrow">Marzley Tech Learning Hub</p><h1>Learn tech skills free, right in your browser</h1>' +
+    var me = state.me, fn = me ? firstName(me.name) : "";
+    main.innerHTML = '<section class="hero-learn"><div><p class="eyebrow">' + (me ? "Welcome back" + (fn ? ", " + esc(fn) : "") : "Marzley Tech Learning Hub") + "</p><h1>" + (me ? (fn ? esc(fn) + ", keep" : "Keep") + " learning tech skills, one lesson at a time" : "Learn tech skills free, right in your browser") + "</h1>" +
+      (me ? '<div class="me-strip" id="me-strip">' + avatarHtml(me.avatar, me.name, "avatar-lg") + '<div><strong><i class="fa-solid fa-star" aria-hidden="true"></i> ' + (me.points || 0) + " points</strong><span>" + state.progress.length + " lesson" + (state.progress.length === 1 ? "" : "s") + ' completed</span></div><p class="me-actions"><a class="btn btn-solid btn-sm" href="./?page=me" id="me-continue">My dashboard</a></p></div>' : "") +
       '<p class="lead" id="hub-lead">46 subjects and 565+ lessons: coding in 13 languages with a live editor, app development (Flutter, Kotlin, React Native, APIs), web and graphic design, Excel, Word and everyday ICT skills, networking and subnetting, cybersecurity, AI tools and how to make money online. Practise with questions that check themselves. Works on your phone.</p>' +
       '<div id="hub-search"></div><ul class="free-badges"><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Tutorials: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Notes: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Practice: free</li><li><i class="fa-solid fa-user" aria-hidden="true"></i> No account needed</li></ul>' +
       '<p class="hero-ctas"><a class="btn btn-solid" href="./?track=html">Start with HTML</a><a class="btn btn-line" href="./?track=career-roadmaps&amp;lesson=choose-a-tech-career">Find your career path</a></p></div>' +
@@ -806,6 +839,18 @@
       '<section class="home-sec"><div class="sec-head"><h2>Latest videos</h2><a href="./?page=videos">All videos</a></div><div class="video-grid" id="home-videos"></div></section>' +
       '<section class="home-sec"><div class="sec-head"><h2>Free notes &amp; books</h2><a href="./?page=notes">All notes</a></div><div class="note-grid" id="home-notes"></div></section>';
     searchUI($("#hub-search"), { big: true, placeholder: "What do you want to learn? e.g. Flutter, Excel VLOOKUP, subnetting" });
+    if (me) {
+      // The badge row is for visitors; signed-in learners get a "continue" button instead
+      var badges = main.querySelector(".free-badges"); if (badges) badges.remove();
+      api("dashboard").then(function (d) {
+        var last = (d.recent || [])[0], b = $("#me-continue");
+        if (last && b) {
+          b.href = "./?track=" + encodeURIComponent(last.track) + "&lesson=" + encodeURIComponent(last.slug);
+          b.textContent = "Continue: " + last.title;
+          b.insertAdjacentHTML("afterend", '<a class="btn btn-line btn-sm" href="./?page=me">My dashboard</a>');
+        }
+      }).catch(function () {});
+    }
     getCatalog().then(function (tracks) {
       var lessons = tracks.reduce(function (n, t) { return n + t.lessons.length; }, 0);
       if (tracks.length > 5) $("#hub-lead").firstChild.textContent = tracks.length + " subjects and " + lessons + " lessons: coding in 13 languages with a live editor, web and graphic design, Excel, Word and everyday ICT skills, networking and subnetting, cybersecurity, AI tools and how to make money online. Practise with questions that check themselves. Works on your phone.";
@@ -849,11 +894,37 @@
   function ytPlay(fig) {
     var id = fig.getAttribute("data-yt");
     var src = /^PL/.test(id) ? "https://www.youtube-nocookie.com/embed/videoseries?list=" + encodeURIComponent(id) + "&autoplay=1"
-      : "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(id) + "?autoplay=1&rel=0";
+      : "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(id) + "?autoplay=1&rel=0&enablejsapi=1&origin=" + encodeURIComponent(location.origin);
     var frame = el('<iframe title="YouTube video" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>');
     frame.src = src;
     fig.querySelector(".yt-play").replaceWith(frame);
+    // Points for watching to the end: the player reports its state once we say we're listening
+    if (!/^PL/.test(id)) {
+      var title = (fig.querySelector("figcaption") || {}).textContent || "";
+      frame.addEventListener("load", function () {
+        var n = 0, hello = setInterval(function () {
+          if (++n > 10 || !frame.isConnected) return clearInterval(hello);
+          try { frame.contentWindow.postMessage(JSON.stringify({ event: "listening", id: id, channel: "widget" }), "https://www.youtube-nocookie.com"); } catch (e) {}
+        }, 1000);
+      });
+      ytWatch[id] = { frame: frame, title: title.replace(/· Watch on YouTube\s*$/, "").trim(), lesson: state.lessonId, max: 0 };
+    }
   }
+  var ytWatch = {};
+  window.addEventListener("message", function (e) {
+    if (!/^https:\/\/www\.youtube(-nocookie)?\.com$/.test(e.origin)) return;
+    var d; try { d = typeof e.data === "string" ? JSON.parse(e.data) : e.data; } catch (x) { return; }
+    if (!d || !d.info) return;
+    Object.keys(ytWatch).forEach(function (vid) {
+      var w = ytWatch[vid];
+      if (!w.frame.isConnected) { delete ytWatch[vid]; return; }
+      if (w.frame.contentWindow !== e.source) return;
+      if (typeof d.info.currentTime === "number") w.max = Math.max(w.max, d.info.currentTime);
+      if (typeof d.info.duration === "number" && d.info.duration) w.duration = d.info.duration;
+      var ended = d.info.playerState === 0 || (d.event === "onStateChange" && d.info === 0);
+      if (ended && !w.done) { w.done = true; earn("video", { video: "yt-" + vid, title: w.title, lesson_id: w.lesson || undefined }, "video watched"); }
+    });
+  });
   document.addEventListener("click", function (e) {
     var b = e.target.closest && e.target.closest(".yt-play");
     if (b) ytPlay(b.closest(".yt"));
@@ -898,6 +969,7 @@
       renderSide(track, lessonSlug);
       main.innerHTML = '<p class="learn-loading"><span class="spinner" aria-hidden="true"></span> Loading…</p>';
       return api("lesson", undefined, "&track=" + encodeURIComponent(trackSlug) + "&slug=" + encodeURIComponent(lessonSlug)).then(function (j) {
+        state.lessonId = Number(j.lesson.id);
         var l = j.lesson, idx = track.lessons.map(function (x) { return x.slug; }).indexOf(lessonSlug);
         var prev = track.lessons[idx - 1], next = track.lessons[idx + 1];
         setTitle(l.title + " (" + track.title + ")", "Free " + track.title + " lesson: " + l.title + ". Clear notes, examples and practice questions.");
@@ -1003,7 +1075,7 @@
     };
     sections.forEach(function (s) {
       s.btn.addEventListener("click", function () {
-        if (got[s.id]) delete got[s.id]; else got[s.id] = 1;
+        if (got[s.id]) delete got[s.id]; else { got[s.id] = 1; earn("understood", { lesson_id: l.id, section: s.id }, "section understood"); }
         store.set(key, JSON.stringify(got));
         paint();
       });
@@ -1046,7 +1118,7 @@
       if (!isReply && state.me) tools.push('<button type="button" class="linklike" data-reply="' + c.id + '">Reply</button>');
       if (d.editor) tools.push('<button type="button" class="linklike" data-hide="' + c.id + '" data-hidden="' + (c.hidden ? 1 : 0) + '">' + (c.hidden ? "Show" : "Hide") + "</button>");
       if (c.mine || d.editor) tools.push('<button type="button" class="linklike danger" data-del="' + c.id + '">Delete</button>');
-      return '<li class="comment rv' + (c.hidden ? " is-hidden" : "") + (c.staff ? " rv-staff" : "") + '" id="rv-' + c.id + '"><span class="avatar" aria-hidden="true">' + (c.staff ? '<i class="fa-solid fa-graduation-cap"></i>' : esc((c.name || "?").charAt(0).toUpperCase())) + "</span><div class=\"rv-main\">" +
+      return '<li class="comment rv' + (c.hidden ? " is-hidden" : "") + (c.staff ? " rv-staff" : "") + '" id="rv-' + c.id + '">' + (c.staff ? '<span class="avatar" aria-hidden="true"><i class="fa-solid fa-graduation-cap"></i></span>' : avatarHtml(c.avatar, c.name)) + "<div class=\"rv-main\">" +
         '<p class="c-head"><strong>' + esc(c.name) + "</strong>" + (c.staff ? ' <span class="tag tag-staff">Tutor</span>' : "") + (c.rating ? " " + stars(c.rating) : "") + " <span>" + esc(timeAgo(c.created_at)) + "</span>" +
         (c.hidden ? ' <span class="tag">Hidden</span>' : "") + (d.editor && c.email ? ' <span class="muted small">' + esc(c.email) + "</span>" : "") + "</p>" +
         '<p class="c-body">' + esc(c.body).replace(/\n/g, "<br>") + "</p>" + (tools.length ? '<p class="rv-tools">' + tools.join(" · ") + "</p>" : "") +
@@ -1059,7 +1131,7 @@
         '<button type="button" class="pill-btn ls-like" aria-pressed="' + d.liked + '"><i class="fa-' + (d.liked ? "solid" : "regular") + ' fa-thumbs-up" aria-hidden="true"></i> ' + (d.liked ? "Liked" : "Like") + ' <span class="ls-n">' + d.likes + '</span><span class="sr-only"> likes</span></button>' +
         (r.count ? '<span class="ls-rating">' + stars(r.average, "Rated " + r.average + " out of 5") + " <strong>" + r.average + "</strong> <span class=\"muted\">(" + plural(r.count, "rating") + ")</span></span>" : '<span class="ls-rating muted">No ratings yet</span>') + "</div>" +
         '<details class="ls-reviews"' + (keepOpen || openAfter ? " open" : "") + '><summary><span class="ls-sum"><i class="fa-regular fa-comments" aria-hidden="true"></i> Reviews &amp; comments <span class="subj-n">' + n + '</span></span><span class="muted small">Ask a question, share a tip or rate this lesson</span><i class="fa-solid fa-chevron-down subj-caret" aria-hidden="true"></i></summary>' +
-        (state.me ? '<form class="c-form rv-form" novalidate><span class="avatar" aria-hidden="true">' + esc(((state.me.name) || "?").charAt(0).toUpperCase()) + '</span><div class="c-field">' +
+        (state.me ? '<form class="c-form rv-form" novalidate>' + avatarHtml(state.me.avatar, state.me.name) + '<div class="c-field">' +
           '<fieldset class="star-pick"><legend>Your rating (optional)</legend><div class="star-row">' + [5, 4, 3, 2, 1].map(function (v) { return '<input type="radio" name="rv-stars" id="rv-s' + v + '" value="' + v + '"><label for="rv-s' + v + '" title="' + v + ' star' + (v > 1 ? "s" : "") + '"><i class="fa-solid fa-star" aria-hidden="true"></i><span class="sr-only">' + v + " star" + (v > 1 ? "s" : "") + "</span></label>"; }).join("") + "</div></fieldset>" +
           '<label for="rv-text" class="sr-only">Your review or question</label><textarea id="rv-text" rows="3" maxlength="2000" placeholder="What did you think? Ask a question or share a tip…"></textarea>' +
           '<div class="c-actions"><p class="u-msg" role="status" aria-live="polite"></p><button type="submit" class="btn btn-solid btn-sm">Post</button></div></div></form>'
@@ -1075,6 +1147,7 @@
         t.disabled = true;
         return api("lesson_like", { lesson_id: l.id }).then(function (j) {
           t.disabled = false;
+          gotPoints(j, "lesson liked");
           t.setAttribute("aria-pressed", j.liked);
           t.innerHTML = '<i class="fa-' + (j.liked ? "solid" : "regular") + ' fa-thumbs-up" aria-hidden="true"></i> ' + (j.liked ? "Liked" : "Like") + ' <span class="ls-n">' + j.likes + '</span><span class="sr-only"> likes</span>';
         }).catch(function (err) { t.disabled = false; alert(err.message); });
@@ -1101,7 +1174,7 @@
       if (f.classList.contains("rv-reply")) body.parent_id = Number(f.parentNode.getAttribute("data-for"));
       else { var st = f.querySelector("input[name=rv-stars]:checked"); if (st) body.rating = Number(st.value); }
       btn.disabled = true;
-      api("review", body).then(function () { load(true); }).catch(function (err) { btn.disabled = false; msg.textContent = err.message; });
+      api("review", body).then(function (r) { gotPoints(r, body.parent_id ? "reply posted" : "comment posted"); load(true); }).catch(function (err) { btn.disabled = false; msg.textContent = err.message; });
     });
     load(false);
   }
@@ -1274,6 +1347,7 @@
     var run = function () {
       var code = ed.getValue();
       store.set("code:" + lang, code); $("#p-run").disabled = true;
+      earn("code", {}, "code run");
       runner.run(lang, code).then(function (r) { $("#p-run").disabled = false; renderHelp($("#p-help"), runLang(lang, code), code, r, ed); });
     };
     $("#p-run").addEventListener("click", run);
@@ -1371,6 +1445,7 @@
         b.disabled = true;
         api("like", { id: v.id }).then(function (r) {
           b.disabled = false;
+          gotPoints(r, "video liked");
           b.setAttribute("aria-pressed", String(r.liked));
           b.querySelector("i").className = "fa-" + (r.liked ? "solid" : "regular") + " fa-thumbs-up";
           $("#like-n").textContent = r.likes;
@@ -1386,6 +1461,7 @@
         ' src="../portal/learn.php?action=stream&amp;id=' + v.id + '"></video>';
       var video = p.querySelector("video");
       video.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+      video.addEventListener("ended", function () { earn("video", { video: "v-" + v.id }, "video watched"); });
       watermark(p, video, "Marzley Tech Solutions");
       return;
     }
@@ -1511,14 +1587,14 @@
       return '<li class="comment' + (c.hidden ? " is-hidden" : "") + '"><span class="avatar" aria-hidden="true">' + esc((c.name || "?").charAt(0).toUpperCase()) + '</span><div><p class="c-head"><strong>' + esc(c.name) + "</strong> <span>" + esc(timeAgo(c.created_at)) + "</span>" + (c.hidden ? ' <span class="tag">Hidden</span>' : "") + "</p>" +
         '<p class="c-text">' + esc(c.body).replace(/\n/g, "<br>") + "</p>" + (c.mine || state.editor ? '<button type="button" class="linklike c-del" data-id="' + c.id + '">Delete</button>' : "") + "</div></li>";
     }).join("");
-    box.innerHTML = '<form class="c-form" id="c-form" novalidate><span class="avatar" aria-hidden="true">' + esc(((state.me && state.me.name) || "?").charAt(0).toUpperCase()) + '</span><div class="c-field"><label for="c-text" class="sr-only">Add a comment</label>' +
+    box.innerHTML = '<form class="c-form" id="c-form" novalidate>' + avatarHtml(state.me && state.me.avatar, state.me && state.me.name) + '<div class="c-field"><label for="c-text" class="sr-only">Add a comment</label>' +
       '<textarea id="c-text" rows="2" maxlength="2000" placeholder="Add a comment or ask a question…"></textarea><div class="c-actions"><p class="u-msg" id="c-msg" role="status" aria-live="polite"></p><button type="submit" class="btn btn-solid btn-sm">Comment</button></div></div></form>' +
       '<ul class="comment-list">' + (list || '<li class="muted">No comments yet. Be the first.</li>') + "</ul>";
     $("#c-form").addEventListener("submit", function (e) {
       e.preventDefault();
       var t = $("#c-text").value.trim();
       if (!t) { $("#c-text").focus(); return; }
-      api("comment", { id: v.id, body: t }).then(function () { pageVideo(v.id); }).catch(function (err) { $("#c-msg").textContent = err.message; });
+      api("comment", { id: v.id, body: t }).then(function (r) { gotPoints(r, "comment posted"); pageVideo(v.id); }).catch(function (err) { $("#c-msg").textContent = err.message; });
     });
     box.querySelectorAll(".c-del").forEach(function (b) {
       b.addEventListener("click", function () {
@@ -1534,6 +1610,143 @@
     return '<a class="note-card" href="./?note=' + n.id + '"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i><div><' + hx + ">" + esc(n.title) + (Number(n.published) ? "" : ' <span class="tag">Draft</span>') + "</" + hx + ">" +
       (n.summary ? "<p>" + esc(n.summary) + "</p>" : "") + '<p class="meta">PDF · ' + fmtSize(n.size) + " · Free</p></div></a>";
   }
+  // ---------- my dashboard: points, continue learning, progress, activity and profile ----------
+  var KIND_ICONS = { signup: "fa-user-plus", understood: "fa-circle-check", complete: "fa-flag-checkered", video: "fa-circle-play", comment: "fa-comment", reply: "fa-reply", like: "fa-thumbs-up", code: "fa-code", notes: "fa-file-pdf", replied: "fa-comments" };
+  var KIND_NAMES = { signup: "Account", understood: "Sections understood", complete: "Lessons completed", video: "Videos watched", comment: "Comments", reply: "Replies", like: "Likes", code: "Code runs", notes: "Notes PDFs" };
+  function pageMe() {
+    setNav("");
+    showSide(false);
+    setTitle("My dashboard", "Your points, progress and recent lessons in the Marzley Tech learning hub.");
+    var me = state.me;
+    if (!me) {
+      main.innerHTML = '<section class="list-page me-page"><h1>My dashboard</h1><div class="empty"><i class="fa-solid fa-star" aria-hidden="true"></i><p>Sign in to see your points, progress and the lessons you were on. It’s free, and you get 10 points for creating your account.</p><p><button type="button" class="btn btn-solid" id="me-signin">Sign in or create an account</button></p></div>' + rulesHtml() + "</section>";
+      $("#me-signin").addEventListener("click", function () { openSignin(); });
+      return;
+    }
+    main.innerHTML = '<p class="learn-loading"><span class="spinner" aria-hidden="true"></span> Loading your dashboard…</p>';
+    Promise.all([api("dashboard"), getCatalog()]).then(function (r) {
+      var d = r[0], tracks = r[1], fn = firstName(me.name);
+      var byId = {}, trackOf = {};
+      tracks.forEach(function (t) { t.lessons.forEach(function (l) { byId[l.id] = l; trackOf[l.id] = t; }); });
+      var lessonUrl = function (t, l) { return "./?track=" + encodeURIComponent(t.slug) + "&lesson=" + encodeURIComponent(l.slug); };
+      // Subjects started: progress and the next lesson to do
+      var started = tracks.map(function (t) {
+        var done = t.lessons.filter(function (l) { return isDone(l.id); }).length;
+        var visited = (d.recent || []).some(function (v) { return v.track === t.slug; });
+        return { t: t, done: done, visited: visited, next: t.lessons.filter(function (l) { return !isDone(l.id); })[0] };
+      }).filter(function (x) { return x.done || x.visited; });
+      var last = (d.recent || [])[0];
+      var lastLesson = last && byId[last.lesson_id];
+      var hello = (function () { var h = new Date().getHours(); return h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening"; })();
+
+      var html = '<section class="me-page">' +
+        '<header class="me-head">' + avatarHtml(me.avatar, me.name, "avatar-xl") + '<div><p class="eyebrow">My dashboard</p><h1>' + hello + (fn ? ", " + esc(fn) : "") + '</h1><p class="muted">' +
+        (last ? "Last time you were on “" + esc(last.title) + "” in " + esc(last.track_title) + "." : "Pick a subject below and your progress will show here.") + "</p></div>" +
+        '<div class="me-total"><strong id="me-points">' + d.points + '</strong><span>points</span></div></header>' +
+        // Continue learning
+        (lastLesson ? '<section class="me-card me-continue"><div><p class="eyebrow">Continue learning</p><h2>' + esc(last.title) + '</h2><p class="muted">' + esc(last.track_title) + " · " + (isDone(last.lesson_id) ? "completed" : "in progress") + " · opened " + esc(timeAgo(last.visited_at)) + '</p></div><a class="btn btn-solid" href="' + lessonUrl(trackOf[last.lesson_id], lastLesson) + '"><i class="fa-solid fa-play" aria-hidden="true"></i> Continue</a></section>' : "") +
+        // Points breakdown
+        '<section class="me-card"><div class="sec-head"><h2>Your points</h2><a href="#me-rules">How to earn points</a></div><div class="me-kinds">' +
+        Object.keys(KIND_NAMES).map(function (k) {
+          var x = d.by_kind[k] || { count: 0, points: 0 };
+          return '<div class="me-kind' + (x.points ? "" : " is-zero") + '"><i class="fa-solid ' + KIND_ICONS[k] + '" aria-hidden="true"></i><strong>' + x.points + '</strong><span>' + KIND_NAMES[k] + (x.count ? " · " + x.count : "") + "</span></div>";
+        }).join("") + "</div></section>" +
+        // Recently opened
+        '<section class="me-card"><h2>Recently opened topics</h2>' + ((d.recent || []).length ? '<ul class="me-list">' + d.recent.map(function (v) {
+          var l = byId[v.lesson_id], t = trackOf[v.lesson_id];
+          if (!l) return "";
+          var done = isDone(v.lesson_id);
+          return '<li><span class="me-ico' + (done ? " is-done" : "") + '"><i class="fa-solid ' + (done ? "fa-circle-check" : "fa-book-open") + '" aria-hidden="true"></i></span><div><strong>' + esc(v.title) + '</strong><span class="muted">' + esc(v.track_title) + " · " + esc(timeAgo(v.visited_at)) + "</span></div>" +
+            '<a class="btn btn-sm ' + (done ? "btn-line" : "btn-solid") + '" href="' + lessonUrl(t, l) + '">' + (done ? "Review" : "Continue") + "</a></li>";
+        }).join("") + "</ul>" : '<p class="muted">Lessons you open will appear here.</p>') + "</section>" +
+        // Progress per subject
+        '<section class="me-card"><h2>Your progress</h2>' + (started.length ? '<ul class="me-progress">' + started.map(function (x) {
+          var pct = x.t.lessons.length ? Math.round(100 * x.done / x.t.lessons.length) : 0;
+          return '<li><div class="mp-row"><strong><i class="' + (TRACK_ICONS[x.t.slug] || TRACK_ICONS[x.t.lang] || "fa-solid fa-book") + '" aria-hidden="true"></i> ' + esc(x.t.title) + '</strong><span class="muted">' + x.done + " of " + x.t.lessons.length + " lessons · " + pct + "%</span></div>" +
+            '<span class="bar" role="progressbar" aria-label="' + esc(x.t.title) + '" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><span style="width:' + pct + '%"></span></span>' +
+            (x.next ? '<p class="mp-next">Next: <a href="' + lessonUrl(x.t, x.next) + '">' + esc(x.next.title) + "</a></p>" : '<p class="mp-next is-done"><i class="fa-solid fa-trophy" aria-hidden="true"></i> Subject complete</p>') + "</li>";
+        }).join("") + "</ul>" : '<p class="muted">You haven’t started a subject yet.</p>') + "</section>" +
+        // Suggestions
+        '<section class="me-card"><h2>Suggested for you</h2><div class="me-suggest" id="me-suggest"></div></section>' +
+        // Activity
+        '<section class="me-card"><h2>Your activity</h2>' + ((d.activity || []).length ? '<ul class="me-feed">' + d.activity.map(function (a) {
+          var txt = esc(a.text);
+          return '<li class="k-' + esc(a.kind) + '"><i class="fa-solid ' + (KIND_ICONS[a.kind] || "fa-star") + '" aria-hidden="true"></i><div>' + (a.link ? '<a href="./' + esc(a.link) + '">' + txt + "</a>" : txt) +
+            '<span class="muted">' + esc(timeAgo(a.at)) + "</span></div>" + (a.points ? '<span class="me-pts">+' + a.points + "</span>" : "") + "</li>";
+        }).join("") + "</ul>" : '<p class="muted">Nothing yet. Complete a lesson, run some code or leave a comment.</p>') + "</section>" +
+        // Profile
+        '<section class="me-card" id="me-profile"><h2>Your profile</h2><div class="me-prof">' +
+        '<div class="me-photo">' + avatarHtml(me.avatar, me.name, "avatar-xl") + '<label class="btn btn-line btn-sm" for="me-photo-in"><i class="fa-solid fa-camera" aria-hidden="true"></i> ' + (me.avatar ? "Change photo" : "Add a photo") + '</label><input type="file" id="me-photo-in" class="sr-only" accept="image/jpeg,image/png,image/webp" />' +
+        (me.avatar ? '<button type="button" class="linklike" id="me-photo-rm">Remove photo</button>' : "") + '</div>' +
+        '<form class="me-form" id="me-form" novalidate><label for="me-name">Your name</label><input id="me-name" maxlength="120" autocomplete="name" required value="' + esc(me.name || "") + '" />' +
+        '<label for="me-phone">Phone number</label><input id="me-phone" type="tel" maxlength="30" autocomplete="tel" placeholder="0712 345 678" value="' + esc(me.phone || "") + '" />' +
+        '<label>Email (you sign in with it, so it can’t be changed)</label><input value="' + esc(me.email) + '" disabled />' +
+        '<label>Learner ID (can’t be changed)</label><input value="' + esc(me.learner_code || "") + '" disabled />' +
+        '<p class="u-msg" id="me-msg" role="status" aria-live="polite"></p><button type="submit" class="btn btn-solid">Save changes</button></form></div>' +
+        '<p class="muted small">Your photo shows in your account menu, next to your comments, and in the client portal if you use the same email there.</p></section>' +
+        rulesHtml() + "</section>";
+      main.innerHTML = html;
+
+      // Suggestions: the next lesson in subjects you've started, then good first lessons in new subjects
+      var picks = [];
+      started.forEach(function (x) { if (x.next && picks.length < 4) picks.push([x.t, x.next, "Next in " + x.t.title]); });
+      var seen = {}; started.forEach(function (x) { seen[x.t.slug] = 1; });
+      ["career-roadmaps", "html", "python", "ai-tools", "freelancing", "excel", "make-money-online", "cybersecurity", "networking", "javascript"].forEach(function (slug) {
+        if (picks.length >= 8 || seen[slug]) return;
+        var t = tracks.filter(function (x) { return x.slug === slug; })[0];
+        if (t && t.lessons[0]) picks.push([t, t.lessons[0], "Start " + t.title]);
+      });
+      $("#me-suggest").innerHTML = picks.map(function (p) {
+        return '<a class="me-sug" href="' + lessonUrl(p[0], p[1]) + '"><i class="' + (TRACK_ICONS[p[0].slug] || TRACK_ICONS[p[0].lang] || "fa-solid fa-book") + '" aria-hidden="true"></i><span><small>' + esc(p[2]) + "</small><strong>" + esc(p[1].title) + '</strong></span><span class="btn btn-solid btn-sm">Start</span></a>';
+      }).join("") || '<p class="muted">You’ve started everything we’d suggest. Browse all subjects on the home page.</p>';
+
+      // Profile: name and phone; photo
+      $("#me-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        var msg = $("#me-msg"), name = $("#me-name").value.trim();
+        if (!name) { msg.textContent = "Please enter your name."; return; }
+        api("profile", { name: name, phone: $("#me-phone").value.trim() }).then(function (r) {
+          me.name = name; me.phone = r.phone || ""; $("#me-phone").value = me.phone;
+          msg.textContent = "Saved."; updateUser();
+        }).catch(function (err) { msg.textContent = err.message; });
+      });
+      $("#me-photo-in").addEventListener("change", function () {
+        var f = this.files[0], msg = $("#me-msg");
+        if (!f) return;
+        msg.textContent = "Uploading your photo…";
+        photoData(f).then(function (img) { return api("avatar_save", { image: img }); }).then(function (r) {
+          me.avatar = r.avatar; updateUser(); pageMe();
+        }).catch(function (err) { msg.textContent = err.message; });
+      });
+      var rm = $("#me-photo-rm");
+      if (rm) rm.addEventListener("click", function () {
+        if (!confirm("Remove your photo?")) return;
+        api("avatar_remove", {}).then(function () { me.avatar = null; updateUser(); pageMe(); }).catch(function (err) { $("#me-msg").textContent = err.message; });
+      });
+    }).catch(function (e) { errorBox(e.message); });
+  }
+  function rulesHtml() {
+    return '<section class="me-card" id="me-rules"><h2>How to earn points</h2><p class="muted">Points add up as you learn. Each action counts once (each section, lesson, video, like or download). Code runs count up to 25 a day, and comments and replies up to 10 a day.</p><ul class="me-rules">' +
+      POINT_RULES.map(function (r) { return '<li><i class="fa-solid ' + r[0] + '" aria-hidden="true"></i><span>' + esc(r[1]) + "</span><strong>" + r[2] + "</strong></li>"; }).join("") + "</ul></section>";
+  }
+  /** Shrinks a chosen photo in the browser (max 640 px) so uploads stay small on slow data. */
+  function photoData(file) {
+    return new Promise(function (res, rej) {
+      if (!file || !/^image\/(jpeg|png|webp)$/.test(file.type)) return rej(new Error("Choose a JPG, PNG or WebP photo."));
+      if (file.size > 15 * 1024 * 1024) return rej(new Error("That photo is too big. Choose one under 15 MB."));
+      var url = URL.createObjectURL(file), img = new Image();
+      img.onload = function () {
+        var k = Math.min(1, 640 / Math.max(img.naturalWidth, img.naturalHeight)), c = document.createElement("canvas");
+        c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        res(c.toDataURL("image/jpeg", 0.88));
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); rej(new Error("That file isn’t a photo we can use.")); };
+      img.src = url;
+    });
+  }
+
   function pageNotes() {
     setNav("notes");
     showSide(false);
@@ -2230,7 +2443,9 @@
     $("#manage-link").hidden = !state.editor;
     if (!me) return;
     var name = me.name || me.email;
-    $("#user-avatar").textContent = name.charAt(0).toUpperCase();
+    var av = $("#user-avatar");
+    av.innerHTML = me.avatar ? '<img src="' + esc(me.avatar) + '" alt="" />' : esc(name.charAt(0).toUpperCase());
+    $("#user-points").innerHTML = '<i class="fa-solid fa-star" aria-hidden="true"></i> ' + (me.points || 0) + " points";
     $("#user-label").textContent = "Account: " + name;
     $("#user-name").textContent = me.name || "Learner";
     $("#user-email").textContent = me.email;
@@ -2243,6 +2458,7 @@
     $("#user-btn").setAttribute("aria-expanded", String(open));
   });
   document.addEventListener("click", function (e) { if (!e.target.closest("#user-menu")) { $("#user-pop").hidden = true; $("#user-btn").setAttribute("aria-expanded", "false"); } });
+  $("#dash-link").addEventListener("click", function () { $("#user-pop").hidden = true; $("#user-btn").setAttribute("aria-expanded", "false"); });
   $("#signout-btn").addEventListener("click", function () {
     api("logout", {}).then(function () { state.me = null; state.progress = loadLocalProgress(); updateUser(); $("#user-pop").hidden = true; route(); });
   });
@@ -2266,6 +2482,7 @@
   }
   function route() {
     while (cleanup.length) { try { cleanup.pop()(); } catch (e) {} }
+    state.lessonId = null;
     setCanonical();
     var p = new URLSearchParams(location.search);
     if (p.get("track")) return pageLesson(p.get("track"), p.get("lesson"));
@@ -2278,6 +2495,7 @@
     if (page === "videos") return pageVideos();
     if (page === "notes") return pageNotes();
     if (page === "search") return pageSearch(p.get("q") || "");
+    if (page === "me") return pageMe();
     pageHome();
   }
   document.addEventListener("click", function (e) {

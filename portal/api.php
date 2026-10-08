@@ -30,7 +30,8 @@ switch ($action) {
 
     case 'me':
         $u = current_user();
-        out(['user' => $u, 'csrf' => $u ? csrf_token() : null, 'google_client_id' => config()['google_client_id'],
+        $av = $u ? q('SELECT id, avatar FROM learners WHERE email = ?', [strtolower($u['email'])])->fetch() : null;
+        out(['user' => $u, 'avatar' => $av ? avatar_url($av) : null, 'csrf' => $u ? csrf_token() : null, 'google_client_id' => config()['google_client_id'],
             'staging' => is_staging(), 'expired' => $u ? null : expired_message()]);
 
     case 'login':
@@ -113,7 +114,7 @@ switch ($action) {
                        q("SELECT * FROM quotes WHERE (client_id = ? OR client_email = ?) AND status <> 'draft' ORDER BY id DESC", [$cid, $row['email'] ?? ''])->fetchAll()),
                    'referral_link' => $code ? rtrim(config()['site_url'] ?? 'https://marzleytechsolutions.co.ke', '/') . '/?ref=' . $code : null,
                    'feedback' => $fb ? ['link' => portal_url() . 'feedback.php?t=' . $fb['token'], 'title' => $fb['title']] : null,
-                   'card' => (bool)paystack()];
+                   'card' => (bool)paystack(), 'learning' => learning_summary((string)($row['email'] ?? ''))];
         }
         // Monthly uptime for each monitored site (care reports)
         $dids = array_map(fn($d) => (int)$d['id'], $domains) ?: [0];
@@ -864,6 +865,15 @@ switch ($action) {
         q('UPDATE clients SET name = ?, phone = ? WHERE id = ?', [$name, $phone, $u['client_id']]);
         $_SESSION['user']['name'] = $name;
         out(['ok' => true]);
+
+    case 'profile_photo':
+        // The same photo shows in the portal and the learning hub (it belongs to the email address)
+        $u = require_user();
+        if (!rate_ok('avatar_portal:' . $u['email'], 10, 3600)) fail(429, 'Too many photo changes. Please wait a little.');
+        $l = learner_for($u['email'], $u['name'] ?? '');
+        $d = body();
+        if (!empty($d['remove'])) remove_avatar($l['id']); else save_avatar($l['id'], (string)($d['image'] ?? ''));
+        out(['ok' => true, 'avatar' => avatar_url(q('SELECT id, avatar FROM learners WHERE id = ?', [$l['id']])->fetch())]);
 
     case 'feedback_publish':
         require_perm('leads');

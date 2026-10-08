@@ -10,7 +10,7 @@ install_error_alerts('learning hub');
 start_session();
 $action = $_GET['action'] ?? '';
 $method = $_SERVER['REQUEST_METHOD'];
-const LEARN_GET = ['me', 'catalog', 'lesson', 'lesson_social', 'videos', 'video', 'notes', 'note', 'poster', 'stream', 'unlock_status', 'notes_pay_status', 'notes_access', 'admin'];
+const LEARN_GET = ['me', 'dashboard', 'avatar', 'catalog', 'lesson', 'lesson_social', 'videos', 'video', 'notes', 'note', 'poster', 'stream', 'unlock_status', 'notes_pay_status', 'notes_access', 'admin'];
 const VIDEO_TYPES = ['mp4' => 'video/mp4', 'm4v' => 'video/mp4', 'webm' => 'video/webm'];
 const VIDEO_MAX = 2048 * 1024 * 1024;   // 2 GB
 const NOTE_MAX = 100 * 1024 * 1024;     // 100 MB
@@ -119,6 +119,12 @@ switch ($action) {
 
     case 'me':
         $progress = $me ? array_map('intval', array_column(q('SELECT lesson_id FROM learn_progress WHERE learner_id = ?', [$me['id']])->fetchAll(), 'lesson_id')) : [];
+        if ($me) {
+            award_points((int)$me['id'], 'signup', 'signup', 'Created your account');   // accounts made before points existed
+            $row = q('SELECT id, name, phone, avatar, created_at FROM learners WHERE id = ?', [$me['id']])->fetch();
+            $me += ['phone' => $row['phone'] ?? '', 'avatar' => $row ? avatar_url($row) : null, 'since' => $row['created_at'] ?? '',
+                    'learner_code' => 'L-' . str_pad((string)$me['id'], 5, '0', STR_PAD_LEFT), 'points' => learner_points((int)$me['id'])];
+        }
         out(['learner' => $me, 'csrf' => csrf_token(), 'editor' => $editor, 'progress' => $progress,
              'google_client_id' => config()['google_client_id'], 'mpesa' => (bool)mpesa_config(), 'notes_prices' => notes_pdf_prices()]);
 
@@ -172,11 +178,93 @@ switch ($action) {
         out(['ok' => true]);
 
     case 'profile':
+        // Name and phone can change; the email (used to sign in) and learner ID can't
         $l = need_learner();
-        $name = str_in(body(), 'name', 120);
-        q('UPDATE learners SET name = ? WHERE id = ?', [$name, $l['id']]);
+        $d = body();
+        $name = str_in($d, 'name', 120);
+        if (trim($name) === '') fail(400, 'Please enter your name.');
+        $set = ['name' => $name];
+        if (array_key_exists('phone', $d)) {
+            $phone = trim((string)$d['phone']);
+            if ($phone !== '' && !normalise_phone($phone)) fail(400, 'Enter a Kenyan phone number, for example 0712 345 678.');
+            $set['phone'] = $phone !== '' ? '0' . substr((string)normalise_phone($phone), 3) : '';
+            q('UPDATE learners SET name = ?, phone = ? WHERE id = ?', [$name, $set['phone'], $l['id']]);
+        } else q('UPDATE learners SET name = ? WHERE id = ?', [$name, $l['id']]);
         $_SESSION['learner']['name'] = $name;
+        out(['ok' => true] + $set);
+
+    case 'avatar_save':
+        $l = need_learner();
+        if (!rate_ok('avatar:' . $l['id'], 10, 3600)) fail(429, 'Too many photo changes. Please wait a little.');
+        save_avatar((int)$l['id'], (string)(body()['image'] ?? ''));
+        out(['ok' => true, 'avatar' => avatar_url(q('SELECT id, avatar FROM learners WHERE id = ?', [$l['id']])->fetch())]);
+
+    case 'avatar_remove':
+        $l = need_learner();
+        remove_avatar((int)$l['id']);
         out(['ok' => true]);
+
+    case 'avatar':
+        $a = (string)q('SELECT avatar FROM learners WHERE id = ?', [(int)($_GET['id'] ?? 0)])->fetchColumn();
+        if ($a === '' || !preg_match('/^[a-f0-9]{24}\.jpg$/', $a)) fail(404, 'No photo.');
+        header_remove('X-Robots-Tag');
+        send_file(learn_dir('avatars') . '/' . $a, 'image/jpeg', 'photo.jpg', false);
+
+    // ---------- points and the learner's dashboard ----------
+
+    case 'points':
+        // Things only the browser sees: understanding a section, watching a video to the end, running code
+        $l = need_learner();
+        $d = body();
+        $kind = (string)($d['kind'] ?? '');
+        if (!in_array($kind, ['understood', 'video', 'code'], true)) fail(400, 'Unknown action.');
+        if (!rate_ok('points:' . $l['id'], 120, 3600)) out(['points' => 0, 'total' => learner_points((int)$l['id'])]);
+        $lesson = null;
+        if (!empty($d['lesson_id'])) {
+            $lesson = q('SELECT ls.id, ls.title, ls.slug, t.slug AS track FROM learn_lessons ls JOIN learn_tracks t ON t.id = ls.track_id WHERE ls.id = ? AND ls.published = 1', [(int)$d['lesson_id']])->fetch();
+            if (!$lesson) fail(404, 'Lesson not found.');
+        }
+        $link = $lesson ? "?track={$lesson['track']}&lesson={$lesson['slug']}" : '';
+        if ($kind === 'understood') {
+            $sec = preg_replace('/[^a-z0-9-]/', '', strtolower((string)($d['section'] ?? '')));
+            if (!$lesson || $sec === '') fail(400, 'Which section?');
+            $got = award_points((int)$l['id'], 'understood', $lesson['id'] . ':' . substr($sec, 0, 60), 'Understood a section of “' . $lesson['title'] . '”', $link);
+        } elseif ($kind === 'video') {
+            $vid = preg_replace('/[^A-Za-z0-9_-]/', '', (string)($d['video'] ?? ''));
+            if ($vid === '') fail(400, 'Which video?');
+            $title = mb_substr(trim((string)($d['title'] ?? '')), 0, 120);
+            if (str_starts_with($vid, 'v-')) {
+                // a paid video: only counts once it's unlocked
+                $v = q('SELECT id, title FROM learn_videos WHERE id = ?', [(int)substr($vid, 2)])->fetch();
+                if (!$v || !learn_unlocked((int)$v['id'], $l)) fail(403, 'Unlock this video first.');
+                $title = $v['title'];
+                $link = '?video=' . (int)$v['id'];
+            }
+            $got = award_points((int)$l['id'], 'video', $vid, 'Watched a full video' . ($title !== '' ? ': ' . $title : ($lesson ? ' in “' . $lesson['title'] . '”' : '')), $link);
+        } else {
+            $got = award_points((int)$l['id'], 'code', date('YmdHis') . bin2hex(random_bytes(3)), 'Ran code' . ($lesson ? ' in “' . $lesson['title'] . '”' : ' in the practice editor'), $link);
+        }
+        out(['points' => $got, 'total' => learner_points((int)$l['id'])]);
+
+    case 'dashboard':
+        $l = need_learner();
+        $id = (int)$l['id'];
+        $by = [];
+        foreach (q('SELECT kind, COUNT(*) AS n, SUM(points) AS p FROM learn_points WHERE learner_id = ? GROUP BY kind', [$id])->fetchAll() as $r) $by[$r['kind']] = ['count' => (int)$r['n'], 'points' => (int)$r['p']];
+        $activity = array_map(fn($r) => ['kind' => $r['kind'], 'points' => (int)$r['points'], 'text' => $r['detail'], 'link' => $r['link'], 'at' => $r['created_at']],
+            q('SELECT kind, points, detail, link, created_at FROM learn_points WHERE learner_id = ? ORDER BY id DESC LIMIT 60', [$id])->fetchAll());
+        // Replies other people (or Marzley Tech) wrote under this learner's comments
+        foreach (q('SELECT r.body, r.is_staff, r.created_at, w.name, w.email, ls.title, ls.slug, t.slug AS track FROM learn_reviews r JOIN learn_reviews p ON p.id = r.parent_id
+                    JOIN learners w ON w.id = r.learner_id JOIN learn_lessons ls ON ls.id = r.lesson_id JOIN learn_tracks t ON t.id = ls.track_id
+                    WHERE p.learner_id = ? AND r.learner_id <> ? AND r.hidden = 0 ORDER BY r.id DESC LIMIT 20', [$id, $id])->fetchAll() as $r) {
+            $activity[] = ['kind' => 'replied', 'points' => 0, 'text' => ($r['is_staff'] ? 'Marzley Tech' : public_name($r['name'], $r['email'])) . ' replied to your comment on “' . $r['title'] . '”: ' . mb_substr($r['body'], 0, 140),
+                           'link' => "?track={$r['track']}&lesson={$r['slug']}#reviews", 'at' => $r['created_at']];
+        }
+        usort($activity, fn($a, $b) => strcmp($b['at'], $a['at']));
+        $recent = q('SELECT v.lesson_id, v.visited_at, ls.title, ls.slug, t.slug AS track, t.title AS track_title FROM learn_visits v JOIN learn_lessons ls ON ls.id = v.lesson_id JOIN learn_tracks t ON t.id = ls.track_id
+                     WHERE v.learner_id = ? AND ls.published = 1 ORDER BY v.visited_at DESC LIMIT 8', [$id])->fetchAll();
+        out(['points' => learner_points($id), 'by_kind' => $by, 'activity' => array_slice($activity, 0, 60), 'recent' => $recent,
+             'rules' => LEARN_POINTS, 'daily' => LEARN_POINTS_DAILY]);
 
     // ---------- tutorials (free) ----------
 
@@ -192,16 +280,21 @@ switch ($action) {
         $t = q("SELECT id, slug, title, lang FROM learn_tracks WHERE slug = ? AND $pub", [(string)($_GET['track'] ?? '')])->fetch();
         $l = $t ? q("SELECT * FROM learn_lessons WHERE track_id = ? AND slug = ? AND $pub", [$t['id'], (string)($_GET['slug'] ?? '')])->fetch() : null;
         if (!$l) fail(404, 'Lesson not found.');
+        if ($me && !q('UPDATE learn_visits SET visited_at = ? WHERE learner_id = ? AND lesson_id = ?', [now(), $me['id'], $l['id']])->rowCount()) {
+            try { q('INSERT INTO learn_visits (learner_id, lesson_id, visited_at) VALUES (?, ?, ?)', [$me['id'], $l['id'], now()]); } catch (PDOException $e) { /* opened twice at once */ }
+        }
         out(['track' => $t, 'lesson' => $l]);
 
     case 'progress':
         $l = need_learner();
         $id = (int)(body()['lesson_id'] ?? 0);
-        if (!q('SELECT id FROM learn_lessons WHERE id = ?', [$id])->fetch()) fail(404, 'Lesson not found.');
+        $ls = q('SELECT ls.id, ls.title, ls.slug, t.slug AS track FROM learn_lessons ls JOIN learn_tracks t ON t.id = ls.track_id WHERE ls.id = ?', [$id])->fetch();
+        if (!$ls) fail(404, 'Lesson not found.');
         if (!q('SELECT id FROM learn_progress WHERE learner_id = ? AND lesson_id = ?', [$l['id'], $id])->fetch()) {
             q('INSERT INTO learn_progress (learner_id, lesson_id, created_at) VALUES (?, ?, ?)', [$l['id'], $id, now()]);
         }
-        out(['ok' => true]);
+        $got = award_points((int)$l['id'], 'complete', (string)$id, 'Completed “' . $ls['title'] . '”', "?track={$ls['track']}&lesson={$ls['slug']}");
+        out(['ok' => true, 'points' => $got]);
 
     // ---------- notes and books (free) ----------
 
@@ -256,7 +349,13 @@ switch ($action) {
         $token = (string)($_GET['token'] ?? '');
         $np = preg_match('/^[a-f0-9]{48}$/', $token) ? q("SELECT p.*, t.slug FROM learn_note_payments p JOIN learn_tracks t ON t.id = p.track_id WHERE p.token = ? AND p.status = 'paid'", [$token])->fetch() : null;
         if (!$np || $np['slug'] !== (string)($_GET['track'] ?? '')) fail(403, 'This download is not unlocked yet.');
-        if (!empty($_GET['dl'])) q('UPDATE learn_note_payments SET downloads = downloads + 1 WHERE id = ?', [$np['id']]);
+        if (!empty($_GET['dl'])) {
+            q('UPDATE learn_note_payments SET downloads = downloads + 1 WHERE id = ?', [$np['id']]);
+            if ($me) {
+                $nt = q('SELECT title, (SELECT COUNT(*) FROM learn_lessons WHERE track_id = t.id AND published = 1) AS n FROM learn_tracks t WHERE id = ?', [$np['track_id']])->fetch();
+                award_points((int)$me['id'], 'notes', (string)$np['id'], 'Downloaded the ' . $nt['title'] . ' notes PDF', '?book=' . $np['slug'], notes_pdf_points((int)$nt['n']));
+            }
+        }
         out(['ok' => true, 'receipt' => $np['receipt'], 'phone' => substr($np['phone'], 0, 6) . '***' . substr($np['phone'], -3), 'paid_at' => $np['paid_at']]);
 
     case 'notes_recover':
@@ -349,14 +448,16 @@ switch ($action) {
         $l = need_learner();
         $v = video_row((int)(body()['id'] ?? 0), $editor);
         if (!learn_unlocked((int)$v['id'], $l)) fail(403, 'Unlock this video to like it.');
+        $got = 0;
         if (q('SELECT id FROM learn_likes WHERE video_id = ? AND learner_id = ?', [$v['id'], $l['id']])->fetch()) {
             q('DELETE FROM learn_likes WHERE video_id = ? AND learner_id = ?', [$v['id'], $l['id']]);
             $liked = false;
         } else {
             q('INSERT INTO learn_likes (video_id, learner_id, created_at) VALUES (?, ?, ?)', [$v['id'], $l['id'], now()]);
             $liked = true;
+            $got = award_points((int)$l['id'], 'like', 'v' . $v['id'], 'Liked the video “' . $v['title'] . '”', '?video=' . (int)$v['id']);
         }
-        out(['liked' => $liked, 'likes' => (int)q('SELECT COUNT(*) AS n FROM learn_likes WHERE video_id = ?', [$v['id']])->fetch()['n']]);
+        out(['liked' => $liked, 'points' => $got, 'likes' => (int)q('SELECT COUNT(*) AS n FROM learn_likes WHERE video_id = ?', [$v['id']])->fetch()['n']]);
 
     case 'comment':
         $l = need_learner();
@@ -366,7 +467,8 @@ switch ($action) {
         $text = trim(preg_replace("/[ \t]+/u", ' ', str_in($d, 'body', 2000)));
         if (!rate_ok('learn_comment:' . $l['id'], 20, 3600)) fail(429, 'You’re commenting very fast. Please wait a little.');
         q('INSERT INTO learn_comments (video_id, learner_id, body, hidden, created_at) VALUES (?, ?, ?, 0, ?)', [$v['id'], $l['id'], $text, now()]);
-        out(['ok' => true]);
+        $got = award_points((int)$l['id'], 'comment', 'vc' . db()->lastInsertId(), 'Commented on the video “' . $v['title'] . '”', '?video=' . (int)$v['id']);
+        out(['ok' => true, 'points' => $got]);
 
     case 'comment_delete':
         $l = need_learner();
@@ -374,6 +476,7 @@ switch ($action) {
         $n = $editor ? q('DELETE FROM learn_comments WHERE id = ?', [$id])->rowCount()
                      : q('DELETE FROM learn_comments WHERE id = ? AND learner_id = ?', [$id, $l['id']])->rowCount();
         if (!$n) fail(404, 'Comment not found.');
+        q("DELETE FROM learn_points WHERE kind = 'comment' AND ref = ?", ['vc' . $id]);
         out(['ok' => true]);
 
     // ---------- likes and reviews on lessons (anyone can read; signed-in learners post) ----------
@@ -382,13 +485,14 @@ switch ($action) {
         $lid = (int)($_GET['lesson_id'] ?? 0);
         if (!q("SELECT id FROM learn_lessons WHERE id = ? AND $pub", [$lid])->fetch()) fail(404, 'Lesson not found.');
         $vis = $editor ? '' : 'AND r.hidden = 0';
-        $rows = q("SELECT r.id, r.parent_id, r.rating, r.body, r.is_staff, r.hidden, r.created_at, r.learner_id, l.name, l.email FROM learn_reviews r JOIN learners l ON l.id = r.learner_id WHERE r.lesson_id = ? $vis ORDER BY r.id", [$lid])->fetchAll();
+        $rows = q("SELECT r.id, r.parent_id, r.rating, r.body, r.is_staff, r.hidden, r.created_at, r.learner_id, l.name, l.email, l.avatar FROM learn_reviews r JOIN learners l ON l.id = r.learner_id WHERE r.lesson_id = ? $vis ORDER BY r.id", [$lid])->fetchAll();
         $top = [];
         $replies = [];
         foreach ($rows as $r) {
             $item = ['id' => (int)$r['id'], 'name' => $r['is_staff'] ? 'Marzley Tech' : public_name($r['name'], $r['email']), 'staff' => (bool)$r['is_staff'],
                      'rating' => $r['rating'] ? (int)$r['rating'] : null, 'body' => $r['body'], 'created_at' => $r['created_at'],
-                     'mine' => $me && (int)$r['learner_id'] === (int)$me['id'], 'hidden' => (bool)$r['hidden'], 'replies' => []];
+                     'mine' => $me && (int)$r['learner_id'] === (int)$me['id'], 'hidden' => (bool)$r['hidden'], 'replies' => [],
+                     'avatar' => $r['is_staff'] ? null : avatar_url(['id' => $r['learner_id'], 'avatar' => $r['avatar']])];
             if ($editor) $item['email'] = $r['email'];
             if ($r['parent_id']) $replies[(int)$r['parent_id']][] = $item; else $top[] = $item;
         }
@@ -407,14 +511,17 @@ switch ($action) {
         $l = need_learner();
         $lid = (int)(body()['lesson_id'] ?? 0);
         if (!q("SELECT id FROM learn_lessons WHERE id = ? AND $pub", [$lid])->fetch()) fail(404, 'Lesson not found.');
+        $got = 0;
         if (q('SELECT id FROM learn_lesson_likes WHERE lesson_id = ? AND learner_id = ?', [$lid, $l['id']])->fetch()) {
             q('DELETE FROM learn_lesson_likes WHERE lesson_id = ? AND learner_id = ?', [$lid, $l['id']]);
             $liked = false;
         } else {
             q('INSERT INTO learn_lesson_likes (lesson_id, learner_id, created_at) VALUES (?, ?, ?)', [$lid, $l['id'], now()]);
             $liked = true;
+            $ls = q('SELECT ls.title, ls.slug, t.slug AS track FROM learn_lessons ls JOIN learn_tracks t ON t.id = ls.track_id WHERE ls.id = ?', [$lid])->fetch();
+            $got = award_points((int)$l['id'], 'like', 'l' . $lid, 'Liked “' . $ls['title'] . '”', "?track={$ls['track']}&lesson={$ls['slug']}");
         }
-        out(['liked' => $liked, 'likes' => (int)q('SELECT COUNT(*) AS n FROM learn_lesson_likes WHERE lesson_id = ?', [$lid])->fetch()['n']]);
+        out(['liked' => $liked, 'points' => $got, 'likes' => (int)q('SELECT COUNT(*) AS n FROM learn_lesson_likes WHERE lesson_id = ?', [$lid])->fetch()['n']]);
 
     case 'review':
         $l = need_learner();
@@ -433,6 +540,9 @@ switch ($action) {
         if ($rating) q('UPDATE learn_reviews SET rating = NULL WHERE lesson_id = ? AND learner_id = ? AND parent_id IS NULL', [$lid, $l['id']]);
         q('INSERT INTO learn_reviews (lesson_id, learner_id, parent_id, rating, body, is_staff, hidden, created_at) VALUES (?, ?, ?, ?, ?, ?, 0, ?)',
             [$lid, $l['id'], $parent ?: null, $rating ?: null, $text, $editor ? 1 : 0, now()]);
+        $rid = (int)db()->lastInsertId();
+        $got = award_points((int)$l['id'], $parent ? 'reply' : 'comment', 'r' . $rid, ($parent ? 'Replied to a comment on “' : 'Commented on “') . $lesson['title'] . '”',
+            "?track={$lesson['track']}&lesson={$lesson['slug']}#reviews");
         if (!$editor) {
             $who = public_name($l['name'], $l['email']);
             foreach (config()['admin_emails'] as $to) {
@@ -441,7 +551,7 @@ switch ($action) {
                     rtrim(config()['site_url'] ?? 'https://marzleytechsolutions.co.ke', '/') . "/learn/?track={$lesson['track']}&lesson={$lesson['slug']}#reviews", false);
             }
         }
-        out(['ok' => true]);
+        out(['ok' => true, 'points' => $got]);
 
     case 'review_delete':
         $l = need_learner();
@@ -450,6 +560,7 @@ switch ($action) {
                      : q('DELETE FROM learn_reviews WHERE id = ? AND learner_id = ?', [$id, $l['id']])->rowCount();
         if (!$n) fail(404, 'Comment not found.');
         q('DELETE FROM learn_reviews WHERE parent_id = ?', [$id]);   // its replies go with it
+        q("DELETE FROM learn_points WHERE kind IN ('comment', 'reply') AND ref = ?", ['r' . $id]);
         out(['ok' => true]);
 
     case 'review_hide':

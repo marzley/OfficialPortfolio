@@ -5,7 +5,7 @@ if (!defined('MARZLEY_PORTAL')) {
     exit;
 }
 
-const SCHEMA_VERSION = 9;
+const SCHEMA_VERSION = 10;
 const STAFF_PERMS = ['projects' => 'Projects & files', 'clients' => 'People', 'support' => 'Support', 'courses' => 'Courses', 'money' => 'Invoices, payments & quotes', 'leads' => 'Leads'];
 const PROJECT_STATUSES = ['planning', 'design', 'build', 'review', 'live', 'on_hold'];
 const INVOICE_STATUSES = ['unpaid', 'paid', 'cancelled'];
@@ -117,6 +117,9 @@ function migrate(PDO $pdo): void {
         "CREATE TABLE IF NOT EXISTS learn_lesson_likes (id $id, lesson_id $uint NOT NULL, learner_id $uint NOT NULL, created_at DATETIME NOT NULL, UNIQUE (lesson_id, learner_id))$end",
         "CREATE TABLE IF NOT EXISTS learn_reviews (id $id, lesson_id $uint NOT NULL, learner_id $uint NOT NULL, parent_id $uint NULL, rating $uint NULL, body TEXT NOT NULL, is_staff $uint NOT NULL DEFAULT 0, hidden $uint NOT NULL DEFAULT 0, created_at DATETIME NOT NULL)$end",
         "CREATE TABLE IF NOT EXISTS learn_progress (id $id, learner_id $uint NOT NULL, lesson_id $uint NOT NULL, created_at DATETIME NOT NULL, UNIQUE (learner_id, lesson_id))$end",
+        // v10: learner points (each action pays once) and recently opened lessons
+        "CREATE TABLE IF NOT EXISTS learn_points (id $id, learner_id $uint NOT NULL, kind VARCHAR(20) NOT NULL, ref VARCHAR(80) NOT NULL, points $uint NOT NULL, detail VARCHAR(200) NOT NULL DEFAULT '', link VARCHAR(200) NOT NULL DEFAULT '', created_at DATETIME NOT NULL, UNIQUE (learner_id, kind, ref))$end",
+        "CREATE TABLE IF NOT EXISTS learn_visits (id $id, learner_id $uint NOT NULL, lesson_id $uint NOT NULL, visited_at DATETIME NOT NULL, UNIQUE (learner_id, lesson_id))$end",
         // v9: course notes downloaded as PDF after an M-Pesa payment (no account needed; the token is the proof of purchase)
         "CREATE TABLE IF NOT EXISTS learn_note_payments (id $id, checkout_id VARCHAR(100) NOT NULL UNIQUE, track_id $uint NOT NULL, amount $uint NOT NULL, phone VARCHAR(30) NOT NULL, token VARCHAR(64) NOT NULL UNIQUE, status VARCHAR(20) NOT NULL DEFAULT 'pending', receipt VARCHAR(30) NULL, paid_amount $uint NULL, downloads $uint NOT NULL DEFAULT 0, created_at DATETIME NOT NULL, paid_at DATETIME NULL)$end",
         "CREATE TABLE IF NOT EXISTS learn_uploads (id $id, token VARCHAR(64) NOT NULL UNIQUE, kind VARCHAR(10) NOT NULL, name VARCHAR(200) NOT NULL, size $uint NOT NULL, received $uint NOT NULL DEFAULT 0, meta TEXT NOT NULL, created_by VARCHAR(190) NOT NULL, created_at DATETIME NOT NULL)$end",
@@ -152,12 +155,13 @@ function migrate(PDO $pdo): void {
         ['login_codes', 'email', "VARCHAR(190) NOT NULL DEFAULT ''"],   // v6: codes for people creating an account
         ['clients', 'ref_code', "VARCHAR(20) NOT NULL DEFAULT ''"],      // v7: each client's own referral code
         ['clients', 'referred_by', "VARCHAR(20) NOT NULL DEFAULT ''"],   // v7: who referred them (signed up through a link)
+        ['learners', 'avatar', "VARCHAR(80) NOT NULL DEFAULT ''"],        // v10: profile photo, shared by the portal and the learning hub
     ];
     foreach ($columns as [$table, $col, $def]) {
         try { $pdo->exec("ALTER TABLE $table ADD COLUMN $col $def"); } catch (PDOException $e) { /* already there */ }
     }
     foreach (['CREATE INDEX audit_created ON audit_log (created_at)', 'CREATE INDEX payments_invoice ON payments (invoice_id)', 'CREATE INDEX payments_ref ON payments (reference)', 'CREATE UNIQUE INDEX payments_checkout ON payments (checkout_id)', 'CREATE INDEX queue_pending ON campaign_queue (sent_at)', 'CREATE UNIQUE INDEX referral_once ON referrals (code, referred_phone, client_id)',
-              'CREATE INDEX checks_domain ON site_checks (domain_id, checked_at)', 'CREATE INDEX learn_comments_video ON learn_comments (video_id)', 'CREATE INDEX learn_codes_email ON learn_codes (email)', 'CREATE INDEX learn_reviews_lesson ON learn_reviews (lesson_id)', 'CREATE INDEX learn_note_pay_phone ON learn_note_payments (phone, track_id)'] as $sql) {
+              'CREATE INDEX checks_domain ON site_checks (domain_id, checked_at)', 'CREATE INDEX learn_comments_video ON learn_comments (video_id)', 'CREATE INDEX learn_codes_email ON learn_codes (email)', 'CREATE INDEX learn_reviews_lesson ON learn_reviews (lesson_id)', 'CREATE INDEX learn_note_pay_phone ON learn_note_payments (phone, track_id)', 'CREATE INDEX learn_points_learner ON learn_points (learner_id, created_at)', 'CREATE INDEX learn_visits_learner ON learn_visits (learner_id, visited_at)'] as $sql) {
         try { $pdo->exec($sql); } catch (PDOException $e) { /* already there */ }
     }
     if ($v < 3) {
@@ -1268,6 +1272,7 @@ function learner_for(string $email, string $name): array {
     if (!$row) {
         q('INSERT INTO learners (email, name, created_at) VALUES (?, ?, ?)', [$email, mb_substr($name, 0, 120), now()]);
         $row = q('SELECT id, email, name FROM learners WHERE email = ?', [$email])->fetch();
+        award_points((int)$row['id'], 'signup', 'signup', 'Created your account');
     }
     return ['id' => (int)$row['id'], 'email' => $row['email'], 'name' => $row['name'] ?: $name];
 }
@@ -1357,3 +1362,75 @@ function settle_note_payment(string $checkoutId, array $r): string {
     audit('notes_pdf_paid', "Track {$np['track_id']} KSh $amount M-Pesa $receipt", 'M-Pesa');
     return 'paid';
 }
+
+// ---------- learner points, profile photos and recent lessons ----------
+
+/** Points for each action. Each one pays once (per lesson, section, video, comment or download). */
+const LEARN_POINTS = ['signup' => 10, 'understood' => 1, 'complete' => 2, 'video' => 5, 'comment' => 3, 'like' => 2, 'reply' => 2, 'code' => 2];
+/** Most a learner can collect from one kind of action in a day, so points can't be farmed. */
+const LEARN_POINTS_DAILY = ['code' => 25, 'comment' => 10, 'reply' => 10];
+
+/** Gives points once for an action; returns how many were given (0 if already given or over today's limit). */
+function award_points(int $learnerId, string $kind, string $ref, string $detail = '', string $link = '', ?int $points = null): int {
+    $points = $points ?? (LEARN_POINTS[$kind] ?? 0);
+    if ($points <= 0 || $learnerId <= 0) return 0;
+    $ref = mb_substr($ref, 0, 80);
+    if (q('SELECT id FROM learn_points WHERE learner_id = ? AND kind = ? AND ref = ?', [$learnerId, $kind, $ref])->fetch()) return 0;
+    if (isset(LEARN_POINTS_DAILY[$kind]) && (int)q('SELECT COUNT(*) FROM learn_points WHERE learner_id = ? AND kind = ? AND created_at >= ?', [$learnerId, $kind, date('Y-m-d 00:00:00')])->fetchColumn() >= LEARN_POINTS_DAILY[$kind]) return 0;
+    try {
+        q('INSERT INTO learn_points (learner_id, kind, ref, points, detail, link, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [$learnerId, $kind, $ref, $points, mb_substr($detail, 0, 200), mb_substr($link, 0, 200), now()]);
+    } catch (PDOException $e) { return 0; }   // the same action arrived twice at once
+    return $points;
+}
+
+function learner_points(int $learnerId): int {
+    return (int)q('SELECT COALESCE(SUM(points), 0) FROM learn_points WHERE learner_id = ?', [$learnerId])->fetchColumn();
+}
+
+/** Points for downloading a subject's notes PDF: 20 for big subjects (KSh 200), 10 for middle (KSh 100), 5 for short (KSh 50). */
+function notes_pdf_points(int $topics): int { return $topics >= 20 ? 20 : ($topics <= 5 ? 5 : 10); }
+
+function avatar_url(array $row): ?string {
+    return !empty($row['avatar']) ? '../portal/learn.php?action=avatar&id=' . (int)$row['id'] . '&v=' . substr($row['avatar'], 0, 8) : null;
+}
+
+/** Saves a profile photo sent as a data URL. The image is re-drawn, so only clean pixels are kept. */
+function save_avatar(int $learnerId, string $dataUrl): string {
+    if (!preg_match('#^data:image/(jpeg|png|webp);base64,([A-Za-z0-9+/=\s]+)$#', $dataUrl, $m)) fail(400, 'Choose a JPG, PNG or WebP photo.');
+    $raw = base64_decode($m[2], true);
+    if ($raw === false || strlen($raw) > 3 * 1024 * 1024) fail(400, 'That photo is too big. Choose one under 3 MB.');
+    $info = @getimagesizefromstring($raw);
+    if (!$info || !in_array($info[2], [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_WEBP], true) || $info[0] < 16 || $info[1] < 16 || $info[0] * $info[1] > 40000000) fail(400, 'That file isn’t a photo we can use.');
+    if (!function_exists('imagecreatefromstring')) fail(500, 'Photos can’t be processed on this server yet.');
+    $src = @imagecreatefromstring($raw);
+    if (!$src) fail(400, 'That file isn’t a photo we can use.');
+    // Square crop from the middle, 320 x 320
+    $w = imagesx($src); $h = imagesy($src); $side = min($w, $h);
+    $out = imagecreatetruecolor(320, 320);
+    imagefill($out, 0, 0, imagecolorallocate($out, 255, 255, 255));
+    imagecopyresampled($out, $src, 0, 0, (int)(($w - $side) / 2), (int)(($h - $side) / 2), 320, 320, $side, $side);
+    $name = bin2hex(random_bytes(12)) . '.jpg';
+    if (!imagejpeg($out, learn_dir('avatars') . '/' . $name, 85)) fail(500, 'The photo could not be saved.');
+    imagedestroy($src); imagedestroy($out);
+    remove_avatar($learnerId);
+    q('UPDATE learners SET avatar = ? WHERE id = ?', [$name, $learnerId]);
+    return $name;
+}
+
+function remove_avatar(int $learnerId): void {
+    $old = (string)q('SELECT avatar FROM learners WHERE id = ?', [$learnerId])->fetchColumn();
+    if ($old !== '' && preg_match('/^[a-f0-9]{24}\.jpg$/', $old)) @unlink(learn_dir('avatars') . '/' . $old);
+    q("UPDATE learners SET avatar = '' WHERE id = ?", [$learnerId]);
+}
+
+/** A short learning summary for the portal: points, lessons done and where they stopped. */
+function learning_summary(string $email): ?array {
+    $l = q('SELECT id, avatar FROM learners WHERE email = ?', [strtolower(trim($email))])->fetch();
+    if (!$l) return null;
+    $last = q('SELECT ls.title, ls.slug, t.slug AS track, t.title AS track_title FROM learn_visits v JOIN learn_lessons ls ON ls.id = v.lesson_id JOIN learn_tracks t ON t.id = ls.track_id WHERE v.learner_id = ? ORDER BY v.visited_at DESC LIMIT 1', [$l['id']])->fetch();
+    return ['points' => learner_points((int)$l['id']), 'avatar' => avatar_url($l),
+            'completed' => (int)q('SELECT COUNT(*) FROM learn_progress WHERE learner_id = ?', [$l['id']])->fetchColumn(),
+            'last' => $last ?: null];
+}
+

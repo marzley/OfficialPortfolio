@@ -62,7 +62,7 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   const cid = one("SELECT id FROM clients WHERE email = 'client@example.com'").id;
 
   // ---------- database upgrade ----------
-  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "9");
+  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "10");
 
   // ---------- sequential invoice numbers ----------
   r = await admin("invoice_save", { client_id: cid, description: "Website build", amount: 10000, status: "unpaid" });
@@ -754,6 +754,80 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
     ok("hidden reviews disappear for everyone else", r.j.reviews.length === 1);
     r = await lpost(boss, "review_delete", { id: rvId });
     ok("the owner can delete a review (and its replies go too)", r.s === 200 && one("SELECT COUNT(*) AS n FROM learn_reviews WHERE parent_id = " + rvId).n == 0);
+
+    // points, recent lessons, profile and photo (shared with the client portal)
+    {
+      const sumOf = (email) => Number(one(`SELECT COALESCE(SUM(p.points), 0) AS n FROM learn_points p JOIN learners l ON l.id = p.learner_id WHERE l.email = '${email}'`).n);
+      r = await lget(stu, "me");
+      ok("creating an account gives 10 points, and the total is shown", one("SELECT p.points FROM learn_points p JOIN learners l ON l.id = p.learner_id WHERE l.email = 'student@example.com' AND p.kind = 'signup'").points == 10 && r.j.learner.points === sumOf("student@example.com") && r.j.learner.points >= 10);
+      const before = r.j.learner.points;
+      const lsn2 = one("SELECT l.id FROM learn_lessons l JOIN learn_tracks t ON t.id = l.track_id WHERE t.slug = 'python' AND l.slug = 'variables-input'").id;
+      r = await lpost(stu, "progress", { lesson_id: lsn2 });
+      ok("completing a lesson gives 2 points", r.j.points === 2);
+      r = await lpost(stu, "progress", { lesson_id: lsn2 });
+      ok("completing the same lesson again gives nothing", r.j.points === 0);
+      r = await lpost(stu, "points", { kind: "understood", lesson_id: lsn2, section: "what-is-a-variable" });
+      const r2 = await lpost(stu, "points", { kind: "understood", lesson_id: lsn2, section: "what-is-a-variable" });
+      ok("each section marked “I understand” gives 1 point, once", r.j.points === 1 && r2.j.points === 0);
+      r = await lpost(stu, "points", { kind: "video", video: "yt-abcdefghijk", title: "Python in 10 minutes", lesson_id: lsn2 });
+      const r3 = await lpost(stu, "points", { kind: "video", video: "yt-abcdefghijk" });
+      ok("watching a video to the end gives 5 points, once", r.j.points === 5 && r3.j.points === 0);
+      r = await lpost(stu2, "points", { kind: "video", video: "v-" + vid });
+      ok("a paid video only counts once it’s unlocked", r.s === 200);
+      r = await lpost(guest, "points", { kind: "code" });
+      ok("points need an account", r.s === 401);
+      let codePts = 0;
+      for (let i = 0; i < 27; i++) { r = await lpost(stu, "points", { kind: "code", lesson_id: lsn2 }); codePts += r.j.points || 0; }
+      ok("each code run gives 2 points, up to 25 runs a day", codePts === 50, codePts);
+      r = await lpost(stu, "points", { kind: "hack" });
+      ok("unknown point actions are refused", r.s === 400);
+      r = await lget(stu, "me");
+      ok("points keep adding up", r.j.learner.points === before + 2 + 1 + 5 + 50 && r.j.learner.points === sumOf("student@example.com"), r.j.learner.points);
+      // replies to my comments show on my dashboard; the person replying gets 2 points
+      r = await lpost(stu, "review", { lesson_id: lsn2, body: "How do I name variables?" });
+      ok("a comment gives 3 points", r.j.points === 3);
+      const myRv = one("SELECT id FROM learn_reviews WHERE body = 'How do I name variables?'").id;
+      r = await lpost(stu2, "review", { lesson_id: lsn2, parent_id: myRv, body: "Use snake_case names." });
+      ok("a reply gives 2 points", r.j.points === 2);
+      await lget(stu, "lesson", "&track=python&slug=variables-input");
+      r = await lget(stu, "dashboard");
+      ok("the dashboard shows points by kind, the last lesson opened and the activity", r.s === 200 && r.j.points === sumOf("student@example.com") && r.j.by_kind.code.points === 50 && r.j.recent[0].slug === "variables-input" &&
+        r.j.activity.some((a) => a.kind === "complete" && /Completed/.test(a.text)), r.j.recent);
+      ok("someone replying to my comment shows in my activity", r.j.activity.some((a) => a.kind === "replied" && /Kamau N\. replied to your comment/.test(a.text) && /#reviews$/.test(a.link)));
+      r = await lget(guest, "dashboard");
+      ok("the dashboard needs an account", r.s === 401);
+      r = await lpost(stu, "review_delete", { id: myRv });
+      ok("deleting a comment takes back its points", r.s === 200 && !one(`SELECT COUNT(*) AS n FROM learn_points WHERE ref = 'r${myRv}'`).n);
+      // profile: name and phone change, email doesn't
+      r = await lpost(stu, "profile", { name: "Achieng Otieno", phone: "12345" });
+      ok("a wrong phone number is refused", r.s === 400);
+      r = await lpost(stu, "profile", { name: "Achieng Otieno", phone: "+254 712 345 678", email: "hacker@example.com" });
+      ok("name and phone are saved; the email can’t be changed", r.s === 200 && one("SELECT phone, email FROM learners WHERE name = 'Achieng Otieno'").phone === "0712345678" && one("SELECT email FROM learners WHERE name = 'Achieng Otieno'").email === "student@example.com");
+      const png = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAeCAIAAADRv8uKAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAALElEQVRIie3NMQEAAAQAMETSP4BYKvg8W4HldMeHelnFYrFYLBaLxWKxWHyyVMYBaHdq4SsAAAAASUVORK5CYII=";
+      r = await lpost(stu, "avatar_save", { image: "data:image/png;base64," + Buffer.from("<?php echo 1; ?>").toString("base64") });
+      ok("a file that isn’t a photo is refused", r.s === 400);
+      r = await lpost(stu, "avatar_save", { image: png });
+      ok("a profile photo can be uploaded", r.s === 200 && /action=avatar&id=\d+/.test(r.j.avatar));
+      const avRes = await fetch(BASE + "/portal/" + r.j.avatar.replace("../portal/", ""));
+      const avBuf = Buffer.from(await avRes.arrayBuffer());
+      ok("the photo is served as a clean square JPEG", avRes.status === 200 && avRes.headers.get("content-type") === "image/jpeg" && avBuf[0] === 0xff && avBuf[1] === 0xd8);
+      r = await lget(stu, "me");
+      ok("the photo comes with the account", /action=avatar/.test(r.j.learner.avatar || "") && r.j.learner.phone === "0712345678" && /^L-\d{5}$/.test(r.j.learner.learner_code));
+      r = await lget(guest, "lesson_social", "&lesson_id=" + lsn);
+      ok("the photo shows next to the learner’s comments", r.j.reviews.some((x) => x.name === "Achieng O." && /action=avatar/.test(x.avatar || "")));
+      r = await lpost(stu, "avatar_remove", {});
+      r = await lget(stu, "me");
+      ok("the photo can be removed", r.s === 200 && !r.j.learner.avatar);
+      // the client portal: same photo, and a learning summary on the overview
+      r = await cl("profile_photo", { image: png });
+      ok("clients can upload a profile photo in the portal", r.s === 200 && /action=avatar/.test(r.j.avatar));
+      r = await cl("me");
+      ok("the portal shows the photo", /action=avatar/.test(r.j.avatar || ""));
+      r = await cl("data");
+      ok("the portal overview has the client’s learning points", r.j.me.learning && r.j.me.learning.points >= 10 && /action=avatar/.test(r.j.me.learning.avatar || ""));
+      r = await lget(cl, "me");
+      ok("the same photo shows in the learning hub", /action=avatar/.test((r.j.learner || {}).avatar || ""));
+    }
 
     // managing
     r = await lget(boss, "admin");
