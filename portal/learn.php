@@ -120,7 +120,7 @@ switch ($action) {
     case 'me':
         $progress = $me ? array_map('intval', array_column(q('SELECT lesson_id FROM learn_progress WHERE learner_id = ?', [$me['id']])->fetchAll(), 'lesson_id')) : [];
         out(['learner' => $me, 'csrf' => csrf_token(), 'editor' => $editor, 'progress' => $progress,
-             'google_client_id' => config()['google_client_id'], 'mpesa' => (bool)mpesa_config(), 'notes_price' => notes_pdf_price()]);
+             'google_client_id' => config()['google_client_id'], 'mpesa' => (bool)mpesa_config(), 'notes_prices' => notes_pdf_prices()]);
 
     case 'google':
         $token = (string)(body()['credential'] ?? '');
@@ -226,7 +226,7 @@ switch ($action) {
         $msisdn = normalise_phone((string)($d['phone'] ?? ''));
         if (!$msisdn) fail(400, 'Enter your M-Pesa number, for example 0712 345 678.');
         if (!rate_ok('notes_pay', 6, 900)) fail(429, 'Too many payment prompts. Please wait a few minutes and try again.');
-        $price = notes_pdf_price();
+        $price = notes_pdf_track_price((int)$t['id']);
         $checkout = stk_push($msisdn, $price, 'NOTES' . $t['id'], 'Notes PDF');
         q('INSERT INTO learn_note_payments (checkout_id, track_id, amount, phone, token, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
             [$checkout, $t['id'], $price, $msisdn, bin2hex(random_bytes(24)), 'pending', now()]);
@@ -278,10 +278,15 @@ switch ($action) {
 
     case 'notes_price_set':
         need_editor();
-        $price = (int)(body()['price'] ?? 0);
-        if ($price < 1 || $price > 100000) fail(400, 'Enter a price between KSh 1 and KSh 100,000.');
-        set_setting('notes_pdf_price', (string)$price);
-        audit('notes_pdf_price', "KSh $price");
+        $d = body();
+        $set = [];
+        foreach (['small', 'medium', 'large'] as $size) {
+            $price = (int)($d[$size] ?? 0);
+            if ($price < 1 || $price > 100000) fail(400, 'Enter prices between KSh 1 and KSh 100,000.');
+            $set[$size] = $price;
+        }
+        foreach ($set as $size => $price) set_setting('notes_pdf_price_' . $size, (string)$price);
+        audit('notes_pdf_price', "KSh {$set['small']} / {$set['medium']} / {$set['large']}");
         out(['ok' => true]);
 
     // ---------- videos (unlocked with M-Pesa) ----------
@@ -472,7 +477,7 @@ switch ($action) {
             'lessons' => q('SELECT * FROM learn_lessons ORDER BY track_id, position, id')->fetchAll(),
             'videos' => $videos,
             'notes' => q('SELECT id, title, summary, track_id, original_name, size, downloads, published, created_at FROM learn_notes ORDER BY created_at DESC')->fetchAll(),
-            'comments' => $comments, 'payments' => $payments, 'notes_price' => notes_pdf_price(),
+            'comments' => $comments, 'payments' => $payments, 'notes_prices' => notes_pdf_prices(),
             'note_payments' => q('SELECT p.id, p.amount, p.phone, p.status, p.receipt, p.downloads, p.created_at, p.paid_at, t.title FROM learn_note_payments p JOIN learn_tracks t ON t.id = p.track_id ORDER BY p.id DESC LIMIT 100')->fetchAll(),
             'reviews' => q('SELECT r.id, r.lesson_id, r.parent_id, r.rating, r.body, r.is_staff, r.hidden, r.created_at, l.name, l.email, s.title AS lesson, s.slug, t.slug AS track, t.title AS track_title
                 FROM learn_reviews r JOIN learners l ON l.id = r.learner_id JOIN learn_lessons s ON s.id = r.lesson_id JOIN learn_tracks t ON t.id = s.track_id ORDER BY r.id DESC LIMIT 300')->fetchAll(),

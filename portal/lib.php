@@ -1312,9 +1312,22 @@ function settle_learn_payment(string $checkoutId, array $r): string {
     return 'paid';
 }
 
-/** Price of one subject's course notes as a PDF download (KSh). Staff change it in the portal's Learning hub tab. */
-function notes_pdf_price(): int {
-    return max(1, min(100000, (int)setting('notes_pdf_price', '50')));
+/** Prices of a subject's course notes as a PDF download (KSh), by size: up to 5 topics, 6 to 19, and 20 or more.
+ *  Staff change them in the portal's Learning hub tab. */
+function notes_pdf_prices(): array {
+    $get = fn(string $key, int $default) => max(1, min(100000, (int)setting($key, (string)$default)));
+    return ['small' => $get('notes_pdf_price_small', 50), 'medium' => $get('notes_pdf_price_medium', 100), 'large' => $get('notes_pdf_price_large', 200)];
+}
+
+/** The PDF price for a subject with this many published topics (lessons). */
+function notes_pdf_price_for(int $topics): int {
+    $p = notes_pdf_prices();
+    return $topics >= 20 ? $p['large'] : ($topics <= 5 ? $p['small'] : $p['medium']);
+}
+
+/** The PDF price for one subject, from its published lesson count. */
+function notes_pdf_track_price(int $trackId): int {
+    return notes_pdf_price_for((int)q('SELECT COUNT(*) FROM learn_lessons WHERE track_id = ? AND published = 1', [$trackId])->fetchColumn());
 }
 
 /**

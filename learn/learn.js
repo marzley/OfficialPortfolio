@@ -86,7 +86,12 @@
     "prolog": "% Facts\nparent(kamau, wanjiku).\nparent(kamau, otieno).\nparent(wanjiku, amina).\n\n% Rules\ngrandparent(X, Z) :- parent(X, Y), parent(Y, Z).\nsibling(X, Y) :- parent(P, X), parent(P, Y), X \\= Y.\n\n% Queries (lines starting with ?-)\n?- grandparent(kamau, Who).\n?- sibling(wanjiku, S)."
   });
 
-  var state = { me: null, csrf: null, editor: false, progress: [], catalog: null, gsiLoaded: false, mpesa: false, notesPrice: 50 };
+  var state = { me: null, csrf: null, editor: false, progress: [], catalog: null, gsiLoaded: false, mpesa: false, notesPrices: { small: 50, medium: 100, large: 200 } };
+  // The PDF price depends on how long the subject is: up to 5 topics, 6–19, or 20 and more
+  function notesPrice(track) {
+    var n = track && track.lessons ? track.lessons.length : 0, p = state.notesPrices;
+    return n >= 20 ? p.large : n <= 5 ? p.small : p.medium;
+  }
   var main = document.getElementById("learn-main");
   var side = document.getElementById("learn-side");
   var sideToggle = document.getElementById("side-toggle");
@@ -1533,13 +1538,13 @@
     setNav("notes");
     showSide(false);
     setTitle("Notes and books", "Course notes for every subject, from the basics up: read free online or download the whole subject as a PDF. Plus free programming notes and books.");
-    main.innerHTML = '<section class="list-page"><h1>Notes &amp; books</h1><p class="lead">Complete course notes for every subject, from the basics all the way up. Read them free online, no account needed, or download a whole subject as a PDF for ' + esc(kes(state.notesPrice)) + ' with M-Pesa.</p>' +
+    main.innerHTML = '<section class="list-page"><h1>Notes &amp; books</h1><p class="lead">Complete course notes for every subject, from the basics all the way up. Read them free online, no account needed, or download a whole subject as a PDF with M-Pesa: ' + esc(kes(state.notesPrices.small)) + ' for short subjects (up to 5 topics), ' + esc(kes(state.notesPrices.medium)) + ' for 6 to 19 topics and ' + esc(kes(state.notesPrices.large)) + ' for 20 topics or more.</p>' +
       '<h2 class="notes-h">Course notes</h2><div class="book-grid" id="book-grid"><p class="muted">Loading…</p></div>' +
       '<h2 class="notes-h">PDF notes &amp; books</h2><div class="note-grid" id="note-grid"><p class="muted">Loading…</p></div></section>';
     getCatalog().then(function (tracks) {
       $("#book-grid").innerHTML = tracks.map(function (t) {
         return '<a class="book-card" href="./?book=' + esc(t.slug) + '"><i class="' + (TRACK_ICONS[t.slug] || TRACK_ICONS[t.lang] || "fa-solid fa-book") + '" aria-hidden="true"></i><span><strong>' + esc(t.title) + " notes</strong>" +
-          '<span class="muted">' + t.lessons.length + " topics · read free · PDF " + esc(kes(state.notesPrice)) + "</span></span></a>";
+          '<span class="muted">' + t.lessons.length + " topics · read free · PDF " + esc(kes(notesPrice(t))) + "</span></span></a>";
       }).join("") || '<p class="muted">Course notes are coming soon.</p>';
     }).catch(function (e) { $("#book-grid").innerHTML = '<p class="muted">' + esc(e.message) + "</p>"; });
     api("notes").then(function (j) {
@@ -1575,9 +1580,9 @@
         }).join("");
         main.innerHTML = '<article class="book"><p class="crumbs"><a href="./?page=notes">Notes</a></p>' +
           '<header class="book-head"><p class="eyebrow">Marzley Tech Learning Hub · Course notes</p><h1>' + esc(track.title) + " notes</h1><p class=\"lead\">" + esc(track.summary || "") + "</p>" +
-          '<p class="book-tools"><button type="button" class="btn btn-solid btn-sm" id="book-pdf"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> <span id="book-pdf-label">Save as PDF · ' + esc(kes(state.notesPrice)) + "</span></button>" +
+          '<p class="book-tools"><button type="button" class="btn btn-solid btn-sm" id="book-pdf"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> <span id="book-pdf-label">Save as PDF · ' + esc(kes(notesPrice(track))) + "</span></button>" +
           '<a class="btn btn-line btn-sm" href="./?track=' + esc(track.slug) + '"><i class="fa-solid fa-play" aria-hidden="true"></i> Start the interactive course</a></p>' +
-          '<p class="muted book-meta">' + track.lessons.length + " topics · free to read online · PDF download " + esc(kes(state.notesPrice)) + " via M-Pesa · marzleytechsolutions.co.ke/learn</p></header>" +
+          '<p class="muted book-meta">' + track.lessons.length + " topics · free to read online · PDF download " + esc(kes(notesPrice(track))) + " via M-Pesa · marzleytechsolutions.co.ke/learn</p></header>" +
           '<nav class="book-toc" aria-label="Contents"><h2>Contents</h2><ol>' + toc + "</ol></nav>" + parts +
           '<footer class="book-foot">© Marzley Tech Solutions · Free learning hub: marzleytechsolutions.co.ke/learn · Questions? WhatsApp 0745 789 590</footer></article>';
         bookPdfSetup(track);
@@ -1663,7 +1668,7 @@
   }
 
   function payForm(track, err) {
-    var price = kes(state.notesPrice);
+    var price = kes(notesPrice(track));
     if (!state.mpesa) {
       openPay('<h2 id="pay-title">Unlock PDF download</h2><p class="muted">Online payment is being set up. WhatsApp us and we’ll send you the ' + esc(track.title) + ' notes PDF.</p>' +
         '<p><a class="btn btn-solid pay-btn" href="https://wa.me/254745789590?text=' + encodeURIComponent("Hello Marzley, I'd like the " + track.title + " notes as a PDF.") + '" target="_blank" rel="noopener noreferrer">WhatsApp us</a></p>');
@@ -1685,7 +1690,7 @@
       var go = $("#pay-go", d);
       go.disabled = true; go.textContent = "Sending request…";
       store.set("phone", phone);
-      api("notes_pay", { track: track.slug, phone: phone }).then(function (r) { payWaiting(track, r.checkout_id, r.amount || state.notesPrice); })
+      api("notes_pay", { track: track.slug, phone: phone }).then(function (r) { payWaiting(track, r.checkout_id, r.amount || notesPrice(track)); })
         .catch(function (er) { go.disabled = false; go.textContent = "Pay " + price; $("#pay-msg", d).textContent = er.message; });
     });
   }
@@ -1751,25 +1756,41 @@
 
   // pdfmake and its fonts load only when someone downloads a PDF
   var pdfMakeReady = null;
+  var PDF_ASSET_V = "2";
   var PDF_FONT_FILES = ["Roboto-Regular.ttf", "Roboto-Medium.ttf", "Roboto-Italic.ttf", "Roboto-MediumItalic.ttf", "DejaVuSansMono.ttf", "DejaVuSansMono-Bold.ttf"];
+  function withTimeout(promise, ms, message) {
+    return new Promise(function (res, rej) {
+      var t = setTimeout(function () { rej(new Error(message)); }, ms);
+      promise.then(function (v) { clearTimeout(t); res(v); }, function (e) { clearTimeout(t); rej(e); });
+    });
+  }
   function loadPdfMake() {
     if (pdfMakeReady) return pdfMakeReady;
-    var base = "../vendor/pdfmake/";
-    var script = new Promise(function (res, rej) {
-      if (window.pdfMake) return res();
+    var base = "../vendor/pdfmake/", slow = "The PDF maker is taking too long to load. Check your connection and try again.";
+    var script = withTimeout(new Promise(function (res, rej) {
+      if (window.pdfMake && window.pdfMake.createPdf) return res();
       var s = document.createElement("script");
-      s.src = base + "pdfmake.min.js";
-      s.onload = function () { res(); };
-      s.onerror = function () { rej(new Error("The PDF maker could not load. Check your connection and try again.")); };
+      s.src = base + "pdfmake.min.js?v=" + PDF_ASSET_V;
+      s.onload = function () { if (window.pdfMake && window.pdfMake.createPdf) res(); else rej(new Error("The PDF maker didn’t start. Refresh the page and try again.")); };
+      s.onerror = function () { s.remove(); rej(new Error("The PDF maker could not load. Check your connection and try again.")); };
       document.head.appendChild(s);
-    });
-    var toB64 = function (buf) {
-      var bytes = new Uint8Array(buf), out = "", step = 0x8000;
+    }), 60000, slow);
+    var toB64 = function (bytes) {
+      var out = "", step = 0x8000;
       for (var i = 0; i < bytes.length; i += step) out += String.fromCharCode.apply(null, bytes.subarray(i, i + step));
       return btoa(out);
     };
     var fonts = Promise.all(PDF_FONT_FILES.map(function (f) {
-      return fetch(base + f).then(function (r) { if (!r.ok) throw new Error("A font for the PDF could not load."); return r.arrayBuffer(); }).then(function (b) { return [f, toB64(b)]; });
+      var ctl = window.AbortController ? new AbortController() : null;
+      var get = fetch(base + f + "?v=" + PDF_ASSET_V, ctl ? { signal: ctl.signal } : undefined)
+        .then(function (r) { if (!r.ok) throw new Error("A font for the PDF could not load (error " + r.status + ")."); return r.arrayBuffer(); })
+        .then(function (buf) {
+          // A real TrueType font starts with 00 01 00 00 (or "true"); anything else is an error page
+          var b = new Uint8Array(buf), sig = b.length > 4 ? (b[0] << 24 | b[1] << 16 | b[2] << 8 | b[3]) >>> 0 : 0;
+          if (b.length < 10000 || (sig !== 0x00010000 && sig !== 0x74727565 && sig !== 0x4f54544f)) throw new Error("A font for the PDF didn’t download properly. Refresh the page and try again.");
+          return [f, toB64(b)];
+        });
+      return withTimeout(get, 60000, slow).catch(function (e) { if (ctl) ctl.abort(); throw e; });
     })).then(function (pairs) { var vfs = {}; pairs.forEach(function (p) { vfs[p[0]] = p[1]; }); return vfs; });
     pdfMakeReady = Promise.all([script, fonts]).then(function (r) { return r[1]; });
     pdfMakeReady.catch(function () { pdfMakeReady = null; });
@@ -1778,12 +1799,17 @@
 
   function makeNotesPdf(track, token, info) {
     var d = openPay('<div class="pay-center"><span class="pay-ok-ico" aria-hidden="true"><i class="fa-solid fa-circle-check"></i></span><h2 id="pay-title">' + (info ? "Preparing your PDF" : "Payment received!") + '</h2>' +
-      '<p class="pay-wait" id="pdf-state" role="status" aria-live="polite"><span class="spinner" aria-hidden="true"></span> Making your PDF… this takes a few seconds.</p></div>');
+      '<p class="pay-wait" id="pdf-state" role="status" aria-live="polite"><span class="spinner" aria-hidden="true"></span> <span id="pdf-step">Loading the PDF maker…</span></p>' +
+      '<p class="pay-note" id="pdf-hint">' + track.lessons.length + " topics. " + (track.lessons.length >= 20 ? "Big subjects can take a minute or two on a phone." : "This takes a few seconds.") + " Please keep this page open.</p></div>");
+    var step = function (t) { var x = $("#pdf-step", d); if (x) x.textContent = t; };
     var lic = info ? Promise.resolve(info) : api("notes_access", undefined, "&track=" + encodeURIComponent(track.slug) + "&token=" + encodeURIComponent(token));
     var book = main.querySelector("article.book");
+    var crash = null, onErr = function (ev) { if (crash && /pdfmake/.test(ev && ev.filename || "")) crash(ev && ev.error ? ev.error : new Error(ev && ev.message || "The PDF maker stopped.")); };
+    window.addEventListener("error", onErr);
     Promise.all([lic, loadPdfMake()]).then(function (r) {
       if (!book) throw new Error("Open the notes page, then tap Download PDF.");
       var licence = r[0], vfs = r[1];
+      step("Building the pages…");
       return new Promise(function (res) { setTimeout(res, 30); }).then(function () {
         var doc = notesPdfDoc(track, book, licence);
         var fonts = {
@@ -1791,28 +1817,42 @@
           Mono: { normal: "DejaVuSansMono.ttf", bold: "DejaVuSansMono-Bold.ttf", italics: "DejaVuSansMono.ttf", bolditalics: "DejaVuSansMono-Bold.ttf" }
         };
         var name = "Marzley-Tech-" + track.title.replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "") + "-notes.pdf";
-        return new Promise(function (res, rej) {
+        var make = new Promise(function (res, rej) {
+          crash = rej;
           try {
             var pdf = window.pdfMake.createPdf(doc, null, fonts, vfs);
             pdf.getBlob(function (blob) {
-              var url = URL.createObjectURL(blob);
-              var a = document.createElement("a");
-              a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
-              setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
-              res({ name: name, size: blob.size });
+              try {
+                if (!blob || !blob.size) throw new Error("The PDF came out empty.");
+                step("Saving your file…");
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement("a");
+                a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+                setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+                res({ name: name, size: blob.size });
+              } catch (e) { rej(e); }
             });
           } catch (e) { rej(e); }
         });
+        // Even a very large subject on a slow phone finishes well inside this
+        return withTimeout(make, Math.max(120000, track.lessons.length * 8000), "Making the PDF took too long on this device. Close other apps and tabs, then try again, or try on a computer.");
       });
     }).then(function (f) {
       api("notes_access", undefined, "&track=" + encodeURIComponent(track.slug) + "&token=" + encodeURIComponent(token) + "&dl=1").catch(function () {});
       $("#pay-title", d).textContent = "Your PDF is ready";
       $("#pdf-state", d).innerHTML = '<i class="fa-solid fa-download" aria-hidden="true"></i> ' + esc(f.name) + " (" + fmtSize(f.size) + ") has been downloaded. Check your Downloads folder.";
+      $("#pdf-hint", d).remove();
       d.querySelector(".pay-center").appendChild(el('<button type="button" class="btn pay-check" id="pdf-again">Download again</button>'));
       $("#pdf-again", d).addEventListener("click", function () { makeNotesPdf(track, token, null); });
     }).catch(function (e) {
       $("#pay-title", d).textContent = "The PDF couldn’t be made";
-      $("#pdf-state", d).textContent = (e && e.message ? e.message : "Something went wrong.") + " Your payment is saved: tap Download PDF again in a moment.";
+      $("#pdf-state", d).textContent = (e && e.message ? e.message : "Something went wrong.") + " Your payment is saved, so you won’t pay again.";
+      var hint = $("#pdf-hint", d); if (hint) hint.textContent = "Still stuck? WhatsApp 0745 789 590 with your M-Pesa code and we’ll send the PDF.";
+      d.querySelector(".pay-center").appendChild(el('<button type="button" class="btn pay-check" id="pdf-again">Try again</button>'));
+      $("#pdf-again", d).addEventListener("click", function () { makeNotesPdf(track, token, null); });
+    }).then(function () {
+      crash = null;
+      window.removeEventListener("error", onErr);
     });
   }
 
@@ -1872,7 +1912,7 @@
       var stack = [];
       if (title && hasText(title)) stack.push({ text: title, bold: true, color: color, margin: [0, 0, 0, 4] });
       stack = stack.concat(body);
-      return { table: { widths: ["*"], body: [[{ stack: stack }]] }, headlineLevel: 1,
+      return { table: { widths: ["*"], body: [[{ stack: stack }]] },
         layout: { fillColor: function () { return fill; }, hLineWidth: function () { return 0; }, vLineWidth: function (i) { return i === 0 ? 3 : 0; }, vLineColor: function () { return color; },
           paddingLeft: function () { return 10; }, paddingRight: function () { return 10; }, paddingTop: function () { return 8; }, paddingBottom: function () { return 6; } },
         margin: [0, 4, 0, 10] };
@@ -1962,6 +2002,28 @@
       return out;
     }
 
+    // A heading never sits alone at the bottom of a page: it moves with the short block after it.
+    // (pdfmake's pageBreakBefore does the same but lays the whole book out again on every move,
+    // which made big subjects take minutes on phones.)
+    function small(n) {
+      if (!n || n.table || n.canvas || n.headlineLevel) return false;
+      if (n.ul || n.ol) return (n.ul || n.ol).length <= 4 && JSON.stringify(n).length < 1500;
+      return n.text !== undefined && JSON.stringify(n.text).length < 900;
+    }
+    function keepHeadings(list) {
+      var out = [];
+      for (var i = 0; i < list.length; i++) {
+        var n = list[i];
+        if (n.headlineLevel && small(list[i + 1])) {
+          var pb = n.pageBreak; delete n.pageBreak;
+          var group = { stack: [n, list[i + 1]], unbreakable: true };
+          if (pb) group.pageBreak = pb;
+          out.push(group); i++;
+        } else out.push(n);
+      }
+      return out;
+    }
+
     var today = new Date().toLocaleDateString("en-KE", { day: "numeric", month: "long", year: "numeric" });
     var lic = licence && licence.receipt ? "Licensed to " + licence.phone + " · M-Pesa " + licence.receipt : "Licensed copy";
     var lead = book.querySelector(".book-head .lead");
@@ -1981,7 +2043,7 @@
       if (!b.length) return;
       b[0].pageBreak = "before";
       for (var i = 0; i < b.length; i++) { if (b[i].style === "h1" || b[i].style === "h2") { b[i].tocItem = true; b[i].tocMargin = [0, 3, 0, 0]; break; } }
-      content = content.concat(b);
+      content = content.concat(keepHeadings(b));
     });
     content.push({ text: "Keep learning", style: "h2", pageBreak: "before" });
     content.push({ text: "Practise every topic with live code, quizzes and videos at marzleytechsolutions.co.ke/learn. Questions? WhatsApp 0745 789 590.", style: "p" });
@@ -1999,8 +2061,6 @@
         return { columns: [{ text: lic + " · personal use only", width: "*" }, { text: page + " / " + pages, alignment: "right", width: 60 }], margin: [50, 22, 50, 0], fontSize: 7.5, color: "#94a3b8" };
       },
       content: content,
-      // A heading never sits alone at the bottom of a page
-      pageBreakBefore: function (node, followingOnPage) { return !!node.headlineLevel && node.pageBreak !== "before" && followingOnPage.length < 2; },
       defaultStyle: { font: "Roboto", fontSize: 10, lineHeight: 1.3, color: "#1f2937" },
       styles: {
         h1: { fontSize: 19, bold: true, color: "#0b1b35", margin: [0, 2, 0, 10], lineHeight: 1.15 },
@@ -2154,7 +2214,7 @@
       state.me = j.learner;
       state.editor = !!j.editor;
       state.mpesa = !!j.mpesa;
-      state.notesPrice = Number(j.notes_price) || state.notesPrice;
+      if (j.notes_prices) ["small", "medium", "large"].forEach(function (k) { state.notesPrices[k] = Number(j.notes_prices[k]) || state.notesPrices[k]; });
       state.googleClientId = j.google_client_id;
       state.progress = j.learner ? (j.progress || []).map(Number) : loadLocalProgress();
       updateUser();

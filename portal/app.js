@@ -1527,15 +1527,18 @@
       pl.length ? h("ul", { className: "admin-list" }, pl) : h("p", { className: "portal-empty", text: "No video payments yet." })));
 
     // Course notes downloaded as PDF (paid with M-Pesa; reading online stays free)
-    var priceIn = h("input", { type: "number", min: "1", max: "100000", step: "1", value: String(d.notes_price || 50), "aria-label": "Price in KSh", className: "notes-price-in" });
+    var np = d.notes_prices || {};
+    var priceIn = function (k, def, label) { return h("input", { type: "number", min: "1", max: "100000", step: "1", value: String(np[k] || def), "aria-label": label, className: "notes-price-in" }); };
+    var pSmall = priceIn("small", 50, "Price for up to 5 topics, KSh"), pMed = priceIn("medium", 100, "Price for 6 to 19 topics, KSh"), pLarge = priceIn("large", 200, "Price for 20 topics or more, KSh");
     var npl = (d.note_payments || []).map(function (p) {
       return h("li", null, h("div", null, h("strong", { text: ksh(p.amount) + " · " + p.title + " notes PDF" }), h("span", { className: "portal-meta", text: p.phone + " · " + day(p.created_at) + (p.receipt ? " · M-Pesa " + p.receipt : "") + (+p.downloads ? " · " + p.downloads + " download" + (+p.downloads === 1 ? "" : "s") : "") })),
         h("span", { className: "pill pill-" + (p.status === "paid" ? "paid" : p.status === "pending" ? "review" : "unpaid"), text: p.status === "paid" ? "Paid" : p.status === "pending" ? "Waiting" : "Not paid" }));
     });
     panel.appendChild(h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: "Course notes PDF sales" })),
-      h("p", { className: "portal-meta", text: "Everyone can read the course notes online for free. Downloading a whole subject as a PDF costs this amount, paid with M-Pesa. Printing the notes page is turned off." }),
-      h("form", { className: "inline-form", onsubmit: function (e) { e.preventDefault(); lsave("notes_price_set", { price: Number(priceIn.value) }, "PDF price saved."); } },
-        h("label", null, h("span", { text: "PDF price per subject (KSh) " }), priceIn), h("button", { type: "submit", className: "btn btn-solid", text: "Save price" })),
+      h("p", { className: "portal-meta", text: "Everyone can read the course notes online for free. Downloading a whole subject as a PDF is paid with M-Pesa, priced by how many topics the subject has. Printing the notes page is turned off." }),
+      h("form", { className: "inline-form", onsubmit: function (e) { e.preventDefault(); lsave("notes_price_set", { small: Number(pSmall.value), medium: Number(pMed.value), large: Number(pLarge.value) }, "PDF prices saved."); } },
+        h("label", null, h("span", { text: "Up to 5 topics (KSh) " }), pSmall), h("label", null, h("span", { text: "6–19 topics (KSh) " }), pMed),
+        h("label", null, h("span", { text: "20+ topics (KSh) " }), pLarge), h("button", { type: "submit", className: "btn btn-solid", text: "Save prices" })),
       npl.length ? h("ul", { className: "admin-list" }, npl) : h("p", { className: "portal-empty", text: "No PDF sales yet." })));
   }
 

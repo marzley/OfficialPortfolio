@@ -647,17 +647,20 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
     {
       const buyer = session();
       r = await lget(buyer, "me");
-      ok("the notes PDF price is published (default KSh 50)", r.j.notes_price === 50);
-      r = await lpost(boss, "notes_price_set", { price: 80 });
+      const np = r.j.notes_prices || {};
+      ok("the notes PDF prices are published by length (KSh 50 / 100 / 200)", np.small === 50 && np.medium === 100 && np.large === 200, np);
+      r = await lpost(boss, "notes_price_set", { small: 40, medium: 80, large: 150 });
       r = await lget(buyer, "me");
-      ok("staff can change the notes PDF price", r.j.notes_price === 80);
-      r = await lpost(stu, "notes_price_set", { price: 1 });
+      ok("staff can change the notes PDF prices", r.j.notes_prices.small === 40 && r.j.notes_prices.medium === 80 && r.j.notes_prices.large === 150);
+      r = await lpost(boss, "notes_price_set", { small: 40, medium: 0, large: 150 });
+      ok("a missing or zero price is refused", r.s === 400);
+      r = await lpost(stu, "notes_price_set", { small: 1, medium: 1, large: 1 });
       ok("learners can’t change the price", r.s === 403 || r.s === 401);
       r = await lpost(buyer, "notes_pay", { track: "html", phone: "0712" });
       ok("a wrong phone number is refused", r.s === 400);
       r = await lpost(buyer, "notes_pay", { track: "html", phone: "0712 345 678" });
       const stkN = JSON.parse(fs.readFileSync(WORK + "/fake/stk-last.json", "utf8"));
-      ok("buying a notes PDF sends an M-Pesa prompt for the price", r.s === 200 && r.j.checkout_id === stkN.id && stkN.body.Amount === 80 && stkN.body.PhoneNumber === "254712345678");
+      ok("a 19-topic subject is charged the middle price", r.s === 200 && r.j.checkout_id === stkN.id && stkN.body.Amount === 80 && stkN.body.PhoneNumber === "254712345678");
       const nco = r.j.checkout_id;
       r = await lget(buyer, "notes_pay_status", "&checkout=" + nco);
       ok("before payment the status is waiting, with no token", r.j.status === "pending" && !r.j.token);
@@ -688,13 +691,14 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
       ok("paying less doesn’t unlock the PDF", r.j.status === "failed" && !r.j.token, r.j);
       r = await lpost(buyer, "notes_pay", { track: "css", phone: "0712345678" });
       const dupCo = r.j.checkout_id;
-      await callback(dupCo, 80, "NOTESPDF01");
+      ok("a subject with 20+ topics is charged the top price", JSON.parse(fs.readFileSync(WORK + "/fake/stk-last.json", "utf8")).body.Amount === 150);
+      await callback(dupCo, 150, "NOTESPDF01");
       await sleep(300);
       r = await lget(buyer, "notes_pay_status", "&checkout=" + dupCo);
       ok("an M-Pesa receipt can’t pay for two PDFs", r.j.status === "failed");
       r = await lget(boss, "admin");
-      ok("PDF sales show in the Learning hub admin", r.j.stats.notes_sold === 1 && r.j.stats.notes_revenue === 80 && r.j.notes_price === 80 && r.j.note_payments.length === 3);
-      r = await lpost(boss, "notes_price_set", { price: 50 });
+      ok("PDF sales show in the Learning hub admin", r.j.stats.notes_sold === 1 && r.j.stats.notes_revenue === 80 && r.j.notes_prices.medium === 80 && r.j.note_payments.length === 3);
+      r = await lpost(boss, "notes_price_set", { small: 50, medium: 100, large: 200 });
     }
 
     // likes and comments (only for people who unlocked)
