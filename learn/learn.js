@@ -14,9 +14,9 @@
     go: "fa-brands fa-golang", "digital-literacy": "fa-solid fa-user-shield", "ms-word": "fa-solid fa-file-word", excel: "fa-solid fa-table",
     powerpoint: "fa-solid fa-person-chalkboard", "google-workspace": "fa-solid fa-cloud", "ai-tools": "fa-solid fa-robot", "e-services-kenya": "fa-solid fa-landmark",
     "computer-maintenance": "fa-solid fa-screwdriver-wrench", "earn-online": "fa-solid fa-hand-holding-dollar",
-    projects: "fa-solid fa-hammer", "career-roadmaps": "fa-solid fa-route" };
+    projects: "fa-solid fa-hammer", "career-roadmaps": "fa-solid fa-route", freelancing: "fa-solid fa-briefcase" };
   var TRACK_GROUPS = [
-    { title: "Career roadmaps & projects", icon: "fa-solid fa-route", slugs: ["career-roadmaps", "projects"] },
+    { title: "Careers, projects & freelancing", icon: "fa-solid fa-route", slugs: ["career-roadmaps", "projects", "freelancing"] },
     { title: "Web & coding", icon: "fa-solid fa-code", slugs: ["html", "css", "javascript", "python", "sql", "php", "typescript", "algorithms", "git"] },
     { title: "App development", icon: "fa-solid fa-mobile-screen-button", slugs: ["app-dev-basics", "dart-flutter", "flutter", "kotlin-android", "react", "react-native", "apis-backend"] },
     { title: "Artificial intelligence (AI)", icon: "fa-solid fa-brain", slugs: ["artificial-intelligence", "ai-tools"] },
@@ -33,6 +33,7 @@
     ["career-roadmaps", "cybersecurity-roadmap", "fa-solid fa-shield-halved", "Cybersecurity", "Networking, Linux, security skills, labs, certifications"],
     ["career-roadmaps", "mobile-app-developer-roadmap", "fa-solid fa-mobile-screen-button", "Mobile app developer", "Flutter, Kotlin or React Native to the Play Store"],
     ["career-roadmaps", "it-support-networking-roadmap", "fa-solid fa-screwdriver-wrench", "IT support & networking", "Hardware, Windows, networks, helpdesk jobs"],
+    ["freelancing", "freelancing-roadmap", "fa-solid fa-briefcase", "Freelancer", "Niche, portfolio, Upwork, Fiverr, direct clients, contracts, KRA tax"],
     ["projects", "how-to-build-projects", "fa-solid fa-hammer", "Build real projects", "14 step-by-step portfolio projects: shop, M-Pesa, school system, API, app"]
   ];
   /** Subjects sorted into TRACK_GROUPS (plus "More subjects" for any new ones), empty groups left out. */
@@ -787,7 +788,7 @@
     showSide(false);
     setTitle("");
     main.innerHTML = '<section class="hero-learn"><div><p class="eyebrow">Marzley Tech Learning Hub</p><h1>Learn tech skills free, right in your browser</h1>' +
-      '<p class="lead" id="hub-lead">42 subjects and 485+ lessons: coding in 13 languages with a live editor, app development (Flutter, Kotlin, React Native, APIs), web and graphic design, Excel, Word and everyday ICT skills, networking and subnetting, cybersecurity, AI tools and how to make money online. Practise with questions that check themselves. Works on your phone.</p>' +
+      '<p class="lead" id="hub-lead">43 subjects and 495+ lessons: coding in 13 languages with a live editor, app development (Flutter, Kotlin, React Native, APIs), web and graphic design, Excel, Word and everyday ICT skills, networking and subnetting, cybersecurity, AI tools and how to make money online. Practise with questions that check themselves. Works on your phone.</p>' +
       '<div id="hub-search"></div><ul class="free-badges"><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Tutorials: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Notes: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Practice: free</li><li><i class="fa-solid fa-user" aria-hidden="true"></i> No account needed</li></ul>' +
       '<p class="hero-ctas"><a class="btn btn-solid" href="./?track=html">Start with HTML</a><a class="btn btn-line" href="./?track=career-roadmaps&amp;lesson=choose-a-tech-career">Find your career path</a></p></div>' +
       '<div class="hero-code" aria-hidden="true"><pre><span class="c-k">print</span>(<span class="c-s">"Habari, Kenya!"</span>)\n<span class="c-t">&lt;h1&gt;</span>Hello<span class="c-t">&lt;/h1&gt;</span>\n<span class="c-k">SELECT</span> * <span class="c-k">FROM</span> Customers;</pre></div></section>' +

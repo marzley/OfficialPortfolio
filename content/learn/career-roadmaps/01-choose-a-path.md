@@ -92,7 +92,7 @@ Every roadmap ends the same way:
 
 - **Attachment / internship**: if you are a student, apply early. Your projects make your application stand out from classmates who only have grades.
 - **Entry-level jobs**: apply with a one-page CV that links to **2–4 projects**. Tailor the CV to each advert's keywords.
-- **Freelancing**: start with people you can reach (family businesses, churches, schools, chamas), deliver well, ask for a testimonial. See [Make money online: freelancing platforms](./?track=make-money-online&lesson=freelancing-platforms).
+- **Freelancing**: start with people you can reach (family businesses, churches, schools, chamas), deliver well, ask for a testimonial. Follow the step-by-step [Freelancing from Kenya](./?track=freelancing&lesson=freelancing-roadmap) subject.
 
 :::warning Avoid "pay to get a job" offers
 Legitimate employers never ask you to pay for an interview, a "placement fee" or "training before starting". Fake job adverts targeting tech graduates are common. Verify the company, never send money, and never share OTPs or M-Pesa PINs.
