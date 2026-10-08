@@ -72,7 +72,13 @@ These are general patterns, not guarantees. Two people doing the same method can
 | 21 | [Energy, recycling and environment](./?track=earn-directory&lesson=energy-recycling-environment-methods) | Available |
 | 22 | [Remote professional jobs](./?track=earn-directory&lesson=remote-professional-jobs-methods) | Available |
 | 23 | [Community, NGO and public programmes](./?track=earn-directory&lesson=community-ngo-public-methods) | Available |
-| 24+ | More categories in future updates | Coming |
+| 24 | [Automotive trades and services](./?track=earn-directory&lesson=automotive-trades-methods) | Available |
+| 25 | [Food and drink businesses](./?track=earn-directory&lesson=food-beverage-business-methods) | Available |
+| 26 | [Beauty and fashion businesses](./?track=earn-directory&lesson=beauty-fashion-business-methods) | Available |
+| 27 | [Sports, gaming and entertainment](./?track=earn-directory&lesson=sports-gaming-entertainment-methods) | Available |
+| 28 | [Tourism and hospitality businesses](./?track=earn-directory&lesson=tourism-hospitality-business-methods) | Available |
+| 29 | [Logistics, import, export and trade](./?track=earn-directory&lesson=logistics-trade-methods) | Available |
+| 30+ | More categories in future updates | Coming |
 
 ## Universal safety rules
 
