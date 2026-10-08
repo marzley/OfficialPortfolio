@@ -517,8 +517,8 @@ SW_NAV = [("Home", "Nyumbani"), ("Work", "Kazi"), ("About", "Kuhusu"), ("Service
 
 SW_FOOTER = [
     (">Technology for real solutions<", ">Teknolojia kwa suluhisho halisi<"),
-    ("<h4>Explore</h4>", "<h4>Gundua</h4>"), ("<h4>Guides</h4>", "<h4>Miongozo</h4>"), ('data-guide="1">User guide (PDF)</a>', 'data-guide="1">Mwongozo wa matumizi (PDF)</a>'), ("<h4>Work</h4>", "<h4>Kazi</h4>"),
-    ("<h4>Contact</h4>", "<h4>Mawasiliano</h4>"), ("<h4>Support</h4>", "<h4>Tuunge mkono</h4>"),
+    ('<h2 class="foot-h">Explore</h2>', '<h2 class="foot-h">Gundua</h2>'), ('<h2 class="foot-h">Guides</h2>', '<h2 class="foot-h">Miongozo</h2>'), ('data-guide="1">User guide (PDF)</a>', 'data-guide="1">Mwongozo wa matumizi (PDF)</a>'), ('<h2 class="foot-h">Work</h2>', '<h2 class="foot-h">Kazi</h2>'),
+    ('<h2 class="foot-h">Contact</h2>', '<h2 class="foot-h">Mawasiliano</h2>'), ('<h2 class="foot-h">Support</h2>', '<h2 class="foot-h">Tuunge mkono</h2>'),
     ('href="./">Home</a>', 'href="./">Nyumbani</a>'), ('href="work">Work</a>', 'href="work">Kazi zetu</a>'),
     ('href="about">About</a>', 'href="about">Kuhusu</a>'), ('href="services">Services</a>', 'href="services">Huduma</a>'),
     ('href="process">Process</a>', 'href="process">Mchakato</a>'),

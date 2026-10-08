@@ -52,9 +52,9 @@ def main():
             continue
         out.append(rule)
     missing = sorted(n for n in names if n not in kept and not re.search(r"\.fa-" + re.escape(n) + r"\b", "".join(out)))
-    faces = ('@font-face{font-family:"Font Awesome 6 Brands";font-style:normal;font-weight:400;font-display:block;src:url(../webfonts/fa-brands-400-sub.woff2) format("woff2")}'
-             '@font-face{font-family:"Font Awesome 6 Free";font-style:normal;font-weight:400;font-display:block;src:url(../webfonts/fa-regular-400-sub.woff2) format("woff2")}'
-             '@font-face{font-family:"Font Awesome 6 Free";font-style:normal;font-weight:900;font-display:block;src:url(../webfonts/fa-solid-900-sub.woff2) format("woff2")}')
+    faces = ('@font-face{font-family:"Font Awesome 6 Brands";font-style:normal;font-weight:400;font-display:swap;src:url(../webfonts/fa-brands-400-sub.woff2) format("woff2")}'
+             '@font-face{font-family:"Font Awesome 6 Free";font-style:normal;font-weight:400;font-display:swap;src:url(../webfonts/fa-regular-400-sub.woff2) format("woff2")}'
+             '@font-face{font-family:"Font Awesome 6 Free";font-style:normal;font-weight:900;font-display:swap;src:url(../webfonts/fa-solid-900-sub.woff2) format("woff2")}')
     header = "/* Font Awesome Free 6.5.2 (subset of the icons this site uses; made by tools/subset_icons.py) - https://fontawesome.com/license/free */\n"
     (FA / "css" / "icons.min.css").write_text(header + "".join(out) + faces, encoding="utf-8")
 

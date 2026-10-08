@@ -228,7 +228,24 @@
     frame = requestAnimationFrame(tick);
   }
 
-  initWorkList();
+  // Start the previews only when someone first points at (or tabs into) the project list:
+  // nothing is measured or animated while the page loads, and phones never need it.
+  (function () {
+    var work = document.querySelector(".work");
+    if (!work) return;
+    var started = false;
+    var go = function (e) {
+      if (started) return;
+      started = true;
+      work.removeEventListener("pointerover", go);
+      work.removeEventListener("focusin", go);
+      initWorkList();
+      var row = e && e.target && e.target.closest ? e.target.closest(".work-row") : null;
+      if (row) row.dispatchEvent(new Event(e.type === "focusin" ? "focus" : "mouseenter"));
+    };
+    work.addEventListener("pointerover", go, { passive: true });
+    work.addEventListener("focusin", go);
+  })();
 
   /* ---------- contact form (Formspree, with WhatsApp / email fallback) ---------- */
   var form = document.getElementById("booking-form");
@@ -671,7 +688,7 @@
       positionPanel();
     });
     window.addEventListener("resize", function () { placeToggle(); positionPanel(); });
-    placeToggle();
+    requestAnimationFrame(placeToggle);
     closeBtn.addEventListener("click", function () { closePanel(true); });
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape" && !a11yPanel.hidden) closePanel(true);
@@ -1234,7 +1251,7 @@
     if (header) header.classList.toggle("is-scrolled", window.scrollY > 8);
   };
   window.addEventListener("scroll", onScroll, { passive: true });
-  onScroll();
+  requestAnimationFrame(onScroll);   // after the first layout, so loading doesn't force an extra one
 
   if ("IntersectionObserver" in window && nav) {
     var links = {};
@@ -1283,7 +1300,13 @@
   /* ---------- scroll progress + back to top ---------- */
   var bar = document.querySelector(".scroll-progress span");
   var toTop = document.querySelector(".to-top");
+  var progressQueued = false;
   var onProgress = function () {
+    if (progressQueued) return;
+    progressQueued = true;
+    requestAnimationFrame(function () { progressQueued = false; drawProgress(); });
+  };
+  var drawProgress = function () {
     var max = document.documentElement.scrollHeight - window.innerHeight;
     var p = max > 0 ? Math.min(1, window.scrollY / max) : 0;
     if (bar) bar.style.transform = "scaleX(" + p + ")";
