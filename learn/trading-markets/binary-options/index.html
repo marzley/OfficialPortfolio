@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Option 2: Binary options: how they work, the maths,…</title>
+    <meta name="description" content="Binary options are heavily advertised on social media in Kenya, often with &quot;earn KSh 10,000 a day in 60 seconds&quot; videos. This lesson explains exactly…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/trading-markets/binary-options/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Option 2: Binary options: how they work, the maths,…" />
+    <meta property="og:description" content="Binary options are heavily advertised on social media in Kenya, often with &quot;earn KSh 10,000 a day in 60 seconds&quot; videos. This lesson explains exactly…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/trading-markets/binary-options/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Option 2: Binary options: how they work, the maths,…" />
+    <meta name="twitter:description" content="Binary options are heavily advertised on social media in Kenya, often with &quot;earn KSh 10,000 a day in 60 seconds&quot; videos. This lesson explains exactly…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/trading-markets/binary-options/#lesson","name":"Option 2: Binary options: how they work, the maths, regulation and why most people lose","description":"Binary options are heavily advertised on social media in Kenya, often with \"earn KSh 10,000 a day in 60 seconds\" videos. This lesson explains exactly…","url":"https://marzleytechsolutions.co.ke/learn/trading-markets/binary-options/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/trading-markets/#course","name":"Trading & investing options explained (10 markets, honest risks)","url":"https://marzleytechsolutions.co.ke/learn/trading-markets/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Trading & investing options explained (10 markets, honest risks)","item":"https://marzleytechsolutions.co.ke/learn/trading-markets/"},{"@type":"ListItem","position":4,"name":"Option 2: Binary options: how they work, the maths, regulation and why most people lose","item":"https://marzleytechsolutions.co.ke/learn/trading-markets/binary-options/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=904cdf833e" />
+    <link rel="stylesheet" href="/css/home.min.css?v=2aecf7fa61" />
+    <link rel="stylesheet" href="/learn/learn.css?v=afcdb5f51a" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/trading-markets/">Trading &amp; investing options explained (10 markets, honest risks)</a> / <span>Option 2: Binary options: how they work, the maths, regulation and why most people lose</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=trading-markets&amp;lesson=binary-options"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Option 2: Binary options</h1>
+<p>Binary options are heavily advertised on social media in Kenya, often with "earn KSh 10,000 a day in 60 seconds" videos. This lesson explains exactly how they work, shows the maths behind the payouts, and why many regulators have banned them for ordinary people.</p>
+<h2>1. What it is</h2>
+<p>A <strong>binary option</strong> is a yes/no bet on a price: <em>"Will EUR/USD be higher than 1.0850 in 5 minutes?"</em> If you're right, you receive a fixed payout (for example 80–90% of your stake). If you're wrong, you lose <strong>100%</strong> of your stake. There's no in-between, hence "binary".</p>
+<p>Common types:</p>
+<ul><li><strong>Up/Down (Call/Put, Higher/Lower):</strong> above or below the current price at expiry.</li><li><strong>Touch/No touch:</strong> whether price touches a level before expiry.</li><li><strong>Range (In/Out):</strong> whether price stays inside or leaves a range.</li><li><strong>Digits</strong> and similar products on some platforms: bets on the last digit of a price.</li></ul>
+<p>Expiry times can be as short as <strong>seconds or minutes</strong>.</p>
+<h2>2. How it works: example</h2>
+<p>You stake <strong>KSh 1,000</strong> on "EUR/USD higher in 5 minutes". The platform offers an <strong>85% payout</strong>.</p>
+<ul><li>Right → you get your KSh 1,000 back + KSh 850 profit.</li><li>Wrong → you lose KSh 1,000.</li></ul>
+<p>You win 85% of your stake when right but lose 100% when wrong. That imbalance is the platform's built-in edge.</p>
+<h2>3. The maths: why the odds are against you</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def breakeven_win_rate(payout):
+    # win payout*stake, lose 1*stake: break even when p*payout = (1-p)*1
+    return 1 / (1 + payout)
+
+def expected_value(win_rate, payout, stake=1000):
+    return stake * (win_rate * payout - (1 - win_rate))
+
+for payout in (0.95, 0.90, 0.85, 0.80, 0.70):
+    print(f&quot;Payout {payout:.0%}: you must win {breakeven_win_rate(payout):.1%} of trades just to break even&quot;)
+
+print()
+# On very short expiries, direction is close to a coin flip for most people
+for wr in (0.50, 0.53, 0.55):
+    ev = expected_value(wr, 0.85)
+    print(f&quot;Win rate {wr:.0%} at 85% payout: expected result per KSh 1,000 bet = KSh {ev:+.0f}&quot;)
+
+# 100 trades of KSh 1,000 at a coin-flip win rate
+print(f&quot;\n100 trades at 50% win rate and 85% payout: about KSh {100 * expected_value(0.50, 0.85):+,.0f}&quot;)</code></pre></figure>
+<p>At an 85% payout you need to win <strong>more than 54%</strong> of your trades just to break even. On expiries of seconds or minutes, price moves are close to random for nearly everyone, so the average result is a steady loss: about <strong>−KSh 75 per KSh 1,000 bet</strong> at a 50% win rate. Over hundreds of trades, that adds up to large losses. This is the same structure as a casino game.</p>
+<h2>4. Costs</h2>
+<p>The cost is hidden in the payout: you receive less than you risk. There may also be deposit/withdrawal fees and conversion costs.</p>
+<h2>5. Risk level: very high</h2>
+<ul><li>You can lose 100% of every stake, very quickly and repeatedly.</li><li>Very short expiries encourage rapid, emotional, repeated betting, the classic gambling pattern.</li><li>With many binary platforms, the platform is your counterparty: it profits when you lose.</li><li>Many binary "brokers" have been outright frauds that manipulated prices or refused withdrawals.</li></ul>
+<h2>6. Regulation</h2>
+<ul><li><strong>European Union:</strong> the European Securities and Markets Authority (ESMA) prohibited selling binary options to retail clients from 2018.</li><li><strong>United Kingdom:</strong> the Financial Conduct Authority (FCA) permanently banned selling them to retail consumers in 2019.</li><li><strong>Australia</strong> and several other countries have also banned or heavily restricted them.</li><li><strong>United States:</strong> legal only on a few regulated exchanges, with strict rules; many offshore sites operate illegally.</li><li><strong>Kenya:</strong> binary options are not a product offered under CMA online forex licences. Platforms promoting binary options to Kenyans are typically offshore and unregulated locally, so you have little protection. Check the CMA website and its investor alerts.</li></ul>
+<p>When major regulators ban a product for ordinary people, it's because evidence showed most users lose money and fraud was widespread.</p>
+<h2>7. Who it may suit / who should avoid it</h2>
+<ul><li><strong>Avoid:</strong> almost everyone, especially beginners, anyone using essential or borrowed money, and anyone who notices gambling-like urges (<a href="/learn/forex/trading-psychology/">trading psychology</a>).</li><li>If you're curious, study the maths above, and treat any money spent as entertainment you expect to lose, like betting.</li></ul>
+<h2>8. Red flags and scams</h2>
+<ul><li>"Earn KSh X daily", "strategy with 90% accuracy", "never lose" bots or signals</li><li>"Account managers" who trade binary options for you</li><li>Platforms you found through a WhatsApp/Telegram/TikTok promoter paid per sign-up</li><li>Bonuses that lock your deposit until you've traded many times</li><li>Withdrawal delays or demands for "verification fees"</li></ul>
+<h2>9. Verdict</h2>
+<p>Binary options are, for nearly all retail users, a <strong>negative expected value</strong> product: you win less than you lose, on outcomes that are close to random over short times. They're banned for retail clients in many countries for this reason. If you want to learn markets, study forex or long-term investing properly; if you want income, build skills. Don't let "60-second" videos convince you otherwise.</p>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>In a binary option, how much of your stake do you lose if you're wrong? (percent)</p><details><summary>Show answer</summary><p>100</p></details></li><li><p>At an 85% payout, what win rate do you need just to break even? Write the whole-number percent.</p><details><summary>Show answer</summary><p>54</p></details></li><li><p>Which EU authority prohibited selling binary options to retail clients in 2018? (abbreviation)</p><details><summary>Show answer</summary><p>ESMA</p></details></li><li><p>Is the expected value of short-expiry binary options positive or negative for most retail users?</p><details><summary>Show answer</summary><p>negative</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 12 in <a href="/learn/trading-markets/">Trading &amp; investing options explained (10 markets, honest risks)</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=trading-markets">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/trading-markets/forex-overview/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Option 1: Forex trading, explained in one lesson</a><a class="btn btn-solid btn-sm" href="/learn/trading-markets/synthetic-indices-deriv/">Option 3: Synthetic indices (Deriv and similar): Volatility, Boom/Crash, multipliers and accumulators <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

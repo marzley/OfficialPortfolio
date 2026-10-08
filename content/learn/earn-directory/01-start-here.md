@@ -1,0 +1,86 @@
+---
+slug: earn-directory-start-here
+title: "How this directory works: the standard method structure, safety rules and categories"
+after: START
+---
+# How this directory works
+
+This directory explains **genuine ways to earn**, grouped by category, with every method described in the **same structure**, so you can compare them fairly and choose one that fits your skills, equipment, time and budget.
+
+It complements the [130+ ways to earn online](./?track=earn-online&lesson=start-here) overview: that subject gives the big picture by family; this directory goes **method by method, task by task**. Some methods appear in both places.
+
+:::warning Our promises to you
+- **Only real methods.** We don't invent opportunities to reach a number. The directory grows category by category, and the count is exact.
+- **No guaranteed income.** Earnings depend on skill, effort, demand, platform availability and luck. We describe realistic ranges in words, not promises.
+- **Scam warnings on every method.** If anyone asks you to pay to get work, it's almost always a scam.
+- **Platforms change.** Companies open and close programmes, change pay and restrict countries (for example, Remotasks stopped operating in Kenya in 2024). Always check current availability yourself.
+:::
+
+## The standard structure for every method
+
+| Part | What it tells you |
+|---|---|
+| **What it is** | The method in plain words |
+| **How it works** | The process from getting work to getting paid |
+| **Skills** | What you need to be good at |
+| **Cost & equipment** | Money and tools needed to start |
+| **Where to find work** | Types of platforms, clients or places (with examples where useful) |
+| **Payment** | How money reaches you (M-Pesa, PayPal, Payoneer, bank) |
+| **Realistic earnings** | An honest range in words (very low → high) and what drives it |
+| **Time to first income** | How long it usually takes to get paid the first time |
+| **How to start** | First concrete steps |
+| **Pros / cons & risks** | Honest trade-offs |
+| **Scam warning** | The specific scams around this method |
+| **Kenya notes** | Local opportunities, payment issues, regulations |
+
+### How to read "realistic earnings"
+
+| Label | Meaning (for most people, especially at the start) |
+|---|---|
+| **Very low** | Pocket money; useful for learning, not for living |
+| **Low** | A small side income |
+| **Low–medium** | A meaningful side income with consistency |
+| **Medium** | Can approach or match a local salary for skilled, consistent people |
+| **Medium–high / high** | Possible with strong skills, reputation and good clients, usually after months or years |
+
+These are general patterns, not guarantees. Two people doing the same method can earn very different amounts.
+
+## Categories
+
+| # | Category | Status |
+|---|---|---|
+| 1 | [Microtasking: AI training and data tasks](./?track=earn-directory&lesson=microtasks-ai-data-tasks) | Available |
+| 2 | [Microtasking: surveys, testing, research and local tasks](./?track=earn-directory&lesson=microtasks-surveys-testing-local) | Available |
+| 3 | [Graphic design: branding, print and digital](./?track=earn-directory&lesson=graphic-design-branding-print) | Available |
+| 4 | [Graphic design: digital products, social media, illustration and specialist work](./?track=earn-directory&lesson=graphic-design-digital-specialist) | Available |
+| 5+ | Writing and language, transcription and audio, video and animation, social media and marketing, web and tech, teaching, selling online, virtual assistance, photography, local digital services and more | Coming in future updates |
+
+## Universal safety rules
+
+1. **Never pay to get work**: no registration, activation, training or "starter kit" fees for online jobs.
+2. **Never rent, buy or sell accounts** on platforms; it breaks their rules and you can lose your earnings.
+3. **Use your real identity** and your own payment accounts.
+4. **Keep work and payment on the platform** until you have a proper contract with a direct client.
+5. **Protect your accounts**: strong passwords, two-factor authentication, never share OTPs or M-Pesa PINs ([passwords and 2FA](./?track=cybersecurity&lesson=passwords-2fa)).
+6. **Keep records** of earnings for tax ([money and tax in Kenya](./?track=freelancing&lesson=money-and-tax-kenya)).
+
+## How to choose a method
+
+Score a few methods from 1 to 5 on: skills you already have, equipment you have, start-up cost, time to first income, earning potential and enjoyment. Start with **one main method** and one backup, and give it at least 60–90 days of consistent effort. See [choosing your niche](./?track=freelancing&lesson=niche-and-offer) and the [90-day plan](./?track=earn-online&lesson=choose-your-path-90-day-plan).
+
+## Summary
+
+- Every method uses the same structure: what, how, skills, cost, where, payment, earnings, time, start, pros/cons, scams, Kenya notes.
+- Only real methods, exact counts, no guarantees; platforms change, so verify availability.
+- Never pay to get work; protect your accounts; start with one method and stay consistent.
+
+```quiz
+Q: Should you pay a registration fee to get an online job? (yes or no)
+A: no
+Q: Which platform stopped operating in Kenya in 2024? (one word)
+A: Remotasks
+Q: How many main methods should you start with?
+A: 1 | one
+Q: For how many days should you try a method consistently before judging it? Write a range like 60-90.
+A: 60-90 | 60 to 90 | 90 | 60
+```

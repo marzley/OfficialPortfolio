@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Backtesting, demo trading and journaling: proving a…</title>
+    <meta name="description" content="How do you know if your trading plan has an edge, or if it just feels like it works? You test it, record everything, and measure. This lesson turns…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/forex/backtesting-journaling/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Backtesting, demo trading and journaling: proving a…" />
+    <meta property="og:description" content="How do you know if your trading plan has an edge, or if it just feels like it works? You test it, record everything, and measure. This lesson turns…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/forex/backtesting-journaling/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Backtesting, demo trading and journaling: proving a…" />
+    <meta name="twitter:description" content="How do you know if your trading plan has an edge, or if it just feels like it works? You test it, record everything, and measure. This lesson turns…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/forex/backtesting-journaling/#lesson","name":"Backtesting, demo trading and journaling: proving a strategy before risking money","description":"How do you know if your trading plan has an edge, or if it just feels like it works? You test it, record everything, and measure. This lesson turns…","url":"https://marzleytechsolutions.co.ke/learn/forex/backtesting-journaling/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/forex/#course","name":"Forex trading education (zero to advanced, honest and step by step)","url":"https://marzleytechsolutions.co.ke/learn/forex/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Forex trading education (zero to advanced, honest and step by step)","item":"https://marzleytechsolutions.co.ke/learn/forex/"},{"@type":"ListItem","position":4,"name":"Backtesting, demo trading and journaling: proving a strategy before risking money","item":"https://marzleytechsolutions.co.ke/learn/forex/backtesting-journaling/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=904cdf833e" />
+    <link rel="stylesheet" href="/css/home.min.css?v=2aecf7fa61" />
+    <link rel="stylesheet" href="/learn/learn.css?v=afcdb5f51a" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/forex/">Forex trading education (zero to advanced, honest and step by step)</a> / <span>Backtesting, demo trading and journaling: proving a strategy before risking money</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=forex&amp;lesson=backtesting-journaling"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Backtesting, demo trading and journaling</h1>
+<p>How do you know if your trading plan has an edge, or if it just <em>feels</em> like it works? You test it, record everything, and measure. This lesson turns your plan into evidence.</p>
+<h2>The testing ladder</h2>
+<figure class="static-code"><figcaption>TEXT</figcaption><pre><code class="language-text">1. Backtest (history)  →  2. Forward test on demo  →  3. Tiny live account  →  4. Gradual scaling
+   100+ trades             2–3 months, 50+ trades     only money you can lose    only with evidence</code></pre></figure>
+<p>Each step must meet criteria <strong>you write down in advance</strong> before you move to the next.</p>
+<h2>Step 1: Backtesting</h2>
+<p><strong>Backtesting</strong> means applying your exact rules to past price data and recording the trades that <em>would</em> have happened.</p>
+<h3>Manual backtesting (best for learning)</h3>
+<ol><li>Open a chart (TradingView's free <strong>Bar Replay</strong> feature, or scroll back on your platform).</li><li>Hide the future: replay candles one by one, so you don't see what happens next.</li><li>Every time your setup appears, record the entry, stop, target, and result <strong>exactly as your rules say</strong>: no "I wouldn't have taken that one".</li><li>Do at least <strong>100 trades</strong>, across different market conditions (trends, ranges, high and low volatility periods). Fewer than that, and luck dominates.</li></ol>
+<h3>Automated backtesting</h3>
+<p>Coders can test rules automatically (Python, MT5 Strategy Tester, TradingView Pine Script). It's faster, but beware:</p>
+<ul><li><strong>Overfitting / curve fitting:</strong> tuning settings until the past looks perfect. Test on data you didn't use to design the rules (<strong>out-of-sample</strong>).</li><li><strong>Unrealistic fills:</strong> include spread, commission, slippage and swaps.</li><li><strong>Look-ahead bias:</strong> accidentally using information that wasn't available at the time (e.g. a daily close before the day ended).</li></ul>
+<h2>Step 2: Forward testing on demo</h2>
+<p>Trade your plan live on a <strong>demo account</strong> for 2–3 months (at least 50 trades), with the same position sizes and rules you'd use with real money. Demo isn't the same as live (no fear of loss, sometimes better fills), but it tests whether you can <strong>execute</strong> the plan in real time and whether the edge survives current market conditions.</p>
+<h2>Step 3: Keep a trading journal</h2>
+<p>Your journal is your most valuable trading tool. A spreadsheet (Excel or Google Sheets) is perfect (<a href="/learn/excel/basics/">Excel basics</a>).</p>
+<div class="static-table"><table><thead><tr><th>Column</th><th>Example</th></tr></thead><tbody><tr><td>Date &amp; time (EAT)</td><td>2026-10-08 11:40</td></tr><tr><td>Pair</td><td>EURUSD</td></tr><tr><td>Direction</td><td>Buy</td></tr><tr><td>Setup type</td><td>Trend pullback</td></tr><tr><td>Timeframes</td><td>D1 trend / H1 entry</td></tr><tr><td>Entry, stop, target</td><td>1.0812 / 1.0782 / 1.0872</td></tr><tr><td>Risk % and lots</td><td>1% / 0.33</td></tr><tr><td>Planned R:R</td><td>2.0</td></tr><tr><td>Exit price and reason</td><td>1.0872 target hit</td></tr><tr><td>Result (R and money)</td><td>+2.0R / +$99</td></tr><tr><td>Followed the plan?</td><td>Yes / No (what was broken?)</td></tr><tr><td>Emotion before/during</td><td>Calm / impatient / fearful</td></tr><tr><td>Screenshot links</td><td>before entry &amp; after exit</td></tr><tr><td>Lesson</td><td>Waited for close; good patience</td></tr></tbody></table></div>
+<p>Also record <strong>setups you skipped</strong> and why. Over time, the journal shows your real behaviour, not the trader you imagine yourself to be.</p>
+<h2>Step 4: Measure the right statistics</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python"># Results in R (multiples of risk) from a journal or backtest, e.g. +2 = won twice the risk, -1 = full loss
+results = [2, -1, -1, 2, 1.5, -1, 2, -1, -1, -1, 2.5, -1, 2, -1, 1, -1, 2, -1, -1, 2,
+           -1, 2, -1, -0.5, 2, -1, -1, 2, 1.8, -1]
+
+wins = [r for r in results if r &gt; 0]
+losses = [r for r in results if r &lt;= 0]
+win_rate = len(wins) / len(results)
+avg_win = sum(wins) / len(wins)
+avg_loss = -sum(losses) / len(losses)
+expectancy = sum(results) / len(results)
+profit_factor = sum(wins) / -sum(losses)
+
+# Maximum drawdown in R and the longest losing streak
+equity, peak, max_dd, streak, worst_streak = 0, 0, 0, 0, 0
+for r in results:
+    equity += r
+    peak = max(peak, equity)
+    max_dd = max(max_dd, peak - equity)
+    streak = streak + 1 if r &lt;= 0 else 0
+    worst_streak = max(worst_streak, streak)
+
+print(f&quot;Trades: {len(results)}  Win rate: {win_rate:.0%}&quot;)
+print(f&quot;Average win: {avg_win:.2f}R  Average loss: {avg_loss:.2f}R&quot;)
+print(f&quot;Expectancy: {expectancy:+.2f}R per trade  Profit factor: {profit_factor:.2f}&quot;)
+print(f&quot;Total: {equity:+.1f}R  Max drawdown: {max_dd:.1f}R  Longest losing streak: {worst_streak}&quot;)</code></pre></figure>
+<p>What they mean:</p>
+<ul><li><strong>Expectancy</strong> (average R per trade, after costs) must be positive.</li><li><strong>Profit factor</strong> = gross wins ÷ gross losses; above 1 is profitable, and higher is more robust.</li><li><strong>Maximum drawdown</strong> tells you the pain to expect; at 1% risk, a 10R drawdown ≈ 10% of the account.</li><li><strong>Longest losing streak</strong> prepares you mentally: if backtests show 7 losses in a row, expect it live.</li></ul>
+<p>Thirty trades (like the sample above) are still too few to be confident. Aim for 100+.</p>
+<h2>Step 5: Criteria to go live (write yours in advance)</h2>
+<p>Example criteria:</p>
+<ul><li>100+ backtested trades with positive expectancy after costs;</li><li>50+ demo trades over at least 2 months, following the plan in at least 90% of trades;</li><li>demo expectancy positive and maximum drawdown within what you can tolerate;</li><li>an emergency fund in place and live capital that you can lose completely.</li></ul>
+<p>If you don't meet them, keep testing and improving. There's no deadline.</p>
+<h2>Step 6: Tiny live account</h2>
+<ul><li>Start with the <strong>smallest possible size</strong> (micro or cent account), even if you're "sure".</li><li>Expect results to be worse than demo at first (emotions, real slippage).</li><li>Keep journaling. Compare live statistics with demo and backtest.</li><li>Increase size <strong>slowly</strong> (e.g. after every 50 trades that meet your criteria), never after a lucky streak, and never to "win back" losses.</li></ul>
+<h2>Weekly and monthly reviews</h2>
+<p><strong>Weekly (30 min):</strong> plan adherence %, mistakes (which rule broke, and why), best and worst trade, one improvement. <strong>Monthly (1 hour):</strong> statistics vs expectations, which setups work best, whether market conditions changed, whether any rule should be tested for change.</p>
+<h2>Summary</h2>
+<ul><li>Test in steps: backtest 100+ trades → demo 50+ trades → tiny live → slow scaling, with written criteria for each step.</li><li>Avoid overfitting, unrealistic costs and look-ahead bias in backtests.</li><li>Journal every trade (and skipped setups) with reasons, emotions and screenshots.</li><li>Measure expectancy, profit factor, drawdown and losing streaks; increase risk only with evidence.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What TradingView feature replays past candles one by one? (two words)</p><details><summary>Show answer</summary><p>Bar Replay</p></details></li><li><p>Roughly how many backtested trades should you collect before trusting results?</p><details><summary>Show answer</summary><p>100</p></details></li><li><p>Profit factor equals gross wins divided by gross ___ (one word)</p><details><summary>Show answer</summary><p>losses</p></details></li><li><p>Using information that wasn't available at the time in a backtest is called what bias? (two words, or one hyphenated)</p><details><summary>Show answer</summary><p>look-ahead</p></details></li></ol></section></div><p class="static-meta">Lesson 12 of 15 in <a href="/learn/forex/">Forex trading education (zero to advanced, honest and step by step)</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=forex">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/forex/trading-plan-strategies/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Building a trading plan and strategy: written rules, example strategy types and when not to trade</a><a class="btn btn-solid btn-sm" href="/learn/forex/trading-psychology/">Trading psychology: fear, greed, revenge trading, discipline and knowing when it has become gambling <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

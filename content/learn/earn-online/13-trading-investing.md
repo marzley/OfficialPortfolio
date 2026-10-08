@@ -7,6 +7,10 @@ after: virtual-assistance-remote-work
 
 Forex, Deriv and crypto trading are some of the most searched "online money" topics in Kenya, and some of the most dangerous. Social media is full of young people showing cars and screenshots of profits, selling "signals" and "mentorship". Behind the scenes, most retail traders lose money, and many lose savings, school fees and loans. This unit explains what trading really is, how forex and Deriv products work, how to practise safely, how to recognise scams, and the safer ways Kenyans grow money: Treasury bills, money market funds and shares.
 
+:::tip Go deeper
+This unit is a summary. For the full step-by-step course, see [Forex trading education: zero to advanced](./?track=forex&lesson=forex-start-here), and for ten markets compared (including binary options, synthetic indices, crypto, NSE shares and T-bills) see [Trading & investing options explained](./?track=trading-markets&lesson=trading-markets-start-here).
+:::
+
 :::warning Read this before anything else
 - **Trading is not a job and not a salary.** It is a high-risk activity. Brokers regulated in Europe must publish the share of retail client accounts that lose money on leveraged products (CFDs); those published figures are commonly in the range of roughly 60% to 80% or more.
 - **Never trade with money you need**: rent, fees, food, loans, chama money.
