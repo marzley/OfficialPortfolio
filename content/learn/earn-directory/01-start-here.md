@@ -84,7 +84,13 @@ These are general patterns, not guarantees. Two people doing the same method can
 | 33 | [Media and publishing businesses](./?track=earn-directory&lesson=media-publishing-business-methods) | Available |
 | 34 | [Livestock and animal enterprises](./?track=earn-directory&lesson=livestock-animal-enterprises-methods) | Available |
 | 35 | [Digital products, software and online assets](./?track=earn-directory&lesson=digital-products-software-methods) | Available |
-| 36+ | More categories in future updates | Coming |
+| 36 | [Small-scale manufacturing](./?track=earn-directory&lesson=small-manufacturing-methods) | Available |
+| 37 | [Specialist crops and agritech](./?track=earn-directory&lesson=specialist-crops-agritech-methods) | Available |
+| 38 | [Security and facilities services](./?track=earn-directory&lesson=security-facilities-services-methods) | Available |
+| 39 | [Specialist online work](./?track=earn-directory&lesson=specialist-online-work-methods) | Available |
+| 40 | [Public-sector careers and official recruitment](./?track=earn-directory&lesson=public-sector-careers-methods) | Available |
+| 41 | [Creative and performance niches](./?track=earn-directory&lesson=creative-performance-niches-methods) | Available |
+| 42+ | More categories in future updates | Coming |
 
 ## Universal safety rules
 
