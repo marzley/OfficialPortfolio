@@ -66,7 +66,13 @@ These are general patterns, not guarantees. Two people doing the same method can
 | 15 | [Agriculture and agribusiness with online tools](./?track=earn-directory&lesson=agriculture-online-tools-methods) | Available |
 | 16 | [Delivery, transport and local gig work](./?track=earn-directory&lesson=gig-delivery-transport-methods) | Available |
 | 17 | [Events, hospitality, health and wellness](./?track=earn-directory&lesson=events-hospitality-wellness-methods) | Available |
-| 18+ | More categories in future updates | Coming |
+| 18 | [Finance, insurance and money services](./?track=earn-directory&lesson=finance-insurance-agency-methods) | Available |
+| 19 | [Construction, property and real estate](./?track=earn-directory&lesson=construction-real-estate-methods) | Available |
+| 20 | [AI-powered services](./?track=earn-directory&lesson=ai-powered-services-methods) | Available |
+| 21 | [Energy, recycling and environment](./?track=earn-directory&lesson=energy-recycling-environment-methods) | Available |
+| 22 | [Remote professional jobs](./?track=earn-directory&lesson=remote-professional-jobs-methods) | Available |
+| 23 | [Community, NGO and public programmes](./?track=earn-directory&lesson=community-ngo-public-methods) | Available |
+| 24+ | More categories in future updates | Coming |
 
 ## Universal safety rules
 
