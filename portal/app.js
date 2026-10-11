@@ -897,44 +897,61 @@
     msg.id = "lead-msg";
     panel.appendChild(h("details", { className: "admin-panel" }, h("summary", { className: "panel-summary", text: "Add a lead by hand (phone call, walk-in)" }), add));
     panel.appendChild(h("p", { className: "portal-meta", text: "Every enquiry from the website’s forms and the chat call-back appears here automatically." }));
+    // Stage tabs on top; the chosen stage's leads fill the page underneath
+    var stages = [["all", "All"]].concat(LEAD_STAGES);
+    if (!stages.some(function (x) { return x[0] === leadStage; })) leadStage = "new";
+    var tabs = h("div", { className: "lead-tabs", role: "tablist", "aria-label": "Lead stages" });
+    stages.forEach(function (st) {
+      var items = st[0] === "all" ? leads : leads.filter(function (l) { return l.status === st[0]; });
+      var total = items.reduce(function (a, l) { return a + (+l.value || 0); }, 0);
+      tabs.appendChild(h("button", { type: "button", role: "tab", className: "lead-tab lead-" + st[0], "aria-selected": String(st[0] === leadStage),
+        onclick: function () { leadStage = st[0]; renderLeads(); var t = panel.querySelector('.lead-tab[aria-selected="true"]'); if (t) t.focus(); } },
+        h("span", { className: "lead-tab-name", text: st[1] }), h("span", { className: "lead-count", text: String(items.length) }),
+        total ? h("small", { text: ksh(total) }) : null));
+    });
+    panel.appendChild(tabs);
     var lf = filterBar(panel, ".lead-card", "leads");
     panel.appendChild(lf.bar);
-    var board = h("div", { className: "lead-board" });
-    LEAD_STAGES.forEach(function (st) {
-      var items = leads.filter(function (l) { return l.status === st[0]; });
-      var total = items.reduce(function (a, l) { return a + (+l.value || 0); }, 0);
-      var col = h("section", { className: "lead-col lead-" + st[0], "aria-label": st[1] },
-        h("h2", null, st[1] + " ", h("span", { className: "lead-count", text: String(items.length) })), total ? h("p", { className: "portal-meta", text: ksh(total) }) : null);
-      items.forEach(function (l) { col.appendChild(leadCard(l)); });
-      if (!items.length) col.appendChild(h("p", { className: "portal-empty", text: "None" }));
-      board.appendChild(col);
-    });
-    panel.appendChild(board);
+    var shown = leadStage === "all" ? leads : leads.filter(function (l) { return l.status === leadStage; });
+    var grid = h("div", { className: "lead-grid", role: "tabpanel" });
+    shown.forEach(function (l) { grid.appendChild(leadCard(l)); });
+    if (!shown.length) grid.appendChild(h("p", { className: "portal-empty lead-none", text: leadStage === "all" ? "No leads yet." : "No leads in “" + stages.filter(function (x) { return x[0] === leadStage; })[0][1] + "” right now." }));
+    panel.appendChild(grid);
     lf.run();
   }
+  var leadStage = "new";
   function leadCard(l) {
     var st = select(LEAD_STAGES, l.status);
     st.setAttribute("aria-label", "Stage for " + l.name);
     st.addEventListener("change", function () { save("lead_status", { id: l.id, status: st.value }); });
     var notes = h("textarea", { rows: "2", maxlength: "4000", placeholder: "Notes (only your team sees these)", "aria-label": "Notes on " + l.name });
     notes.value = l.notes || "";
-    return h("article", { className: "lead-card portal-card" },
-      h("div", { className: "portal-card-head" }, h("h3", { text: l.name }), l.value > 0 ? h("span", { className: "pill pill-build", text: ksh(l.value) }) : null),
-      h("p", { className: "portal-meta", text: (l.source || "Website") + " · " + day(l.created_at) }),
-      h("p", { className: "row-actions" },
-        l.phone ? h("a", { className: "linklike", href: waTo(l.phone, "Hello " + l.name + ", this is Marzley Tech Solutions. Thank you for reaching out!"), target: "_blank", rel: "noopener noreferrer", text: "WhatsApp" }) : null,
-        l.phone ? h("a", { className: "linklike", href: "tel:" + l.phone.replace(/[^\d+]/g, ""), text: "Call" }) : null,
-        l.email ? h("a", { className: "linklike", href: "mailto:" + l.email, text: "Email" }) : null),
-      l.message ? h("details", null, h("summary", { text: "What they asked" }), h("p", { className: "lead-msg", text: l.message })) : null,
-      st,
-      h("form", { className: "inline-form", onsubmit: function (e) {
-        e.preventDefault();
-        save("lead_save", { id: l.id, name: l.name, email: l.email, phone: l.phone, source: l.source, message: l.message, status: l.status, value: l.value, notes: notes.value });
-      } }, notes, h("button", { type: "submit", className: "btn btn-ghost btn-sm", text: "Save notes" })),
-      l.status !== "won" && l.status !== "lost" ? h("div", { className: "row-actions" },
-        can("money") ? h("button", { type: "button", className: "linklike", onclick: function () { selectTab("quotes"); renderQuotes({ lead_id: l.id, client_name: l.name, client_email: l.email, client_phone: l.phone, title: "", items: "[]", deposit_percent: 50 }); }, text: "Make a quote" }) : null,
-        can("money") ? h("button", { type: "button", className: "linklike", onclick: function () { selectTab("clients"); var qs = $("quick-start"); if (qs) { qs.open = true; var i = qs.querySelectorAll("input"); i[0].value = l.name; i[1].value = l.email; i[2].value = l.phone; qs.setAttribute("data-lead", l.id); i[3].focus(); } }, text: "Won: quick start" }) : null,
-        h("button", { type: "button", className: "linklike danger", onclick: function () { if (confirm("Delete this lead?")) remove("lead", l.id); }, text: "Delete" })) : null);
+    var stageName = (LEAD_STAGES.filter(function (x) { return x[0] === l.status; })[0] || [l.status, l.status])[1];
+    var chip = function (href, icon, label, ext) { return h("a", { className: "lead-chip", href: href, target: ext ? "_blank" : null, rel: ext ? "noopener noreferrer" : null }, h("i", { className: icon, "aria-hidden": "true" }), " " + label); };
+    var open = l.status !== "won" && l.status !== "lost";
+    return h("article", { className: "lead-card lead-s-" + l.status, "data-status": l.status },
+      h("header", { className: "lead-head" },
+        h("span", { className: "lead-avatar", "aria-hidden": "true", text: String(l.name || "?").trim().charAt(0).toUpperCase() }),
+        h("div", null, h("h3", { text: l.name }), h("p", { className: "portal-meta", text: (l.source || "Website") + " · " + day(l.created_at) })),
+        h("div", { className: "lead-head-side" }, l.value > 0 ? h("span", { className: "pill pill-build", text: ksh(l.value) }) : null,
+          leadStage === "all" ? h("span", { className: "lead-stage-tag lead-" + l.status, text: stageName }) : null)),
+      (l.phone || l.email) ? h("div", { className: "lead-chips" },
+        l.phone ? chip(waTo(l.phone, "Hello " + l.name + ", this is Marzley Tech Solutions. Thank you for reaching out!"), "fa-brands fa-whatsapp", "WhatsApp", true) : null,
+        l.phone ? chip("tel:" + l.phone.replace(/[^\d+]/g, ""), "fa-solid fa-phone", "Call") : null,
+        l.email ? chip("mailto:" + l.email, "fa-solid fa-envelope", "Email") : null) : null,
+      l.message ? h("details", { className: "lead-ask" }, h("summary", { text: "What they asked" }), h("p", { className: "lead-msg", text: l.message })) : null,
+      h("div", { className: "lead-work" },
+        h("label", { className: "lead-stage" }, h("span", { text: "Stage" }), st),
+        h("form", { className: "lead-notes", onsubmit: function (e) {
+          e.preventDefault();
+          save("lead_save", { id: l.id, name: l.name, email: l.email, phone: l.phone, source: l.source, message: l.message, status: l.status, value: l.value, notes: notes.value });
+        } }, notes, h("button", { type: "submit", className: "btn btn-ghost btn-sm", text: "Save notes" }))),
+      h("footer", { className: "lead-actions" },
+        open && can("money") ? h("button", { type: "button", className: "btn btn-solid btn-sm", onclick: function () { selectTab("quotes"); renderQuotes({ lead_id: l.id, client_name: l.name, client_email: l.email, client_phone: l.phone, title: "", items: "[]", deposit_percent: 50 }); } },
+          h("i", { className: "fa-solid fa-file-signature", "aria-hidden": "true" }), " Make a quote") : null,
+        open && can("money") ? h("button", { type: "button", className: "btn btn-ghost btn-sm", onclick: function () { selectTab("clients"); var qs = $("quick-start"); if (qs) { qs.open = true; var i = qs.querySelectorAll("input"); i[0].value = l.name; i[1].value = l.email; i[2].value = l.phone; qs.setAttribute("data-lead", l.id); i[3].focus(); } } },
+          h("i", { className: "fa-solid fa-trophy", "aria-hidden": "true" }), " Won: quick start") : null,
+        h("button", { type: "button", className: "linklike danger lead-del", onclick: function () { remove("lead", l.id); } }, h("i", { className: "fa-solid fa-xmark", "aria-hidden": "true" }), " Delete")));
   }
 
   // ---------- quotes ----------
