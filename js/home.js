@@ -1072,6 +1072,17 @@
   if (donate) {
     var coffee = null, coffeeTimer = null;
     var kes = function (n) { return "KSh " + Number(n).toLocaleString("en-KE"); };
+    // Supporters anywhere: outside Kenya the amounts show in US dollars and card comes first.
+    // Card payments are charged in KSh (our Paystack account); the supporter's bank converts.
+    var USD_KES = 129;   // approximate rate, only used to turn dollar amounts into KSh
+    var inKenya = (function () {
+      try { if (Intl.DateTimeFormat().resolvedOptions().timeZone === "Africa/Nairobi") return true; } catch (e) {}
+      return /-KE$/i.test(navigator.language || "");
+    })();
+    var cur = inKenya ? "KES" : "USD";
+    var PRESETS = { KES: [[100, "1 coffee"], [250, "2 coffees"], [500, "A coffee and snacks"], [1000, "Lunch for the team"]],
+                    USD: [[3, "1 coffee"], [5, "2 coffees"], [10, "A coffee and snacks"], [25, "Lunch for the team"]] };
+    var money = function (n, c) { return (c || cur) === "USD" ? "$" + Number(n).toLocaleString("en-US") : kes(n); };
     var buildCoffee = function () {
       var d = document.createElement("dialog");
       d.className = "coffee";
@@ -1080,16 +1091,14 @@
         '<button type="button" class="coffee-x" data-close aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>' +
         '<div class="coffee-step" data-step="pick">' +
           '<div class="coffee-head"><span class="coffee-cup" aria-hidden="true">☕</span><div><h2 id="coffee-title">Buy us a coffee</h2>' +
-          '<p>Your support keeps our lessons, notes and tools free for everyone learning tech in Kenya. Asante!</p></div></div>' +
-          '<fieldset class="coffee-amounts"><legend>Choose an amount</legend>' +
-            [[100, "1 coffee"], [250, "2 coffees"], [500, "A coffee and snacks"], [1000, "Lunch for the team"]].map(function (a, i) {
-              return '<label class="coffee-amt"><input type="radio" name="coffee-amt" value="' + a[0] + '"' + (i === 1 ? " checked" : "") + '><span><strong>' + kes(a[0]) + "</strong><small>" + a[1] + "</small></span></label>";
-            }).join("") +
-            '<label class="coffee-amt coffee-own"><input type="radio" name="coffee-amt" value="own"><span><strong>Other</strong><input type="number" inputmode="numeric" min="10" max="150000" step="1" placeholder="KSh" aria-label="Your own amount in KSh" id="coffee-own"></span></label>' +
+          '<p>Your support keeps our lessons, notes and tools free for learners in Kenya and around the world. Thank you!</p></div></div>' +
+          '<div class="coffee-cur" role="group" aria-label="Currency"><button type="button" data-cur="USD">$ USD</button><button type="button" data-cur="KES">KSh</button></div>' +
+          '<fieldset class="coffee-amounts"><legend>Choose an amount</legend><div class="coffee-presets"></div>' +
+            '<label class="coffee-amt coffee-own"><input type="radio" name="coffee-amt" value="own"><span><strong>Other</strong><input type="number" inputmode="decimal" min="1" max="150000" step="any" id="coffee-own"></span></label>' +
           "</fieldset>" +
           '<div class="coffee-tabs" role="tablist" aria-label="How to pay">' +
-            '<button type="button" role="tab" aria-selected="true" data-tab="mpesa"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> M-Pesa</button>' +
-            '<button type="button" role="tab" aria-selected="false" data-tab="card"><i class="fa-solid fa-credit-card" aria-hidden="true"></i> Card</button></div>' +
+            '<button type="button" role="tab" aria-selected="false" data-tab="card"><i class="fa-solid fa-credit-card" aria-hidden="true"></i> Card (any country)</button>' +
+            '<button type="button" role="tab" aria-selected="false" data-tab="mpesa"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> M-Pesa (Kenya)</button></div>' +
           '<form class="coffee-form" data-pane="mpesa" novalidate>' +
             '<label for="coffee-phone">M-Pesa number</label><div class="coffee-phone"><span>+254</span><input id="coffee-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="712 345 678" maxlength="13"></div>' +
             '<label for="coffee-name">Your name <small>(optional, so we can say thank you)</small></label><input id="coffee-name" autocomplete="name" maxlength="80">' +
@@ -1100,7 +1109,7 @@
             '<label for="coffee-email">Email (for your receipt)</label><input id="coffee-email" type="email" autocomplete="email" maxlength="190">' +
             '<p class="coffee-err" role="alert"></p>' +
             '<button type="submit" class="btn btn-solid coffee-go">Pay by card · <span data-amt></span></button>' +
-            '<p class="coffee-alt"><i class="fa-solid fa-lock" aria-hidden="true"></i> Secure payment by Paystack. Visa and Mastercard accepted.</p></form>' +
+            '<p class="coffee-alt"><i class="fa-solid fa-lock" aria-hidden="true"></i> Secure payment by Paystack. Visa and Mastercard from any country. <span class="coffee-fx"></span></p></form>' +
         "</div>" +
         '<div class="coffee-step coffee-center" data-step="wait" hidden><span class="coffee-ring" aria-hidden="true"><i class="fa-solid fa-mobile-screen"></i></span><h2>Check your phone</h2>' +
           '<p class="coffee-msg" role="status" aria-live="polite"></p><button type="button" class="btn btn-ghost" data-close>Close</button></div>' +
@@ -1108,25 +1117,42 @@
           '<p class="coffee-msg"></p><button type="button" class="btn btn-solid" data-close>Close</button></div>';
       document.body.appendChild(d);
 
-      var amount = function () {
+      // The amount in the chosen currency, and what we charge in KSh
+      var picked = function () {
         var on = d.querySelector('input[name="coffee-amt"]:checked');
         if (!on) return 0;
-        return on.value === "own" ? Math.floor(Number(d.querySelector("#coffee-own").value) || 0) : Number(on.value);
+        var v = on.value === "own" ? Number(d.querySelector("#coffee-own").value) || 0 : Number(on.value);
+        return cur === "USD" ? Math.round(v * 100) / 100 : Math.floor(v);
       };
+      var amount = function () { return cur === "USD" ? Math.round(picked() * USD_KES) : picked(); };
       var paint = function () {
-        var a = amount();
-        d.querySelectorAll("[data-amt]").forEach(function (el) { el.textContent = a >= 10 ? kes(a) : "choose an amount"; });
+        var a = amount(), p = picked();
+        var label = a >= 10 ? (cur === "USD" ? money(p) + " (≈ " + kes(a) + ")" : kes(a)) : "choose an amount";
+        d.querySelectorAll("[data-amt]").forEach(function (el) { el.textContent = label; });
+        d.querySelector(".coffee-fx").textContent = cur === "USD" ? "Charged in Kenyan shillings (about " + kes(USD_KES) + " per $1); your bank converts it." : "";
       };
+      var setCur = function (c) {
+        cur = c;
+        d.querySelectorAll("[data-cur]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-cur") === c)); });
+        d.querySelector(".coffee-presets").innerHTML = PRESETS[c].map(function (a, i) {
+          return '<label class="coffee-amt"><input type="radio" name="coffee-amt" value="' + a[0] + '"' + (i === 1 ? " checked" : "") + '><span><strong>' + money(a[0], c) + "</strong><small>" + a[1] + "</small></span></label>";
+        }).join("");
+        var own = d.querySelector("#coffee-own");
+        own.value = ""; own.placeholder = c === "USD" ? "$" : "KSh"; own.setAttribute("aria-label", "Your own amount in " + (c === "USD" ? "US dollars" : "KSh"));
+        paint();
+      };
+      var setTab = function (name) {
+        d.querySelectorAll("[data-tab]").forEach(function (o) { o.setAttribute("aria-selected", String(o.getAttribute("data-tab") === name)); });
+        d.querySelectorAll("[data-pane]").forEach(function (p) { p.hidden = p.getAttribute("data-pane") !== name; });
+      };
+      d.querySelectorAll("[data-cur]").forEach(function (b) { b.addEventListener("click", function () { setCur(b.getAttribute("data-cur")); }); });
       var step = function (name) { d.querySelectorAll(".coffee-step").forEach(function (el) { el.hidden = el.getAttribute("data-step") !== name; }); };
       var err = function (pane, text) { d.querySelector('[data-pane="' + pane + '"] .coffee-err').textContent = text || ""; };
       d.addEventListener("change", paint);
       d.querySelector("#coffee-own").addEventListener("input", function () { d.querySelector('.coffee-own input[type="radio"]').checked = true; paint(); });
       d.querySelector("#coffee-own").addEventListener("focus", function () { d.querySelector('.coffee-own input[type="radio"]').checked = true; paint(); });
       d.querySelectorAll("[data-tab]").forEach(function (t) {
-        t.addEventListener("click", function () {
-          d.querySelectorAll("[data-tab]").forEach(function (o) { o.setAttribute("aria-selected", String(o === t)); });
-          d.querySelectorAll("[data-pane]").forEach(function (p) { p.hidden = p.getAttribute("data-pane") !== t.getAttribute("data-tab"); });
-        });
+        t.addEventListener("click", function () { setTab(t.getAttribute("data-tab")); if (t.getAttribute("data-tab") === "mpesa" && cur !== "KES") setCur("KES"); });
       });
       d.addEventListener("click", function (e) {
         if (e.target === d || (e.target.closest && e.target.closest("[data-close]"))) d.close();
@@ -1176,7 +1202,7 @@
       d.querySelector('[data-pane="card"]').addEventListener("submit", function (e) {
         e.preventDefault();
         var a = amount(), email = d.querySelector("#coffee-email").value.trim();
-        if (a < 10) return err("card", "Choose an amount of at least KSh 10.");
+        if (a < 10) return err("card", cur === "USD" ? "Choose an amount of at least $1." : "Choose an amount of at least KSh 10.");
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return err("card", "Enter your email address for the receipt.");
         err("card", "");
         var open = function () {
@@ -1184,7 +1210,7 @@
           window.PaystackPop.setup({
             key: "pk_live_60a185fa3aad8a497acdd0013d119219ca5a19c2", email: email, amount: Math.round(a * 100), currency: "KES",
             callback: function (resp) {
-              d.querySelector('[data-step="done"] .coffee-msg').textContent = "We received " + kes(a) + " (reference " + resp.reference + "). Thank you for supporting free learning in Kenya.";
+              d.querySelector('[data-step="done"] .coffee-msg').textContent = "We received your " + (cur === "USD" ? money(picked()) : kes(a)) + " gift (reference " + resp.reference + "). Thank you for supporting free learning!";
               step("done"); d.showModal();
             }
           }).openIframe();
@@ -1196,7 +1222,8 @@
         sc.onerror = function () { window.open("https://paystack.shop/pay/yxq9x-qg6d", "_blank", "noopener"); };
         document.head.appendChild(sc);
       });
-      paint();
+      setCur(cur);
+      setTab(inKenya ? "mpesa" : "card");
       return d;
     };
     donate.addEventListener("click", function () {
