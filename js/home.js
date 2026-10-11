@@ -1110,6 +1110,8 @@
             '<p class="coffee-err" role="alert"></p>' +
             '<button type="submit" class="btn btn-solid coffee-go">Pay by card · <span data-amt></span></button>' +
             '<p class="coffee-alt"><i class="fa-solid fa-lock" aria-hidden="true"></i> Secure payment by Paystack. Visa and Mastercard from any country. <span class="coffee-fx"></span></p></form>' +
+          '<p class="coffee-or"><span>or</span></p>' +
+          '<a class="coffee-bmc" href="https://buymeacoffee.com/marzley" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">☕</span><span><strong>Support us on Buy Me a Coffee</strong><small>Card, PayPal, Apple Pay or Google Pay · any country</small></span><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>' +
         "</div>" +
         '<div class="coffee-step coffee-center" data-step="wait" hidden><span class="coffee-ring" aria-hidden="true"><i class="fa-solid fa-mobile-screen"></i></span><h2>Check your phone</h2>' +
           '<p class="coffee-msg" role="status" aria-live="polite"></p><button type="button" class="btn btn-ghost" data-close>Close</button></div>' +
@@ -1224,6 +1226,13 @@
       });
       setCur(cur);
       setTab(inKenya ? "mpesa" : "card");
+      if (!inKenya) {
+        // Abroad, Buy Me a Coffee is the easiest way to give, so it comes first
+        var head = d.querySelector(".coffee-head"), bmc = d.querySelector(".coffee-bmc"), or = d.querySelector(".coffee-or");
+        head.insertAdjacentElement("afterend", bmc);
+        bmc.insertAdjacentElement("afterend", or);
+        or.querySelector("span").textContent = "or pay here";
+      }
       return d;
     };
     donate.addEventListener("click", function () {
