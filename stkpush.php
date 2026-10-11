@@ -46,8 +46,8 @@ $logFile        = $logDir . '/stk_request.log';
 // INPUT
 $rawPhone = $_POST['phone'] ?? '';
 // What the payment is for (shown on the M-Pesa statement); only known values are accepted
-$purpose = in_array($_POST['purpose'] ?? '', ['deposit', 'care', 'demo'], true) ? $_POST['purpose'] : 'deposit';
-$transactionDesc = ['deposit' => 'Project deposit', 'care' => 'Care plan', 'demo' => 'Live demo'][$purpose];
+$purpose = in_array($_POST['purpose'] ?? '', ['deposit', 'care', 'demo', 'support'], true) ? $_POST['purpose'] : 'deposit';
+$transactionDesc = ['deposit' => 'Project deposit', 'care' => 'Care plan', 'demo' => 'Live demo', 'support' => 'Support Marzley'][$purpose];
 $amount   = isset($_POST['amount']) ? (int)$_POST['amount'] : 0;
 if ($amount <= 0) $amount = 1;
 if ($amount > 150000) {

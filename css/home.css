@@ -4357,8 +4357,8 @@ body:not(.subpage) .work-list > li:nth-child(n + 7) {
 /* ---------- back to top ---------- */
 .to-top {
   position: fixed;
-  left: 20px;
-  bottom: 86px;
+  right: 20px;
+  bottom: 24px;
   z-index: 60;
   display: inline-flex;
   align-items: center;
@@ -4383,8 +4383,8 @@ body:not(.subpage) .work-list > li:nth-child(n + 7) {
 
 @media (max-width: 700px) {
   .to-top {
-    bottom: 88px;
-    left: 24px;
+    bottom: 20px;
+    right: 16px;
   }
 }
 
@@ -6067,3 +6067,53 @@ html.gm-open { overflow: hidden; }
 .post-body .btn { text-decoration: none; }
 .post-body .author-topic a, .post-body .author-links a { text-decoration: none; }
 .post-body .author-topic a:hover, .post-body .author-links a:hover { text-decoration: underline; }
+
+/* ---------- "Buy us a coffee" ---------- */
+.coffee { width: min(460px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); margin: auto; padding: 26px 22px 22px; border: 0; border-radius: 22px; background: var(--card); color: var(--fg); box-shadow: var(--shadow-lg); overflow-y: auto; }
+.coffee::backdrop { background: rgba(8, 17, 31, .62); backdrop-filter: blur(3px); }
+.coffee[open] { animation: coffee-in .28s var(--ease); }
+@keyframes coffee-in { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+.coffee h2 { margin: 0 0 4px; font-size: 22px; letter-spacing: -.02em; color: var(--heading); }
+.coffee p { margin: 0; color: var(--fg-muted); font-size: 14.5px; line-height: 1.5; }
+.coffee-x { position: absolute; top: 12px; right: 12px; width: 38px; height: 38px; border: 0; border-radius: 50%; background: var(--bg); color: var(--fg-muted); cursor: pointer; font-size: 16px; }
+.coffee-x:hover { color: var(--heading); }
+.coffee-head { display: flex; gap: 14px; align-items: flex-start; padding-right: 36px; margin-bottom: 18px; }
+.coffee-cup { display: grid; place-items: center; flex: none; width: 54px; height: 54px; border-radius: 16px; background: linear-gradient(135deg, #ffd66b, var(--amber)); font-size: 28px; box-shadow: 0 8px 20px rgba(255, 184, 0, .35); }
+.coffee-big { width: 76px; height: 76px; font-size: 40px; border-radius: 50%; margin: 0 auto 10px; }
+.coffee-amounts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 0 16px; padding: 0; border: 0; }
+.coffee-amounts legend { margin-bottom: 8px; font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--fg-muted); }
+.coffee-amt { position: relative; cursor: pointer; }
+.coffee-amt > input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+.coffee-amt > span { display: grid; gap: 2px; min-height: 64px; padding: 10px 12px; border: 2px solid var(--line); border-radius: 14px; background: var(--bg); transition: border-color .15s, background .15s, transform .15s; }
+.coffee-amt strong { font-size: 17px; color: var(--heading); }
+.coffee-amt small { font-size: 12.5px; color: var(--fg-muted); }
+.coffee-amt:hover > span { border-color: var(--amber); }
+.coffee-amt > input:checked + span { border-color: var(--amber); background: var(--current-bg); }
+.coffee-amt > input:focus-visible + span { outline: 3px solid var(--blue); outline-offset: 2px; }
+.coffee-own input[type="number"] { width: 100%; min-width: 0; padding: 4px 0 0; border: 0; border-bottom: 1px dashed var(--field-border); background: transparent; color: var(--fg); font: inherit; font-size: 15px; }
+.coffee-own input[type="number"]:focus { outline: none; border-bottom-color: var(--amber); }
+.coffee-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; margin-bottom: 14px; border-radius: 12px; background: var(--bg); }
+.coffee-tabs button { min-height: 40px; border: 0; border-radius: 9px; background: none; color: var(--fg-muted); font: inherit; font-weight: 700; cursor: pointer; }
+.coffee-tabs button[aria-selected="true"] { background: var(--card); color: var(--heading); box-shadow: var(--shadow); }
+.coffee-form { display: grid; gap: 8px; }
+.coffee-form label { font-size: 13.5px; font-weight: 700; color: var(--heading); }
+.coffee-form label small { font-weight: 500; color: var(--fg-muted); }
+.coffee-form > input, .coffee-phone { min-height: 48px; border: 1px solid var(--field-border); border-radius: 12px; background: var(--field-bg); color: var(--fg); font: inherit; }
+.coffee-form > input { padding: 0 14px; }
+.coffee-phone { display: flex; align-items: center; overflow: hidden; }
+.coffee-phone span { padding: 0 10px 0 14px; color: var(--fg-muted); font-weight: 700; }
+.coffee-phone input { flex: 1; min-width: 0; height: 46px; border: 0; background: transparent; color: var(--fg); font: inherit; }
+.coffee-phone input:focus { outline: none; }
+.coffee-phone:focus-within, .coffee-form > input:focus { outline: 3px solid rgba(255, 184, 0, .35); border-color: var(--amber); }
+.coffee-err { min-height: 0; color: #dc2626 !important; font-weight: 600; font-size: 13.5px !important; }
+.coffee-err:empty { display: none; }
+.coffee-go { justify-content: center; min-height: 50px; margin-top: 4px; font-size: 15.5px; }
+.coffee-alt { text-align: center; font-size: 13px !important; }
+.coffee-alt strong { color: var(--heading); }
+.coffee-center { display: grid; justify-items: center; gap: 10px; padding: 10px 6px 4px; text-align: center; }
+.coffee-ring { display: grid; place-items: center; width: 76px; height: 76px; border-radius: 50%; background: var(--current-bg); color: var(--amber-text); font-size: 30px; animation: coffee-pulse 1.6s ease-in-out infinite; }
+@keyframes coffee-pulse { 50% { box-shadow: 0 0 0 14px rgba(255, 184, 0, .15); } }
+@media (prefers-reduced-motion: reduce) { .coffee[open], .coffee-ring { animation: none; } }
+@media (max-width: 380px) { .coffee-amounts { grid-template-columns: 1fr; } }
+.footer-grid #donate-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; border: 1px solid var(--amber); border-radius: 999px; color: var(--amber); font-weight: 700; transition: background .15s, color .15s; }
+.footer-grid #donate-btn:hover, .footer-grid #donate-btn:focus-visible { background: var(--amber); color: var(--navy); }

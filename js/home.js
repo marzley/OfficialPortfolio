@@ -588,9 +588,9 @@
       if (returnFocus) a11yToggle.focus();
     };
     // ----- movable button: drag (or arrow keys) along any screen edge -----
-    var DOCK_KEY = "marzley-a11y-dock";
+    var DOCK_KEY = "marzley-a11y-dock-2";   // new key: everyone starts on the right again
     var BTN = 52, HEADER = 72, GAP = 8;
-    var dock = { edge: "left", pos: 0.5 };
+    var dock = { edge: "right", pos: 0.5 };
     try {
       var savedDock = JSON.parse(localStorage.getItem(DOCK_KEY) || "null");
       if (savedDock && /^(left|right|top|bottom)$/.test(savedDock.edge)) dock = savedDock;
@@ -1067,33 +1067,141 @@
     setInterval(updateOpen, 60000);
   }
 
-  /* ---------- donate (Paystack) ---------- */
+  /* ---------- "Buy us a coffee": M-Pesa prompt or card (Paystack) ---------- */
   var donate = document.getElementById("donate-btn");
   if (donate) {
-    var pay = function () {
-      var amount = Number(prompt("Enter the amount you want to donate (KSh):"));
-      if (!amount || amount <= 0) return;
-      var email = prompt("Your email address (for the receipt):");
-      if (!email || email.indexOf("@") === -1) return;
-      window.PaystackPop.setup({
-        key: "pk_live_60a185fa3aad8a497acdd0013d119219ca5a19c2",
-        email: email,
-        amount: Math.round(amount * 100),
-        currency: "KES",
-        callback: function (response) {
-          alert("Thank you for your support! Reference: " + response.reference);
-        }
-      }).openIframe();
+    var coffee = null, coffeeTimer = null;
+    var kes = function (n) { return "KSh " + Number(n).toLocaleString("en-KE"); };
+    var buildCoffee = function () {
+      var d = document.createElement("dialog");
+      d.className = "coffee";
+      d.setAttribute("aria-labelledby", "coffee-title");
+      d.innerHTML =
+        '<button type="button" class="coffee-x" data-close aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>' +
+        '<div class="coffee-step" data-step="pick">' +
+          '<div class="coffee-head"><span class="coffee-cup" aria-hidden="true">☕</span><div><h2 id="coffee-title">Buy us a coffee</h2>' +
+          '<p>Your support keeps our lessons, notes and tools free for everyone learning tech in Kenya. Asante!</p></div></div>' +
+          '<fieldset class="coffee-amounts"><legend>Choose an amount</legend>' +
+            [[100, "1 coffee"], [250, "2 coffees"], [500, "A coffee and snacks"], [1000, "Lunch for the team"]].map(function (a, i) {
+              return '<label class="coffee-amt"><input type="radio" name="coffee-amt" value="' + a[0] + '"' + (i === 1 ? " checked" : "") + '><span><strong>' + kes(a[0]) + "</strong><small>" + a[1] + "</small></span></label>";
+            }).join("") +
+            '<label class="coffee-amt coffee-own"><input type="radio" name="coffee-amt" value="own"><span><strong>Other</strong><input type="number" inputmode="numeric" min="10" max="150000" step="1" placeholder="KSh" aria-label="Your own amount in KSh" id="coffee-own"></span></label>' +
+          "</fieldset>" +
+          '<div class="coffee-tabs" role="tablist" aria-label="How to pay">' +
+            '<button type="button" role="tab" aria-selected="true" data-tab="mpesa"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> M-Pesa</button>' +
+            '<button type="button" role="tab" aria-selected="false" data-tab="card"><i class="fa-solid fa-credit-card" aria-hidden="true"></i> Card</button></div>' +
+          '<form class="coffee-form" data-pane="mpesa" novalidate>' +
+            '<label for="coffee-phone">M-Pesa number</label><div class="coffee-phone"><span>+254</span><input id="coffee-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="712 345 678" maxlength="13"></div>' +
+            '<label for="coffee-name">Your name <small>(optional, so we can say thank you)</small></label><input id="coffee-name" autocomplete="name" maxlength="80">' +
+            '<p class="coffee-err" role="alert"></p>' +
+            '<button type="submit" class="btn btn-solid coffee-go">Send M-Pesa prompt · <span data-amt></span></button>' +
+            '<p class="coffee-alt">Or pay directly: <strong>Lipa na M-Pesa › Buy Goods › Till 6095737</strong></p></form>' +
+          '<form class="coffee-form" data-pane="card" hidden novalidate>' +
+            '<label for="coffee-email">Email (for your receipt)</label><input id="coffee-email" type="email" autocomplete="email" maxlength="190">' +
+            '<p class="coffee-err" role="alert"></p>' +
+            '<button type="submit" class="btn btn-solid coffee-go">Pay by card · <span data-amt></span></button>' +
+            '<p class="coffee-alt"><i class="fa-solid fa-lock" aria-hidden="true"></i> Secure payment by Paystack. Visa and Mastercard accepted.</p></form>' +
+        "</div>" +
+        '<div class="coffee-step coffee-center" data-step="wait" hidden><span class="coffee-ring" aria-hidden="true"><i class="fa-solid fa-mobile-screen"></i></span><h2>Check your phone</h2>' +
+          '<p class="coffee-msg" role="status" aria-live="polite"></p><button type="button" class="btn btn-ghost" data-close>Close</button></div>' +
+        '<div class="coffee-step coffee-center" data-step="done" hidden><span class="coffee-cup coffee-big" aria-hidden="true">☕</span><h2>Asante sana!</h2>' +
+          '<p class="coffee-msg"></p><button type="button" class="btn btn-solid" data-close>Close</button></div>';
+      document.body.appendChild(d);
+
+      var amount = function () {
+        var on = d.querySelector('input[name="coffee-amt"]:checked');
+        if (!on) return 0;
+        return on.value === "own" ? Math.floor(Number(d.querySelector("#coffee-own").value) || 0) : Number(on.value);
+      };
+      var paint = function () {
+        var a = amount();
+        d.querySelectorAll("[data-amt]").forEach(function (el) { el.textContent = a >= 10 ? kes(a) : "choose an amount"; });
+      };
+      var step = function (name) { d.querySelectorAll(".coffee-step").forEach(function (el) { el.hidden = el.getAttribute("data-step") !== name; }); };
+      var err = function (pane, text) { d.querySelector('[data-pane="' + pane + '"] .coffee-err').textContent = text || ""; };
+      d.addEventListener("change", paint);
+      d.querySelector("#coffee-own").addEventListener("input", function () { d.querySelector('.coffee-own input[type="radio"]').checked = true; paint(); });
+      d.querySelector("#coffee-own").addEventListener("focus", function () { d.querySelector('.coffee-own input[type="radio"]').checked = true; paint(); });
+      d.querySelectorAll("[data-tab]").forEach(function (t) {
+        t.addEventListener("click", function () {
+          d.querySelectorAll("[data-tab]").forEach(function (o) { o.setAttribute("aria-selected", String(o === t)); });
+          d.querySelectorAll("[data-pane]").forEach(function (p) { p.hidden = p.getAttribute("data-pane") !== t.getAttribute("data-tab"); });
+        });
+      });
+      d.addEventListener("click", function (e) {
+        if (e.target === d || (e.target.closest && e.target.closest("[data-close]"))) d.close();
+      });
+      d.addEventListener("close", function () { clearTimeout(coffeeTimer); step("pick"); });
+
+      // M-Pesa: a prompt on their phone, then wait for Safaricom's confirmation
+      var poll = function (id, tries) {
+        fetch("status.php?id=" + encodeURIComponent(id), { headers: { Accept: "application/json" }, cache: "no-store" })
+          .then(function (r) { return r.json(); })
+          .then(function (st) {
+            if (st.status === "paid") {
+              d.querySelector('[data-step="done"] .coffee-msg').textContent = "We received " + kes(st.amount || amount()) + (st.receipt ? " (M-Pesa " + st.receipt + ")" : "") + ". Thank you for supporting free learning in Kenya.";
+              step("done");
+            } else if (st.status === "failed") {
+              step("pick"); err("mpesa", "The payment didn't go through" + (st.message ? ": " + st.message : "") + ". No money was taken. You can try again.");
+            } else if (tries > 0) coffeeTimer = setTimeout(function () { poll(id, tries - 1); }, 3000);
+            else d.querySelector('[data-step="wait"] .coffee-msg').textContent = "Still waiting for M-Pesa. If you entered your PIN, you'll get the M-Pesa SMS. Thank you!";
+          })
+          .catch(function () { if (tries > 0) coffeeTimer = setTimeout(function () { poll(id, tries - 1); }, 3000); });
+      };
+      d.querySelector('[data-pane="mpesa"]').addEventListener("submit", function (e) {
+        e.preventDefault();
+        var a = amount(), raw = d.querySelector("#coffee-phone").value.replace(/[\s-]/g, "").replace(/^\+?254/, "").replace(/^0/, "");
+        if (a < 10) return err("mpesa", "Choose an amount of at least KSh 10.");
+        if (!/^[17]\d{8}$/.test(raw)) return err("mpesa", "Enter your M-Pesa number, for example 712 345 678.");
+        err("mpesa", "");
+        var btn = e.target.querySelector(".coffee-go");
+        btn.disabled = true;
+        var body = new FormData();
+        body.append("phone", "0" + raw); body.append("amount", String(a)); body.append("purpose", "support");
+        body.append("name", d.querySelector("#coffee-name").value.trim());
+        fetch("stkpush.php", { method: "POST", body: body, headers: { Accept: "application/json" } })
+          .then(function (r) { return r.json().catch(function () { return {}; }); })
+          .then(function (res) {
+            btn.disabled = false;
+            if (String(res.ResponseCode) === "0" && res.CheckoutRequestID) {
+              d.querySelector('[data-step="wait"] .coffee-msg').textContent = "We sent a " + kes(a) + " M-Pesa prompt to 0" + raw.slice(0, 3) + "•••" + raw.slice(-3) + ". Enter your M-Pesa PIN to complete it.";
+              step("wait");
+              poll(res.CheckoutRequestID, 30);
+            } else err("mpesa", (res.error || res.errorMessage || "M-Pesa couldn't send the prompt.") + " You can also pay to Till 6095737.");
+          })
+          .catch(function () { btn.disabled = false; err("mpesa", "Couldn't reach M-Pesa. Check your connection, or pay to Till 6095737."); });
+      });
+
+      // Card: Paystack's script (and the 120 KB it pulls in) loads only now
+      d.querySelector('[data-pane="card"]').addEventListener("submit", function (e) {
+        e.preventDefault();
+        var a = amount(), email = d.querySelector("#coffee-email").value.trim();
+        if (a < 10) return err("card", "Choose an amount of at least KSh 10.");
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return err("card", "Enter your email address for the receipt.");
+        err("card", "");
+        var open = function () {
+          d.close();
+          window.PaystackPop.setup({
+            key: "pk_live_60a185fa3aad8a497acdd0013d119219ca5a19c2", email: email, amount: Math.round(a * 100), currency: "KES",
+            callback: function (resp) {
+              d.querySelector('[data-step="done"] .coffee-msg').textContent = "We received " + kes(a) + " (reference " + resp.reference + "). Thank you for supporting free learning in Kenya.";
+              step("done"); d.showModal();
+            }
+          }).openIframe();
+        };
+        if (window.PaystackPop) return open();
+        var sc = document.createElement("script");
+        sc.src = "https://js.paystack.co/v1/inline.js";
+        sc.onload = function () { if (window.PaystackPop) open(); else window.open("https://paystack.shop/pay/yxq9x-qg6d", "_blank", "noopener"); };
+        sc.onerror = function () { window.open("https://paystack.shop/pay/yxq9x-qg6d", "_blank", "noopener"); };
+        document.head.appendChild(sc);
+      });
+      paint();
+      return d;
     };
-    // Paystack's script (and the 120 KB it pulls in) loads only when someone clicks, not on every page
     donate.addEventListener("click", function () {
-      if (window.PaystackPop) return pay();
-      var fallback = function () { window.open("https://paystack.shop/pay/yxq9x-qg6d", "_blank", "noopener"); };
-      var s = document.createElement("script");
-      s.src = "https://js.paystack.co/v1/inline.js";
-      s.onload = function () { if (window.PaystackPop) pay(); else fallback(); };
-      s.onerror = fallback;
-      document.head.appendChild(s);
+      if (!coffee) coffee = buildCoffee();
+      if (typeof coffee.showModal === "function") coffee.showModal(); else coffee.setAttribute("open", "");
     });
   }
 

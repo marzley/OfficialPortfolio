@@ -787,6 +787,13 @@ function settle_site_payment(string $checkoutId, array $r): string {
     }
     if (!q("UPDATE site_payments SET status = 'paid', receipt = ?, paid_amount = ?, paid_at = ? WHERE id = ? AND status = 'pending'", [$receipt, $amount, now(), $sp['id']])->rowCount()) return 'paid';
     if ($sp['purpose'] === 'demo') { audit('demo_paid', "KSh $amount M-Pesa $receipt", 'M-Pesa'); return 'paid'; }
+    if ($sp['purpose'] === 'support') {
+        // "Buy us a coffee": a gift, not a project payment, so it doesn't go on the Leads board
+        $who = $sp['name'] ?: 'Someone';
+        audit('support_paid', "KSh $amount from $who M-Pesa $receipt", 'M-Pesa');
+        notify_admins("Coffee support: KSh " . number_format($amount) . " from $who", "$who supported Marzley Tech with KSh " . number_format($amount) . " (Buy us a coffee).\n\nPhone: {$sp['phone']}\nM-Pesa code: $receipt\n\nConsider sending a thank-you message.");
+        return 'paid';
+    }
 
     $what = $sp['purpose'] === 'care' ? 'Care plan' . ($sp['plan'] ? " ({$sp['plan']})" : '') : 'Project deposit';
     $who = $sp['name'] ?: 'Someone';
