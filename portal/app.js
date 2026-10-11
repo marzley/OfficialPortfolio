@@ -2486,6 +2486,31 @@
   var adminPw = $("admin-password");
   if (adminPw) adminPw.addEventListener("click", function () { refreshPw().then(function () { openPassword(false); }); });
 
+  // ---------- phones: the menu is a side panel opened with the ☰ button ----------
+  var sideQuery = window.matchMedia("(max-width: 900px)");
+  function setSide(view, open) {
+    var btn = view.querySelector(".side-toggle"), back = view.querySelector(".side-backdrop");
+    view.classList.toggle("side-open", open);
+    if (btn) { btn.setAttribute("aria-expanded", String(open)); btn.setAttribute("aria-label", open ? "Close menu" : "Open menu"); }
+    if (back) back.hidden = !open;
+    document.body.classList.toggle("side-locked", open);
+    if (open) { var cur = view.querySelector('.admin-nav [aria-selected="true"]') || view.querySelector(".admin-nav button"); if (cur) cur.focus(); }
+    else if (btn && view.contains(document.activeElement)) btn.focus();
+  }
+  document.querySelectorAll(".admin").forEach(function (view) {
+    var btn = view.querySelector(".side-toggle"), back = view.querySelector(".side-backdrop");
+    if (!btn) return;
+    btn.addEventListener("click", function () { setSide(view, !view.classList.contains("side-open")); });
+    if (back) back.addEventListener("click", function () { setSide(view, false); });
+    // Picking a page closes the panel
+    view.querySelector(".admin-nav").addEventListener("click", function (e) { if (sideQuery.matches && e.target.closest("button")) setSide(view, false); });
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    document.querySelectorAll(".admin.side-open").forEach(function (v) { setSide(v, false); });
+  });
+  if (sideQuery.addEventListener) sideQuery.addEventListener("change", function () { document.querySelectorAll(".admin.side-open").forEach(function (v) { setSide(v, false); }); });
+
   translateStatic();
   ["lang-toggle", "client-lang"].forEach(function (id) {
     var lt0 = $(id);
