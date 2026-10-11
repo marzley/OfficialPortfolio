@@ -1096,9 +1096,15 @@
           '<fieldset class="coffee-amounts"><legend>Choose an amount</legend><div class="coffee-presets"></div>' +
             '<label class="coffee-amt coffee-own"><input type="radio" name="coffee-amt" value="own"><span><strong>Other</strong><input type="number" inputmode="decimal" min="1" max="150000" step="any" id="coffee-own"></span></label>' +
           "</fieldset>" +
-          '<div class="coffee-tabs" role="tablist" aria-label="How to pay">' +
-            '<button type="button" role="tab" aria-selected="false" data-tab="card"><i class="fa-solid fa-credit-card" aria-hidden="true"></i> Card (any country)</button>' +
-            '<button type="button" role="tab" aria-selected="false" data-tab="mpesa"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> M-Pesa (Kenya)</button></div>' +
+          '<p class="coffee-label">How would you like to give?</p>' +
+          '<div class="coffee-tabs coffee-tabs-3" role="tablist" aria-label="How to pay">' +
+            '<button type="button" role="tab" aria-selected="false" data-tab="bmc"><span aria-hidden="true">☕</span> Buy Me a Coffee<small>PayPal and more</small></button>' +
+            '<button type="button" role="tab" aria-selected="false" data-tab="card"><i class="fa-solid fa-credit-card" aria-hidden="true"></i> Card<small>Visa, Mastercard</small></button>' +
+            '<button type="button" role="tab" aria-selected="false" data-tab="mpesa"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> M-Pesa<small>Kenya</small></button></div>' +
+          '<div class="coffee-form" data-pane="bmc" hidden>' +
+            '<p>Give with PayPal, any card, Apple Pay or Google Pay on our Buy Me a Coffee page. It works in almost every country, and you can leave us a message.</p>' +
+            '<a class="coffee-bmc" href="https://buymeacoffee.com/marzley" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">☕</span><span><strong>Open buymeacoffee.com/marzley</strong><small>Choose your amount there · <span data-bmc-amt></span></small></span><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>' +
+          "</div>" +
           '<form class="coffee-form" data-pane="mpesa" novalidate>' +
             '<label for="coffee-phone">M-Pesa number</label><div class="coffee-phone"><span>+254</span><input id="coffee-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="712 345 678" maxlength="13"></div>' +
             '<label for="coffee-name">Your name <small>(optional, so we can say thank you)</small></label><input id="coffee-name" autocomplete="name" maxlength="80">' +
@@ -1110,8 +1116,6 @@
             '<p class="coffee-err" role="alert"></p>' +
             '<button type="submit" class="btn btn-solid coffee-go">Pay by card · <span data-amt></span></button>' +
             '<p class="coffee-alt"><i class="fa-solid fa-lock" aria-hidden="true"></i> Secure payment by Paystack. Visa and Mastercard from any country. <span class="coffee-fx"></span></p></form>' +
-          '<p class="coffee-or"><span>or</span></p>' +
-          '<a class="coffee-bmc" href="https://buymeacoffee.com/marzley" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">☕</span><span><strong>Support us on Buy Me a Coffee</strong><small>Card, PayPal, Apple Pay or Google Pay · any country</small></span><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>' +
         "</div>" +
         '<div class="coffee-step coffee-center" data-step="wait" hidden><span class="coffee-ring" aria-hidden="true"><i class="fa-solid fa-mobile-screen"></i></span><h2>Check your phone</h2>' +
           '<p class="coffee-msg" role="status" aria-live="polite"></p><button type="button" class="btn btn-ghost" data-close>Close</button></div>' +
@@ -1131,6 +1135,8 @@
         var a = amount(), p = picked();
         var label = a >= 10 ? (cur === "USD" ? money(p) + " (≈ " + kes(a) + ")" : kes(a)) : "choose an amount";
         d.querySelectorAll("[data-amt]").forEach(function (el) { el.textContent = label; });
+        var hint = d.querySelector("[data-bmc-amt]");
+        if (hint) hint.textContent = picked() > 0 ? "you picked " + money(picked()) : "any amount";
         d.querySelector(".coffee-fx").textContent = cur === "USD" ? "Charged in Kenyan shillings (about " + kes(USD_KES) + " per $1); your bank converts it." : "";
       };
       var setCur = function (c) {
@@ -1225,14 +1231,7 @@
         document.head.appendChild(sc);
       });
       setCur(cur);
-      setTab(inKenya ? "mpesa" : "card");
-      if (!inKenya) {
-        // Abroad, Buy Me a Coffee is the easiest way to give, so it comes first
-        var head = d.querySelector(".coffee-head"), bmc = d.querySelector(".coffee-bmc"), or = d.querySelector(".coffee-or");
-        head.insertAdjacentElement("afterend", bmc);
-        bmc.insertAdjacentElement("afterend", or);
-        or.querySelector("span").textContent = "or pay here";
-      }
+      setTab(inKenya ? "mpesa" : "bmc");   // every option is there for everyone; this only picks the first tab
       return d;
     };
     donate.addEventListener("click", function () {
