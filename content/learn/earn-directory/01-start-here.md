@@ -90,7 +90,13 @@ These are general patterns, not guarantees. Two people doing the same method can
 | 39 | [Specialist online work](./?track=earn-directory&lesson=specialist-online-work-methods) | Available |
 | 40 | [Public-sector careers and official recruitment](./?track=earn-directory&lesson=public-sector-careers-methods) | Available |
 | 41 | [Creative and performance niches](./?track=earn-directory&lesson=creative-performance-niches-methods) | Available |
-| 42+ | More categories in future updates | Coming |
+| 42 | [Fishing, marine and lake economy](./?track=earn-directory&lesson=fishing-marine-lake-methods) | Available |
+| 43 | [Mining, quarrying and building materials](./?track=earn-directory&lesson=mining-quarrying-materials-methods) | Available |
+| 44 | [Faith-community services](./?track=earn-directory&lesson=faith-community-services-methods) | Available |
+| 45 | [Kids, family and personal services](./?track=earn-directory&lesson=kids-family-personal-services-methods) | Available |
+| 46 | [Sports, outdoor and recreation](./?track=earn-directory&lesson=sports-outdoor-recreation-methods) | Available |
+| 47 | [Specialist printing and branding](./?track=earn-directory&lesson=specialist-printing-branding-methods) | Available |
+| 48+ | More categories in future updates | Coming |
 
 ## Universal safety rules
 
