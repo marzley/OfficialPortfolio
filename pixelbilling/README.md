@@ -1,58 +1,38 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# PixelBilling System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+ISP billing, network management and subscriber automation by Marzley Tech Solutions.
+Laravel 13 / PHP 8.3, Sanctum token auth, multi-tenant.
 
-## About Laravel
+> **Status: Phase 1 (foundation) only.** Not production-ready. See "Not yet built".
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Run
+    composer install && cp .env.example .env && php artisan key:generate
+    php artisan migrate --seed && php artisan serve
+    php artisan test
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Phase 1 contents
+- Tenants + SaaS plans (money in integer minor units).
+- ISP self-registration (tenant + owner in one transaction), login, logout, `me`.
+- **Tenant isolation**: `BelongsToTenant` trait + `TenantScope`. Tenant is derived only from the
+  authenticated user (`ResolveTenant`), never from request input. The scope fails closed
+  (no tenant context => no rows; creating without context throws). `tenant_id` is not mass-assignable.
+- **RBAC**: role -> permission map in `config/permissions.php`, enforced by `can.do:<permission>` middleware.
+  Platform roles have no tenant data permissions. Owner `*` never includes `platform.*`.
+- Suspended tenants are blocked at login and for already-issued tokens.
+- Audit log with secret redaction; correlation IDs; security headers; login/register rate limits.
+- Sample tenant-owned resource (`service_locations`) and staff management as the pattern for later modules.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## API (prefix `/api/v1`, Bearer token)
+| Method | Path | Permission |
+|---|---|---|
+| POST | auth/register, auth/login | public (throttled) |
+| POST | auth/logout; GET auth/me | authenticated |
+| GET | locations, locations/{id} | locations.view |
+| POST | locations | locations.manage |
+| GET/POST | staff | staff.manage |
 
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
-```
-
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Not yet built (be aware)
+Customers, packages, subscriptions, invoicing, MikroTik, hotspot/PPPoE, Daraja/M-Pesa, vouchers,
+notifications, reports, customer portal, React frontend, MFA, per-tenant role overrides,
+platform-admin tooling and audited support access, Docker/Nginx, backups.
+Tested only on SQLite; PostgreSQL migrations are unverified. No external integration has been exercised.
