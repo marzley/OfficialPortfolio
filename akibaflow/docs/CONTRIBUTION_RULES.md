@@ -1,0 +1,12 @@
+# Contribution & accounting rules
+1. **Obligations are rows.** One per member per due date per plan. Outstanding = `original − waived − paid` summed over open obligations with `due_date ≤ today`. Never computed from "days since last payment".
+2. **Statuses** (displayed; derived in SQL so they can't go stale): upcoming (`due > today`), due, partially_paid, overdue (`due + grace < today`), paid, waived, cancelled.
+3. **Generation:** up to `today + lookahead_days` (defaults: daily 1, weekly 7, biweekly 14, monthly 31). Idempotent. Members only owe within their eligibility interval (join date → exit/pause).
+4. **Month-end rule:** a monthly day that doesn't exist (31st in April, 30th in Feb) falls on the **last valid day** of that month; "last day" is also selectable. A member who joins after this month's due day first owes next month.
+5. **Plan changes** are versions with an `effective_from` strictly in the future *and* after every already-generated obligation. Past obligations keep their original version/amount/grace. All changes are audited and members notified.
+6. **Allocation:** oldest due first; contributions before late fees. Partial payments supported (group can require whole contributions). Excess: group policy `hold_credit` (default; member applies it) or `apply_future` (auto-applied to upcoming obligations). Credit is a liability (acct 2000), never income.
+7. **Reversals:** payments are never deleted. A reversal (dual control by default: requester ≠ approver) marks allocations reversed, reopens obligations, posts a mirror journal, and un-applies spent credit if needed so credit never goes negative. Documented limitation: after a reversal, *other* payments are not re-shuffled to different obligations.
+8. **Waivers** reduce what is owed (reason required, audited); they never create cash.
+9. **Late fees** are OFF by default and only ever a group-configured fixed fee per overdue obligation (optional extra delay, optional per-member cap), one per obligation, never compounding, shown separately. The group must confirm legality/constitutional basis.
+10. **Pay buttons:** "Pay today" = amount due today; "Clear all dues" = every open obligation due ≤ today. Both are computed server-side. Because allocation is oldest-first, "pay today" money may clear an older due first (the UI says so).
+11. Group cash ≠ expected contributions: dashboards show *collected* (cash), *expected* and *outstanding* (owed) separately; funds come from the ledger.

@@ -1,0 +1,26 @@
+<?php $cur = $g['currency']; $gid = (int)$g['group_id']; $rec = \Akiba\Core\Permissions::can($g['role'], 'payments.record_manual'); $rev = \Akiba\Core\Permissions::can($g['role'], 'payments.reverse'); $raw = $rep['raw']; ?>
+<div class="page-head"><h1>Payments</h1><a class="btn ghost small" href="/g/<?= $gid ?>/reports/transactions?<?= e(http_build_query(['from' => $from, 'to' => $to, 'format' => 'csv'])) ?>">Download CSV</a></div>
+<?php if ($revs): ?><div class="card"><h2>Reversals awaiting approval</h2>
+<?php foreach ($revs as $r): ?><div class="mini-form"><p class="mb0"><strong><?= e($r['receipt_no']) ?></strong> · <?= money((int)$r['amount_minor'], $r['currency']) ?> · requested by <?= e($r['requester']) ?>: <?= e($r['reason']) ?></p>
+  <?php if ($rev): foreach (['approve' => ['primary', 'Approve reversal'], 'reject' => ['ghost', 'Reject']] as $dec => [$cls, $lbl]): ?><form method="post" action="/g/<?= $gid ?>/reversals/<?= (int)$r['id'] ?>/decide" data-confirm="<?= $dec === 'approve' ? 'Reverse this payment? Obligations will be reopened.' : 'Reject this reversal request?' ?>"><?= csrf_field() ?><input type="hidden" name="decision" value="<?= $dec ?>"><button class="btn small <?= $cls ?>"><?= $lbl ?></button></form><?php endforeach; endif; ?></div><?php endforeach; ?></div><?php endif; ?>
+<form class="card mini-form" method="get">
+  <div class="field"><label for="from">From</label><input id="from" type="date" name="from" value="<?= e($from) ?>"></div><div class="field"><label for="to">To</label><input id="to" type="date" name="to" value="<?= e($to) ?>"></div>
+  <div class="field"><label for="status">Status</label><select id="status" name="status"><option value="">Any</option><option value="posted" <?= $status === 'posted' ? 'selected' : '' ?>>Posted</option><option value="reversed" <?= $status === 'reversed' ? 'selected' : '' ?>>Reversed</option></select></div>
+  <div class="field"><label for="source">Source</label><select id="source" name="source"><option value="">Any</option><option value="provider_verified" <?= $source === 'provider_verified' ? 'selected' : '' ?>>Provider-verified</option><option value="manual" <?= $source === 'manual' ? 'selected' : '' ?>>Manual</option></select></div><button class="btn">Filter</button></form>
+<div class="card"><?php if (!$raw): ?><p class="empty">No payments in this period.</p><?php else: ?>
+<div class="table-wrap"><table><thead><tr><th>Receipt</th><th>Date</th><th>Member</th><th>Method / ref</th><th>Source</th><th class="num">Amount</th><th>Status</th><th></th></tr></thead><tbody>
+<?php foreach ($raw as $t): ?><tr><td><a href="/g/<?= $gid ?>/receipts/<?= (int)$t['id'] ?>"><?= e($t['receipt_no']) ?></a></td><td class="nowrap"><?= e(dt($t['paid_at'], $g['timezone'], 'd M Y H:i')) ?></td><td><?= e($t['full_name']) ?></td><td class="small"><?= e(str_replace('_', ' ', $t['method'])) ?><br><?= e($t['provider_ref']) ?></td>
+  <td><?= $t['source'] === 'manual' ? '<span class="badge badge-neutral">Manual</span>' : '<span class="badge badge-ok">Provider-verified</span>' ?></td><td class="num"><?= money((int)$t['amount_minor'], $cur) ?></td><td><?= badge($t['status']) ?></td>
+  <td><?php if ($rev && $t['status'] === 'posted'): ?><form class="mini-form" method="post" action="/g/<?= $gid ?>/payments/<?= (int)$t['id'] ?>/reverse" data-confirm="Request reversal of <?= e($t['receipt_no']) ?>?"><?= csrf_field() ?><div class="field"><label class="sr-only" for="rr<?= (int)$t['id'] ?>">Reason</label><input id="rr<?= (int)$t['id'] ?>" name="reason" placeholder="Reason" required></div><button class="btn small ghost">Reverse</button></form><?php endif; ?></td></tr><?php endforeach; ?>
+</tbody></table></div><?php endif; ?></div>
+<?php if ($rec): ?>
+<form class="card" method="post" action="/g/<?= $gid ?>/payments/manual"><?= csrf_field() ?><h2>Record a payment received outside the app</h2>
+  <p class="muted small">For cash, bank deposits or Paybill payments. Entries are clearly labelled <em>manual</em> on receipts and reports, and each reference can only be recorded once.</p>
+  <div class="form-grid">
+    <div class="field"><label for="mm">Member</label><select id="mm" name="membership_id" required><option value="">Choose…</option><?php foreach ($members as $m): ?><option value="<?= (int)$m['id'] ?>"><?= e($m['full_name']) ?> (<?= e($m['member_code']) ?>)</option><?php endforeach; ?></select></div>
+    <div class="field"><label for="ma">Amount (<?= e($cur) ?>)</label><input id="ma" name="amount" inputmode="decimal" required></div>
+    <div class="field"><label for="mt">Method</label><select id="mt" name="method"><option value="cash">Cash</option><option value="bank">Bank deposit</option><option value="mpesa_paybill">M-PESA Paybill</option><option value="mpesa_till">M-PESA Till</option><option value="other">Other</option></select></div>
+    <div class="field"><label for="mr">Receipt / reference no.</label><input id="mr" name="reference" required maxlength="60"></div></div>
+  <div class="field"><label for="mn">Note</label><input id="mn" name="note" maxlength="250"></div>
+  <button class="btn primary" type="submit" data-confirm="Record this payment? It will be applied to the member's oldest dues first.">Record payment</button></form>
+<?php endif; ?>

@@ -1,0 +1,5 @@
+# Backup & recovery
+- `php bin/backup.php` → `mysqldump --single-transaction --routines --triggers` → gzip → `storage/backups/akibaflow-<utc>.sql.gz` (mode 0600), SHA-256 + size in `backup_runs`. DB password is passed via a temp 0600 defaults file, never on the command line.
+- `php bin/backup.php --verify` re-checks checksum, gzip integrity and that the schema is present, then stamps `verified_at`. Tampering/truncation is detected (tested). The admin page and health panel show the newest backup and whether it is verified; a missing/unverified backup shows red.
+- **Restore:** `zcat file.sql.gz | mysql -u… dbname` (into an empty DB). Tested in development: restored row counts matched and all 7 immutability triggers were recreated. Do a restore drill at least quarterly; "verified" ≠ "restorable on your production setup".
+- You must supply: off-server encrypted copy, retention (suggest 30 daily + 12 monthly), access control, and recovery objectives. Nothing here ships backups off the machine. Point-in-time recovery needs binary logging (not configured).

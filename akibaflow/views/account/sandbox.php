@@ -1,0 +1,6 @@
+<div class="page-head"><h1>Sandbox phone</h1></div>
+<div class="alert warn"><strong>Development simulator.</strong> This stands in for the customer's phone so you can test the M-PESA flow without Safaricom credentials. It is disabled in production and when <code>PAYMENT_DRIVER=mpesa</code>. Answers are delivered through the same callback handler a real Daraja callback uses.</div>
+<?php if (!$rows): ?><div class="card empty">No prompts yet. Start a payment from a group's "Contribute now" page.</div><?php endif; ?>
+<?php foreach ($rows as $r): ?><div class="card"><p><strong>Enter M-PESA PIN to pay <?= money((int)$r['amount_minor'], $r['currency']) ?> to <?= e($r['gname']) ?></strong><br><span class="muted small">Prompt for <?= e($r['phone']) ?> · <?= e($r['ref']) ?> · <?= e($r['state']) ?></span></p>
+  <?php if ($r['state'] === 'prompted'): ?><form class="btn-row" method="post" action="/sandbox/phone"><?= csrf_field() ?><input type="hidden" name="checkout" value="<?= e($r['checkout_id']) ?>">
+    <button class="btn primary" name="outcome" value="pay">Enter PIN &amp; pay</button><button class="btn ghost" name="outcome" value="cancel">Cancel</button><button class="btn ghost" name="outcome" value="insufficient">Insufficient funds</button></form><?php endif; ?></div><?php endforeach; ?>

@@ -1,0 +1,5 @@
+<div class="page-head"><h1>Integrations</h1></div>
+<div class="alert info">Secrets live in the server environment (<code>.env</code> or a secrets manager), never in the database or browser. They are shown here only as set / not set.</div>
+<div class="card"><dl class="kv"><?php foreach ($items as $k => $v): ?><dt><?= e($k) ?></dt><dd><?= e($v) ?></dd><?php endforeach; ?></dl></div>
+<form class="card" method="post" action="/admin/integrations/test-mpesa"><?= csrf_field() ?><h2>Test M-PESA credentials</h2><p class="muted">Requests an OAuth token from Daraja. No money moves.</p><button class="btn" <?= $configured ? '' : 'disabled' ?> type="submit">Test connection</button><?= $configured ? '' : ' <span class="muted">Configure all MPESA_* variables first.</span>' ?></form>
+<div class="card"><h2>Recent integration events</h2><?php if (!$logs): ?><p class="muted">None.</p><?php endif; ?><?php foreach ($logs as $l): ?><p class="mb0"><?= badge($l['level'] === 'error' ? 'failed' : 'succeeded') ?> <?= e($l['integration']) ?> · <?= e($l['message']) ?> · <span class="muted small"><?= e(dt($l['created_at'])) ?></span></p><?php endforeach; ?></div>
