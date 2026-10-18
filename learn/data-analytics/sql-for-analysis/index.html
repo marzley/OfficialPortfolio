@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SQL for analysis: GROUP BY, HAVING, JOINs, CASE and…</title>
+    <meta name="description" content="Most company data lives in databases. SQL lets you ask questions of millions of rows in seconds. If you know SELECT and WHERE (see the SQL subject)…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/data-analytics/sql-for-analysis/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="SQL for analysis: GROUP BY, HAVING, JOINs, CASE and…" />
+    <meta property="og:description" content="Most company data lives in databases. SQL lets you ask questions of millions of rows in seconds. If you know SELECT and WHERE (see the SQL subject)…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/data-analytics/sql-for-analysis/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="SQL for analysis: GROUP BY, HAVING, JOINs, CASE and…" />
+    <meta name="twitter:description" content="Most company data lives in databases. SQL lets you ask questions of millions of rows in seconds. If you know SELECT and WHERE (see the SQL subject)…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/data-analytics/sql-for-analysis/#lesson","name":"SQL for analysis: GROUP BY, HAVING, JOINs, CASE and window functions","description":"Most company data lives in databases. SQL lets you ask questions of millions of rows in seconds. If you know SELECT and WHERE (see the SQL subject)…","url":"https://marzleytechsolutions.co.ke/learn/data-analytics/sql-for-analysis/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/data-analytics/#course","name":"Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)","url":"https://marzleytechsolutions.co.ke/learn/data-analytics/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)","item":"https://marzleytechsolutions.co.ke/learn/data-analytics/"},{"@type":"ListItem","position":4,"name":"SQL for analysis: GROUP BY, HAVING, JOINs, CASE and window functions","item":"https://marzleytechsolutions.co.ke/learn/data-analytics/sql-for-analysis/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/data-analytics/">Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)</a> / <span>SQL for analysis: GROUP BY, HAVING, JOINs, CASE and window functions</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=data-analytics&amp;lesson=sql-for-analysis"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>SQL for analysis: GROUP BY, HAVING, JOINs, CASE and window functions</h1>
+<p>Most company data lives in databases. SQL lets you ask questions of millions of rows in seconds. If you know SELECT and WHERE (see the <a href="/learn/sql/">SQL subject</a>), this lesson teaches the queries analysts use daily. Every example runs right here.</p>
+<h2>The dataset</h2>
+<p>A chain of agro-dealers with two tables: <strong>branches</strong> and <strong>sales</strong>.</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE TABLE branches (branch_id INTEGER PRIMARY KEY, name TEXT, county TEXT, monthly_target INTEGER);
+INSERT INTO branches VALUES
+ (1, &#x27;Kenol&#x27;, &#x27;Murang&#x27;&#x27;a&#x27;, 300000), (2, &#x27;Thika&#x27;, &#x27;Kiambu&#x27;, 450000),
+ (3, &#x27;Nyeri Town&#x27;, &#x27;Nyeri&#x27;, 350000), (4, &#x27;Embu&#x27;, &#x27;Embu&#x27;, 250000);
+
+CREATE TABLE sales (sale_id INTEGER PRIMARY KEY, branch_id INTEGER, sale_date TEXT, item TEXT, category TEXT, amount INTEGER);
+INSERT INTO sales VALUES
+ (1, 1, &#x27;2026-03-02&#x27;, &#x27;DAP fertiliser 50kg&#x27;, &#x27;Fertiliser&#x27;, 7400), (2, 1, &#x27;2026-03-02&#x27;, &#x27;Maize seed 2kg&#x27;, &#x27;Seed&#x27;, 1350),
+ (3, 2, &#x27;2026-03-03&#x27;, &#x27;CAN fertiliser 50kg&#x27;, &#x27;Fertiliser&#x27;, 6200), (4, 2, &#x27;2026-03-03&#x27;, &#x27;Knapsack sprayer&#x27;, &#x27;Equipment&#x27;, 4800),
+ (5, 3, &#x27;2026-03-04&#x27;, &#x27;Dairy meal 70kg&#x27;, &#x27;Feeds&#x27;, 3900), (6, 2, &#x27;2026-03-05&#x27;, &#x27;DAP fertiliser 50kg&#x27;, &#x27;Fertiliser&#x27;, 7400),
+ (7, 4, &#x27;2026-03-05&#x27;, &#x27;Maize seed 2kg&#x27;, &#x27;Seed&#x27;, 1350), (8, 1, &#x27;2026-03-06&#x27;, &#x27;Dairy meal 70kg&#x27;, &#x27;Feeds&#x27;, 3900),
+ (9, 3, &#x27;2026-03-07&#x27;, &#x27;CAN fertiliser 50kg&#x27;, &#x27;Fertiliser&#x27;, 6200), (10, 2, &#x27;2026-03-08&#x27;, &#x27;Dairy meal 70kg&#x27;, &#x27;Feeds&#x27;, 3900),
+ (11, 1, &#x27;2026-04-02&#x27;, &#x27;DAP fertiliser 50kg&#x27;, &#x27;Fertiliser&#x27;, 7400), (12, 3, &#x27;2026-04-03&#x27;, &#x27;Knapsack sprayer&#x27;, &#x27;Equipment&#x27;, 4800),
+ (13, 2, &#x27;2026-04-04&#x27;, &#x27;Maize seed 2kg&#x27;, &#x27;Seed&#x27;, 1350), (14, 4, &#x27;2026-04-05&#x27;, &#x27;DAP fertiliser 50kg&#x27;, &#x27;Fertiliser&#x27;, 7400);
+
+SELECT category, COUNT(*) AS sales_count, SUM(amount) AS revenue, ROUND(AVG(amount)) AS avg_sale
+FROM sales
+GROUP BY category
+ORDER BY revenue DESC;</code></pre></figure>
+<p><strong>GROUP BY</strong> creates one row per category; COUNT, SUM and AVG summarise each group.</p>
+<h2>JOIN: combine tables</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE TABLE branches (branch_id INTEGER PRIMARY KEY, name TEXT, county TEXT);
+INSERT INTO branches VALUES (1, &#x27;Kenol&#x27;, &#x27;Murang&#x27;&#x27;a&#x27;), (2, &#x27;Thika&#x27;, &#x27;Kiambu&#x27;), (3, &#x27;Nyeri Town&#x27;, &#x27;Nyeri&#x27;), (4, &#x27;Embu&#x27;, &#x27;Embu&#x27;);
+CREATE TABLE sales (sale_id INTEGER PRIMARY KEY, branch_id INTEGER, amount INTEGER);
+INSERT INTO sales VALUES (1, 1, 7400), (2, 1, 1350), (3, 2, 6200), (4, 2, 4800), (5, 3, 3900), (6, 2, 7400), (7, 1, 3900);
+
+SELECT b.name, b.county, COUNT(s.sale_id) AS sales_count, COALESCE(SUM(s.amount), 0) AS revenue
+FROM branches b
+LEFT JOIN sales s ON s.branch_id = b.branch_id
+GROUP BY b.branch_id
+ORDER BY revenue DESC;</code></pre></figure>
+<p>A <strong>LEFT JOIN</strong> keeps every branch, even Embu with no sales in this sample (revenue 0). An INNER JOIN would drop it, which can hide problems.</p>
+<h2>HAVING: filter groups</h2>
+<p>WHERE filters rows before grouping; <strong>HAVING</strong> filters groups after.</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE TABLE sales (sale_id INTEGER PRIMARY KEY, item TEXT, amount INTEGER);
+INSERT INTO sales VALUES (1, &#x27;DAP fertiliser 50kg&#x27;, 7400), (2, &#x27;Maize seed 2kg&#x27;, 1350), (3, &#x27;DAP fertiliser 50kg&#x27;, 7400),
+ (4, &#x27;Knapsack sprayer&#x27;, 4800), (5, &#x27;Maize seed 2kg&#x27;, 1350), (6, &#x27;DAP fertiliser 50kg&#x27;, 7400), (7, &#x27;Dairy meal 70kg&#x27;, 3900);
+
+SELECT item, COUNT(*) AS times_sold, SUM(amount) AS revenue
+FROM sales
+GROUP BY item
+HAVING COUNT(*) &gt;= 2
+ORDER BY revenue DESC;</code></pre></figure>
+<h2>CASE: create categories</h2>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE TABLE sales (sale_id INTEGER PRIMARY KEY, amount INTEGER);
+INSERT INTO sales VALUES (1, 7400), (2, 1350), (3, 6200), (4, 4800), (5, 3900), (6, 950), (7, 12500);
+
+SELECT
+  CASE WHEN amount &lt; 2000 THEN &#x27;Small&#x27;
+       WHEN amount &lt; 6000 THEN &#x27;Medium&#x27;
+       ELSE &#x27;Large&#x27; END AS size_band,
+  COUNT(*) AS sales_count,
+  SUM(amount) AS revenue
+FROM sales
+GROUP BY size_band
+ORDER BY revenue DESC;</code></pre></figure>
+<h2>Window functions: running totals and rankings</h2>
+<p>Window functions calculate across rows <strong>without</strong> collapsing them into groups.</p>
+<figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE TABLE monthly (branch TEXT, month TEXT, revenue INTEGER);
+INSERT INTO monthly VALUES
+ (&#x27;Kenol&#x27;, &#x27;2026-01&#x27;, 280000), (&#x27;Kenol&#x27;, &#x27;2026-02&#x27;, 310000), (&#x27;Kenol&#x27;, &#x27;2026-03&#x27;, 295000),
+ (&#x27;Thika&#x27;, &#x27;2026-01&#x27;, 430000), (&#x27;Thika&#x27;, &#x27;2026-02&#x27;, 470000), (&#x27;Thika&#x27;, &#x27;2026-03&#x27;, 455000);
+
+SELECT branch, month, revenue,
+       SUM(revenue) OVER (PARTITION BY branch ORDER BY month) AS running_total,
+       revenue - LAG(revenue) OVER (PARTITION BY branch ORDER BY month) AS change_vs_last_month,
+       RANK() OVER (PARTITION BY month ORDER BY revenue DESC) AS rank_in_month
+FROM monthly
+ORDER BY branch, month;</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Function</th><th>Gives</th></tr></thead><tbody><tr><td><code>SUM(...) OVER (...)</code></td><td>Running totals</td></tr><tr><td><code>LAG</code> / <code>LEAD</code></td><td>The previous or next row's value (month-on-month change)</td></tr><tr><td><code>RANK</code>, <code>ROW_NUMBER</code></td><td>Rankings within groups</td></tr><tr><td><code>AVG(...) OVER (...)</code></td><td>Moving averages</td></tr></tbody></table></div>
+<aside class="callout callout-tip"><p class="callout-title">Write queries step by step</p><div class="callout-body"><p>Start with <code>SELECT * ... LIMIT 10</code> to see the data, add filters, then grouping, then ordering. Check row counts at each step, especially after JOINs (a wrong join condition can multiply rows).</p></div></aside>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A JOIN of sales to products gives a total revenue three times bigger than expected. What's the likely cause?</span><em>Show answer</em></summary><div class="callout-body"><p>The join matched each sale to several product rows (for example, the products table has duplicate codes, or the join condition is incomplete), multiplying rows. Check for duplicates in the joined key and count rows before and after the JOIN.</p></div></details>
+<h2>Summary</h2>
+<ul><li>GROUP BY with COUNT, SUM and AVG summarises data; HAVING filters groups.</li><li>LEFT JOIN keeps all rows from the first table; check row counts after joins.</li><li>CASE creates categories; window functions give running totals, changes and rankings.</li><li>Build queries step by step and check results.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which clause filters groups after GROUP BY? (one word)</p><details><summary>Show answer</summary><p>having</p></details></li><li><p>Which join keeps every branch even if it has no sales? (two words)</p><details><summary>Show answer</summary><p>left join</p></details></li><li><p>Which window function gets the previous row's value? (one word)</p><details><summary>Show answer</summary><p>lag</p></details></li></ol></section></div><p class="static-meta">Lesson 10 of 15 in <a href="/learn/data-analytics/">Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=data-analytics">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/data-analytics/excel-for-analysis/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Excel and Google Sheets for analysis: PivotTables, lookups, conditional formatting and charts</a><a class="btn btn-solid btn-sm" href="/learn/data-analytics/python-for-data/">Python for data analysis: CSV files, grouping, and an introduction to pandas <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

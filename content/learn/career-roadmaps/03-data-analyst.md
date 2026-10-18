@@ -13,6 +13,10 @@ In Kenya, analysts work in banks and SACCOs, telcos, insurance, retail and super
 You need **comfort** with numbers (percentages, averages, growth rates), curiosity, attention to detail, and the ability to explain findings in plain language. The tools do the heavy calculation.
 :::
 
+:::tip Follow the full course
+The [Data analytics subject](./?track=data-analytics&lesson=data-analytics-start-here) teaches every stage below step by step: statistics with code you can run, data cleaning, Excel, SQL, Python, charts, Power BI, storytelling and a portfolio project.
+:::
+
 ## The 8 stages
 
 | Stage | Skill | Time (1–2 h/day) |

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Averages and spread: mean, median, mode, range and…</title>
+    <meta name="description" content="Descriptive statistics summarise a pile of numbers in a few figures. They answer two questions: What is typical? (the centre) and How much do values…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/data-analytics/descriptive-statistics/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Averages and spread: mean, median, mode, range and…" />
+    <meta property="og:description" content="Descriptive statistics summarise a pile of numbers in a few figures. They answer two questions: What is typical? (the centre) and How much do values…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/data-analytics/descriptive-statistics/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Averages and spread: mean, median, mode, range and…" />
+    <meta name="twitter:description" content="Descriptive statistics summarise a pile of numbers in a few figures. They answer two questions: What is typical? (the centre) and How much do values…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/data-analytics/descriptive-statistics/#lesson","name":"Averages and spread: mean, median, mode, range and standard deviation","description":"Descriptive statistics summarise a pile of numbers in a few figures. They answer two questions: What is typical? (the centre) and How much do values…","url":"https://marzleytechsolutions.co.ke/learn/data-analytics/descriptive-statistics/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/data-analytics/#course","name":"Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)","url":"https://marzleytechsolutions.co.ke/learn/data-analytics/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)","item":"https://marzleytechsolutions.co.ke/learn/data-analytics/"},{"@type":"ListItem","position":4,"name":"Averages and spread: mean, median, mode, range and standard deviation","item":"https://marzleytechsolutions.co.ke/learn/data-analytics/descriptive-statistics/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/data-analytics/">Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)</a> / <span>Averages and spread: mean, median, mode, range and standard deviation</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=data-analytics&amp;lesson=descriptive-statistics"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Averages and spread: mean, median, mode, range and standard deviation</h1>
+<p>Descriptive statistics summarise a pile of numbers in a few figures. They answer two questions: <strong>What is typical?</strong> (the centre) and <strong>How much do values vary?</strong> (the spread). You'll use them in almost every report.</p>
+<h2>Measures of the centre</h2>
+<div class="static-table"><table><thead><tr><th>Measure</th><th>How to find it</th><th>Best when</th></tr></thead><tbody><tr><td><strong>Mean</strong> (average)</td><td>Add all values, divide by how many</td><td>Values are fairly even, no extreme outliers</td></tr><tr><td><strong>Median</strong></td><td>The middle value when sorted</td><td>There are extreme values (salaries, house prices)</td></tr><tr><td><strong>Mode</strong></td><td>The most common value</td><td>Categories or repeated values (most common shoe size)</td></tr></tbody></table></div>
+<h3>Why the median matters: a salary example</h3>
+<p>Ten workers earn (KSh per month): 18,000, 20,000, 21,000, 22,000, 22,000, 24,000, 25,000, 26,000, 28,000 and the owner's 400,000.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import statistics as st
+
+salaries = [18000, 20000, 21000, 22000, 22000, 24000, 25000, 26000, 28000, 400000]
+
+print(&quot;Mean:  &quot;, round(st.mean(salaries)))
+print(&quot;Median:&quot;, st.median(salaries))
+print(&quot;Mode:  &quot;, st.mode(salaries))
+
+without_owner = salaries[:-1]
+print(&quot;Mean without the owner:&quot;, round(st.mean(without_owner)))</code></pre></figure>
+<p>The mean is pulled far up by one huge salary, so it describes <strong>nobody</strong>. The median describes a typical worker much better. That's why reports on incomes and house prices usually use the median.</p>
+<h2>Measures of spread</h2>
+<p>Two shops can have the same average daily sales but very different reliability. Spread tells you how much values jump around.</p>
+<div class="static-table"><table><thead><tr><th>Measure</th><th>Meaning</th></tr></thead><tbody><tr><td><strong>Range</strong></td><td>Maximum minus minimum. Simple, but one extreme value changes it a lot</td></tr><tr><td><strong>Variance</strong></td><td>The average of the squared distances from the mean</td></tr><tr><td><strong>Standard deviation (SD)</strong></td><td>The square root of the variance; roughly "the typical distance from the mean", in the same units as the data</td></tr></tbody></table></div>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import statistics as st
+
+shop_a = [5000, 5200, 4900, 5100, 5000, 4800, 5000]   # steady
+shop_b = [1000, 9000, 2000, 8000, 5000, 3000, 7000]   # up and down
+
+for name, sales in [(&quot;Shop A&quot;, shop_a), (&quot;Shop B&quot;, shop_b)]:
+    print(name)
+    print(&quot;  mean:&quot;, round(st.mean(sales)))
+    print(&quot;  range:&quot;, max(sales) - min(sales))
+    print(&quot;  standard deviation:&quot;, round(st.stdev(sales)))</code></pre></figure>
+<p>Both shops average about the same, but Shop B's standard deviation is far bigger: its sales are much less predictable. A manager planning stock would treat them differently.</p>
+<aside class="callout callout-tip"><p class="callout-title">Sample or population?</p><div class="callout-body"><p><code>stdev</code> calculates the <strong>sample</strong> standard deviation (used when your data is a sample from a bigger group), and <code>pstdev</code> the <strong>population</strong> standard deviation (when you have every value). In Excel these are <code>STDEV.S</code> and <code>STDEV.P</code>. For most business data, the sample version is the usual choice.</p></div></aside>
+<h2>The same calculations in Excel</h2>
+<div class="static-table"><table><thead><tr><th>Statistic</th><th>Excel / Google Sheets formula</th></tr></thead><tbody><tr><td>Mean</td><td><code>=AVERAGE(B2:B100)</code></td></tr><tr><td>Median</td><td><code>=MEDIAN(B2:B100)</code></td></tr><tr><td>Mode</td><td><code>=MODE.SNGL(B2:B100)</code></td></tr><tr><td>Range</td><td><code>=MAX(B2:B100)-MIN(B2:B100)</code></td></tr><tr><td>Standard deviation</td><td><code>=STDEV.S(B2:B100)</code></td></tr><tr><td>Count</td><td><code>=COUNT(B2:B100)</code></td></tr></tbody></table></div>
+<h2>Calculate it yourself: the mean step by step</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">scores = [62, 75, 58, 90, 71, 66, 84]
+
+total = 0
+for s in scores:
+    total += s
+mean = total / len(scores)
+
+squared_gaps = [(s - mean) ** 2 for s in scores]
+variance = sum(squared_gaps) / (len(scores) - 1)   # sample variance
+sd = variance ** 0.5
+
+print(&quot;Mean:&quot;, round(mean, 1))
+print(&quot;Standard deviation:&quot;, round(sd, 1))</code></pre></figure>
+<p>Change the scores and run it again to see how one very high or low score changes the mean and the standard deviation.</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A report says "the average house rent in an estate is KSh 45,000". Most tenants pay about KSh 15,000, but a few penthouses cost KSh 300,000. Is the mean a fair summary? What would you report?</span><em>Show answer</em></summary><div class="callout-body"><p>No: a few very expensive units pull the mean far above what most tenants pay. Report the median rent (closer to what a typical tenant pays), and perhaps the range or the share of units in each price band.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Centre: mean (average), median (middle) and mode (most common).</li><li>Use the median when extreme values exist (incomes, prices).</li><li>Spread: range, variance and standard deviation; a bigger SD means less predictable values.</li><li>Excel: AVERAGE, MEDIAN, MODE.SNGL, STDEV.S.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which measure of centre is best for salaries with one very high earner? (one word)</p><details><summary>Show answer</summary><p>median</p></details></li><li><p>What is the middle value of 3, 9, 4, 7, 5 when sorted? (a number)</p><details><summary>Show answer</summary><p>5</p></details></li><li><p>Which Excel function gives the sample standard deviation? (write it like STDEV.S)</p><details><summary>Show answer</summary><p>stdev.s</p></details></li></ol></section></div><p class="static-meta">Lesson 3 of 15 in <a href="/learn/data-analytics/">Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=data-analytics">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/data-analytics/types-of-data-sources/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Types of data, where data comes from and what makes data good</a><a class="btn btn-solid btn-sm" href="/learn/data-analytics/distributions-outliers/">Distributions, percentiles and outliers: seeing the shape of your data <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

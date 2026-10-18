@@ -15,12 +15,13 @@
     powerpoint: "fa-solid fa-person-chalkboard", "google-workspace": "fa-solid fa-cloud", "ai-tools": "fa-solid fa-robot", "ai-by-task": "fa-solid fa-lightbulb", "e-services-kenya": "fa-solid fa-landmark",
     "computer-maintenance": "fa-solid fa-screwdriver-wrench", "earn-online": "fa-solid fa-hand-holding-dollar",
     projects: "fa-solid fa-hammer", "career-roadmaps": "fa-solid fa-route", freelancing: "fa-solid fa-briefcase",
-    forex: "fa-solid fa-chart-line", "trading-markets": "fa-solid fa-scale-balanced", "earn-directory": "fa-solid fa-list-check" };
+    forex: "fa-solid fa-chart-line", "trading-markets": "fa-solid fa-scale-balanced", "earn-directory": "fa-solid fa-list-check", "data-analytics": "fa-solid fa-chart-column" };
   var TRACK_GROUPS = [
     { title: "Careers, projects & freelancing", icon: "fa-solid fa-route", slugs: ["career-roadmaps", "projects", "freelancing"] },
     { title: "Web & coding", icon: "fa-solid fa-code", slugs: ["html", "css", "javascript", "python", "sql", "php", "typescript", "algorithms", "git"] },
     { title: "App development", icon: "fa-solid fa-mobile-screen-button", slugs: ["app-dev-basics", "dart-flutter", "flutter", "kotlin-android", "react", "react-native", "apis-backend"] },
     { title: "Artificial intelligence (AI)", icon: "fa-solid fa-brain", slugs: ["artificial-intelligence", "ai-by-task", "ai-tools"] },
+    { title: "Data & analytics", icon: "fa-solid fa-chart-column", slugs: ["data-analytics"] },
     { title: "More programming languages", icon: "fa-solid fa-laptop-code", slugs: ["java", "c-programming", "cpp", "csharp", "go"] },
     { title: "Design", icon: "fa-solid fa-palette", slugs: ["web-design", "graphic-design"] },
     { title: "ICT & digital skills", icon: "fa-solid fa-computer", slugs: ["earn-online", "it-basics", "digital-literacy", "ms-word", "excel", "powerpoint", "google-workspace", "e-services-kenya", "computer-maintenance"] },
@@ -828,7 +829,7 @@
     var me = state.me, fn = me ? firstName(me.name) : "";
     main.innerHTML = '<section class="hero-learn"><div><p class="eyebrow">' + (me ? "Welcome back" + (fn ? ", " + esc(fn) : "") : "Marzley Tech Learning Hub") + "</p><h1>" + (me ? (fn ? esc(fn) + ", keep" : "Keep") + " learning tech skills, one lesson at a time" : "Learn tech skills free, right in your browser") + "</h1>" +
       (me ? '<div class="me-strip" id="me-strip">' + avatarHtml(me.avatar, me.name, "avatar-lg") + '<div><strong><i class="fa-solid fa-star" aria-hidden="true"></i> ' + (me.points || 0) + " points</strong><span>" + state.progress.length + " lesson" + (state.progress.length === 1 ? "" : "s") + ' completed</span></div><p class="me-actions"><a class="btn btn-solid btn-sm" href="./?page=me" id="me-continue">My dashboard</a></p></div>' : "") +
-      '<p class="lead" id="hub-lead">47 subjects and 585+ lessons: coding in 13 languages with a live editor, app development (Flutter, Kotlin, React Native, APIs), web and graphic design, Excel, Word and everyday ICT skills, networking and subnetting, cybersecurity, AI tools and how to make money online. Practise with questions that check themselves. Works on your phone.</p>' +
+      '<p class="lead" id="hub-lead">48 subjects and 600+ lessons: coding in 13 languages with a live editor, app development (Flutter, Kotlin, React Native, APIs), web and graphic design, Excel, Word and everyday ICT skills, networking and subnetting, cybersecurity, AI tools and how to make money online. Practise with questions that check themselves. Works on your phone.</p>' +
       '<div id="hub-search"></div><ul class="free-badges"><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Tutorials: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Notes: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Practice: free</li><li><i class="fa-solid fa-user" aria-hidden="true"></i> No account needed</li></ul>' +
       '<p class="hero-ctas"><a class="btn btn-solid" href="./?track=html">Start with HTML</a><a class="btn btn-line" href="./?track=career-roadmaps&amp;lesson=choose-a-tech-career">Find your career path</a></p></div>' +
       '<div class="hero-code" aria-hidden="true"><pre><span class="c-k">print</span>(<span class="c-s">"Habari, Kenya!"</span>)\n<span class="c-t">&lt;h1&gt;</span>Hello<span class="c-t">&lt;/h1&gt;</span>\n<span class="c-k">SELECT</span> * <span class="c-k">FROM</span> Customers;</pre></div></section>' +

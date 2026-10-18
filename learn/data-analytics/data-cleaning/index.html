@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Data cleaning: duplicates, missing values, messy formats…</title>
+    <meta name="description" content="Analysts often say they spend most of their time cleaning data. Real data has typing errors, blanks, duplicates and the same thing written five ways…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/data-analytics/data-cleaning/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Data cleaning: duplicates, missing values, messy formats…" />
+    <meta property="og:description" content="Analysts often say they spend most of their time cleaning data. Real data has typing errors, blanks, duplicates and the same thing written five ways…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/data-analytics/data-cleaning/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Data cleaning: duplicates, missing values, messy formats…" />
+    <meta name="twitter:description" content="Analysts often say they spend most of their time cleaning data. Real data has typing errors, blanks, duplicates and the same thing written five ways…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/data-analytics/data-cleaning/#lesson","name":"Data cleaning: duplicates, missing values, messy formats and a cleaning checklist","description":"Analysts often say they spend most of their time cleaning data. Real data has typing errors, blanks, duplicates and the same thing written five ways…","url":"https://marzleytechsolutions.co.ke/learn/data-analytics/data-cleaning/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/data-analytics/#course","name":"Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)","url":"https://marzleytechsolutions.co.ke/learn/data-analytics/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)","item":"https://marzleytechsolutions.co.ke/learn/data-analytics/"},{"@type":"ListItem","position":4,"name":"Data cleaning: duplicates, missing values, messy formats and a cleaning checklist","item":"https://marzleytechsolutions.co.ke/learn/data-analytics/data-cleaning/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/data-analytics/">Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)</a> / <span>Data cleaning: duplicates, missing values, messy formats and a cleaning checklist</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=data-analytics&amp;lesson=data-cleaning"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Data cleaning: duplicates, missing values, messy formats and a cleaning checklist</h1>
+<p>Analysts often say they spend most of their time cleaning data. Real data has typing errors, blanks, duplicates and the same thing written five ways. Cleaning is not glamorous, but it decides whether your answers are right.</p>
+<h2>The most common problems</h2>
+<div class="static-table"><table><thead><tr><th>Problem</th><th>Example</th></tr></thead><tbody><tr><td>Duplicates</td><td>The same order entered twice</td></tr><tr><td>Missing values</td><td>A blank branch or amount</td></tr><tr><td>Inconsistent text</td><td>"Nairobi", "nairobi ", "NRB"</td></tr><tr><td>Wrong data types</td><td>Amounts stored as text ("KSh 1,200")</td></tr><tr><td>Mixed formats</td><td>Phone numbers as 0712..., +254712..., 712...</td></tr><tr><td>Mixed date formats</td><td>03/04/2026: 3 April or 4 March?</td></tr><tr><td>Impossible values</td><td>Age 230, negative quantity</td></tr><tr><td>Extra spaces</td><td>" Kiambu" vs "Kiambu"</td></tr></tbody></table></div>
+<h2>Clean a messy dataset (run it)</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">raw = [
+    {&quot;id&quot;: &quot;1&quot;, &quot;county&quot;: &quot; Nairobi&quot;, &quot;phone&quot;: &quot;0712 345 678&quot;, &quot;amount&quot;: &quot;KSh 1,200&quot;},
+    {&quot;id&quot;: &quot;2&quot;, &quot;county&quot;: &quot;nairobi&quot;, &quot;phone&quot;: &quot;+254712345679&quot;, &quot;amount&quot;: &quot;850&quot;},
+    {&quot;id&quot;: &quot;2&quot;, &quot;county&quot;: &quot;nairobi&quot;, &quot;phone&quot;: &quot;+254712345679&quot;, &quot;amount&quot;: &quot;850&quot;},
+    {&quot;id&quot;: &quot;3&quot;, &quot;county&quot;: &quot;KIAMBU&quot;, &quot;phone&quot;: &quot;712345680&quot;, &quot;amount&quot;: &quot;&quot;},
+    {&quot;id&quot;: &quot;4&quot;, &quot;county&quot;: &quot;Murang&#x27;a&quot;, &quot;phone&quot;: &quot;0722-000-111&quot;, &quot;amount&quot;: &quot;2,500&quot;},
+]
+
+def clean_phone(p):
+    digits = &quot;&quot;.join(ch for ch in p if ch.isdigit())
+    if digits.startswith(&quot;0&quot;):
+        digits = &quot;254&quot; + digits[1:]
+    elif len(digits) == 9:
+        digits = &quot;254&quot; + digits
+    return digits
+
+def clean_amount(a):
+    digits = &quot;&quot;.join(ch for ch in a if ch.isdigit() or ch == &quot;.&quot;)
+    return float(digits) if digits else None
+
+seen, clean = set(), []
+for row in raw:
+    if row[&quot;id&quot;] in seen:          # remove duplicates
+        continue
+    seen.add(row[&quot;id&quot;])
+    clean.append({
+        &quot;id&quot;: int(row[&quot;id&quot;]),
+        &quot;county&quot;: row[&quot;county&quot;].strip().capitalize(),
+        &quot;phone&quot;: clean_phone(row[&quot;phone&quot;]),
+        &quot;amount&quot;: clean_amount(row[&quot;amount&quot;]),
+    })
+
+for row in clean:
+    print(row)
+
+missing = [r[&quot;id&quot;] for r in clean if r[&quot;amount&quot;] is None]
+print(&quot;Rows with a missing amount:&quot;, missing)</code></pre></figure>
+<aside class="callout callout-warning"><p class="callout-title">A classic trap: .title()</p><div class="callout-body"><p>Python's <code>.title()</code> (and Excel's <code>PROPER</code>) capitalises after every apostrophe, so "murang'a" becomes "Murang'A". We used <code>.capitalize()</code> instead. For real projects, keep a lookup table of correct county and town names and map messy values to it.</p></div></aside>
+<h2>What to do with missing values</h2>
+<div class="static-table"><table><thead><tr><th>Option</th><th>When to use</th></tr></thead><tbody><tr><td><strong>Find the real value</strong></td><td>Best choice: check receipts or the source system</td></tr><tr><td><strong>Leave it blank and exclude from that calculation</strong></td><td>Common; say how many rows were excluded</td></tr><tr><td><strong>Fill with a sensible value</strong> (median, "Unknown")</td><td>Carefully, and only when it won't mislead</td></tr><tr><td><strong>Delete the row</strong></td><td>Only if the row is useless and few rows are affected</td></tr></tbody></table></div>
+<p>Never quietly fill blanks with zero: a missing sale is not a sale of KSh 0.</p>
+<h2>A cleaning checklist</h2>
+<ol><li><strong>Keep the original</strong> file untouched; work on a copy.</li><li><strong>Count rows</strong> before and after each step.</li><li><strong>Remove exact duplicates</strong> (and check near-duplicates).</li><li><strong>Trim spaces</strong> and fix capitalisation.</li><li><strong>Standardise categories</strong> (a lookup table: "NRB" → "Nairobi").</li><li><strong>Convert types:</strong> numbers to numbers, dates to real dates.</li><li><strong>Handle missing values</strong> with a clear rule.</li><li><strong>Check ranges:</strong> no negative quantities or impossible ages.</li><li><strong>Document every step</strong> so someone else can repeat it.</li></ol>
+<h2>Cleaning in Excel</h2>
+<div class="static-table"><table><thead><tr><th>Task</th><th>Excel tool</th></tr></thead><tbody><tr><td>Remove duplicates</td><td>Data &gt; Remove Duplicates</td></tr><tr><td>Trim spaces</td><td><code>=TRIM(A2)</code></td></tr><tr><td>Fix capitals</td><td><code>=PROPER(A2)</code> or <code>=UPPER(A2)</code></td></tr><tr><td>Split text</td><td>Data &gt; Text to Columns</td></tr><tr><td>Find blanks</td><td>Filter, or <code>=COUNTBLANK(range)</code></td></tr><tr><td>Repeatable cleaning</td><td><strong>Power Query</strong> (Data &gt; Get &amp; Transform): records every step and reruns it on new data</td></tr></tbody></table></div>
+<aside class="callout callout-tip"><p class="callout-title">Power Query is a superpower</p><div class="callout-body"><p>If you clean the same monthly report every month, build the steps once in Power Query and click Refresh next month. The same tool is inside Power BI.</p></div></aside>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> After cleaning, your total sales are KSh 40,000 lower than the finance team's figure. What do you check?</span><em>Show answer</em></summary><div class="callout-body"><p>Compare row counts before and after cleaning, check whether you removed rows that weren't really duplicates, whether amounts stored as text became blank, whether a date filter cut off days, and whether finance includes refunds or tax differently. Reconcile until you can explain the difference.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Real data has duplicates, blanks, inconsistent text, wrong types and mixed formats.</li><li>Clean on a copy, count rows at each step and document what you did.</li><li>Handle missing values deliberately; never treat blanks as zero.</li><li>Use TRIM, Remove Duplicates and Power Query in Excel.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Should you fill missing sales amounts with zero? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Which Excel function removes extra spaces? (one word)</p><details><summary>Show answer</summary><p>trim</p></details></li><li><p>Which Excel tool records cleaning steps so you can refresh them? (two words)</p><details><summary>Show answer</summary><p>power query</p></details></li></ol></section></div><p class="static-meta">Lesson 8 of 15 in <a href="/learn/data-analytics/">Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=data-analytics">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/data-analytics/ab-testing-hypothesis/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> A/B tests and hypothesis testing: proving what works (with p-values explained simply)</a><a class="btn btn-solid btn-sm" href="/learn/data-analytics/excel-for-analysis/">Excel and Google Sheets for analysis: PivotTables, lookups, conditional formatting and charts <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sampling and probability: surveys, bias, margin of error…</title>
+    <meta name="description" content="You rarely have data on everyone. Pollsters ask about 2,000 people to estimate how millions will vote; a county surveys a few hundred households…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/data-analytics/sampling-probability/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Sampling and probability: surveys, bias, margin of error…" />
+    <meta property="og:description" content="You rarely have data on everyone. Pollsters ask about 2,000 people to estimate how millions will vote; a county surveys a few hundred households…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/data-analytics/sampling-probability/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Sampling and probability: surveys, bias, margin of error…" />
+    <meta name="twitter:description" content="You rarely have data on everyone. Pollsters ask about 2,000 people to estimate how millions will vote; a county surveys a few hundred households…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/data-analytics/sampling-probability/#lesson","name":"Sampling and probability: surveys, bias, margin of error and why size matters","description":"You rarely have data on everyone. Pollsters ask about 2,000 people to estimate how millions will vote; a county surveys a few hundred households…","url":"https://marzleytechsolutions.co.ke/learn/data-analytics/sampling-probability/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/data-analytics/#course","name":"Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)","url":"https://marzleytechsolutions.co.ke/learn/data-analytics/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)","item":"https://marzleytechsolutions.co.ke/learn/data-analytics/"},{"@type":"ListItem","position":4,"name":"Sampling and probability: surveys, bias, margin of error and why size matters","item":"https://marzleytechsolutions.co.ke/learn/data-analytics/sampling-probability/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/data-analytics/">Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)</a> / <span>Sampling and probability: surveys, bias, margin of error and why size matters</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=data-analytics&amp;lesson=sampling-probability"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Sampling and probability: surveys, bias, margin of error and why size matters</h1>
+<p>You rarely have data on everyone. Pollsters ask about 2,000 people to estimate how millions will vote; a county surveys a few hundred households. Learning how sampling works helps you trust good surveys and spot bad ones.</p>
+<h2>Population and sample</h2>
+<ul><li><strong>Population:</strong> everyone or everything you want to know about (all customers, all voters, all farms in a county).</li><li><strong>Sample:</strong> the smaller group you actually measure.</li><li>A <strong>statistic</strong> describes the sample; we use it to estimate the population.</li></ul>
+<h2>Good and bad samples</h2>
+<div class="static-table"><table><thead><tr><th>Method</th><th>How</th><th>Risk</th></tr></thead><tbody><tr><td><strong>Simple random sample</strong></td><td>Everyone has an equal chance of being picked</td><td>Best basic method</td></tr><tr><td><strong>Stratified sample</strong></td><td>Split into groups (counties, age groups) and sample from each</td><td>Ensures every group is represented</td></tr><tr><td><strong>Systematic sample</strong></td><td>Pick every 10th customer</td><td>Fine unless there's a hidden pattern</td></tr><tr><td><strong>Convenience sample</strong></td><td>Whoever is easy to reach</td><td>Often biased</td></tr><tr><td><strong>Self-selected (voluntary)</strong></td><td>People choose to answer (online polls)</td><td>Very biased: people with strong opinions answer</td></tr></tbody></table></div>
+<h2>Types of bias</h2>
+<div class="static-table"><table><thead><tr><th>Bias</th><th>Example</th></tr></thead><tbody><tr><td><strong>Selection bias</strong></td><td>Surveying only Nairobi shoppers about national habits</td></tr><tr><td><strong>Non-response bias</strong></td><td>Busy people don't answer, so results over-represent people with free time</td></tr><tr><td><strong>Leading questions</strong></td><td>"Don't you agree our excellent service is great?"</td></tr><tr><td><strong>Survivorship bias</strong></td><td>Studying only successful businesses and ignoring the ones that closed</td></tr></tbody></table></div>
+<h2>Probability basics</h2>
+<p><strong>Probability</strong> is how likely something is, from 0 (impossible) to 1 (certain). Probability of an event = favourable outcomes ÷ all possible outcomes. A fair coin landing heads: 1 ÷ 2 = 0.5.</p>
+<p>The <strong>law of large numbers:</strong> the more times you repeat a random experiment, the closer the results get to the true probability. Watch it happen:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import random
+random.seed(7)
+
+for flips in [10, 100, 1000, 10000]:
+    heads = sum(random.random() &lt; 0.5 for _ in range(flips))
+    print(f&quot;{flips:&gt;6} flips: {heads / flips:.3f} heads&quot;)</code></pre></figure>
+<p>With 10 flips the share of heads can be far from 0.5; with 10,000 it's very close.</p>
+<h2>Why sample size matters</h2>
+<p>Imagine 40% of a county's farmers use certified seed. Let's draw random samples of different sizes and see how close the estimates get:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import random
+random.seed(1)
+
+population = [1] * 40000 + [0] * 60000   # 1 = uses certified seed (40%)
+
+for n in [20, 100, 500, 2000]:
+    estimates = []
+    for _ in range(200):
+        sample = random.sample(population, n)
+        estimates.append(sum(sample) / n)
+    print(f&quot;sample of {n:&gt;4}: estimates ranged from {min(estimates):.0%} to {max(estimates):.0%}&quot;)</code></pre></figure>
+<p>Small samples bounce around a lot; bigger samples cluster near the true 40%.</p>
+<h2>Margin of error (the rough rule)</h2>
+<p>Surveys report results like "52% ± 3%". For a simple random sample, a quick approximation of the 95% margin of error for a percentage is:</p>
+<p><strong>margin of error ≈ 1 ÷ √(sample size)</strong></p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">for n in [100, 400, 1000, 2000, 4000]:
+    moe = 1 / n ** 0.5
+    print(f&quot;sample of {n:&gt;4}: about ±{moe:.1%}&quot;)</code></pre></figure>
+<p>Notice that to halve the margin of error you need <strong>four times</strong> the sample. That's why national polls rarely survey more than a few thousand people.</p>
+<aside class="callout callout-warning"><p class="callout-title">A big biased sample is still wrong</p><div class="callout-body"><p>100,000 answers to a self-selected online poll can be less accurate than 1,000 well-chosen random interviews. How you choose the sample matters more than how big it is.</p></div></aside>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A radio station runs a text-in poll: "Should fuel prices be reduced?" 95% vote yes. Does this tell you what Kenyans think?</span><em>Show answer</em></summary><div class="callout-body"><p>No. It's self-selected (only listeners who chose to text), and the question is leading (almost everyone wants cheaper fuel). It says little about public opinion on real policy choices. A random sample with a neutral question would be needed.</p></div></details>
+<h2>Summary</h2>
+<ul><li>A sample estimates a population; random sampling is the foundation.</li><li>Watch for selection, non-response, leading-question and survivorship bias.</li><li>Bigger random samples give estimates closer to the truth (law of large numbers).</li><li>Margin of error ≈ 1 ÷ √n for percentages; quadruple the sample to halve it.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>A sample where everyone has an equal chance of being chosen is called a simple ___ sample (one word)</p><details><summary>Show answer</summary><p>random</p></details></li><li><p>Probability ranges from 0 to what number?</p><details><summary>Show answer</summary><p>1</p></details></li><li><p>About how many times bigger must a sample be to halve the margin of error? (a number)</p><details><summary>Show answer</summary><p>4</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 15 in <a href="/learn/data-analytics/">Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=data-analytics">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/data-analytics/distributions-outliers/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Distributions, percentiles and outliers: seeing the shape of your data</a><a class="btn btn-solid btn-sm" href="/learn/data-analytics/correlation-regression/">Correlation and regression: finding relationships (and why correlation isn&#x27;t causation) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

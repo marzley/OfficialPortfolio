@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Distributions, percentiles and outliers: seeing the…</title>
+    <meta name="description" content="Averages hide a lot. To really understand data, look at its distribution : how values are spread out, where most of them sit, and which ones are unusual." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/data-analytics/distributions-outliers/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Distributions, percentiles and outliers: seeing the…" />
+    <meta property="og:description" content="Averages hide a lot. To really understand data, look at its distribution : how values are spread out, where most of them sit, and which ones are unusual." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/data-analytics/distributions-outliers/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Distributions, percentiles and outliers: seeing the…" />
+    <meta name="twitter:description" content="Averages hide a lot. To really understand data, look at its distribution : how values are spread out, where most of them sit, and which ones are unusual." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/data-analytics/distributions-outliers/#lesson","name":"Distributions, percentiles and outliers: seeing the shape of your data","description":"Averages hide a lot. To really understand data, look at its distribution : how values are spread out, where most of them sit, and which ones are unusual.","url":"https://marzleytechsolutions.co.ke/learn/data-analytics/distributions-outliers/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/data-analytics/#course","name":"Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)","url":"https://marzleytechsolutions.co.ke/learn/data-analytics/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)","item":"https://marzleytechsolutions.co.ke/learn/data-analytics/"},{"@type":"ListItem","position":4,"name":"Distributions, percentiles and outliers: seeing the shape of your data","item":"https://marzleytechsolutions.co.ke/learn/data-analytics/distributions-outliers/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/data-analytics/">Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)</a> / <span>Distributions, percentiles and outliers: seeing the shape of your data</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=data-analytics&amp;lesson=distributions-outliers"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Distributions, percentiles and outliers: seeing the shape of your data</h1>
+<p>Averages hide a lot. To really understand data, look at its <strong>distribution</strong>: how values are spread out, where most of them sit, and which ones are unusual.</p>
+<h2>Percentiles and quartiles</h2>
+<p>A <strong>percentile</strong> tells you the value below which a certain percentage of data falls. If your exam score is at the 90th percentile, you scored higher than 90% of candidates.</p>
+<p><strong>Quartiles</strong> split sorted data into four equal parts:</p>
+<div class="static-table"><table><thead><tr><th>Name</th><th>Percentile</th><th>Meaning</th></tr></thead><tbody><tr><td>Q1 (first quartile)</td><td>25th</td><td>A quarter of values are below it</td></tr><tr><td>Q2 (median)</td><td>50th</td><td>Half are below it</td></tr><tr><td>Q3 (third quartile)</td><td>75th</td><td>Three quarters are below it</td></tr></tbody></table></div>
+<p>The <strong>interquartile range (IQR)</strong> is Q3 minus Q1: the spread of the middle half of the data. Extreme values don't affect it, which makes it very useful.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import statistics as st
+
+delivery_minutes = [18, 22, 25, 25, 27, 29, 30, 31, 33, 35, 36, 38, 40, 44, 95]
+
+q1, q2, q3 = st.quantiles(delivery_minutes, n=4)
+iqr = q3 - q1
+print(&quot;Q1:&quot;, q1, &quot; median:&quot;, q2, &quot; Q3:&quot;, q3)
+print(&quot;IQR:&quot;, iqr)</code></pre></figure>
+<h2>Finding outliers with the IQR rule</h2>
+<p>An <strong>outlier</strong> is a value far from the rest. A common rule: a value is an outlier if it's more than <strong>1.5 × IQR</strong> below Q1 or above Q3.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import statistics as st
+
+delivery_minutes = [18, 22, 25, 25, 27, 29, 30, 31, 33, 35, 36, 38, 40, 44, 95]
+q1, _, q3 = st.quantiles(delivery_minutes, n=4)
+iqr = q3 - q1
+low, high = q1 - 1.5 * iqr, q3 + 1.5 * iqr
+
+outliers = [m for m in delivery_minutes if m &lt; low or m &gt; high]
+print(&quot;Normal range:&quot;, round(low, 1), &quot;to&quot;, round(high, 1), &quot;minutes&quot;)
+print(&quot;Outliers:&quot;, outliers)</code></pre></figure>
+<p>The 95-minute delivery stands out. Now the analyst's job begins: <strong>why?</strong> A typing error? A breakdown? A far-away customer? Never delete an outlier without finding out what it is.</p>
+<div class="static-table"><table><thead><tr><th>Outlier cause</th><th>What to do</th></tr></thead><tbody><tr><td>Data entry error (950 instead of 95)</td><td>Fix it if you can confirm the right value</td></tr><tr><td>A real but rare event (a breakdown)</td><td>Keep it; report it separately</td></tr><tr><td>A different group (wholesale order among retail)</td><td>Analyse that group separately</td></tr></tbody></table></div>
+<h2>Shapes of distributions</h2>
+<div class="static-table"><table><thead><tr><th>Shape</th><th>Description</th><th>Example</th></tr></thead><tbody><tr><td><strong>Symmetric / normal</strong></td><td>Bell-shaped; mean ≈ median</td><td>Heights of adults, many measurement errors</td></tr><tr><td><strong>Right-skewed</strong></td><td>Long tail of high values; mean &gt; median</td><td>Incomes, house prices, M-Pesa transaction sizes</td></tr><tr><td><strong>Left-skewed</strong></td><td>Long tail of low values; mean &lt; median</td><td>Scores on a very easy test</td></tr><tr><td><strong>Bimodal</strong></td><td>Two peaks</td><td>Restaurant orders at lunch and dinner</td></tr></tbody></table></div>
+<p>A quick check: if the mean is much bigger than the median, the data is probably right-skewed.</p>
+<h2>A text histogram (run it)</h2>
+<p>A <strong>histogram</strong> groups values into ranges ("bins") and shows how many fall in each. Here is one drawn with characters:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">ages = [19, 22, 23, 24, 25, 25, 26, 27, 28, 29, 31, 33, 34, 36, 38, 41, 45, 52, 58, 63]
+
+for start in range(10, 70, 10):
+    count = sum(1 for a in ages if start &lt;= a &lt; start + 10)
+    print(f&quot;{start}-{start + 9}: &quot; + &quot;#&quot; * count + f&quot; ({count})&quot;)</code></pre></figure>
+<p>Most customers are in their twenties, with fewer older customers: a right-skewed shape.</p>
+<aside class="callout callout-tip"><p class="callout-title">In Excel</p><div class="callout-body"><p>Use <code>=QUARTILE.INC(range, 1)</code> and <code>=QUARTILE.INC(range, 3)</code> for Q1 and Q3, <code>=PERCENTILE.INC(range, 0.9)</code> for the 90th percentile, and Insert &gt; Chart &gt; Histogram or Box and Whisker to see the shape.</p></div></aside>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A boda boda company finds that 3 out of 2,000 trips took over 4 hours. Should it delete them before calculating the average trip time?</span><em>Show answer</em></summary><div class="callout-body"><p>Not automatically. First check why: GPS errors, a rider forgetting to end the trip, or real long hires. Fix or exclude clear errors and explain that in the report; keep genuine long trips, and consider reporting the median (which outliers barely affect) alongside the mean.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Percentiles and quartiles show where values sit; the IQR is the spread of the middle half.</li><li>The 1.5 × IQR rule flags outliers; investigate them before deciding what to do.</li><li>Distributions can be symmetric, skewed or bimodal; mean much bigger than median suggests right skew.</li><li>Histograms and box plots show the shape.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the median also called in quartile terms? (two characters)</p><details><summary>Show answer</summary><p>q2</p></details></li><li><p>IQR stands for interquartile ___ (one word)</p><details><summary>Show answer</summary><p>range</p></details></li><li><p>Incomes usually have which kind of skew? (one word: left or right)</p><details><summary>Show answer</summary><p>right</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 15 in <a href="/learn/data-analytics/">Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=data-analytics">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/data-analytics/descriptive-statistics/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Averages and spread: mean, median, mode, range and standard deviation</a><a class="btn btn-solid btn-sm" href="/learn/data-analytics/sampling-probability/">Sampling and probability: surveys, bias, margin of error and why size matters <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

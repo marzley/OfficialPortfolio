@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Correlation and regression: finding relationships (and…</title>
+    <meta name="description" content="Does more advertising bring more sales? Do farms with more rainfall harvest more maize? Correlation measures how strongly two numbers move together…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/data-analytics/correlation-regression/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Correlation and regression: finding relationships (and…" />
+    <meta property="og:description" content="Does more advertising bring more sales? Do farms with more rainfall harvest more maize? Correlation measures how strongly two numbers move together…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/data-analytics/correlation-regression/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Correlation and regression: finding relationships (and…" />
+    <meta name="twitter:description" content="Does more advertising bring more sales? Do farms with more rainfall harvest more maize? Correlation measures how strongly two numbers move together…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/data-analytics/correlation-regression/#lesson","name":"Correlation and regression: finding relationships (and why correlation isn't causation)","description":"Does more advertising bring more sales? Do farms with more rainfall harvest more maize? Correlation measures how strongly two numbers move together…","url":"https://marzleytechsolutions.co.ke/learn/data-analytics/correlation-regression/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/data-analytics/#course","name":"Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)","url":"https://marzleytechsolutions.co.ke/learn/data-analytics/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)","item":"https://marzleytechsolutions.co.ke/learn/data-analytics/"},{"@type":"ListItem","position":4,"name":"Correlation and regression: finding relationships (and why correlation isn't causation)","item":"https://marzleytechsolutions.co.ke/learn/data-analytics/correlation-regression/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/data-analytics/">Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)</a> / <span>Correlation and regression: finding relationships (and why correlation isn&#x27;t causation)</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=data-analytics&amp;lesson=correlation-regression"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Correlation and regression: finding relationships (and why correlation isn't causation)</h1>
+<p>Does more advertising bring more sales? Do farms with more rainfall harvest more maize? <strong>Correlation</strong> measures how strongly two numbers move together, and <strong>regression</strong> draws the best straight line through them so you can estimate one from the other.</p>
+<h2>Correlation: the coefficient r</h2>
+<p>The correlation coefficient <strong>r</strong> runs from −1 to +1:</p>
+<div class="static-table"><table><thead><tr><th>r</th><th>Meaning</th><th>Example</th></tr></thead><tbody><tr><td>close to +1</td><td>Strong positive: both rise together</td><td>Hours studied and exam score</td></tr><tr><td>close to 0</td><td>No straight-line relationship</td><td>Shoe size and exam score</td></tr><tr><td>close to −1</td><td>Strong negative: one rises as the other falls</td><td>Price of a product and units sold</td></tr></tbody></table></div>
+<p>A rough guide: above 0.7 (or below −0.7) is strong; 0.3 to 0.7 is moderate; below 0.3 is weak.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import statistics as st
+
+ad_spend = [5, 8, 10, 12, 15, 18, 20, 25]          # KSh thousands per week
+sales =    [58, 76, 74, 90, 95, 113, 112, 141]    # KSh thousands per week
+
+r = st.correlation(ad_spend, sales)
+print(&quot;Correlation r =&quot;, round(r, 3))</code></pre></figure>
+<p>A value near +1 means weeks with more advertising had more sales.</p>
+<h2>Correlation is not causation</h2>
+<p>Two things can move together without one causing the other:</p>
+<div class="static-table"><table><thead><tr><th>Correlation</th><th>The hidden explanation</th></tr></thead><tbody><tr><td>Ice cream sales and drownings rise together</td><td>Hot weather causes both (a <strong>confounding variable</strong>)</td></tr><tr><td>Towns with more churches have more crime</td><td>Bigger towns have more of both</td></tr><tr><td>Students with tutors score lower</td><td>Weaker students are more likely to get tutors (reverse causation)</td></tr></tbody></table></div>
+<p>To show causation you usually need an <strong>experiment</strong> (like an A/B test, next lesson) or very careful analysis that controls for other factors.</p>
+<h2>Simple linear regression: the line of best fit</h2>
+<p>Regression finds the straight line <strong>y = a + b × x</strong> that best fits the points:</p>
+<ul><li><strong>b (slope):</strong> how much y changes when x goes up by 1</li><li><strong>a (intercept):</strong> the value of y when x is 0</li></ul>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import statistics as st
+
+ad_spend = [5, 8, 10, 12, 15, 18, 20, 25]
+sales =    [58, 76, 74, 90, 95, 113, 112, 141]
+
+slope, intercept = st.linear_regression(ad_spend, sales)
+print(f&quot;sales ≈ {intercept:.1f} + {slope:.2f} × ad_spend&quot;)
+
+for spend in [10, 22, 30]:   # careful: 30k is outside the data (5k to 25k)
+    print(f&quot;If we spend {spend}k on ads, expected sales ≈ {intercept + slope * spend:.0f}k&quot;)</code></pre></figure>
+<p>The slope says roughly how many thousand shillings of extra sales came with each extra thousand spent on ads, <strong>in this data</strong>.</p>
+<h2>R-squared: how well does the line fit?</h2>
+<p><strong>R²</strong> (r squared) is the share of the variation in y explained by x, from 0 to 1.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import statistics as st
+
+ad_spend = [5, 8, 10, 12, 15, 18, 20, 25]
+sales =    [58, 76, 74, 90, 95, 113, 112, 141]
+r = st.correlation(ad_spend, sales)
+print(f&quot;R² = {r * r:.2f}  -&gt;  about {r * r:.0%} of the variation in sales moves with ad spend&quot;)</code></pre></figure>
+<h2>Be careful with predictions</h2>
+<ul><li><strong>Don't extrapolate far:</strong> the data covers ad spend from 5k to 25k. Predicting sales at 200k is guesswork; returns usually shrink.</li><li><strong>Look at the scatter plot first:</strong> some relationships are curved, and a straight line misleads.</li><li><strong>Outliers can drag the line:</strong> check them (lesson 4).</li><li><strong>Other factors matter:</strong> holidays, prices and competitors also affect sales.</li></ul>
+<aside class="callout callout-tip"><p class="callout-title">In Excel</p><div class="callout-body"><p><code>=CORREL(A2:A9, B2:B9)</code> gives r. <code>=SLOPE(B2:B9, A2:A9)</code> and <code>=INTERCEPT(B2:B9, A2:A9)</code> give the line. Insert a scatter chart and add a trendline with "Display R-squared value".</p></div></aside>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A study finds that Kenyan households with smartphones have higher incomes. A phone company says: "Buy a smartphone and earn more!" What's wrong with that claim?</span><em>Show answer</em></summary><div class="callout-body"><p>It confuses correlation with causation. Higher income lets people buy smartphones (reverse causation), and other factors (education, living in towns, type of job) affect both. Smartphones may help some people earn, but this correlation alone doesn't prove it.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Correlation r (−1 to +1) measures how strongly two numbers move together in a straight line.</li><li>Correlation is not causation: watch for confounders and reverse causation.</li><li>Regression gives a line y = a + b × x; the slope shows the change in y per unit of x.</li><li>R² shows how much variation the line explains; don't extrapolate far beyond your data.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the highest possible value of the correlation coefficient r? (a number)</p><details><summary>Show answer</summary><p>1</p></details></li><li><p>A hidden factor that causes two things to move together is called a ___ variable (one word)</p><details><summary>Show answer</summary><p>confounding</p></details></li><li><p>Which Excel function gives the correlation coefficient? (one word)</p><details><summary>Show answer</summary><p>correl</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 15 in <a href="/learn/data-analytics/">Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=data-analytics">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/data-analytics/sampling-probability/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Sampling and probability: surveys, bias, margin of error and why size matters</a><a class="btn btn-solid btn-sm" href="/learn/data-analytics/ab-testing-hypothesis/">A/B tests and hypothesis testing: proving what works (with p-values explained simply) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

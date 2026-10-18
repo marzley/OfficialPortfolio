@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Python for data analysis: CSV files, grouping, and an…</title>
+    <meta name="description" content="Excel struggles with very large files and repeating the same steps every week. Python handles millions of rows and automates the whole job: load…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/data-analytics/python-for-data/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Python for data analysis: CSV files, grouping, and an…" />
+    <meta property="og:description" content="Excel struggles with very large files and repeating the same steps every week. Python handles millions of rows and automates the whole job: load…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/data-analytics/python-for-data/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Python for data analysis: CSV files, grouping, and an…" />
+    <meta name="twitter:description" content="Excel struggles with very large files and repeating the same steps every week. Python handles millions of rows and automates the whole job: load…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/data-analytics/python-for-data/#lesson","name":"Python for data analysis: CSV files, grouping, and an introduction to pandas","description":"Excel struggles with very large files and repeating the same steps every week. Python handles millions of rows and automates the whole job: load…","url":"https://marzleytechsolutions.co.ke/learn/data-analytics/python-for-data/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/data-analytics/#course","name":"Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)","url":"https://marzleytechsolutions.co.ke/learn/data-analytics/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)","item":"https://marzleytechsolutions.co.ke/learn/data-analytics/"},{"@type":"ListItem","position":4,"name":"Python for data analysis: CSV files, grouping, and an introduction to pandas","item":"https://marzleytechsolutions.co.ke/learn/data-analytics/python-for-data/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/data-analytics/">Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)</a> / <span>Python for data analysis: CSV files, grouping, and an introduction to pandas</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=data-analytics&amp;lesson=python-for-data"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Python for data analysis: CSV files, grouping, and an introduction to pandas</h1>
+<p>Excel struggles with very large files and repeating the same steps every week. Python handles millions of rows and automates the whole job: load, clean, analyse, chart and export, with one click. If you're new to Python, do the <a href="/learn/python/">Python subject</a> first.</p>
+<h2>Reading a CSV file</h2>
+<p>CSV (comma-separated values) is the most common data format: every system can export it.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import csv, io
+
+csv_text = &quot;&quot;&quot;date,branch,item,qty,price
+2026-03-01,Kenol,Unga 2kg,12,210
+2026-03-01,Thika,Milk 500ml,40,65
+2026-03-02,Kenol,Sugar 1kg,8,190
+2026-03-02,Thika,Unga 2kg,20,210
+2026-03-03,Kenol,Milk 500ml,30,65
+2026-03-03,Thika,Bread,25,65
+&quot;&quot;&quot;
+
+rows = list(csv.DictReader(io.StringIO(csv_text)))
+print(&quot;Rows:&quot;, len(rows))
+print(&quot;First row:&quot;, rows[0])</code></pre></figure>
+<p>In real work you'd use <code>open(&quot;sales.csv&quot;)</code> instead of <code>io.StringIO(...)</code>.</p>
+<h2>Grouping and totals (like a PivotTable)</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import csv, io
+from collections import defaultdict
+
+csv_text = &quot;&quot;&quot;date,branch,item,qty,price
+2026-03-01,Kenol,Unga 2kg,12,210
+2026-03-01,Thika,Milk 500ml,40,65
+2026-03-02,Kenol,Sugar 1kg,8,190
+2026-03-02,Thika,Unga 2kg,20,210
+2026-03-03,Kenol,Milk 500ml,30,65
+2026-03-03,Thika,Bread,25,65
+&quot;&quot;&quot;
+rows = list(csv.DictReader(io.StringIO(csv_text)))
+
+by_branch = defaultdict(int)
+by_item = defaultdict(int)
+for r in rows:
+    revenue = int(r[&quot;qty&quot;]) * int(r[&quot;price&quot;])
+    by_branch[r[&quot;branch&quot;]] += revenue
+    by_item[r[&quot;item&quot;]] += revenue
+
+print(&quot;Revenue by branch:&quot;)
+for branch, total in sorted(by_branch.items(), key=lambda kv: -kv[1]):
+    print(f&quot;  {branch:&lt;6} KSh {total:,}&quot;)
+
+top_item = max(by_item, key=by_item.get)
+print(&quot;Top item:&quot;, top_item, f&quot;(KSh {by_item[top_item]:,})&quot;)</code></pre></figure>
+<h2>Writing results to a new CSV</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import csv, io
+
+summary = [(&quot;Thika&quot;, 8425), (&quot;Kenol&quot;, 5990)]   # the totals from the example above
+out = io.StringIO()
+writer = csv.writer(out)
+writer.writerow([&quot;branch&quot;, &quot;revenue&quot;])
+writer.writerows(summary)
+print(out.getvalue())</code></pre></figure>
+<h2>pandas: the analyst's main Python library</h2>
+<p><strong>pandas</strong> stores data in a <strong>DataFrame</strong> (like a spreadsheet in code) and does in one line what took a loop above. On your own computer, install it with <code>pip install pandas</code> (it's included in Anaconda and Google Colab). Here's how the same analysis looks in pandas:</p>
+<figure class="static-code"><figcaption>Python</figcaption><pre><code class="language-python">import pandas as pd
+
+df = pd.read_csv(&quot;sales.csv&quot;, parse_dates=[&quot;date&quot;])
+df[&quot;revenue&quot;] = df[&quot;qty&quot;] * df[&quot;price&quot;]
+
+print(df.head())                                   # first 5 rows
+print(df.describe())                               # mean, std, quartiles for every number column
+print(df.groupby(&quot;branch&quot;)[&quot;revenue&quot;].sum())       # revenue by branch
+print(df.groupby(df[&quot;date&quot;].dt.month)[&quot;revenue&quot;].sum())   # by month
+
+pivot = df.pivot_table(index=&quot;branch&quot;, columns=&quot;item&quot;, values=&quot;revenue&quot;, aggfunc=&quot;sum&quot;, fill_value=0)
+pivot.to_excel(&quot;summary.xlsx&quot;)                     # needs openpyxl</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>Task</th><th>pandas</th></tr></thead><tbody><tr><td>Load a file</td><td><code>pd.read_csv()</code>, <code>pd.read_excel()</code></td></tr><tr><td>See the data</td><td><code>df.head()</code>, <code>df.info()</code>, <code>df.describe()</code></td></tr><tr><td>Filter rows</td><td><code>df[df[&quot;branch&quot;] == &quot;Thika&quot;]</code></td></tr><tr><td>New column</td><td><code>df[&quot;revenue&quot;] = df[&quot;qty&quot;] * df[&quot;price&quot;]</code></td></tr><tr><td>Group and total</td><td><code>df.groupby(&quot;branch&quot;)[&quot;revenue&quot;].sum()</code></td></tr><tr><td>Remove duplicates</td><td><code>df.drop_duplicates()</code></td></tr><tr><td>Missing values</td><td><code>df.isna().sum()</code>, <code>df.dropna()</code>, <code>df.fillna()</code></td></tr><tr><td>Charts</td><td><code>df.plot()</code> (uses matplotlib)</td></tr></tbody></table></div>
+<aside class="callout callout-tip"><p class="callout-title">Where to practise pandas for free</p><div class="callout-body"><p><strong>Google Colab</strong> (colab.research.google.com) runs Python notebooks with pandas in your browser, even on a basic laptop. Kaggle also offers free notebooks and datasets.</p></div></aside>
+<h2>Mini project: automate a weekly report</h2>
+<ol><li>Export the week's sales as CSV.</li><li>Python script: load, clean (lesson 8), total by branch and item, compare with last week.</li><li>Save a summary CSV or Excel file and a chart.</li><li>Next week, run the same script on the new file: a 2-hour job becomes 2 minutes.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> When is Excel enough, and when should an analyst switch to Python?</span><em>Show answer</em></summary><div class="callout-body"><p>Excel is enough for small to medium datasets, one-off analysis and sharing with non-technical colleagues. Switch to Python for very large files, repeated weekly or daily reports, combining many files, complex cleaning or advanced statistics and machine learning.</p></div></details>
+<h2>Summary</h2>
+<ul><li>CSV is the common format; Python's csv module reads and writes it.</li><li>Grouping with dictionaries works like a PivotTable.</li><li>pandas DataFrames make loading, cleaning, grouping and exporting fast.</li><li>Use Google Colab to practise pandas free; automate repeated reports.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does CSV stand for? (three words)</p><details><summary>Show answer</summary><p>comma separated values</p></details></li><li><p>Which Python library stores data in DataFrames? (one word)</p><details><summary>Show answer</summary><p>pandas</p></details></li><li><p>Which pandas method groups rows, like a PivotTable? (one word)</p><details><summary>Show answer</summary><p>groupby</p></details></li></ol></section></div><p class="static-meta">Lesson 11 of 15 in <a href="/learn/data-analytics/">Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=data-analytics">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/data-analytics/sql-for-analysis/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> SQL for analysis: GROUP BY, HAVING, JOINs, CASE and window functions</a><a class="btn btn-solid btn-sm" href="/learn/data-analytics/data-visualisation/">Data visualisation: choosing the right chart and designing clear dashboards <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

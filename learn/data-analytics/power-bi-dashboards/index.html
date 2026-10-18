@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Power BI: from raw data to an interactive dashboard…</title>
+    <meta name="description" content="Power BI is Microsoft&#x27;s business intelligence tool. Banks, telcos, NGOs, insurers and government agencies in Kenya use it to build dashboards that…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/data-analytics/power-bi-dashboards/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Power BI: from raw data to an interactive dashboard…" />
+    <meta property="og:description" content="Power BI is Microsoft&#x27;s business intelligence tool. Banks, telcos, NGOs, insurers and government agencies in Kenya use it to build dashboards that…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/data-analytics/power-bi-dashboards/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Power BI: from raw data to an interactive dashboard…" />
+    <meta name="twitter:description" content="Power BI is Microsoft&#x27;s business intelligence tool. Banks, telcos, NGOs, insurers and government agencies in Kenya use it to build dashboards that…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/data-analytics/power-bi-dashboards/#lesson","name":"Power BI: from raw data to an interactive dashboard (Power Query, data model, DAX)","description":"Power BI is Microsoft's business intelligence tool. Banks, telcos, NGOs, insurers and government agencies in Kenya use it to build dashboards that…","url":"https://marzleytechsolutions.co.ke/learn/data-analytics/power-bi-dashboards/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/data-analytics/#course","name":"Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)","url":"https://marzleytechsolutions.co.ke/learn/data-analytics/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)","item":"https://marzleytechsolutions.co.ke/learn/data-analytics/"},{"@type":"ListItem","position":4,"name":"Power BI: from raw data to an interactive dashboard (Power Query, data model, DAX)","item":"https://marzleytechsolutions.co.ke/learn/data-analytics/power-bi-dashboards/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/data-analytics/">Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)</a> / <span>Power BI: from raw data to an interactive dashboard (Power Query, data model, DAX)</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=data-analytics&amp;lesson=power-bi-dashboards"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Power BI: from raw data to an interactive dashboard (Power Query, data model, DAX)</h1>
+<p><strong>Power BI</strong> is Microsoft's business intelligence tool. Banks, telcos, NGOs, insurers and government agencies in Kenya use it to build dashboards that managers can click and filter. <strong>Power BI Desktop</strong> is free to download for Windows; sharing dashboards online inside an organisation usually needs a paid licence.</p>
+<h2>The Power BI workflow</h2>
+<div class="static-table"><table><thead><tr><th>Step</th><th>Where</th><th>What you do</th></tr></thead><tbody><tr><td>1. Get data</td><td>Home &gt; Get Data</td><td>Connect to Excel, CSV, SQL databases, SharePoint, web</td></tr><tr><td>2. Clean (transform)</td><td><strong>Power Query</strong> editor</td><td>Remove columns, fix types, trim text, merge tables</td></tr><tr><td>3. Model</td><td>Model view</td><td>Link tables with relationships</td></tr><tr><td>4. Calculate</td><td><strong>DAX</strong> measures</td><td>Totals, ratios, comparisons</td></tr><tr><td>5. Visualise</td><td>Report view</td><td>Cards, charts, tables, slicers, maps</td></tr><tr><td>6. Share</td><td>Publish</td><td>Power BI Service (online), PDF, PowerPoint</td></tr></tbody></table></div>
+<h2>Step 2: Power Query</h2>
+<p>Power Query records every cleaning step (like the Excel version in lesson 8). Common steps:</p>
+<ul><li><strong>Use first row as headers</strong></li><li><strong>Change type</strong> (text, whole number, date)</li><li><strong>Trim</strong> and <strong>Clean</strong> text</li><li><strong>Remove duplicates</strong> and <strong>Remove rows</strong> (blank, errors)</li><li><strong>Merge queries</strong> (like a JOIN) and <strong>Append queries</strong> (stack monthly files)</li><li><strong>Unpivot columns</strong> (turn month columns into rows)</li></ul>
+<p>Click <strong>Close &amp; Apply</strong>. Next month, click <strong>Refresh</strong> and every step runs again on the new data.</p>
+<h2>Step 3: the data model (star schema)</h2>
+<p>Good models have:</p>
+<ul><li>One <strong>fact table</strong> with events and numbers (each sale: date, branch, product, amount)</li><li>Several <strong>dimension tables</strong> describing things (Branches, Products, Dates)</li></ul>
+<p>Relationships connect them (Sales[BranchID] → Branches[BranchID]). This shape is called a <strong>star schema</strong>, and it makes reports fast and filters work correctly. Add a proper <strong>Date table</strong> so time comparisons work.</p>
+<h2>Step 4: DAX measures</h2>
+<p><strong>DAX</strong> (Data Analysis Expressions) is Power BI's formula language. Write <strong>measures</strong> for calculations:</p>
+<figure class="static-code"><figcaption>TEXT</figcaption><pre><code class="language-text">Total Revenue = SUM(Sales[Amount])
+
+Orders = COUNTROWS(Sales)
+
+Average Order = DIVIDE([Total Revenue], [Orders])
+
+Thika Revenue = CALCULATE([Total Revenue], Branches[Name] = &quot;Thika&quot;)
+
+Revenue Last Month = CALCULATE([Total Revenue], DATEADD(&#x27;Date&#x27;[Date], -1, MONTH))
+
+Growth % = DIVIDE([Total Revenue] - [Revenue Last Month], [Revenue Last Month])</code></pre></figure>
+<div class="static-table"><table><thead><tr><th>DAX function</th><th>Use</th></tr></thead><tbody><tr><td><code>SUM</code>, <code>AVERAGE</code>, <code>COUNTROWS</code></td><td>Basic totals</td></tr><tr><td><code>DIVIDE</code></td><td>Safe division (no error when dividing by zero)</td></tr><tr><td><code>CALCULATE</code></td><td>Change the filter for a calculation: the most important DAX function</td></tr><tr><td><code>DATEADD</code>, <code>SAMEPERIODLASTYEAR</code>, <code>TOTALYTD</code></td><td>Time intelligence</td></tr><tr><td><code>RANKX</code></td><td>Rankings</td></tr></tbody></table></div>
+<p><strong>Measures vs calculated columns:</strong> measures calculate on the fly for whatever is filtered (use them for totals and ratios); calculated columns add a value to every row (use them for categories).</p>
+<h2>Step 5: build the report</h2>
+<p>A one-page sales dashboard:</p>
+<ol><li><strong>Cards:</strong> Total Revenue, Orders, Average Order, Growth %.</li><li><strong>Line chart:</strong> revenue by month.</li><li><strong>Bar chart:</strong> revenue by branch (sorted).</li><li><strong>Bar chart:</strong> top 10 products.</li><li><strong>Slicers:</strong> date range, branch, category.</li><li><strong>Map:</strong> revenue by county (if location matters).</li></ol>
+<p>Click any bar and the whole page filters: that interactivity is what managers love.</p>
+<h2>Step 6: share it</h2>
+<ul><li><strong>Publish</strong> to the Power BI Service and share with colleagues (requires licences in most organisations).</li><li>Export to PDF or PowerPoint for meetings.</li><li>Schedule refreshes so dashboards update automatically.</li></ul>
+<aside class="callout callout-tip"><p class="callout-title">Practise and prove it</p><div class="callout-body"><p>Rebuild a dashboard with open data (KNBS, World Bank, or a Kaggle dataset). Microsoft's <strong>PL-300: Power BI Data Analyst</strong> certification is widely recognised by employers. Free alternatives to practise: Looker Studio and Tableau Public.</p></div></aside>
+<aside class="callout callout-warning"><p class="callout-title">Don't publish private data</p><div class="callout-body"><p>"Publish to web" makes a report public on the internet. Never use it for company, customer or personal data. Use secure sharing within your organisation.</p></div></aside>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A manager says the dashboard's "Growth %" shows a huge jump in January. When you check, December's data is only half-loaded. What should you do?</span><em>Show answer</em></summary><div class="callout-body"><p>Fix the data first (complete the December load or exclude incomplete periods), add a "data up to" date on the dashboard, and consider a data-quality check that flags incomplete months, so managers don't act on misleading growth figures.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Power BI: get data → Power Query → model → DAX → visuals → publish.</li><li>Use a star schema: a fact table plus dimension tables and a Date table.</li><li>DAX measures (SUM, DIVIDE, CALCULATE, time intelligence) power the numbers.</li><li>Keep dashboards focused; never "publish to web" with private data.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which Power BI editor is used to clean and transform data? (two words)</p><details><summary>Show answer</summary><p>power query</p></details></li><li><p>What is Power BI's formula language called? (abbreviation)</p><details><summary>Show answer</summary><p>dax</p></details></li><li><p>Which DAX function changes the filter context of a calculation? (one word)</p><details><summary>Show answer</summary><p>calculate</p></details></li></ol></section></div><p class="static-meta">Lesson 13 of 15 in <a href="/learn/data-analytics/">Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=data-analytics">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/data-analytics/data-visualisation/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Data visualisation: choosing the right chart and designing clear dashboards</a><a class="btn btn-solid btn-sm" href="/learn/data-analytics/storytelling-with-data/">Storytelling with data: turning analysis into reports and presentations people act on <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

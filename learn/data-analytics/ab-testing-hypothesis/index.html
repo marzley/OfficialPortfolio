@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>A/B tests and hypothesis testing: proving what works…</title>
+    <meta name="description" content="Did the new SMS message really bring more customers back, or was it luck? A/B testing answers questions like this. You split people randomly into two…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/data-analytics/ab-testing-hypothesis/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="A/B tests and hypothesis testing: proving what works…" />
+    <meta property="og:description" content="Did the new SMS message really bring more customers back, or was it luck? A/B testing answers questions like this. You split people randomly into two…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/data-analytics/ab-testing-hypothesis/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="A/B tests and hypothesis testing: proving what works…" />
+    <meta name="twitter:description" content="Did the new SMS message really bring more customers back, or was it luck? A/B testing answers questions like this. You split people randomly into two…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/data-analytics/ab-testing-hypothesis/#lesson","name":"A/B tests and hypothesis testing: proving what works (with p-values explained simply)","description":"Did the new SMS message really bring more customers back, or was it luck? A/B testing answers questions like this. You split people randomly into two…","url":"https://marzleytechsolutions.co.ke/learn/data-analytics/ab-testing-hypothesis/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/data-analytics/#course","name":"Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)","url":"https://marzleytechsolutions.co.ke/learn/data-analytics/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)","item":"https://marzleytechsolutions.co.ke/learn/data-analytics/"},{"@type":"ListItem","position":4,"name":"A/B tests and hypothesis testing: proving what works (with p-values explained simply)","item":"https://marzleytechsolutions.co.ke/learn/data-analytics/ab-testing-hypothesis/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/data-analytics/">Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)</a> / <span>A/B tests and hypothesis testing: proving what works (with p-values explained simply)</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=data-analytics&amp;lesson=ab-testing-hypothesis"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>A/B tests and hypothesis testing: proving what works (with p-values explained simply)</h1>
+<p>Did the new SMS message really bring more customers back, or was it luck? <strong>A/B testing</strong> answers questions like this. You split people randomly into two groups, show each group a different version, and compare the results.</p>
+<h2>How an A/B test works</h2>
+<ol><li><strong>Question:</strong> "Does a discount SMS bring more repeat orders than a reminder SMS?"</li><li><strong>Randomly split</strong> customers into group A (reminder) and group B (discount).</li><li><strong>Run the test</strong> for a fixed period.</li><li><strong>Measure</strong> the result (the share who ordered again).</li><li><strong>Check whether the difference is bigger than chance</strong> would explain.</li></ol>
+<p>Random splitting is the key: it makes the groups alike in every other way, so a difference in results can be credited to the change you made.</p>
+<h2>Hypotheses</h2>
+<ul><li><strong>Null hypothesis (H0):</strong> there's no real difference; any gap is just chance.</li><li><strong>Alternative hypothesis (H1):</strong> there is a real difference.</li></ul>
+<p>We look for strong enough evidence to reject H0.</p>
+<h2>The p-value in plain words</h2>
+<p>The <strong>p-value</strong> answers: "If there were really no difference, how often would we see a gap at least this big just by chance?"</p>
+<ul><li>A <strong>small p-value</strong> (commonly below 0.05) means such a gap would rarely happen by luck, so we treat the difference as real ("statistically significant").</li><li>A <strong>large p-value</strong> means luck could easily explain it.</li></ul>
+<p>A p-value is <strong>not</strong> "the probability that B is better". It's about how surprising the data would be if nothing had changed.</p>
+<h2>Test it by simulation (no formulas needed)</h2>
+<p>Results: Group A (reminder): 48 of 400 ordered again. Group B (discount): 72 of 400 ordered again.</p>
+<p>We can ask the computer: if both messages were truly the same, how often would random shuffling produce a gap this big?</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import random
+random.seed(42)
+
+a_orders, a_total = 48, 400
+b_orders, b_total = 72, 400
+observed_gap = b_orders / b_total - a_orders / a_total
+print(f&quot;A: {a_orders / a_total:.1%}  B: {b_orders / b_total:.1%}  gap: {observed_gap:.1%}&quot;)
+
+# Pretend there is no difference: pool everyone, shuffle, split again many times
+pool = [1] * (a_orders + b_orders) + [0] * (a_total + b_total - a_orders - b_orders)
+extreme = 0
+trials = 5000
+for _ in range(trials):
+    random.shuffle(pool)
+    fake_a = sum(pool[:a_total]) / a_total
+    fake_b = sum(pool[a_total:]) / b_total
+    if abs(fake_b - fake_a) &gt;= observed_gap:
+        extreme += 1
+
+p_value = extreme / trials
+print(&quot;p-value ≈&quot;, round(p_value, 3))
+print(&quot;Significant at 0.05?&quot;, &quot;yes&quot; if p_value &lt; 0.05 else &quot;no&quot;)</code></pre></figure>
+<p>This is called a <strong>permutation test</strong>. Change the numbers (try 55 instead of 72) and see how the p-value grows when the gap shrinks.</p>
+<h2>Practical significance vs statistical significance</h2>
+<p>With a huge sample, even a tiny difference (0.1%) can be "significant" but not worth the cost. Always ask: <strong>is the difference big enough to matter for the business?</strong></p>
+<h2>Common A/B testing mistakes</h2>
+<div class="static-table"><table><thead><tr><th>Mistake</th><th>Why it's a problem</th></tr></thead><tbody><tr><td>Stopping the test as soon as B looks good</td><td>Early results swing a lot; decide the length in advance</td></tr><tr><td>Testing many changes at once</td><td>You won't know which change caused the result</td></tr><tr><td>Groups not random (e.g. A = Nairobi, B = Mombasa)</td><td>Other differences may cause the gap</td></tr><tr><td>Too few people</td><td>Real differences can be missed</td></tr><tr><td>Testing 20 things and reporting the one "winner"</td><td>By chance, about 1 in 20 tests looks significant at 0.05</td></tr></tbody></table></div>
+<aside class="callout callout-kenya"><p class="callout-title">Where A/B tests are used</p><div class="callout-body"><p>Kenyan fintechs test loan reminder messages, e-commerce sites test checkout pages, NGOs test which SMS wording gets more people to clinics, and marketers test ad images. Ethical rule: never test something that could harm people, and follow data protection rules.</p></div></aside>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> An online shop shows the new checkout page to customers on Monday and the old one on Tuesday, then compares sales. Why is this a poor test, and how should it be done?</span><em>Show answer</em></summary><div class="callout-body"><p>Days differ (paydays, weather, promotions), so day-to-day differences could cause the gap. Instead, randomly show each visitor either page at the same time, for a fixed period decided in advance, then compare conversion rates with a significance check.</p></div></details>
+<h2>Summary</h2>
+<ul><li>A/B tests randomly split people to compare two versions fairly.</li><li>H0 says no difference; a small p-value (below 0.05) suggests a real difference.</li><li>A permutation test simulates "no difference" to estimate the p-value.</li><li>Check practical significance, fix the test length in advance and avoid common mistakes.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which hypothesis says there's no real difference? (one word: the ___ hypothesis)</p><details><summary>Show answer</summary><p>null</p></details></li><li><p>What p-value threshold is commonly used for significance? (a number)</p><details><summary>Show answer</summary><p>0.05</p></details></li><li><p>Should you stop a test as soon as B looks better? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 7 of 15 in <a href="/learn/data-analytics/">Data analytics: from zero to job-ready (statistics, Excel, SQL, Python, Power BI)</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=data-analytics">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/data-analytics/correlation-regression/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Correlation and regression: finding relationships (and why correlation isn&#x27;t causation)</a><a class="btn btn-solid btn-sm" href="/learn/data-analytics/data-cleaning/">Data cleaning: duplicates, missing values, messy formats and a cleaning checklist <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>
