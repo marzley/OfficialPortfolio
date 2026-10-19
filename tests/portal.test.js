@@ -640,6 +640,24 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
     await sleep(300);
     r = await lget(stu2, "unlock_status", "&checkout=" + r.j.checkout_id);
     ok("an M-Pesa code can’t unlock twice", r.j.unlocked === false);
+    // paid, but the page was closed before it unlocked: recover with the M-Pesa receipt
+    {
+      const stu4 = session();
+      await lpost(stu4, "dev_login", { email: "njeri.video@example.com", name: "Njeri W" });
+      r = await lpost(stu4, "unlock", { id: vid, phone: "0733111222" });
+      await callback(r.j.checkout_id, 50, "LRNREC0001");
+      await sleep(300);
+      r = await lpost(stu2, "unlock_recover", { id: vid, phone: "0722000111", receipt: "LRNWRONG01" });
+      ok("a wrong receipt code doesn’t unlock the video", r.s === 404 && /couldn’t match/.test(r.j.error), r.j);
+      r = await lpost(stu4, "unlock_recover", { id: vid, phone: "0733 111 222", receipt: "lrnrec0001" });
+      ok("the right number and receipt unlock the video", r.s === 200 && r.j.unlocked === true, r.j);
+      r = await lget(stu4, "video", "&id=" + vid);
+      ok("the recovered video plays", r.j.video.unlocked === true);
+      r = await lpost(stu2, "unlock_recover", { id: vid, phone: "0733111222", receipt: "LRNREC0001" });
+      ok("someone else’s receipt can’t unlock another account", r.s === 409 && /another account \(nj…@example\.com\)/.test(r.j.error), r.j);
+      r = await lpost(guest, "unlock_recover", { id: vid, phone: "0733111222", receipt: "LRNREC0001" });
+      ok("recovering needs an account", r.s === 401 || r.s === 403);
+    }
 
     // course notes as a PDF: free to read, paid with M-Pesa to download, no account needed
     {
@@ -891,7 +909,7 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
 
     // managing
     r = await lget(boss, "admin");
-    ok("hub dashboard shows income and learners", r.s === 200 && r.j.stats.revenue === 100 && r.j.stats.learners >= 2 && r.j.videos[0].unlocks === 2, r.j.stats);
+    ok("hub dashboard shows income and learners", r.s === 200 && r.j.stats.revenue === 150 && r.j.stats.learners >= 2 && r.j.videos[0].unlocks === 3, r.j.stats);
     r = await lget(stu, "admin");
     ok("learners can’t open the hub dashboard", r.s === 401 || r.s === 403);
     r = await lpost(boss, "video_delete", { id: vid });

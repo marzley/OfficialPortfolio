@@ -463,7 +463,42 @@ switch ($action) {
         if (!$lp) fail(404, 'Payment not found.');
         $status = $lp['status'];
         if ($status === 'pending' && ($r = mpesa_result($lp['checkout_id']))) $status = settle_learn_payment($lp['checkout_id'], $r);
-        out(['status' => $status, 'unlocked' => learn_unlocked((int)$lp['video_id'], $l)]);
+        // "Check now": if Safaricom says the prompt was cancelled or failed, say so instead of waiting
+        if ($status === 'pending' && !empty($_GET['check']) && strtotime($lp['created_at']) < time() - 15 && rate_ok('unlock_check:' . $l['id'], 30, 600)) {
+            $code = stk_query($lp['checkout_id']);
+            if ($code !== null && $code !== '0' && $code !== '4999') {
+                q("UPDATE learn_payments SET status = 'failed' WHERE id = ? AND status = 'pending'", [$lp['id']]);
+                $status = 'failed';
+            }
+        }
+        out(['status' => $status === 'mismatch' ? 'failed' : $status, 'unlocked' => learn_unlocked((int)$lp['video_id'], $l)]);
+
+    case 'unlock_recover':
+        // Paid, but the video didn't unlock (prompt closed, connection lost): match the M-Pesa receipt
+        $l = need_learner();
+        $d = body();
+        if (!rate_ok('unlock_recover:' . $l['id'], 10, 3600)) fail(429, 'Too many tries. Please wait an hour, or WhatsApp us on 0745 789 590.');
+        $v = video_row((int)($d['id'] ?? 0), false);
+        if (learn_unlocked((int)$v['id'], $l)) out(['ok' => true, 'unlocked' => true]);
+        $msisdn = normalise_phone((string)($d['phone'] ?? ''));
+        $receipt = strtoupper(preg_replace('/[^A-Z0-9]/i', '', (string)($d['receipt'] ?? '')));
+        if (!$msisdn) fail(400, 'Enter the M-Pesa number you paid with.');
+        if (strlen($receipt) < 8) fail(400, 'Enter the M-Pesa receipt code from your confirmation SMS, for example SJK4H2L9XA.');
+        // A payment whose result arrived but wasn't processed yet is settled now
+        foreach (q("SELECT checkout_id FROM learn_payments WHERE video_id = ? AND phone = ? AND status = 'pending' AND created_at > ?", [$v['id'], $msisdn, date('Y-m-d H:i:s', time() - 7 * 86400)])->fetchAll() as $p) {
+            if ($r = mpesa_result($p['checkout_id'])) settle_learn_payment($p['checkout_id'], $r);
+        }
+        $lp = q("SELECT p.*, w.email FROM learn_payments p JOIN learners w ON w.id = p.learner_id WHERE p.video_id = ? AND p.phone = ? AND p.receipt = ? AND p.status = 'paid'", [$v['id'], $msisdn, $receipt])->fetch();
+        if (!$lp) fail(404, 'We couldn’t match that payment to this video yet. Check the number and receipt code, or WhatsApp us your M-Pesa message on 0745 789 590 and we’ll unlock it for you.');
+        if ((int)$lp['learner_id'] !== (int)$l['id']) {
+            [$u, $dom] = explode('@', $lp['email']) + ['', ''];
+            fail(409, 'That payment unlocked the video on another account (' . mb_substr($u, 0, 2) . '…@' . $dom . '). Sign in with that email to watch it.');
+        }
+        if (!q('SELECT id FROM learn_unlocks WHERE video_id = ? AND learner_id = ?', [$v['id'], $l['id']])->fetch()) {
+            q('INSERT INTO learn_unlocks (video_id, learner_id, amount, receipt, created_at) VALUES (?, ?, ?, ?, ?)', [$v['id'], $l['id'], (int)$lp['paid_amount'], $receipt, now()]);
+        }
+        audit('video_unlock_recovered', "Video {$v['id']} receipt $receipt", $l['email']);
+        out(['ok' => true, 'unlocked' => true]);
 
     case 'like':
         $l = need_learner();

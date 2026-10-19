@@ -1395,11 +1395,13 @@
   }
 
   // ---------- videos ----------
+  // Views, likes and comments on our own videos are hidden for now (switch on when there's activity to show)
+  var SHOW_VIDEO_SOCIAL = false;
   function videoCard(v, lvl) {
     var hx = lvl || "h3";
     return '<a class="video-card" href="./?video=' + v.id + '"><span class="thumb">' + (v.poster ? '<img src="../portal/' + esc(v.poster) + '" alt="" loading="lazy" />' : '<i class="fa-solid fa-circle-play" aria-hidden="true"></i>') +
       (v.duration ? '<span class="dur">' + fmtDur(v.duration) + "</span>" : "") + '<span class="price ' + (v.unlocked ? "open" : "") + '">' + (v.unlocked ? '<i class="fa-solid fa-lock-open" aria-hidden="true"></i> Unlocked' : '<i class="fa-solid fa-lock" aria-hidden="true"></i> ' + ksh(v.price)) + "</span></span>" +
-      "<" + hx + ">" + esc(v.title) + (v.published ? "" : ' <span class="tag">Draft</span>') + "</" + hx + '><p class="meta">' + v.views + " views · " + v.likes + " likes · " + v.comments + " comments</p></a>";
+      "<" + hx + ">" + esc(v.title) + (v.published ? "" : ' <span class="tag">Draft</span>') + "</" + hx + ">" + (SHOW_VIDEO_SOCIAL ? '<p class="meta">' + v.views + " views · " + v.likes + " likes · " + v.comments + " comments</p>" : '<p class="meta">' + (v.unlocked ? "Unlocked · watch any time" : "Video lesson · " + ksh(v.price)) + "</p>") + "</a>";
   }
   var CHANNELS = [
     ["freeCodeCamp.org", "Full free courses: web development, Python, JavaScript, SQL, data science", "https://www.youtube.com/@freecodecamp"],
@@ -1425,7 +1427,7 @@
     setNav("videos");
     showSide(false);
     setTitle("Video lessons", "Step-by-step coding video lessons. Unlock each one with M-Pesa.");
-    main.innerHTML = '<section class="list-page"><h1>Video lessons</h1><p class="lead">Step-by-step lessons you can pause and replay. Watching needs a free account: sign in, unlock a video once with M-Pesa and it’s yours to watch any time. Tutorials, notes and practice stay free without an account.</p><div class="video-grid" id="vid-grid"><p class="muted">Loading…</p></div></section>';
+    main.innerHTML = '<section class="list-page"><h1>Video lessons</h1><p class="lead">Step-by-step lessons you can pause and replay. Watching needs a free account: sign in, unlock a video once with M-Pesa and it’s yours to watch any time. Tutorials and practice stay free without an account.</p><div class="video-grid" id="vid-grid"><p class="muted">Loading…</p></div></section>';
     main.querySelector(".list-page").insertAdjacentHTML("beforeend", freeChannels());
     api("videos").then(function (j) {
       $("#vid-grid").innerHTML = (j.videos || []).map(function (v) { return videoCard(v, "h2"); }).join("") || '<div class="empty"><i class="fa-solid fa-video" aria-hidden="true"></i><p>Our own video lessons are coming soon. Meanwhile, try the free channels below.</p></div>';
@@ -1441,19 +1443,19 @@
       var v = j.video;
       setTitle(v.title, v.summary ? v.summary.slice(0, 150) : "Video lesson: " + v.title);
       main.innerHTML = '<article class="video-page"><p class="crumbs"><a href="./?page=videos">Videos</a></p><div class="player" id="player"></div>' +
-        "<h1>" + esc(v.title) + '</h1><div class="video-meta"><span>' + plural(v.views, "view") + " · " + esc(timeAgo(v.created_at)) + '</span><div class="video-acts">' +
-        '<button type="button" class="pill-btn" id="like-btn" aria-pressed="' + !!v.liked + '"' + (v.unlocked ? "" : " disabled") + '><i class="fa-' + (v.liked ? "solid" : "regular") + ' fa-thumbs-up" aria-hidden="true"></i> <span id="like-n">' + v.likes + '</span><span class="sr-only"> likes</span></button>' +
+        "<h1>" + esc(v.title) + '</h1><div class="video-meta"><span>' + (SHOW_VIDEO_SOCIAL ? plural(v.views, "view") + " · " : "") + esc(timeAgo(v.created_at)) + '</span><div class="video-acts">' +
+        (SHOW_VIDEO_SOCIAL ? '<button type="button" class="pill-btn" id="like-btn" aria-pressed="' + !!v.liked + '"' + (v.unlocked ? "" : " disabled") + '><i class="fa-' + (v.liked ? "solid" : "regular") + ' fa-thumbs-up" aria-hidden="true"></i> <span id="like-n">' + v.likes + '</span><span class="sr-only"> likes</span></button>' : "") +
         '<button type="button" class="pill-btn" id="share-btn"><i class="fa-solid fa-share-nodes" aria-hidden="true"></i> Share</button></div></div>' +
         (v.summary ? '<div class="video-desc">' + markdown(v.summary).html + "</div>" : "") +
-        '<section class="comments" aria-labelledby="c-title"><h2 id="c-title">' + plural(v.comments, "comment") + '</h2><div id="c-body"></div></section></article>';
+        (SHOW_VIDEO_SOCIAL ? '<section class="comments" aria-labelledby="c-title"><h2 id="c-title">' + plural(v.comments, "comment") + '</h2><div id="c-body"></div></section>' : "") + "</article>";
       renderPlayer(v);
-      renderComments(v);
+      if (SHOW_VIDEO_SOCIAL) renderComments(v);
       $("#share-btn").addEventListener("click", function () {
         var url = location.href;
         if (navigator.share) navigator.share({ title: v.title, url: url }).catch(function () {});
         else if (navigator.clipboard) navigator.clipboard.writeText(url).then(function () { $("#share-btn").innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i> Link copied'; });
       });
-      $("#like-btn").addEventListener("click", function () {
+      if ($("#like-btn")) $("#like-btn").addEventListener("click", function () {
         var b = $("#like-btn");
         b.disabled = true;
         api("like", { id: v.id }).then(function (r) {
@@ -1479,7 +1481,7 @@
       return;
     }
     p.innerHTML = '<div class="locked"' + (v.poster ? ' style="background-image:url(\'../portal/' + esc(v.poster) + '\')"' : "") + '><div class="lock-card">' +
-      '<i class="fa-solid fa-lock" aria-hidden="true"></i><h2>Unlock this video for ' + ksh(v.price) + '</h2><p>Pay once with M-Pesa and watch any time, plus join the comments.</p><div id="unlock-area"></div></div></div>';
+      '<i class="fa-solid fa-lock" aria-hidden="true"></i><h2>Unlock this video for ' + ksh(v.price) + '</h2><p>Pay once with M-Pesa and watch any time.</p><div id="unlock-area"></div></div></div>';
     unlockArea(v);
   }
 
@@ -1564,29 +1566,81 @@
       area.innerHTML = '<p>Online payment is being set up. <a href="https://wa.me/254745789590?text=' + encodeURIComponent("Hello Marzley, I'd like to unlock the video: " + v.title) + '" target="_blank" rel="noopener noreferrer">WhatsApp us</a> to unlock it.</p>';
       return;
     }
-    area.innerHTML = '<form class="unlock-form" id="unlock-form" novalidate><label for="u-phone">M-Pesa phone number</label><div class="unlock-row"><input id="u-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Enter your phone number" value="' + esc(store.get("phone") || "") + '" required />' +
-      '<button type="submit" class="btn btn-solid" id="u-pay">Pay ' + ksh(v.price) + '</button></div><p class="u-msg" id="u-msg" role="status" aria-live="polite"></p></form>';
-    $("#unlock-form").addEventListener("submit", function (e) {
+    area.innerHTML = '<button type="button" class="btn btn-solid" id="u-pay">Unlock for ' + ksh(v.price) + '</button>' +
+      '<p class="small"><button type="button" class="linklike" id="u-recover">Already paid but the video didn’t unlock?</button></p>';
+    $("#u-pay").addEventListener("click", function () { videoPayForm(v); });
+    $("#u-recover").addEventListener("click", function () { videoRecoverForm(v); });
+  }
+
+  // Unlocking a video uses the same M-Pesa pop-up as the notes PDF: prompt, auto-detect, "Check Now", and "Already paid?" recovery
+  function phoneFrom(raw) { raw = raw.replace(/\s+/g, ""); return /^(0|254|\+254)/.test(raw) ? raw.replace(/^\+/, "") : "0" + raw; }
+  function videoUnlocked(v) {
+    stopPayPoll();
+    var d = openPay('<div class="pay-center"><span class="pay-ok-ico" aria-hidden="true"><i class="fa-solid fa-circle-check"></i></span><h2 id="pay-title">Video unlocked!</h2><p class="pay-sub">“' + esc(v.title) + '” is yours to watch any time.</p><button type="button" class="btn pay-btn" id="pay-watch">Watch now</button></div>');
+    $("#pay-watch", d).addEventListener("click", function () { closePay(); pageVideo(v.id); });
+    setTimeout(function () { if (location.search.indexOf("video=" + v.id) >= 0) pageVideo(v.id); }, 300);
+  }
+  function videoPayForm(v, err) {
+    var price = ksh(v.price);
+    var d = openPay('<h2 id="pay-title" class="pay-title">Unlock this video</h2><p class="pay-sub">A payment of <strong>' + esc(price) + '</strong> unlocks <strong>' + esc(v.title) + '</strong> on your account, to watch any time.</p>' +
+      '<form id="pay-form" class="pay-form" novalidate><label for="pay-phone">M-PESA PHONE NUMBER</label><div class="pay-phone"><span>+254</span><input id="pay-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="712345678" maxlength="13" value="' + esc((store.get("phone") || "").replace(/^(\+?254|0)/, "")) + '" required /></div>' +
+      '<p class="form-msg pay-err" id="pay-msg" role="status" aria-live="polite">' + esc(err || "") + '</p><button type="submit" class="btn pay-btn" id="pay-go">Pay ' + esc(price) + '</button></form>' +
+      '<button type="button" class="pay-link" id="pay-cancel">Cancel</button><button type="button" class="pay-small" id="pay-recover">Already paid but the video didn’t unlock?</button>');
+    $("#pay-cancel", d).addEventListener("click", closePay);
+    $("#pay-recover", d).addEventListener("click", function () { videoRecoverForm(v); });
+    setTimeout(function () { var i = $("#pay-phone", d); if (i && !i.value) i.focus(); }, 50);
+    $("#pay-form", d).addEventListener("submit", function (e) {
       e.preventDefault();
-      var phone = $("#u-phone").value.trim(), msg = $("#u-msg"), btn = $("#u-pay");
-      if (phone.replace(/\D/g, "").length < 9) { msg.textContent = "Enter your M-Pesa number, for example 0712 345 678."; $("#u-phone").focus(); return; }
+      var phone = phoneFrom($("#pay-phone", d).value);
+      if (!/^(0[17]\d{8}|254[17]\d{8})$/.test(phone)) { $("#pay-msg", d).textContent = "Enter your M-Pesa number, for example 712 345 678."; return; }
+      var go = $("#pay-go", d);
+      go.disabled = true; go.textContent = "Sending request…";
       store.set("phone", phone);
-      btn.disabled = true;
-      msg.innerHTML = '<span class="spinner sm" aria-hidden="true"></span> Sending the M-Pesa prompt…';
       api("unlock", { id: v.id, phone: phone }).then(function (r) {
-        if (r.status === "paid") return location.reload();
-        msg.innerHTML = '<span class="spinner sm" aria-hidden="true"></span> Check your phone and enter your M-Pesa PIN to pay ' + ksh(v.price) + ".";
-        var tries = 0;
-        var poll = setInterval(function () {
-          tries++;
-          api("unlock_status", undefined, "&checkout=" + encodeURIComponent(r.checkout_id)).then(function (s) {
-            if (s.unlocked) { clearInterval(poll); msg.innerHTML = '<i class="fa-solid fa-circle-check" aria-hidden="true"></i> Paid! Unlocking…'; setTimeout(function () { pageVideo(v.id); }, 700); }
-            else if (s.status === "failed" || s.status === "mismatch") { clearInterval(poll); btn.disabled = false; msg.textContent = "The payment didn’t go through. Please try again."; }
-            else if (tries > 40) { clearInterval(poll); btn.disabled = false; msg.textContent = "We haven’t received the payment yet. If you paid, refresh this page in a minute."; }
-          }).catch(function () {});
-        }, 3000);
-        cleanup.push(function () { clearInterval(poll); });
-      }).catch(function (err) { btn.disabled = false; msg.textContent = err.message; });
+        if (r.status === "paid") return videoUnlocked(v);
+        videoPayWaiting(v, r.checkout_id);
+      }).catch(function (er) { go.disabled = false; go.textContent = "Pay " + price; $("#pay-msg", d).textContent = er.message; });
+    });
+  }
+  function videoPayWaiting(v, checkout) {
+    var d = openPay('<div class="pay-center"><span class="pay-phone-ico" aria-hidden="true"><i class="fa-solid fa-mobile-screen"></i></span><h2 id="pay-title">Request Sent!</h2>' +
+      '<p class="pay-sub">Please check your phone and enter your M-PESA PIN to complete the payment of ' + esc(ksh(v.price)) + '.</p>' +
+      '<p class="pay-wait" id="pay-wait" role="status" aria-live="polite"><span class="spinner" aria-hidden="true"></span> Waiting to auto-detect payment…</p>' +
+      '<button type="button" class="btn pay-check" id="pay-check">Check Now</button><button type="button" class="pay-link" id="pay-cancel">Cancel</button>' +
+      '<button type="button" class="pay-small" id="pay-recover">Paid but nothing happened? Use your M-Pesa receipt</button></div>');
+    var tries = 0, busy = false;
+    var check = function (manual) {
+      if (busy) return;
+      busy = true;
+      api("unlock_status", undefined, "&checkout=" + encodeURIComponent(checkout) + (manual ? "&check=1" : "")).then(function (s) {
+        busy = false;
+        if (s.unlocked) videoUnlocked(v);
+        else if (s.status === "failed") { stopPayPoll(); videoPayForm(v, "The payment didn’t go through (it may have been cancelled or timed out). You can try again."); }
+        else if (manual) $("#pay-wait", d).innerHTML = '<span class="spinner" aria-hidden="true"></span> Not received yet. Enter your PIN on the M-Pesa prompt, then tap Check Now.';
+      }).catch(function (e) { busy = false; if (manual) $("#pay-wait", d).textContent = e.message; });
+    };
+    stopPayPoll();
+    payPoll = setInterval(function () {
+      if (++tries > 60) { stopPayPoll(); $("#pay-wait", d).textContent = "Still waiting. If you paid, tap Check Now, or use your M-Pesa receipt below."; return; }
+      check(false);
+    }, 3000);
+    $("#pay-check", d).addEventListener("click", function () { check(true); });
+    $("#pay-cancel", d).addEventListener("click", closePay);
+    $("#pay-recover", d).addEventListener("click", function () { stopPayPoll(); videoRecoverForm(v); });
+  }
+  function videoRecoverForm(v) {
+    var d = openPay('<h2 id="pay-title" class="pay-title">Unlock with your receipt</h2><p class="pay-sub">Paid for “' + esc(v.title) + '” but it didn’t unlock? Enter the number you paid with and the M-Pesa receipt code from your confirmation SMS.</p>' +
+      '<form id="rec-form" class="pay-form" novalidate><label for="rec-phone">M-PESA PHONE NUMBER</label><div class="pay-phone"><span>+254</span><input id="rec-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="712345678" value="' + esc((store.get("phone") || "").replace(/^(\+?254|0)/, "")) + '" required /></div>' +
+      '<label for="rec-code">M-PESA RECEIPT CODE</label><input id="rec-code" class="pay-input" autocapitalize="characters" placeholder="e.g. SJK4H2L9XA" maxlength="20" required />' +
+      '<p class="form-msg pay-err" id="rec-msg" role="status" aria-live="polite"></p><button type="submit" class="btn pay-btn" id="rec-go">Unlock my video</button></form>' +
+      '<button type="button" class="pay-link" id="rec-back">Back</button><p class="pay-note">Still stuck? <a href="https://wa.me/254745789590?text=' + encodeURIComponent("Hello Marzley, I paid to unlock the video \"" + v.title + "\" but it didn't unlock.") + '" target="_blank" rel="noopener noreferrer">WhatsApp us</a> your M-Pesa message and we’ll unlock it.</p>');
+    $("#rec-back", d).addEventListener("click", function () { videoPayForm(v); });
+    $("#rec-form", d).addEventListener("submit", function (e) {
+      e.preventDefault();
+      var go = $("#rec-go", d);
+      go.disabled = true; go.textContent = "Checking…";
+      api("unlock_recover", { id: v.id, phone: phoneFrom($("#rec-phone", d).value), receipt: $("#rec-code", d).value }).then(function () { videoUnlocked(v); })
+        .catch(function (er) { go.disabled = false; go.textContent = "Unlock my video"; $("#rec-msg", d).textContent = er.message; });
     });
   }
 
