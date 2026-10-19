@@ -5,7 +5,7 @@ if (!defined('MARZLEY_PORTAL')) {
     exit;
 }
 
-const SCHEMA_VERSION = 15;
+const SCHEMA_VERSION = 16;
 const STAFF_PERMS = ['projects' => 'Projects & files', 'clients' => 'People', 'support' => 'Support', 'courses' => 'Courses', 'money' => 'Invoices, payments & quotes', 'leads' => 'Leads'];
 const PROJECT_STATUSES = ['planning', 'design', 'build', 'review', 'live', 'on_hold'];
 const INVOICE_STATUSES = ['unpaid', 'paid', 'cancelled'];
@@ -117,6 +117,8 @@ function migrate(PDO $pdo): void {
         "CREATE TABLE IF NOT EXISTS learn_lesson_likes (id $id, lesson_id $uint NOT NULL, learner_id $uint NOT NULL, created_at DATETIME NOT NULL, UNIQUE (lesson_id, learner_id))$end",
         "CREATE TABLE IF NOT EXISTS learn_reviews (id $id, lesson_id $uint NOT NULL, learner_id $uint NOT NULL, parent_id $uint NULL, rating $uint NULL, body TEXT NOT NULL, is_staff $uint NOT NULL DEFAULT 0, hidden $uint NOT NULL DEFAULT 0, created_at DATETIME NOT NULL)$end",
         "CREATE TABLE IF NOT EXISTS learn_progress (id $id, learner_id $uint NOT NULL, lesson_id $uint NOT NULL, created_at DATETIME NOT NULL, UNIQUE (learner_id, lesson_id))$end",
+        // v16: coupon codes for notes PDFs, passes and bundles
+        "CREATE TABLE IF NOT EXISTS learn_coupons (id $id, code VARCHAR(30) NOT NULL UNIQUE, percent $uint NOT NULL, applies VARCHAR(10) NOT NULL DEFAULT 'all', max_uses $uint NOT NULL DEFAULT 0, expires_on DATE NULL, active $uint NOT NULL DEFAULT 1, note VARCHAR(120) NOT NULL DEFAULT '', created_at DATETIME NOT NULL)$end",
         // v15: classes (a tutor shares a join link; members' progress and certificates show to the tutor)
         "CREATE TABLE IF NOT EXISTS learn_classes (id $id, owner_id $uint NOT NULL, name VARCHAR(120) NOT NULL, code VARCHAR(12) NOT NULL UNIQUE, track_id $uint NULL, created_at DATETIME NOT NULL)$end",
         "CREATE TABLE IF NOT EXISTS learn_class_members (id $id, class_id $uint NOT NULL, learner_id $uint NOT NULL, joined_at DATETIME NOT NULL, UNIQUE (class_id, learner_id))$end",
@@ -169,6 +171,8 @@ function migrate(PDO $pdo): void {
         ['learners', 'weekly_email', "$uint NOT NULL DEFAULT 1"],         // v14: weekly progress email (one-click off)
         ['learners', 'mail_token', "VARCHAR(48) NOT NULL DEFAULT ''"],    // v14: for the one-click "stop these emails" link
         ['learn_note_payments', 'pass_days', "$uint NOT NULL DEFAULT 0"], // v14: monthly notes pass (track_id 0 = every subject, for this many days)
+        ['learn_note_payments', 'bundle', "VARCHAR(40) NOT NULL DEFAULT ''"], // v16: a bundle of subjects bought together (track_id 0)
+        ['learn_note_payments', 'coupon', "VARCHAR(30) NOT NULL DEFAULT ''"], // v16: coupon code used, if any
     ];
     foreach ($columns as [$table, $col, $def]) {
         try { $pdo->exec("ALTER TABLE $table ADD COLUMN $col $def"); } catch (PDOException $e) { /* already there */ }
@@ -1342,7 +1346,55 @@ function settle_learn_payment(string $checkoutId, array $r): string {
 function notes_pdf_prices(): array {
     $get = fn(string $key, int $default) => max(1, min(100000, (int)setting($key, (string)$default)));
     return ['small' => $get('notes_pdf_price_small', 50), 'medium' => $get('notes_pdf_price_medium', 100), 'large' => $get('notes_pdf_price_large', 200),
-            'pass' => $get('notes_pass_price', 1000), 'pass_days' => NOTES_PASS_DAYS];
+            'pass' => $get('notes_pass_price', 1000), 'pass_days' => NOTES_PASS_DAYS,
+            'pass90' => $get('notes_pass90_price', 2500), 'pass90_days' => 90];
+}
+
+/** Pass plans: every subject's PDF for 30 days, or 90 days at a lower price per month. */
+function notes_pass_plans(): array {
+    $p = notes_pdf_prices();
+    return ['30' => ['days' => 30, 'price' => $p['pass']], '90' => ['days' => 90, 'price' => $p['pass90']]];
+}
+
+/** Subject bundles: several related subjects' PDFs at 20% less than buying them one by one (kept for good, like single PDFs). */
+const NOTES_BUNDLES = [
+    'web-basics' => ['Web basics', ['html', 'css', 'javascript']],
+    'office-skills' => ['Office skills', ['ms-word', 'excel', 'powerpoint']],
+    'data-starter' => ['Data starter', ['python', 'sql', 'data-analytics']],
+    'network-security' => ['Networking and security', ['networking', 'linux', 'cybersecurity']],
+    'earn-online' => ['Earning online', ['freelancing', 'microtask-platforms', 'freelance-platforms']],
+    'app-developer' => ['App developer', ['app-dev-basics', 'dart-flutter', 'flutter']],
+];
+
+function notes_bundles(): array {
+    static $cache = null;
+    if ($cache !== null) return $cache;
+    $out = [];
+    foreach (NOTES_BUNDLES as $slug => [$title, $tracks]) {
+        $items = []; $full = 0;
+        foreach ($tracks as $ts) {
+            $t = q('SELECT id, slug, title FROM learn_tracks WHERE slug = ? AND published = 1', [$ts])->fetch();
+            if (!$t) continue;
+            $price = notes_pdf_track_price((int)$t['id']);
+            $items[] = ['slug' => $t['slug'], 'title' => $t['title'], 'price' => $price];
+            $full += $price;
+        }
+        if (count($items) < 2) continue;
+        $out[$slug] = ['slug' => $slug, 'title' => $title, 'tracks' => $items, 'full' => $full, 'price' => max(1, (int)(round($full * 0.8 / 10) * 10))];
+    }
+    return $cache = $out;
+}
+
+/** Applies a coupon to a price for a kind of purchase (notes, pass or bundle). Fails with a clear message if it can't be used. */
+function coupon_apply(string $code, string $kind, int $price): array {
+    $code = strtoupper(trim($code));
+    if ($code === '') return ['price' => $price, 'code' => '', 'percent' => 0];
+    $c = q('SELECT * FROM learn_coupons WHERE code = ?', [$code])->fetch();
+    if (!$c || !(int)$c['active']) fail(400, 'That coupon code isn’t valid.');
+    if ($c['expires_on'] && $c['expires_on'] < date('Y-m-d')) fail(400, 'That coupon has expired.');
+    if ($c['applies'] !== 'all' && $c['applies'] !== $kind) fail(400, 'That coupon can’t be used for this purchase.');
+    if ((int)$c['max_uses'] > 0 && (int)q("SELECT COUNT(*) FROM learn_note_payments WHERE coupon = ? AND status = 'paid'", [$code])->fetchColumn() >= (int)$c['max_uses']) fail(400, 'That coupon has been fully used.');
+    return ['price' => max(1, (int)round($price * (100 - (int)$c['percent']) / 100)), 'code' => $code, 'percent' => (int)$c['percent']];
 }
 
 /** The monthly notes pass: every subject's PDF for this many days after payment. */

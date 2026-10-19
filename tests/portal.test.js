@@ -62,7 +62,7 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   const cid = one("SELECT id FROM clients WHERE email = 'client@example.com'").id;
 
   // ---------- database upgrade ----------
-  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "15");
+  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "16");
 
   // ---------- sequential invoice numbers ----------
   r = await admin("invoice_save", { client_id: cid, description: "Website build", amount: 10000, status: "unpaid" });
@@ -738,7 +738,98 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
       r = await lget(boss, "admin");
       ok("pass sales show in the admin list", r.j.note_payments.some((p) => +p.track_id === 0 && /Monthly notes pass/.test(p.title)));
       ok("the sales report has 30 days, 12 weeks, best sellers and follow-ups", Object.keys(r.j.sales.days).length === 30 && Object.keys(r.j.sales.weeks).length === 12 && r.j.sales.total_30 >= 80 && r.j.sales.top_subjects.length >= 2 && Array.isArray(r.j.sales.follow_up), r.j.sales);
-      await lpost(boss, "notes_price_set", { small: 50, medium: 100, large: 200, pass: 1000 });
+      // 3-month pass
+      await lpost(boss, "notes_price_set", { small: 50, medium: 100, large: 200, pass: 250, pass90: 600 });
+      r = await lget(guest, "me");
+      ok("the 3-month pass price is public", r.j.notes_prices.pass90 === 600);
+      r = await lpost(buyer, "notes_pass_pay", { phone: "0711222333", plan: "7" });
+      ok("only the 30 and 90 day passes can be bought", r.s === 400);
+      r = await lpost(buyer, "notes_pass_pay", { phone: "0711222333", plan: "90" });
+      const p90Co = r.j.checkout_id;
+      ok("the 3-month pass charges its own price", r.s === 200 && JSON.parse(fs.readFileSync(WORK + "/fake/stk-last.json", "utf8")).body.Amount === 600);
+      await callback(p90Co, 600, "NOTESPASS9");
+      await sleep(300);
+      r = await lget(buyer, "notes_pay_status", "&checkout=" + p90Co);
+      ok("the 3-month pass lasts 90 days", r.j.status === "paid" && r.j.pass === true && one("SELECT pass_days FROM learn_note_payments WHERE receipt = 'NOTESPASS9'").pass_days == 90, r.j);
+
+      // subject bundles: related subjects at 20% off, kept for good
+      r = await lget(guest, "me");
+      const wb = (r.j.notes_bundles || []).find((b) => b.slug === "web-basics");
+      ok("bundles are listed with the full and the bundle price", wb && wb.tracks.length >= 2 && wb.price === Math.max(1, Math.round(wb.full * 0.8 / 10) * 10) && wb.price < wb.full, r.j.notes_bundles);
+      r = await lpost(buyer, "notes_bundle_pay", { bundle: "nope", phone: "0711222333" });
+      ok("an unknown bundle is refused", r.s === 404);
+      r = await lpost(buyer, "notes_bundle_pay", { bundle: "web-basics", phone: "0711222333" });
+      const bCo = r.j.checkout_id;
+      ok("the bundle sends one prompt for the bundle price", r.s === 200 && JSON.parse(fs.readFileSync(WORK + "/fake/stk-last.json", "utf8")).body.Amount === wb.price);
+      await callback(bCo, wb.price, "NOTESBUND1");
+      await sleep(300);
+      r = await lget(buyer, "notes_pay_status", "&checkout=" + bCo);
+      const bTok = r.j.token;
+      ok("once paid, the browser gets a bundle token (not a pass)", r.j.status === "paid" && r.j.pass === false && r.j.bundle === "web-basics" && /^[a-f0-9]{48}$/.test(bTok), r.j);
+      let allIn = true;
+      for (const t of wb.tracks) { const a = await lget(guest, "notes_access", "&track=" + t.slug + "&token=" + bTok); if (a.s !== 200) allIn = false; }
+      ok("the bundle unlocks each of its subjects", allIn);
+      r = await lget(guest, "notes_access", "&track=python&token=" + bTok);
+      ok("the bundle doesn't unlock other subjects", r.s === 403);
+      r = await lpost(rec, "notes_recover", { track: "bundle:web-basics", phone: "0711222333", receipt: "NOTESBUND1" });
+      ok("“already paid” recovers a bundle", r.s === 200 && r.j.token === bTok);
+      r = await lpost(rec, "notes_recover", { track: "bundle:office-skills", phone: "0711222333", receipt: "NOTESBUND1" });
+      ok("a bundle receipt doesn't recover a different bundle", r.s === 404);
+
+      // coupon codes
+      r = await lpost(stu, "coupon_save", { code: "TVET20", percent: 20 });
+      ok("only the team can create coupons", r.s === 403 || r.s === 401);
+      r = await lpost(boss, "coupon_save", { code: "X", percent: 20 });
+      ok("coupon codes need 3+ letters", r.s === 400);
+      r = await lpost(boss, "coupon_save", { code: "TVET20", percent: 95 });
+      ok("discounts are capped at 90%", r.s === 400);
+      r = await lpost(boss, "coupon_save", { code: "tvet20", percent: 20, applies: "notes", max_uses: 1, note: "TVET class" });
+      ok("a coupon is created (code in capitals)", r.s === 200 && one("SELECT code FROM learn_coupons WHERE code = 'TVET20'"));
+      r = await lpost(boss, "coupon_save", { code: "TVET20", percent: 10 });
+      ok("coupon codes are unique", r.s === 400);
+      r = await lpost(guest, "coupon_check", { coupon: "tvet20", kind: "notes", track: "html" });
+      const htmlPrice = r.j.was;
+      ok("checking a coupon shows the new price", r.s === 200 && r.j.percent === 20 && r.j.price === Math.round(htmlPrice * 0.8), r.j);
+      r = await lpost(guest, "coupon_check", { coupon: "TVET20", kind: "pass", plan: "30" });
+      ok("a notes-only coupon can't be used on a pass", r.s === 400);
+      r = await lpost(guest, "coupon_check", { coupon: "NOSUCH", kind: "notes", track: "html" });
+      ok("an unknown coupon is refused", r.s === 400);
+      fs.rmSync(WORK + "/private/portal_ratelimit", { recursive: true, force: true }); // many prompts from one test IP so far
+      const cbuy = session();
+      await lget(cbuy, "me");
+      r = await lpost(cbuy, "notes_pay", { track: "html", phone: "0700111222", coupon: "TVET20" });
+      const cCo = r.j.checkout_id;
+      ok("the coupon lowers the M-Pesa amount", r.s === 200 && JSON.parse(fs.readFileSync(WORK + "/fake/stk-last.json", "utf8")).body.Amount === Math.round(htmlPrice * 0.8), r.j);
+      await callback(cCo, Math.round(htmlPrice * 0.8), "NOTESCPN01");
+      await sleep(300);
+      r = await lget(cbuy, "notes_pay_status", "&checkout=" + cCo);
+      ok("the discounted payment unlocks the PDF", r.j.status === "paid" && !!r.j.token, r.j);
+      r = await lpost(cbuy, "notes_pay", { track: "css", phone: "0700111222", coupon: "TVET20" });
+      ok("a coupon stops working once its uses are spent", r.s === 400 && /fully used/.test(r.j.error));
+      await lpost(boss, "coupon_save", { code: "OLD10", percent: 10, expires_on: "2020-01-01" });
+      r = await lpost(guest, "coupon_check", { coupon: "OLD10", kind: "notes", track: "html" });
+      ok("an expired coupon is refused", r.s === 400 && /expired/.test(r.j.error));
+      await lpost(boss, "coupon_save", { code: "ALL15", percent: 15 });
+      const allId = one("SELECT id FROM learn_coupons WHERE code = 'ALL15'").id;
+      r = await lpost(guest, "coupon_check", { coupon: "ALL15", kind: "bundle", bundle: "web-basics" });
+      ok("an everything coupon works on bundles", r.s === 200 && r.j.price === Math.round(wb.price * 0.85));
+      await lpost(boss, "coupon_toggle", { id: allId, active: false });
+      r = await lpost(guest, "coupon_check", { coupon: "ALL15", kind: "bundle", bundle: "web-basics" });
+      ok("a coupon turned off is refused", r.s === 400);
+      r = await lget(boss, "admin");
+      const tv = (r.j.coupons || []).find((c) => c.code === "TVET20");
+      ok("the admin lists coupons with how often they were used", tv && +tv.used === 1 && r.j.note_payments.some((p) => p.coupon === "TVET20") && r.j.note_payments.some((p) => p.bundle === "web-basics"));
+
+      // WhatsApp updates link
+      r = await lpost(boss, "whatsapp_updates_save", { url: "https://evil.example.com/x" });
+      ok("only WhatsApp links are accepted for updates", r.s === 400);
+      r = await lpost(stu, "whatsapp_updates_save", { url: "https://whatsapp.com/channel/0029VaTest" });
+      ok("only the team can set the WhatsApp link", r.s === 403 || r.s === 401);
+      r = await lpost(boss, "whatsapp_updates_save", { url: "https://whatsapp.com/channel/0029VaTest" });
+      r = await lget(guest, "me");
+      ok("the hub gets the WhatsApp updates link", r.j.whatsapp_updates === "https://whatsapp.com/channel/0029VaTest");
+      await lpost(boss, "whatsapp_updates_save", { url: "" });
+      await lpost(boss, "notes_price_set", { small: 50, medium: 100, large: 200, pass: 1000, pass90: 2500 });
     }
 
     // likes and comments (only for people who unlocked)

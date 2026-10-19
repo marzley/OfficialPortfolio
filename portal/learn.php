@@ -128,7 +128,8 @@ switch ($action) {
                     'settings' => ['leaderboard' => (bool)($row['leaderboard'] ?? 0), 'weekly_email' => (bool)($row['weekly_email'] ?? 1)]];
         }
         out(['learner' => $me, 'csrf' => csrf_token(), 'editor' => $editor, 'progress' => $progress,
-             'google_client_id' => config()['google_client_id'], 'mpesa' => (bool)mpesa_config(), 'notes_prices' => notes_pdf_prices()]);
+             'google_client_id' => config()['google_client_id'], 'mpesa' => (bool)mpesa_config(), 'notes_prices' => notes_pdf_prices(),
+             'notes_bundles' => array_values(notes_bundles()), 'whatsapp_updates' => setting('whatsapp_updates_url', '')]);
 
     case 'google':
         $token = (string)(body()['credential'] ?? '');
@@ -475,24 +476,66 @@ switch ($action) {
         $msisdn = normalise_phone((string)($d['phone'] ?? ''));
         if (!$msisdn) fail(400, 'Enter your M-Pesa number, for example 0712 345 678.');
         if (!rate_ok('notes_pay', 6, 900)) fail(429, 'Too many payment prompts. Please wait a few minutes and try again.');
-        $price = notes_pdf_track_price((int)$t['id']);
+        $cp = coupon_apply((string)($d['coupon'] ?? ''), 'notes', notes_pdf_track_price((int)$t['id']));
+        $price = $cp['price'];
         $checkout = stk_push($msisdn, $price, 'NOTES' . $t['id'], 'Notes PDF');
-        q('INSERT INTO learn_note_payments (checkout_id, track_id, amount, phone, token, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
-            [$checkout, $t['id'], $price, $msisdn, bin2hex(random_bytes(24)), 'pending', now()]);
+        q('INSERT INTO learn_note_payments (checkout_id, track_id, amount, phone, token, status, coupon, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            [$checkout, $t['id'], $price, $msisdn, bin2hex(random_bytes(24)), 'pending', $cp['code'], now()]);
         $_SESSION['note_checkouts'] = array_slice(array_merge($_SESSION['note_checkouts'] ?? [], [$checkout]), -20);
         out(['ok' => true, 'checkout_id' => $checkout, 'amount' => $price, 'status' => 'pending']);
 
     case 'notes_pass_pay':
         // Monthly pass: one payment unlocks every subject's PDF for NOTES_PASS_DAYS days (stored with track_id 0)
-        $msisdn = normalise_phone((string)(body()['phone'] ?? ''));
+        $d = body();
+        $msisdn = normalise_phone((string)($d['phone'] ?? ''));
         if (!$msisdn) fail(400, 'Enter your M-Pesa number, for example 0712 345 678.');
+        $plan = notes_pass_plans()[(string)($d['plan'] ?? '30')] ?? null;
+        if (!$plan) fail(400, 'Choose a pass.');
         if (!rate_ok('notes_pay', 6, 900)) fail(429, 'Too many payment prompts. Please wait a few minutes and try again.');
-        $price = notes_pdf_prices()['pass'];
+        $cp = coupon_apply((string)($d['coupon'] ?? ''), 'pass', $plan['price']);
+        $price = $cp['price'];
         $checkout = stk_push($msisdn, $price, 'NOTESPASS', 'Notes pass');
-        q('INSERT INTO learn_note_payments (checkout_id, track_id, amount, phone, token, status, pass_days, created_at) VALUES (?, 0, ?, ?, ?, ?, ?, ?)',
-            [$checkout, $price, $msisdn, bin2hex(random_bytes(24)), 'pending', NOTES_PASS_DAYS, now()]);
+        q('INSERT INTO learn_note_payments (checkout_id, track_id, amount, phone, token, status, pass_days, coupon, created_at) VALUES (?, 0, ?, ?, ?, ?, ?, ?, ?)',
+            [$checkout, $price, $msisdn, bin2hex(random_bytes(24)), 'pending', $plan['days'], $cp['code'], now()]);
         $_SESSION['note_checkouts'] = array_slice(array_merge($_SESSION['note_checkouts'] ?? [], [$checkout]), -20);
         out(['ok' => true, 'checkout_id' => $checkout, 'amount' => $price, 'status' => 'pending']);
+
+    case 'notes_bundle_pay':
+        // Several related subjects' PDFs at a bundle price (kept for good, like single PDFs)
+        $d = body();
+        $b = notes_bundles()[(string)($d['bundle'] ?? '')] ?? null;
+        if (!$b) fail(404, 'That bundle was not found.');
+        $msisdn = normalise_phone((string)($d['phone'] ?? ''));
+        if (!$msisdn) fail(400, 'Enter your M-Pesa number, for example 0712 345 678.');
+        if (!rate_ok('notes_pay', 6, 900)) fail(429, 'Too many payment prompts. Please wait a few minutes and try again.');
+        $cp = coupon_apply((string)($d['coupon'] ?? ''), 'bundle', $b['price']);
+        $price = $cp['price'];
+        $checkout = stk_push($msisdn, $price, 'NOTESBUNDLE', 'Notes bundle');
+        q('INSERT INTO learn_note_payments (checkout_id, track_id, amount, phone, token, status, bundle, coupon, created_at) VALUES (?, 0, ?, ?, ?, ?, ?, ?, ?)',
+            [$checkout, $price, $msisdn, bin2hex(random_bytes(24)), 'pending', $b['slug'], $cp['code'], now()]);
+        $_SESSION['note_checkouts'] = array_slice(array_merge($_SESSION['note_checkouts'] ?? [], [$checkout]), -20);
+        out(['ok' => true, 'checkout_id' => $checkout, 'amount' => $price, 'status' => 'pending']);
+
+    case 'coupon_check':
+        // Preview the price with a coupon before paying
+        $d = body();
+        if (!rate_ok('coupon_check', 30, 600)) fail(429, 'Too many tries. Please wait a few minutes.');
+        $kind = (string)($d['kind'] ?? '');
+        if ($kind === 'notes') {
+            $t = q('SELECT id FROM learn_tracks WHERE slug = ? AND published = 1', [(string)($d['track'] ?? '')])->fetch();
+            if (!$t) fail(404, 'Those notes were not found.');
+            $base = notes_pdf_track_price((int)$t['id']);
+        } elseif ($kind === 'pass') {
+            $plan = notes_pass_plans()[(string)($d['plan'] ?? '30')] ?? null;
+            if (!$plan) fail(400, 'Choose a pass.');
+            $base = $plan['price'];
+        } elseif ($kind === 'bundle') {
+            $b = notes_bundles()[(string)($d['bundle'] ?? '')] ?? null;
+            if (!$b) fail(404, 'That bundle was not found.');
+            $base = $b['price'];
+        } else fail(400, 'Unknown purchase.');
+        $cp = coupon_apply((string)($d['coupon'] ?? ''), $kind, $base);
+        out(['ok' => true, 'price' => $cp['price'], 'was' => $base, 'percent' => $cp['percent'], 'code' => $cp['code']]);
 
     case 'notes_pay_status':
         $checkout = (string)($_GET['checkout'] ?? '');
@@ -511,25 +554,30 @@ switch ($action) {
             }
         }
         if ($status === 'mismatch') $status = 'failed';
-        out(['status' => $status] + ($status === 'paid' ? ['token' => $np['token'], 'track' => $np['slug'], 'pass' => (int)$np['track_id'] === 0] : []));
+        out(['status' => $status] + ($status === 'paid' ? ['token' => $np['token'], 'track' => $np['slug'], 'pass' => (int)$np['track_id'] === 0 && $np['bundle'] === '', 'bundle' => $np['bundle'] !== '' ? $np['bundle'] : null] : []));
 
     case 'notes_access':
         $token = (string)($_GET['token'] ?? '');
         $np = preg_match('/^[a-f0-9]{48}$/', $token) ? q("SELECT p.*, t.slug FROM learn_note_payments p LEFT JOIN learn_tracks t ON t.id = p.track_id WHERE p.token = ? AND p.status = 'paid'", [$token])->fetch() : null;
         $want = q('SELECT id, slug, title, (SELECT COUNT(*) FROM learn_lessons WHERE track_id = t.id AND published = 1) AS n FROM learn_tracks t WHERE slug = ? AND published = 1', [(string)($_GET['track'] ?? '')])->fetch();
-        $isPass = $np && (int)$np['track_id'] === 0;
-        if (!$np || !$want || (!$isPass && $np['slug'] !== $want['slug'])) fail(403, 'This download is not unlocked yet.');
+        $isBundle = $np && (int)$np['track_id'] === 0 && $np['bundle'] !== '';
+        $isPass = $np && (int)$np['track_id'] === 0 && !$isBundle;
+        $inBundle = $isBundle && $want && in_array($want['slug'], NOTES_BUNDLES[$np['bundle']][1] ?? [], true);
+        if (!$np || !$want || (!$isPass && !$inBundle && $np['slug'] !== $want['slug'])) fail(403, 'This download is not unlocked yet.');
         if ($isPass && notes_pass_expiry($np) < now()) fail(403, 'Your monthly notes pass has expired. Buy a new one, or pay for just this subject.');
         if (!empty($_GET['dl'])) {
             q('UPDATE learn_note_payments SET downloads = downloads + 1 WHERE id = ?', [$np['id']]);
-            if ($me) award_points((int)$me['id'], 'notes', $isPass ? 'p' . $np['id'] . '-' . $want['id'] : (string)$np['id'], 'Downloaded the ' . $want['title'] . ' notes PDF', '?book=' . $want['slug'], notes_pdf_points((int)$want['n']));
+            if ($me) award_points((int)$me['id'], 'notes', ($isPass || $isBundle) ? 'p' . $np['id'] . '-' . $want['id'] : (string)$np['id'], 'Downloaded the ' . $want['title'] . ' notes PDF', '?book=' . $want['slug'], notes_pdf_points((int)$want['n']));
         }
         out(['ok' => true, 'receipt' => $np['receipt'], 'phone' => substr($np['phone'], 0, 6) . '***' . substr($np['phone'], -3), 'paid_at' => $np['paid_at']] + ($isPass ? ['pass' => true, 'expires_at' => notes_pass_expiry($np)] : []));
 
     case 'notes_recover':
         $d = body();
         if (!rate_ok('notes_recover', 10, 3600)) fail(429, 'Too many tries. Please wait an hour, or WhatsApp us on 0745 789 590.');
-        $t = ($d['track'] ?? '') === 'pass' ? ['id' => 0, 'slug' => 'pass'] : q('SELECT id, slug FROM learn_tracks WHERE slug = ?', [(string)($d['track'] ?? '')])->fetch();
+        $tr = (string)($d['track'] ?? '');
+        $bundle = str_starts_with($tr, 'bundle:') ? substr($tr, 7) : '';
+        if ($bundle !== '' && !isset(NOTES_BUNDLES[$bundle])) fail(404, 'That bundle was not found.');
+        $t = ($tr === 'pass' || $bundle !== '') ? ['id' => 0, 'slug' => $tr] : q('SELECT id, slug FROM learn_tracks WHERE slug = ?', [$tr])->fetch();
         $msisdn = normalise_phone((string)($d['phone'] ?? ''));
         $receipt = strtoupper(preg_replace('/[^A-Z0-9]/i', '', (string)($d['receipt'] ?? '')));
         if (!$t || !$msisdn) fail(400, 'Enter the M-Pesa number you paid with.');
@@ -538,7 +586,7 @@ switch ($action) {
         foreach (q("SELECT checkout_id FROM learn_note_payments WHERE track_id = ? AND phone = ? AND status = 'pending' AND created_at > ?", [$t['id'], $msisdn, date('Y-m-d H:i:s', time() - 7 * 86400)])->fetchAll() as $p) {
             if ($r = mpesa_result($p['checkout_id'])) settle_note_payment($p['checkout_id'], $r);
         }
-        $np = q("SELECT token FROM learn_note_payments WHERE track_id = ? AND phone = ? AND receipt = ? AND status = 'paid'", [$t['id'], $msisdn, $receipt])->fetch();
+        $np = q("SELECT token FROM learn_note_payments WHERE track_id = ? AND bundle = ? AND phone = ? AND receipt = ? AND status = 'paid'", [$t['id'], $bundle, $msisdn, $receipt])->fetch();
         if (!$np) fail(404, 'We couldn’t match that payment to these notes yet. Check the number and receipt code, or WhatsApp us your M-Pesa message on 0745 789 590 and we’ll sort it out.');
         audit('notes_pdf_recovered', "Track {$t['id']} receipt $receipt", 'visitor');
         out(['ok' => true, 'token' => $np['token'], 'track' => $t['slug']]);
@@ -547,14 +595,43 @@ switch ($action) {
         need_editor();
         $d = body();
         $set = [];
-        foreach (['small', 'medium', 'large', 'pass'] as $size) {
-            if ($size === 'pass' && !isset($d['pass'])) continue;
+        foreach (['small', 'medium', 'large', 'pass', 'pass90'] as $size) {
+            if (($size === 'pass' || $size === 'pass90') && !isset($d[$size])) continue;
             $price = (int)($d[$size] ?? 0);
             if ($price < 1 || $price > 100000) fail(400, 'Enter prices between KSh 1 and KSh 100,000.');
             $set[$size] = $price;
         }
-        foreach ($set as $size => $price) set_setting($size === 'pass' ? 'notes_pass_price' : 'notes_pdf_price_' . $size, (string)$price);
+        foreach ($set as $size => $price) set_setting($size === 'pass' ? 'notes_pass_price' : ($size === 'pass90' ? 'notes_pass90_price' : 'notes_pdf_price_' . $size), (string)$price);
         audit('notes_pdf_price', "KSh {$set['small']} / {$set['medium']} / {$set['large']}" . (isset($set['pass']) ? " / pass {$set['pass']}" : ''));
+        out(['ok' => true]);
+
+    case 'coupon_save':
+        need_editor();
+        $d = body();
+        $code = strtoupper(preg_replace('/[^A-Z0-9]/i', '', (string)($d['code'] ?? '')));
+        $pct = (int)($d['percent'] ?? 0);
+        $applies = in_array($d['applies'] ?? '', ['all', 'notes', 'pass', 'bundle'], true) ? $d['applies'] : 'all';
+        $exp = trim((string)($d['expires_on'] ?? ''));
+        if (strlen($code) < 3 || strlen($code) > 30) fail(400, 'Use a code of 3 to 30 letters and numbers, for example TVET20.');
+        if ($pct < 1 || $pct > 90) fail(400, 'Choose a discount between 1% and 90%.');
+        if ($exp !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $exp)) fail(400, 'Use a date like 2026-12-31, or leave it empty.');
+        if (q('SELECT id FROM learn_coupons WHERE code = ?', [$code])->fetch()) fail(400, 'That code already exists.');
+        q('INSERT INTO learn_coupons (code, percent, applies, max_uses, expires_on, active, note, created_at) VALUES (?, ?, ?, ?, ?, 1, ?, ?)',
+            [$code, $pct, $applies, max(0, (int)($d['max_uses'] ?? 0)), $exp ?: null, mb_substr((string)($d['note'] ?? ''), 0, 120), now()]);
+        audit('coupon_created', "$code $pct% ($applies)");
+        out(['ok' => true]);
+
+    case 'whatsapp_updates_save':
+        need_editor();
+        $url = trim((string)(body()['url'] ?? ''));
+        if ($url !== '' && !preg_match('#^https://(whatsapp\.com/channel/|www\.whatsapp\.com/channel/|chat\.whatsapp\.com/|wa\.me/)[A-Za-z0-9_?=&%+/.-]+$#', $url)) fail(400, 'Paste a WhatsApp channel, group or wa.me link (starting with https://).');
+        set_setting('whatsapp_updates_url', $url);
+        out(['ok' => true]);
+
+    case 'coupon_toggle':
+        need_editor();
+        $d = body();
+        q('UPDATE learn_coupons SET active = ? WHERE id = ?', [empty($d['active']) ? 0 : 1, (int)($d['id'] ?? 0)]);
         out(['ok' => true]);
 
     // ---------- videos (unlocked with M-Pesa) ----------
@@ -793,7 +870,7 @@ switch ($action) {
             'videos' => $videos,
             'notes' => q('SELECT id, title, summary, track_id, original_name, size, downloads, published, created_at FROM learn_notes ORDER BY created_at DESC')->fetchAll(),
             'comments' => $comments, 'payments' => $payments, 'notes_prices' => notes_pdf_prices(),
-            'note_payments' => q('SELECT p.id, p.amount, p.phone, p.status, p.receipt, p.downloads, p.created_at, p.paid_at, p.track_id, COALESCE(t.title, \'Monthly notes pass (all subjects)\') AS title FROM learn_note_payments p LEFT JOIN learn_tracks t ON t.id = p.track_id ORDER BY p.id DESC LIMIT 100')->fetchAll(),
+            'note_payments' => q('SELECT p.id, p.amount, p.phone, p.status, p.receipt, p.downloads, p.created_at, p.paid_at, p.track_id, p.pass_days, p.bundle, p.coupon, COALESCE(t.title, \'Monthly notes pass (all subjects)\') AS title FROM learn_note_payments p LEFT JOIN learn_tracks t ON t.id = p.track_id ORDER BY p.id DESC LIMIT 100')->fetchAll(),
             'reviews' => q('SELECT r.id, r.lesson_id, r.parent_id, r.rating, r.body, r.is_staff, r.hidden, r.created_at, l.name, l.email, s.title AS lesson, s.slug, t.slug AS track, t.title AS track_title
                 FROM learn_reviews r JOIN learners l ON l.id = r.learner_id JOIN learn_lessons s ON s.id = r.lesson_id JOIN learn_tracks t ON t.id = s.track_id ORDER BY r.id DESC LIMIT 300')->fetchAll(),
             'top_lessons' => q('SELECT s.title, t.title AS track_title, COUNT(k.id) AS likes FROM learn_lesson_likes k JOIN learn_lessons s ON s.id = k.lesson_id JOIN learn_tracks t ON t.id = s.track_id GROUP BY s.id, s.title, t.title ORDER BY likes DESC LIMIT 10')->fetchAll(),
@@ -812,6 +889,8 @@ switch ($action) {
                 'certificates' => (int)q('SELECT COUNT(*) AS n FROM learn_certificates')->fetch()['n'],
             ],
             'sales' => learn_sales_report(),
+            'notes_bundles' => array_values(notes_bundles()), 'whatsapp_updates' => setting('whatsapp_updates_url', ''),
+            'coupons' => q("SELECT c.*, (SELECT COUNT(*) FROM learn_note_payments p WHERE p.coupon = c.code AND p.status = 'paid') AS used FROM learn_coupons c ORDER BY c.id DESC")->fetchAll(),
             'certificates' => q('SELECT c.code, c.lessons, c.issued_at, l.name, l.email, t.title FROM learn_certificates c JOIN learners l ON l.id = c.learner_id JOIN learn_tracks t ON t.id = c.track_id ORDER BY c.id DESC LIMIT 100')->fetchAll(),
         ]);
 

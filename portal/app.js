@@ -1583,17 +1583,48 @@
     // Course notes downloaded as PDF (paid with M-Pesa; reading online stays free)
     var np = d.notes_prices || {};
     var priceIn = function (k, def, label) { return h("input", { type: "number", min: "1", max: "100000", step: "1", value: String(np[k] || def), "aria-label": label, className: "notes-price-in" }); };
-    var pSmall = priceIn("small", 50, "Price for up to 5 topics, KSh"), pMed = priceIn("medium", 100, "Price for 6 to 19 topics, KSh"), pLarge = priceIn("large", 200, "Price for 20 topics or more, KSh"), pPass = priceIn("pass", 1000, "Monthly pass price (every subject for 30 days), KSh");
+    var pSmall = priceIn("small", 50, "Price for up to 5 topics, KSh"), pMed = priceIn("medium", 100, "Price for 6 to 19 topics, KSh"), pLarge = priceIn("large", 200, "Price for 20 topics or more, KSh"), pPass = priceIn("pass", 1000, "Monthly pass price (every subject for 30 days), KSh"), pPass90 = priceIn("pass90", 2500, "3-month pass price (every subject for 90 days), KSh");
+    var bundleNames = {};
+    (d.notes_bundles || []).forEach(function (b) { bundleNames[b.slug] = b.title; });
     var npl = (d.note_payments || []).map(function (p) {
-      return h("li", null, h("div", null, h("strong", { text: ksh(p.amount) + " · " + p.title + (+p.track_id === 0 ? "" : " notes PDF") }), h("span", { className: "portal-meta", text: p.phone + " · " + day(p.created_at) + (p.receipt ? " · M-Pesa " + p.receipt : "") + (+p.downloads ? " · " + p.downloads + " download" + (+p.downloads === 1 ? "" : "s") : "") })),
+      return h("li", null, h("div", null, h("strong", { text: ksh(p.amount) + " · " + (+p.track_id !== 0 ? p.title + " notes PDF" : p.bundle ? "Bundle: " + (bundleNames[p.bundle] || p.bundle) : (+p.pass_days > 30 ? "3-month notes pass (all subjects)" : p.title)) }), h("span", { className: "portal-meta", text: p.phone + " · " + day(p.created_at) + (p.coupon ? " · coupon " + p.coupon : "") + (p.receipt ? " · M-Pesa " + p.receipt : "") + (+p.downloads ? " · " + p.downloads + " download" + (+p.downloads === 1 ? "" : "s") : "") })),
         h("span", { className: "pill pill-" + (p.status === "paid" ? "paid" : p.status === "pending" ? "review" : "unpaid"), text: p.status === "paid" ? "Paid" : p.status === "pending" ? "Waiting" : "Not paid" }));
     });
     panel.appendChild(h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: "Course notes PDF sales" })),
-      h("p", { className: "portal-meta", text: "Everyone can read the course notes online for free. Downloading a whole subject as a PDF is paid with M-Pesa, priced by how many topics the subject has, or with a monthly pass that unlocks every subject's PDF for 30 days. Printing the notes page is turned off." }),
-      h("form", { className: "inline-form", onsubmit: function (e) { e.preventDefault(); lsave("notes_price_set", { small: Number(pSmall.value), medium: Number(pMed.value), large: Number(pLarge.value), pass: Number(pPass.value) }, "PDF prices saved."); } },
+      h("p", { className: "portal-meta", text: "Everyone can read the course notes online for free. Downloading a whole subject as a PDF is paid with M-Pesa, priced by how many topics the subject has, with a pass that unlocks every subject's PDF for 30 or 90 days, or with a subject bundle (three related subjects at 20% off). Printing the notes page is turned off." }),
+      h("form", { className: "inline-form", onsubmit: function (e) { e.preventDefault(); lsave("notes_price_set", { small: Number(pSmall.value), medium: Number(pMed.value), large: Number(pLarge.value), pass: Number(pPass.value), pass90: Number(pPass90.value) }, "PDF prices saved."); } },
         h("label", null, h("span", { text: "Up to 5 topics (KSh) " }), pSmall), h("label", null, h("span", { text: "6–19 topics (KSh) " }), pMed),
-        h("label", null, h("span", { text: "20+ topics (KSh) " }), pLarge), h("label", null, h("span", { text: "Monthly pass, all subjects (KSh) " }), pPass), h("button", { type: "submit", className: "btn btn-solid", text: "Save prices" })),
+        h("label", null, h("span", { text: "20+ topics (KSh) " }), pLarge), h("label", null, h("span", { text: "Monthly pass, all subjects (KSh) " }), pPass), h("label", null, h("span", { text: "3-month pass (KSh) " }), pPass90), h("button", { type: "submit", className: "btn btn-solid", text: "Save prices" })),
       npl.length ? h("ul", { className: "admin-list" }, npl) : h("p", { className: "portal-empty", text: "No PDF sales yet." })));
+    // Coupon codes for notes PDFs, passes and bundles
+    var cCode = h("input", { type: "text", maxlength: "30", placeholder: "e.g. TVET20", "aria-label": "Coupon code", required: true, oninput: function () { var at = this.selectionStart; this.value = this.value.toUpperCase(); this.setSelectionRange(at, at); } });
+    var cPct = h("input", { type: "number", min: "1", max: "90", step: "1", value: "20", "aria-label": "Discount percent", className: "notes-price-in" });
+    var cApplies = select([["all", "Everything"], ["notes", "Single subject PDFs"], ["pass", "Notes passes"], ["bundle", "Subject bundles"]], "all");
+    var cMax = h("input", { type: "number", min: "0", step: "1", value: "0", "aria-label": "Maximum uses (0 = no limit)", className: "notes-price-in" });
+    var cExp = h("input", { type: "date", "aria-label": "Last day the code works (optional)" });
+    var cNote = h("input", { type: "text", maxlength: "120", placeholder: "Who it's for (optional)", "aria-label": "Note" });
+    var APPLIES = { all: "everything", notes: "single PDFs", pass: "passes", bundle: "bundles" };
+    var col = (d.coupons || []).map(function (c) {
+      var expired = c.expires_on && c.expires_on < new Date().toISOString().slice(0, 10), full = +c.max_uses && +c.used >= +c.max_uses;
+      return h("li", null, h("div", null, h("strong", { text: c.code + " · " + c.percent + "% off " + APPLIES[c.applies] }),
+          h("span", { className: "portal-meta", text: "Used " + c.used + (+c.max_uses ? " of " + c.max_uses : "") + " times" + (c.expires_on ? " · until " + day(c.expires_on) : "") + (c.note ? " · " + c.note : "") })),
+        h("span", { className: "row-actions" },
+          h("span", { className: "pill pill-" + (+c.active && !expired && !full ? "paid" : "unpaid"), text: !+c.active ? "Off" : expired ? "Expired" : full ? "Used up" : "Active" }),
+          h("button", { type: "button", className: "linklike", onclick: function () { lsave("coupon_toggle", { id: c.id, active: !+c.active }, +c.active ? "Coupon turned off." : "Coupon turned on."); }, text: +c.active ? "Turn off" : "Turn on" })));
+    });
+    panel.appendChild(h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: "Coupon codes" })),
+      h("p", { className: "portal-meta", text: "Give schools, groups or followers a discount on notes PDFs. Learners type the code in the M-Pesa pop-up and see the new price before paying. Codes count as used only after a payment goes through." }),
+      h("form", { className: "inline-form", onsubmit: function (e) { e.preventDefault(); lsave("coupon_save", { code: cCode.value, percent: Number(cPct.value), applies: cApplies.value, max_uses: Number(cMax.value), expires_on: cExp.value, note: cNote.value }, "Coupon created."); } },
+        h("label", null, h("span", { text: "Code " }), cCode), h("label", null, h("span", { text: "% off " }), cPct), h("label", null, h("span", { text: "Works on " }), cApplies),
+        h("label", null, h("span", { text: "Max uses (0 = no limit) " }), cMax), h("label", null, h("span", { text: "Last day " }), cExp), h("label", null, h("span", { text: "Note " }), cNote),
+        h("button", { type: "submit", className: "btn btn-solid", text: "Create coupon" })),
+      col.length ? h("ul", { className: "admin-list" }, col) : h("p", { className: "portal-empty", text: "No coupons yet." })));
+    // WhatsApp updates: where the hub's "Get updates on WhatsApp" buttons point
+    var waIn = h("input", { type: "url", value: d.whatsapp_updates || "", placeholder: "https://whatsapp.com/channel/…", "aria-label": "WhatsApp channel or group link", style: "min-width:280px" });
+    panel.appendChild(h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: "WhatsApp updates" })),
+      h("p", { className: "portal-meta", text: "Paste your WhatsApp channel or group invite link. The hub's “New lessons and tips on WhatsApp” buttons open it. Leave it empty and the buttons open a chat with you asking to be added instead." }),
+      h("form", { className: "inline-form", onsubmit: function (e) { e.preventDefault(); lsave("whatsapp_updates_save", { url: waIn.value.trim() }, "WhatsApp link saved."); } },
+        h("label", null, h("span", { text: "Link " }), waIn), h("button", { type: "submit", className: "btn btn-solid", text: "Save link" }))));
     // Certificates learners earned by completing every lesson of a subject
     var cl = (d.certificates || []).map(function (c) {
       return h("li", null, h("div", null, h("strong", { text: (c.name || c.email) + " · " + c.title }), h("span", { className: "portal-meta", text: c.email + " · all " + c.lessons + " lessons · " + day(c.issued_at) })),

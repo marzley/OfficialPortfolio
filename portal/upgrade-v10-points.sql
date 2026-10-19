@@ -89,3 +89,19 @@ CREATE TABLE IF NOT EXISTS learn_class_members (
     joined_at DATETIME NOT NULL,
     UNIQUE KEY learn_class_once (class_id, learner_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- v16: coupon codes, subject bundles and the 3-month pass (pass_days 90 uses the v14 column)
+CREATE TABLE IF NOT EXISTS learn_coupons (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(30) NOT NULL UNIQUE,
+    percent INT UNSIGNED NOT NULL,
+    applies VARCHAR(10) NOT NULL DEFAULT 'all',
+    max_uses INT UNSIGNED NOT NULL DEFAULT 0,
+    expires_on DATE NULL,
+    active INT UNSIGNED NOT NULL DEFAULT 1,
+    note VARCHAR(120) NOT NULL DEFAULT '',
+    created_at DATETIME NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- Each line may say "Duplicate column" if already added: harmless.
+ALTER TABLE learn_note_payments ADD COLUMN bundle VARCHAR(40) NOT NULL DEFAULT '';
+ALTER TABLE learn_note_payments ADD COLUMN coupon VARCHAR(30) NOT NULL DEFAULT '';

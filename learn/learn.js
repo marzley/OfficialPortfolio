@@ -87,7 +87,7 @@
     "prolog": "% Facts\nparent(kamau, wanjiku).\nparent(kamau, otieno).\nparent(wanjiku, amina).\n\n% Rules\ngrandparent(X, Z) :- parent(X, Y), parent(Y, Z).\nsibling(X, Y) :- parent(P, X), parent(P, Y), X \\= Y.\n\n% Queries (lines starting with ?-)\n?- grandparent(kamau, Who).\n?- sibling(wanjiku, S)."
   });
 
-  var state = { me: null, csrf: null, editor: false, progress: [], catalog: null, gsiLoaded: false, mpesa: false, notesPrices: { small: 50, medium: 100, large: 200, pass: 1000, pass_days: 30 } };
+  var state = { me: null, csrf: null, editor: false, progress: [], catalog: null, gsiLoaded: false, mpesa: false, notesPrices: { small: 50, medium: 100, large: 200, pass: 1000, pass_days: 30, pass90: 2500 }, notesBundles: [], whatsappUpdates: "" };
   // The PDF price depends on how long the subject is: up to 5 topics, 6–19, or 20 and more
   function notesPrice(track) {
     var n = track && track.lessons ? track.lessons.length : 0, p = state.notesPrices;
@@ -844,6 +844,7 @@
       '<p class="path-steps" aria-label="How the roadmaps work"><span>Learn</span><span>Practise</span><span>Build</span><span>Show</span><span>Work</span><span>Earn</span></p><div class="path-grid">' +
       PATHS.map(function (r) { return '<a class="path-card" href="./?track=' + r[0] + "&amp;lesson=" + r[1] + '"><i class="' + r[2] + '" aria-hidden="true"></i><strong>' + esc(r[3]) + "</strong><small>" + esc(r[4]) + "</small></a>"; }).join("") + "</div></section>" +
       '<section class="home-sec"><h2>Tutorials</h2><div class="track-grid" id="track-grid"><p class="muted">Loading…</p></div></section>' +
+      waUpdatesCard() +
       '<section class="home-sec"><div class="sec-head"><h2>Latest videos</h2><a href="./?page=videos">All videos</a></div><div class="video-grid" id="home-videos"></div></section>' +
       '<section class="home-sec"><div class="sec-head"><h2>Course notes</h2><a href="./?page=notes">All notes</a></div><p class="muted" id="home-notes-lead"></p><div class="book-grid" id="home-notes"></div></section>';
     searchUI($("#hub-search"), { big: true, placeholder: "What do you want to learn? e.g. Flutter, Excel VLOOKUP, subnetting" });
@@ -966,13 +967,21 @@
   }
 
   /** "Keep learning" box under each lesson: free videos on YouTube, and an online editor for languages we can't run here. */
+  /** Your WhatsApp channel (set in the portal), or a message asking to be added to updates. */
+  function waUpdatesLink() {
+    return state.whatsappUpdates || "https://wa.me/254745789590?text=" + encodeURIComponent("Hello Marzley, please add me to your learning updates (new lessons, tips and offers).");
+  }
+  function waUpdatesCard() {
+    return '<section class="home-sec wa-updates"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i><div><h2>New lessons and tips on WhatsApp</h2><p class="muted">One short message when we add lessons, free tools or offers. No spam, leave any time.</p></div><a class="btn btn-solid" href="' + esc(waUpdatesLink()) + '" target="_blank" rel="noopener noreferrer">' + (state.whatsappUpdates ? "Follow on WhatsApp" : "Join on WhatsApp") + "</a></section>";
+  }
   function moreBox(track, l) {
     var q = encodeURIComponent((track.title.replace(/\s*\(.*\)\s*/, " ") + " " + l.title.replace(/^Project:\s*/, "") + " tutorial").replace(/\s+/g, " ").trim());
     var pg = PLAYGROUNDS[track.slug];
     return '<aside class="more-box" aria-label="Keep learning"><h2><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Keep learning</h2><ul>' +
       '<li><a href="https://www.youtube.com/results?search_query=' + q + '" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-youtube" aria-hidden="true"></i> Watch free videos on “' + esc(l.title) + '”</a></li>' +
       (pg ? '<li><a href="' + esc(pg[1]) + '" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-play" aria-hidden="true"></i> Run the code online: ' + esc(pg[0]) + "</a></li>" : "") +
-      '<li><a href="./?page=videos"><i class="fa-solid fa-film" aria-hidden="true"></i> Our step-by-step video lessons</a></li></ul></aside>';
+      '<li><a href="./?page=videos"><i class="fa-solid fa-film" aria-hidden="true"></i> Our step-by-step video lessons</a></li>' +
+      '<li><a href="' + esc(waUpdatesLink()) + '" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Get new lessons and tips on WhatsApp</a></li></ul></aside>';
   }
 
   function pageLesson(trackSlug, lessonSlug) {
@@ -1018,6 +1027,59 @@
   // ---------- long lessons: contents list, reading progress, reading time and "I understand this section" ticks ----------
   var readerScroll = null;
   function slugify(t) { return String(t).toLowerCase().replace(/<[^>]+>/g, "").replace(/&[a-z]+;/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || "section"; }
+  // ---------- "Listen": the phone or computer reads the lesson aloud (free, built into the browser) ----------
+  function listenText(body) {
+    var clone = body.cloneNode(true);
+    clone.querySelectorAll("pre, .try, .quiz, .lesson-meta, button, .code-sample, .lsec-done, .tool, script, style, .yt, iframe").forEach(function (n) { n.remove(); });
+    clone.querySelectorAll("h1, h2, h3, h4, li, p, td, th").forEach(function (n) { n.appendChild(document.createTextNode(". ")); });
+    return (clone.textContent || "").replace(/\s+/g, " ").replace(/(\.\s*){2,}/g, ". ").trim();
+  }
+  function listenControl(meta, body) {
+    if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") return;
+    var sw = new URLSearchParams(location.search).get("track") === "kiswahili";
+    var box = el('<span class="listen"><button type="button" class="listen-btn" id="listen-btn" aria-pressed="false"><i class="fa-solid fa-volume-high" aria-hidden="true"></i> <span>' + (sw ? "Sikiliza" : "Listen") + '</span></button>' +
+      '<button type="button" class="listen-stop" id="listen-stop" hidden aria-label="Stop"><i class="fa-solid fa-stop" aria-hidden="true"></i></button>' +
+      '<select class="listen-rate" id="listen-rate" aria-label="Reading speed" hidden><option value="0.85">0.85×</option><option value="1" selected>1×</option><option value="1.2">1.2×</option><option value="1.4">1.4×</option></select></span>');
+    meta.appendChild(box);
+    var btn = box.querySelector("#listen-btn"), stop = box.querySelector("#listen-stop"), rate = box.querySelector("#listen-rate");
+    var chunks = [], idx = 0, playing = false, paused = false;
+    var voice = function () {
+      var vs = speechSynthesis.getVoices(), want = sw ? /^sw/i : /^en/i;
+      return vs.filter(function (v) { return want.test(v.lang) && /KE/i.test(v.lang); })[0] || vs.filter(function (v) { return want.test(v.lang); })[0] || null;
+    };
+    var setUi = function () {
+      btn.setAttribute("aria-pressed", String(playing && !paused));
+      btn.querySelector("i").className = "fa-solid " + (playing && !paused ? "fa-pause" : "fa-volume-high");
+      btn.querySelector("span").textContent = playing ? (paused ? (sw ? "Endelea" : "Resume") : (sw ? "Simamisha" : "Pause")) : (sw ? "Sikiliza" : "Listen");
+      stop.hidden = rate.hidden = !playing;
+    };
+    var speakNext = function () {
+      if (!playing || idx >= chunks.length) { playing = false; paused = false; setUi(); return; }
+      var u = new SpeechSynthesisUtterance(chunks[idx]);
+      var v = voice(); if (v) u.voice = v;
+      u.lang = v ? v.lang : (sw ? "sw-KE" : "en-GB");
+      u.rate = Number(rate.value) || 1;
+      u.onend = function () { idx++; speakNext(); };
+      u.onerror = function () { idx++; speakNext(); };
+      speechSynthesis.speak(u);
+    };
+    var reset = function () { playing = false; paused = false; idx = 0; speechSynthesis.cancel(); setUi(); };
+    btn.addEventListener("click", function () {
+      if (!playing) {
+        // Short pieces: some browsers stop reading long texts part-way
+        chunks = (listenText(body).match(/[^.!?]+[.!?]+|\S[^.!?]*$/g) || []).reduce(function (acc, sentence) {
+          var last = acc[acc.length - 1];
+          if (last && (last + " " + sentence).length < 220) acc[acc.length - 1] = last + " " + sentence.trim(); else acc.push(sentence.trim());
+          return acc;
+        }, []);
+        idx = 0; playing = true; paused = false; speechSynthesis.cancel(); setUi(); speakNext();
+      } else if (paused) { paused = false; speechSynthesis.resume(); setUi(); }
+      else { paused = true; speechSynthesis.pause(); setUi(); }
+    });
+    stop.addEventListener("click", reset);
+    rate.addEventListener("change", function () { if (playing) { speechSynthesis.cancel(); paused = false; setUi(); speakNext(); } });
+    cleanup.push(function () { speechSynthesis.cancel(); });
+  }
   function enhanceLesson(article, l) {
     if (readerScroll) { window.removeEventListener("scroll", readerScroll); readerScroll = null; }
     var body = article && article.querySelector(".lesson-body");
@@ -1028,6 +1090,7 @@
     var meta = el('<p class="lesson-meta"><span><i class="fa-regular fa-clock" aria-hidden="true"></i> About ' + plural(mins, "minute") + ' of reading</span>' +
       (heads.length ? '<span><i class="fa-solid fa-list-check" aria-hidden="true"></i> ' + plural(heads.length, "section") + "</span>" : "") + "</p>");
     if (h1) h1.insertAdjacentElement("afterend", meta); else body.insertBefore(meta, body.firstChild);
+    listenControl(meta, body);
     var bar = el('<div class="read-progress" aria-hidden="true"><span></span></div>');
     article.insertBefore(bar, article.firstChild);
     var fill = bar.firstChild;
@@ -2178,10 +2241,21 @@
     showSide(false);
     setTitle("Notes and books", "Course notes for every subject, from the basics up: read free online or download the whole subject as a PDF. Plus free programming notes and books.");
     main.innerHTML = '<section class="list-page"><h1>Notes &amp; books</h1><p class="lead">Complete course notes for every subject, from the basics all the way up. Read them free online, no account needed, or download a whole subject as a PDF with M-Pesa: ' + esc(kes(state.notesPrices.small)) + ' for short subjects (up to 5 topics), ' + esc(kes(state.notesPrices.medium)) + ' for 6 to 19 topics and ' + esc(kes(state.notesPrices.large)) + ' for 20 topics or more.</p>' +
-      '<div class="pass-banner"><i class="fa-solid fa-ticket" aria-hidden="true"></i><div><strong>Monthly notes pass: ' + esc(kes(state.notesPrices.pass)) + '</strong><span>Download every subject\'s notes as PDFs for ' + state.notesPrices.pass_days + ' days.</span></div><button type="button" class="btn btn-solid btn-sm" id="pass-buy">' + (passToken() ? "You have a pass" : "Get the pass") + "</button></div>" +
+      '<div class="pass-banner"><i class="fa-solid fa-ticket" aria-hidden="true"></i><div><strong>Notes pass: every subject\'s PDF</strong><span>' + esc(kes(state.notesPrices.pass)) + " for " + state.notesPrices.pass_days + " days, or " + esc(kes(state.notesPrices.pass90)) + ' for 90 days.</span></div><button type="button" class="btn btn-solid btn-sm" id="pass-buy">' + (passToken() ? "You have a pass" : "Get a pass") + "</button></div>" +
+      ((state.notesBundles || []).length ? '<h2 class="notes-h">Subject bundles <span class="muted small">(save 20%)</span></h2><div class="bundle-grid">' + state.notesBundles.map(function (b) {
+        var owned = !!bundleToken(b.slug);
+        return '<div class="bundle-card"><strong>' + esc(b.title) + '</strong><span class="muted">' + b.tracks.map(function (t) { return esc(t.title); }).join(" · ") + '</span><p><b>' + esc(kes(b.price)) + '</b> <s class="muted">' + esc(kes(b.full)) + '</s></p><button type="button" class="btn ' + (owned ? "btn-line" : "btn-solid") + ' btn-sm" data-bundle="' + esc(b.slug) + '">' + (owned ? "Unlocked on this device" : "Get the bundle") + "</button></div>";
+      }).join("") + "</div>" : "") +
       '<h2 class="notes-h">Course notes</h2><div class="book-grid" id="book-grid"><p class="muted">Loading…</p></div>' +
       '<h2 class="notes-h">PDF notes &amp; books</h2><div class="note-grid" id="note-grid"><p class="muted">Loading…</p></div></section>';
     $("#pass-buy").addEventListener("click", function () { if (passToken()) { alert("Your pass is active on this device: open any subject's notes and tap Download PDF."); return; } passPayForm(null); });
+    main.querySelectorAll("[data-bundle]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var b = state.notesBundles.filter(function (x) { return x.slug === btn.getAttribute("data-bundle"); })[0];
+        if (bundleToken(b.slug)) { alert("This bundle is unlocked on this device: open any of its subjects' notes and tap Download PDF."); return; }
+        bundlePayForm(b, null);
+      });
+    });
     getCatalog().then(function (tracks) {
       $("#book-grid").innerHTML = tracks.map(function (t) {
         return '<a class="book-card" href="./?book=' + esc(t.slug) + '"><i class="' + (TRACK_ICONS[t.slug] || TRACK_ICONS[t.lang] || "fa-solid fa-book") + '" aria-hidden="true"></i><span><strong>' + esc(t.title) + " notes</strong>" +
@@ -2294,67 +2368,91 @@
   function closePay() { stopPayPoll(); if (payDlg && payDlg.open) payDlg.close(); }
 
   function passToken() { return store.get("notes-pass") || ""; }
+  function bundleToken(slug) { return store.get("notes-bundle:" + slug) || ""; }
+  /** A bought bundle that includes this subject, if any: its token. */
+  function bundleTokenFor(track) {
+    var b = (state.notesBundles || []).filter(function (x) { return bundleToken(x.slug) && x.tracks.some(function (t) { return t.slug === track.slug; }); })[0];
+    return b ? bundleToken(b.slug) : "";
+  }
+  function bundlesWith(track) { return (state.notesBundles || []).filter(function (x) { return x.tracks.some(function (t) { return t.slug === track.slug; }); }); }
+  function phoneValue(d, id) { var raw = $(id, d).value.replace(/\s+/g, ""); return /^(0|254|\+254)/.test(raw) ? raw.replace(/^\+/, "") : "0" + raw; }
+  function phoneField() { return '<label for="pay-phone">M-PESA PHONE NUMBER</label><div class="pay-phone"><span>+254</span><input id="pay-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="712345678" maxlength="13" value="' + esc((store.get("phone") || "").replace(/^(\+?254|0)/, "")) + '" required /></div>'; }
+  function couponField() {
+    return '<details class="coupon"><summary>Have a coupon code?</summary><div class="coupon-row"><input id="pay-coupon" class="pay-input" autocapitalize="characters" maxlength="30" placeholder="e.g. TVET20" /><button type="button" class="btn btn-line btn-sm" id="pay-coupon-go">Apply</button></div><p class="coupon-msg" id="pay-coupon-msg" role="status" aria-live="polite"></p></details>';
+  }
+  /** Coupon box: checks the code with the server and updates the price shown on the Pay button. */
+  function wireCoupon(d, ctx, base, onPrice) {
+    ctx.coupon = "";
+    $("#pay-coupon-go", d).addEventListener("click", function () {
+      var code = $("#pay-coupon", d).value.trim(), msg = $("#pay-coupon-msg", d);
+      if (!code) { ctx.coupon = ""; onPrice(base); msg.textContent = ""; return; }
+      msg.textContent = "Checking…";
+      api("coupon_check", Object.assign({ coupon: code }, ctx.check)).then(function (r) {
+        ctx.coupon = r.code; onPrice(r.price);
+        msg.innerHTML = '<i class="fa-solid fa-circle-check" aria-hidden="true"></i> ' + r.percent + "% off applied: " + esc(kes(r.price)) + ' <s class="muted">' + esc(kes(r.was)) + "</s>";
+      }).catch(function (er) { ctx.coupon = ""; onPrice(base); msg.textContent = er.message; });
+    });
+  }
   function startNotesPdf(track) {
-    var token = store.get(pdfTokenKey(track.slug));
-    if (!token && passToken()) {
-      openPay('<div class="pay-center"><span class="spinner" aria-hidden="true"></span><h2 id="pay-title">Checking your notes pass…</h2></div>');
-      api("notes_access", undefined, "&track=" + encodeURIComponent(track.slug) + "&token=" + encodeURIComponent(passToken())).then(function (info) {
-        makeNotesPdf(track, passToken(), info);
-      }).catch(function (e) {
-        if (e.status === 403) { try { localStorage.removeItem("learn:notes-pass"); } catch (x) {} return payForm(track, e.message); }
-        payMessage("Couldn’t check your pass", e.message, track);
-      });
-      return;
-    }
-    if (token) {
-      openPay('<div class="pay-center"><span class="spinner" aria-hidden="true"></span><h2 id="pay-title">Checking your download…</h2></div>');
-      api("notes_access", undefined, "&track=" + encodeURIComponent(track.slug) + "&token=" + encodeURIComponent(token)).then(function (info) {
-        makeNotesPdf(track, token, info);
-      }).catch(function (e) {
-        if (e.status === 403) { try { localStorage.removeItem("learn:" + pdfTokenKey(track.slug)); } catch (x) {} return payForm(track); }
-        payMessage("Couldn’t check your download", e.message, track);
-      });
-      return;
-    }
-    payForm(track);
+    var own = store.get(pdfTokenKey(track.slug)), viaBundle = !own && bundleTokenFor(track), token = own || viaBundle || passToken();
+    if (!token) return payForm(track);
+    openPay('<div class="pay-center"><span class="spinner" aria-hidden="true"></span><h2 id="pay-title">' + (own ? "Checking your download…" : viaBundle ? "Checking your bundle…" : "Checking your notes pass…") + "</h2></div>");
+    api("notes_access", undefined, "&track=" + encodeURIComponent(track.slug) + "&token=" + encodeURIComponent(token)).then(function (info) {
+      makeNotesPdf(track, token, info);
+    }).catch(function (e) {
+      if (e.status === 403) {
+        try { if (own) localStorage.removeItem("learn:" + pdfTokenKey(track.slug)); else if (!viaBundle) localStorage.removeItem("learn:notes-pass"); } catch (x) {}
+        return payForm(track, own ? "" : e.message);
+      }
+      payMessage("Couldn’t check your download", e.message, track);
+    });
   }
 
   function payForm(track, err) {
-    var price = kes(notesPrice(track));
+    var base = notesPrice(track), price = base;
     if (!state.mpesa) {
       openPay('<h2 id="pay-title">Unlock PDF download</h2><p class="muted">Online payment is being set up. WhatsApp us and we’ll send you the ' + esc(track.title) + ' notes PDF.</p>' +
         '<p><a class="btn btn-solid pay-btn" href="https://wa.me/254745789590?text=' + encodeURIComponent("Hello Marzley, I'd like the " + track.title + " notes as a PDF.") + '" target="_blank" rel="noopener noreferrer">WhatsApp us</a></p>');
       return;
     }
-    var d = openPay('<h2 id="pay-title" class="pay-title">Unlock PDF Download</h2><p class="pay-sub">A payment of <strong>' + esc(price) + '</strong> is required to download the <strong>' + esc(track.title) + '</strong> notes (' + track.lessons.length + ' topics) as a PDF.</p>' +
-      '<form id="pay-form" class="pay-form" novalidate><label for="pay-phone">M-PESA PHONE NUMBER</label><div class="pay-phone"><span>+254</span><input id="pay-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="712345678" maxlength="13" value="' + esc((store.get("phone") || "").replace(/^(\+?254|0)/, "")) + '" required /></div>' +
-      '<p class="form-msg pay-err" id="pay-msg" role="status" aria-live="polite">' + esc(err || "") + '</p><button type="submit" class="btn pay-btn" id="pay-go">Pay ' + esc(price) + '</button></form>' +
-      '<div class="pass-offer"><span>Need more subjects? <strong>' + esc(kes(state.notesPrices.pass)) + '</strong> unlocks every subject\'s PDF for ' + state.notesPrices.pass_days + ' days.</span><button type="button" class="pay-small" id="pay-pass">Get the monthly pass</button></div>' +
+    var bundles = bundlesWith(track);
+    var d = openPay('<h2 id="pay-title" class="pay-title">Unlock PDF Download</h2><p class="pay-sub">A payment of <strong id="pay-amount">' + esc(kes(price)) + '</strong> is required to download the <strong>' + esc(track.title) + '</strong> notes (' + track.lessons.length + ' topics) as a PDF.</p>' +
+      '<form id="pay-form" class="pay-form" novalidate>' + phoneField() + couponField() +
+      '<p class="form-msg pay-err" id="pay-msg" role="status" aria-live="polite">' + esc(err || "") + '</p><button type="submit" class="btn pay-btn" id="pay-go">Pay ' + esc(kes(price)) + '</button></form>' +
+      '<div class="pass-offer"><span>Need more subjects? <strong>' + esc(kes(state.notesPrices.pass)) + '</strong> unlocks every subject\'s PDF for ' + state.notesPrices.pass_days + ' days' + (state.notesPrices.pass90 ? ", or " + esc(kes(state.notesPrices.pass90)) + " for 90 days" : "") + '.</span><button type="button" class="pay-small" id="pay-pass">See the notes passes</button>' +
+      (bundles.length ? '<span>Or get the <strong>' + esc(bundles[0].title) + '</strong> bundle (' + bundles[0].tracks.map(function (t) { return esc(t.title); }).join(", ") + ') for ' + esc(kes(bundles[0].price)) + ' <s class="muted">' + esc(kes(bundles[0].full)) + '</s>.</span><button type="button" class="pay-small" id="pay-bundle">Get the bundle</button>' : "") + "</div>" +
       '<button type="button" class="pay-link" id="pay-cancel">Cancel</button><button type="button" class="pay-small" id="pay-recover">Already paid but didn’t get your document?</button>' +
       '<p class="pay-note">Reading the notes online stays free. The PDF is for your personal use and works on this device whenever you come back.</p>');
+    var ctx = { check: { kind: "notes", track: track.slug } };
+    wireCoupon(d, ctx, base, function (p) { price = p; $("#pay-amount", d).textContent = kes(p); $("#pay-go", d).textContent = "Pay " + kes(p); });
     $("#pay-cancel", d).addEventListener("click", closePay);
     $("#pay-recover", d).addEventListener("click", function () { recoverForm(track); });
     $("#pay-pass", d).addEventListener("click", function () { passPayForm(track); });
+    if (bundles.length) $("#pay-bundle", d).addEventListener("click", function () { bundlePayForm(bundles[0], track); });
     setTimeout(function () { var i = $("#pay-phone", d); if (i && !i.value) i.focus(); }, 50);
     $("#pay-form", d).addEventListener("submit", function (e) {
       e.preventDefault();
-      var raw = $("#pay-phone", d).value.replace(/\s+/g, "");
-      var phone = /^(0|254|\+254)/.test(raw) ? raw.replace(/^\+/, "") : "0" + raw;
+      var phone = phoneValue(d, "#pay-phone");
       if (!/^(0[17]\d{8}|254[17]\d{8})$/.test(phone)) { $("#pay-msg", d).textContent = "Enter your M-Pesa number, for example 712 345 678."; return; }
       var go = $("#pay-go", d);
       go.disabled = true; go.textContent = "Sending request…";
       store.set("phone", phone);
-      api("notes_pay", { track: track.slug, phone: phone }).then(function (r) { payWaiting(track, r.checkout_id, r.amount || notesPrice(track)); })
-        .catch(function (er) { go.disabled = false; go.textContent = "Pay " + price; $("#pay-msg", d).textContent = er.message; });
+      api("notes_pay", { track: track.slug, phone: phone, coupon: ctx.coupon }).then(function (r) { payWaiting(track, r.checkout_id, r.amount || price); })
+        .catch(function (er) { go.disabled = false; go.textContent = "Pay " + kes(price); $("#pay-msg", d).textContent = er.message; });
     });
   }
 
-  function payWaiting(track, checkout, amount, passMode) {
+  /** Waits for the M-Pesa payment. mode: undefined (one subject), "pass", or a bundle object. */
+  function payWaiting(track, checkout, amount, mode) {
     var d = openPay('<div class="pay-center"><span class="pay-phone-ico" aria-hidden="true"><i class="fa-solid fa-mobile-screen"></i></span><h2 id="pay-title">Request Sent!</h2>' +
       '<p class="pay-sub">Please check your phone and enter your M-PESA PIN to complete the payment of ' + esc(kes(amount)) + '.</p>' +
       '<p class="pay-wait" id="pay-wait" role="status" aria-live="polite"><span class="spinner" aria-hidden="true"></span> Waiting to auto-detect payment…</p>' +
       '<button type="button" class="btn pay-check" id="pay-check">Check Now</button><button type="button" class="pay-link" id="pay-cancel">Cancel</button></div>');
     var tries = 0, busy = false;
+    var done = function (title, text) {
+      var d2 = openPay('<div class="pay-center"><span class="pay-ok-ico" aria-hidden="true"><i class="fa-solid fa-circle-check"></i></span><h2 id="pay-title">' + esc(title) + '</h2><p class="pay-sub">' + esc(text) + '</p><button type="button" class="btn pay-btn" id="pass-ok">Choose notes</button></div>');
+      $("#pass-ok", d2).addEventListener("click", function () { closePay(); pageNotes(); });
+    };
     var check = function (manual) {
       if (busy) return;
       busy = true;
@@ -2364,7 +2462,13 @@
           stopPayPoll();
           store.set("notes-pass", s.token);
           if (track) makeNotesPdf(track, s.token, null);
-          else { var d2 = openPay('<div class="pay-center"><span class="pay-ok-ico" aria-hidden="true"><i class="fa-solid fa-circle-check"></i></span><h2 id="pay-title">Your notes pass is active</h2><p class="pay-sub">Open any subject\'s notes and tap Download PDF, for the next ' + state.notesPrices.pass_days + ' days on this device.</p><button type="button" class="btn pay-btn" id="pass-ok">Choose notes</button></div>'); $("#pass-ok", d2).addEventListener("click", function () { closePay(); pageNotes(); }); }
+          else done("Your notes pass is active", "Open any subject's notes and tap Download PDF, on this device, until your pass ends.");
+        } else if (s.status === "paid" && s.token && s.bundle) {
+          stopPayPoll();
+          store.set("notes-bundle:" + s.bundle, s.token);
+          var bt = (state.notesBundles || []).filter(function (x) { return x.slug === s.bundle; })[0];
+          if (track && bt && bt.tracks.some(function (t) { return t.slug === track.slug; })) makeNotesPdf(track, s.token, null);
+          else done("Your bundle is unlocked", "Open the notes for " + (bt ? bt.tracks.map(function (t) { return t.title; }).join(", ") : "each subject in the bundle") + " and tap Download PDF.");
         } else if (s.status === "paid" && s.token) {
           stopPayPoll();
           store.set(pdfTokenKey(track.slug), s.token);
@@ -2372,8 +2476,8 @@
           makeNotesPdf(track, s.token, null);
         } else if (s.status === "failed") {
           stopPayPoll();
-          if (passMode) passPayForm(track, "The payment didn’t go through (it may have been cancelled or timed out). You can try again.");
-          else payForm(track, "The payment didn’t go through (it may have been cancelled or timed out). You can try again.");
+          var why = "The payment didn’t go through (it may have been cancelled or timed out). You can try again.";
+          if (mode === "pass") passPayForm(track, why); else if (mode) bundlePayForm(mode, track, why); else payForm(track, why);
         } else if (manual) {
           $("#pay-wait", d).innerHTML = '<span class="spinner" aria-hidden="true"></span> Not received yet. Enter your PIN on the M-Pesa prompt, then tap Check Now.';
         }
@@ -2388,46 +2492,83 @@
     $("#pay-cancel", d).addEventListener("click", closePay);
   }
 
-  function passPayForm(track, err) {
-    var price = kes(state.notesPrices.pass);
-    if (!state.mpesa) { openPay('<h2 id="pay-title">Monthly notes pass</h2><p class="muted">Online payment is being set up. <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp us</a> for the pass.</p>'); return; }
-    var d = openPay('<h2 id="pay-title" class="pay-title">Monthly notes pass</h2><p class="pay-sub"><strong>' + esc(price) + '</strong> unlocks the PDF download for <strong>every subject</strong> for ' + state.notesPrices.pass_days + ' days, on this device.</p>' +
-      '<form id="pay-form" class="pay-form" novalidate><label for="pay-phone">M-PESA PHONE NUMBER</label><div class="pay-phone"><span>+254</span><input id="pay-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="712345678" maxlength="13" value="' + esc((store.get("phone") || "").replace(/^(\+?254|0)/, "")) + '" required /></div>' +
-      '<p class="form-msg pay-err" id="pay-msg" role="status" aria-live="polite">' + esc(err || "") + '</p><button type="submit" class="btn pay-btn" id="pay-go">Pay ' + esc(price) + '</button></form>' +
+  function passPayForm(track, err, planPick) {
+    if (!state.mpesa) { openPay('<h2 id="pay-title">Notes pass</h2><p class="muted">Online payment is being set up. <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp us</a> for the pass.</p>'); return; }
+    var np = state.notesPrices, plan = planPick === "90" ? "90" : "30";
+    var planPrice = function (p) { return p === "90" ? np.pass90 : np.pass; };
+    var base = planPrice(plan), price = base;
+    var save = Math.max(0, np.pass * 3 - np.pass90);
+    var d = openPay('<h2 id="pay-title" class="pay-title">Notes pass</h2><p class="pay-sub">Unlocks the PDF download for <strong>every subject</strong>, on this device, for the time you choose.</p>' +
+      '<form id="pay-form" class="pay-form" novalidate><div class="pass-plans">' +
+      '<label class="pass-plan"><input type="radio" name="pass-plan" value="30"' + (plan === "30" ? " checked" : "") + ' /><span><strong>' + np.pass_days + ' days</strong><em>' + esc(kes(np.pass)) + "</em></span></label>" +
+      '<label class="pass-plan"><input type="radio" name="pass-plan" value="90"' + (plan === "90" ? " checked" : "") + ' /><span><strong>90 days</strong><em>' + esc(kes(np.pass90)) + "</em>" + (save ? "<small>Save " + esc(kes(save)) + "</small>" : "") + "</span></label></div>" +
+      phoneField() + couponField() +
+      '<p class="form-msg pay-err" id="pay-msg" role="status" aria-live="polite">' + esc(err || "") + '</p><button type="submit" class="btn pay-btn" id="pay-go">Pay ' + esc(kes(price)) + '</button></form>' +
       '<button type="button" class="pay-link" id="pay-cancel">' + (track ? "Back" : "Cancel") + '</button><button type="button" class="pay-small" id="pay-recover">Already bought a pass but it didn’t activate?</button>');
+    var ctx = { check: { kind: "pass", plan: plan } };
+    var setPrice = function (p) { price = p; $("#pay-go", d).textContent = "Pay " + kes(p); };
+    wireCoupon(d, ctx, base, setPrice);
+    d.querySelectorAll('input[name="pass-plan"]').forEach(function (r) {
+      r.addEventListener("change", function () { plan = r.value; base = planPrice(plan); ctx.check.plan = plan; ctx.coupon = ""; $("#pay-coupon-msg", d).textContent = ""; setPrice(base); });
+    });
     $("#pay-cancel", d).addEventListener("click", function () { if (track) payForm(track); else closePay(); });
-    $("#pay-recover", d).addEventListener("click", function () { recoverForm(track, true); });
+    $("#pay-recover", d).addEventListener("click", function () { recoverForm(track, "pass"); });
     $("#pay-form", d).addEventListener("submit", function (e) {
       e.preventDefault();
-      var raw = $("#pay-phone", d).value.replace(/\s+/g, "");
-      var phone = /^(0|254|\+254)/.test(raw) ? raw.replace(/^\+/, "") : "0" + raw;
+      var phone = phoneValue(d, "#pay-phone");
       if (!/^(0[17]\d{8}|254[17]\d{8})$/.test(phone)) { $("#pay-msg", d).textContent = "Enter your M-Pesa number, for example 712 345 678."; return; }
       var go = $("#pay-go", d);
       go.disabled = true; go.textContent = "Sending request…";
       store.set("phone", phone);
-      api("notes_pass_pay", { phone: phone }).then(function (r) { payWaiting(track, r.checkout_id, r.amount || state.notesPrices.pass, true); })
-        .catch(function (er) { go.disabled = false; go.textContent = "Pay " + price; $("#pay-msg", d).textContent = er.message; });
+      api("notes_pass_pay", { phone: phone, plan: plan, coupon: ctx.coupon }).then(function (r) { payWaiting(track, r.checkout_id, r.amount || price, "pass"); })
+        .catch(function (er) { go.disabled = false; go.textContent = "Pay " + kes(price); $("#pay-msg", d).textContent = er.message; });
     });
   }
-  function recoverForm(track, passMode) {
-    var d = openPay('<h2 id="pay-title" class="pay-title">' + (passMode ? "Activate your pass" : "Get your PDF") + '</h2><p class="pay-sub">Enter the number you paid with and the M-Pesa receipt code from your confirmation SMS.</p>' +
+
+  function bundlePayForm(bundle, track, err) {
+    if (!state.mpesa) { openPay('<h2 id="pay-title">' + esc(bundle.title) + ' bundle</h2><p class="muted">Online payment is being set up. <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp us</a> for the bundle.</p>'); return; }
+    var base = bundle.price, price = base;
+    var d = openPay('<h2 id="pay-title" class="pay-title">' + esc(bundle.title) + ' bundle</h2><p class="pay-sub">PDF downloads for <strong>' + bundle.tracks.map(function (t) { return esc(t.title); }).join(", ") + '</strong>, yours to keep on this device. <strong>' + esc(kes(bundle.price)) + '</strong> instead of ' + esc(kes(bundle.full)) + ".</p>" +
+      '<form id="pay-form" class="pay-form" novalidate>' + phoneField() + couponField() +
+      '<p class="form-msg pay-err" id="pay-msg" role="status" aria-live="polite">' + esc(err || "") + '</p><button type="submit" class="btn pay-btn" id="pay-go">Pay ' + esc(kes(price)) + '</button></form>' +
+      '<button type="button" class="pay-link" id="pay-cancel">' + (track ? "Back" : "Cancel") + '</button><button type="button" class="pay-small" id="pay-recover">Already bought this bundle but it didn’t unlock?</button>');
+    var ctx = { check: { kind: "bundle", bundle: bundle.slug } };
+    wireCoupon(d, ctx, base, function (p) { price = p; $("#pay-go", d).textContent = "Pay " + kes(p); });
+    $("#pay-cancel", d).addEventListener("click", function () { if (track) payForm(track); else closePay(); });
+    $("#pay-recover", d).addEventListener("click", function () { recoverForm(track, bundle); });
+    $("#pay-form", d).addEventListener("submit", function (e) {
+      e.preventDefault();
+      var phone = phoneValue(d, "#pay-phone");
+      if (!/^(0[17]\d{8}|254[17]\d{8})$/.test(phone)) { $("#pay-msg", d).textContent = "Enter your M-Pesa number, for example 712 345 678."; return; }
+      var go = $("#pay-go", d);
+      go.disabled = true; go.textContent = "Sending request…";
+      store.set("phone", phone);
+      api("notes_bundle_pay", { bundle: bundle.slug, phone: phone, coupon: ctx.coupon }).then(function (r) { payWaiting(track, r.checkout_id, r.amount || price, bundle); })
+        .catch(function (er) { go.disabled = false; go.textContent = "Pay " + kes(price); $("#pay-msg", d).textContent = er.message; });
+    });
+  }
+
+  /** "Already paid": number + M-Pesa receipt brings the token back. mode: undefined (one subject), "pass", or a bundle object. */
+  function recoverForm(track, mode) {
+    var isPass = mode === "pass", bundle = mode && mode !== "pass" ? mode : null;
+    var what = isPass ? "the notes pass" : bundle ? "the " + bundle.title + " bundle" : "the " + track.title + " notes PDF";
+    var d = openPay('<h2 id="pay-title" class="pay-title">' + (isPass ? "Activate your pass" : bundle ? "Unlock your bundle" : "Get your PDF") + '</h2><p class="pay-sub">Enter the number you paid with and the M-Pesa receipt code from your confirmation SMS.</p>' +
       '<form id="rec-form" class="pay-form" novalidate><label for="rec-phone">M-PESA PHONE NUMBER</label><div class="pay-phone"><span>+254</span><input id="rec-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="712345678" value="' + esc((store.get("phone") || "").replace(/^(\+?254|0)/, "")) + '" required /></div>' +
       '<label for="rec-code">M-PESA RECEIPT CODE</label><input id="rec-code" class="pay-input" autocapitalize="characters" placeholder="e.g. SJK4H2L9XA" maxlength="20" required />' +
-      '<p class="form-msg pay-err" id="rec-msg" role="status" aria-live="polite"></p><button type="submit" class="btn pay-btn" id="rec-go">Get my PDF</button></form>' +
-      '<button type="button" class="pay-link" id="rec-back">Back</button><p class="pay-note">Still stuck? <a href="https://wa.me/254745789590?text=' + encodeURIComponent(passMode ? "Hello Marzley, I paid for the monthly notes pass but it didn't activate." : "Hello Marzley, I paid for the " + track.title + " notes PDF but didn't get it.") + '" target="_blank" rel="noopener noreferrer">WhatsApp us</a> your M-Pesa message.</p>');
-    $("#rec-back", d).addEventListener("click", function () { if (passMode) passPayForm(track); else payForm(track); });
+      '<p class="form-msg pay-err" id="rec-msg" role="status" aria-live="polite"></p><button type="submit" class="btn pay-btn" id="rec-go">Unlock</button></form>' +
+      '<button type="button" class="pay-link" id="rec-back">Back</button><p class="pay-note">Still stuck? <a href="https://wa.me/254745789590?text=' + encodeURIComponent("Hello Marzley, I paid for " + what + " but it didn't unlock.") + '" target="_blank" rel="noopener noreferrer">WhatsApp us</a> your M-Pesa message.</p>');
+    $("#rec-back", d).addEventListener("click", function () { if (isPass) passPayForm(track); else if (bundle) bundlePayForm(bundle, track); else payForm(track); });
     $("#rec-form", d).addEventListener("submit", function (e) {
       e.preventDefault();
-      var raw = $("#rec-phone", d).value.replace(/\s+/g, "");
-      var phone = /^(0|254|\+254)/.test(raw) ? raw.replace(/^\+/, "") : "0" + raw;
       var go = $("#rec-go", d);
       go.disabled = true; go.textContent = "Checking…";
-      api("notes_recover", { track: passMode ? "pass" : track.slug, phone: phone, receipt: $("#rec-code", d).value }).then(function (r) {
-        if (passMode) { store.set("notes-pass", r.token); if (track) makeNotesPdf(track, r.token, null); else { closePay(); pageNotes(); } return; }
-        store.set(pdfTokenKey(track.slug), r.token);
-        var lbl = $("#book-pdf-label"); if (lbl) lbl.textContent = "Download PDF";
-        makeNotesPdf(track, r.token, null);
-      }).catch(function (er) { go.disabled = false; go.textContent = "Get my PDF"; $("#rec-msg", d).textContent = er.message; });
+      api("notes_recover", { track: isPass ? "pass" : bundle ? "bundle:" + bundle.slug : track.slug, phone: phoneValue(d, "#rec-phone"), receipt: $("#rec-code", d).value }).then(function (r) {
+        if (isPass) store.set("notes-pass", r.token);
+        else if (bundle) store.set("notes-bundle:" + bundle.slug, r.token);
+        else { store.set(pdfTokenKey(track.slug), r.token); var lbl = $("#book-pdf-label"); if (lbl) lbl.textContent = "Download PDF"; }
+        if (track && (!bundle || bundle.tracks.some(function (t) { return t.slug === track.slug; }))) makeNotesPdf(track, r.token, null);
+        else { closePay(); pageNotes(); }
+      }).catch(function (er) { go.disabled = false; go.textContent = "Unlock"; $("#rec-msg", d).textContent = er.message; });
     });
   }
 
@@ -2926,7 +3067,9 @@
       state.me = j.learner;
       state.editor = !!j.editor;
       state.mpesa = !!j.mpesa;
-      if (j.notes_prices) ["small", "medium", "large", "pass", "pass_days"].forEach(function (k) { state.notesPrices[k] = Number(j.notes_prices[k]) || state.notesPrices[k]; });
+      if (j.notes_prices) ["small", "medium", "large", "pass", "pass_days", "pass90"].forEach(function (k) { state.notesPrices[k] = Number(j.notes_prices[k]) || state.notesPrices[k]; });
+      state.notesBundles = j.notes_bundles || [];
+      state.whatsappUpdates = j.whatsapp_updates || "";
       state.googleClientId = j.google_client_id;
       state.progress = j.learner ? (j.progress || []).map(Number) : loadLocalProgress();
       updateUser();

@@ -903,3 +903,44 @@ html.js .learn-static { display: none; }
 .class-table td .muted { display: block; }
 .class-danger { margin-top: 24px; }
 .join-page .empty h1 { font-size: 26px; }
+
+/* ---------- 3-month pass, bundles, coupons ---------- */
+.pass-plans { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 6px; }
+.pass-plan { position: relative; cursor: pointer; }
+.pass-plan input { position: absolute; opacity: 0; pointer-events: none; }
+.pass-plan > span { display: grid; gap: 2px; justify-items: center; padding: 12px 8px; border: 2px solid var(--line); border-radius: 12px; background: var(--card); text-align: center; letter-spacing: 0; }
+.pass-plan strong { color: var(--heading); font-size: 15px; }
+.pass-plan em { font-style: normal; font-size: 18px; font-weight: 800; color: var(--fg); }
+.pass-plan small { font-size: 12px; font-weight: 700; color: var(--green); }
+.pass-plan input:checked + span { border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22, 163, 74, .18); }
+.pass-plan input:focus-visible + span { outline: 2px solid #16a34a; outline-offset: 2px; }
+.bundle-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin-bottom: 8px; }
+.bundle-card { display: grid; gap: 6px; align-content: start; padding: 14px 16px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); }
+.bundle-card strong { color: var(--heading); font-size: 16px; }
+.bundle-card .muted { font-size: 13px; line-height: 1.4; }
+.bundle-card p { margin: 2px 0 4px; }
+.bundle-card p b { font-size: 18px; color: var(--heading); }
+.bundle-card .btn { justify-self: start; }
+.coupon { margin: 6px 0 2px; text-align: left; }
+.coupon summary { cursor: pointer; font-size: 14px; font-weight: 700; color: var(--fg-muted); letter-spacing: 0; }
+.coupon summary:hover { color: var(--heading); }
+.coupon-row { display: flex; gap: 8px; margin-top: 8px; }
+.coupon-row .pay-input { flex: 1; min-width: 0; min-height: 44px; font-size: 15px; }
+.coupon-msg { margin: 6px 0 0; font-size: 14px; color: var(--fg-muted); min-height: 1em; }
+.coupon-msg i { color: var(--green); }
+
+/* ---------- listen to a lesson ---------- */
+.listen { display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; vertical-align: middle; }
+.listen-btn, .listen-stop { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--heading); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+.listen-stop { padding: 4px 10px; }
+.listen-btn:hover, .listen-stop:hover, .listen-btn[aria-pressed=true] { border-color: var(--amber); }
+.listen-btn i { color: var(--amber-text); }
+.listen-rate { min-height: 32px; padding: 2px 6px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--fg); font: inherit; font-size: 13px; }
+
+/* ---------- WhatsApp updates ---------- */
+.wa-updates { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 18px 20px; border-radius: 16px; border: 1px solid var(--line); background: var(--card); }
+.wa-updates > i { font-size: 34px; color: #16a34a; }
+.wa-updates > div { flex: 1; min-width: 220px; }
+.wa-updates h2 { margin: 0 0 4px; font-size: 20px; }
+.wa-updates p { margin: 0; }
+.pay-input::placeholder { text-transform: none; }
