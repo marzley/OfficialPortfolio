@@ -21,6 +21,10 @@ Platform fees, connects/credits pricing and policies change. Check each platform
 - Platform rules that get accounts banned
 :::
 
+:::tip Full reviews
+For detailed reviews of 37 freelance platforms (fees, getting paid in Kenya, pros, cons and scams), see [Freelance platforms reviewed](./?track=freelance-platforms&lesson=freelance-platforms-start-here).
+:::
+
 ## How marketplaces work
 
 1. You create a **profile** (skills, portfolio, rates).

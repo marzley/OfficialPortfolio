@@ -9,6 +9,10 @@ A **freelance marketplace** connects you with clients who need work done, holds 
 
 > Fees and rules change: check each site's current fee page before you join.
 
+:::tip Full reviews
+For detailed reviews of 37 freelance platforms (fees, getting paid in Kenya, pros, cons and scams), see [Freelance platforms reviewed](./?track=freelance-platforms&lesson=freelance-platforms-start-here).
+:::
+
 ## General marketplaces (all skills)
 
 | Marketplace | How it works | Best for |
