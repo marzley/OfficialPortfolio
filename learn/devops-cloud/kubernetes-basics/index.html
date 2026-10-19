@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kubernetes basics: pods, deployments, services, scaling,…</title>
+    <meta name="description" content="Docker runs containers on one machine. When you have many containers across many servers, something must decide where they run, restart them when they…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/devops-cloud/kubernetes-basics/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Kubernetes basics: pods, deployments, services, scaling,…" />
+    <meta property="og:description" content="Docker runs containers on one machine. When you have many containers across many servers, something must decide where they run, restart them when they…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/devops-cloud/kubernetes-basics/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Kubernetes basics: pods, deployments, services, scaling,…" />
+    <meta name="twitter:description" content="Docker runs containers on one machine. When you have many containers across many servers, something must decide where they run, restart them when they…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/devops-cloud/kubernetes-basics/#lesson","name":"Kubernetes basics: pods, deployments, services, scaling, and when you don't need it","description":"Docker runs containers on one machine. When you have many containers across many servers, something must decide where they run, restart them when they…","url":"https://marzleytechsolutions.co.ke/learn/devops-cloud/kubernetes-basics/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/devops-cloud/#course","name":"DevOps & cloud: from zero to deploying and running real systems","url":"https://marzleytechsolutions.co.ke/learn/devops-cloud/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"DevOps & cloud: from zero to deploying and running real systems","item":"https://marzleytechsolutions.co.ke/learn/devops-cloud/"},{"@type":"ListItem","position":4,"name":"Kubernetes basics: pods, deployments, services, scaling, and when you don't need it","item":"https://marzleytechsolutions.co.ke/learn/devops-cloud/kubernetes-basics/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/devops-cloud/">DevOps &amp; cloud: from zero to deploying and running real systems</a> / <span>Kubernetes basics: pods, deployments, services, scaling, and when you don&#x27;t need it</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=devops-cloud&amp;lesson=kubernetes-basics"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Kubernetes basics: pods, deployments, services, scaling, and when you don't need it</h1>
+<p>Docker runs containers on one machine. When you have many containers across many servers, something must decide where they run, restart them when they crash, scale them up and down and route traffic to them. That's a <strong>container orchestrator</strong>, and <strong>Kubernetes</strong> (often written <strong>K8s</strong>) is the most widely used.</p>
+<h2>What Kubernetes does</h2>
+<ul><li><strong>Schedules</strong> containers onto servers (nodes) with enough capacity</li><li><strong>Self-heals:</strong> restarts crashed containers and replaces failed nodes</li><li><strong>Scales</strong> the number of copies up or down (manually or automatically)</li><li><strong>Rolls out</strong> new versions gradually and rolls back if needed</li><li><strong>Load balances</strong> traffic across healthy copies</li><li><strong>Manages configuration and secrets</strong></li></ul>
+<h2>Key objects</h2>
+<div class="static-table"><table><thead><tr><th>Object</th><th>What it is</th></tr></thead><tbody><tr><td><strong>Cluster</strong></td><td>A group of machines running Kubernetes</td></tr><tr><td><strong>Node</strong></td><td>One machine (virtual or physical) in the cluster</td></tr><tr><td><strong>Pod</strong></td><td>The smallest unit: one or more containers that run together</td></tr><tr><td><strong>Deployment</strong></td><td>Keeps a set number of identical pods running; handles updates</td></tr><tr><td><strong>Service</strong></td><td>A stable address that load-balances traffic to pods</td></tr><tr><td><strong>Ingress</strong></td><td>Routes outside HTTP/HTTPS traffic to services by domain or path</td></tr><tr><td><strong>ConfigMap / Secret</strong></td><td>Settings and sensitive values for pods</td></tr><tr><td><strong>Namespace</strong></td><td>A way to separate environments or teams in one cluster</td></tr></tbody></table></div>
+<h2>A deployment and a service (YAML)</h2>
+<figure class="static-code"><figcaption>YAML</figcaption><pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: shop-api
+  template:
+    metadata:
+      labels:
+        app: shop-api
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/marzley/shop-api:1.4.2
+          ports:
+            - containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+          resources:
+            requests: { cpu: &quot;100m&quot;, memory: &quot;128Mi&quot; }
+            limits: { cpu: &quot;500m&quot;, memory: &quot;256Mi&quot; }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shop-api
+spec:
+  selector:
+    app: shop-api
+  ports:
+    - port: 80
+      targetPort: 3000</code></pre></figure>
+<ul><li><strong>replicas: 3</strong> keeps three copies running; if one dies, Kubernetes starts another.</li><li>The <strong>readinessProbe</strong> stops traffic going to a pod until <code>/health</code> answers.</li><li><strong>resources</strong> tell Kubernetes how much CPU and memory each pod needs.</li><li>The <strong>Service</strong> gives the pods one stable name (<code>shop-api</code>) inside the cluster.</li></ul>
+<h2>Everyday kubectl commands</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">kubectl apply -f shop-api.yaml              # create or update
+kubectl get pods                            # list pods
+kubectl describe pod shop-api-7d9f...       # details and events (great for debugging)
+kubectl logs deploy/shop-api                # logs
+kubectl scale deploy/shop-api --replicas=5  # scale
+kubectl set image deploy/shop-api api=ghcr.io/marzley/shop-api:1.4.3   # update
+kubectl rollout undo deploy/shop-api        # roll back</code></pre></figure>
+<h2>Managed Kubernetes</h2>
+<p>Running Kubernetes yourself is hard. Most teams use a managed service where the provider runs the control plane:</p>
+<ul><li><strong>Amazon EKS</strong>, <strong>Azure Kubernetes Service (AKS)</strong>, <strong>Google Kubernetes Engine (GKE)</strong></li><li>Simpler providers also offer managed Kubernetes at lower prices.</li></ul>
+<p>Tools you'll meet: <strong>Helm</strong> (packages of Kubernetes YAML), <strong>Argo CD</strong> (GitOps: the cluster follows what's in Git), and the Kubernetes dashboard.</p>
+<h2>Do you even need Kubernetes?</h2>
+<div class="static-table"><table><thead><tr><th>You probably DON'T need Kubernetes if…</th><th>Kubernetes helps when…</th></tr></thead><tbody><tr><td>You have one or two apps and small traffic</td><td>You run many services with different teams</td></tr><tr><td>A single server or a PaaS works fine</td><td>You need automatic scaling and self-healing at scale</td></tr><tr><td>Your team is small and new to containers</td><td>You have people to run and secure it</td></tr></tbody></table></div>
+<p>Many Kenyan startups and SMEs run perfectly on a few servers, Docker Compose or a PaaS. Learn Kubernetes for your career, but choose it for a project only when it solves a real problem.</p>
+<h2>Practise safely</h2>
+<ul><li><strong>minikube</strong>, <strong>kind</strong> or <strong>k3d</strong> run a small cluster on your laptop.</li><li><strong>Killercoda</strong> and similar browser labs offer free Kubernetes scenarios.</li><li>Managed clusters cost money even when idle: delete practice clusters when you finish.</li></ul>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A pod keeps restarting every few seconds. How would you investigate?</span><em>Show answer</em></summary><div class="callout-body"><p>Run kubectl describe pod to read events (image pull errors, failed probes, out-of-memory kills), kubectl logs (and logs --previous) to see the crash message, check environment variables and secrets, resource limits, and whether the readiness/liveness probes point to the right path and port.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Kubernetes orchestrates containers across many machines: scheduling, healing, scaling and rollouts.</li><li>Key objects: pods, deployments, services, ingress, ConfigMaps, Secrets and namespaces.</li><li>kubectl applies YAML, inspects pods, reads logs, scales and rolls back.</li><li>Use managed Kubernetes (EKS, AKS, GKE) and only when the project really needs it.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the smallest deployable unit in Kubernetes? (one word)</p><details><summary>Show answer</summary><p>pod</p></details></li><li><p>Which object gives pods a stable address and load-balances to them? (one word)</p><details><summary>Show answer</summary><p>service</p></details></li><li><p>Which command rolls back a deployment? (write like kubectl rollout undo)</p><details><summary>Show answer</summary><p>kubectl rollout undo</p></details></li></ol></section></div><p class="static-meta">Lesson 7 of 14 in <a href="/learn/devops-cloud/">DevOps &amp; cloud: from zero to deploying and running real systems</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=devops-cloud">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/devops-cloud/docker-containers/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Docker and containers: images, Dockerfiles, volumes and Docker Compose</a><a class="btn btn-solid btn-sm" href="/learn/devops-cloud/infrastructure-as-code/">Infrastructure as code: Terraform and Ansible (servers built from files, not clicks) <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

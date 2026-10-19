@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cloud computing basics: IaaS, PaaS, SaaS, regions,…</title>
+    <meta name="description" content="Before using any cloud provider, understand the ideas they all share. These concepts also appear in every entry-level cloud certification." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/devops-cloud/cloud-computing-basics/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Cloud computing basics: IaaS, PaaS, SaaS, regions,…" />
+    <meta property="og:description" content="Before using any cloud provider, understand the ideas they all share. These concepts also appear in every entry-level cloud certification." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/devops-cloud/cloud-computing-basics/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Cloud computing basics: IaaS, PaaS, SaaS, regions,…" />
+    <meta name="twitter:description" content="Before using any cloud provider, understand the ideas they all share. These concepts also appear in every entry-level cloud certification." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/devops-cloud/cloud-computing-basics/#lesson","name":"Cloud computing basics: IaaS, PaaS, SaaS, regions, shared responsibility and pricing","description":"Before using any cloud provider, understand the ideas they all share. These concepts also appear in every entry-level cloud certification.","url":"https://marzleytechsolutions.co.ke/learn/devops-cloud/cloud-computing-basics/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/devops-cloud/#course","name":"DevOps & cloud: from zero to deploying and running real systems","url":"https://marzleytechsolutions.co.ke/learn/devops-cloud/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"DevOps & cloud: from zero to deploying and running real systems","item":"https://marzleytechsolutions.co.ke/learn/devops-cloud/"},{"@type":"ListItem","position":4,"name":"Cloud computing basics: IaaS, PaaS, SaaS, regions, shared responsibility and pricing","item":"https://marzleytechsolutions.co.ke/learn/devops-cloud/cloud-computing-basics/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/devops-cloud/">DevOps &amp; cloud: from zero to deploying and running real systems</a> / <span>Cloud computing basics: IaaS, PaaS, SaaS, regions, shared responsibility and pricing</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=devops-cloud&amp;lesson=cloud-computing-basics"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Cloud computing basics: IaaS, PaaS, SaaS, regions, shared responsibility and pricing</h1>
+<p>Before using any cloud provider, understand the ideas they all share. These concepts also appear in every entry-level cloud certification.</p>
+<h2>Why companies use the cloud</h2>
+<div class="static-table"><table><thead><tr><th>Benefit</th><th>Example</th></tr></thead><tbody><tr><td><strong>No upfront hardware</strong></td><td>A startup launches without buying servers</td></tr><tr><td><strong>Scale on demand</strong></td><td>An e-commerce site handles Black Friday traffic, then scales down</td></tr><tr><td><strong>Pay as you go</strong></td><td>Pay per hour, per GB or per request</td></tr><tr><td><strong>Global reach</strong></td><td>Serve users in Kenya, Europe and the US from nearby data centres</td></tr><tr><td><strong>Managed services</strong></td><td>The provider runs databases, backups and patches for you</td></tr><tr><td><strong>Reliability</strong></td><td>Run in several data centres so one failure doesn't take you down</td></tr></tbody></table></div>
+<h2>Service models: IaaS, PaaS, SaaS</h2>
+<p>Think of it like getting a meal:</p>
+<div class="static-table"><table><thead><tr><th>Model</th><th>You manage</th><th>Provider manages</th><th>Examples</th><th>Meal analogy</th></tr></thead><tbody><tr><td><strong>IaaS</strong> (Infrastructure)</td><td>OS, apps, data</td><td>Hardware, network, virtualisation</td><td>AWS EC2, Azure Virtual Machines, Google Compute Engine</td><td>Rent a kitchen; you cook</td></tr><tr><td><strong>PaaS</strong> (Platform)</td><td>Your code and data</td><td>Servers, OS, runtime</td><td>Azure App Service, Google App Engine, Heroku-style platforms</td><td>Order ingredients delivered; you assemble</td></tr><tr><td><strong>SaaS</strong> (Software)</td><td>Just your use and data</td><td>Everything else</td><td>Gmail, Microsoft 365, Zoom</td><td>Eat at a restaurant</td></tr></tbody></table></div>
+<p>Also common: <strong>serverless / FaaS</strong> (functions that run when triggered: AWS Lambda, Azure Functions, Google Cloud Functions) and <strong>containers as a service</strong>.</p>
+<h2>Deployment models</h2>
+<ul><li><strong>Public cloud:</strong> shared provider infrastructure (AWS, Azure, Google Cloud).</li><li><strong>Private cloud:</strong> infrastructure dedicated to one organisation (on-premises or hosted).</li><li><strong>Hybrid cloud:</strong> a mix, e.g. sensitive data on-premises, web apps in public cloud.</li><li><strong>Multi-cloud:</strong> using more than one provider.</li></ul>
+<h2>Regions and availability zones</h2>
+<ul><li>A <strong>region</strong> is a geographic area with data centres (for example, Cape Town, Johannesburg, Frankfurt, Ireland).</li><li>An <strong>availability zone (AZ)</strong> is one or more separate data centres within a region, with independent power and networking.</li><li>Running across <strong>several AZs</strong> keeps your app alive if one data centre fails.</li></ul>
+<p><strong>Choosing a region:</strong> closeness to users (lower latency), the services available there, price, and legal requirements on where data is stored.</p>
+<aside class="callout callout-kenya"><p class="callout-title">Data location and the law</p><div class="callout-body"><p>Kenya's Data Protection Act (2019) and its regulations set rules on processing personal data, including conditions for transferring it outside Kenya, and some sectors (government, health, finance) have extra requirements. Check the rules for your sector before choosing where to store personal data. Nairobi also has commercial data centres for organisations that need local hosting.</p></div></aside>
+<h2>The shared responsibility model</h2>
+<p>Security is shared between you and the provider:</p>
+<div class="static-table"><table><thead><tr><th>Provider is responsible for</th><th>You are responsible for</th></tr></thead><tbody><tr><td>Physical data centres, hardware, the cloud network</td><td>Your data, user accounts and passwords</td></tr><tr><td>The virtualisation layer</td><td>Configuring access (IAM), firewalls and encryption settings</td></tr><tr><td>Managed service infrastructure</td><td>Patching your own servers (in IaaS), your application code</td></tr></tbody></table></div>
+<p>Most cloud breaches come from <strong>customer mistakes</strong>: public storage buckets, leaked keys, weak passwords, no MFA.</p>
+<h2>How cloud pricing works</h2>
+<div class="static-table"><table><thead><tr><th>Pricing model</th><th>Meaning</th></tr></thead><tbody><tr><td><strong>On-demand / pay as you go</strong></td><td>Per second or hour, no commitment</td></tr><tr><td><strong>Reserved / savings plans</strong></td><td>Commit for 1–3 years for lower prices</td></tr><tr><td><strong>Spot / preemptible</strong></td><td>Cheap spare capacity that can be taken back at short notice</td></tr><tr><td><strong>Free tier</strong></td><td>Limited free usage to learn (rules differ per provider; check them)</td></tr></tbody></table></div>
+<p>Common costs: compute hours, storage per GB per month, <strong>data transfer out</strong> (often forgotten), managed databases, and IP addresses.</p>
+<h2>Estimate a monthly bill (run it)</h2>
+<p>The prices below are made-up examples for practice only. Real prices differ by provider and region; use each provider's pricing calculator.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">hours_per_month = 730
+server_per_hour = 0.02        # USD, example only
+storage_gb, storage_per_gb = 50, 0.10
+data_out_gb, data_out_per_gb = 100, 0.09
+
+compute = server_per_hour * hours_per_month
+storage = storage_gb * storage_per_gb
+transfer = data_out_gb * data_out_per_gb
+total = compute + storage + transfer
+kes_rate = 129                # example exchange rate
+
+print(f&quot;Compute:  ${compute:.2f}&quot;)
+print(f&quot;Storage:  ${storage:.2f}&quot;)
+print(f&quot;Transfer: ${transfer:.2f}&quot;)
+print(f&quot;Total:    ${total:.2f}  (about KSh {total * kes_rate:,.0f})&quot;)</code></pre></figure>
+<p>Try doubling the data transfer, or running two servers, and see how the bill changes.</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A school wants its student portal to keep working even if one data centre loses power. What should it ask its cloud team to do?</span><em>Show answer</em></summary><div class="callout-body"><p>Run the application across at least two availability zones in a region, with a load balancer in front and a database that has a standby copy in another zone, plus regular backups (ideally stored in another region). Test that failover actually works.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Cloud gives on-demand, pay-as-you-go computing with managed services and global reach.</li><li>IaaS, PaaS and SaaS differ in how much you manage; serverless runs code on demand.</li><li>Regions contain availability zones; spread across zones for reliability; consider data laws.</li><li>Security is shared; most breaches come from customer misconfigurations. Watch data transfer costs.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Gmail is an example of which service model? (abbreviation)</p><details><summary>Show answer</summary><p>saas</p></details></li><li><p>What is a separate data centre inside a region called? (two words: availability ___)</p><details><summary>Show answer</summary><p>zone</p></details></li><li><p>Under the shared responsibility model, who configures your user access: you or the provider? (one word)</p><details><summary>Show answer</summary><p>you</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 14 in <a href="/learn/devops-cloud/">DevOps &amp; cloud: from zero to deploying and running real systems</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=devops-cloud">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/devops-cloud/devops-cloud-start-here/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Start here: what DevOps and cloud engineers do, and your roadmap</a><a class="btn btn-solid btn-sm" href="/learn/devops-cloud/linux-servers-devops/">Linux servers for DevOps: SSH keys, users, services, logs, updates and firewalls <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Monitoring, logging and reliability: metrics, alerts,…</title>
+    <meta name="description" content="Deploying is the beginning. Users expect services to work all the time, and when they don&#x27;t, you need to know before customers start calling…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/devops-cloud/monitoring-reliability/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Monitoring, logging and reliability: metrics, alerts,…" />
+    <meta property="og:description" content="Deploying is the beginning. Users expect services to work all the time, and when they don&#x27;t, you need to know before customers start calling…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/devops-cloud/monitoring-reliability/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Monitoring, logging and reliability: metrics, alerts,…" />
+    <meta name="twitter:description" content="Deploying is the beginning. Users expect services to work all the time, and when they don&#x27;t, you need to know before customers start calling…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/devops-cloud/monitoring-reliability/#lesson","name":"Monitoring, logging and reliability: metrics, alerts, SLOs, incidents and backups","description":"Deploying is the beginning. Users expect services to work all the time, and when they don't, you need to know before customers start calling…","url":"https://marzleytechsolutions.co.ke/learn/devops-cloud/monitoring-reliability/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/devops-cloud/#course","name":"DevOps & cloud: from zero to deploying and running real systems","url":"https://marzleytechsolutions.co.ke/learn/devops-cloud/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"DevOps & cloud: from zero to deploying and running real systems","item":"https://marzleytechsolutions.co.ke/learn/devops-cloud/"},{"@type":"ListItem","position":4,"name":"Monitoring, logging and reliability: metrics, alerts, SLOs, incidents and backups","item":"https://marzleytechsolutions.co.ke/learn/devops-cloud/monitoring-reliability/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/devops-cloud/">DevOps &amp; cloud: from zero to deploying and running real systems</a> / <span>Monitoring, logging and reliability: metrics, alerts, SLOs, incidents and backups</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=devops-cloud&amp;lesson=monitoring-reliability"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Monitoring, logging and reliability: metrics, alerts, SLOs, incidents and backups</h1>
+<p>Deploying is the beginning. Users expect services to work all the time, and when they don't, you need to know before customers start calling. Monitoring and reliability practices are the core of <strong>site reliability engineering (SRE)</strong>.</p>
+<h2>The three pillars of observability</h2>
+<div class="static-table"><table><thead><tr><th>Pillar</th><th>What it is</th><th>Example</th></tr></thead><tbody><tr><td><strong>Metrics</strong></td><td>Numbers over time</td><td>CPU 85%, 120 requests per second, 2% errors</td></tr><tr><td><strong>Logs</strong></td><td>Event records with details</td><td>"Payment callback failed: timeout after 30s"</td></tr><tr><td><strong>Traces</strong></td><td>The path of one request through many services</td><td>Checkout took 4s: 3.2s waiting for the payment API</td></tr></tbody></table></div>
+<h2>What to monitor: the golden signals</h2>
+<ol><li><strong>Latency:</strong> how long requests take</li><li><strong>Traffic:</strong> how many requests</li><li><strong>Errors:</strong> the share of failed requests</li><li><strong>Saturation:</strong> how full resources are (CPU, memory, disk, database connections)</li></ol>
+<p>Also: uptime from outside, SSL certificate expiry, backups succeeding, queue lengths and business metrics (orders per hour, M-Pesa payments confirmed).</p>
+<h2>Popular tools</h2>
+<div class="static-table"><table><thead><tr><th>Tool</th><th>Use</th></tr></thead><tbody><tr><td><strong>Prometheus</strong> + <strong>Grafana</strong></td><td>Open-source metrics collection and dashboards</td></tr><tr><td><strong>Loki</strong> / <strong>ELK</strong> (Elasticsearch, Logstash, Kibana) / <strong>OpenSearch</strong></td><td>Collecting and searching logs</td></tr><tr><td><strong>OpenTelemetry</strong></td><td>A standard way to produce metrics, logs and traces</td></tr><tr><td>Cloud tools: CloudWatch, Azure Monitor, Google Cloud Monitoring</td><td>Built into each provider</td></tr><tr><td>Uptime monitors (many free plans)</td><td>External checks and alerts</td></tr><tr><td>Datadog, New Relic and similar</td><td>Commercial all-in-one platforms</td></tr></tbody></table></div>
+<h2>Good alerts</h2>
+<p>Alert fatigue is real: too many alerts and people ignore them.</p>
+<ul><li><strong>Alert on symptoms users feel</strong> (site down, errors above 5%, checkout slow), not every CPU spike.</li><li><strong>Every alert needs an action.</strong> If nobody needs to do anything, it's a dashboard, not an alert.</li><li><strong>Send alerts where people see them:</strong> SMS, WhatsApp/Telegram bots, Slack, phone calls for critical issues.</li><li>Write a short <strong>runbook</strong> for each alert: what it means, how to check and how to fix.</li></ul>
+<h2>SLIs, SLOs and error budgets</h2>
+<ul><li><strong>SLI (service level indicator):</strong> a measurement, e.g. the % of successful requests.</li><li><strong>SLO (service level objective):</strong> a target, e.g. 99.9% of requests succeed each month.</li><li><strong>SLA (service level agreement):</strong> a promise to customers, often with penalties.</li><li><strong>Error budget:</strong> the allowed failure. 99.9% availability allows about 43 minutes of downtime in a 30-day month.</li></ul>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">minutes_per_month = 30 * 24 * 60
+for slo in [99.0, 99.5, 99.9, 99.95, 99.99]:
+    allowed = minutes_per_month * (100 - slo) / 100
+    print(f&quot;{slo}% availability -&gt; {allowed:,.1f} minutes of downtime allowed per month&quot;)</code></pre></figure>
+<p>Each extra "nine" is much harder and more expensive. Choose targets that match what users actually need.</p>
+<h2>Incident response</h2>
+<p>When something breaks:</p>
+<ol><li><strong>Detect:</strong> an alert or a user report.</li><li><strong>Communicate:</strong> tell the team and, if needed, users ("We're investigating slow payments").</li><li><strong>Mitigate first:</strong> roll back, restart, scale up, switch to backup. Restore service before finding the root cause.</li><li><strong>Resolve:</strong> fix the underlying problem.</li><li><strong>Post-incident review (blameless):</strong> what happened, why, how we detected it, and what we'll change. Focus on systems, not blaming people.</li></ol>
+<h2>Backups and disaster recovery</h2>
+<ul><li><strong>RPO (recovery point objective):</strong> how much data you can afford to lose (e.g. 1 hour).</li><li><strong>RTO (recovery time objective):</strong> how long you can be down (e.g. 4 hours).</li><li>The <strong>3-2-1 rule:</strong> 3 copies of data, on 2 different types of storage, 1 off-site.</li><li>Automate backups, keep copies in another region or provider, and <strong>test restores regularly</strong>.</li></ul>
+<aside class="callout callout-kenya"><p class="callout-title">Local realities</p><div class="callout-body"><p>Plan for power and internet interruptions at offices and on-premises servers (UPS, generators, backup internet). Payment integrations like M-Pesa depend on external APIs: monitor callbacks and have a way to reconcile payments if callbacks fail.</p></div></aside>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> At 9am on a Monday, checkout errors jump to 30%. You deployed a new version at 8:50am. What do you do first?</span><em>Show answer</em></summary><div class="callout-body"><p>Mitigate first: roll back to the previous version immediately (or switch off the new feature flag), confirm errors drop, and tell stakeholders. Then investigate the cause in logs and traces in a safe environment, fix it, add a test, and hold a blameless review.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Observability: metrics, logs and traces. Watch latency, traffic, errors and saturation.</li><li>Alert on user-facing symptoms; every alert needs an action and a runbook.</li><li>SLIs measure, SLOs set targets, error budgets allow some failure; each extra "nine" costs more.</li><li>In incidents, mitigate first, then fix and review blamelessly. Back up with 3-2-1 and test restores.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Name the three pillars of observability: metrics, logs and ___ (one word)</p><details><summary>Show answer</summary><p>traces</p></details></li><li><p>In incidents, what comes first: mitigate or find the root cause? (one word)</p><details><summary>Show answer</summary><p>mitigate</p></details></li><li><p>In the 3-2-1 backup rule, how many copies should be off-site? (a number)</p><details><summary>Show answer</summary><p>1</p></details></li></ol></section></div><p class="static-meta">Lesson 11 of 14 in <a href="/learn/devops-cloud/">DevOps &amp; cloud: from zero to deploying and running real systems</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=devops-cloud">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/devops-cloud/deploy-real-app/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Project: deploy a real web app with Docker, Nginx, HTTPS and automatic deploys</a><a class="btn btn-solid btn-sm" href="/learn/devops-cloud/cloud-security/">Cloud and DevOps security: IAM, MFA, secrets, encryption and secure pipelines <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Docker and containers: images, Dockerfiles, volumes and…</title>
+    <meta name="description" content="&quot;It works on my machine&quot; is the oldest excuse in software. Containers fix it: they package an app with everything it needs (runtime, libraries…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/devops-cloud/docker-containers/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Docker and containers: images, Dockerfiles, volumes and…" />
+    <meta property="og:description" content="&quot;It works on my machine&quot; is the oldest excuse in software. Containers fix it: they package an app with everything it needs (runtime, libraries…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/devops-cloud/docker-containers/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Docker and containers: images, Dockerfiles, volumes and…" />
+    <meta name="twitter:description" content="&quot;It works on my machine&quot; is the oldest excuse in software. Containers fix it: they package an app with everything it needs (runtime, libraries…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/devops-cloud/docker-containers/#lesson","name":"Docker and containers: images, Dockerfiles, volumes and Docker Compose","description":"\"It works on my machine\" is the oldest excuse in software. Containers fix it: they package an app with everything it needs (runtime, libraries…","url":"https://marzleytechsolutions.co.ke/learn/devops-cloud/docker-containers/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/devops-cloud/#course","name":"DevOps & cloud: from zero to deploying and running real systems","url":"https://marzleytechsolutions.co.ke/learn/devops-cloud/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"DevOps & cloud: from zero to deploying and running real systems","item":"https://marzleytechsolutions.co.ke/learn/devops-cloud/"},{"@type":"ListItem","position":4,"name":"Docker and containers: images, Dockerfiles, volumes and Docker Compose","item":"https://marzleytechsolutions.co.ke/learn/devops-cloud/docker-containers/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/devops-cloud/">DevOps &amp; cloud: from zero to deploying and running real systems</a> / <span>Docker and containers: images, Dockerfiles, volumes and Docker Compose</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=devops-cloud&amp;lesson=docker-containers"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Docker and containers: images, Dockerfiles, volumes and Docker Compose</h1>
+<p>"It works on my machine" is the oldest excuse in software. <strong>Containers</strong> fix it: they package an app with everything it needs (runtime, libraries, settings) so it runs the same on your laptop, a test server and the cloud. <strong>Docker</strong> is the most popular container tool.</p>
+<h2>Containers vs virtual machines</h2>
+<div class="static-table"><table><thead><tr><th></th><th>Virtual machine</th><th>Container</th></tr></thead><tbody><tr><td>Includes</td><td>A full operating system</td><td>Just the app and its dependencies (shares the host's kernel)</td></tr><tr><td>Size</td><td>Gigabytes</td><td>Often tens or hundreds of megabytes</td></tr><tr><td>Start time</td><td>Minutes</td><td>Seconds</td></tr><tr><td>Use</td><td>Full isolation, different OSes</td><td>Packaging and running apps consistently</td></tr></tbody></table></div>
+<h2>Key words</h2>
+<ul><li><strong>Image:</strong> a read-only template (like a recipe) for a container, e.g. <code>nginx</code>, <code>node:20</code>, <code>mysql:8</code>.</li><li><strong>Container:</strong> a running instance of an image (the meal cooked from the recipe).</li><li><strong>Dockerfile:</strong> instructions to build your own image.</li><li><strong>Registry:</strong> where images are stored and shared (Docker Hub, GitHub Container Registry, cloud registries).</li><li><strong>Volume:</strong> storage that survives when a container is deleted (for databases and uploads).</li></ul>
+<h2>First commands</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">docker run -d -p 8080:80 --name web nginx    # run Nginx; open http://localhost:8080
+docker ps                                     # running containers
+docker logs web                               # its logs
+docker exec -it web sh                        # a shell inside the container
+docker stop web &amp;&amp; docker rm web              # stop and remove
+docker images                                 # images on your machine</code></pre></figure>
+<p><code>-p 8080:80</code> maps port 8080 on your computer to port 80 inside the container.</p>
+<h2>Write a Dockerfile</h2>
+<p>For a small Node.js app:</p>
+<figure class="static-code"><figcaption>DOCKERFILE</figcaption><pre><code class="language-dockerfile"># Start from an official, small base image
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install dependencies first (better caching)
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+# Copy the rest of the code
+COPY . .
+
+# Don&#x27;t run as root
+USER node
+
+EXPOSE 3000
+CMD [&quot;node&quot;, &quot;server.js&quot;]</code></pre></figure>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">docker build -t mpesa-receipts:1.0 .
+docker run -d -p 3000:3000 --env-file .env mpesa-receipts:1.0</code></pre></figure>
+<p>Add a <code>.dockerignore</code> file (like <code>.gitignore</code>) listing <code>node_modules</code>, <code>.git</code> and <code>.env</code> so they aren't copied into the image.</p>
+<h2>Docker Compose: several containers together</h2>
+<p>Most apps need more than one service: the app, a database, maybe a cache. <strong>Docker Compose</strong> describes them in one file:</p>
+<figure class="static-code"><figcaption>YAML</figcaption><pre><code class="language-yaml"># compose.yaml
+services:
+  app:
+    build: .
+    ports:
+      - &quot;3000:3000&quot;
+    environment:
+      DB_HOST: db
+      DB_NAME: shop
+      DB_USER: shop
+      DB_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - db
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: shop
+      MYSQL_USER: shop
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+volumes:
+  db_data:</code></pre></figure>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">docker compose up -d        # start everything
+docker compose logs -f app  # follow logs
+docker compose down         # stop (the volume keeps your data)</code></pre></figure>
+<p>The app reaches the database at the hostname <code>db</code>: Compose creates a private network where services find each other by name. Passwords come from a <code>.env</code> file that isn't committed to Git.</p>
+<h2>Good practices</h2>
+<ol><li>Use <strong>official, small</strong> base images (alpine or slim variants) and pin versions (<code>node:20-alpine</code>, not <code>latest</code>).</li><li><strong>One process per container</strong> (app, database and cache in separate containers).</li><li><strong>Never put secrets in images</strong>; pass them as environment variables or secrets at runtime.</li><li>Run as a <strong>non-root user</strong>.</li><li>Store data in <strong>volumes</strong> (containers are disposable).</li><li><strong>Scan images</strong> for vulnerabilities (e.g. <code>docker scout</code>, Trivy) in CI.</li><li>Tag images with versions or Git commit IDs so you can roll back.</li></ol>
+<h2>Containers in CI/CD</h2>
+<p>A typical pipeline: run tests → <code>docker build</code> → push the image to a registry → deploy that exact image to staging, then production. The same image runs everywhere, so what you tested is what goes live.</p>
+<aside class="callout callout-tip"><p class="callout-title">Practise for free</p><div class="callout-body"><p>Play with Docker (labs.play-with-docker.com) gives temporary Docker playgrounds in the browser. Docker Desktop runs on Windows and Mac; on Linux, install Docker Engine. GitHub Codespaces also includes Docker.</p></div></aside>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> You delete and recreate your database container, and all the shop's orders are gone. What went wrong and how do you prevent it?</span><em>Show answer</em></summary><div class="callout-body"><p>The data was stored inside the container's own filesystem, which is deleted with the container. Store database data in a named volume (or a managed database service), and take regular backups that are tested by restoring them.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Containers package apps with their dependencies so they run the same everywhere.</li><li>Images are templates; containers are running instances; Dockerfiles build images; registries store them.</li><li>Docker Compose runs multi-container apps from one file; services reach each other by name.</li><li>Use small official images, no secrets in images, non-root users, volumes for data and version tags.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is a running instance of an image called? (one word)</p><details><summary>Show answer</summary><p>container</p></details></li><li><p>Which file contains instructions to build a Docker image? (one word)</p><details><summary>Show answer</summary><p>dockerfile</p></details></li><li><p>Where should database data be stored so it survives deleting the container? (one word)</p><details><summary>Show answer</summary><p>volume</p></details></li></ol></section></div><p class="static-meta">Lesson 6 of 14 in <a href="/learn/devops-cloud/">DevOps &amp; cloud: from zero to deploying and running real systems</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=devops-cloud">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/devops-cloud/ci-cd-pipelines/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Git workflows and CI/CD pipelines: automatic testing and deployment with GitHub Actions</a><a class="btn btn-solid btn-sm" href="/learn/devops-cloud/kubernetes-basics/">Kubernetes basics: pods, deployments, services, scaling, and when you don&#x27;t need it <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Git workflows and CI/CD pipelines: automatic testing and…</title>
+    <meta name="description" content="CI/CD is the heart of DevOps. Every time someone pushes code, a pipeline automatically builds it, tests it and (if everything passes) deploys it. Teams…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/devops-cloud/ci-cd-pipelines/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Git workflows and CI/CD pipelines: automatic testing and…" />
+    <meta property="og:description" content="CI/CD is the heart of DevOps. Every time someone pushes code, a pipeline automatically builds it, tests it and (if everything passes) deploys it. Teams…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/devops-cloud/ci-cd-pipelines/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Git workflows and CI/CD pipelines: automatic testing and…" />
+    <meta name="twitter:description" content="CI/CD is the heart of DevOps. Every time someone pushes code, a pipeline automatically builds it, tests it and (if everything passes) deploys it. Teams…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/devops-cloud/ci-cd-pipelines/#lesson","name":"Git workflows and CI/CD pipelines: automatic testing and deployment with GitHub Actions","description":"CI/CD is the heart of DevOps. Every time someone pushes code, a pipeline automatically builds it, tests it and (if everything passes) deploys it. Teams…","url":"https://marzleytechsolutions.co.ke/learn/devops-cloud/ci-cd-pipelines/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/devops-cloud/#course","name":"DevOps & cloud: from zero to deploying and running real systems","url":"https://marzleytechsolutions.co.ke/learn/devops-cloud/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"DevOps & cloud: from zero to deploying and running real systems","item":"https://marzleytechsolutions.co.ke/learn/devops-cloud/"},{"@type":"ListItem","position":4,"name":"Git workflows and CI/CD pipelines: automatic testing and deployment with GitHub Actions","item":"https://marzleytechsolutions.co.ke/learn/devops-cloud/ci-cd-pipelines/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/devops-cloud/">DevOps &amp; cloud: from zero to deploying and running real systems</a> / <span>Git workflows and CI/CD pipelines: automatic testing and deployment with GitHub Actions</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=devops-cloud&amp;lesson=ci-cd-pipelines"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Git workflows and CI/CD pipelines: automatic testing and deployment with GitHub Actions</h1>
+<p><strong>CI/CD</strong> is the heart of DevOps. Every time someone pushes code, a pipeline automatically builds it, tests it and (if everything passes) deploys it. Teams that do this release small changes often, with fewer disasters. You met GitHub Actions in the <a href="/learn/git/github-actions-ci/">Git subject</a>; here we build full pipelines.</p>
+<h2>A team Git workflow</h2>
+<ol><li><code>main</code> always holds working, deployable code.</li><li>For each change, create a <strong>branch</strong>: <code>git switch -c feature/mpesa-receipts</code>.</li><li>Commit small, clear changes; push the branch.</li><li>Open a <strong>pull request (PR)</strong>; CI runs automatically.</li><li>A teammate <strong>reviews</strong>; fix comments.</li><li><strong>Merge</strong> when tests pass and the review is approved.</li><li>CD deploys <code>main</code> automatically (or after approval).</li></ol>
+<p>Protect <code>main</code> in your repository settings: require PRs, passing checks and at least one review.</p>
+<h2>CI, continuous delivery and continuous deployment</h2>
+<div class="static-table"><table><thead><tr><th>Term</th><th>Meaning</th></tr></thead><tbody><tr><td><strong>Continuous integration (CI)</strong></td><td>Every change is built and tested automatically</td></tr><tr><td><strong>Continuous delivery</strong></td><td>Every passing change is ready to deploy; a person clicks "deploy"</td></tr><tr><td><strong>Continuous deployment</strong></td><td>Every passing change is deployed automatically</td></tr></tbody></table></div>
+<h2>A CI pipeline (GitHub Actions)</h2>
+<p>Save as <code>.github/workflows/ci.yml</code>:</p>
+<figure class="static-code"><figcaption>YAML</figcaption><pre><code class="language-yaml">name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test</code></pre></figure>
+<ul><li><strong>on:</strong> when the workflow runs (every PR and every push to main).</li><li><strong>jobs → steps:</strong> commands that run on a fresh Ubuntu machine.</li><li>If any step fails, the PR shows a red cross and shouldn't be merged.</li></ul>
+<h2>Adding deployment (CD)</h2>
+<p>A common pattern: when <code>main</code> changes and tests pass, deploy to the server over SSH.</p>
+<figure class="static-code"><figcaption>YAML</figcaption><pre><code class="language-yaml">  deploy:
+    needs: test
+    if: github.ref == &#x27;refs/heads/main&#x27;
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy over SSH
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          echo &quot;$SSH_KEY&quot; &gt; ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H &quot;$HOST&quot; &gt;&gt; ~/.ssh/known_hosts
+          rsync -az --delete --exclude &quot;.git&quot; ./ deploy@&quot;$HOST&quot;:/var/www/myapp/
+          ssh deploy@&quot;$HOST&quot; &quot;sudo systemctl restart myapp&quot;</code></pre></figure>
+<ul><li><strong>needs: test</strong> means deploy only runs if tests passed.</li><li><strong>Secrets</strong> (SSH key, host) are stored in repository settings, never in the code.</li><li><strong>environment: production</strong> can require a manual approval before deploying.</li></ul>
+<p>Other popular CI/CD tools: GitLab CI/CD, Jenkins, Azure Pipelines, CircleCI, and the deploy pipelines built into platforms.</p>
+<h2>Deployment strategies</h2>
+<div class="static-table"><table><thead><tr><th>Strategy</th><th>How</th><th>Benefit</th></tr></thead><tbody><tr><td><strong>Rolling</strong></td><td>Update servers one by one</td><td>No downtime</td></tr><tr><td><strong>Blue-green</strong></td><td>Run the new version beside the old; switch traffic over</td><td>Instant rollback</td></tr><tr><td><strong>Canary</strong></td><td>Send a small % of users to the new version first</td><td>Catch problems early</td></tr><tr><td><strong>Feature flags</strong></td><td>Ship code switched off; turn it on gradually</td><td>Separate deploys from releases</td></tr></tbody></table></div>
+<p>Always have a <strong>rollback plan</strong>: redeploy the previous version quickly.</p>
+<h2>What a good pipeline checks</h2>
+<ol><li>Code formatting and linting</li><li>Unit tests</li><li>Security checks (dependency vulnerabilities, secret scanning)</li><li>Build (and build a Docker image, lesson 6)</li><li>Deploy to a <strong>staging</strong> environment, run smoke tests</li><li>Deploy to <strong>production</strong>, with monitoring</li></ol>
+<aside class="callout callout-warning"><p class="callout-title">Secrets in pipelines</p><div class="callout-body"><p>Never print secrets in logs, never commit <code>.env</code> files, and give pipeline credentials the least access they need. Rotate keys if they leak. M-Pesa and payment keys belong in secret stores, not in code.</p></div></aside>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> Tests pass on a developer's laptop but fail in CI. Why might that happen, and why is that actually useful?</span><em>Show answer</em></summary><div class="callout-body"><p>Differences in environment: missing dependencies not listed in package files, different versions, environment variables only set locally, files not committed, or tests depending on local data or time zones. CI's clean machine exposes these hidden assumptions before they break production.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Work in branches and pull requests; protect <code>main</code>.</li><li>CI builds and tests every change; CD deploys passing changes (with or without a manual click).</li><li>GitHub Actions workflows live in <code>.github/workflows/*.yml</code>; store credentials in secrets.</li><li>Use safe deployment strategies (rolling, blue-green, canary) and always plan a rollback.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>In which folder do GitHub Actions workflow files live? (write it like .github/workflows)</p><details><summary>Show answer</summary><p>.github/workflows</p></details></li><li><p>Which deployment strategy sends a small share of users to the new version first? (one word)</p><details><summary>Show answer</summary><p>canary</p></details></li><li><p>Should secrets be written directly in workflow files? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 14 in <a href="/learn/devops-cloud/">DevOps &amp; cloud: from zero to deploying and running real systems</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=devops-cloud">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/devops-cloud/cloud-networking/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Cloud networking: VPCs, subnets, security groups, DNS, load balancers and HTTPS</a><a class="btn btn-solid btn-sm" href="/learn/devops-cloud/docker-containers/">Docker and containers: images, Dockerfiles, volumes and Docker Compose <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

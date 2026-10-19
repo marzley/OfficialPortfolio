@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cloud and DevOps security: IAM, MFA, secrets, encryption…</title>
+    <meta name="description" content="Most cloud breaches aren&#x27;t clever hacks: they&#x27;re leaked keys, public storage, missing MFA and over-powerful accounts. A few disciplined habits prevent…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/devops-cloud/cloud-security/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Cloud and DevOps security: IAM, MFA, secrets, encryption…" />
+    <meta property="og:description" content="Most cloud breaches aren&#x27;t clever hacks: they&#x27;re leaked keys, public storage, missing MFA and over-powerful accounts. A few disciplined habits prevent…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/devops-cloud/cloud-security/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Cloud and DevOps security: IAM, MFA, secrets, encryption…" />
+    <meta name="twitter:description" content="Most cloud breaches aren&#x27;t clever hacks: they&#x27;re leaked keys, public storage, missing MFA and over-powerful accounts. A few disciplined habits prevent…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/devops-cloud/cloud-security/#lesson","name":"Cloud and DevOps security: IAM, MFA, secrets, encryption and secure pipelines","description":"Most cloud breaches aren't clever hacks: they're leaked keys, public storage, missing MFA and over-powerful accounts. A few disciplined habits prevent…","url":"https://marzleytechsolutions.co.ke/learn/devops-cloud/cloud-security/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/devops-cloud/#course","name":"DevOps & cloud: from zero to deploying and running real systems","url":"https://marzleytechsolutions.co.ke/learn/devops-cloud/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"DevOps & cloud: from zero to deploying and running real systems","item":"https://marzleytechsolutions.co.ke/learn/devops-cloud/"},{"@type":"ListItem","position":4,"name":"Cloud and DevOps security: IAM, MFA, secrets, encryption and secure pipelines","item":"https://marzleytechsolutions.co.ke/learn/devops-cloud/cloud-security/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/devops-cloud/">DevOps &amp; cloud: from zero to deploying and running real systems</a> / <span>Cloud and DevOps security: IAM, MFA, secrets, encryption and secure pipelines</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=devops-cloud&amp;lesson=cloud-security"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Cloud and DevOps security: IAM, MFA, secrets, encryption and secure pipelines</h1>
+<p>Most cloud breaches aren't clever hacks: they're leaked keys, public storage, missing MFA and over-powerful accounts. A few disciplined habits prevent most of them. (For general security, see the <a href="/learn/cybersecurity/basics/">Cybersecurity subject</a>.)</p>
+<h2>1. Protect the root account</h2>
+<ul><li>The <strong>root/owner account</strong> can do anything, including deleting everything and running up huge bills.</li><li>Turn on <strong>MFA</strong> (an authenticator app or security key) immediately.</li><li>Don't use root for daily work; create named admin users or use single sign-on.</li><li>Store recovery details safely.</li></ul>
+<h2>2. Identity and access management (IAM)</h2>
+<ul><li><strong>Least privilege:</strong> give each person, app and pipeline only the permissions they need.</li><li>Use <strong>roles and groups</strong>, not permissions on individual users.</li><li>Prefer <strong>short-lived credentials</strong> (roles, single sign-on, OIDC for CI/CD) over long-lived access keys.</li><li><strong>Review access regularly</strong> and remove people who leave immediately.</li></ul>
+<figure class="static-code"><figcaption>JSON</figcaption><pre><code class="language-json">{
+  &quot;Version&quot;: &quot;2012-10-17&quot;,
+  &quot;Statement&quot;: [{
+    &quot;Effect&quot;: &quot;Allow&quot;,
+    &quot;Action&quot;: [&quot;s3:PutObject&quot;],
+    &quot;Resource&quot;: &quot;arn:aws:s3:::marzley-shop-backups-2026/*&quot;
+  }]
+}</code></pre></figure>
+<p>This example AWS policy lets a backup job <strong>only upload</strong> files to one bucket: nothing else.</p>
+<h2>3. Secrets management</h2>
+<div class="static-table"><table><thead><tr><th>Don't</th><th>Do</th></tr></thead><tbody><tr><td>Put passwords and API keys in code or Git</td><td>Use a secrets manager (AWS Secrets Manager, Azure Key Vault, Google Secret Manager, Vault)</td></tr><tr><td>Share keys on WhatsApp or email</td><td>Share access through roles and the secrets manager</td></tr><tr><td>Keep the same key for years</td><td>Rotate keys regularly and immediately if leaked</td></tr><tr><td>Print secrets in logs</td><td>Mask them in CI/CD logs</td></tr></tbody></table></div>
+<p>Turn on <strong>secret scanning</strong> in GitHub. If a key leaks: revoke it first, then investigate.</p>
+<h2>4. Network security</h2>
+<ul><li>Private subnets for databases and internal services (lesson 4).</li><li>Security groups that allow only required ports from required sources.</li><li>No SSH open to the world; use bastion hosts or the provider's session manager.</li><li>A <strong>WAF</strong> (web application firewall) and DDoS protection for public sites, where it's justified.</li></ul>
+<h2>5. Encryption</h2>
+<ul><li><strong>In transit:</strong> HTTPS/TLS everywhere, including between services where possible.</li><li><strong>At rest:</strong> turn on encryption for disks, databases, object storage and backups (often one setting, with provider-managed keys).</li></ul>
+<h2>6. Storage buckets</h2>
+<ul><li><strong>Block public access</strong> by default (account-wide settings exist).</li><li>Share specific files with time-limited signed URLs instead of making buckets public.</li></ul>
+<h2>7. Secure pipelines (DevSecOps)</h2>
+<p>Add security checks to CI/CD:</p>
+<ul><li><strong>Dependency scanning</strong> for known vulnerabilities</li><li><strong>Container image scanning</strong></li><li><strong>Static analysis</strong> of code</li><li><strong>IaC scanning</strong> (catch public buckets and open ports before they're created)</li><li><strong>Signed and pinned</strong> third-party actions and base images</li></ul>
+<h2>8. Logging and detection</h2>
+<ul><li>Turn on <strong>audit logs</strong> (AWS CloudTrail, Azure Activity Log, Google Cloud Audit Logs).</li><li>Alert on risky events: root logins, new admin users, disabled logging, unusual regions or spending spikes.</li><li>Use the provider's security recommendations dashboard.</li></ul>
+<h2>9. Compliance</h2>
+<p>Know the rules for the data you handle: Kenya's Data Protection Act, sector rules (banking, health, government), and standards like ISO 27001 or PCI DSS for card payments.</p>
+<aside class="callout callout-warning"><p class="callout-title">A leaked key costs money fast</p><div class="callout-body"><p>Attackers scan public GitHub repositories for cloud keys and use them within minutes, often to run cryptocurrency miners on your account. If you ever push a key, revoke it immediately; deleting the commit isn't enough.</p></div></aside>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A developer's laptop with saved cloud access keys is stolen. What should the team do?</span><em>Show answer</em></summary><div class="callout-body"><p>Immediately revoke and rotate all keys and sessions from that laptop, check audit logs for unusual activity since the theft, review billing for spikes, and reset passwords with MFA. Long term: use short-lived credentials and single sign-on with MFA, and encrypt laptops.</p></div></details>
+<h2>Summary</h2>
+<ul><li>MFA on everything, especially the root account; don't use root daily.</li><li>Least-privilege IAM with roles and short-lived credentials.</li><li>Secrets in a secrets manager, never in code; rotate and scan.</li><li>Private networks, encryption in transit and at rest, no public buckets, security checks in CI/CD and audit logs with alerts.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does MFA stand for? (three words)</p><details><summary>Show answer</summary><p>multi-factor authentication</p></details></li><li><p>Giving only the permissions needed is the principle of least ___ (one word)</p><details><summary>Show answer</summary><p>privilege</p></details></li><li><p>If a key leaks on GitHub, is deleting the commit enough? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 12 of 14 in <a href="/learn/devops-cloud/">DevOps &amp; cloud: from zero to deploying and running real systems</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=devops-cloud">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/devops-cloud/monitoring-reliability/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Monitoring, logging and reliability: metrics, alerts, SLOs, incidents and backups</a><a class="btn btn-solid btn-sm" href="/learn/devops-cloud/cloud-cost-control/">Cloud cost control (FinOps): free tiers, budgets, right-sizing and avoiding surprise bills <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

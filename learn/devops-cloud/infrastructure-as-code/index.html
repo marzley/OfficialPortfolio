@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Infrastructure as code: Terraform and Ansible (servers…</title>
+    <meta name="description" content="Clicking around a cloud console is fine for learning. But for real systems you need to rebuild environments exactly, review changes and recover after…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/devops-cloud/infrastructure-as-code/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Infrastructure as code: Terraform and Ansible (servers…" />
+    <meta property="og:description" content="Clicking around a cloud console is fine for learning. But for real systems you need to rebuild environments exactly, review changes and recover after…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/devops-cloud/infrastructure-as-code/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Infrastructure as code: Terraform and Ansible (servers…" />
+    <meta name="twitter:description" content="Clicking around a cloud console is fine for learning. But for real systems you need to rebuild environments exactly, review changes and recover after…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/devops-cloud/infrastructure-as-code/#lesson","name":"Infrastructure as code: Terraform and Ansible (servers built from files, not clicks)","description":"Clicking around a cloud console is fine for learning. But for real systems you need to rebuild environments exactly, review changes and recover after…","url":"https://marzleytechsolutions.co.ke/learn/devops-cloud/infrastructure-as-code/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/devops-cloud/#course","name":"DevOps & cloud: from zero to deploying and running real systems","url":"https://marzleytechsolutions.co.ke/learn/devops-cloud/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"DevOps & cloud: from zero to deploying and running real systems","item":"https://marzleytechsolutions.co.ke/learn/devops-cloud/"},{"@type":"ListItem","position":4,"name":"Infrastructure as code: Terraform and Ansible (servers built from files, not clicks)","item":"https://marzleytechsolutions.co.ke/learn/devops-cloud/infrastructure-as-code/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/devops-cloud/">DevOps &amp; cloud: from zero to deploying and running real systems</a> / <span>Infrastructure as code: Terraform and Ansible (servers built from files, not clicks)</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=devops-cloud&amp;lesson=infrastructure-as-code"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Infrastructure as code: Terraform and Ansible (servers built from files, not clicks)</h1>
+<p>Clicking around a cloud console is fine for learning. But for real systems you need to rebuild environments exactly, review changes and recover after disasters. <strong>Infrastructure as code (IaC)</strong> describes your servers, networks and databases in text files kept in Git.</p>
+<h2>Why IaC?</h2>
+<div class="static-table"><table><thead><tr><th>Without IaC</th><th>With IaC</th></tr></thead><tbody><tr><td>"Who changed the firewall last week?"</td><td>Every change is a reviewed Git commit</td></tr><tr><td>Staging and production slowly drift apart</td><td>Both built from the same code</td></tr><tr><td>Rebuilding after a disaster takes days</td><td>Run the code again</td></tr><tr><td>Knowledge lives in one person's head</td><td>It's written down and versioned</td></tr></tbody></table></div>
+<h2>Two kinds of tools</h2>
+<div class="static-table"><table><thead><tr><th>Tool</th><th>Main job</th><th>Style</th></tr></thead><tbody><tr><td><strong>Terraform</strong> (or the open-source fork <strong>OpenTofu</strong>)</td><td>Create cloud resources: networks, servers, databases, DNS</td><td>Declarative: describe the end state</td></tr><tr><td><strong>Ansible</strong></td><td>Configure servers: install packages, edit files, deploy apps</td><td>Runs tasks over SSH, no agent needed</td></tr><tr><td>Cloud-specific</td><td>AWS CloudFormation / CDK, Azure Bicep, Google Cloud Deployment Manager</td><td>Tied to one provider</td></tr><tr><td>Pulumi</td><td>IaC in general-purpose languages (Python, TypeScript)</td><td>Declarative, code-based</td></tr></tbody></table></div>
+<h2>Terraform example</h2>
+<figure class="static-code"><figcaption>HCL</figcaption><pre><code class="language-hcl"># main.tf
+terraform {
+  required_providers {
+    aws = { source = &quot;hashicorp/aws&quot;, version = &quot;~&gt; 5.0&quot; }
+  }
+}
+
+provider &quot;aws&quot; {
+  region = var.region
+}
+
+variable &quot;region&quot; {
+  default = &quot;af-south-1&quot;   # Cape Town; choose the region that fits your users and rules
+}
+
+resource &quot;aws_s3_bucket&quot; &quot;backups&quot; {
+  bucket = &quot;marzley-shop-backups-2026&quot;
+}
+
+resource &quot;aws_s3_bucket_public_access_block&quot; &quot;backups&quot; {
+  bucket                  = aws_s3_bucket.backups.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+output &quot;bucket_name&quot; {
+  value = aws_s3_bucket.backups.bucket
+}</code></pre></figure>
+<p>The workflow:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">terraform init      # download providers
+terraform fmt       # tidy the code
+terraform plan      # preview what will change (read this carefully!)
+terraform apply     # make the changes
+terraform destroy   # delete everything (great for practice environments)</code></pre></figure>
+<p><strong>State:</strong> Terraform keeps a <strong>state file</strong> recording what it created. In teams, store state remotely (an S3 bucket, Azure Storage, Terraform Cloud) with locking, and never commit it to Git: it can contain secrets.</p>
+<p><strong>Modules</strong> package reusable pieces (e.g. a standard VPC) so every project builds networks the same way.</p>
+<h2>Ansible example</h2>
+<figure class="static-code"><figcaption>YAML</figcaption><pre><code class="language-yaml"># playbook.yml: configure web servers
+- hosts: web
+  become: true
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: true
+
+    - name: Copy site configuration
+      template:
+        src: shop.conf.j2
+        dest: /etc/nginx/sites-available/shop.conf
+      notify: Reload nginx
+
+    - name: Enable the site
+      file:
+        src: /etc/nginx/sites-available/shop.conf
+        dest: /etc/nginx/sites-enabled/shop.conf
+        state: link
+      notify: Reload nginx
+
+  handlers:
+    - name: Reload nginx
+      service:
+        name: nginx
+        state: reloaded</code></pre></figure>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">ansible-playbook -i inventory.ini playbook.yml</code></pre></figure>
+<p>Ansible tasks are <strong>idempotent</strong>: running the playbook twice gives the same result, changing only what's needed.</p>
+<h2>Good IaC practices</h2>
+<ol><li><strong>Everything in Git</strong>, changed through pull requests.</li><li>**Always read <code>terraform plan</code>** before applying; look for unexpected deletions.</li><li><strong>Remote state with locking</strong>; never commit state or secrets.</li><li><strong>Separate environments</strong> (dev, staging, production) with variables or workspaces.</li><li><strong>Run IaC in CI/CD:</strong> plan on every PR, apply after approval.</li><li><strong>Tag resources</strong> (project, owner, environment) to track costs.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A teammate fixes a production problem by changing a firewall rule by hand in the console. Next week, someone runs terraform apply. What happens, and what's the right process?</span><em>Show answer</em></summary><div class="callout-body"><p>Terraform sees the manual change as drift and may revert it to what the code says, bringing the problem back. The right process: make the fix in the Terraform code through a pull request, review the plan, then apply, so code and reality stay the same.</p></div></details>
+<h2>Summary</h2>
+<ul><li>IaC describes infrastructure in versioned files: reviewable, repeatable and recoverable.</li><li>Terraform (or OpenTofu) creates cloud resources declaratively: init, plan, apply, destroy.</li><li>Ansible configures servers with idempotent tasks over SSH.</li><li>Keep code in Git, read plans carefully, use remote state and run IaC through CI/CD.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which Terraform command previews changes before applying them? (write like terraform plan)</p><details><summary>Show answer</summary><p>terraform plan</p></details></li><li><p>Running an Ansible playbook twice gives the same result. What is this property called? (one word)</p><details><summary>Show answer</summary><p>idempotent</p></details></li><li><p>Should the Terraform state file be committed to Git? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 8 of 14 in <a href="/learn/devops-cloud/">DevOps &amp; cloud: from zero to deploying and running real systems</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=devops-cloud">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/devops-cloud/kubernetes-basics/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Kubernetes basics: pods, deployments, services, scaling, and when you don&#x27;t need it</a><a class="btn btn-solid btn-sm" href="/learn/devops-cloud/core-cloud-services/">Core cloud services compared: AWS, Azure and Google Cloud side by side <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

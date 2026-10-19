@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cloud networking: VPCs, subnets, security groups, DNS,…</title>
+    <meta name="description" content="Networking is where many cloud beginners get stuck. The good news: cloud networking uses the same ideas as normal networking (IP addresses, subnets…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/devops-cloud/cloud-networking/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Cloud networking: VPCs, subnets, security groups, DNS,…" />
+    <meta property="og:description" content="Networking is where many cloud beginners get stuck. The good news: cloud networking uses the same ideas as normal networking (IP addresses, subnets…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/devops-cloud/cloud-networking/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Cloud networking: VPCs, subnets, security groups, DNS,…" />
+    <meta name="twitter:description" content="Networking is where many cloud beginners get stuck. The good news: cloud networking uses the same ideas as normal networking (IP addresses, subnets…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/devops-cloud/cloud-networking/#lesson","name":"Cloud networking: VPCs, subnets, security groups, DNS, load balancers and HTTPS","description":"Networking is where many cloud beginners get stuck. The good news: cloud networking uses the same ideas as normal networking (IP addresses, subnets…","url":"https://marzleytechsolutions.co.ke/learn/devops-cloud/cloud-networking/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/devops-cloud/#course","name":"DevOps & cloud: from zero to deploying and running real systems","url":"https://marzleytechsolutions.co.ke/learn/devops-cloud/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"DevOps & cloud: from zero to deploying and running real systems","item":"https://marzleytechsolutions.co.ke/learn/devops-cloud/"},{"@type":"ListItem","position":4,"name":"Cloud networking: VPCs, subnets, security groups, DNS, load balancers and HTTPS","item":"https://marzleytechsolutions.co.ke/learn/devops-cloud/cloud-networking/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/devops-cloud/">DevOps &amp; cloud: from zero to deploying and running real systems</a> / <span>Cloud networking: VPCs, subnets, security groups, DNS, load balancers and HTTPS</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=devops-cloud&amp;lesson=cloud-networking"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Cloud networking: VPCs, subnets, security groups, DNS, load balancers and HTTPS</h1>
+<p>Networking is where many cloud beginners get stuck. The good news: cloud networking uses the same ideas as normal networking (IP addresses, subnets, ports, DNS). If you need a refresher, see <a href="/learn/networking/cidr/">CIDR</a>, <a href="/learn/networking/tcp-udp-ports/">ports</a> and <a href="/learn/networking/dns-dhcp/">DNS</a>.</p>
+<h2>The VPC: your private network in the cloud</h2>
+<p>A <strong>VPC</strong> (Virtual Private Cloud; called a <strong>VNet</strong> in Azure) is your own isolated network inside the provider's cloud. You choose its IP range, for example <code>10.0.0.0/16</code>.</p>
+<p>Inside it you create <strong>subnets</strong>:</p>
+<ul><li><strong>Public subnets:</strong> have a route to the internet (for load balancers and web servers).</li><li><strong>Private subnets:</strong> no direct internet access (for databases and internal services).</li></ul>
+<figure class="static-code"><figcaption>TEXT</figcaption><pre><code class="language-text">VPC 10.0.0.0/16
+├── Public subnet  10.0.1.0/24  (zone A)  → load balancer
+├── Public subnet  10.0.2.0/24  (zone B)  → load balancer
+├── Private subnet 10.0.11.0/24 (zone A)  → app servers
+├── Private subnet 10.0.12.0/24 (zone B)  → app servers
+└── Private subnet 10.0.21.0/24 (zone A)  → database</code></pre></figure>
+<h2>Plan subnets with Python (run it)</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import ipaddress
+
+vpc = ipaddress.ip_network(&quot;10.0.0.0/16&quot;)
+print(&quot;VPC:&quot;, vpc, &quot;has&quot;, vpc.num_addresses, &quot;addresses&quot;)
+
+subnets = list(vpc.subnets(new_prefix=24))
+print(&quot;It can hold&quot;, len(subnets), &quot;subnets of /24&quot;)
+for name, net in [(&quot;public-a&quot;, subnets[1]), (&quot;public-b&quot;, subnets[2]), (&quot;private-a&quot;, subnets[11]), (&quot;db-a&quot;, subnets[21])]:
+    hosts = list(net.hosts())
+    print(f&quot;{name:&lt;10} {net}  usable {hosts[0]} - {hosts[-1]}&quot;)
+
+print(&quot;Is 10.0.11.25 in private-a?&quot;, ipaddress.ip_address(&quot;10.0.11.25&quot;) in subnets[11])</code></pre></figure>
+<p>Note: cloud providers reserve a few addresses in each subnet for their own use, so slightly fewer are usable than in normal networking.</p>
+<h2>Getting to and from the internet</h2>
+<div class="static-table"><table><thead><tr><th>Component</th><th>Purpose</th></tr></thead><tbody><tr><td><strong>Internet gateway</strong></td><td>Lets public subnets reach the internet (and be reached)</td></tr><tr><td><strong>NAT gateway</strong></td><td>Lets private servers download updates without being reachable from the internet</td></tr><tr><td><strong>Route tables</strong></td><td>Decide where traffic from each subnet goes</td></tr><tr><td><strong>Public / elastic IP</strong></td><td>A fixed public address for a server or load balancer</td></tr></tbody></table></div>
+<h2>Firewalls: security groups and network ACLs</h2>
+<ul><li><strong>Security groups</strong> (AWS; similar "network security groups" in Azure, "firewall rules" in Google Cloud) are virtual firewalls on each server or service. They're <strong>stateful</strong>: if a request is allowed in, the reply is allowed out.</li><li><strong>Network ACLs</strong> are optional subnet-level rules.</li></ul>
+<p><strong>Typical rules:</strong></p>
+<div class="static-table"><table><thead><tr><th>Resource</th><th>Allow inbound</th></tr></thead><tbody><tr><td>Load balancer</td><td>443 (HTTPS) and 80 (HTTP) from anywhere</td></tr><tr><td>App servers</td><td>App port only from the load balancer's security group</td></tr><tr><td>Database</td><td>3306 (MySQL) / 5432 (PostgreSQL) only from app servers</td></tr><tr><td>SSH (22)</td><td>Only from your office IP, or not at all (use a provider's secure session manager)</td></tr></tbody></table></div>
+<aside class="callout callout-warning"><p class="callout-title">The most common mistake</p><div class="callout-body"><p>Opening port 22 (SSH) or a database port to <code>0.0.0.0/0</code> (the whole internet). Bots scan the internet constantly and will find and attack it within minutes.</p></div></aside>
+<h2>DNS: names to addresses</h2>
+<p>You point your domain to your load balancer or server with DNS records:</p>
+<div class="static-table"><table><thead><tr><th>Record</th><th>Use</th></tr></thead><tbody><tr><td><strong>A</strong></td><td>Name → IPv4 address</td></tr><tr><td><strong>AAAA</strong></td><td>Name → IPv6 address</td></tr><tr><td><strong>CNAME</strong></td><td>Name → another name (e.g. <code>www</code> → a load balancer's name)</td></tr><tr><td><strong>MX</strong></td><td>Email servers</td></tr><tr><td><strong>TXT</strong></td><td>Verification and email security (SPF, DKIM, DMARC)</td></tr></tbody></table></div>
+<p>Providers have DNS services (Route 53, Azure DNS, Cloud DNS), or you can use your registrar or Cloudflare. See <a href="/learn/hosting/dns-records/">DNS records</a>.</p>
+<h2>Load balancers</h2>
+<p>A <strong>load balancer</strong> spreads traffic across several servers and stops sending traffic to unhealthy ones (using <strong>health checks</strong>). Benefits: no single server failure takes the site down, and you can add servers when traffic grows.</p>
+<ul><li><strong>Layer 7 (application)</strong> load balancers understand HTTP: route <code>/api</code> to one group and <code>/</code> to another, and handle HTTPS certificates.</li><li><strong>Layer 4 (network)</strong> load balancers work with TCP/UDP: very fast, for non-HTTP traffic.</li></ul>
+<h2>HTTPS everywhere</h2>
+<ul><li>Use HTTPS for every public site (free certificates from <strong>Let's Encrypt</strong>, or the provider's certificate manager).</li><li>Terminate HTTPS at the load balancer or on the server with Nginx.</li><li>Redirect HTTP to HTTPS.</li></ul>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A developer puts the database in a public subnet with port 3306 open to the internet "so the app can reach it". What's a safer design?</span><em>Show answer</em></summary><div class="callout-body"><p>Put the database in a private subnet with no public IP, and allow port 3306 only from the app servers' security group. The app reaches it privately inside the VPC; the internet can't reach it at all.</p></div></details>
+<h2>Summary</h2>
+<ul><li>A VPC is your private network; split it into public and private subnets across zones.</li><li>Internet and NAT gateways and route tables control internet access.</li><li>Security groups are stateful firewalls: allow only what's needed; never expose SSH or databases to the world.</li><li>DNS points names to load balancers; load balancers spread traffic with health checks; use HTTPS everywhere.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What does VPC stand for? (three words)</p><details><summary>Show answer</summary><p>virtual private cloud</p></details></li><li><p>Which subnet type should hold a database: public or private? (one word)</p><details><summary>Show answer</summary><p>private</p></details></li><li><p>Which DNS record points a name to an IPv4 address? (one letter)</p><details><summary>Show answer</summary><p>a</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 14 in <a href="/learn/devops-cloud/">DevOps &amp; cloud: from zero to deploying and running real systems</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=devops-cloud">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/devops-cloud/linux-servers-devops/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Linux servers for DevOps: SSH keys, users, services, logs, updates and firewalls</a><a class="btn btn-solid btn-sm" href="/learn/devops-cloud/ci-cd-pipelines/">Git workflows and CI/CD pipelines: automatic testing and deployment with GitHub Actions <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

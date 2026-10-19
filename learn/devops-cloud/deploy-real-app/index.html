@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Project: deploy a real web app with Docker, Nginx, HTTPS…</title>
+    <meta name="description" content="Time to put it all together. In this project you deploy a small web app to a cloud server the way professionals do: containers, a reverse proxy, HTTPS…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/devops-cloud/deploy-real-app/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Project: deploy a real web app with Docker, Nginx, HTTPS…" />
+    <meta property="og:description" content="Time to put it all together. In this project you deploy a small web app to a cloud server the way professionals do: containers, a reverse proxy, HTTPS…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/devops-cloud/deploy-real-app/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Project: deploy a real web app with Docker, Nginx, HTTPS…" />
+    <meta name="twitter:description" content="Time to put it all together. In this project you deploy a small web app to a cloud server the way professionals do: containers, a reverse proxy, HTTPS…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/devops-cloud/deploy-real-app/#lesson","name":"Project: deploy a real web app with Docker, Nginx, HTTPS and automatic deploys","description":"Time to put it all together. In this project you deploy a small web app to a cloud server the way professionals do: containers, a reverse proxy, HTTPS…","url":"https://marzleytechsolutions.co.ke/learn/devops-cloud/deploy-real-app/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/devops-cloud/#course","name":"DevOps & cloud: from zero to deploying and running real systems","url":"https://marzleytechsolutions.co.ke/learn/devops-cloud/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"DevOps & cloud: from zero to deploying and running real systems","item":"https://marzleytechsolutions.co.ke/learn/devops-cloud/"},{"@type":"ListItem","position":4,"name":"Project: deploy a real web app with Docker, Nginx, HTTPS and automatic deploys","item":"https://marzleytechsolutions.co.ke/learn/devops-cloud/deploy-real-app/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/devops-cloud/">DevOps &amp; cloud: from zero to deploying and running real systems</a> / <span>Project: deploy a real web app with Docker, Nginx, HTTPS and automatic deploys</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=devops-cloud&amp;lesson=deploy-real-app"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Project: deploy a real web app with Docker, Nginx, HTTPS and automatic deploys</h1>
+<p>Time to put it all together. In this project you deploy a small web app to a cloud server the way professionals do: containers, a reverse proxy, HTTPS, a CI/CD pipeline and backups. It's an excellent portfolio piece.</p>
+<h2>What you'll build</h2>
+<figure class="static-code"><figcaption>TEXT</figcaption><pre><code class="language-text">GitHub repo ──push──► GitHub Actions (test, build image) ──► registry
+                                                            │
+                                         server pulls new image and restarts
+                                                            ▼
+Users ──HTTPS──► Nginx (reverse proxy, Let&#x27;s Encrypt) ──► app container ──► database container (volume)
+                                                                            │
+                                                                nightly backup → object storage</code></pre></figure>
+<h2>What you need</h2>
+<ul><li>A small cloud server (VPS) with Ubuntu: from a big cloud's free tier or a VPS provider. Some Kenyan hosting companies also offer VPS plans billed in shillings.</li><li>A domain name (see <a href="/learn/hosting/domains/">domains</a>).</li><li>A GitHub account.</li><li>An app: any small Node, Python or PHP app (or one from the <a href="/learn/projects/how-to-build-projects/">projects subject</a>).</li></ul>
+<h2>Step 1: prepare the server</h2>
+<p>Follow the checklist from <a href="/learn/devops-cloud/linux-servers-devops/">Linux servers for DevOps</a>: SSH keys, a <code>deploy</code> user, updates, firewall (22, 80, 443). Then install Docker:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">curl -fsSL https://get.docker.com | sh
+sudo usermod -aG docker deploy    # log out and in again</code></pre></figure>
+<aside class="callout callout-warning"><p class="callout-title">Read scripts before piping them to a shell</p><div class="callout-body"><p><code>curl ... | sh</code> runs a script from the internet with your permissions. Only do it from official sources you trust (here, Docker's own site), or download and read the script first.</p></div></aside>
+<h2>Step 2: containerise the app</h2>
+<p>Write a <code>Dockerfile</code> and <code>compose.yaml</code> like in the <a href="/learn/devops-cloud/docker-containers/">Docker lesson</a>. Test locally: <code>docker compose up -d</code>, open the app in your browser.</p>
+<h2>Step 3: point the domain</h2>
+<p>Create an <strong>A record</strong> for <code>app.yourdomain.co.ke</code> pointing to the server's public IP. DNS changes can take minutes to hours.</p>
+<h2>Step 4: Nginx as a reverse proxy with HTTPS</h2>
+<p>Install Nginx and Certbot on the server:</p>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo apt install -y nginx certbot python3-certbot-nginx</code></pre></figure>
+<figure class="static-code"><figcaption>NGINX</figcaption><pre><code class="language-nginx"># /etc/nginx/sites-available/app
+server {
+    server_name app.yourdomain.co.ke;
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}</code></pre></figure>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">sudo ln -s /etc/nginx/sites-available/app /etc/nginx/sites-enabled/
+sudo nginx -t &amp;&amp; sudo systemctl reload nginx
+sudo certbot --nginx -d app.yourdomain.co.ke     # free HTTPS certificate, auto-renews</code></pre></figure>
+<p>In <code>compose.yaml</code>, publish the app only on localhost (<code>&quot;127.0.0.1:3000:3000&quot;</code>) so it's reachable through Nginx, not directly from the internet.</p>
+<h2>Step 5: automatic deploys</h2>
+<p>In GitHub Actions (see <a href="/learn/devops-cloud/ci-cd-pipelines/">CI/CD</a>):</p>
+<ol><li>On every push to <code>main</code>: run tests.</li><li>Build the image and push it to GitHub Container Registry, tagged with the commit ID.</li><li>SSH into the server and run:</li></ol>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">cd /home/deploy/app
+docker compose pull
+docker compose up -d
+docker image prune -f</code></pre></figure>
+<p>Store the SSH key and server address as repository <strong>secrets</strong>.</p>
+<h2>Step 6: backups</h2>
+<figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash"># /home/deploy/backup.sh (run nightly with cron)
+docker compose exec -T db mysqldump -u root -p&quot;$DB_ROOT_PASSWORD&quot; shop | gzip &gt; /home/deploy/backups/shop-$(date +%F).sql.gz
+find /home/deploy/backups -name &quot;*.sql.gz&quot; -mtime +14 -delete</code></pre></figure>
+<p>Copy backups off the server too (object storage or another location). <strong>Test restoring</strong> a backup at least once; a backup you can't restore isn't a backup.</p>
+<h2>Step 7: monitoring</h2>
+<ul><li>An uptime monitor that alerts you when the site is down (many have free plans).</li><li>Check <code>docker compose logs</code>, disk space and memory regularly (next lesson covers proper monitoring).</li></ul>
+<h2>Document it for your portfolio</h2>
+<p>Write a README with: the architecture diagram, what each part does, how to deploy, how backups work, and what you'd improve. Link it on your CV and LinkedIn.</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> After deploying, the site works over HTTP but HTTPS fails. What would you check?</span><em>Show answer</em></summary><div class="callout-body"><p>Check the DNS A record points to the server, port 443 is open in both UFW and the cloud firewall, Certbot completed without errors, the Nginx config passes nginx -t and was reloaded, and the server_name matches the domain exactly. Then check Nginx error logs.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Prepare a hardened server, install Docker and containerise your app.</li><li>Point a domain, put Nginx in front as a reverse proxy and add free HTTPS with Certbot.</li><li>Automate deploys with GitHub Actions and a container registry.</li><li>Back up nightly, store copies off the server, test restores and add uptime monitoring.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which tool gets free Let's Encrypt HTTPS certificates for Nginx? (one word)</p><details><summary>Show answer</summary><p>certbot</p></details></li><li><p>Which Nginx command tests the configuration before reloading? (write like nginx -t)</p><details><summary>Show answer</summary><p>nginx -t</p></details></li><li><p>Is a backup useful if you've never tested restoring it? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 10 of 14 in <a href="/learn/devops-cloud/">DevOps &amp; cloud: from zero to deploying and running real systems</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=devops-cloud">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/devops-cloud/core-cloud-services/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Core cloud services compared: AWS, Azure and Google Cloud side by side</a><a class="btn btn-solid btn-sm" href="/learn/devops-cloud/monitoring-reliability/">Monitoring, logging and reliability: metrics, alerts, SLOs, incidents and backups <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cloud cost control (FinOps): free tiers, budgets,…</title>
+    <meta name="description" content="The cloud&#x27;s pay-as-you-go model is powerful, and dangerous for beginners. Stories of students receiving bills of hundreds of dollars for a forgotten…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/devops-cloud/cloud-cost-control/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Cloud cost control (FinOps): free tiers, budgets,…" />
+    <meta property="og:description" content="The cloud&#x27;s pay-as-you-go model is powerful, and dangerous for beginners. Stories of students receiving bills of hundreds of dollars for a forgotten…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/devops-cloud/cloud-cost-control/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Cloud cost control (FinOps): free tiers, budgets,…" />
+    <meta name="twitter:description" content="The cloud&#x27;s pay-as-you-go model is powerful, and dangerous for beginners. Stories of students receiving bills of hundreds of dollars for a forgotten…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/devops-cloud/cloud-cost-control/#lesson","name":"Cloud cost control (FinOps): free tiers, budgets, right-sizing and avoiding surprise bills","description":"The cloud's pay-as-you-go model is powerful, and dangerous for beginners. Stories of students receiving bills of hundreds of dollars for a forgotten…","url":"https://marzleytechsolutions.co.ke/learn/devops-cloud/cloud-cost-control/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/devops-cloud/#course","name":"DevOps & cloud: from zero to deploying and running real systems","url":"https://marzleytechsolutions.co.ke/learn/devops-cloud/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"DevOps & cloud: from zero to deploying and running real systems","item":"https://marzleytechsolutions.co.ke/learn/devops-cloud/"},{"@type":"ListItem","position":4,"name":"Cloud cost control (FinOps): free tiers, budgets, right-sizing and avoiding surprise bills","item":"https://marzleytechsolutions.co.ke/learn/devops-cloud/cloud-cost-control/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/devops-cloud/">DevOps &amp; cloud: from zero to deploying and running real systems</a> / <span>Cloud cost control (FinOps): free tiers, budgets, right-sizing and avoiding surprise bills</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=devops-cloud&amp;lesson=cloud-cost-control"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Cloud cost control (FinOps): free tiers, budgets, right-sizing and avoiding surprise bills</h1>
+<p>The cloud's pay-as-you-go model is powerful, and dangerous for beginners. Stories of students receiving bills of hundreds of dollars for a forgotten server are common. Cost control is part of an engineer's job; companies call it <strong>FinOps</strong>.</p>
+<h2>Before you create anything</h2>
+<ol><li><strong>Set a budget and billing alerts</strong> (e.g. alert at $5, $10, $20).</li><li><strong>Read the free tier rules:</strong> limits on hours, storage and services; some offers last 12 months, some are always free.</li><li><strong>Pick small sizes</strong> and one region.</li><li><strong>Turn on MFA</strong> (stolen accounts are a major source of huge bills).</li></ol>
+<h2>What usually causes surprise bills</h2>
+<div class="static-table"><table><thead><tr><th>Cause</th><th>Prevention</th></tr></thead><tbody><tr><td>Forgotten servers and databases left running</td><td>Delete practice resources the same day; use <code>terraform destroy</code></td></tr><tr><td>Managed Kubernetes clusters and NAT gateways (charged hourly even when idle)</td><td>Delete after practice</td></tr><tr><td>Unattached disks, snapshots and public IPs</td><td>Clean up after deleting servers</td></tr><tr><td><strong>Data transfer out</strong> of the cloud</td><td>Use a CDN; keep traffic inside one region</td></tr><tr><td>Leaked access keys used for crypto-mining</td><td>Never commit keys; MFA; billing alerts</td></tr><tr><td>Logs stored forever</td><td>Set retention periods</td></tr></tbody></table></div>
+<h2>Saving money on real systems</h2>
+<div class="static-table"><table><thead><tr><th>Technique</th><th>Idea</th></tr></thead><tbody><tr><td><strong>Right-sizing</strong></td><td>Use the smallest instance that meets needs; check actual CPU and memory use</td></tr><tr><td><strong>Auto scaling</strong></td><td>Add servers at busy times, remove them when quiet</td></tr><tr><td><strong>Scheduling</strong></td><td>Turn off dev and test environments at night and weekends</td></tr><tr><td><strong>Reserved instances / savings plans</strong></td><td>Commit for 1–3 years for steady workloads</td></tr><tr><td><strong>Spot / preemptible instances</strong></td><td>Cheap capacity for jobs that can be interrupted</td></tr><tr><td><strong>Storage tiers</strong></td><td>Move old backups to cheaper archive storage</td></tr><tr><td><strong>Serverless</strong></td><td>Pay only when code runs, for spiky or low traffic</td></tr><tr><td><strong>Tagging</strong></td><td>Tag every resource (project, owner, environment) to see who spends what</td></tr></tbody></table></div>
+<h2>How much can scheduling save? (run it)</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">hours_in_month = 730
+hourly_cost = 0.10            # example price per server-hour (USD)
+servers = 4                   # a dev/test environment
+
+always_on = hours_in_month * hourly_cost * servers
+office_hours = 22 * 12        # 22 weekdays x 12 hours
+scheduled = office_hours * hourly_cost * servers
+
+print(f&quot;Always on:      ${always_on:,.2f} per month&quot;)
+print(f&quot;Office hours:   ${scheduled:,.2f} per month&quot;)
+print(f&quot;Saving:         ${always_on - scheduled:,.2f} ({1 - scheduled / always_on:.0%})&quot;)</code></pre></figure>
+<p>Turning off test servers outside office hours saves most of their cost.</p>
+<h2>Paying for cloud from Kenya</h2>
+<ul><li>Cloud providers usually bill in US dollars by card. Use a debit card or a virtual card (some banks and mobile money services offer virtual cards; check fees and limits).</li><li>Exchange rates and card fees change your real cost; keep a buffer.</li><li>For businesses, check invoicing and tax requirements with an accountant.</li><li>Some local hosting providers bill in shillings and accept M-Pesa, which can suit small websites better than a big cloud.</li></ul>
+<h2>A monthly cost review habit</h2>
+<ol><li>Open the billing dashboard; compare with last month.</li><li>Look at the top 5 services by cost.</li><li>Find idle or oversized resources.</li><li>Delete, downsize or schedule.</li><li>Check that alerts and budgets still match reality.</li></ol>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> You finish a Kubernetes tutorial on a cloud free trial and close your laptop. What might still be costing money, and what should you do?</span><em>Show answer</em></summary><div class="callout-body"><p>The managed cluster's control plane, worker node VMs, load balancers, NAT gateways, disks and public IPs may all still be running. Delete the cluster and related resources (or run terraform destroy), check the billing page and resource lists in every region you used, and keep billing alerts on.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Set budgets and billing alerts before creating anything; know the free tier rules.</li><li>Surprise bills come from forgotten resources, idle clusters, data transfer and leaked keys.</li><li>Save with right-sizing, auto scaling, scheduling, commitments, spot capacity, storage tiers and tagging.</li><li>Review costs monthly; consider local, shilling-billed hosting for small sites.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the practice of managing cloud costs often called? (one word)</p><details><summary>Show answer</summary><p>finops</p></details></li><li><p>Should you leave practice Kubernetes clusters running overnight? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li><li><p>Using the smallest instance that meets your needs is called ___-sizing (one word)</p><details><summary>Show answer</summary><p>right</p></details></li></ol></section></div><p class="static-meta">Lesson 13 of 14 in <a href="/learn/devops-cloud/">DevOps &amp; cloud: from zero to deploying and running real systems</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=devops-cloud">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/devops-cloud/cloud-security/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Cloud and DevOps security: IAM, MFA, secrets, encryption and secure pipelines</a><a class="btn btn-solid btn-sm" href="/learn/devops-cloud/devops-cloud-careers/">DevOps and cloud careers: certifications, portfolio projects and finding work <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>
