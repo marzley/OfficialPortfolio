@@ -22,7 +22,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=9c47f7007c" />
     <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
-    <link rel="stylesheet" href="/learn/learn.css?v=778a8b735f" />
+    <link rel="stylesheet" href="/learn/learn.css?v=99eb66afff" />
     <script src="/js/theme-init.js?v=47e6e7558c"></script>
 </head>
 <body class="learn-body static-learn">
@@ -316,7 +316,7 @@ void main() {
     expect(find.text(&#x27;1&#x27;), findsOneWidget);
   });
 }</code></pre></figure>
-<div class="static-table"><table><thead><tr><th>Test type</th><th>Speed</th><th>Tests</th><th>Tool</th></tr></thead><tbody><tr><td><strong>Unit</strong></td><td>Milliseconds</td><td>Functions and classes (cart, validators, controllers)</td><td><code>test</code> / <code>flutter_test</code></td></tr><tr><td><strong>Widget</strong></td><td>Fast</td><td>One screen or widget, taps and text</td><td><code>flutter_test</code> (<code>testWidgets</code>)</td></tr><tr><td><strong>Integration</strong></td><td>Slow</td><td>The whole app on a device or emulator</td><td><code>integration_test</code></td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th>Test type</th><th>Speed</th><th>Tests</th><th>Tool</th></tr></thead><tbody><tr><td><strong>Unit</strong></td><td>Milliseconds</td><td>Functions and classes (cart, validators, controllers)</td><td><code>test</code> / <code>flutter_test</code></td></tr><tr><td><strong>Widget</strong></td><td>Fast</td><td>One screen or widget, taps and text</td><td><code>flutter_test</code> (<code>testWidgets</code>)</td></tr><tr><td><strong>Integration</strong></td><td>Slow</td><td>The whole app on a device or emulator</td><td><code>integration_test</code></td></tr></tbody></table></div>
 <p>Aim for <strong>many</strong> unit tests, <strong>some</strong> widget tests and <strong>a few</strong> integration tests for critical flows (sign in, checkout, pay).</p>
 <h2>Code quality tools</h2>
 <ul><li><code>dart format .</code> formats code consistently.</li><li><code>dart analyze</code> (or <code>flutter analyze</code>) finds bugs and style problems; configure rules in <code>analysis_options.yaml</code> with <code>flutter_lints</code> or <code>very_good_analysis</code>.</li><li><code>flutter test --coverage</code> shows which lines your tests exercise.</li><li><strong>CI</strong>: run format, analyze and test on every push with GitHub Actions, so broken code never reaches the Play Store.</li></ul>

@@ -22,7 +22,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=9c47f7007c" />
     <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
-    <link rel="stylesheet" href="/learn/learn.css?v=778a8b735f" />
+    <link rel="stylesheet" href="/learn/learn.css?v=99eb66afff" />
     <script src="/js/theme-init.js?v=47e6e7558c"></script>
 </head>
 <body class="learn-body static-learn">
@@ -64,7 +64,7 @@ print(linear_search(phones, &quot;0799000000&quot;))   # -1</code></pre></figure
 <ul><li>If it's the target, done.</li><li>If the target is smaller, search the <strong>left half</strong>.</li><li>If larger, search the <strong>right half</strong>.</li></ul>
 <p>Each step halves the remaining data, like finding a word in a dictionary by opening near the middle.</p>
 <p>Example: find 67 in <code>[5, 12, 23, 34, 45, 56, 67, 78, 89]</code>:</p>
-<div class="static-table"><table><thead><tr><th>Step</th><th>low</th><th>high</th><th>mid</th><th>items[mid]</th><th>Action</th></tr></thead><tbody><tr><td>1</td><td>0</td><td>8</td><td>4</td><td>45</td><td>67 &gt; 45 → go right</td></tr><tr><td>2</td><td>5</td><td>8</td><td>6</td><td>67</td><td>Found at index 6</td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th>Step</th><th>low</th><th>high</th><th>mid</th><th>items[mid]</th><th>Action</th></tr></thead><tbody><tr><td>1</td><td>0</td><td>8</td><td>4</td><td>45</td><td>67 &gt; 45 → go right</td></tr><tr><td>2</td><td>5</td><td>8</td><td>6</td><td>67</td><td>Found at index 6</td></tr></tbody></table></div>
 <figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">def binary_search(items, target):
     low, high = 0, len(items) - 1
     steps = 0

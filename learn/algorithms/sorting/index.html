@@ -22,7 +22,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=9c47f7007c" />
     <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
-    <link rel="stylesheet" href="/learn/learn.css?v=778a8b735f" />
+    <link rel="stylesheet" href="/learn/learn.css?v=99eb66afff" />
     <script src="/js/theme-init.js?v=47e6e7558c"></script>
 </head>
 <body class="learn-body static-learn">
@@ -155,7 +155,7 @@ random.seed(1)
 for n in [500, 2000]:
     data = [random.randint(0, 100000) for _ in range(n)]
     print(f&quot;n={n}: bubble {timed(bubble_sort, data):.3f}s, merge {timed(merge_sort, data):.4f}s, built-in {timed(sorted, data):.5f}s&quot;)</code></pre></figure>
-<div class="static-table"><table><thead><tr><th>Algorithm</th><th>Best</th><th>Average</th><th>Worst</th><th>Extra memory</th><th>Stable?</th></tr></thead><tbody><tr><td>Bubble</td><td>O(n) (with early stop)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>Yes</td></tr><tr><td>Selection</td><td>O(n²)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>No</td></tr><tr><td>Insertion</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>Yes</td></tr><tr><td>Merge</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n)</td><td>Yes</td></tr><tr><td>Quick</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n²)</td><td>O(log n)</td><td>No (typical in-place versions)</td></tr><tr><td>Python's Timsort</td><td>O(n)</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n)</td><td>Yes</td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th>Algorithm</th><th>Best</th><th>Average</th><th>Worst</th><th>Extra memory</th><th>Stable?</th></tr></thead><tbody><tr><td>Bubble</td><td>O(n) (with early stop)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>Yes</td></tr><tr><td>Selection</td><td>O(n²)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>No</td></tr><tr><td>Insertion</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>Yes</td></tr><tr><td>Merge</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n)</td><td>Yes</td></tr><tr><td>Quick</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n²)</td><td>O(log n)</td><td>No (typical in-place versions)</td></tr><tr><td>Python's Timsort</td><td>O(n)</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n)</td><td>Yes</td></tr></tbody></table></div>
 <h2>Stability</h2>
 <p>A <strong>stable</strong> sort keeps items with equal keys in their original order. Example: students already sorted by name, then sorted by grade; with a stable sort, students with the same grade remain alphabetical. That's why multi-level sorting works.</p>
 <h2>Sorting in Python</h2>

@@ -183,8 +183,10 @@ def markdown(src):
             while i < len(lines) and lines[i].strip().startswith("|"):
                 rows.append(split_row(lines[i]))
                 i += 1
-            out.append('<div class="static-table"><table><thead><tr>%s</tr></thead><tbody>%s</tbody></table></div>' % (
-                "".join("<th>%s</th>" % inline(c) for c in head),
+            no_head = all(not c.strip() for c in head)
+            out.append('<div class="static-table%s%s"><table>%s<tbody>%s</tbody></table></div>' % (
+                " t-wide" if len(head) >= 4 else "", " t-kv" if no_head else "",
+                "" if no_head else "<thead><tr>%s</tr></thead>" % "".join("<th>%s</th>" % inline(c) for c in head),
                 "".join("<tr>%s</tr>" % "".join("<td>%s</td>" % inline(c) for c in r) for r in rows)))
             continue
         if re.match(r"^\s*[-*]\s+", line) or re.match(r"^\s*\d+\.\s+", line):

@@ -22,7 +22,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=9c47f7007c" />
     <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
-    <link rel="stylesheet" href="/learn/learn.css?v=778a8b735f" />
+    <link rel="stylesheet" href="/learn/learn.css?v=99eb66afff" />
     <script src="/js/theme-init.js?v=47e6e7558c"></script>
 </head>
 <body class="learn-body static-learn">
@@ -47,7 +47,7 @@
 <h2>Step 2: Get and understand the data</h2>
 <p>Each sale is a row: date, branch, product, category, quantity, unit price, payment method. In a real project you'd get an export from the shop's point-of-sale system or Excel book. For practice, use the sample below, or a public dataset (Kaggle has many retail sales datasets; KNBS publishes price data).</p>
 <p>Before analysing, write a <strong>data dictionary</strong>: each column, what it means, its type, and any problems you notice.</p>
-<div class="static-table"><table><thead><tr><th>Column</th><th>Meaning</th><th>Type</th><th>Problems found</th></tr></thead><tbody><tr><td>date</td><td>Date of sale</td><td>date</td><td>Two formats mixed: 2026-03-01 and 01/03/2026</td></tr><tr><td>branch</td><td>Branch name</td><td>text</td><td>"Kikuyu", "kikuyu " (case and spaces)</td></tr><tr><td>product</td><td>Product name</td><td>text</td><td></td></tr><tr><td>qty</td><td>Units sold</td><td>integer</td><td>One negative value (a refund?)</td></tr><tr><td>price</td><td>Unit price (KSh)</td><td>number</td><td></td></tr><tr><td>payment</td><td>M-Pesa or Cash</td><td>text</td><td>"mpesa", "M-PESA", "Mpesa"</td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th>Column</th><th>Meaning</th><th>Type</th><th>Problems found</th></tr></thead><tbody><tr><td>date</td><td>Date of sale</td><td>date</td><td>Two formats mixed: 2026-03-01 and 01/03/2026</td></tr><tr><td>branch</td><td>Branch name</td><td>text</td><td>"Kikuyu", "kikuyu " (case and spaces)</td></tr><tr><td>product</td><td>Product name</td><td>text</td><td></td></tr><tr><td>qty</td><td>Units sold</td><td>integer</td><td>One negative value (a refund?)</td></tr><tr><td>price</td><td>Unit price (KSh)</td><td>number</td><td></td></tr><tr><td>payment</td><td>M-Pesa or Cash</td><td>text</td><td>"mpesa", "M-PESA", "Mpesa"</td></tr></tbody></table></div>
 <h2>Step 3: Clean the data</h2>
 <p>Cleaning is often 60–80% of real analysis work. Typical steps:</p>
 <ul><li><strong>Standardise text</strong>: trim spaces, consistent capitals (<code>TRIM</code>, <code>PROPER</code> in Excel; <code>.strip().title()</code> in Python).</li><li><strong>Fix dates</strong> into one format.</li><li><strong>Handle odd values</strong>: decide what a negative quantity means (refund? typing error?), and <strong>write down every decision</strong> in your report.</li><li><strong>Remove exact duplicates</strong>.</li><li><strong>Add calculated columns</strong>: revenue = qty × price, day of week, month.</li></ul>

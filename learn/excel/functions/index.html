@@ -22,7 +22,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=9c47f7007c" />
     <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
-    <link rel="stylesheet" href="/learn/learn.css?v=778a8b735f" />
+    <link rel="stylesheet" href="/learn/learn.css?v=99eb66afff" />
     <script src="/js/theme-init.js?v=47e6e7558c"></script>
 </head>
 <body class="learn-body static-learn">
@@ -82,7 +82,7 @@
     → total Unga sales in Thika</code></pre></figure>
 <p>Note: in <code>SUMIFS</code> the <strong>sum range comes first</strong>; in <code>SUMIF</code> it comes last.</p>
 <h3>Example: a chama contributions summary</h3>
-<div class="static-table"><table><thead><tr><th></th><th>A</th><th>B</th><th>C</th></tr></thead><tbody><tr><td>1</td><td>Member</td><td>Month</td><td>Amount</td></tr><tr><td>2</td><td>Achieng</td><td>Jan</td><td>2,000</td></tr><tr><td>3</td><td>Brian</td><td>Jan</td><td>2,000</td></tr><tr><td>4</td><td>Achieng</td><td>Feb</td><td>2,000</td></tr><tr><td>5</td><td>Chebet</td><td>Jan</td><td>1,000</td></tr><tr><td>6</td><td>Brian</td><td>Feb</td><td>0</td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th></th><th>A</th><th>B</th><th>C</th></tr></thead><tbody><tr><td>1</td><td>Member</td><td>Month</td><td>Amount</td></tr><tr><td>2</td><td>Achieng</td><td>Jan</td><td>2,000</td></tr><tr><td>3</td><td>Brian</td><td>Jan</td><td>2,000</td></tr><tr><td>4</td><td>Achieng</td><td>Feb</td><td>2,000</td></tr><tr><td>5</td><td>Chebet</td><td>Jan</td><td>1,000</td></tr><tr><td>6</td><td>Brian</td><td>Feb</td><td>0</td></tr></tbody></table></div>
 <ul><li>Achieng's total: <code>=SUMIF(A2:A6, &quot;Achieng&quot;, C2:C6)</code> → 4,000</li><li>January total: <code>=SUMIF(B2:B6, &quot;Jan&quot;, C2:C6)</code> → 5,000</li><li>Number of missed contributions: <code>=COUNTIF(C2:C6, 0)</code> → 1</li></ul>
 <h2>RANK and percentages</h2>
 <ul><li><strong>Rank</strong> a student among the class: <code>=RANK.EQ(C2, $C$2:$C$41, 0)</code> (0 = highest gets rank 1). The <code>$</code> signs keep the range fixed when copying (absolute reference).</li><li><strong>Percentage of total:</strong> <code>=B2/$B$10</code> formatted as %.</li><li><strong>Percentage change:</strong> <code>=(New-Old)/Old</code>, e.g. <code>=(C2-B2)/B2</code> formatted as % (sales growth).</li><li><strong>Add VAT 16%:</strong> <code>=B2*1.16</code>; VAT included in a price: <code>=B2*16/116</code>.</li></ul>

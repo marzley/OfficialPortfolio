@@ -22,7 +22,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=9c47f7007c" />
     <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
-    <link rel="stylesheet" href="/learn/learn.css?v=778a8b735f" />
+    <link rel="stylesheet" href="/learn/learn.css?v=99eb66afff" />
     <script src="/js/theme-init.js?v=47e6e7558c"></script>
 </head>
 <body class="learn-body static-learn">
@@ -212,7 +212,7 @@ if (p != NULL) {
 }</code></pre></figure>
 <p>Dereferencing NULL crashes the program (a "segmentation fault").</p>
 <h2>Common pointer bugs</h2>
-<div class="static-table"><table><thead><tr><th>Bug</th><th>Example</th><th>Result</th><th>Prevention</th></tr></thead><tbody><tr><td><strong>Uninitialised pointer</strong></td><td><code>int *p; *p = 5;</code></td><td>Writes to a random address: crash or corruption</td><td>Initialise to NULL or a valid address</td></tr><tr><td><strong>NULL dereference</strong></td><td><code>*p</code> when p is NULL</td><td>Segmentation fault</td><td>Check for NULL</td></tr><tr><td><strong>Dangling pointer</strong></td><td>Using memory after <code>free</code>, or returning the address of a local variable</td><td>Unpredictable behaviour</td><td>Set to NULL after free; never return addresses of locals</td></tr><tr><td><strong>Memory leak</strong></td><td>Forgetting to free</td><td>Program uses more and more memory</td><td>Free everything you allocate</td></tr><tr><td><strong>Double free</strong></td><td><code>free(p); free(p);</code></td><td>Crash or corruption</td><td>Set to NULL after free</td></tr><tr><td><strong>Buffer overflow</strong></td><td>Writing past the end of an array</td><td>Corrupts memory; major security hole</td><td>Check bounds; use sizes; safe functions (<code>snprintf</code>, <code>fgets</code>)</td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th>Bug</th><th>Example</th><th>Result</th><th>Prevention</th></tr></thead><tbody><tr><td><strong>Uninitialised pointer</strong></td><td><code>int *p; *p = 5;</code></td><td>Writes to a random address: crash or corruption</td><td>Initialise to NULL or a valid address</td></tr><tr><td><strong>NULL dereference</strong></td><td><code>*p</code> when p is NULL</td><td>Segmentation fault</td><td>Check for NULL</td></tr><tr><td><strong>Dangling pointer</strong></td><td>Using memory after <code>free</code>, or returning the address of a local variable</td><td>Unpredictable behaviour</td><td>Set to NULL after free; never return addresses of locals</td></tr><tr><td><strong>Memory leak</strong></td><td>Forgetting to free</td><td>Program uses more and more memory</td><td>Free everything you allocate</td></tr><tr><td><strong>Double free</strong></td><td><code>free(p); free(p);</code></td><td>Crash or corruption</td><td>Set to NULL after free</td></tr><tr><td><strong>Buffer overflow</strong></td><td>Writing past the end of an array</td><td>Corrupts memory; major security hole</td><td>Check bounds; use sizes; safe functions (<code>snprintf</code>, <code>fgets</code>)</td></tr></tbody></table></div>
 <p>Buffer overflows in C code have caused many famous security vulnerabilities, which is why careful bounds checking matters.</p>
 <h2>Tools that catch memory bugs</h2>
 <figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">gcc -Wall -Wextra -g program.c -o program                 # warnings and debug info

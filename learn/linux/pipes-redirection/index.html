@@ -22,7 +22,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=9c47f7007c" />
     <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
-    <link rel="stylesheet" href="/learn/learn.css?v=778a8b735f" />
+    <link rel="stylesheet" href="/learn/learn.css?v=99eb66afff" />
     <script src="/js/theme-init.js?v=47e6e7558c"></script>
 </head>
 <body class="learn-body static-learn">
@@ -81,7 +81,7 @@ cd /tmp; ls                    # run both regardless</code></pre></figure>
 <h2>Why pipes are Linux's superpower</h2>
 <p>Linux follows a simple philosophy: small programs that each do one job well, connected together. Pipes and redirection let you combine <code>grep</code>, <code>sort</code>, <code>uniq</code>, <code>cut</code>, <code>awk</code> and others to answer questions in one line that might otherwise need a script or spreadsheet: "which IP addresses hit the login page most?", "how many orders came in today?", "which folder is filling the disk?" System administrators, DevOps engineers and security analysts use these combinations constantly.</p>
 <h2>Standard streams</h2>
-<div class="static-table"><table><thead><tr><th>Stream</th><th>Number</th><th>Default</th><th>Redirect with</th></tr></thead><tbody><tr><td>Standard input (stdin)</td><td>0</td><td>Keyboard</td><td><code>&lt;</code></td></tr><tr><td>Standard output (stdout)</td><td>1</td><td>Screen</td><td><code>&gt;</code> or <code>&gt;&gt;</code></td></tr><tr><td>Standard error (stderr)</td><td>2</td><td>Screen</td><td><code>2&gt;</code> or <code>2&gt;&gt;</code></td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th>Stream</th><th>Number</th><th>Default</th><th>Redirect with</th></tr></thead><tbody><tr><td>Standard input (stdin)</td><td>0</td><td>Keyboard</td><td><code>&lt;</code></td></tr><tr><td>Standard output (stdout)</td><td>1</td><td>Screen</td><td><code>&gt;</code> or <code>&gt;&gt;</code></td></tr><tr><td>Standard error (stderr)</td><td>2</td><td>Screen</td><td><code>2&gt;</code> or <code>2&gt;&gt;</code></td></tr></tbody></table></div>
 <figure class="static-code"><figcaption>Terminal</figcaption><pre><code class="language-bash">ls /etc /nothing &gt; out.txt 2&gt; errors.txt     # normal output and errors to separate files
 ls /etc /nothing &gt; all.txt 2&gt;&amp;1              # both to the same file
 command &gt; /dev/null 2&gt;&amp;1                     # discard all output (common in cron jobs)

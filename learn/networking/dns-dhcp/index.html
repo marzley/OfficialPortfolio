@@ -22,7 +22,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=9c47f7007c" />
     <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
-    <link rel="stylesheet" href="/learn/learn.css?v=778a8b735f" />
+    <link rel="stylesheet" href="/learn/learn.css?v=99eb66afff" />
     <script src="/js/theme-init.js?v=47e6e7558c"></script>
 </head>
 <body class="learn-body static-learn">
@@ -73,7 +73,7 @@
 <p>When a device joins, DHCP gives it:</p>
 <ul><li><strong>IP address</strong> and <strong>subnet mask</strong></li><li><strong>Default gateway</strong> (router)</li><li><strong>DNS server(s)</strong></li><li><strong>Lease time</strong> (how long it may keep the address)</li><li>Optional extras: domain name, NTP server, TFTP server for IP phones (option 66/150), etc.</li></ul>
 <h3>DORA: how a device gets an address</h3>
-<div class="static-table"><table><thead><tr><th>Step</th><th>Message</th><th>From → To</th><th>Meaning</th></tr></thead><tbody><tr><td><strong>D</strong></td><td>Discover</td><td>Client → broadcast (255.255.255.255)</td><td>"Is there a DHCP server? I need an address"</td></tr><tr><td><strong>O</strong></td><td>Offer</td><td>Server → client</td><td>"You can have 192.168.1.57"</td></tr><tr><td><strong>R</strong></td><td>Request</td><td>Client → broadcast</td><td>"I'd like 192.168.1.57 please" (broadcast so other servers know)</td></tr><tr><td><strong>A</strong></td><td>Acknowledge</td><td>Server → client</td><td>"It's yours for 24 hours"</td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th>Step</th><th>Message</th><th>From → To</th><th>Meaning</th></tr></thead><tbody><tr><td><strong>D</strong></td><td>Discover</td><td>Client → broadcast (255.255.255.255)</td><td>"Is there a DHCP server? I need an address"</td></tr><tr><td><strong>O</strong></td><td>Offer</td><td>Server → client</td><td>"You can have 192.168.1.57"</td></tr><tr><td><strong>R</strong></td><td>Request</td><td>Client → broadcast</td><td>"I'd like 192.168.1.57 please" (broadcast so other servers know)</td></tr><tr><td><strong>A</strong></td><td>Acknowledge</td><td>Server → client</td><td>"It's yours for 24 hours"</td></tr></tbody></table></div>
 <p>DHCP uses <strong>UDP ports 67 (server) and 68 (client)</strong>.</p>
 <h3>Leases and renewal</h3>
 <ul><li>At <strong>50%</strong> of the lease, the client tries to renew with the same server; at <strong>87.5%</strong> it asks any server.</li><li>Short leases (1–8 hours) suit busy guest Wi-Fi with many visitors; longer leases (1–8 days) suit stable office PCs.</li><li>If a client gets no answer at all, Windows assigns itself an <strong>APIPA</strong> address (169.254.x.x): a sign DHCP failed.</li></ul>

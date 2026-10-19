@@ -22,7 +22,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=9c47f7007c" />
     <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
-    <link rel="stylesheet" href="/learn/learn.css?v=778a8b735f" />
+    <link rel="stylesheet" href="/learn/learn.css?v=99eb66afff" />
     <script src="/js/theme-init.js?v=47e6e7558c"></script>
 </head>
 <body class="learn-body static-learn">
@@ -58,7 +58,7 @@
 <ul><li><code>=IPMT(rate, period, nper, pv)</code> → interest part of a given payment.</li><li><code>=PPMT(rate, period, nper, pv)</code> → principal part.</li></ul>
 <p>Early payments are mostly interest; later ones mostly principal.</p>
 <h2>Building an amortisation schedule</h2>
-<div class="static-table"><table><thead><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr></thead><tbody><tr><td>1</td><td>Loan amount</td><td>200,000</td><td></td><td></td><td></td></tr><tr><td>2</td><td>Annual rate</td><td>14%</td><td></td><td></td><td></td></tr><tr><td>3</td><td>Months</td><td>24</td><td></td><td></td><td></td></tr><tr><td>4</td><td>Monthly payment</td><td><code>=PMT(B2/12,B3,-B1)</code></td><td></td><td></td><td></td></tr><tr><td>6</td><td><strong>Month</strong></td><td><strong>Opening balance</strong></td><td><strong>Interest</strong></td><td><strong>Principal</strong></td><td><strong>Closing balance</strong></td></tr><tr><td>7</td><td>1</td><td><code>=B1</code></td><td><code>=B7*$B$2/12</code></td><td><code>=$B$4-C7</code></td><td><code>=B7-D7</code></td></tr><tr><td>8</td><td>2</td><td><code>=E7</code></td><td><code>=B8*$B$2/12</code></td><td><code>=$B$4-C8</code></td><td><code>=B8-D8</code></td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr></thead><tbody><tr><td>1</td><td>Loan amount</td><td>200,000</td><td></td><td></td><td></td></tr><tr><td>2</td><td>Annual rate</td><td>14%</td><td></td><td></td><td></td></tr><tr><td>3</td><td>Months</td><td>24</td><td></td><td></td><td></td></tr><tr><td>4</td><td>Monthly payment</td><td><code>=PMT(B2/12,B3,-B1)</code></td><td></td><td></td><td></td></tr><tr><td>6</td><td><strong>Month</strong></td><td><strong>Opening balance</strong></td><td><strong>Interest</strong></td><td><strong>Principal</strong></td><td><strong>Closing balance</strong></td></tr><tr><td>7</td><td>1</td><td><code>=B1</code></td><td><code>=B7*$B$2/12</code></td><td><code>=$B$4-C7</code></td><td><code>=B7-D7</code></td></tr><tr><td>8</td><td>2</td><td><code>=E7</code></td><td><code>=B8*$B$2/12</code></td><td><code>=$B$4-C8</code></td><td><code>=B8-D8</code></td></tr></tbody></table></div>
 <p>Copy row 8 down to month 24; the closing balance reaches (about) zero. Add totals of interest and principal; chart the declining balance.</p>
 <p>This is exactly how lenders compute schedules (with their specific conventions).</p>
 <h2>Savings and investments: FV, PV, RATE, NPER</h2>

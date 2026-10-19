@@ -22,7 +22,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=9c47f7007c" />
     <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
-    <link rel="stylesheet" href="/learn/learn.css?v=778a8b735f" />
+    <link rel="stylesheet" href="/learn/learn.css?v=99eb66afff" />
     <script src="/js/theme-init.js?v=47e6e7558c"></script>
 </head>
 <body class="learn-body static-learn">
@@ -106,7 +106,7 @@ class PhoneTest {
 <h2>From working app to published product</h2>
 <p>Getting an app onto Google Play is where many developers stall. Release work includes testing on real devices, fixing crashes, making the app small and fast, protecting secrets, preparing the store listing, meeting Google Play's policies and planning updates. Doing this well is what turns a project into a product that clients pay for and users trust, and it's a skill that freelance and agency clients value highly.</p>
 <h2>Testing strategy: the testing pyramid</h2>
-<div class="static-table"><table><thead><tr><th>Level</th><th>What it tests</th><th>Tools</th><th>How many</th></tr></thead><tbody><tr><td>Unit tests</td><td>Pure Kotlin logic (validation, calculations, ViewModels with fakes)</td><td>JUnit, kotlinx-coroutines-test, MockK</td><td>Many (fast)</td></tr><tr><td>Integration tests</td><td>Database (Room), repositories, API parsing</td><td>Room in-memory DB, MockWebServer</td><td>Some</td></tr><tr><td>UI tests</td><td>Screens and user flows</td><td>Compose testing, Espresso</td><td>A few key flows</td></tr><tr><td>Manual testing</td><td>Real devices, real networks</td><td>Budget phones, slow networks</td><td>Before every release</td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th>Level</th><th>What it tests</th><th>Tools</th><th>How many</th></tr></thead><tbody><tr><td>Unit tests</td><td>Pure Kotlin logic (validation, calculations, ViewModels with fakes)</td><td>JUnit, kotlinx-coroutines-test, MockK</td><td>Many (fast)</td></tr><tr><td>Integration tests</td><td>Database (Room), repositories, API parsing</td><td>Room in-memory DB, MockWebServer</td><td>Some</td></tr><tr><td>UI tests</td><td>Screens and user flows</td><td>Compose testing, Espresso</td><td>A few key flows</td></tr><tr><td>Manual testing</td><td>Real devices, real networks</td><td>Budget phones, slow networks</td><td>Before every release</td></tr></tbody></table></div>
 <figure class="static-code"><figcaption>Kotlin</figcaption><pre><code class="language-kotlin">class PhoneValidatorTest {
     @Test fun acceptsSafaricomFormat() = assertEquals(&quot;254712345678&quot;, normalisePhone(&quot;0712 345 678&quot;))
     @Test fun acceptsNew01Prefix() = assertEquals(&quot;254112345678&quot;, normalisePhone(&quot;0112345678&quot;))

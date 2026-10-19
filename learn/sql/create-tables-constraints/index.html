@@ -22,7 +22,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=9c47f7007c" />
     <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
-    <link rel="stylesheet" href="/learn/learn.css?v=778a8b735f" />
+    <link rel="stylesheet" href="/learn/learn.css?v=99eb66afff" />
     <script src="/js/theme-init.js?v=47e6e7558c"></script>
 </head>
 <body class="learn-body static-learn">
@@ -54,7 +54,7 @@ INSERT INTO Students (AdmNo, Name, Form, Phone) VALUES (&#x27;ADM001&#x27;, &#x2
 INSERT INTO Students (AdmNo, Name, Form) VALUES (&#x27;ADM002&#x27;, &#x27;Brian Otieno&#x27;, 3);
 SELECT * FROM Students;</code></pre></figure>
 <h2>Common data types</h2>
-<div class="static-table"><table><thead><tr><th>Kind</th><th>MySQL</th><th>SQLite</th><th>Example</th></tr></thead><tbody><tr><td>Whole numbers</td><td><code>INT</code>, <code>BIGINT</code></td><td><code>INTEGER</code></td><td>42</td></tr><tr><td>Money / exact decimals</td><td><code>DECIMAL(10,2)</code></td><td><code>NUMERIC</code></td><td>1500.50</td></tr><tr><td>Decimals (approximate)</td><td><code>FLOAT</code>, <code>DOUBLE</code></td><td><code>REAL</code></td><td>3.14</td></tr><tr><td>Short text</td><td><code>VARCHAR(100)</code></td><td><code>TEXT</code></td><td>'Nairobi'</td></tr><tr><td>Long text</td><td><code>TEXT</code></td><td><code>TEXT</code></td><td>a description</td></tr><tr><td>Date / time</td><td><code>DATE</code>, <code>DATETIME</code></td><td><code>TEXT</code> ('2026-09-28')</td><td></td></tr><tr><td>True/false</td><td><code>BOOLEAN</code> (TINYINT)</td><td><code>INTEGER</code> 0/1</td><td></td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th>Kind</th><th>MySQL</th><th>SQLite</th><th>Example</th></tr></thead><tbody><tr><td>Whole numbers</td><td><code>INT</code>, <code>BIGINT</code></td><td><code>INTEGER</code></td><td>42</td></tr><tr><td>Money / exact decimals</td><td><code>DECIMAL(10,2)</code></td><td><code>NUMERIC</code></td><td>1500.50</td></tr><tr><td>Decimals (approximate)</td><td><code>FLOAT</code>, <code>DOUBLE</code></td><td><code>REAL</code></td><td>3.14</td></tr><tr><td>Short text</td><td><code>VARCHAR(100)</code></td><td><code>TEXT</code></td><td>'Nairobi'</td></tr><tr><td>Long text</td><td><code>TEXT</code></td><td><code>TEXT</code></td><td>a description</td></tr><tr><td>Date / time</td><td><code>DATE</code>, <code>DATETIME</code></td><td><code>TEXT</code> ('2026-09-28')</td><td></td></tr><tr><td>True/false</td><td><code>BOOLEAN</code> (TINYINT)</td><td><code>INTEGER</code> 0/1</td><td></td></tr></tbody></table></div>
 <blockquote><p>For money use <code>DECIMAL</code> (or store whole cents as integers). Never <code>FLOAT</code>: it can't store 0.10 exactly.</p></blockquote>
 <h2>Constraints: rules the database enforces</h2>
 <div class="static-table"><table><thead><tr><th>Constraint</th><th>Meaning</th></tr></thead><tbody><tr><td><code>PRIMARY KEY</code></td><td>Unique id for each row (auto-numbers in SQLite; use <code>AUTO_INCREMENT</code> in MySQL)</td></tr><tr><td><code>NOT NULL</code></td><td>Must have a value</td></tr><tr><td><code>UNIQUE</code></td><td>No duplicates (e.g. emails, admission numbers)</td></tr><tr><td><code>DEFAULT</code></td><td>Value used if none is given</td></tr><tr><td><code>CHECK</code></td><td>Must pass a condition</td></tr><tr><td><code>FOREIGN KEY</code></td><td>Must match a row in another table</td></tr></tbody></table></div>

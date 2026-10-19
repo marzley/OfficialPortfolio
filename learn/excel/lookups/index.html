@@ -22,7 +22,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=9c47f7007c" />
     <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
-    <link rel="stylesheet" href="/learn/learn.css?v=778a8b735f" />
+    <link rel="stylesheet" href="/learn/learn.css?v=99eb66afff" />
     <script src="/js/theme-init.js?v=47e6e7558c"></script>
 </head>
 <body class="learn-body static-learn">
@@ -43,7 +43,7 @@
 <h2>Why lookups?</h2>
 <p>Imagine a sales sheet where you type a product code and want the product name and price to appear automatically from a price list. Without lookups, you'd search manually every time and make mistakes. With lookups, the spreadsheet finds them instantly, and updates if the price list changes.</p>
 <p><strong>Price list (sheet "Products", A1:C6):</strong></p>
-<div class="static-table"><table><thead><tr><th></th><th>A</th><th>B</th><th>C</th></tr></thead><tbody><tr><td>1</td><td>Code</td><td>Product</td><td>Price</td></tr><tr><td>2</td><td>P001</td><td>Unga 2kg</td><td>180</td></tr><tr><td>3</td><td>P002</td><td>Sugar 1kg</td><td>150</td></tr><tr><td>4</td><td>P003</td><td>Milk 500ml</td><td>60</td></tr><tr><td>5</td><td>P004</td><td>Cooking oil 1L</td><td>320</td></tr><tr><td>6</td><td>P005</td><td>Bread 400g</td><td>65</td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th></th><th>A</th><th>B</th><th>C</th></tr></thead><tbody><tr><td>1</td><td>Code</td><td>Product</td><td>Price</td></tr><tr><td>2</td><td>P001</td><td>Unga 2kg</td><td>180</td></tr><tr><td>3</td><td>P002</td><td>Sugar 1kg</td><td>150</td></tr><tr><td>4</td><td>P003</td><td>Milk 500ml</td><td>60</td></tr><tr><td>5</td><td>P004</td><td>Cooking oil 1L</td><td>320</td></tr><tr><td>6</td><td>P005</td><td>Bread 400g</td><td>65</td></tr></tbody></table></div>
 <h2>VLOOKUP</h2>
 <figure class="static-code"><pre><code>=VLOOKUP(lookup_value, table_array, col_index_num, [range_lookup])</code></pre></figure>
 <div class="static-table"><table><thead><tr><th>Argument</th><th>Meaning</th><th>Example</th></tr></thead><tbody><tr><td><code>lookup_value</code></td><td>What you're looking for</td><td><code>A2</code> (the code typed on the sales sheet)</td></tr><tr><td><code>table_array</code></td><td>The table to search; the <strong>first column</strong> must contain the lookup values</td><td><code>Products!$A$2:$C$6</code></td></tr><tr><td><code>col_index_num</code></td><td>Which column of the table to return (1 = first)</td><td><code>3</code> for Price</td></tr><tr><td><code>range_lookup</code></td><td><code>FALSE</code> (or 0) = <strong>exact match</strong>; <code>TRUE</code> = approximate</td><td><code>FALSE</code></td></tr></tbody></table></div>
@@ -96,7 +96,7 @@
 <h2>Lookups across sheets and files</h2>
 <ul><li>Click into another sheet while building the formula; Excel writes <code>Products!$A$2:$C$6</code>.</li><li>Sheet names with spaces appear in quotes: <code>&#x27;Price List&#x27;!$A$2:$C$6</code>.</li><li>Turning the price list into an <strong>Excel Table</strong> (<code>Ctrl+T</code>) and naming it lets you write <code>=XLOOKUP(A2, Products[Code], Products[Price])</code>, which grows automatically when you add products.</li><li>Lookups to other workbooks work but break if files move; prefer keeping related data in one workbook.</li></ul>
 <h2>A complete example: an invoice that fills itself</h2>
-<div class="static-table"><table><thead><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr></thead><tbody><tr><td>1</td><td>Code</td><td>Product</td><td>Price</td><td>Qty</td><td>Amount</td></tr><tr><td>2</td><td>P004</td><td><code>=XLOOKUP(A2,Products!A:A,Products!B:B,&quot;?&quot;)</code> → Cooking oil 1L</td><td><code>=XLOOKUP(A2,Products!A:A,Products!C:C,0)</code> → 320</td><td>2</td><td><code>=C2*D2</code> → 640</td></tr><tr><td>3</td><td>P001</td><td>→ Unga 2kg</td><td>→ 180</td><td>3</td><td>→ 540</td></tr><tr><td>8</td><td></td><td></td><td></td><td>Total</td><td><code>=SUM(E2:E7)</code> → 1,180</td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr></thead><tbody><tr><td>1</td><td>Code</td><td>Product</td><td>Price</td><td>Qty</td><td>Amount</td></tr><tr><td>2</td><td>P004</td><td><code>=XLOOKUP(A2,Products!A:A,Products!B:B,&quot;?&quot;)</code> → Cooking oil 1L</td><td><code>=XLOOKUP(A2,Products!A:A,Products!C:C,0)</code> → 320</td><td>2</td><td><code>=C2*D2</code> → 640</td></tr><tr><td>3</td><td>P001</td><td>→ Unga 2kg</td><td>→ 180</td><td>3</td><td>→ 540</td></tr><tr><td>8</td><td></td><td></td><td></td><td>Total</td><td><code>=SUM(E2:E7)</code> → 1,180</td></tr></tbody></table></div>
 <p>Type a code and quantity; name, price and amount fill in automatically.</p>
 <h2>Practice tasks</h2>
 <ol><li>Create the Products price list and a sales sheet that fills product names and prices with VLOOKUP (exact match).</li><li>Rebuild the same with XLOOKUP and with INDEX/MATCH.</li><li>Create a commission band table and calculate each salesperson's rate with approximate match.</li><li>Replace a nested IF grading formula with a VLOOKUP band table.</li><li>Create a deliberate #N/A (a code with a trailing space) and fix it with TRIM; then add IFNA.</li></ol>

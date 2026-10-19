@@ -22,7 +22,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=9c47f7007c" />
     <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
-    <link rel="stylesheet" href="/learn/learn.css?v=778a8b735f" />
+    <link rel="stylesheet" href="/learn/learn.css?v=99eb66afff" />
     <script src="/js/theme-init.js?v=47e6e7558c"></script>
 </head>
 <body class="learn-body static-learn">
@@ -82,7 +82,7 @@ int main(void) {
            (int)sizeof(int), (int)sizeof(double), (int)sizeof(char));
     return 0;
 }</code></pre></figure>
-<div class="static-table"><table><thead><tr><th>Type</th><th>Typical size</th><th>Use</th><th>printf</th></tr></thead><tbody><tr><td><code>char</code></td><td>1 byte</td><td>A character (stored as a number, e.g. 'A' = 65)</td><td><code>%c</code></td></tr><tr><td><code>int</code></td><td>4 bytes</td><td>Whole numbers (about ±2.1 billion)</td><td><code>%d</code></td></tr><tr><td><code>long</code></td><td>4 or 8 bytes</td><td>Larger whole numbers</td><td><code>%ld</code></td></tr><tr><td><code>float</code></td><td>4 bytes</td><td>Decimals (~7 digits precision)</td><td><code>%f</code></td></tr><tr><td><code>double</code></td><td>8 bytes</td><td>Decimals (~15 digits)</td><td><code>%f</code> (printf), <code>%lf</code> (scanf)</td></tr><tr><td><code>unsigned int</code></td><td>4 bytes</td><td>Non-negative whole numbers</td><td><code>%u</code></td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th>Type</th><th>Typical size</th><th>Use</th><th>printf</th></tr></thead><tbody><tr><td><code>char</code></td><td>1 byte</td><td>A character (stored as a number, e.g. 'A' = 65)</td><td><code>%c</code></td></tr><tr><td><code>int</code></td><td>4 bytes</td><td>Whole numbers (about ±2.1 billion)</td><td><code>%d</code></td></tr><tr><td><code>long</code></td><td>4 or 8 bytes</td><td>Larger whole numbers</td><td><code>%ld</code></td></tr><tr><td><code>float</code></td><td>4 bytes</td><td>Decimals (~7 digits precision)</td><td><code>%f</code></td></tr><tr><td><code>double</code></td><td>8 bytes</td><td>Decimals (~15 digits)</td><td><code>%f</code> (printf), <code>%lf</code> (scanf)</td></tr><tr><td><code>unsigned int</code></td><td>4 bytes</td><td>Non-negative whole numbers</td><td><code>%u</code></td></tr></tbody></table></div>
 <p>Sizes can vary by platform; <code>sizeof</code> tells you on your machine, and <code>&lt;limits.h&gt;</code> defines limits such as <code>INT_MAX</code> (2,147,483,647 for a 4-byte int). C has no built-in <code>bool</code> or <code>string</code> types in old standards: <code>&lt;stdbool.h&gt;</code> provides <code>bool</code>, and strings are arrays of <code>char</code> (see the arrays and strings lesson).</p>
 <h2>Variables and constants</h2>
 <figure class="static-code"><figcaption>C · runs live in the interactive lesson</figcaption><pre><code class="language-c">#include &lt;stdio.h&gt;

@@ -22,7 +22,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=9c47f7007c" />
     <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
-    <link rel="stylesheet" href="/learn/learn.css?v=778a8b735f" />
+    <link rel="stylesheet" href="/learn/learn.css?v=99eb66afff" />
     <script src="/js/theme-init.js?v=47e6e7558c"></script>
 </head>
 <body class="learn-body static-learn">
@@ -66,7 +66,7 @@
 =IFERROR(XLOOKUP(A2, IDs, Names), &quot;Not found&quot;)</code></pre></figure>
 <p>Use it carefully: hiding errors can also hide real mistakes.</p>
 <h2>Worked example: a fee tracker</h2>
-<div class="static-table"><table><thead><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr></thead><tbody><tr><td>1</td><td>Student</td><td>Fee</td><td>Paid</td><td>Balance</td><td>Status</td></tr><tr><td>2</td><td>Amina</td><td>15000</td><td>15000</td><td><code>=B2-C2</code></td><td><code>=IF(D2&lt;=0,&quot;Cleared&quot;,IF(C2=0,&quot;Not paid&quot;,&quot;Partial&quot;))</code></td></tr><tr><td>3</td><td>Brian</td><td>15000</td><td>8000</td><td>7000</td><td>Partial</td></tr><tr><td>4</td><td>Chebet</td><td>15000</td><td>0</td><td>15000</td><td>Not paid</td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr></thead><tbody><tr><td>1</td><td>Student</td><td>Fee</td><td>Paid</td><td>Balance</td><td>Status</td></tr><tr><td>2</td><td>Amina</td><td>15000</td><td>15000</td><td><code>=B2-C2</code></td><td><code>=IF(D2&lt;=0,&quot;Cleared&quot;,IF(C2=0,&quot;Not paid&quot;,&quot;Partial&quot;))</code></td></tr><tr><td>3</td><td>Brian</td><td>15000</td><td>8000</td><td>7000</td><td>Partial</td></tr><tr><td>4</td><td>Chebet</td><td>15000</td><td>0</td><td>15000</td><td>Not paid</td></tr></tbody></table></div>
 <p>Summary cells:</p>
 <figure class="static-code"><pre><code>Cleared students:   =COUNTIF(E2:E41,&quot;Cleared&quot;)
 Total collected:    =SUM(C2:C41)
@@ -86,7 +86,7 @@ Collection rate:    =SUM(C2:C41)/SUM(B2:B41)    (format as %)</code></pre></figu
 =IF(E2&lt;=TODAY(), &quot;Overdue&quot;, &quot;Due in &quot; &amp; E2-TODAY() &amp; &quot; days&quot;)</code></pre></figure>
 <p>The third formula is a common trick: it prevents ugly results (like negative numbers) in rows that haven't been filled yet.</p>
 <h2>Real example: stock reorder alerts</h2>
-<div class="static-table"><table><thead><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr></thead><tbody><tr><td>1</td><td>Item</td><td>In stock</td><td>Reorder level</td><td>Action</td></tr><tr><td>2</td><td>Unga 2kg</td><td>8</td><td>20</td><td><code>=IF(B2&lt;=C2,&quot;REORDER&quot;,&quot;OK&quot;)</code></td></tr><tr><td>3</td><td>Sugar 1kg</td><td>45</td><td>15</td><td></td></tr><tr><td>4</td><td>Soap</td><td>0</td><td>10</td><td></td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr></thead><tbody><tr><td>1</td><td>Item</td><td>In stock</td><td>Reorder level</td><td>Action</td></tr><tr><td>2</td><td>Unga 2kg</td><td>8</td><td>20</td><td><code>=IF(B2&lt;=C2,&quot;REORDER&quot;,&quot;OK&quot;)</code></td></tr><tr><td>3</td><td>Sugar 1kg</td><td>45</td><td>15</td><td></td></tr><tr><td>4</td><td>Soap</td><td>0</td><td>10</td><td></td></tr></tbody></table></div>
 <p>A better version distinguishes out of stock:</p>
 <figure class="static-code"><pre><code>=IF(B2=0, &quot;OUT OF STOCK&quot;, IF(B2&lt;=C2, &quot;Reorder&quot;, &quot;OK&quot;))</code></pre></figure>
 <p>Add conditional formatting to colour "OUT OF STOCK" red and "Reorder" orange, and the sheet becomes a dashboard.</p>
@@ -113,7 +113,7 @@ Collection rate:    =SUM(C2:C41)/SUM(B2:B41)    (format as %)</code></pre></figu
 =MAXIFS(D:D, B:B, &quot;Eldoret&quot;)                          largest Eldoret sale</code></pre></figure>
 <p>Notice <code>&quot;&gt;=&quot;&amp;DATE(...)</code>: comparison operators go inside quotes and are joined to values with <code>&amp;</code>. Using cells for criteria (H2, I2) makes a flexible report where the user just types a branch name.</p>
 <h2>A branch summary report</h2>
-<div class="static-table"><table><thead><tr><th></th><th>G</th><th>H</th><th>I</th></tr></thead><tbody><tr><td>1</td><td>Branch</td><td>Sales count</td><td>Total (KSh)</td></tr><tr><td>2</td><td>Nakuru</td><td><code>=COUNTIF($B:$B,G2)</code></td><td><code>=SUMIF($B:$B,G2,$D:$D)</code></td></tr><tr><td>3</td><td>Thika</td><td></td><td></td></tr><tr><td>4</td><td>Eldoret</td><td></td><td></td></tr><tr><td>5</td><td>Total</td><td><code>=SUM(H2:H4)</code></td><td><code>=SUM(I2:I4)</code></td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th></th><th>G</th><th>H</th><th>I</th></tr></thead><tbody><tr><td>1</td><td>Branch</td><td>Sales count</td><td>Total (KSh)</td></tr><tr><td>2</td><td>Nakuru</td><td><code>=COUNTIF($B:$B,G2)</code></td><td><code>=SUMIF($B:$B,G2,$D:$D)</code></td></tr><tr><td>3</td><td>Thika</td><td></td><td></td></tr><tr><td>4</td><td>Eldoret</td><td></td><td></td></tr><tr><td>5</td><td>Total</td><td><code>=SUM(H2:H4)</code></td><td><code>=SUM(I2:I4)</code></td></tr></tbody></table></div>
 <p>Fill the formulas down. Check: the total of the summary must equal <code>=SUM(D:D)</code>. Cross-checking totals catches missing branches and typos in branch names.</p>
 <h2>Error handling beyond IFERROR</h2>
 <figure class="static-code"><pre><code>=IFERROR(B2/C2, 0)                        any error becomes 0

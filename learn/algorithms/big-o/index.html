@@ -22,7 +22,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=9c47f7007c" />
     <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
-    <link rel="stylesheet" href="/learn/learn.css?v=778a8b735f" />
+    <link rel="stylesheet" href="/learn/learn.css?v=99eb66afff" />
     <script src="/js/theme-init.js?v=47e6e7558c"></script>
 </head>
 <body class="learn-body static-learn">
@@ -42,7 +42,7 @@
 <aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Why we measure growth rather than seconds</li><li>What Big O means, and dropping constants and smaller terms</li><li>The common complexities: O(1), O(log n), O(n), O(n log n), O(n²), O(2ⁿ)</li><li>How to analyse loops, nested loops and function calls</li><li>Best, average and worst cases</li><li>Space complexity</li><li>Complexity of common Python operations</li><li>Practical optimisation: choosing better data structures and algorithms</li></ul></div></aside>
 <h2>Why growth, not seconds?</h2>
 <p>Running time in seconds depends on the computer, language and other programs running. Big O ignores those details and asks: <strong>if the input doubles, what happens to the work?</strong></p>
-<div class="static-table"><table><thead><tr><th>Input size n</th><th>O(1)</th><th>O(log n)</th><th>O(n)</th><th>O(n log n)</th><th>O(n²)</th></tr></thead><tbody><tr><td>10</td><td>1</td><td>~3</td><td>10</td><td>~33</td><td>100</td></tr><tr><td>1,000</td><td>1</td><td>~10</td><td>1,000</td><td>~10,000</td><td>1,000,000</td></tr><tr><td>1,000,000</td><td>1</td><td>~20</td><td>1,000,000</td><td>~20,000,000</td><td>1,000,000,000,000</td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th>Input size n</th><th>O(1)</th><th>O(log n)</th><th>O(n)</th><th>O(n log n)</th><th>O(n²)</th></tr></thead><tbody><tr><td>10</td><td>1</td><td>~3</td><td>10</td><td>~33</td><td>100</td></tr><tr><td>1,000</td><td>1</td><td>~10</td><td>1,000</td><td>~10,000</td><td>1,000,000</td></tr><tr><td>1,000,000</td><td>1</td><td>~20</td><td>1,000,000</td><td>~20,000,000</td><td>1,000,000,000,000</td></tr></tbody></table></div>
 <figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import math
 print(f&quot;{&#x27;n&#x27;:&gt;10} {&#x27;log n&#x27;:&gt;7} {&#x27;n log n&#x27;:&gt;12} {&#x27;n^2&#x27;:&gt;16}&quot;)
 for n in [10, 100, 1_000, 10_000, 1_000_000]:
@@ -115,7 +115,7 @@ for n in [200, 400, 800]:
     print(f&quot;n={n}: {time.perf_counter() - t:.4f}s&quot;)</code></pre></figure>
 <p>Doubling n roughly <strong>quadruples</strong> the time for O(n²) code: that pattern tells you the complexity even without maths.</p>
 <h2>Best, average and worst cases</h2>
-<div class="static-table"><table><thead><tr><th>Algorithm</th><th>Best</th><th>Average</th><th>Worst</th></tr></thead><tbody><tr><td>Linear search</td><td>O(1)</td><td>O(n)</td><td>O(n)</td></tr><tr><td>Binary search</td><td>O(1)</td><td>O(log n)</td><td>O(log n)</td></tr><tr><td>Quick sort</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n²)</td></tr><tr><td>Dictionary lookup</td><td>O(1)</td><td>O(1)</td><td>O(n) (rare, many collisions)</td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th>Algorithm</th><th>Best</th><th>Average</th><th>Worst</th></tr></thead><tbody><tr><td>Linear search</td><td>O(1)</td><td>O(n)</td><td>O(n)</td></tr><tr><td>Binary search</td><td>O(1)</td><td>O(log n)</td><td>O(log n)</td></tr><tr><td>Quick sort</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n²)</td></tr><tr><td>Dictionary lookup</td><td>O(1)</td><td>O(1)</td><td>O(n) (rare, many collisions)</td></tr></tbody></table></div>
 <p>Plan for the worst case when it matters (e.g. payment systems under heavy load).</p>
 <h2>Space complexity</h2>
 <p>Big O also measures <strong>memory</strong>:</p>

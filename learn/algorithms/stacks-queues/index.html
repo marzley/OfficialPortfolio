@@ -22,7 +22,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=9c47f7007c" />
     <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
-    <link rel="stylesheet" href="/learn/learn.css?v=778a8b735f" />
+    <link rel="stylesheet" href="/learn/learn.css?v=99eb66afff" />
     <script src="/js/theme-init.js?v=47e6e7558c"></script>
 </head>
 <body class="learn-body static-learn">
@@ -232,7 +232,7 @@ while patients:
 <ol><li>A customer pays; the web server records the order and puts "send receipt" on a queue.</li><li>The server responds immediately ("Payment received").</li><li>A background <strong>worker</strong> takes jobs from the queue: sends the SMS/email, updates stock, generates the PDF.</li><li>If the SMS gateway is down, the job is retried later instead of failing the payment.</li></ol>
 <p>This keeps websites fast and reliable even under heavy load (e.g. thousands of school fee payments on opening day).</p>
 <h2>Complexity summary</h2>
-<div class="static-table"><table><thead><tr><th>Operation</th><th>Python list as stack</th><th><code>deque</code> as queue</th><th><code>heapq</code> priority queue</th></tr></thead><tbody><tr><td>Add</td><td><code>append</code> O(1)</td><td><code>append</code> O(1)</td><td><code>heappush</code> O(log n)</td></tr><tr><td>Remove</td><td><code>pop()</code> O(1)</td><td><code>popleft</code> O(1)</td><td><code>heappop</code> O(log n)</td></tr><tr><td>Peek</td><td><code>stack[-1]</code> O(1)</td><td><code>q[0]</code> O(1)</td><td><code>heap[0]</code> O(1)</td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th>Operation</th><th>Python list as stack</th><th><code>deque</code> as queue</th><th><code>heapq</code> priority queue</th></tr></thead><tbody><tr><td>Add</td><td><code>append</code> O(1)</td><td><code>append</code> O(1)</td><td><code>heappush</code> O(log n)</td></tr><tr><td>Remove</td><td><code>pop()</code> O(1)</td><td><code>popleft</code> O(1)</td><td><code>heappop</code> O(log n)</td></tr><tr><td>Peek</td><td><code>stack[-1]</code> O(1)</td><td><code>q[0]</code> O(1)</td><td><code>heap[0]</code> O(1)</td></tr></tbody></table></div>
 <p>Avoid <code>list.pop(0)</code> for queues: it shifts every element (O(n)).</p>
 <h2>Practice</h2>
 <ol><li>Reverse a string using a stack.</li><li>Use a stack to evaluate a postfix expression like <code>3 4 + 2 *</code> (answer 14).</li><li>Simulate a bank with two tellers serving one shared queue of 10 customers.</li><li>Use BFS to find the shortest path in a small grid maze.</li><li>Use <code>heapq</code> to always process the largest order first (hint: push negative amounts).</li></ol>

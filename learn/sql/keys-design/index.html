@@ -22,7 +22,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=9c47f7007c" />
     <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
-    <link rel="stylesheet" href="/learn/learn.css?v=778a8b735f" />
+    <link rel="stylesheet" href="/learn/learn.css?v=99eb66afff" />
     <script src="/js/theme-init.js?v=47e6e7558c"></script>
 </head>
 <body class="learn-body static-learn">
@@ -45,7 +45,7 @@
 <ul><li>An <strong>entity</strong> is a "thing" you store data about: Student, Course, Teacher, Payment. Each entity usually becomes a <strong>table</strong>.</li><li>An <strong>attribute</strong> is a fact about it: a student's name, date of birth, admission number. Each attribute becomes a <strong>column</strong>.</li><li>Each <strong>row</strong> is one instance: one particular student.</li></ul>
 <h2>Primary keys</h2>
 <p>A <strong>primary key (PK)</strong> uniquely identifies each row. Rules: unique, never NULL, and ideally never changes.</p>
-<div class="static-table"><table><thead><tr><th>Type</th><th>Example</th><th>Pros</th><th>Cons</th></tr></thead><tbody><tr><td><strong>Natural key</strong></td><td>National ID number, KRA PIN, admission number</td><td>Meaningful</td><td>Can change, can be missing (children have no ID), privacy concerns</td></tr><tr><td><strong>Surrogate key</strong></td><td>Auto-number <code>StudentID</code> 1, 2, 3...</td><td>Simple, stable, small</td><td>Has no meaning outside the database</td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th>Type</th><th>Example</th><th>Pros</th><th>Cons</th></tr></thead><tbody><tr><td><strong>Natural key</strong></td><td>National ID number, KRA PIN, admission number</td><td>Meaningful</td><td>Can change, can be missing (children have no ID), privacy concerns</td></tr><tr><td><strong>Surrogate key</strong></td><td>Auto-number <code>StudentID</code> 1, 2, 3...</td><td>Simple, stable, small</td><td>Has no meaning outside the database</td></tr></tbody></table></div>
 <p>Most systems use a <strong>surrogate</strong> key as the PK and store natural identifiers as ordinary columns with a <code>UNIQUE</code> constraint.</p>
 <figure class="static-code"><figcaption>SQL · runs live in the interactive lesson</figcaption><pre><code class="language-sql">CREATE TABLE Students (
   StudentID INTEGER PRIMARY KEY,           -- surrogate key

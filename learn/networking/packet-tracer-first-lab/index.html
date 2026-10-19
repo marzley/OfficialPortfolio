@@ -22,7 +22,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=9c47f7007c" />
     <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
-    <link rel="stylesheet" href="/learn/learn.css?v=778a8b735f" />
+    <link rel="stylesheet" href="/learn/learn.css?v=99eb66afff" />
     <script src="/js/theme-init.js?v=47e6e7558c"></script>
 </head>
 <body class="learn-body static-learn">
@@ -74,7 +74,7 @@ write memory</code></pre></figure>
 <div class="static-table"><table><thead><tr><th>Command</th><th>Meaning</th></tr></thead><tbody><tr><td><code>enable</code></td><td>Privileged mode (prompt ends with <code>#</code>)</td></tr><tr><td><code>configure terminal</code></td><td>Global configuration mode</td></tr><tr><td><code>interface ...</code></td><td>Configure one port</td></tr><tr><td><code>ip address A M</code></td><td>Set the address and mask</td></tr><tr><td><code>no shutdown</code></td><td>Turn the port on (router ports start <strong>off</strong>)</td></tr><tr><td><code>write memory</code></td><td>Save, so settings survive a reboot</td></tr></tbody></table></div>
 <h2>Step 3: configure the PCs</h2>
 <p>Click each PC → <strong>Desktop</strong> → <strong>IP Configuration</strong>:</p>
-<div class="static-table"><table><thead><tr><th>PC</th><th>IP address</th><th>Subnet mask</th><th>Default gateway</th></tr></thead><tbody><tr><td>PC1</td><td>192.168.10.10</td><td>255.255.255.0</td><td>192.168.10.1</td></tr><tr><td>PC2</td><td>192.168.10.11</td><td>255.255.255.0</td><td>192.168.10.1</td></tr><tr><td>PC3</td><td>192.168.20.10</td><td>255.255.255.0</td><td>192.168.20.1</td></tr><tr><td>PC4</td><td>192.168.20.11</td><td>255.255.255.0</td><td>192.168.20.1</td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th>PC</th><th>IP address</th><th>Subnet mask</th><th>Default gateway</th></tr></thead><tbody><tr><td>PC1</td><td>192.168.10.10</td><td>255.255.255.0</td><td>192.168.10.1</td></tr><tr><td>PC2</td><td>192.168.10.11</td><td>255.255.255.0</td><td>192.168.10.1</td></tr><tr><td>PC3</td><td>192.168.20.10</td><td>255.255.255.0</td><td>192.168.20.1</td></tr><tr><td>PC4</td><td>192.168.20.11</td><td>255.255.255.0</td><td>192.168.20.1</td></tr></tbody></table></div>
 <p>The <strong>default gateway</strong> is the router's address on that PC's network. Without it, a PC can only talk inside its own network.</p>
 <h2>Step 4: test</h2>
 <p>On PC1 → Desktop → <strong>Command Prompt</strong>:</p>
@@ -103,7 +103,7 @@ end</code></pre></figure>
 <h2>Why practise with Packet Tracer</h2>
 <p>Real routers and switches are expensive, and mistakes on a live network can take an office offline. Cisco Packet Tracer is a free simulator that lets you build networks, configure devices with the same commands as real Cisco equipment, and watch packets move. It's used in CCNA training, university networking courses and TVET colleges, and it's the best way to gain hands-on confidence before touching production equipment.</p>
 <h2>Understanding the command-line modes</h2>
-<div class="static-table"><table><thead><tr><th>Prompt</th><th>Mode</th><th>How to enter</th><th>Used for</th></tr></thead><tbody><tr><td><code>Router&gt;</code></td><td>User EXEC</td><td>Default</td><td>Basic viewing</td></tr><tr><td><code>Router#</code></td><td>Privileged EXEC</td><td><code>enable</code></td><td>show commands, saving, reloading</td></tr><tr><td><code>Router(config)#</code></td><td>Global configuration</td><td><code>configure terminal</code></td><td>Device-wide settings</td></tr><tr><td><code>Router(config-if)#</code></td><td>Interface configuration</td><td><code>interface g0/0</code></td><td>IP addresses, enabling ports</td></tr><tr><td><code>Router(config-line)#</code></td><td>Line configuration</td><td><code>line console 0</code> / <code>line vty 0 4</code></td><td>Console and remote access passwords</td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th>Prompt</th><th>Mode</th><th>How to enter</th><th>Used for</th></tr></thead><tbody><tr><td><code>Router&gt;</code></td><td>User EXEC</td><td>Default</td><td>Basic viewing</td></tr><tr><td><code>Router#</code></td><td>Privileged EXEC</td><td><code>enable</code></td><td>show commands, saving, reloading</td></tr><tr><td><code>Router(config)#</code></td><td>Global configuration</td><td><code>configure terminal</code></td><td>Device-wide settings</td></tr><tr><td><code>Router(config-if)#</code></td><td>Interface configuration</td><td><code>interface g0/0</code></td><td>IP addresses, enabling ports</td></tr><tr><td><code>Router(config-line)#</code></td><td>Line configuration</td><td><code>line console 0</code> / <code>line vty 0 4</code></td><td>Console and remote access passwords</td></tr></tbody></table></div>
 <p><code>exit</code> goes up one level; <code>end</code> (or Ctrl+Z) returns to privileged mode. Press <code>?</code> at any prompt to see available commands, and Tab to complete them.</p>
 <h2>Securing the router (basic hardening)</h2>
 <figure class="static-code"><pre><code>Router&gt; enable

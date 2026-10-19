@@ -22,7 +22,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=9c47f7007c" />
     <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
-    <link rel="stylesheet" href="/learn/learn.css?v=778a8b735f" />
+    <link rel="stylesheet" href="/learn/learn.css?v=99eb66afff" />
     <script src="/js/theme-init.js?v=47e6e7558c"></script>
 </head>
 <body class="learn-body static-learn">
@@ -42,7 +42,7 @@
 <aside class="callout callout-note"><p class="callout-title">What you will learn</p><div class="callout-body"><ul><li>Why data is split into tables, and how keys link them</li><li>INNER JOIN step by step</li><li>Table aliases and qualified column names</li><li>Joining three tables</li><li>LEFT JOIN and finding rows with no match</li><li>RIGHT and FULL OUTER JOIN</li><li>Self joins and CROSS JOIN</li><li>Joins with GROUP BY for real reports</li><li>Common join mistakes</li></ul></div></aside>
 <h2>Why join?</h2>
 <p>Imagine storing everything in one table:</p>
-<div class="static-table"><table><thead><tr><th>OrderID</th><th>CustomerName</th><th>City</th><th>Product</th><th>Price</th><th>Quantity</th></tr></thead><tbody><tr><td>1</td><td>Wanjiku Mwangi</td><td>Nairobi</td><td>Bluetooth speaker</td><td>3500</td><td>1</td></tr><tr><td>3</td><td>Wanjiku Mwangi</td><td>Nairobi</td><td>Wireless mouse</td><td>1200</td><td>2</td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th>OrderID</th><th>CustomerName</th><th>City</th><th>Product</th><th>Price</th><th>Quantity</th></tr></thead><tbody><tr><td>1</td><td>Wanjiku Mwangi</td><td>Nairobi</td><td>Bluetooth speaker</td><td>3500</td><td>1</td></tr><tr><td>3</td><td>Wanjiku Mwangi</td><td>Nairobi</td><td>Wireless mouse</td><td>1200</td><td>2</td></tr></tbody></table></div>
 <p>Wanjiku's name and city repeat on every order. If she moves to Thika, you must update many rows, and if you miss one, the data contradicts itself. Splitting data into tables (normalisation) stores each fact once. <strong>Keys</strong> connect them:</p>
 <ul><li><code>Customers.CustomerID</code> is the <strong>primary key</strong> of Customers.</li><li><code>Orders.CustomerID</code> is a <strong>foreign key</strong> pointing to it.</li><li><code>Orders.ProductID</code> points to <code>Products.ProductID</code>.</li></ul>
 <h2>INNER JOIN</h2>

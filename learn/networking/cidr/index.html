@@ -22,7 +22,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=9c47f7007c" />
     <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
-    <link rel="stylesheet" href="/learn/learn.css?v=778a8b735f" />
+    <link rel="stylesheet" href="/learn/learn.css?v=99eb66afff" />
     <script src="/js/theme-init.js?v=47e6e7558c"></script>
 </head>
 <body class="learn-body static-learn">
@@ -68,9 +68,9 @@ for cidr in [&quot;172.16.5.200/26&quot;, &quot;10.20.30.40/22&quot;, &quot;172.
           f&quot;first {net.network_address + 1}  last {net.broadcast_address - 1}  usable {hosts}&quot;)</code></pre></figure>
 <h2>How many subnets fit?</h2>
 <p>Splitting a /a into /b subnets gives 2^(b − a) pieces:</p>
-<div class="static-table"><table><thead><tr><th>From</th><th>Into</th><th>Subnets</th><th>Each has</th></tr></thead><tbody><tr><td>/24</td><td>/25</td><td>2</td><td>126 hosts</td></tr><tr><td>/24</td><td>/26</td><td>4</td><td>62 hosts</td></tr><tr><td>/24</td><td>/27</td><td>8</td><td>30 hosts</td></tr><tr><td>/24</td><td>/30</td><td>64</td><td>2 hosts</td></tr><tr><td>/16</td><td>/24</td><td>256</td><td>254 hosts</td></tr><tr><td>/22</td><td>/24</td><td>4</td><td>254 hosts</td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th>From</th><th>Into</th><th>Subnets</th><th>Each has</th></tr></thead><tbody><tr><td>/24</td><td>/25</td><td>2</td><td>126 hosts</td></tr><tr><td>/24</td><td>/26</td><td>4</td><td>62 hosts</td></tr><tr><td>/24</td><td>/27</td><td>8</td><td>30 hosts</td></tr><tr><td>/24</td><td>/30</td><td>64</td><td>2 hosts</td></tr><tr><td>/16</td><td>/24</td><td>256</td><td>254 hosts</td></tr><tr><td>/22</td><td>/24</td><td>4</td><td>254 hosts</td></tr></tbody></table></div>
 <h2>Quick table: prefix → size</h2>
-<div class="static-table"><table><thead><tr><th>Prefix</th><th>Addresses</th><th>Prefix</th><th>Addresses</th></tr></thead><tbody><tr><td>/8</td><td>16,777,216</td><td>/20</td><td>4,096</td></tr><tr><td>/12</td><td>1,048,576</td><td>/21</td><td>2,048</td></tr><tr><td>/16</td><td>65,536</td><td>/22</td><td>1,024</td></tr><tr><td>/17</td><td>32,768</td><td>/23</td><td>512</td></tr><tr><td>/18</td><td>16,384</td><td>/24</td><td>256</td></tr><tr><td>/19</td><td>8,192</td><td>/30</td><td>4</td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th>Prefix</th><th>Addresses</th><th>Prefix</th><th>Addresses</th></tr></thead><tbody><tr><td>/8</td><td>16,777,216</td><td>/20</td><td>4,096</td></tr><tr><td>/12</td><td>1,048,576</td><td>/21</td><td>2,048</td></tr><tr><td>/16</td><td>65,536</td><td>/22</td><td>1,024</td></tr><tr><td>/17</td><td>32,768</td><td>/23</td><td>512</td></tr><tr><td>/18</td><td>16,384</td><td>/24</td><td>256</td></tr><tr><td>/19</td><td>8,192</td><td>/30</td><td>4</td></tr></tbody></table></div>
 <p>Shortcut: each step of 1 in the prefix halves (or doubles) the size. /24 = 256, so /23 = 512, /22 = 1,024, /25 = 128.</p>
 <h2>CIDR in real life</h2>
 <div class="static-table"><table><thead><tr><th>Where</th><th>Example</th></tr></thead><tbody><tr><td><strong>ISPs</strong></td><td>A business fibre plan with a /29 of public IPs</td></tr><tr><td><strong>Cloud</strong></td><td>An AWS/Azure virtual network of 10.0.0.0/16, split into /24 subnets for web, app and database tiers</td></tr><tr><td><strong>Firewall rules</strong></td><td>"Allow SSH only from 41.90.64.0/24"</td></tr><tr><td><strong>Routing tables</strong></td><td>Routes like 10.10.0.0/16 via 192.168.1.2; the default route 0.0.0.0/0</td></tr><tr><td><strong>Home routers</strong></td><td>LAN 192.168.100.0/24</td></tr></tbody></table></div>

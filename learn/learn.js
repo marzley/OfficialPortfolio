@@ -211,7 +211,9 @@
         var head = splitRow(line), rows = [];
         i += 2;
         while (i < lines.length && /^\s*\|/.test(lines[i])) rows.push(splitRow(lines[i++]));
-        out.push('<div class="table-wrap"><table><thead><tr>' + head.map(function (c) { return "<th>" + inline(c) + "</th>"; }).join("") + "</tr></thead><tbody>" +
+        // Key/value tables ("| | |" header) get no empty header row; wide tables scroll sideways on phones
+        var noHead = head.every(function (c) { return !c.trim(); });
+        out.push('<div class="table-wrap' + (head.length >= 4 ? " t-wide" : "") + (noHead ? " t-kv" : "") + '"><table>' + (noHead ? "" : "<thead><tr>" + head.map(function (c) { return "<th>" + inline(c) + "</th>"; }).join("") + "</tr></thead>") + "<tbody>" +
           rows.map(function (r) { return "<tr>" + r.map(function (c) { return "<td>" + inline(c) + "</td>"; }).join("") + "</tr>"; }).join("") + "</tbody></table></div>");
         continue;
       }
@@ -2611,7 +2613,7 @@
       var n = Math.max.apply(null, rows.map(function (r) { return r.length; }));
       rows = rows.map(function (r) { while (r.length < n) r.push({ text: " " }); return r; });
       var widths = []; for (var i = 0; i < n; i++) widths.push("*");
-      return { table: { headerRows: 1, keepWithHeaderRows: 1, dontBreakRows: true, widths: widths, body: rows }, layout: { hLineColor: function () { return "#d8dee6"; }, vLineColor: function () { return "#d8dee6"; },
+      return { table: { headerRows: t.querySelector("thead") ? 1 : 0, keepWithHeaderRows: t.querySelector("thead") ? 1 : 0, dontBreakRows: true, widths: widths, body: rows }, layout: { hLineColor: function () { return "#d8dee6"; }, vLineColor: function () { return "#d8dee6"; },
         paddingLeft: function () { return 5; }, paddingRight: function () { return 5; }, paddingTop: function () { return 3; }, paddingBottom: function () { return 3; } }, margin: [0, 2, 0, 10] };
     }
     function listItem(li) {

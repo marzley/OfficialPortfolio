@@ -22,7 +22,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
     <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=9c47f7007c" />
     <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
-    <link rel="stylesheet" href="/learn/learn.css?v=778a8b735f" />
+    <link rel="stylesheet" href="/learn/learn.css?v=99eb66afff" />
     <script src="/js/theme-init.js?v=47e6e7558c"></script>
 </head>
 <body class="learn-body static-learn">
@@ -128,7 +128,7 @@ git rebase --abort                       # give up a rebase
 git log --merge -p pricing.html          # commits on both sides touching the file</code></pre></figure>
 <p>Note: during a rebase, "ours" and "theirs" are swapped compared with a merge, which confuses many people. When unsure, edit the file manually.</p>
 <h2>Merge vs rebase vs squash</h2>
-<div class="static-table"><table><thead><tr><th>Method</th><th>History looks like</th><th>Good for</th><th>Caution</th></tr></thead><tbody><tr><td>Merge commit</td><td>Branch lines join with a merge commit</td><td>Shared branches; keeps full history</td><td>Busier history</td></tr><tr><td>Rebase</td><td>Straight line, as if work happened in order</td><td>Cleaning up your own branch before a PR</td><td>Never rebase commits others already have</td></tr><tr><td>Squash merge</td><td>One commit per feature on main</td><td>Tidy main branch on GitHub PRs</td><td>Individual commits of the branch are combined</td></tr></tbody></table></div>
+<div class="static-table t-wide"><table><thead><tr><th>Method</th><th>History looks like</th><th>Good for</th><th>Caution</th></tr></thead><tbody><tr><td>Merge commit</td><td>Branch lines join with a merge commit</td><td>Shared branches; keeps full history</td><td>Busier history</td></tr><tr><td>Rebase</td><td>Straight line, as if work happened in order</td><td>Cleaning up your own branch before a PR</td><td>Never rebase commits others already have</td></tr><tr><td>Squash merge</td><td>One commit per feature on main</td><td>Tidy main branch on GitHub PRs</td><td>Individual commits of the branch are combined</td></tr></tbody></table></div>
 <p>Follow your team's convention; consistency matters more than the choice.</p>
 <h2>Interactive rebase: tidy your own commits</h2>
 <p>Before opening a pull request, you can combine "WIP" and "fix typo" commits:</p>
