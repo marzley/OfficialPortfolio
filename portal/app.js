@@ -1568,7 +1568,7 @@
         h("a", { className: "btn btn-ghost btn-sm", href: "verify.php?code=" + encodeURIComponent(c.code), target: "_blank", rel: "noopener", text: c.code }));
     });
     panel.appendChild(h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: "Learner certificates" })),
-      h("p", { className: "portal-meta", text: "A certificate is issued automatically when a signed-in learner completes every lesson in a subject (they also get 25 points and an email). Anyone can check a code on the certificate check page." }),
+      h("p", { className: "portal-meta", text: "A certificate is issued automatically when a signed-in learner completes every lesson in a subject and passes its final test (10 questions from the lesson quizzes, 70% to pass). They also get 25 points and an email. Anyone can check a code on the certificate check page." }),
       cl.length ? h("ul", { className: "admin-list" }, cl) : h("p", { className: "portal-empty", text: "No certificates yet." })));
   }
 

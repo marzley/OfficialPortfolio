@@ -62,7 +62,7 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   const cid = one("SELECT id FROM clients WHERE email = 'client@example.com'").id;
 
   // ---------- database upgrade ----------
-  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "12");
+  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "13");
 
   // ---------- sequential invoice numbers ----------
   r = await admin("invoice_save", { client_id: cid, description: "Website build", amount: 10000, status: "unpaid" });
@@ -843,6 +843,37 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
       r = await lget(boss, "admin");
       ok("the owner sees learner certificates", r.j.stats.certificates === 2 && r.j.certificates.some((c) => c.code === cert.code && c.email === "student@example.com"));
       sql(`DELETE FROM learn_lessons WHERE track_id = ${ctId}`); sql(`DELETE FROM learn_tracks WHERE id = ${ctId}`);
+      // final test: a subject with lesson quizzes needs a 70% pass before the certificate
+      sql("INSERT INTO learn_tracks (slug, title, lang, summary, position, published) VALUES ('final-test', 'Final test subject', 'python', '', 998, 1)");
+      const ftId = one("SELECT id FROM learn_tracks WHERE slug = 'final-test'").id;
+      for (let i = 1; i <= 3; i++) {
+        const quiz = "```quiz\n" + [0, 1, 2, 3].map((k) => `Q: What is ${i * 10 + k} plus one?\nA: ${i * 10 + k + 1} | number ${i * 10 + k + 1}`).join("\n") + "\n```";
+        sql(`INSERT INTO learn_lessons (track_id, slug, title, position, body, exercise, starter, expected, published, updated_at) VALUES (${ftId}, 'f${i}', 'Final lesson ${i}', ${i}, '# L${i}\n\n${quiz}', '', '', '', 1, '2026-01-01 00:00:00')`);
+      }
+      const ftLs = sel(`SELECT id FROM learn_lessons WHERE track_id = ${ftId} ORDER BY position`).map((x) => x.id);
+      r = await lget(stu, "final_test", "&track=final-test");
+      ok("the final test opens only after every lesson", r.j.status === "lessons" && r.j.done === 0 && r.j.total === 3, r.j);
+      for (const id of ftLs.slice(0, 2)) await lpost(stu, "progress", { lesson_id: id });
+      r = await lpost(stu, "progress", { lesson_id: ftLs[2] });
+      ok("finishing the lessons asks for the final test instead of issuing the certificate", r.j.certificate === null && r.j.final_test && r.j.final_test.track === "final-test", r.j);
+      r = await lget(stu, "dashboard");
+      ok("the dashboard lists subjects ready for their final test", r.j.tests_ready.some((t) => t.track === "final-test"));
+      r = await lget(stu, "final_test", "&track=final-test");
+      const qs = r.j.questions;
+      ok("the test has 10 questions from the lesson quizzes, without answers", r.j.status === "test" && qs.length === 10 && !JSON.stringify(r.j).includes('"a"') && r.j.pass === 70, r.j);
+      const right = (q) => String(Number(q.q.match(/What is (\d+)/)[1]) + 1);
+      r = await lpost(stu, "final_submit", { track: "final-test", answers: qs.map((q, i) => (i < 6 ? right(q) : "wrong")) });
+      ok("60% fails, and says which lessons to revise", r.j.passed === false && r.j.score === 6 && r.j.total === 10 && r.j.certificate === null && r.j.results.filter((x) => !x.correct).length === 4, r.j);
+      r = await lpost(stu, "final_submit", { track: "final-test", answers: [] });
+      ok("a test can't be submitted twice", r.s === 409);
+      r = await lget(stu, "final_test", "&track=final-test");
+      r = await lpost(stu, "final_submit", { track: "final-test", answers: r.j.questions.map((q, i) => (i < 7 ? " " + right(q).toUpperCase() + ". " : "")) });
+      ok("70% passes (capitals, spaces and a full stop don't matter) and issues the certificate", r.j.passed === true && r.j.score === 7 && r.j.certificate && /^MLC-/.test(r.j.certificate.code), r.j);
+      r = await lget(stu, "final_test", "&track=final-test");
+      ok("after passing, the test page shows the certificate", r.j.status === "certified");
+      r = await lget(guest, "final_test", "&track=final-test");
+      ok("the final test needs an account", r.s === 401);
+      sql(`DELETE FROM learn_lessons WHERE track_id = ${ftId}`); sql(`DELETE FROM learn_tracks WHERE id = ${ftId}`);
       // profile: name and phone change, email doesn't
       r = await lpost(stu, "profile", { name: "Achieng Otieno", phone: "12345" });
       ok("a wrong phone number is refused", r.s === 400);

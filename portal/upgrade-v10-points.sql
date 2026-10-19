@@ -53,3 +53,15 @@ CREATE TABLE IF NOT EXISTS learn_certificates (
     issued_at DATETIME NOT NULL,
     UNIQUE KEY learn_certificates_once (learner_id, track_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- v13: final tests (10 questions from a subject's lesson quizzes; 70% to pass before the certificate)
+CREATE TABLE IF NOT EXISTS learn_final_tests (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    learner_id INT UNSIGNED NOT NULL,
+    track_id INT UNSIGNED NOT NULL,
+    score INT UNSIGNED NOT NULL,
+    total INT UNSIGNED NOT NULL,
+    passed INT UNSIGNED NOT NULL DEFAULT 0,
+    created_at DATETIME NOT NULL,
+    KEY learn_final_learner (learner_id, track_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

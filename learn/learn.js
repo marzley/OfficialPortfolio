@@ -640,6 +640,7 @@
     if (state.me) api("progress", { lesson_id: id }).then(function (r) {
       gotPoints(r, r.certificate ? "lesson completed + certificate" : "lesson completed");
       if (r.certificate) celebrateCert(r.certificate);
+      else if (r.final_test) finalTestReady(r.final_test);
     }).catch(function () {});
   }
 
@@ -1712,7 +1713,7 @@
         '<div class="me-total"><strong id="me-points">' + d.points + '</strong><span>points</span></div></header>' +
         // Continue learning
         (lastLesson ? '<section class="me-card me-continue"><div><p class="eyebrow">Continue learning</p><h2>' + esc(last.title) + '</h2><p class="muted">' + esc(last.track_title) + " · " + (isDone(last.lesson_id) ? "completed" : "in progress") + " · opened " + esc(timeAgo(last.visited_at)) + '</p></div><a class="btn btn-solid" href="' + lessonUrl(trackOf[last.lesson_id], lastLesson) + '"><i class="fa-solid fa-play" aria-hidden="true"></i> Continue</a></section>' : "") +
-        certsHtml(d.certificates || [], started) +
+        (state.testsReady = d.tests_ready || [], certsHtml(d.certificates || [], started)) +
         badgesHtml(d.badges || [], d.streak) +
         // Points breakdown
         '<section class="me-card"><div class="sec-head"><h2>Your points</h2><a href="#me-rules">How to earn points</a></div><div class="me-kinds">' +
@@ -1814,8 +1815,12 @@
   function certsHtml(certs, started) {
     state.certs = certs;
     var close = started.filter(function (x) { return x.next && x.t.lessons.length >= 3; }).sort(function (a, b) { return (b.done / b.t.lessons.length) - (a.done / a.t.lessons.length); })[0];
+    var ready = state.testsReady || [];
     return '<section class="me-card" id="me-certs"><div class="sec-head"><h2><i class="fa-solid fa-certificate" aria-hidden="true"></i> Your certificates</h2><span class="muted">' + certs.length + " earned</span></div>" +
-      (certs.length ? '<ul class="cert-list">' + certs.map(certCard).join("") + "</ul>" : '<p class="muted">Complete every lesson in a subject to earn a free certificate with your name, a code anyone can check, and a QR code. You can download it as a PDF and add it to LinkedIn.</p>') +
+      (ready.length ? '<ul class="cert-list cert-ready">' + ready.map(function (t) {
+        return '<li class="cert-card"><span class="cert-seal" aria-hidden="true"><i class="fa-solid fa-pen-to-square"></i></span><div class="cert-info"><strong>' + esc(t.title) + '</strong><span class="muted">All ' + t.lessons + ' lessons done · final test to go</span></div><div class="cert-actions"><a class="btn btn-solid btn-sm" href="./?final=' + esc(t.track) + '">Take the final test</a></div></li>';
+      }).join("") + "</ul>" : "") +
+      (certs.length ? '<ul class="cert-list">' + certs.map(certCard).join("") + "</ul>" : ready.length ? "" : '<p class="muted">Complete every lesson in a subject and pass its short final test to earn a free certificate with your name, a code anyone can check, and a QR code. You can download it as a PDF and add it to LinkedIn.</p>') +
       (close ? '<p class="cert-next"><i class="fa-solid fa-flag-checkered" aria-hidden="true"></i> Closest: <strong>' + esc(close.t.title) + "</strong>, " + (close.t.lessons.length - close.done) + " lesson" + (close.t.lessons.length - close.done === 1 ? "" : "s") + ' to go. <a href="./?track=' + esc(close.t.slug) + "&amp;lesson=" + esc(close.next.slug) + '">Continue</a></p>' : "") + '<p class="u-msg" id="cert-msg" role="status" aria-live="polite"></p></section>';
   }
   function badgesHtml(badges, streak) {
@@ -1834,9 +1839,61 @@
     var n = track.lessons.length;
     if (n < 3) return "";
     var done = track.lessons.filter(function (l) { return isDone(l.id); }).length;
-    var txt = done >= n ? (state.me ? '<i class="fa-solid fa-trophy" aria-hidden="true"></i> Subject complete! <a href="./?page=me#me-certs">Get your certificate</a>' : '<i class="fa-solid fa-trophy" aria-hidden="true"></i> Subject complete! <button type="button" class="linklike" data-signin>Sign in</button> to get your free certificate.')
-      : '<i class="fa-solid fa-certificate" aria-hidden="true"></i> ' + done + " of " + n + " lessons done. Complete them all to earn a free certificate" + (state.me ? "." : ' (<button type="button" class="linklike" data-signin>sign in</button> so your progress counts).');
+    var txt = done >= n ? (state.me ? '<i class="fa-solid fa-trophy" aria-hidden="true"></i> Every lesson done! <a href="./?final=' + esc(track.slug) + '">Take the final test</a> to get your certificate (or see it if you already have it).' : '<i class="fa-solid fa-trophy" aria-hidden="true"></i> Subject complete! <button type="button" class="linklike" data-signin>Sign in</button> to get your free certificate.')
+      : '<i class="fa-solid fa-certificate" aria-hidden="true"></i> ' + done + " of " + n + " lessons done. Complete them all, then pass a short final test, to earn a free certificate" + (state.me ? "." : ' (<button type="button" class="linklike" data-signin>sign in</button> so your progress counts).');
     return '<p class="cert-hint" id="cert-hint">' + txt + "</p>";
+  }
+  // ---------- final test: 10 questions from the subject's own lesson quizzes, 70% to pass ----------
+  function finalTestReady(t) {
+    var d = openPay('<div class="pay-center cert-pop"><span class="pay-ok-ico" aria-hidden="true"><i class="fa-solid fa-flag-checkered"></i></span><h2 id="pay-title">Every lesson done!</h2>' +
+      "<p>You've completed all " + t.lessons + " lessons of <strong>" + esc(t.title) + "</strong>. One step left: a short final test from the lesson quizzes. Pass it to get your certificate.</p>" +
+      '<p class="cert-pop-actions"><a class="btn btn-solid" href="./?final=' + esc(t.track) + '" id="ft-go">Take the final test</a><button type="button" class="btn btn-line" id="ft-later">Later</button></p></div>');
+    $("#ft-go", d).addEventListener("click", function () { closePay(); });
+    $("#ft-later", d).addEventListener("click", closePay);
+  }
+  function pageFinal(slug) {
+    setNav("tutorials");
+    showSide(false);
+    setTitle("Final test", "The final test for a learning hub subject.");
+    if (!state.me) {
+      main.innerHTML = '<section class="list-page final-page"><h1>Final test</h1><div class="empty"><i class="fa-solid fa-certificate" aria-hidden="true"></i><p>Sign in to take the final test and get your certificate.</p><p><button type="button" class="btn btn-solid" data-signin>Sign in</button></p></div></section>';
+      return;
+    }
+    main.innerHTML = '<p class="learn-loading"><span class="spinner" aria-hidden="true"></span> Preparing your test…</p>';
+    api("final_test", undefined, "&track=" + encodeURIComponent(slug)).then(function (t) {
+      setTitle("Final test: " + t.title, "The final test for " + t.title + ".");
+      var head = '<p class="crumbs"><a href="./">Learn</a> / <a href="./?track=' + esc(slug) + '">' + esc(t.title) + "</a></p><h1>Final test: " + esc(t.title) + "</h1>";
+      if (t.status === "certified") {
+        main.innerHTML = '<section class="list-page final-page">' + head + '<div class="empty"><i class="fa-solid fa-trophy" aria-hidden="true"></i><p>You already have the certificate for this subject.</p><p><a class="btn btn-solid" href="./?page=me#me-certs">See your certificates</a></p></div></section>';
+        if (t.certificate) state.certs = (state.certs || []).concat([t.certificate]);
+        return;
+      }
+      if (t.status === "lessons") {
+        main.innerHTML = '<section class="list-page final-page">' + head + '<div class="empty"><i class="fa-solid fa-book-open" aria-hidden="true"></i><p>Finish every lesson first: you\'ve done ' + t.done + " of " + t.total + '.</p><p><a class="btn btn-solid" href="./?track=' + esc(slug) + '">Continue the lessons</a></p></div></section>';
+        return;
+      }
+      main.innerHTML = '<section class="list-page final-page">' + head + '<p class="lead">' + t.questions.length + " questions from the lesson quizzes. Score " + t.pass + "% or more to get your certificate. Type your answers; spelling counts, capitals don't. You can retake it with new questions.</p>" +
+        '<form id="final-form" novalidate><ol class="final-qs">' + t.questions.map(function (q, i) {
+          return '<li><p class="quiz-q">' + inline(q.q) + '</p><label class="sr-only" for="fq' + i + '">Answer ' + (i + 1) + '</label><input id="fq' + i + '" autocomplete="off" spellcheck="false" maxlength="300" placeholder="Your answer" /><p class="muted small">From: ' + esc(q.lesson) + "</p></li>";
+        }).join("") + '</ol><p class="u-msg" id="final-msg" role="status" aria-live="polite"></p><button type="submit" class="btn btn-solid" id="final-go">Submit answers</button></form></section>';
+      $("#final-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        var answers = t.questions.map(function (q, i) { return $("#fq" + i).value; });
+        var blank = answers.filter(function (a) { return !a.trim(); }).length;
+        if (blank && !confirm(blank + " question" + (blank === 1 ? " is" : "s are") + " empty. Submit anyway?")) return;
+        var go = $("#final-go"); go.disabled = true; go.textContent = "Marking…";
+        api("final_submit", { track: slug, answers: answers }).then(function (r) {
+          var pct = r.total ? Math.round(100 * r.score / r.total) : 0;
+          var wrong = r.results.filter(function (x) { return !x.correct; });
+          var seen = {}, revise = wrong.filter(function (x) { if (seen[x.link]) return false; seen[x.link] = 1; return true; });
+          main.innerHTML = '<section class="list-page final-page">' + head + '<div class="final-result ' + (r.passed ? "is-pass" : "is-fail") + '"><strong>' + r.score + " / " + r.total + " (" + pct + "%)</strong><span>" + (r.passed ? "Passed! Well done." : "Not yet: you need " + r.pass + "%.") + "</span></div>" +
+            (revise.length ? '<h2 class="notes-h">Revise these lessons</h2><ul class="final-revise">' + revise.map(function (x) { return '<li><a href="./' + esc(x.link) + '">' + esc(x.lesson) + "</a></li>"; }).join("") + "</ul>" : "") +
+            '<p class="final-acts">' + (r.passed ? '<a class="btn btn-solid" href="./?page=me#me-certs">See your certificate</a>' : '<a class="btn btn-solid" href="./?final=' + esc(slug) + '" id="final-again">Try again with new questions</a>') + "</p></section>";
+          if (r.passed && r.certificate) { gotPoints({ points: 25 }, "certificate earned"); celebrateCert(r.certificate); }
+          window.scrollTo(0, 0);
+        }).catch(function (er) { go.disabled = false; go.textContent = "Submit answers"; $("#final-msg").textContent = er.message; });
+      });
+    }).catch(function (e) { errorBox(e.message); });
   }
   function celebrateCert(c) {
     state.certs = (state.certs || []).filter(function (x) { return x.code !== c.code; }).concat([c]);
@@ -2755,6 +2812,7 @@
     if (p.get("video")) return pageVideo(p.get("video"));
     if (p.get("note")) return pageNote(p.get("note"));
     if (p.get("book")) return pageBook(p.get("book"));
+    if (p.get("final")) return pageFinal(p.get("final"));
     var page = p.get("page");
     if (page === "tutorials") return pageTutorials();
     if (page === "practice") return pagePractice(p.get("lang"));

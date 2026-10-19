@@ -5,7 +5,7 @@ if (!defined('MARZLEY_PORTAL')) {
     exit;
 }
 
-const SCHEMA_VERSION = 12;
+const SCHEMA_VERSION = 13;
 const STAFF_PERMS = ['projects' => 'Projects & files', 'clients' => 'People', 'support' => 'Support', 'courses' => 'Courses', 'money' => 'Invoices, payments & quotes', 'leads' => 'Leads'];
 const PROJECT_STATUSES = ['planning', 'design', 'build', 'review', 'live', 'on_hold'];
 const INVOICE_STATUSES = ['unpaid', 'paid', 'cancelled'];
@@ -117,6 +117,8 @@ function migrate(PDO $pdo): void {
         "CREATE TABLE IF NOT EXISTS learn_lesson_likes (id $id, lesson_id $uint NOT NULL, learner_id $uint NOT NULL, created_at DATETIME NOT NULL, UNIQUE (lesson_id, learner_id))$end",
         "CREATE TABLE IF NOT EXISTS learn_reviews (id $id, lesson_id $uint NOT NULL, learner_id $uint NOT NULL, parent_id $uint NULL, rating $uint NULL, body TEXT NOT NULL, is_staff $uint NOT NULL DEFAULT 0, hidden $uint NOT NULL DEFAULT 0, created_at DATETIME NOT NULL)$end",
         "CREATE TABLE IF NOT EXISTS learn_progress (id $id, learner_id $uint NOT NULL, lesson_id $uint NOT NULL, created_at DATETIME NOT NULL, UNIQUE (learner_id, lesson_id))$end",
+        // v13: final tests (a certificate needs a pass once every lesson is done)
+        "CREATE TABLE IF NOT EXISTS learn_final_tests (id $id, learner_id $uint NOT NULL, track_id $uint NOT NULL, score $uint NOT NULL, total $uint NOT NULL, passed $uint NOT NULL DEFAULT 0, created_at DATETIME NOT NULL)$end",
         // v12: a certificate for each subject a learner finishes (every published lesson completed)
         "CREATE TABLE IF NOT EXISTS learn_certificates (id $id, learner_id $uint NOT NULL, track_id $uint NOT NULL, code VARCHAR(20) NOT NULL UNIQUE, lessons $uint NOT NULL DEFAULT 0, issued_at DATETIME NOT NULL, UNIQUE (learner_id, track_id))$end",
         // v11: passwords (optional): sign in with a username or email and a password, besides Google and email codes
@@ -165,7 +167,7 @@ function migrate(PDO $pdo): void {
         try { $pdo->exec("ALTER TABLE $table ADD COLUMN $col $def"); } catch (PDOException $e) { /* already there */ }
     }
     foreach (['CREATE INDEX audit_created ON audit_log (created_at)', 'CREATE INDEX payments_invoice ON payments (invoice_id)', 'CREATE INDEX payments_ref ON payments (reference)', 'CREATE UNIQUE INDEX payments_checkout ON payments (checkout_id)', 'CREATE INDEX queue_pending ON campaign_queue (sent_at)', 'CREATE UNIQUE INDEX referral_once ON referrals (code, referred_phone, client_id)',
-              'CREATE INDEX checks_domain ON site_checks (domain_id, checked_at)', 'CREATE INDEX learn_comments_video ON learn_comments (video_id)', 'CREATE INDEX learn_codes_email ON learn_codes (email)', 'CREATE INDEX learn_reviews_lesson ON learn_reviews (lesson_id)', 'CREATE INDEX learn_note_pay_phone ON learn_note_payments (phone, track_id)', 'CREATE INDEX learn_points_learner ON learn_points (learner_id, created_at)', 'CREATE INDEX learn_visits_learner ON learn_visits (learner_id, visited_at)'] as $sql) {
+              'CREATE INDEX checks_domain ON site_checks (domain_id, checked_at)', 'CREATE INDEX learn_comments_video ON learn_comments (video_id)', 'CREATE INDEX learn_codes_email ON learn_codes (email)', 'CREATE INDEX learn_reviews_lesson ON learn_reviews (lesson_id)', 'CREATE INDEX learn_note_pay_phone ON learn_note_payments (phone, track_id)', 'CREATE INDEX learn_points_learner ON learn_points (learner_id, created_at)', 'CREATE INDEX learn_visits_learner ON learn_visits (learner_id, visited_at)', 'CREATE INDEX learn_final_learner ON learn_final_tests (learner_id, track_id)'] as $sql) {
         try { $pdo->exec($sql); } catch (PDOException $e) { /* already there */ }
     }
     if ($v < 3) {
@@ -1473,6 +1475,7 @@ function learn_certificate_check(int $learnerId, int $trackId): ?array {
     if ($total < 3) return null;
     $done = (int)q('SELECT COUNT(*) FROM learn_progress p JOIN learn_lessons ls ON ls.id = p.lesson_id WHERE p.learner_id = ? AND ls.track_id = ? AND ls.published = 1', [$learnerId, $trackId])->fetchColumn();
     if ($done < $total) return null;
+    if (learn_final_needed($learnerId, $trackId)) return null;   // every lesson done: the final test comes next
     $code = new_learn_certificate_code();
     try {
         q('INSERT INTO learn_certificates (learner_id, track_id, code, lessons, issued_at) VALUES (?, ?, ?, ?, ?)', [$learnerId, $trackId, $code, $total, now()]);
@@ -1487,6 +1490,61 @@ function learn_certificate_check(int $learnerId, int $trackId): ?array {
             "\n\nKeep learning!\nMarzley Tech Solutions · +254 745 789 590", false);
     }
     return learn_certificate_row(q('SELECT * FROM learn_certificates WHERE code = ?', [$code])->fetch());
+}
+
+/** Final test: questions drawn from the subject's own lesson quizzes. */
+const FINAL_TEST_SIZE = 10;
+const FINAL_TEST_PASS = 70;       // percent
+const FINAL_TEST_MIN_BANK = 5;    // subjects with fewer quiz questions than this don't need a test
+
+/** Same rules as the lesson quizzes in learn.js (normAns): case, quotes, commas, spaces and a final full stop don't matter. */
+function quiz_norm(string $s): string {
+    $s = mb_strtolower($s);
+    $s = str_replace(['“', '”', '"', "'", '`', ','], '', $s);
+    return rtrim(preg_replace('/\s+/u', '', $s), '.');
+}
+
+/** Every question in a subject's ```quiz blocks: [id, q, answers, lesson title, lesson slug]. */
+function learn_quiz_bank(int $trackId): array {
+    $bank = [];
+    foreach (q('SELECT id, slug, title, body FROM learn_lessons WHERE track_id = ? AND published = 1 ORDER BY position, id', [$trackId])->fetchAll() as $l) {
+        if (!preg_match_all('/```quiz\s*\n(.*?)```/s', (string)$l['body'], $blocks)) continue;
+        foreach ($blocks[1] as $bi => $block) {
+            $cur = null; $qi = 0;
+            foreach (preg_split('/\R/', $block) as $line) {
+                if (preg_match('/^\s*([QAH]):\s*(.*)$/', $line, $m)) {
+                    if ($m[1] === 'Q') { if ($cur && $cur['a']) $bank[] = $cur; $cur = ['id' => $l['id'] . '-' . $bi . '-' . $qi++, 'q' => trim($m[2]), 'a' => [], 'lesson' => $l['title'], 'slug' => $l['slug']]; }
+                    elseif ($m[1] === 'A' && $cur) $cur['a'] = array_values(array_filter(array_map('trim', explode('|', $m[2])), 'strlen'));
+                } elseif ($cur && !$cur['a'] && trim($line) !== '') $cur['q'] .= ' ' . trim($line);
+            }
+            if ($cur && $cur['a']) $bank[] = $cur;
+        }
+    }
+    return $bank;
+}
+
+function learn_final_passed(int $learnerId, int $trackId): bool {
+    return (bool)q('SELECT id FROM learn_final_tests WHERE learner_id = ? AND track_id = ? AND passed = 1', [$learnerId, $trackId])->fetch();
+}
+
+/** True when this subject has a final test and the learner hasn't passed it yet. */
+function learn_final_needed(int $learnerId, int $trackId): bool {
+    return !learn_final_passed($learnerId, $trackId) && count(learn_quiz_bank($trackId)) >= FINAL_TEST_MIN_BANK;
+}
+
+/** Subjects where every lesson is done and only the final test stands between the learner and the certificate. */
+function learn_tests_ready(int $learnerId): array {
+    $out = [];
+    foreach (q('SELECT DISTINCT ls.track_id FROM learn_progress p JOIN learn_lessons ls ON ls.id = p.lesson_id WHERE p.learner_id = ?', [$learnerId])->fetchAll() as $r) {
+        $tid = (int)$r['track_id'];
+        if (q('SELECT id FROM learn_certificates WHERE learner_id = ? AND track_id = ?', [$learnerId, $tid])->fetch()) continue;
+        $t = q('SELECT slug, title FROM learn_tracks WHERE id = ? AND published = 1', [$tid])->fetch();
+        if (!$t) continue;
+        $total = (int)q('SELECT COUNT(*) FROM learn_lessons WHERE track_id = ? AND published = 1', [$tid])->fetchColumn();
+        $done = (int)q('SELECT COUNT(*) FROM learn_progress p JOIN learn_lessons ls ON ls.id = p.lesson_id WHERE p.learner_id = ? AND ls.track_id = ? AND ls.published = 1', [$learnerId, $tid])->fetchColumn();
+        if ($total >= 3 && $done >= $total && learn_final_needed($learnerId, $tid)) $out[] = ['track' => $t['slug'], 'title' => $t['title'], 'lessons' => $total];
+    }
+    return $out;
 }
 
 /** Issues any certificates already earned (subjects finished before certificates existed, or lessons added and finished later). */

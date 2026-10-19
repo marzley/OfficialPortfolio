@@ -10,7 +10,7 @@ install_error_alerts('learning hub');
 start_session();
 $action = $_GET['action'] ?? '';
 $method = $_SERVER['REQUEST_METHOD'];
-const LEARN_GET = ['me', 'dashboard', 'avatar', 'catalog', 'lesson', 'lesson_social', 'videos', 'video', 'notes', 'note', 'poster', 'stream', 'unlock_status', 'notes_pay_status', 'notes_access', 'admin'];
+const LEARN_GET = ['me', 'dashboard', 'avatar', 'catalog', 'lesson', 'lesson_social', 'videos', 'video', 'notes', 'note', 'poster', 'stream', 'unlock_status', 'final_test', 'notes_pay_status', 'notes_access', 'admin'];
 const VIDEO_TYPES = ['mp4' => 'video/mp4', 'm4v' => 'video/mp4', 'webm' => 'video/webm'];
 const VIDEO_MAX = 2048 * 1024 * 1024;   // 2 GB
 const NOTE_MAX = 100 * 1024 * 1024;     // 100 MB
@@ -281,7 +281,7 @@ switch ($action) {
         $recent = q('SELECT v.lesson_id, v.visited_at, ls.title, ls.slug, t.slug AS track, t.title AS track_title FROM learn_visits v JOIN learn_lessons ls ON ls.id = v.lesson_id JOIN learn_tracks t ON t.id = ls.track_id
                      WHERE v.learner_id = ? AND ls.published = 1 ORDER BY v.visited_at DESC LIMIT 8', [$id])->fetchAll();
         $badges = learn_badges($id);
-        out(['points' => learner_points($id), 'by_kind' => $by, 'certificates' => learn_certificates($id), 'badges' => $badges['badges'], 'streak' => $badges['streak'], 'activity' => array_slice($activity, 0, 60), 'recent' => $recent,
+        out(['points' => learner_points($id), 'by_kind' => $by, 'certificates' => learn_certificates($id), 'tests_ready' => learn_tests_ready($id), 'badges' => $badges['badges'], 'streak' => $badges['streak'], 'activity' => array_slice($activity, 0, 60), 'recent' => $recent,
              'rules' => LEARN_POINTS, 'daily' => LEARN_POINTS_DAILY]);
 
     // ---------- tutorials (free) ----------
@@ -315,7 +315,59 @@ switch ($action) {
         // Finishing the last lesson of a subject earns its certificate (and its points)
         $cert = learn_certificate_check((int)$l['id'], (int)$ls['track_id']);
         if ($cert) $got += LEARN_POINTS['certificate'];
-        out(['ok' => true, 'points' => $got, 'certificate' => $cert]);
+        // Every lesson done but the final test is still to come
+        $ready = $cert ? null : (array_values(array_filter(learn_tests_ready((int)$l['id']), fn($x) => $x['track'] === $ls['track']))[0] ?? null);
+        out(['ok' => true, 'points' => $got, 'certificate' => $cert, 'final_test' => $ready]);
+
+    case 'final_test':
+        // A fresh set of questions from the subject's lesson quizzes; the answers stay on the server
+        $l = need_learner();
+        $t = q('SELECT id, slug, title FROM learn_tracks WHERE slug = ? AND published = 1', [(string)($_GET['track'] ?? '')])->fetch();
+        if (!$t) fail(404, 'Subject not found.');
+        $tid = (int)$t['id'];
+        $cert = q('SELECT * FROM learn_certificates WHERE learner_id = ? AND track_id = ?', [$l['id'], $tid])->fetch();
+        if ($cert) out(['status' => 'certified', 'certificate' => learn_certificate_row($cert), 'title' => $t['title']]);
+        $total = (int)q('SELECT COUNT(*) FROM learn_lessons WHERE track_id = ? AND published = 1', [$tid])->fetchColumn();
+        $done = (int)q('SELECT COUNT(*) FROM learn_progress p JOIN learn_lessons ls ON ls.id = p.lesson_id WHERE p.learner_id = ? AND ls.track_id = ? AND ls.published = 1', [$l['id'], $tid])->fetchColumn();
+        if ($done < $total) out(['status' => 'lessons', 'title' => $t['title'], 'done' => $done, 'total' => $total]);
+        if (!learn_final_needed((int)$l['id'], $tid)) {
+            $c = learn_certificate_check((int)$l['id'], $tid);
+            out(['status' => 'certified', 'certificate' => $c, 'title' => $t['title']]);
+        }
+        if (!rate_ok('final_start:' . $l['id'], 12, 3600)) fail(429, 'You’ve started a lot of tests this hour. Revise the lessons and try again a little later.');
+        $bank = learn_quiz_bank($tid);
+        shuffle($bank);
+        $pick = array_slice($bank, 0, FINAL_TEST_SIZE);
+        $_SESSION['final_test'][$tid] = ['ids' => array_column($pick, 'id'), 'at' => time()];
+        out(['status' => 'test', 'title' => $t['title'], 'track' => $t['slug'], 'pass' => FINAL_TEST_PASS,
+             'questions' => array_map(fn($x) => ['q' => $x['q'], 'lesson' => $x['lesson']], $pick)]);
+
+    case 'final_submit':
+        $l = need_learner();
+        $d = body();
+        $t = q('SELECT id, slug, title FROM learn_tracks WHERE slug = ? AND published = 1', [(string)($d['track'] ?? '')])->fetch();
+        if (!$t) fail(404, 'Subject not found.');
+        $tid = (int)$t['id'];
+        $att = $_SESSION['final_test'][$tid] ?? null;
+        if (!$att || $att['at'] < time() - 7200) fail(409, 'This test has expired. Start it again for a fresh set of questions.');
+        unset($_SESSION['final_test'][$tid]);
+        $byId = [];
+        foreach (learn_quiz_bank($tid) as $x) $byId[$x['id']] = $x;
+        $answers = is_array($d['answers'] ?? null) ? array_values($d['answers']) : [];
+        $score = 0; $results = [];
+        foreach ($att['ids'] as $i => $qid) {
+            $x = $byId[$qid] ?? null;
+            if (!$x) continue;   // the lesson changed since the test started: that question doesn't count
+            $given = quiz_norm(mb_substr((string)($answers[$i] ?? ''), 0, 300));
+            $ok = $given !== '' && in_array($given, array_map('quiz_norm', $x['a']), true);
+            if ($ok) $score++;
+            $results[] = ['correct' => $ok, 'lesson' => $x['lesson'], 'link' => "?track={$t['slug']}&lesson={$x['slug']}"];
+        }
+        $count = count($results);
+        $passed = $count > 0 && $score * 100 >= FINAL_TEST_PASS * $count;
+        q('INSERT INTO learn_final_tests (learner_id, track_id, score, total, passed, created_at) VALUES (?, ?, ?, ?, ?, ?)', [$l['id'], $tid, $score, $count, (int)$passed, now()]);
+        $cert = $passed ? learn_certificate_check((int)$l['id'], $tid) : null;
+        out(['score' => $score, 'total' => $count, 'passed' => $passed, 'pass' => FINAL_TEST_PASS, 'results' => $results, 'certificate' => $cert]);
 
     // ---------- notes and books (free) ----------
 
