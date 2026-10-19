@@ -524,7 +524,7 @@ SW_FOOTER = [
     ('href="process">Process</a>', 'href="process">Mchakato</a>'),
     ('href="pricing">Packages &amp; pricing</a>', 'href="pricing">Vifurushi na bei</a>'),
     ('href="training">Training courses</a>', 'href="training">Kozi za mafunzo</a>'),
-    ('href="learn/">Learn to code (free)</a>', 'href="learn/">Jifunze kuandika programu (bure)</a>'),
+    ('href="learn/">Learn to code (free)</a>', 'href="learn/">Jifunze kuandika programu (bure)</a></li><li><a href="learn/?track=kiswahili&amp;lesson=kiswahili-anza-hapa">Masomo kwa Kiswahili</a>'),
     ('href="website-check">Free website check</a>', 'href="website-check">Kagua tovuti yako bure</a>'),
     ('href="referrals">Refer &amp; earn</a>', 'href="referrals">Pendekeza upate zawadi</a>'),
     ('href="blog">Blog</a>', 'href="blog">Blogu</a>'), ('href="faq">FAQ</a>', 'href="faq">Maswali</a>'),

@@ -243,7 +243,7 @@ def fit(title, extra):
     return title[:57].rsplit(" ", 1)[0] + "…"
 
 
-def page(head_assets, title, desc, canonical, ld, crumbs, main):
+def page(head_assets, title, desc, canonical, ld, crumbs, main, lang="en"):
     nav = ('<nav class="learn-nav" aria-label="Learning hub">'
            '<a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a>'
            '<a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a>'
@@ -251,7 +251,7 @@ def page(head_assets, title, desc, canonical, ld, crumbs, main):
            '<a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>')
     crumb_html = " / ".join('<a href="%s">%s</a>' % (e(u), e(n)) for n, u in crumbs[:-1]) + " / <span>%s</span>" % e(crumbs[-1][0])
     return """<!DOCTYPE html>
-<html lang="en">
+<html lang="{lang}">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -293,7 +293,7 @@ def page(head_assets, title, desc, canonical, ld, crumbs, main):
     </footer>
 </body>
 </html>
-""".format(title=e(title), desc=e(desc), canonical=e(canonical), site=SITE, ld=json.dumps(ld, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/"),
+""".format(lang=lang, title=e(title), desc=e(desc), canonical=e(canonical), site=SITE, ld=json.dumps(ld, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/"),
            assets=head_assets, nav=nav, crumbs=crumb_html, main=main)
 
 
@@ -322,6 +322,7 @@ def build():
     written = set()
     for track in seed["tracks"]:
         t, lessons = track["slug"], track["lessons"]
+        lang = "sw" if t == "kiswahili" else "en"
         tdir = OUT / t
         if tdir.exists():
             shutil.rmtree(tdir)
@@ -343,14 +344,14 @@ def build():
         ld = {"@context": "https://schema.org", "@graph": [
             {"@type": "Course", "@id": course_url + "#course", "name": track["title"], "description": track["summary"], "url": course_url,
              "provider": {"@type": "Organization", "@id": SITE + "#business", "name": "Marzley Tech Solutions", "url": SITE},
-             "isAccessibleForFree": True, "inLanguage": "en",
+             "isAccessibleForFree": True, "inLanguage": lang,
              "offers": {"@type": "Offer", "price": "0", "priceCurrency": "KES", "category": "Free"},
              "hasCourseInstance": {"@type": "CourseInstance", "courseMode": "Online", "courseWorkload": "PT%dH" % max(1, len(lessons))},
              "hasPart": [{"@type": "LearningResource", "name": l["title"], "url": SITE.rstrip("/") + lesson_url(t, l["slug"])} for l in lessons]},
             breadcrumbs(crumbs)]}
-        (tdir / "index.html").write_text(page(assets, fit(track["title"] + " free course", "Marzley Tech"),
+        (tdir / "index.html").write_text(page(assets, fit(track["title"] + (" kozi ya bure" if lang == "sw" else " free course"), "Marzley Tech"),
                                               (track["summary"][:152].rsplit(" ", 1)[0] + "…") if len(track["summary"]) > 155 else track["summary"],
-                                              course_url, ld, crumbs, main), encoding="utf-8")
+                                              course_url, ld, crumbs, main, lang), encoding="utf-8")
         # ---- each lesson
         for n, l in enumerate(lessons):
             prev, nxt = (lessons[n - 1] if n else None), (lessons[n + 1] if n + 1 < len(lessons) else None)
@@ -376,14 +377,14 @@ def build():
             desc = description(l, track)
             ld = {"@context": "https://schema.org", "@graph": [
                 {"@type": "LearningResource", "@id": url + "#lesson", "name": l["title"], "description": desc, "url": url,
-                 "learningResourceType": "Lesson", "isAccessibleForFree": True, "inLanguage": "en", "educationalUse": "self-study",
+                 "learningResourceType": "Lesson", "isAccessibleForFree": True, "inLanguage": lang, "educationalUse": "self-study",
                  "isPartOf": {"@type": "Course", "@id": course_url + "#course", "name": track["title"], "url": course_url},
                  "author": {"@type": "Person", "@id": SITE + "#kelvin", "name": "Kelvin Wanyoike", "url": SITE + "kelvin-wanyoike"},
                  "publisher": {"@type": "Organization", "@id": SITE + "#business", "name": "Marzley Tech Solutions"}},
                 breadcrumbs(crumbs)]}
             d = tdir / l["slug"]
             d.mkdir()
-            (d / "index.html").write_text(page(assets, fit(l["title"], track["title"]), desc, url, ld, crumbs, main), encoding="utf-8")
+            (d / "index.html").write_text(page(assets, fit(l["title"], track["title"]), desc, url, ld, crumbs, main, lang), encoding="utf-8")
     # remove folders of subjects that no longer exist
     for d in OUT.iterdir():
         if d.is_dir() and (d / "index.html").exists() and d.name not in written and "static-course" in (d / "index.html").read_text(encoding="utf-8"):

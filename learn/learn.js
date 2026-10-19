@@ -15,7 +15,7 @@
     powerpoint: "fa-solid fa-person-chalkboard", "google-workspace": "fa-solid fa-cloud", "ai-tools": "fa-solid fa-robot", "ai-by-task": "fa-solid fa-lightbulb", "e-services-kenya": "fa-solid fa-landmark",
     "computer-maintenance": "fa-solid fa-screwdriver-wrench", "earn-online": "fa-solid fa-hand-holding-dollar",
     projects: "fa-solid fa-hammer", "career-roadmaps": "fa-solid fa-route", freelancing: "fa-solid fa-briefcase",
-    forex: "fa-solid fa-chart-line", "trading-markets": "fa-solid fa-scale-balanced", "earn-directory": "fa-solid fa-list-check", "data-analytics": "fa-solid fa-chart-column", "devops-cloud": "fa-solid fa-cloud", "cybersecurity-advanced": "fa-solid fa-shield-halved", "microtask-platforms": "fa-solid fa-hand-pointer", "freelance-platforms": "fa-solid fa-handshake" };
+    forex: "fa-solid fa-chart-line", "trading-markets": "fa-solid fa-scale-balanced", "earn-directory": "fa-solid fa-list-check", "data-analytics": "fa-solid fa-chart-column", "devops-cloud": "fa-solid fa-cloud", "cybersecurity-advanced": "fa-solid fa-shield-halved", "microtask-platforms": "fa-solid fa-hand-pointer", "freelance-platforms": "fa-solid fa-handshake", kiswahili: "fa-solid fa-language" };
   var TRACK_GROUPS = [
     { title: "Careers, projects & freelancing", icon: "fa-solid fa-route", slugs: ["career-roadmaps", "projects", "freelancing"] },
     { title: "Web & coding", icon: "fa-solid fa-code", slugs: ["html", "css", "javascript", "python", "sql", "php", "typescript", "algorithms", "git"] },
@@ -24,7 +24,7 @@
     { title: "Data & analytics", icon: "fa-solid fa-chart-column", slugs: ["data-analytics"] },
     { title: "More programming languages", icon: "fa-solid fa-laptop-code", slugs: ["java", "c-programming", "cpp", "csharp", "go"] },
     { title: "Design", icon: "fa-solid fa-palette", slugs: ["web-design", "graphic-design"] },
-    { title: "ICT & digital skills", icon: "fa-solid fa-computer", slugs: ["earn-online", "it-basics", "digital-literacy", "ms-word", "excel", "powerpoint", "google-workspace", "e-services-kenya", "computer-maintenance"] },
+    { title: "ICT & digital skills", icon: "fa-solid fa-computer", slugs: ["kiswahili", "earn-online", "it-basics", "digital-literacy", "ms-word", "excel", "powerpoint", "google-workspace", "e-services-kenya", "computer-maintenance"] },
     { title: "Networking, systems & security", icon: "fa-solid fa-network-wired", slugs: ["networking", "linux", "devops-cloud", "cybersecurity", "cybersecurity-advanced", "hosting"] },
     { title: "Business & earning online", icon: "fa-solid fa-sack-dollar", slugs: ["earn-directory", "microtask-platforms", "freelance-platforms", "make-money-online", "marketing"] },
     { title: "Trading & investing (education)", icon: "fa-solid fa-chart-line", slugs: ["forex", "trading-markets"] }
