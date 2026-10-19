@@ -305,6 +305,12 @@ html { zoom: 1; }
 .learn-actions .portal-link:hover, .learn-actions .portal-link:focus-visible { border-color: var(--amber); box-shadow: 0 4px 14px rgba(11, 27, 53, .12); transform: translateY(-1px); color: var(--heading); }
 @media (prefers-reduced-motion: reduce) { .learn-actions .portal-link { transition: none; } .learn-actions .portal-link:hover { transform: none; } }
 @media (max-width: 1100px) { .learn-actions .portal-link { padding: 0 4px; } .learn-actions .portal-link span { display: none; } }
+.learn-actions .portal-link[hidden] { display: none; }
+/* Phones: the portal is in the footer (and the account menu), so the top bar keeps just search, theme and sign in */
+@media (max-width: 640px) { .learn-actions .portal-link { display: none; } }
+.user-portal { display: flex; align-items: center; gap: 8px; margin: 4px 0 8px; padding: 8px 10px; border-radius: 10px; color: var(--heading); text-decoration: none; font-weight: 600; font-size: 14px; }
+.user-portal i { color: var(--amber-text); width: 18px; text-align: center; }
+.user-portal:hover, .user-portal:focus-visible { background: var(--bg); }
 
 /* ---------- practice questions and tools ---------- */
 .quiz, .tool { margin: 22px 0; padding: 18px 20px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow); }

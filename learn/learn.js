@@ -2704,6 +2704,8 @@
     var me = state.me;
     $("#signin-btn").hidden = !!me;
     $("#user-menu").hidden = !me;
+    // Signed in, the client portal link lives in the account menu, so the top bar doesn't show two "person" buttons
+    var pl = document.querySelector(".learn-actions .portal-link"); if (pl) pl.hidden = !!me;
     $("#manage-link").hidden = !state.editor;
     if (!me) return;
     var name = me.name || me.email;
