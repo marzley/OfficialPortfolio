@@ -96,7 +96,10 @@ These are general patterns, not guarantees. Two people doing the same method can
 | 45 | [Kids, family and personal services](./?track=earn-directory&lesson=kids-family-personal-services-methods) | Available |
 | 46 | [Sports, outdoor and recreation](./?track=earn-directory&lesson=sports-outdoor-recreation-methods) | Available |
 | 47 | [Specialist printing and branding](./?track=earn-directory&lesson=specialist-printing-branding-methods) | Available |
-| 48+ | More categories in future updates | Coming |
+| 48 | [Smart technology and telecom installation](./?track=earn-directory&lesson=smart-tech-installation-methods) | Available |
+| 49 | [Interior finishing and home specialties](./?track=earn-directory&lesson=interior-finishing-home-specialties-methods) | Available |
+| 50 | [Domestic, personal and funeral services](./?track=earn-directory&lesson=domestic-personal-funeral-services-methods) | Available |
+| 51+ | More categories in future updates | Coming |
 
 ## Universal safety rules
 
