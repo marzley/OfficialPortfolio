@@ -62,7 +62,7 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   const cid = one("SELECT id FROM clients WHERE email = 'client@example.com'").id;
 
   // ---------- database upgrade ----------
-  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "13");
+  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "14");
 
   // ---------- sequential invoice numbers ----------
   r = await admin("invoice_save", { client_id: cid, description: "Website build", amount: 10000, status: "unpaid" });
@@ -874,6 +874,29 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
       r = await lget(guest, "final_test", "&track=final-test");
       ok("the final test needs an account", r.s === 401);
       sql(`DELETE FROM learn_lessons WHERE track_id = ${ftId}`); sql(`DELETE FROM learn_tracks WHERE id = ${ftId}`);
+      // leaderboard: opt-in only, first name and initial
+      r = await lget(guest, "leaderboard");
+      ok("the leaderboard is empty until someone opts in", r.s === 200 && r.j.top.length === 0 && r.j.month);
+      r = await lpost(stu, "settings", { leaderboard: true });
+      ok("a learner can join the leaderboard", r.j.settings.leaderboard === true);
+      r = await lget(stu, "leaderboard");
+      ok("the leaderboard shows this month's points, first name and initial only", r.j.top.length === 1 && r.j.top[0].me === true && r.j.top[0].points > 0 && !/@/.test(r.j.top[0].name) && r.j.me.rank === 1, r.j);
+      r = await lget(stu2, "leaderboard");
+      ok("others see the board but not who isn't on it", r.j.top.length === 1 && r.j.top[0].me === false && r.j.me === null);
+      await lpost(stu, "settings", { leaderboard: false });
+      r = await lget(guest, "leaderboard");
+      ok("leaving the leaderboard removes you", r.j.top.length === 0);
+      // weekly progress email, with a one-click off link
+      clearMail();
+      sql("UPDATE learners SET last_seen = '" + new Date().toISOString().slice(0, 19).replace("T", " ") + "'");
+      cron("weekly");
+      const wk = fs.readFileSync(WORK + "/mail.txt", "utf8");
+      ok("active learners get a weekly progress email with the next step", /Points this week/.test(wk) && /learn\.php\?action=email_off&t=[a-f0-9]{48}/.test(wk), wk.slice(0, 300));
+      clearMail(); cron("weekly");
+      ok("the weekly email goes once a week", !/Points this week/.test(fs.readFileSync(WORK + "/mail.txt", "utf8")));
+      const tok = wk.match(/email_off&t=([a-f0-9]{48})/)[1];
+      const off = await fetch(BASE + "/portal/learn.php?action=email_off&t=" + tok);
+      ok("one click turns the weekly email off", off.status === 200 && /turned off/.test(await off.text()) && one(`SELECT COUNT(*) AS n FROM learners WHERE mail_token = '${tok}' AND weekly_email = 0`).n == 1);
       // profile: name and phone change, email doesn't
       r = await lpost(stu, "profile", { name: "Achieng Otieno", phone: "12345" });
       ok("a wrong phone number is refused", r.s === 400);

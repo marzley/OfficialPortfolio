@@ -65,3 +65,8 @@ CREATE TABLE IF NOT EXISTS learn_final_tests (
     created_at DATETIME NOT NULL,
     KEY learn_final_learner (learner_id, track_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- v14: leaderboard (opt-in) and the weekly progress email (one-click off). Each line may say "Duplicate column" if already added: harmless.
+ALTER TABLE learners ADD COLUMN leaderboard INT UNSIGNED NOT NULL DEFAULT 0;
+ALTER TABLE learners ADD COLUMN weekly_email INT UNSIGNED NOT NULL DEFAULT 1;
+ALTER TABLE learners ADD COLUMN mail_token VARCHAR(48) NOT NULL DEFAULT '';

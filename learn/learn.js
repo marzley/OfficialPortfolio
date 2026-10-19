@@ -1715,6 +1715,7 @@
         (lastLesson ? '<section class="me-card me-continue"><div><p class="eyebrow">Continue learning</p><h2>' + esc(last.title) + '</h2><p class="muted">' + esc(last.track_title) + " · " + (isDone(last.lesson_id) ? "completed" : "in progress") + " · opened " + esc(timeAgo(last.visited_at)) + '</p></div><a class="btn btn-solid" href="' + lessonUrl(trackOf[last.lesson_id], lastLesson) + '"><i class="fa-solid fa-play" aria-hidden="true"></i> Continue</a></section>' : "") +
         (state.testsReady = d.tests_ready || [], certsHtml(d.certificates || [], started)) +
         badgesHtml(d.badges || [], d.streak) +
+        '<section class="me-card" id="me-board"><div class="sec-head"><h2><i class="fa-solid fa-ranking-star" aria-hidden="true"></i> Leaderboard</h2><span class="muted" id="board-month"></span></div><div id="board-body"><p class="muted">Loading…</p></div></section>' +
         // Points breakdown
         '<section class="me-card"><div class="sec-head"><h2>Your points</h2><a href="#me-rules">How to earn points</a></div><div class="me-kinds">' +
         Object.keys(KIND_NAMES).map(function (k) {
@@ -1754,11 +1755,13 @@
         '<label>Learner ID (can’t be changed)</label><input value="' + esc(me.learner_code || "") + '" disabled />' +
         '<p class="u-msg" id="me-msg" role="status" aria-live="polite"></p><button type="submit" class="btn btn-solid">Save changes</button></form></div>' +
         '<p class="muted small">Your photo shows in your account menu, next to your comments, and in the client portal if you use the same email there.</p></section>' +
+        prefsSection(me) +
         pwSection(me) +
         rulesHtml() + "</section>";
       main.innerHTML = html;
       if (/^#me-[a-z-]+$/.test(location.hash) && $(location.hash)) setTimeout(function () { $(location.hash).scrollIntoView({ block: "start" }); }, 50);
 
+      loadBoard();
       // Suggestions: the next lesson in subjects you've started, then good first lessons in new subjects
       var picks = [];
       started.forEach(function (x) { if (x.next && picks.length < 4) picks.push([x.t, x.next, "Next in " + x.t.title]); });
@@ -1987,6 +1990,32 @@
       msg("The certificate couldn’t be made: " + (e && e.message ? e.message : "please try again."));
     }).then(function () { btn.disabled = false; });
   }
+  // ---------- leaderboard (opt-in) and email settings ----------
+  function loadBoard() {
+    api("leaderboard").then(function (b) {
+      var on = !!(state.me && state.me.settings && state.me.settings.leaderboard);
+      $("#board-month").textContent = b.month;
+      $("#board-body").innerHTML = (b.top.length ? '<ol class="board">' + b.top.map(function (r) {
+        return '<li class="' + (r.me ? "is-me" : "") + '"><span class="board-rank">' + r.rank + "</span>" + avatarHtml(r.avatar, r.name) + '<span class="board-name">' + esc(r.name) + (r.me ? " (you)" : "") + '</span><strong>' + r.points + " pts</strong></li>";
+      }).join("") + "</ol>" : '<p class="muted">No one has joined this month\'s leaderboard yet. Be the first!</p>') +
+        '<p class="muted small">' + (on ? (b.me ? "You're #" + b.me.rank + " this month with " + b.me.points + " points." : "You have " + b.my_points + " points this month.") : "You have " + b.my_points + " points this month. Only learners who choose to appear are shown, by first name and initial.") + "</p>" +
+        '<label class="switch-row"><input type="checkbox" id="board-on"' + (on ? " checked" : "") + ' /> <span>Show me on the leaderboard</span></label>';
+      $("#board-on").addEventListener("change", function () {
+        var box = this;
+        api("settings", { leaderboard: box.checked }).then(function (r) { state.me.settings = r.settings; loadBoard(); }).catch(function (e) { box.checked = !box.checked; alert(e.message); });
+      });
+    }).catch(function () { $("#board-body").innerHTML = '<p class="muted">The leaderboard could not load.</p>'; });
+  }
+  function prefsSection(me) {
+    var st = me.settings || {};
+    return '<section class="me-card" id="me-prefs"><h2>Email settings</h2><label class="switch-row"><input type="checkbox" id="pref-weekly"' + (st.weekly_email !== false ? " checked" : "") + ' /> <span>Weekly progress email: your points, streak and the next lesson towards a certificate (Mondays)</span></label><p class="u-msg" id="pref-msg" role="status" aria-live="polite"></p></section>';
+  }
+  document.addEventListener("change", function (e) {
+    if (!e.target || e.target.id !== "pref-weekly") return;
+    var box = e.target;
+    api("settings", { weekly_email: box.checked }).then(function (r) { state.me.settings = r.settings; $("#pref-msg").textContent = r.settings.weekly_email ? "Weekly emails on." : "Weekly emails off."; })
+      .catch(function (er) { box.checked = !box.checked; $("#pref-msg").textContent = er.message; });
+  });
   function pwSection(me) {
     var pw = me.password || {}, needCur = pw.has_password && !pw.fresh;
     return '<section class="me-card" id="me-password"><h2>Sign-in and password</h2>' +

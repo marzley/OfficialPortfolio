@@ -5,7 +5,7 @@ if (!defined('MARZLEY_PORTAL')) {
     exit;
 }
 
-const SCHEMA_VERSION = 13;
+const SCHEMA_VERSION = 14;
 const STAFF_PERMS = ['projects' => 'Projects & files', 'clients' => 'People', 'support' => 'Support', 'courses' => 'Courses', 'money' => 'Invoices, payments & quotes', 'leads' => 'Leads'];
 const PROJECT_STATUSES = ['planning', 'design', 'build', 'review', 'live', 'on_hold'];
 const INVOICE_STATUSES = ['unpaid', 'paid', 'cancelled'];
@@ -162,6 +162,9 @@ function migrate(PDO $pdo): void {
         ['clients', 'ref_code', "VARCHAR(20) NOT NULL DEFAULT ''"],      // v7: each client's own referral code
         ['clients', 'referred_by', "VARCHAR(20) NOT NULL DEFAULT ''"],   // v7: who referred them (signed up through a link)
         ['learners', 'avatar', "VARCHAR(80) NOT NULL DEFAULT ''"],        // v10: profile photo, shared by the portal and the learning hub
+        ['learners', 'leaderboard', "$uint NOT NULL DEFAULT 0"],          // v14: shown on the monthly leaderboard (opt-in)
+        ['learners', 'weekly_email', "$uint NOT NULL DEFAULT 1"],         // v14: weekly progress email (one-click off)
+        ['learners', 'mail_token', "VARCHAR(48) NOT NULL DEFAULT ''"],    // v14: for the one-click "stop these emails" link
     ];
     foreach ($columns as [$table, $col, $def]) {
         try { $pdo->exec("ALTER TABLE $table ADD COLUMN $col $def"); } catch (PDOException $e) { /* already there */ }
@@ -1545,6 +1548,70 @@ function learn_tests_ready(int $learnerId): array {
         if ($total >= 3 && $done >= $total && learn_final_needed($learnerId, $tid)) $out[] = ['track' => $t['slug'], 'title' => $t['title'], 'lessons' => $total];
     }
     return $out;
+}
+
+// ---------- leaderboard and weekly emails ----------
+
+/** First name and initial, so public lists don't show full names or emails. */
+function learner_public_name(string $name, string $email): string {
+    $parts = preg_split('/\s+/', trim($name)) ?: [];
+    if (!$parts || $parts[0] === '') return ucfirst(explode('@', $email)[0][0] ?? 'L') . '.';
+    return $parts[0] . (isset($parts[1]) ? ' ' . mb_substr($parts[1], 0, 1) . '.' : '');
+}
+
+/** This month's top learners by points (only those who chose to appear). */
+function learn_leaderboard(int $limit = 20, int $meId = 0): array {
+    $from = date('Y-m-01 00:00:00');
+    $rows = q('SELECT l.id, l.name, l.email, l.avatar, SUM(p.points) AS pts FROM learn_points p JOIN learners l ON l.id = p.learner_id
+               WHERE p.created_at >= ? AND l.leaderboard = 1 GROUP BY l.id, l.name, l.email, l.avatar ORDER BY pts DESC, MIN(p.created_at) ASC', [$from])->fetchAll();
+    $top = []; $mine = null;
+    foreach ($rows as $i => $r) {
+        $row = ['rank' => $i + 1, 'name' => learner_public_name((string)$r['name'], (string)$r['email']), 'avatar' => avatar_url($r), 'points' => (int)$r['pts'], 'me' => (int)$r['id'] === $meId];
+        if ($i < $limit) $top[] = $row;
+        if ($row['me']) $mine = $row;
+    }
+    $myPts = $meId ? (int)q('SELECT COALESCE(SUM(points), 0) FROM learn_points WHERE learner_id = ? AND created_at >= ?', [$meId, $from])->fetchColumn() : 0;
+    return ['month' => date('F Y'), 'top' => $top, 'me' => $mine, 'my_points' => $myPts, 'count' => count($rows)];
+}
+
+function learner_mail_token(int $learnerId): string {
+    $t = (string)q('SELECT mail_token FROM learners WHERE id = ?', [$learnerId])->fetchColumn();
+    if (strlen($t) !== 48) { $t = bin2hex(random_bytes(24)); q('UPDATE learners SET mail_token = ? WHERE id = ?', [$t, $learnerId]); }
+    return $t;
+}
+
+/** The weekly progress email for one learner, or null when there's nothing useful to say. */
+function learn_weekly_email(int $learnerId): ?array {
+    $l = q('SELECT id, name, email, weekly_email FROM learners WHERE id = ?', [$learnerId])->fetch();
+    if (!$l || !(int)$l['weekly_email']) return null;
+    $site = rtrim(config()['site_url'] ?? 'https://marzleytechsolutions.co.ke', '/');
+    $weekPts = (int)q('SELECT COALESCE(SUM(points), 0) FROM learn_points WHERE learner_id = ? AND created_at >= ?', [$learnerId, date('Y-m-d H:i:s', time() - 7 * 86400)])->fetchColumn();
+    $streak = learn_streaks($learnerId);
+    $lines = [];
+    // Closest unfinished subject, and the next lesson in it
+    $best = null;
+    foreach (q('SELECT DISTINCT ls.track_id FROM learn_progress p JOIN learn_lessons ls ON ls.id = p.lesson_id WHERE p.learner_id = ?', [$learnerId])->fetchAll() as $r) {
+        $tid = (int)$r['track_id'];
+        if (q('SELECT id FROM learn_certificates WHERE learner_id = ? AND track_id = ?', [$learnerId, $tid])->fetch()) continue;
+        $t = q('SELECT slug, title FROM learn_tracks WHERE id = ? AND published = 1', [$tid])->fetch();
+        if (!$t) continue;
+        $total = (int)q('SELECT COUNT(*) FROM learn_lessons WHERE track_id = ? AND published = 1', [$tid])->fetchColumn();
+        $next = q('SELECT slug, title FROM learn_lessons WHERE track_id = ? AND published = 1 AND id NOT IN (SELECT lesson_id FROM learn_progress WHERE learner_id = ?) ORDER BY position, id LIMIT 1', [$tid, $learnerId])->fetch();
+        $left = $next ? $total - (int)q('SELECT COUNT(*) FROM learn_progress p JOIN learn_lessons ls ON ls.id = p.lesson_id WHERE p.learner_id = ? AND ls.track_id = ? AND ls.published = 1', [$learnerId, $tid])->fetchColumn() : 0;
+        if ($total >= 3 && (!$best || $left < $best['left'])) $best = ['title' => $t['title'], 'slug' => $t['slug'], 'left' => $left, 'next' => $next];
+    }
+    $tests = learn_tests_ready($learnerId);
+    if ($tests) $lines[] = 'You finished every lesson in “' . $tests[0]['title'] . '”. Take the final test to get your certificate: ' . $site . '/learn/?final=' . $tests[0]['track'];
+    if ($best && $best['next']) $lines[] = "You're " . $best['left'] . ' lesson' . ($best['left'] === 1 ? '' : 's') . ' away from your “' . $best['title'] . '” certificate. Next up: “' . $best['next']['title'] . '”: ' . $site . '/learn/?track=' . $best['slug'] . '&lesson=' . $best['next']['slug'];
+    if (!$lines && $weekPts === 0) return null;   // nothing started and nothing this week: don't email
+    $first = strtok(trim((string)$l['name']), ' ') ?: '';
+    $text = 'Hi' . ($first !== '' ? " $first" : '') . ",\n\nHere's your week in the Marzley Tech learning hub:\n\n" .
+        "- Points this week: $weekPts (total " . learner_points($learnerId) . ")\n" .
+        '- Learning streak: ' . ($streak['current'] ? $streak['current'] . ' day' . ($streak['current'] === 1 ? '' : 's') . ' in a row' : 'learn today to start a new one') . " (best: {$streak['best']})\n\n" .
+        ($lines ? implode("\n\n", $lines) . "\n\n" : "Pick up where you left off: $site/learn/?page=me\n\n") .
+        "Keep going: a little every day adds up.\n\nMarzley Tech Solutions\n\n" .
+        "Don't want these weekly emails? Turn them off with one click: $site/portal/learn.php?action=email_off&t=" . learner_mail_token($learnerId);
+    return ['to' => $l['email'], 'subject' => $tests ? 'Your certificate is one test away' : 'Your week in the learning hub', 'text' => $text];
 }
 
 /** Issues any certificates already earned (subjects finished before certificates existed, or lessons added and finished later). */

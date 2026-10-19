@@ -10,7 +10,7 @@ install_error_alerts('learning hub');
 start_session();
 $action = $_GET['action'] ?? '';
 $method = $_SERVER['REQUEST_METHOD'];
-const LEARN_GET = ['me', 'dashboard', 'avatar', 'catalog', 'lesson', 'lesson_social', 'videos', 'video', 'notes', 'note', 'poster', 'stream', 'unlock_status', 'final_test', 'notes_pay_status', 'notes_access', 'admin'];
+const LEARN_GET = ['me', 'dashboard', 'avatar', 'catalog', 'lesson', 'lesson_social', 'videos', 'video', 'notes', 'note', 'poster', 'stream', 'unlock_status', 'final_test', 'leaderboard', 'email_off', 'notes_pay_status', 'notes_access', 'admin'];
 const VIDEO_TYPES = ['mp4' => 'video/mp4', 'm4v' => 'video/mp4', 'webm' => 'video/webm'];
 const VIDEO_MAX = 2048 * 1024 * 1024;   // 2 GB
 const NOTE_MAX = 100 * 1024 * 1024;     // 100 MB
@@ -121,10 +121,11 @@ switch ($action) {
         $progress = $me ? array_map('intval', array_column(q('SELECT lesson_id FROM learn_progress WHERE learner_id = ?', [$me['id']])->fetchAll(), 'lesson_id')) : [];
         if ($me) {
             award_points((int)$me['id'], 'signup', 'signup', 'Created your account');   // accounts made before points existed
-            $row = q('SELECT id, name, phone, avatar, created_at FROM learners WHERE id = ?', [$me['id']])->fetch();
+            $row = q('SELECT id, name, phone, avatar, created_at, leaderboard, weekly_email FROM learners WHERE id = ?', [$me['id']])->fetch();
             $me += ['phone' => $row['phone'] ?? '', 'avatar' => $row ? avatar_url($row) : null, 'since' => $row['created_at'] ?? '',
                     'learner_code' => 'L-' . str_pad((string)$me['id'], 5, '0', STR_PAD_LEFT), 'points' => learner_points((int)$me['id']),
-                    'password' => password_status($me['email']) + ['fresh' => fresh_sign_in()]];
+                    'password' => password_status($me['email']) + ['fresh' => fresh_sign_in()],
+                    'settings' => ['leaderboard' => (bool)($row['leaderboard'] ?? 0), 'weekly_email' => (bool)($row['weekly_email'] ?? 1)]];
         }
         out(['learner' => $me, 'csrf' => csrf_token(), 'editor' => $editor, 'progress' => $progress,
              'google_client_id' => config()['google_client_id'], 'mpesa' => (bool)mpesa_config(), 'notes_prices' => notes_pdf_prices()]);
@@ -208,6 +209,28 @@ switch ($action) {
         } else q('UPDATE learners SET name = ? WHERE id = ?', [$name, $l['id']]);
         $_SESSION['learner']['name'] = $name;
         out(['ok' => true] + $set);
+
+    case 'settings':
+        // Leaderboard (opt-in) and the weekly progress email
+        $l = need_learner();
+        $d = body();
+        if (array_key_exists('leaderboard', $d)) q('UPDATE learners SET leaderboard = ? WHERE id = ?', [empty($d['leaderboard']) ? 0 : 1, $l['id']]);
+        if (array_key_exists('weekly_email', $d)) q('UPDATE learners SET weekly_email = ? WHERE id = ?', [empty($d['weekly_email']) ? 0 : 1, $l['id']]);
+        $r = q('SELECT leaderboard, weekly_email FROM learners WHERE id = ?', [$l['id']])->fetch();
+        out(['ok' => true, 'settings' => ['leaderboard' => (bool)$r['leaderboard'], 'weekly_email' => (bool)$r['weekly_email']]]);
+
+    case 'leaderboard':
+        out(learn_leaderboard(20, $me ? (int)$me['id'] : 0));
+
+    case 'email_off':
+        // One-click link in the weekly email
+        $t = (string)($_GET['t'] ?? '');
+        $row = strlen($t) === 48 ? q('SELECT id FROM learners WHERE mail_token = ?', [$t])->fetch() : null;
+        if ($row) q('UPDATE learners SET weekly_email = 0 WHERE id = ?', [$row['id']]);
+        header('Content-Type: text/html; charset=utf-8');
+        page_message('Weekly emails', 'fa-envelope', $row ? 'Weekly emails turned off' : 'Link not recognised',
+            $row ? '<p>You won’t get the weekly learning email any more. You can turn it back on from your dashboard.</p><p><a class="btn btn-solid" href="../learn/?page=me">Open my dashboard</a></p>' : '<p>This link isn’t valid. You can change email settings on your dashboard.</p><p><a class="btn btn-solid" href="../learn/?page=me">Open my dashboard</a></p>');
+        exit;
 
     case 'avatar_save':
         $l = need_learner();

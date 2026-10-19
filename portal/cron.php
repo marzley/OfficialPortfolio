@@ -11,6 +11,7 @@
 // backup: saves the database and uploaded files to backup_dir (outside public_html),
 //         copies them off-site if offsite_backup is set, and deletes backups older than backup_keep_days.
 // monitor: checks every client website you monitor and emails you when one goes down or comes back.
+// weekly: (also runs with daily on Mondays) a short progress email to learners active in the last 30 days.
 if (PHP_SAPI !== 'cli') {
     http_response_code(404);
     exit;
@@ -160,6 +161,19 @@ function sql_value(PDO $pdo, $v): string {
     return $pdo->quote((string)$v);
 }
 
+/** Monday mornings: a short progress email for learners active in the last 30 days (once a week each). */
+function run_weekly_learning(callable $log): void {
+    $week = date('o-\\WW');
+    $sent = 0;
+    foreach (q('SELECT id FROM learners WHERE weekly_email = 1 AND last_seen >= ?', [date('Y-m-d H:i:s', time() - 30 * 86400)])->fetchAll() as $r) {
+        $m = learn_weekly_email((int)$r['id']);
+        if (!$m || !once('learn_weekly', (int)$r['id'], $week)) continue;
+        send_mail($m['to'], $m['subject'], $m['text'], false);
+        $sent++;
+    }
+    $log("weekly learning emails: sent $sent");
+}
+
 function run_backup(callable $log): void {
     $cfg = config();
     $dir = $cfg['backup_dir'];
@@ -265,9 +279,10 @@ function run_monitor(callable $log): void {
 
 try {
     if ($job === 'monitor') run_monitor($log);
-    elseif ($job === 'daily') run_daily($log);
+    elseif ($job === 'daily') { run_daily($log); if (date('N') === '1') run_weekly_learning($log); }
+    elseif ($job === 'weekly') run_weekly_learning($log);
     elseif ($job === 'backup') run_backup($log);
-    else { fwrite(STDERR, "Usage: php cron.php daily|backup|monitor\n"); exit(2); }
+    else { fwrite(STDERR, "Usage: php cron.php daily|backup|monitor|weekly\n"); exit(2); }
 } catch (Throwable $e) {
     report_error("scheduled job '$job'", $e->getMessage());
     fwrite(STDERR, $e->getMessage() . "\n");
