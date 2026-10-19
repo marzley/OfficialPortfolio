@@ -896,6 +896,8 @@
   }
 
   /* ---------- project planner ---------- */
+  // Its own scope: names like current, bar and render are reused elsewhere in this file (cursor, scroll bar, chat)
+  (function () {
   var planner = document.getElementById("planner-app");
   if (planner) {
     var steps = Array.prototype.slice.call(planner.querySelectorAll(".planner-step"));
@@ -1047,6 +1049,7 @@
     });
     render();
   }
+  })();
 
   /* ---------- 24/7 availability with live Kenya time ---------- */
   var openBox = document.getElementById("open-status");
