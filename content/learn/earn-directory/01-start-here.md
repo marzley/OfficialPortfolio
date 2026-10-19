@@ -99,7 +99,32 @@ These are general patterns, not guarantees. Two people doing the same method can
 | 48 | [Smart technology and telecom installation](./?track=earn-directory&lesson=smart-tech-installation-methods) | Available |
 | 49 | [Interior finishing and home specialties](./?track=earn-directory&lesson=interior-finishing-home-specialties-methods) | Available |
 | 50 | [Domestic, personal and funeral services](./?track=earn-directory&lesson=domestic-personal-funeral-services-methods) | Available |
-| 51+ | More categories in future updates | Coming |
+| 51 | [Legal, compliance and verification services](./?track=earn-directory&lesson=legal-compliance-verification-methods) | Available |
+| 52 | [Agro-processing and value addition](./?track=earn-directory&lesson=agro-processing-value-addition-methods) | Available |
+| 53 | [Water, sanitation and hygiene services](./?track=earn-directory&lesson=water-sanitation-hygiene-methods) | Available |
+| 54 | [Energy services beyond solar panels](./?track=earn-directory&lesson=energy-services-methods) | Available |
+| 55 | [Urban transport niches](./?track=earn-directory&lesson=urban-transport-niches-methods) | Available |
+| 56 | [Neighbourhood shops and retail](./?track=earn-directory&lesson=neighbourhood-retail-methods) | Available |
+| 57 | [Construction equipment and specialist building services](./?track=earn-directory&lesson=construction-equipment-services-methods) | Available |
+| 58 | [More specialist online and technical niches](./?track=earn-directory&lesson=online-specialist-niches-methods) | Available |
+| 59 | [More crops and livestock](./?track=earn-directory&lesson=more-crops-livestock-methods) | Available |
+| 60 | [More farm and livestock services](./?track=earn-directory&lesson=farm-services-extra-methods) | Available |
+| 61 | [More education services](./?track=earn-directory&lesson=education-services-extra-methods) | Available |
+| 62 | [More food and hospitality businesses](./?track=earn-directory&lesson=food-hospitality-extra-methods) | Available |
+| 63 | [More fashion and textile businesses](./?track=earn-directory&lesson=fashion-textiles-extra-methods) | Available |
+| 64 | [IT hardware and technical services](./?track=earn-directory&lesson=it-hardware-technical-methods) | Available |
+| 65 | [Accessibility and assistive services](./?track=earn-directory&lesson=accessibility-assistive-services-methods) | Available |
+| 66 | [More property and finance businesses](./?track=earn-directory&lesson=property-finance-extra-methods) | Available |
+| 67 | [Heritage crafts and art](./?track=earn-directory&lesson=heritage-crafts-art-methods) | Available |
+| 68 | [More waste and recycling businesses](./?track=earn-directory&lesson=waste-recycling-extra-methods) | Available |
+| 69 | [More event services](./?track=earn-directory&lesson=events-extra-methods) | Available |
+| 70 | [More automotive specialist trades](./?track=earn-directory&lesson=automotive-specialist-methods) | Available |
+| 71 | [Tourism niches](./?track=earn-directory&lesson=tourism-niches-methods) | Available |
+| 72 | [More manufacturing and fabrication](./?track=earn-directory&lesson=manufacturing-fabrication-extra-methods) | Available |
+| 73 | [Health support and safety services](./?track=earn-directory&lesson=health-support-safety-methods) | Available |
+| 74 | [More technical trades and installations](./?track=earn-directory&lesson=technical-trades-extra-methods) | Available |
+| 75 | [Personal and niche services](./?track=earn-directory&lesson=personal-niche-services-methods) | Available |
+| 76+ | More categories in future updates | Coming |
 
 ## Universal safety rules
 
