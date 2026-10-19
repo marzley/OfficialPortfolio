@@ -1,4 +1,4 @@
-/* Marzley Tech learning hub: tutorials with live code, practice, videos (unlocked with M-Pesa) and free notes.
+/* Marzley Tech learning hub: tutorials with live code, practice, videos (unlocked with M-Pesa) and course notes (PDF download paid with M-Pesa).
  * Learner code never runs on this page: it runs in runner.html, a sandboxed frame with no access to the site. */
 (function () {
   "use strict";
@@ -834,7 +834,7 @@
     main.innerHTML = '<section class="hero-learn"><div><p class="eyebrow">' + (me ? "Welcome back" + (fn ? ", " + esc(fn) : "") : "Marzley Tech Learning Hub") + "</p><h1>" + (me ? (fn ? esc(fn) + ", keep" : "Keep") + " learning tech skills, one lesson at a time" : "Learn tech skills free, right in your browser") + "</h1>" +
       (me ? '<div class="me-strip" id="me-strip">' + avatarHtml(me.avatar, me.name, "avatar-lg") + '<div><strong><i class="fa-solid fa-star" aria-hidden="true"></i> ' + (me.points || 0) + " points</strong><span>" + state.progress.length + " lesson" + (state.progress.length === 1 ? "" : "s") + ' completed</span></div><p class="me-actions"><a class="btn btn-solid btn-sm" href="./?page=me" id="me-continue">My dashboard</a></p></div>' : "") +
       '<p class="lead" id="hub-lead">50 subjects and 630+ lessons: coding in 13 languages with a live editor, app development (Flutter, Kotlin, React Native, APIs), web and graphic design, Excel, Word and everyday ICT skills, networking and subnetting, cybersecurity, AI tools and how to make money online. Practise with questions that check themselves. Works on your phone.</p>' +
-      '<div id="hub-search"></div><ul class="free-badges"><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Tutorials: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Notes: free</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Practice: free</li><li><i class="fa-solid fa-user" aria-hidden="true"></i> No account needed</li></ul>' +
+      '<div id="hub-search"></div><ul class="free-badges"><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Tutorials: free</li><li><i class="fa-solid fa-book-open" aria-hidden="true"></i> Notes: read online, PDF paid</li><li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Practice: free</li><li><i class="fa-solid fa-user" aria-hidden="true"></i> No account needed</li></ul>' +
       '<p class="hero-ctas"><a class="btn btn-solid" href="./?track=html">Start with HTML</a><a class="btn btn-line" href="./?track=career-roadmaps&amp;lesson=choose-a-tech-career">Find your career path</a></p></div>' +
       '<div class="hero-code" aria-hidden="true"><pre><span class="c-k">print</span>(<span class="c-s">"Habari, Kenya!"</span>)\n<span class="c-t">&lt;h1&gt;</span>Hello<span class="c-t">&lt;/h1&gt;</span>\n<span class="c-k">SELECT</span> * <span class="c-k">FROM</span> Customers;</pre></div></section>' +
       '<section class="home-sec path-sec"><div class="sec-head"><h2>Choose your path</h2><a href="./?track=projects&amp;lesson=how-to-build-projects">Build real projects</a></div>' +
@@ -842,7 +842,7 @@
       PATHS.map(function (r) { return '<a class="path-card" href="./?track=' + r[0] + "&amp;lesson=" + r[1] + '"><i class="' + r[2] + '" aria-hidden="true"></i><strong>' + esc(r[3]) + "</strong><small>" + esc(r[4]) + "</small></a>"; }).join("") + "</div></section>" +
       '<section class="home-sec"><h2>Tutorials</h2><div class="track-grid" id="track-grid"><p class="muted">Loading…</p></div></section>' +
       '<section class="home-sec"><div class="sec-head"><h2>Latest videos</h2><a href="./?page=videos">All videos</a></div><div class="video-grid" id="home-videos"></div></section>' +
-      '<section class="home-sec"><div class="sec-head"><h2>Free notes &amp; books</h2><a href="./?page=notes">All notes</a></div><div class="note-grid" id="home-notes"></div></section>';
+      '<section class="home-sec"><div class="sec-head"><h2>Course notes</h2><a href="./?page=notes">All notes</a></div><p class="muted" id="home-notes-lead"></p><div class="book-grid" id="home-notes"></div></section>';
     searchUI($("#hub-search"), { big: true, placeholder: "What do you want to learn? e.g. Flutter, Excel VLOOKUP, subnetting" });
     if (me) {
       // The badge row is for visitors; signed-in learners get a "continue" button instead
@@ -873,8 +873,16 @@
     }).catch(function (e) { $("#track-grid").innerHTML = '<p class="muted">' + esc(e.message) + "</p>"; });
     api("videos").then(function (j) { var v = (j.videos || []).slice(0, 3); $("#home-videos").innerHTML = v.length ? v.map(function (x) { return videoCard(x); }).join("") : '<p class="muted">Video lessons are coming soon.</p>'; })
       .catch(function () { $("#home-videos").innerHTML = '<p class="muted">Videos could not load.</p>'; });
-    api("notes").then(function (j) { var n = (j.notes || []).slice(0, 4); $("#home-notes").innerHTML = n.length ? n.map(function (x) { return noteCard(x); }).join("") : '<p class="muted">Notes are coming soon.</p>'; })
-      .catch(function () { $("#home-notes").innerHTML = '<p class="muted">Notes could not load.</p>'; });
+    // Course notes: every subject as one book, read online, downloaded as a PDF with M-Pesa
+    $("#home-notes-lead").textContent = "Complete notes for every subject. Read them online, or download a whole subject as a PDF with M-Pesa from " + kes(state.notesPrices.small) + ".";
+    getCatalog().then(function (tracks) {
+      var pick = ["html", "python", "excel", "cybersecurity", "ai-tools", "networking"].map(function (slug) { return tracks.filter(function (t) { return t.slug === slug; })[0]; }).filter(Boolean);
+      if (pick.length < 6) tracks.forEach(function (t) { if (pick.length < 6 && pick.indexOf(t) < 0 && t.lessons.length) pick.push(t); });
+      $("#home-notes").innerHTML = pick.map(function (t) {
+        return '<a class="book-card" href="./?book=' + esc(t.slug) + '"><i class="' + (TRACK_ICONS[t.slug] || TRACK_ICONS[t.lang] || "fa-solid fa-book") + '" aria-hidden="true"></i><span><strong>' + esc(t.title) + " notes</strong>" +
+          '<span class="muted">' + t.lessons.length + " topics · PDF " + esc(kes(notesPrice(t))) + "</span></span></a>";
+      }).join("");
+    }).catch(function () { $("#home-notes").innerHTML = '<p class="muted">Notes could not load.</p>'; });
   }
 
   function pageTutorials() {

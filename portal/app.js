@@ -65,7 +65,7 @@
     "Date": "Tarehe", "Method": "Njia", "Reference": "Kumbukumbu", "No payments yet.": "Bado hakuna malipo.", "Your details": "Maelezo yako", "Save": "Hifadhi", "Saved.": "Imehifadhiwa.",
     "M-Pesa phone number (payments and referral rewards)": "Nambari ya M-Pesa (malipo na zawadi)", "Email (sign-in)": "Barua pepe (kuingia)", "Security": "Usalama",
     "Sign out everywhere": "Toka kwenye vifaa vyote", "No projects yet": "Bado hakuna miradi", "Request sent. We’ll get back to you within a day.": "Ombi limetumwa. Tutakujibu ndani ya siku moja.",
-    "Just want to learn to code?": "Unataka tu kujifunza kuandika programu?", "Free tutorials, notes and practice. No account needed.": "Mafunzo, notisi na mazoezi bure. Huhitaji akaunti.",
+    "Just want to learn to code?": "Unataka tu kujifunza kuandika programu?", "Free tutorials, quizzes and practice. No account needed.": "Mafunzo, maswali na mazoezi bure. Huhitaji akaunti.",
     "6-digit code": "Nambari ya tarakimu 6", "Send me a code": "Nitumie nambari", "Sign in": "Ingia"
   };
   var t = function (s) { return LANG === "sw" && SW[s] ? SW[s] : s; };
@@ -1455,7 +1455,7 @@
       ["Certificates earned", st.certificates || 0, "fa-certificate", "Subjects finished by learners"]];
     panel.appendChild(h("section", { className: "admin-panel" },
       h("div", { className: "admin-panel-head" }, h("h2", { text: "Learning hub" }), h("a", { className: "btn btn-ghost", href: "../learn/", target: "_blank", rel: "noopener" }, h("i", { className: "fa-solid fa-arrow-up-right-from-square", "aria-hidden": "true" }), " Open the hub")),
-      h("p", { className: "portal-meta", text: "Free tutorials with live code and free notes for everyone; videos unlocked per person with M-Pesa. Learners sign up themselves with Google or an email code." }),
+      h("p", { className: "portal-meta", text: "Free tutorials with live code for everyone; course notes read online, with PDF downloads and videos paid with M-Pesa. Learners sign up themselves with Google or an email code." }),
       h("div", { className: "learn-stats" }, cards.map(function (c) {
         return h("div", { className: "learn-stat" }, h("i", { className: "fa-solid " + c[2], "aria-hidden": "true" }), h("span", null, h("small", { text: c[0] }), h("strong", { text: String(c[1]) }), h("em", { text: c[3] })));
       }))));
