@@ -10,7 +10,7 @@ install_error_alerts('learning hub');
 start_session();
 $action = $_GET['action'] ?? '';
 $method = $_SERVER['REQUEST_METHOD'];
-const LEARN_GET = ['me', 'dashboard', 'avatar', 'catalog', 'lesson', 'lesson_social', 'videos', 'video', 'notes', 'note', 'poster', 'stream', 'unlock_status', 'final_test', 'leaderboard', 'email_off', 'notes_pay_status', 'notes_access', 'admin'];
+const LEARN_GET = ['me', 'dashboard', 'avatar', 'catalog', 'lesson', 'lesson_social', 'videos', 'video', 'notes', 'note', 'poster', 'stream', 'unlock_status', 'final_test', 'leaderboard', 'email_off', 'classes', 'class_get', 'class_info', 'notes_pay_status', 'notes_access', 'admin'];
 const VIDEO_TYPES = ['mp4' => 'video/mp4', 'm4v' => 'video/mp4', 'webm' => 'video/webm'];
 const VIDEO_MAX = 2048 * 1024 * 1024;   // 2 GB
 const NOTE_MAX = 100 * 1024 * 1024;     // 100 MB
@@ -218,6 +218,66 @@ switch ($action) {
         if (array_key_exists('weekly_email', $d)) q('UPDATE learners SET weekly_email = ? WHERE id = ?', [empty($d['weekly_email']) ? 0 : 1, $l['id']]);
         $r = q('SELECT leaderboard, weekly_email FROM learners WHERE id = ?', [$l['id']])->fetch();
         out(['ok' => true, 'settings' => ['leaderboard' => (bool)$r['leaderboard'], 'weekly_email' => (bool)$r['weekly_email']]]);
+
+    case 'classes':
+        // Classes I teach and classes I've joined
+        $l = need_learner();
+        $own = q('SELECT c.*, (SELECT COUNT(*) FROM learn_class_members m WHERE m.class_id = c.id) AS members, t.title AS track_title FROM learn_classes c LEFT JOIN learn_tracks t ON t.id = c.track_id WHERE c.owner_id = ? ORDER BY c.id DESC', [$l['id']])->fetchAll();
+        $joined = q('SELECT c.id, c.name, c.code, t.slug AS track, t.title AS track_title, o.name AS tutor FROM learn_class_members m JOIN learn_classes c ON c.id = m.class_id LEFT JOIN learn_tracks t ON t.id = c.track_id JOIN learners o ON o.id = c.owner_id WHERE m.learner_id = ? ORDER BY m.id DESC', [$l['id']])->fetchAll();
+        out(['own' => array_map(fn($c) => ['id' => (int)$c['id'], 'name' => $c['name'], 'code' => $c['code'], 'members' => (int)$c['members'], 'track_title' => $c['track_title']], $own), 'joined' => $joined]);
+
+    case 'class_create':
+        $l = need_learner();
+        $d = body();
+        $name = trim(str_in($d, 'name', 120));
+        if ($name === '') fail(400, 'Give the class a name, for example “Form 3 Computer Studies” or “ICT cohort 5”.');
+        if ((int)q('SELECT COUNT(*) FROM learn_classes WHERE owner_id = ?', [$l['id']])->fetchColumn() >= 20) fail(400, 'You can run up to 20 classes. Delete an old one first.');
+        $tid = null;
+        if (!empty($d['track'])) {
+            $t = q('SELECT id FROM learn_tracks WHERE slug = ? AND published = 1', [(string)$d['track']])->fetch();
+            if (!$t) fail(404, 'Subject not found.');
+            $tid = (int)$t['id'];
+        }
+        $code = new_class_code();
+        q('INSERT INTO learn_classes (owner_id, name, code, track_id, created_at) VALUES (?, ?, ?, ?, ?)', [$l['id'], $name, $code, $tid, now()]);
+        out(['ok' => true, 'id' => (int)q('SELECT id FROM learn_classes WHERE code = ?', [$code])->fetchColumn(), 'code' => $code]);
+
+    case 'class_get':
+        $l = need_learner();
+        $c = q('SELECT * FROM learn_classes WHERE id = ? AND owner_id = ?', [(int)($_GET['id'] ?? 0), $l['id']])->fetch();
+        if (!$c) fail(404, 'Class not found.');
+        out(['class' => learn_class_report($c)]);
+
+    case 'class_info':
+        // What a student sees before joining
+        $c = q('SELECT c.name, c.code, t.title AS track_title, o.name AS tutor, o.email AS tutor_email FROM learn_classes c LEFT JOIN learn_tracks t ON t.id = c.track_id JOIN learners o ON o.id = c.owner_id WHERE c.code = ?', [strtoupper((string)($_GET['code'] ?? ''))])->fetch();
+        if (!$c) fail(404, 'That class link isn’t valid. Ask your tutor for a new one.');
+        out(['class' => ['name' => $c['name'], 'code' => $c['code'], 'track_title' => $c['track_title'], 'tutor' => learner_public_name((string)$c['tutor'], (string)$c['tutor_email'])]]);
+
+    case 'class_join':
+        $l = need_learner();
+        $c = q('SELECT id, owner_id, name FROM learn_classes WHERE code = ?', [strtoupper((string)(body()['code'] ?? ''))])->fetch();
+        if (!$c) fail(404, 'That class link isn’t valid. Ask your tutor for a new one.');
+        if ((int)$c['owner_id'] === (int)$l['id']) fail(400, 'This is your own class: share the link with your students.');
+        if (!q('SELECT id FROM learn_class_members WHERE class_id = ? AND learner_id = ?', [$c['id'], $l['id']])->fetch()) {
+            if ((int)q('SELECT COUNT(*) FROM learn_class_members WHERE class_id = ?', [$c['id']])->fetchColumn() >= 300) fail(400, 'This class is full.');
+            q('INSERT INTO learn_class_members (class_id, learner_id, joined_at) VALUES (?, ?, ?)', [$c['id'], $l['id'], now()]);
+        }
+        out(['ok' => true, 'name' => $c['name']]);
+
+    case 'class_leave':
+        $l = need_learner();
+        q('DELETE FROM learn_class_members WHERE class_id = ? AND learner_id = ?', [(int)(body()['id'] ?? 0), $l['id']]);
+        out(['ok' => true]);
+
+    case 'class_remove':
+        $l = need_learner();
+        $d = body();
+        $c = q('SELECT id FROM learn_classes WHERE id = ? AND owner_id = ?', [(int)($d['id'] ?? 0), $l['id']])->fetch();
+        if (!$c) fail(404, 'Class not found.');
+        if (!empty($d['learner_id'])) q('DELETE FROM learn_class_members WHERE class_id = ? AND learner_id = ?', [$c['id'], (int)$d['learner_id']]);
+        else { q('DELETE FROM learn_class_members WHERE class_id = ?', [$c['id']]); q('DELETE FROM learn_classes WHERE id = ?', [$c['id']]); }
+        out(['ok' => true]);
 
     case 'leaderboard':
         out(learn_leaderboard(20, $me ? (int)$me['id'] : 0));

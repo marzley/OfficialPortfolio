@@ -1755,6 +1755,7 @@
         '<label>Learner ID (can’t be changed)</label><input value="' + esc(me.learner_code || "") + '" disabled />' +
         '<p class="u-msg" id="me-msg" role="status" aria-live="polite"></p><button type="submit" class="btn btn-solid">Save changes</button></form></div>' +
         '<p class="muted small">Your photo shows in your account menu, next to your comments, and in the client portal if you use the same email there.</p></section>' +
+        '<section class="me-card" id="me-classes"><div class="sec-head"><h2><i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i> Classes</h2><a href="./?page=classes">Open classes</a></div><p class="muted">Teachers and trainers: create a class, share the join link, and follow your students\' progress and certificates. Students: classes you joined show here too.</p></section>' +
         prefsSection(me) +
         pwSection(me) +
         rulesHtml() + "</section>";
@@ -1928,29 +1929,17 @@
     return logoData;
   }
   /** A landscape A4 certificate made in the browser: name, subject, date, code and a QR code to the check page. */
-  function certificatePdf(c, btn) {
-    var me = state.me || {}, name = String(me.name || "").trim();
-    var msg = function (t) { var m = $("#cert-msg") || $("#me-msg"); if (m) m.textContent = t; else alert(t); };
-    if (!name) {
-      msg("Add your name in “Your profile” first, so it can go on your certificate.");
-      if (payDlg && payDlg.open) closePay();
-      var p = $("#me-profile"); if (p) { p.scrollIntoView({ block: "start" }); $("#me-name").focus(); } else go("./?page=me#me-profile");
-      return;
-    }
-    var old = btn.innerHTML;
-    btn.disabled = true; btn.innerHTML = '<span class="spinner" aria-hidden="true"></span> Making PDF…';
-    Promise.all([loadPdfMake(), brandLogo()]).then(function (r) {
-      var vfs = r[0], logo = r[1], navy = "#0b1b35", gold = "#d99a00", grey = "#475569";
-      var doc = {
-        pageSize: "A4", pageOrientation: "landscape", pageMargins: [70, 92, 70, 40],
-        info: { title: "Certificate: " + c.title, author: "Marzley Tech Solutions", subject: "Certificate " + c.code },
-        background: function () {
-          return { canvas: [
-            { type: "rect", x: 18, y: 18, w: 805.89, h: 559.28, lineWidth: 10, lineColor: navy },
-            { type: "rect", x: 34, y: 34, w: 773.89, h: 527.28, lineWidth: 2, lineColor: gold }
-          ] };
-        },
-        content: [
+  var CERT_NAVY = "#0b1b35", CERT_GOLD = "#d99a00", CERT_GREY = "#475569";
+  function certBackground() {
+    return { canvas: [
+      { type: "rect", x: 18, y: 18, w: 805.89, h: 559.28, lineWidth: 10, lineColor: CERT_NAVY },
+      { type: "rect", x: 34, y: 34, w: 773.89, h: 527.28, lineWidth: 2, lineColor: CERT_GOLD }
+    ] };
+  }
+  /** One certificate page (pdfmake content) for this certificate and name. */
+  function certPage(c, name, logo) {
+    var navy = CERT_NAVY, gold = CERT_GOLD, grey = CERT_GREY;
+    return [
           logo ? { image: logo, width: 62, alignment: "center", margin: [0, 0, 0, 6] } : { text: "" },
           { text: "MARZLEY TECH SOLUTIONS", alignment: "center", color: gold, bold: true, fontSize: 11, characterSpacing: 3 },
           { text: "Certificate of Completion", alignment: "center", color: navy, bold: true, fontSize: 34, margin: [0, 8, 0, 14] },
@@ -1968,20 +1957,37 @@
               { qr: c.verify_url, fit: 78, foreground: navy }
             ] }
           ] }
-        ],
-        defaultStyle: { font: "Roboto" }
-      };
-      var fonts = { Roboto: { normal: "Roboto-Regular.ttf", bold: "Roboto-Medium.ttf", italics: "Roboto-Italic.ttf", bolditalics: "Roboto-MediumItalic.ttf" } };
-      var file = "Certificate-" + c.title.replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) + "-" + c.code + ".pdf";
-      return new Promise(function (res, rej) {
-        try { window.pdfMake.createPdf(doc, null, fonts, vfs).getBlob(function (blob) {
-          if (!blob || !blob.size) return rej(new Error("The PDF came out empty."));
-          var url = URL.createObjectURL(blob), a = document.createElement("a");
-          a.href = url; a.download = file; document.body.appendChild(a); a.click(); a.remove();
-          setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
-          res(file);
-        }); } catch (e) { rej(e); }
-      });
+        ];
+  }
+  /** Saves a pdfmake document as a download; resolves with the file name. */
+  function savePdf(doc, vfs, file) {
+    var fonts = { Roboto: { normal: "Roboto-Regular.ttf", bold: "Roboto-Medium.ttf", italics: "Roboto-Italic.ttf", bolditalics: "Roboto-MediumItalic.ttf" } };
+    return new Promise(function (res, rej) {
+      try { window.pdfMake.createPdf(doc, null, fonts, vfs).getBlob(function (blob) {
+        if (!blob || !blob.size) return rej(new Error("The PDF came out empty."));
+        var url = URL.createObjectURL(blob), a = document.createElement("a");
+        a.href = url; a.download = file; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+        res(file);
+      }); } catch (e) { rej(e); }
+    });
+  }
+  function certificatePdf(c, btn) {
+    var me = state.me || {}, name = String(me.name || "").trim();
+    var msg = function (t) { var m = $("#cert-msg") || $("#me-msg"); if (m) m.textContent = t; else alert(t); };
+    if (!name) {
+      msg("Add your name in “Your profile” first, so it can go on your certificate.");
+      if (payDlg && payDlg.open) closePay();
+      var p = $("#me-profile"); if (p) { p.scrollIntoView({ block: "start" }); $("#me-name").focus(); } else go("./?page=me#me-profile");
+      return;
+    }
+    var old = btn.innerHTML;
+    btn.disabled = true; btn.innerHTML = '<span class="spinner" aria-hidden="true"></span> Making PDF…';
+    Promise.all([loadPdfMake(), brandLogo()]).then(function (r) {
+      var doc = { pageSize: "A4", pageOrientation: "landscape", pageMargins: [70, 92, 70, 40],
+        info: { title: "Certificate: " + c.title, author: "Marzley Tech Solutions", subject: "Certificate " + c.code },
+        background: certBackground, content: certPage(c, name, r[1]), defaultStyle: { font: "Roboto" } };
+      return savePdf(doc, r[0], "Certificate-" + c.title.replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) + "-" + c.code + ".pdf");
     }).then(function (file) {
       btn.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i> Downloaded';
       msg(file + " has been downloaded.");
@@ -2016,6 +2022,104 @@
     api("settings", { weekly_email: box.checked }).then(function (r) { state.me.settings = r.settings; $("#pref-msg").textContent = r.settings.weekly_email ? "Weekly emails on." : "Weekly emails off."; })
       .catch(function (er) { box.checked = !box.checked; $("#pref-msg").textContent = er.message; });
   });
+  // ---------- classes: tutors share a join link and follow students' progress and certificates ----------
+  function needSignin(title, text) {
+    main.innerHTML = '<section class="list-page"><h1>' + esc(title) + '</h1><div class="empty"><i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i><p>' + esc(text) + '</p><p><button type="button" class="btn btn-solid" data-signin>Sign in or create an account</button></p></div></section>';
+  }
+  function classLink(code) { return location.origin + location.pathname + "?join=" + code; }
+  function pageClasses() {
+    setNav(""); showSide(false);
+    setTitle("Classes", "Create a class, share the join link and follow your students' progress.");
+    if (!state.me) return needSignin("Classes", "Sign in to create a class or see the classes you've joined.");
+    main.innerHTML = '<p class="learn-loading"><span class="spinner" aria-hidden="true"></span> Loading…</p>';
+    Promise.all([api("classes"), getCatalog()]).then(function (r) {
+      var d = r[0], tracks = r[1];
+      main.innerHTML = '<section class="list-page classes-page"><h1>Classes</h1><p class="lead">For schools, colleges and trainers: create a class, share its link with your students, and see each student\'s lessons, final test results and certificates in one table.</p>' +
+        '<section class="me-card"><h2>Create a class</h2><form id="class-form" class="me-form" novalidate><label for="class-name">Class name</label><input id="class-name" maxlength="120" placeholder="e.g. Form 3 Computer Studies, ICT cohort 5" />' +
+        '<label for="class-track">Subject to follow (optional)</label><select id="class-track"><option value="">All subjects (no single focus)</option>' + tracks.map(function (t) { return '<option value="' + esc(t.slug) + '">' + esc(t.title) + "</option>"; }).join("") + '</select>' +
+        '<p class="u-msg" id="class-msg" role="status" aria-live="polite"></p><button type="submit" class="btn btn-solid">Create class</button></form></section>' +
+        '<section class="me-card"><h2>Classes you teach</h2>' + (d.own.length ? '<ul class="me-list">' + d.own.map(function (c) {
+          return '<li><span class="me-ico"><i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i></span><div><strong>' + esc(c.name) + '</strong><span class="muted">' + c.members + " student" + (c.members === 1 ? "" : "s") + (c.track_title ? " · " + esc(c.track_title) : "") + '</span></div><a class="btn btn-sm btn-solid" href="./?class=' + c.id + '">Open</a></li>';
+        }).join("") + "</ul>" : '<p class="muted">No classes yet. Create one above.</p>') + "</section>" +
+        '<section class="me-card"><h2>Classes you\'ve joined</h2>' + (d.joined.length ? '<ul class="me-list">' + d.joined.map(function (c) {
+          return '<li><span class="me-ico"><i class="fa-solid fa-users" aria-hidden="true"></i></span><div><strong>' + esc(c.name) + '</strong><span class="muted">Tutor: ' + esc(c.tutor || "") + (c.track_title ? " · " + esc(c.track_title) : "") + "</span></div>" +
+            (c.track ? '<a class="btn btn-sm btn-solid" href="./?track=' + esc(c.track) + '">Study</a>' : "") + '<button type="button" class="linklike" data-leave="' + c.id + '">Leave</button></li>';
+        }).join("") + "</ul>" : '<p class="muted">You haven\'t joined a class. Your tutor will give you a join link.</p>') + "</section></section>";
+      $("#class-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        api("class_create", { name: $("#class-name").value, track: $("#class-track").value }).then(function (c) { go("./?class=" + c.id); }).catch(function (er) { $("#class-msg").textContent = er.message; });
+      });
+      main.querySelectorAll("[data-leave]").forEach(function (b) {
+        b.addEventListener("click", function () { if (confirm("Leave this class? Your tutor will no longer see your progress.")) api("class_leave", { id: Number(b.getAttribute("data-leave")) }).then(pageClasses); });
+      });
+    }).catch(function (e) { errorBox(e.message); });
+  }
+  function pageClass(id) {
+    setNav(""); showSide(false);
+    if (!state.me) return needSignin("Class", "Sign in to open your class.");
+    main.innerHTML = '<p class="learn-loading"><span class="spinner" aria-hidden="true"></span> Loading…</p>';
+    api("class_get", undefined, "&id=" + encodeURIComponent(id)).then(function (j) {
+      var c = j.class, link = classLink(c.code), certs = c.members.filter(function (m) { return m.certificate; });
+      setTitle(c.name, "Class progress for " + c.name);
+      var head = c.track ? "<th>Lessons (of " + c.lessons + ")</th><th>Best test</th><th>Certificate</th>" : "<th>Lessons done</th><th>Certificates</th>";
+      main.innerHTML = '<section class="list-page class-page"><p class="crumbs"><a href="./?page=classes">Classes</a></p><h1>' + esc(c.name) + "</h1>" +
+        (c.track ? '<p class="muted">Subject: <a href="./?track=' + esc(c.track) + '">' + esc(c.track_title) + "</a></p>" : "") +
+        '<div class="class-share"><label for="class-link">Join link for students</label><div class="class-share-row"><input id="class-link" readonly value="' + esc(link) + '" /><button type="button" class="btn btn-solid btn-sm" id="copy-link">Copy</button>' +
+        '<a class="btn btn-line btn-sm" target="_blank" rel="noopener" href="https://wa.me/?text=' + encodeURIComponent("Join our class “" + c.name + "” on the Marzley Tech learning hub: " + link) + '"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Share</a></div>' +
+        '<p class="muted small">Class code: <strong>' + esc(c.code) + "</strong>. Students sign in (free) and tap Join. They're told you'll see their name, email and progress.</p></div>" +
+        '<div class="class-acts"><span><strong>' + c.members.length + "</strong> student" + (c.members.length === 1 ? "" : "s") + (c.track ? " · <strong>" + certs.length + "</strong> certificate" + (certs.length === 1 ? "" : "s") : "") + "</span>" +
+        (c.track && certs.length ? '<button type="button" class="btn btn-solid btn-sm" id="bulk-certs"><i class="fa-solid fa-download" aria-hidden="true"></i> Download all certificates (PDF)</button>' : "") +
+        (c.members.length ? '<button type="button" class="btn btn-line btn-sm" id="class-csv"><i class="fa-solid fa-file-csv" aria-hidden="true"></i> Export CSV</button>' : "") + "</div>" +
+        '<p class="u-msg" id="class-msg" role="status" aria-live="polite"></p>' +
+        (c.members.length ? '<div class="table-wrap"><table class="class-table"><thead><tr><th>Student</th>' + head + "<th>Points</th><th>Last active</th><th></th></tr></thead><tbody>" + c.members.map(function (m) {
+          var cells = c.track ? "<td>" + m.done + "</td><td>" + (m.best_test === null ? "–" : m.best_test + "%") + "</td><td>" + (m.certificate ? '<a href="' + esc(m.certificate.verify_url) + '" target="_blank" rel="noopener">' + esc(m.certificate.code) + "</a>" : "–") + "</td>"
+            : "<td>" + m.lessons + "</td><td>" + m.certificates + "</td>";
+          return "<tr><td><strong>" + esc(m.name || m.email) + '</strong><span class="muted small">' + esc(m.email) + "</span></td>" + cells + "<td>" + m.points + "</td><td>" + (m.last_seen ? esc(timeAgo(m.last_seen)) : "–") + '</td><td><button type="button" class="linklike" data-remove="' + m.id + '">Remove</button></td></tr>';
+        }).join("") + "</tbody></table></div>" : '<div class="empty"><i class="fa-solid fa-users" aria-hidden="true"></i><p>No students yet. Share the join link above.</p></div>') +
+        '<p class="class-danger"><button type="button" class="linklike" id="class-delete">Delete this class</button></p></section>';
+      $("#copy-link").addEventListener("click", function () { var i = $("#class-link"); i.select(); (navigator.clipboard ? navigator.clipboard.writeText(link) : Promise.reject()).then(function () { $("#copy-link").textContent = "Copied"; }, function () { document.execCommand("copy"); }); });
+      main.querySelectorAll("[data-remove]").forEach(function (b) {
+        b.addEventListener("click", function () { if (confirm("Remove this student from the class?")) api("class_remove", { id: c.id, learner_id: Number(b.getAttribute("data-remove")) }).then(function () { pageClass(id); }); });
+      });
+      $("#class-delete").addEventListener("click", function () { if (confirm("Delete “" + c.name + "”? Students keep their own progress and certificates.")) api("class_remove", { id: c.id }).then(function () { go("./?page=classes"); }); });
+      var csv = $("#class-csv");
+      if (csv) csv.addEventListener("click", function () {
+        var rows = [["Name", "Email", c.track ? "Lessons done (of " + c.lessons + ")" : "Lessons done", c.track ? "Best test %" : "Certificates", c.track ? "Certificate code" : "", "Points", "Last active"]].concat(c.members.map(function (m) {
+          return [m.name, m.email, c.track ? m.done : m.lessons, c.track ? (m.best_test === null ? "" : m.best_test) : m.certificates, c.track ? (m.certificate ? m.certificate.code : "") : "", m.points, m.last_seen || ""];
+        }));
+        var text = rows.map(function (r) { return r.map(function (v) { v = String(v == null ? "" : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(","); }).join("\n");
+        var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["﻿" + text], { type: "text/csv" })); a.download = c.name.replace(/[^A-Za-z0-9]+/g, "-") + "-progress.csv"; document.body.appendChild(a); a.click(); a.remove();
+      });
+      var bulk = $("#bulk-certs");
+      if (bulk) bulk.addEventListener("click", function () {
+        bulk.disabled = true; bulk.innerHTML = '<span class="spinner" aria-hidden="true"></span> Making ' + certs.length + " certificates…";
+        Promise.all([loadPdfMake(), brandLogo()]).then(function (r) {
+          var content = [];
+          certs.forEach(function (m, i) { var page = certPage(m.certificate, m.name || m.email, r[1]); if (i < certs.length - 1) page.push({ text: "", pageBreak: "after" }); content = content.concat(page); });
+          return savePdf({ pageSize: "A4", pageOrientation: "landscape", pageMargins: [70, 92, 70, 40], info: { title: c.name + " certificates", author: "Marzley Tech Solutions" }, background: certBackground, content: content, defaultStyle: { font: "Roboto" } },
+            r[0], c.name.replace(/[^A-Za-z0-9]+/g, "-") + "-certificates.pdf");
+        }).then(function (file) { $("#class-msg").textContent = file + " has been downloaded (" + certs.length + " page" + (certs.length === 1 ? "" : "s") + ")."; })
+          .catch(function (e) { $("#class-msg").textContent = "The certificates couldn't be made: " + e.message; })
+          .then(function () { bulk.disabled = false; bulk.innerHTML = '<i class="fa-solid fa-download" aria-hidden="true"></i> Download all certificates (PDF)'; });
+      });
+    }).catch(function (e) { errorBox(e.status === 404 ? "That class wasn't found, or it isn't yours." : e.message); });
+  }
+  function pageJoin(code) {
+    setNav(""); showSide(false);
+    main.innerHTML = '<p class="learn-loading"><span class="spinner" aria-hidden="true"></span> Loading…</p>';
+    api("class_info", undefined, "&code=" + encodeURIComponent(code)).then(function (j) {
+      var c = j.class;
+      setTitle("Join " + c.name, "Join a class on the Marzley Tech learning hub.");
+      main.innerHTML = '<section class="list-page join-page"><div class="empty"><i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i><h1>Join “' + esc(c.name) + '”</h1><p>Tutor: <strong>' + esc(c.tutor) + "</strong>" + (c.track_title ? " · Subject: <strong>" + esc(c.track_title) + "</strong>" : "") + '</p>' +
+        '<p class="muted">When you join, your tutor will see your name, email, lessons completed, final test scores and certificates. You can leave the class any time.</p>' +
+        (state.me ? '<p><button type="button" class="btn btn-solid" id="join-go">Join the class</button></p>' : '<p><button type="button" class="btn btn-solid" data-signin>Sign in (free) to join</button></p>') + '<p class="u-msg" id="join-msg" role="status" aria-live="polite"></p></div></section>';
+      var b = $("#join-go");
+      if (b) b.addEventListener("click", function () {
+        b.disabled = true;
+        api("class_join", { code: c.code }).then(function () { go("./?page=classes"); }).catch(function (e) { b.disabled = false; $("#join-msg").textContent = e.message; });
+      });
+    }).catch(function (e) { errorBox(e.message); });
+  }
   function pwSection(me) {
     var pw = me.password || {}, needCur = pw.has_password && !pw.fresh;
     return '<section class="me-card" id="me-password"><h2>Sign-in and password</h2>' +
@@ -2885,6 +2989,8 @@
     if (p.get("note")) return pageNote(p.get("note"));
     if (p.get("book")) return pageBook(p.get("book"));
     if (p.get("final")) return pageFinal(p.get("final"));
+    if (p.get("join")) return pageJoin(p.get("join"));
+    if (p.get("class")) return pageClass(p.get("class"));
     var page = p.get("page");
     if (page === "tutorials") return pageTutorials();
     if (page === "practice") return pagePractice(p.get("lang"));
@@ -2892,6 +2998,7 @@
     if (page === "notes") return pageNotes();
     if (page === "search") return pageSearch(p.get("q") || "");
     if (page === "me") return pageMe();
+    if (page === "classes") return pageClasses();
     pageHome();
   }
   document.addEventListener("click", function (e) {

@@ -62,7 +62,7 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   const cid = one("SELECT id FROM clients WHERE email = 'client@example.com'").id;
 
   // ---------- database upgrade ----------
-  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "14");
+  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "15");
 
   // ---------- sequential invoice numbers ----------
   r = await admin("invoice_save", { client_id: cid, description: "Website build", amount: 10000, status: "unpaid" });
@@ -921,6 +921,31 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
       const tok = wk.match(/email_off&t=([a-f0-9]{48})/)[1];
       const off = await fetch(BASE + "/portal/learn.php?action=email_off&t=" + tok);
       ok("one click turns the weekly email off", off.status === 200 && /turned off/.test(await off.text()) && one(`SELECT COUNT(*) AS n FROM learners WHERE mail_token = '${tok}' AND weekly_email = 0`).n == 1);
+      // classes: a tutor shares a join link and follows students' progress and certificates
+      r = await lpost(stu2, "class_create", { name: "", track: "html" });
+      ok("a class needs a name", r.s === 400);
+      r = await lpost(stu2, "class_create", { name: "Form 3 Computer Studies", track: "html" });
+      const cls = r.j;
+      ok("a tutor creates a class with a join code", r.s === 200 && /^[A-Z0-9]{8}$/.test(cls.code), r.j);
+      r = await lget(guest, "class_info", "&code=" + cls.code.toLowerCase());
+      ok("anyone with the link sees the class name and tutor (first name only)", r.s === 200 && r.j.class.name === "Form 3 Computer Studies" && r.j.class.track_title === "HTML" && !/@/.test(r.j.class.tutor), r.j);
+      r = await lpost(stu, "class_join", { code: cls.code });
+      ok("a student joins with the code", r.s === 200);
+      r = await lpost(stu2, "class_join", { code: cls.code });
+      ok("a tutor can't join their own class", r.s === 400);
+      r = await lget(stu2, "class_get", "&id=" + cls.id);
+      const mem = r.j.class.members[0];
+      ok("the tutor sees each student's progress in the subject", r.s === 200 && r.j.class.members.length === 1 && mem.email === "student@example.com" && typeof mem.done === "number" && r.j.class.lessons > 0 && "certificate" in mem, r.j.class);
+      r = await lget(stu, "class_get", "&id=" + cls.id);
+      ok("students can't open the tutor's class report", r.s === 404);
+      r = await lget(stu, "classes");
+      ok("students see the classes they joined", r.j.joined.length === 1 && r.j.joined[0].track === "html");
+      await lpost(stu2, "class_remove", { id: cls.id, learner_id: mem.id });
+      r = await lget(stu2, "class_get", "&id=" + cls.id);
+      ok("the tutor can remove a student", r.j.class.members.length === 0);
+      await lpost(stu2, "class_remove", { id: cls.id });
+      r = await lget(stu2, "classes");
+      ok("the tutor can delete the class", r.j.own.length === 0);
       // profile: name and phone change, email doesn't
       r = await lpost(stu, "profile", { name: "Achieng Otieno", phone: "12345" });
       ok("a wrong phone number is refused", r.s === 400);

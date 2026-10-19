@@ -5,7 +5,7 @@ if (!defined('MARZLEY_PORTAL')) {
     exit;
 }
 
-const SCHEMA_VERSION = 14;
+const SCHEMA_VERSION = 15;
 const STAFF_PERMS = ['projects' => 'Projects & files', 'clients' => 'People', 'support' => 'Support', 'courses' => 'Courses', 'money' => 'Invoices, payments & quotes', 'leads' => 'Leads'];
 const PROJECT_STATUSES = ['planning', 'design', 'build', 'review', 'live', 'on_hold'];
 const INVOICE_STATUSES = ['unpaid', 'paid', 'cancelled'];
@@ -117,6 +117,9 @@ function migrate(PDO $pdo): void {
         "CREATE TABLE IF NOT EXISTS learn_lesson_likes (id $id, lesson_id $uint NOT NULL, learner_id $uint NOT NULL, created_at DATETIME NOT NULL, UNIQUE (lesson_id, learner_id))$end",
         "CREATE TABLE IF NOT EXISTS learn_reviews (id $id, lesson_id $uint NOT NULL, learner_id $uint NOT NULL, parent_id $uint NULL, rating $uint NULL, body TEXT NOT NULL, is_staff $uint NOT NULL DEFAULT 0, hidden $uint NOT NULL DEFAULT 0, created_at DATETIME NOT NULL)$end",
         "CREATE TABLE IF NOT EXISTS learn_progress (id $id, learner_id $uint NOT NULL, lesson_id $uint NOT NULL, created_at DATETIME NOT NULL, UNIQUE (learner_id, lesson_id))$end",
+        // v15: classes (a tutor shares a join link; members' progress and certificates show to the tutor)
+        "CREATE TABLE IF NOT EXISTS learn_classes (id $id, owner_id $uint NOT NULL, name VARCHAR(120) NOT NULL, code VARCHAR(12) NOT NULL UNIQUE, track_id $uint NULL, created_at DATETIME NOT NULL)$end",
+        "CREATE TABLE IF NOT EXISTS learn_class_members (id $id, class_id $uint NOT NULL, learner_id $uint NOT NULL, joined_at DATETIME NOT NULL, UNIQUE (class_id, learner_id))$end",
         // v13: final tests (a certificate needs a pass once every lesson is done)
         "CREATE TABLE IF NOT EXISTS learn_final_tests (id $id, learner_id $uint NOT NULL, track_id $uint NOT NULL, score $uint NOT NULL, total $uint NOT NULL, passed $uint NOT NULL DEFAULT 0, created_at DATETIME NOT NULL)$end",
         // v12: a certificate for each subject a learner finishes (every published lesson completed)
@@ -1655,6 +1658,42 @@ function learn_sales_report(): array {
     $sum = fn(array $d) => array_sum(array_map(fn($x) => $x['notes'] + $x['video'], $d));
     return ['days' => $days, 'weeks' => $weeks, 'top_subjects' => $top, 'top_videos' => $topVideos, 'follow_up' => array_slice($follow, 0, 30),
             'total_30' => $sum($days), 'total_7' => $sum(array_slice($days, -7, 7, true)), 'today' => $sum(array_slice($days, -1, 1, true))];
+}
+
+// ---------- classes for schools and trainers ----------
+
+function new_class_code(): string {
+    $alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    do {
+        $c = '';
+        for ($i = 0; $i < 8; $i++) $c .= $alphabet[random_int(0, strlen($alphabet) - 1)];
+    } while (q('SELECT id FROM learn_classes WHERE code = ?', [$c])->fetch());
+    return $c;
+}
+
+/** A class with its members' progress (for the tutor who owns it). */
+function learn_class_report(array $c): array {
+    $tid = $c['track_id'] ? (int)$c['track_id'] : 0;
+    $track = $tid ? q('SELECT slug, title FROM learn_tracks WHERE id = ?', [$tid])->fetch() : null;
+    $total = $tid ? (int)q('SELECT COUNT(*) FROM learn_lessons WHERE track_id = ? AND published = 1', [$tid])->fetchColumn() : 0;
+    $members = [];
+    foreach (q('SELECT l.id, l.name, l.email, l.avatar, m.joined_at FROM learn_class_members m JOIN learners l ON l.id = m.learner_id WHERE m.class_id = ? ORDER BY l.name, l.email', [$c['id']])->fetchAll() as $m) {
+        $lid = (int)$m['id'];
+        $row = ['id' => $lid, 'name' => $m['name'], 'email' => $m['email'], 'avatar' => avatar_url($m), 'joined_at' => $m['joined_at'], 'points' => learner_points($lid),
+                'lessons' => (int)q('SELECT COUNT(*) FROM learn_progress WHERE learner_id = ?', [$lid])->fetchColumn(),
+                'certificates' => (int)q('SELECT COUNT(*) FROM learn_certificates WHERE learner_id = ?', [$lid])->fetchColumn(),
+                'last_seen' => q('SELECT last_seen FROM learners WHERE id = ?', [$lid])->fetchColumn() ?: null];
+        if ($tid) {
+            $row['done'] = (int)q('SELECT COUNT(*) FROM learn_progress p JOIN learn_lessons ls ON ls.id = p.lesson_id WHERE p.learner_id = ? AND ls.track_id = ? AND ls.published = 1', [$lid, $tid])->fetchColumn();
+            $best = q('SELECT MAX(score * 100 / CASE WHEN total = 0 THEN 1 ELSE total END) FROM learn_final_tests WHERE learner_id = ? AND track_id = ?', [$lid, $tid])->fetchColumn();
+            $row['best_test'] = $best === null || $best === false ? null : (int)$best;
+            $cert = q('SELECT * FROM learn_certificates WHERE learner_id = ? AND track_id = ?', [$lid, $tid])->fetch();
+            $row['certificate'] = $cert ? learn_certificate_row($cert) : null;
+        }
+        $members[] = $row;
+    }
+    return ['id' => (int)$c['id'], 'name' => $c['name'], 'code' => $c['code'], 'created_at' => $c['created_at'],
+            'track' => $track ? $track['slug'] : null, 'track_title' => $track ? $track['title'] : null, 'lessons' => $total, 'members' => $members];
 }
 
 /** Issues any certificates already earned (subjects finished before certificates existed, or lessons added and finished later). */

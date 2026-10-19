@@ -72,3 +72,20 @@ ALTER TABLE learners ADD COLUMN weekly_email INT UNSIGNED NOT NULL DEFAULT 1;
 ALTER TABLE learners ADD COLUMN mail_token VARCHAR(48) NOT NULL DEFAULT '';
 -- v14: monthly notes pass rows (track_id 0 = every subject for pass_days days)
 ALTER TABLE learn_note_payments ADD COLUMN pass_days INT UNSIGNED NOT NULL DEFAULT 0;
+
+-- v15: classes for schools and trainers (join link; the tutor sees members' progress and certificates)
+CREATE TABLE IF NOT EXISTS learn_classes (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    owner_id INT UNSIGNED NOT NULL,
+    name VARCHAR(120) NOT NULL,
+    code VARCHAR(12) NOT NULL UNIQUE,
+    track_id INT UNSIGNED NULL,
+    created_at DATETIME NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS learn_class_members (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    class_id INT UNSIGNED NOT NULL,
+    learner_id INT UNSIGNED NOT NULL,
+    joined_at DATETIME NOT NULL,
+    UNIQUE KEY learn_class_once (class_id, learner_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
