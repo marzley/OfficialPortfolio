@@ -70,3 +70,5 @@ CREATE TABLE IF NOT EXISTS learn_final_tests (
 ALTER TABLE learners ADD COLUMN leaderboard INT UNSIGNED NOT NULL DEFAULT 0;
 ALTER TABLE learners ADD COLUMN weekly_email INT UNSIGNED NOT NULL DEFAULT 1;
 ALTER TABLE learners ADD COLUMN mail_token VARCHAR(48) NOT NULL DEFAULT '';
+-- v14: monthly notes pass rows (track_id 0 = every subject for pass_days days)
+ALTER TABLE learn_note_payments ADD COLUMN pass_days INT UNSIGNED NOT NULL DEFAULT 0;

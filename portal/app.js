@@ -1548,19 +1548,51 @@
     panel.appendChild(h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: "Video payments" })),
       pl.length ? h("ul", { className: "admin-list" }, pl) : h("p", { className: "portal-empty", text: "No video payments yet." })));
 
+    // Sales: income by day and week, best sellers, payments worth following up
+    var sl = d.sales;
+    if (sl) {
+      var dayKeys = Object.keys(sl.days), dayTot = dayKeys.map(function (k) { return sl.days[k].notes + sl.days[k].video; });
+      var maxD = Math.max.apply(null, dayTot.concat([1]));
+      var wkKeys = Object.keys(sl.weeks), maxW = Math.max.apply(null, wkKeys.map(function (k) { return sl.weeks[k]; }).concat([1]));
+      var bars = h("div", { className: "sales-bars", role: "img", "aria-label": "Learning hub income per day for the last 30 days" }, dayKeys.map(function (k, i) {
+        var x = sl.days[k];
+        return h("span", { className: "sales-bar" + (dayTot[i] ? "" : " is-zero"), style: "height:" + Math.max(3, Math.round(100 * dayTot[i] / maxD)) + "%", title: day(k) + ": " + ksh(dayTot[i]) + " (notes " + ksh(x.notes) + ", videos " + ksh(x.video) + ")" });
+      }));
+      var follow = (sl.follow_up || []).map(function (f) {
+        var wa = "https://wa.me/" + String(f.phone).replace(/^0/, "254") + "?text=" + encodeURIComponent("Hello, this is Marzley Tech. We saw your M-Pesa payment for “" + f.what + "” didn't go through. Can we help you finish it?");
+        return h("li", null, h("div", null, h("strong", { text: f.phone + " · " + ksh(f.amount) }), h("span", { className: "portal-meta", text: f.type + ": " + f.what + " · " + (f.status === "pending" ? "not completed" : "failed") + " · " + day(f.created_at) })),
+          h("a", { className: "btn btn-ghost btn-sm", href: wa, target: "_blank", rel: "noopener", text: "WhatsApp" }));
+      });
+      panel.appendChild(h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: "Learning hub sales" })),
+        h("div", { className: "learn-stats" }, [["Today", sl.today], ["Last 7 days", sl.total_7], ["Last 30 days", sl.total_30]].map(function (c) {
+          return h("div", { className: "learn-stat" }, h("i", { className: "fa-solid fa-sack-dollar", "aria-hidden": "true" }), h("span", null, h("small", { text: c[0] }), h("strong", { text: ksh(c[1]) }), h("em", { text: "Notes PDFs, passes and videos" })));
+        })),
+        h("h3", { className: "sales-h", text: "Income per day (last 30 days)" }), bars,
+        h("p", { className: "portal-meta", text: day(dayKeys[0]) + " to " + day(dayKeys[dayKeys.length - 1]) + ". Hover or tap a bar for the amount." }),
+        h("h3", { className: "sales-h", text: "Income per week (last 12 weeks)" }),
+        h("ul", { className: "sales-weeks" }, wkKeys.map(function (k) {
+          return h("li", null, h("span", { text: k.replace("-W", " week ") }), h("span", { className: "sales-wbar" }, h("span", { style: "width:" + Math.round(100 * sl.weeks[k] / maxW) + "%" })), h("strong", { text: ksh(sl.weeks[k]) }));
+        })),
+        h("div", { className: "sales-cols" },
+          h("div", null, h("h3", { className: "sales-h", text: "Best-selling notes" }), (sl.top_subjects || []).length ? h("ol", { className: "sales-top" }, sl.top_subjects.map(function (t) { return h("li", null, h("span", { text: t.title }), h("strong", { text: ksh(t.total) + " · " + t.n })); })) : h("p", { className: "portal-empty", text: "No PDF sales yet." })),
+          h("div", null, h("h3", { className: "sales-h", text: "Best-selling videos" }), (sl.top_videos || []).length ? h("ol", { className: "sales-top" }, sl.top_videos.map(function (t) { return h("li", null, h("span", { text: t.title }), h("strong", { text: ksh(t.total) + " · " + t.n })); })) : h("p", { className: "portal-empty", text: "No video sales yet." }))),
+        h("h3", { className: "sales-h", text: "Payments to follow up (last 7 days)" }),
+        h("p", { className: "portal-meta", text: "People whose M-Pesa payment failed or wasn't finished, and who haven't paid since. A friendly message often saves the sale." }),
+        follow.length ? h("ul", { className: "admin-list" }, follow) : h("p", { className: "portal-empty", text: "Nothing to follow up." })));
+    }
     // Course notes downloaded as PDF (paid with M-Pesa; reading online stays free)
     var np = d.notes_prices || {};
     var priceIn = function (k, def, label) { return h("input", { type: "number", min: "1", max: "100000", step: "1", value: String(np[k] || def), "aria-label": label, className: "notes-price-in" }); };
-    var pSmall = priceIn("small", 50, "Price for up to 5 topics, KSh"), pMed = priceIn("medium", 100, "Price for 6 to 19 topics, KSh"), pLarge = priceIn("large", 200, "Price for 20 topics or more, KSh");
+    var pSmall = priceIn("small", 50, "Price for up to 5 topics, KSh"), pMed = priceIn("medium", 100, "Price for 6 to 19 topics, KSh"), pLarge = priceIn("large", 200, "Price for 20 topics or more, KSh"), pPass = priceIn("pass", 300, "Monthly pass price (every subject for 30 days), KSh");
     var npl = (d.note_payments || []).map(function (p) {
-      return h("li", null, h("div", null, h("strong", { text: ksh(p.amount) + " · " + p.title + " notes PDF" }), h("span", { className: "portal-meta", text: p.phone + " · " + day(p.created_at) + (p.receipt ? " · M-Pesa " + p.receipt : "") + (+p.downloads ? " · " + p.downloads + " download" + (+p.downloads === 1 ? "" : "s") : "") })),
+      return h("li", null, h("div", null, h("strong", { text: ksh(p.amount) + " · " + p.title + (+p.track_id === 0 ? "" : " notes PDF") }), h("span", { className: "portal-meta", text: p.phone + " · " + day(p.created_at) + (p.receipt ? " · M-Pesa " + p.receipt : "") + (+p.downloads ? " · " + p.downloads + " download" + (+p.downloads === 1 ? "" : "s") : "") })),
         h("span", { className: "pill pill-" + (p.status === "paid" ? "paid" : p.status === "pending" ? "review" : "unpaid"), text: p.status === "paid" ? "Paid" : p.status === "pending" ? "Waiting" : "Not paid" }));
     });
     panel.appendChild(h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: "Course notes PDF sales" })),
-      h("p", { className: "portal-meta", text: "Everyone can read the course notes online for free. Downloading a whole subject as a PDF is paid with M-Pesa, priced by how many topics the subject has. Printing the notes page is turned off." }),
-      h("form", { className: "inline-form", onsubmit: function (e) { e.preventDefault(); lsave("notes_price_set", { small: Number(pSmall.value), medium: Number(pMed.value), large: Number(pLarge.value) }, "PDF prices saved."); } },
+      h("p", { className: "portal-meta", text: "Everyone can read the course notes online for free. Downloading a whole subject as a PDF is paid with M-Pesa, priced by how many topics the subject has, or with a monthly pass that unlocks every subject's PDF for 30 days. Printing the notes page is turned off." }),
+      h("form", { className: "inline-form", onsubmit: function (e) { e.preventDefault(); lsave("notes_price_set", { small: Number(pSmall.value), medium: Number(pMed.value), large: Number(pLarge.value), pass: Number(pPass.value) }, "PDF prices saved."); } },
         h("label", null, h("span", { text: "Up to 5 topics (KSh) " }), pSmall), h("label", null, h("span", { text: "6–19 topics (KSh) " }), pMed),
-        h("label", null, h("span", { text: "20+ topics (KSh) " }), pLarge), h("button", { type: "submit", className: "btn btn-solid", text: "Save prices" })),
+        h("label", null, h("span", { text: "20+ topics (KSh) " }), pLarge), h("label", null, h("span", { text: "Monthly pass, all subjects (KSh) " }), pPass), h("button", { type: "submit", className: "btn btn-solid", text: "Save prices" })),
       npl.length ? h("ul", { className: "admin-list" }, npl) : h("p", { className: "portal-empty", text: "No PDF sales yet." })));
     // Certificates learners earned by completing every lesson of a subject
     var cl = (d.certificates || []).map(function (c) {

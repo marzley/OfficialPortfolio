@@ -422,11 +422,23 @@ switch ($action) {
         $_SESSION['note_checkouts'] = array_slice(array_merge($_SESSION['note_checkouts'] ?? [], [$checkout]), -20);
         out(['ok' => true, 'checkout_id' => $checkout, 'amount' => $price, 'status' => 'pending']);
 
+    case 'notes_pass_pay':
+        // Monthly pass: one payment unlocks every subject's PDF for NOTES_PASS_DAYS days (stored with track_id 0)
+        $msisdn = normalise_phone((string)(body()['phone'] ?? ''));
+        if (!$msisdn) fail(400, 'Enter your M-Pesa number, for example 0712 345 678.');
+        if (!rate_ok('notes_pay', 6, 900)) fail(429, 'Too many payment prompts. Please wait a few minutes and try again.');
+        $price = notes_pdf_prices()['pass'];
+        $checkout = stk_push($msisdn, $price, 'NOTESPASS', 'Notes pass');
+        q('INSERT INTO learn_note_payments (checkout_id, track_id, amount, phone, token, status, pass_days, created_at) VALUES (?, 0, ?, ?, ?, ?, ?, ?)',
+            [$checkout, $price, $msisdn, bin2hex(random_bytes(24)), 'pending', NOTES_PASS_DAYS, now()]);
+        $_SESSION['note_checkouts'] = array_slice(array_merge($_SESSION['note_checkouts'] ?? [], [$checkout]), -20);
+        out(['ok' => true, 'checkout_id' => $checkout, 'amount' => $price, 'status' => 'pending']);
+
     case 'notes_pay_status':
         $checkout = (string)($_GET['checkout'] ?? '');
         // Only the browser that started the payment can collect its download token
         if (!in_array($checkout, $_SESSION['note_checkouts'] ?? [], true)) fail(404, 'Payment not found.');
-        $np = q('SELECT p.*, t.slug FROM learn_note_payments p JOIN learn_tracks t ON t.id = p.track_id WHERE p.checkout_id = ?', [$checkout])->fetch();
+        $np = q('SELECT p.*, t.slug FROM learn_note_payments p LEFT JOIN learn_tracks t ON t.id = p.track_id WHERE p.checkout_id = ?', [$checkout])->fetch();
         if (!$np) fail(404, 'Payment not found.');
         $status = $np['status'];
         if ($status === 'pending' && ($r = mpesa_result($checkout))) $status = settle_note_payment($checkout, $r);
@@ -439,25 +451,25 @@ switch ($action) {
             }
         }
         if ($status === 'mismatch') $status = 'failed';
-        out(['status' => $status] + ($status === 'paid' ? ['token' => $np['token'], 'track' => $np['slug']] : []));
+        out(['status' => $status] + ($status === 'paid' ? ['token' => $np['token'], 'track' => $np['slug'], 'pass' => (int)$np['track_id'] === 0] : []));
 
     case 'notes_access':
         $token = (string)($_GET['token'] ?? '');
-        $np = preg_match('/^[a-f0-9]{48}$/', $token) ? q("SELECT p.*, t.slug FROM learn_note_payments p JOIN learn_tracks t ON t.id = p.track_id WHERE p.token = ? AND p.status = 'paid'", [$token])->fetch() : null;
-        if (!$np || $np['slug'] !== (string)($_GET['track'] ?? '')) fail(403, 'This download is not unlocked yet.');
+        $np = preg_match('/^[a-f0-9]{48}$/', $token) ? q("SELECT p.*, t.slug FROM learn_note_payments p LEFT JOIN learn_tracks t ON t.id = p.track_id WHERE p.token = ? AND p.status = 'paid'", [$token])->fetch() : null;
+        $want = q('SELECT id, slug, title, (SELECT COUNT(*) FROM learn_lessons WHERE track_id = t.id AND published = 1) AS n FROM learn_tracks t WHERE slug = ? AND published = 1', [(string)($_GET['track'] ?? '')])->fetch();
+        $isPass = $np && (int)$np['track_id'] === 0;
+        if (!$np || !$want || (!$isPass && $np['slug'] !== $want['slug'])) fail(403, 'This download is not unlocked yet.');
+        if ($isPass && notes_pass_expiry($np) < now()) fail(403, 'Your monthly notes pass has expired. Buy a new one, or pay for just this subject.');
         if (!empty($_GET['dl'])) {
             q('UPDATE learn_note_payments SET downloads = downloads + 1 WHERE id = ?', [$np['id']]);
-            if ($me) {
-                $nt = q('SELECT title, (SELECT COUNT(*) FROM learn_lessons WHERE track_id = t.id AND published = 1) AS n FROM learn_tracks t WHERE id = ?', [$np['track_id']])->fetch();
-                award_points((int)$me['id'], 'notes', (string)$np['id'], 'Downloaded the ' . $nt['title'] . ' notes PDF', '?book=' . $np['slug'], notes_pdf_points((int)$nt['n']));
-            }
+            if ($me) award_points((int)$me['id'], 'notes', $isPass ? 'p' . $np['id'] . '-' . $want['id'] : (string)$np['id'], 'Downloaded the ' . $want['title'] . ' notes PDF', '?book=' . $want['slug'], notes_pdf_points((int)$want['n']));
         }
-        out(['ok' => true, 'receipt' => $np['receipt'], 'phone' => substr($np['phone'], 0, 6) . '***' . substr($np['phone'], -3), 'paid_at' => $np['paid_at']]);
+        out(['ok' => true, 'receipt' => $np['receipt'], 'phone' => substr($np['phone'], 0, 6) . '***' . substr($np['phone'], -3), 'paid_at' => $np['paid_at']] + ($isPass ? ['pass' => true, 'expires_at' => notes_pass_expiry($np)] : []));
 
     case 'notes_recover':
         $d = body();
         if (!rate_ok('notes_recover', 10, 3600)) fail(429, 'Too many tries. Please wait an hour, or WhatsApp us on 0745 789 590.');
-        $t = q('SELECT id, slug FROM learn_tracks WHERE slug = ?', [(string)($d['track'] ?? '')])->fetch();
+        $t = ($d['track'] ?? '') === 'pass' ? ['id' => 0, 'slug' => 'pass'] : q('SELECT id, slug FROM learn_tracks WHERE slug = ?', [(string)($d['track'] ?? '')])->fetch();
         $msisdn = normalise_phone((string)($d['phone'] ?? ''));
         $receipt = strtoupper(preg_replace('/[^A-Z0-9]/i', '', (string)($d['receipt'] ?? '')));
         if (!$t || !$msisdn) fail(400, 'Enter the M-Pesa number you paid with.');
@@ -475,13 +487,14 @@ switch ($action) {
         need_editor();
         $d = body();
         $set = [];
-        foreach (['small', 'medium', 'large'] as $size) {
+        foreach (['small', 'medium', 'large', 'pass'] as $size) {
+            if ($size === 'pass' && !isset($d['pass'])) continue;
             $price = (int)($d[$size] ?? 0);
             if ($price < 1 || $price > 100000) fail(400, 'Enter prices between KSh 1 and KSh 100,000.');
             $set[$size] = $price;
         }
-        foreach ($set as $size => $price) set_setting('notes_pdf_price_' . $size, (string)$price);
-        audit('notes_pdf_price', "KSh {$set['small']} / {$set['medium']} / {$set['large']}");
+        foreach ($set as $size => $price) set_setting($size === 'pass' ? 'notes_pass_price' : 'notes_pdf_price_' . $size, (string)$price);
+        audit('notes_pdf_price', "KSh {$set['small']} / {$set['medium']} / {$set['large']}" . (isset($set['pass']) ? " / pass {$set['pass']}" : ''));
         out(['ok' => true]);
 
     // ---------- videos (unlocked with M-Pesa) ----------
@@ -720,7 +733,7 @@ switch ($action) {
             'videos' => $videos,
             'notes' => q('SELECT id, title, summary, track_id, original_name, size, downloads, published, created_at FROM learn_notes ORDER BY created_at DESC')->fetchAll(),
             'comments' => $comments, 'payments' => $payments, 'notes_prices' => notes_pdf_prices(),
-            'note_payments' => q('SELECT p.id, p.amount, p.phone, p.status, p.receipt, p.downloads, p.created_at, p.paid_at, t.title FROM learn_note_payments p JOIN learn_tracks t ON t.id = p.track_id ORDER BY p.id DESC LIMIT 100')->fetchAll(),
+            'note_payments' => q('SELECT p.id, p.amount, p.phone, p.status, p.receipt, p.downloads, p.created_at, p.paid_at, p.track_id, COALESCE(t.title, \'Monthly notes pass (all subjects)\') AS title FROM learn_note_payments p LEFT JOIN learn_tracks t ON t.id = p.track_id ORDER BY p.id DESC LIMIT 100')->fetchAll(),
             'reviews' => q('SELECT r.id, r.lesson_id, r.parent_id, r.rating, r.body, r.is_staff, r.hidden, r.created_at, l.name, l.email, s.title AS lesson, s.slug, t.slug AS track, t.title AS track_title
                 FROM learn_reviews r JOIN learners l ON l.id = r.learner_id JOIN learn_lessons s ON s.id = r.lesson_id JOIN learn_tracks t ON t.id = s.track_id ORDER BY r.id DESC LIMIT 300')->fetchAll(),
             'top_lessons' => q('SELECT s.title, t.title AS track_title, COUNT(k.id) AS likes FROM learn_lesson_likes k JOIN learn_lessons s ON s.id = k.lesson_id JOIN learn_tracks t ON t.id = s.track_id GROUP BY s.id, s.title, t.title ORDER BY likes DESC LIMIT 10')->fetchAll(),
@@ -738,6 +751,7 @@ switch ($action) {
                 'reviews' => (int)q('SELECT COUNT(*) AS n FROM learn_reviews WHERE parent_id IS NULL')->fetch()['n'],
                 'certificates' => (int)q('SELECT COUNT(*) AS n FROM learn_certificates')->fetch()['n'],
             ],
+            'sales' => learn_sales_report(),
             'certificates' => q('SELECT c.code, c.lessons, c.issued_at, l.name, l.email, t.title FROM learn_certificates c JOIN learners l ON l.id = c.learner_id JOIN learn_tracks t ON t.id = c.track_id ORDER BY c.id DESC LIMIT 100')->fetchAll(),
         ]);
 

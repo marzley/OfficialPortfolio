@@ -87,7 +87,7 @@
     "prolog": "% Facts\nparent(kamau, wanjiku).\nparent(kamau, otieno).\nparent(wanjiku, amina).\n\n% Rules\ngrandparent(X, Z) :- parent(X, Y), parent(Y, Z).\nsibling(X, Y) :- parent(P, X), parent(P, Y), X \\= Y.\n\n% Queries (lines starting with ?-)\n?- grandparent(kamau, Who).\n?- sibling(wanjiku, S)."
   });
 
-  var state = { me: null, csrf: null, editor: false, progress: [], catalog: null, gsiLoaded: false, mpesa: false, notesPrices: { small: 50, medium: 100, large: 200 } };
+  var state = { me: null, csrf: null, editor: false, progress: [], catalog: null, gsiLoaded: false, mpesa: false, notesPrices: { small: 50, medium: 100, large: 200, pass: 300, pass_days: 30 } };
   // The PDF price depends on how long the subject is: up to 5 topics, 6–19, or 20 and more
   function notesPrice(track) {
     var n = track && track.lessons ? track.lessons.length : 0, p = state.notesPrices;
@@ -2072,8 +2072,10 @@
     showSide(false);
     setTitle("Notes and books", "Course notes for every subject, from the basics up: read free online or download the whole subject as a PDF. Plus free programming notes and books.");
     main.innerHTML = '<section class="list-page"><h1>Notes &amp; books</h1><p class="lead">Complete course notes for every subject, from the basics all the way up. Read them free online, no account needed, or download a whole subject as a PDF with M-Pesa: ' + esc(kes(state.notesPrices.small)) + ' for short subjects (up to 5 topics), ' + esc(kes(state.notesPrices.medium)) + ' for 6 to 19 topics and ' + esc(kes(state.notesPrices.large)) + ' for 20 topics or more.</p>' +
+      '<div class="pass-banner"><i class="fa-solid fa-ticket" aria-hidden="true"></i><div><strong>Monthly notes pass: ' + esc(kes(state.notesPrices.pass)) + '</strong><span>Download every subject\'s notes as PDFs for ' + state.notesPrices.pass_days + ' days.</span></div><button type="button" class="btn btn-solid btn-sm" id="pass-buy">' + (passToken() ? "You have a pass" : "Get the pass") + "</button></div>" +
       '<h2 class="notes-h">Course notes</h2><div class="book-grid" id="book-grid"><p class="muted">Loading…</p></div>' +
       '<h2 class="notes-h">PDF notes &amp; books</h2><div class="note-grid" id="note-grid"><p class="muted">Loading…</p></div></section>';
+    $("#pass-buy").addEventListener("click", function () { if (passToken()) { alert("Your pass is active on this device: open any subject's notes and tap Download PDF."); return; } passPayForm(null); });
     getCatalog().then(function (tracks) {
       $("#book-grid").innerHTML = tracks.map(function (t) {
         return '<a class="book-card" href="./?book=' + esc(t.slug) + '"><i class="' + (TRACK_ICONS[t.slug] || TRACK_ICONS[t.lang] || "fa-solid fa-book") + '" aria-hidden="true"></i><span><strong>' + esc(t.title) + " notes</strong>" +
@@ -2185,8 +2187,19 @@
   }
   function closePay() { stopPayPoll(); if (payDlg && payDlg.open) payDlg.close(); }
 
+  function passToken() { return store.get("notes-pass") || ""; }
   function startNotesPdf(track) {
     var token = store.get(pdfTokenKey(track.slug));
+    if (!token && passToken()) {
+      openPay('<div class="pay-center"><span class="spinner" aria-hidden="true"></span><h2 id="pay-title">Checking your notes pass…</h2></div>');
+      api("notes_access", undefined, "&track=" + encodeURIComponent(track.slug) + "&token=" + encodeURIComponent(passToken())).then(function (info) {
+        makeNotesPdf(track, passToken(), info);
+      }).catch(function (e) {
+        if (e.status === 403) { try { localStorage.removeItem("learn:notes-pass"); } catch (x) {} return payForm(track, e.message); }
+        payMessage("Couldn’t check your pass", e.message, track);
+      });
+      return;
+    }
     if (token) {
       openPay('<div class="pay-center"><span class="spinner" aria-hidden="true"></span><h2 id="pay-title">Checking your download…</h2></div>');
       api("notes_access", undefined, "&track=" + encodeURIComponent(track.slug) + "&token=" + encodeURIComponent(token)).then(function (info) {
@@ -2210,10 +2223,12 @@
     var d = openPay('<h2 id="pay-title" class="pay-title">Unlock PDF Download</h2><p class="pay-sub">A payment of <strong>' + esc(price) + '</strong> is required to download the <strong>' + esc(track.title) + '</strong> notes (' + track.lessons.length + ' topics) as a PDF.</p>' +
       '<form id="pay-form" class="pay-form" novalidate><label for="pay-phone">M-PESA PHONE NUMBER</label><div class="pay-phone"><span>+254</span><input id="pay-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="712345678" maxlength="13" value="' + esc((store.get("phone") || "").replace(/^(\+?254|0)/, "")) + '" required /></div>' +
       '<p class="form-msg pay-err" id="pay-msg" role="status" aria-live="polite">' + esc(err || "") + '</p><button type="submit" class="btn pay-btn" id="pay-go">Pay ' + esc(price) + '</button></form>' +
+      '<div class="pass-offer"><span>Need more subjects? <strong>' + esc(kes(state.notesPrices.pass)) + '</strong> unlocks every subject\'s PDF for ' + state.notesPrices.pass_days + ' days.</span><button type="button" class="pay-small" id="pay-pass">Get the monthly pass</button></div>' +
       '<button type="button" class="pay-link" id="pay-cancel">Cancel</button><button type="button" class="pay-small" id="pay-recover">Already paid but didn’t get your document?</button>' +
       '<p class="pay-note">Reading the notes online stays free. The PDF is for your personal use and works on this device whenever you come back.</p>');
     $("#pay-cancel", d).addEventListener("click", closePay);
     $("#pay-recover", d).addEventListener("click", function () { recoverForm(track); });
+    $("#pay-pass", d).addEventListener("click", function () { passPayForm(track); });
     setTimeout(function () { var i = $("#pay-phone", d); if (i && !i.value) i.focus(); }, 50);
     $("#pay-form", d).addEventListener("submit", function (e) {
       e.preventDefault();
@@ -2228,7 +2243,7 @@
     });
   }
 
-  function payWaiting(track, checkout, amount) {
+  function payWaiting(track, checkout, amount, passMode) {
     var d = openPay('<div class="pay-center"><span class="pay-phone-ico" aria-hidden="true"><i class="fa-solid fa-mobile-screen"></i></span><h2 id="pay-title">Request Sent!</h2>' +
       '<p class="pay-sub">Please check your phone and enter your M-PESA PIN to complete the payment of ' + esc(kes(amount)) + '.</p>' +
       '<p class="pay-wait" id="pay-wait" role="status" aria-live="polite"><span class="spinner" aria-hidden="true"></span> Waiting to auto-detect payment…</p>' +
@@ -2239,14 +2254,20 @@
       busy = true;
       api("notes_pay_status", undefined, "&checkout=" + encodeURIComponent(checkout) + (manual ? "&check=1" : "")).then(function (s) {
         busy = false;
-        if (s.status === "paid" && s.token) {
+        if (s.status === "paid" && s.token && s.pass) {
+          stopPayPoll();
+          store.set("notes-pass", s.token);
+          if (track) makeNotesPdf(track, s.token, null);
+          else { var d2 = openPay('<div class="pay-center"><span class="pay-ok-ico" aria-hidden="true"><i class="fa-solid fa-circle-check"></i></span><h2 id="pay-title">Your notes pass is active</h2><p class="pay-sub">Open any subject\'s notes and tap Download PDF, for the next ' + state.notesPrices.pass_days + ' days on this device.</p><button type="button" class="btn pay-btn" id="pass-ok">Choose notes</button></div>'); $("#pass-ok", d2).addEventListener("click", function () { closePay(); pageNotes(); }); }
+        } else if (s.status === "paid" && s.token) {
           stopPayPoll();
           store.set(pdfTokenKey(track.slug), s.token);
           var lbl = $("#book-pdf-label"); if (lbl) lbl.textContent = "Download PDF";
           makeNotesPdf(track, s.token, null);
         } else if (s.status === "failed") {
           stopPayPoll();
-          payForm(track, "The payment didn’t go through (it may have been cancelled or timed out). You can try again.");
+          if (passMode) passPayForm(track, "The payment didn’t go through (it may have been cancelled or timed out). You can try again.");
+          else payForm(track, "The payment didn’t go through (it may have been cancelled or timed out). You can try again.");
         } else if (manual) {
           $("#pay-wait", d).innerHTML = '<span class="spinner" aria-hidden="true"></span> Not received yet. Enter your PIN on the M-Pesa prompt, then tap Check Now.';
         }
@@ -2261,20 +2282,42 @@
     $("#pay-cancel", d).addEventListener("click", closePay);
   }
 
-  function recoverForm(track) {
-    var d = openPay('<h2 id="pay-title" class="pay-title">Get your PDF</h2><p class="pay-sub">Enter the number you paid with and the M-Pesa receipt code from your confirmation SMS.</p>' +
+  function passPayForm(track, err) {
+    var price = kes(state.notesPrices.pass);
+    if (!state.mpesa) { openPay('<h2 id="pay-title">Monthly notes pass</h2><p class="muted">Online payment is being set up. <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp us</a> for the pass.</p>'); return; }
+    var d = openPay('<h2 id="pay-title" class="pay-title">Monthly notes pass</h2><p class="pay-sub"><strong>' + esc(price) + '</strong> unlocks the PDF download for <strong>every subject</strong> for ' + state.notesPrices.pass_days + ' days, on this device.</p>' +
+      '<form id="pay-form" class="pay-form" novalidate><label for="pay-phone">M-PESA PHONE NUMBER</label><div class="pay-phone"><span>+254</span><input id="pay-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="712345678" maxlength="13" value="' + esc((store.get("phone") || "").replace(/^(\+?254|0)/, "")) + '" required /></div>' +
+      '<p class="form-msg pay-err" id="pay-msg" role="status" aria-live="polite">' + esc(err || "") + '</p><button type="submit" class="btn pay-btn" id="pay-go">Pay ' + esc(price) + '</button></form>' +
+      '<button type="button" class="pay-link" id="pay-cancel">' + (track ? "Back" : "Cancel") + '</button><button type="button" class="pay-small" id="pay-recover">Already bought a pass but it didn’t activate?</button>');
+    $("#pay-cancel", d).addEventListener("click", function () { if (track) payForm(track); else closePay(); });
+    $("#pay-recover", d).addEventListener("click", function () { recoverForm(track, true); });
+    $("#pay-form", d).addEventListener("submit", function (e) {
+      e.preventDefault();
+      var raw = $("#pay-phone", d).value.replace(/\s+/g, "");
+      var phone = /^(0|254|\+254)/.test(raw) ? raw.replace(/^\+/, "") : "0" + raw;
+      if (!/^(0[17]\d{8}|254[17]\d{8})$/.test(phone)) { $("#pay-msg", d).textContent = "Enter your M-Pesa number, for example 712 345 678."; return; }
+      var go = $("#pay-go", d);
+      go.disabled = true; go.textContent = "Sending request…";
+      store.set("phone", phone);
+      api("notes_pass_pay", { phone: phone }).then(function (r) { payWaiting(track, r.checkout_id, r.amount || state.notesPrices.pass, true); })
+        .catch(function (er) { go.disabled = false; go.textContent = "Pay " + price; $("#pay-msg", d).textContent = er.message; });
+    });
+  }
+  function recoverForm(track, passMode) {
+    var d = openPay('<h2 id="pay-title" class="pay-title">' + (passMode ? "Activate your pass" : "Get your PDF") + '</h2><p class="pay-sub">Enter the number you paid with and the M-Pesa receipt code from your confirmation SMS.</p>' +
       '<form id="rec-form" class="pay-form" novalidate><label for="rec-phone">M-PESA PHONE NUMBER</label><div class="pay-phone"><span>+254</span><input id="rec-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="712345678" value="' + esc((store.get("phone") || "").replace(/^(\+?254|0)/, "")) + '" required /></div>' +
       '<label for="rec-code">M-PESA RECEIPT CODE</label><input id="rec-code" class="pay-input" autocapitalize="characters" placeholder="e.g. SJK4H2L9XA" maxlength="20" required />' +
       '<p class="form-msg pay-err" id="rec-msg" role="status" aria-live="polite"></p><button type="submit" class="btn pay-btn" id="rec-go">Get my PDF</button></form>' +
-      '<button type="button" class="pay-link" id="rec-back">Back</button><p class="pay-note">Still stuck? <a href="https://wa.me/254745789590?text=' + encodeURIComponent("Hello Marzley, I paid for the " + track.title + " notes PDF but didn't get it.") + '" target="_blank" rel="noopener noreferrer">WhatsApp us</a> your M-Pesa message.</p>');
-    $("#rec-back", d).addEventListener("click", function () { payForm(track); });
+      '<button type="button" class="pay-link" id="rec-back">Back</button><p class="pay-note">Still stuck? <a href="https://wa.me/254745789590?text=' + encodeURIComponent(passMode ? "Hello Marzley, I paid for the monthly notes pass but it didn't activate." : "Hello Marzley, I paid for the " + track.title + " notes PDF but didn't get it.") + '" target="_blank" rel="noopener noreferrer">WhatsApp us</a> your M-Pesa message.</p>');
+    $("#rec-back", d).addEventListener("click", function () { if (passMode) passPayForm(track); else payForm(track); });
     $("#rec-form", d).addEventListener("submit", function (e) {
       e.preventDefault();
       var raw = $("#rec-phone", d).value.replace(/\s+/g, "");
       var phone = /^(0|254|\+254)/.test(raw) ? raw.replace(/^\+/, "") : "0" + raw;
       var go = $("#rec-go", d);
       go.disabled = true; go.textContent = "Checking…";
-      api("notes_recover", { track: track.slug, phone: phone, receipt: $("#rec-code", d).value }).then(function (r) {
+      api("notes_recover", { track: passMode ? "pass" : track.slug, phone: phone, receipt: $("#rec-code", d).value }).then(function (r) {
+        if (passMode) { store.set("notes-pass", r.token); if (track) makeNotesPdf(track, r.token, null); else { closePay(); pageNotes(); } return; }
         store.set(pdfTokenKey(track.slug), r.token);
         var lbl = $("#book-pdf-label"); if (lbl) lbl.textContent = "Download PDF";
         makeNotesPdf(track, r.token, null);
@@ -2777,7 +2820,7 @@
       state.me = j.learner;
       state.editor = !!j.editor;
       state.mpesa = !!j.mpesa;
-      if (j.notes_prices) ["small", "medium", "large"].forEach(function (k) { state.notesPrices[k] = Number(j.notes_prices[k]) || state.notesPrices[k]; });
+      if (j.notes_prices) ["small", "medium", "large", "pass", "pass_days"].forEach(function (k) { state.notesPrices[k] = Number(j.notes_prices[k]) || state.notesPrices[k]; });
       state.googleClientId = j.google_client_id;
       state.progress = j.learner ? (j.progress || []).map(Number) : loadLocalProgress();
       updateUser();

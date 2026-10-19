@@ -165,6 +165,7 @@ function migrate(PDO $pdo): void {
         ['learners', 'leaderboard', "$uint NOT NULL DEFAULT 0"],          // v14: shown on the monthly leaderboard (opt-in)
         ['learners', 'weekly_email', "$uint NOT NULL DEFAULT 1"],         // v14: weekly progress email (one-click off)
         ['learners', 'mail_token', "VARCHAR(48) NOT NULL DEFAULT ''"],    // v14: for the one-click "stop these emails" link
+        ['learn_note_payments', 'pass_days', "$uint NOT NULL DEFAULT 0"], // v14: monthly notes pass (track_id 0 = every subject, for this many days)
     ];
     foreach ($columns as [$table, $col, $def]) {
         try { $pdo->exec("ALTER TABLE $table ADD COLUMN $col $def"); } catch (PDOException $e) { /* already there */ }
@@ -1337,7 +1338,16 @@ function settle_learn_payment(string $checkoutId, array $r): string {
  *  Staff change them in the portal's Learning hub tab. */
 function notes_pdf_prices(): array {
     $get = fn(string $key, int $default) => max(1, min(100000, (int)setting($key, (string)$default)));
-    return ['small' => $get('notes_pdf_price_small', 50), 'medium' => $get('notes_pdf_price_medium', 100), 'large' => $get('notes_pdf_price_large', 200)];
+    return ['small' => $get('notes_pdf_price_small', 50), 'medium' => $get('notes_pdf_price_medium', 100), 'large' => $get('notes_pdf_price_large', 200),
+            'pass' => $get('notes_pass_price', 300), 'pass_days' => NOTES_PASS_DAYS];
+}
+
+/** The monthly notes pass: every subject's PDF for this many days after payment. */
+const NOTES_PASS_DAYS = 30;
+
+/** When a paid notes pass row stops working (Y-m-d H:i:s). */
+function notes_pass_expiry(array $np): string {
+    return date('Y-m-d H:i:s', strtotime((string)$np['paid_at']) + max(1, (int)$np['pass_days']) * 86400);
 }
 
 /** The PDF price for a subject with this many published topics (lessons). */
@@ -1612,6 +1622,39 @@ function learn_weekly_email(int $learnerId): ?array {
         "Keep going: a little every day adds up.\n\nMarzley Tech Solutions\n\n" .
         "Don't want these weekly emails? Turn them off with one click: $site/portal/learn.php?action=email_off&t=" . learner_mail_token($learnerId);
     return ['to' => $l['email'], 'subject' => $tests ? 'Your certificate is one test away' : 'Your week in the learning hub', 'text' => $text];
+}
+
+/** Learning hub income for the portal: last 30 days by day, last 12 weeks, best sellers and payments to follow up. */
+function learn_sales_report(): array {
+    $rows = [];
+    foreach (q("SELECT paid_at, paid_amount AS amount, 'notes' AS kind, track_id FROM learn_note_payments WHERE status = 'paid' AND paid_at >= ?", [date('Y-m-d 00:00:00', strtotime('-84 days'))])->fetchAll() as $r) $rows[] = $r;
+    foreach (q("SELECT paid_at, paid_amount AS amount, 'video' AS kind, 0 AS track_id FROM learn_payments WHERE status = 'paid' AND paid_at >= ?", [date('Y-m-d 00:00:00', strtotime('-84 days'))])->fetchAll() as $r) $rows[] = $r;
+    $days = [];
+    for ($i = 29; $i >= 0; $i--) $days[date('Y-m-d', strtotime("-$i days"))] = ['notes' => 0, 'video' => 0];
+    $weeks = [];
+    for ($i = 11; $i >= 0; $i--) $weeks[date('o-\WW', strtotime("-$i weeks"))] = 0;
+    foreach ($rows as $r) {
+        $d = substr((string)$r['paid_at'], 0, 10);
+        if (isset($days[$d])) $days[$d][$r['kind']] += (int)$r['amount'];
+        $w = date('o-\WW', strtotime((string)$r['paid_at']));
+        if (isset($weeks[$w])) $weeks[$w] += (int)$r['amount'];
+    }
+    $top = q("SELECT COALESCE(t.title, 'Monthly notes pass') AS title, COUNT(*) AS n, SUM(p.paid_amount) AS total FROM learn_note_payments p LEFT JOIN learn_tracks t ON t.id = p.track_id
+              WHERE p.status = 'paid' GROUP BY p.track_id, t.title ORDER BY total DESC LIMIT 8")->fetchAll();
+    $topVideos = q("SELECT v.title, COUNT(*) AS n, SUM(p.paid_amount) AS total FROM learn_payments p JOIN learn_videos v ON v.id = p.video_id WHERE p.status = 'paid' GROUP BY v.id, v.title ORDER BY total DESC LIMIT 5")->fetchAll();
+    // People who started paying but it failed or never finished in the last 7 days, with no later success: worth a friendly message
+    $since = date('Y-m-d H:i:s', time() - 7 * 86400);
+    $follow = [];
+    foreach (q("SELECT p.phone, p.amount, p.status, p.created_at, COALESCE(t.title, 'Monthly notes pass') AS what FROM learn_note_payments p LEFT JOIN learn_tracks t ON t.id = p.track_id
+                WHERE p.status IN ('failed', 'pending') AND p.created_at >= ? AND p.created_at < ? AND NOT EXISTS (SELECT 1 FROM learn_note_payments x WHERE x.phone = p.phone AND x.track_id = p.track_id AND x.status = 'paid')
+                ORDER BY p.id DESC LIMIT 30", [$since, date('Y-m-d H:i:s', time() - 600)])->fetchAll() as $r) $follow[] = $r + ['type' => 'Notes PDF'];
+    foreach (q("SELECT p.phone, p.amount, p.status, p.created_at, v.title AS what FROM learn_payments p JOIN learn_videos v ON v.id = p.video_id
+                WHERE p.status IN ('failed', 'pending') AND p.created_at >= ? AND p.created_at < ? AND NOT EXISTS (SELECT 1 FROM learn_unlocks u WHERE u.video_id = p.video_id AND u.learner_id = p.learner_id)
+                ORDER BY p.id DESC LIMIT 30", [$since, date('Y-m-d H:i:s', time() - 600)])->fetchAll() as $r) $follow[] = $r + ['type' => 'Video'];
+    usort($follow, fn($a, $b) => strcmp($b['created_at'], $a['created_at']));
+    $sum = fn(array $d) => array_sum(array_map(fn($x) => $x['notes'] + $x['video'], $d));
+    return ['days' => $days, 'weeks' => $weeks, 'top_subjects' => $top, 'top_videos' => $topVideos, 'follow_up' => array_slice($follow, 0, 30),
+            'total_30' => $sum($days), 'total_7' => $sum(array_slice($days, -7, 7, true)), 'today' => $sum(array_slice($days, -1, 1, true))];
 }
 
 /** Issues any certificates already earned (subjects finished before certificates existed, or lessons added and finished later). */

@@ -715,6 +715,30 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
       r = await lget(boss, "admin");
       ok("PDF sales show in the Learning hub admin", r.j.stats.notes_sold === 1 && r.j.stats.notes_revenue === 80 && r.j.notes_prices.medium === 80 && r.j.note_payments.length === 3);
       r = await lpost(boss, "notes_price_set", { small: 50, medium: 100, large: 200 });
+      // monthly notes pass: one payment, every subject's PDF for 30 days
+      r = await lpost(boss, "notes_price_set", { small: 50, medium: 100, large: 200, pass: 250 });
+      r = await lget(guest, "me");
+      ok("the pass price and length are public", r.j.notes_prices.pass === 250 && r.j.notes_prices.pass_days === 30);
+      r = await lpost(buyer, "notes_pass_pay", { phone: "0711 222 333" });
+      const passCo = r.j.checkout_id;
+      ok("the pass sends one M-Pesa prompt for the pass price", r.s === 200 && JSON.parse(fs.readFileSync(WORK + "/fake/stk-last.json", "utf8")).body.Amount === 250);
+      await callback(passCo, 250, "NOTESPASS1");
+      await sleep(300);
+      r = await lget(buyer, "notes_pay_status", "&checkout=" + passCo);
+      const passTok = r.j.token;
+      ok("once paid, the browser gets a pass token", r.j.status === "paid" && r.j.pass === true && /^[a-f0-9]{48}$/.test(passTok), r.j);
+      r = await lget(guest, "notes_access", "&track=html&token=" + passTok);
+      const r2p = await lget(guest, "notes_access", "&track=css&token=" + passTok);
+      ok("the pass unlocks every subject's PDF and says when it ends", r.s === 200 && r.j.pass === true && !!r.j.expires_at && r2p.s === 200);
+      r = await lpost(rec, "notes_recover", { track: "pass", phone: "0711222333", receipt: "NOTESPASS1" });
+      ok("“already paid” recovers the pass too", r.s === 200 && r.j.token === passTok);
+      sql("UPDATE learn_note_payments SET paid_at = '2020-01-01 00:00:00' WHERE receipt = 'NOTESPASS1'");
+      r = await lget(guest, "notes_access", "&track=html&token=" + passTok);
+      ok("an expired pass stops working, with a clear message", r.s === 403 && /expired/.test(r.j.error));
+      r = await lget(boss, "admin");
+      ok("pass sales show in the admin list", r.j.note_payments.some((p) => +p.track_id === 0 && /Monthly notes pass/.test(p.title)));
+      ok("the sales report has 30 days, 12 weeks, best sellers and follow-ups", Object.keys(r.j.sales.days).length === 30 && Object.keys(r.j.sales.weeks).length === 12 && r.j.sales.total_30 >= 80 && r.j.sales.top_subjects.length >= 2 && Array.isArray(r.j.sales.follow_up), r.j.sales);
+      await lpost(boss, "notes_price_set", { small: 50, medium: 100, large: 200, pass: 300 });
     }
 
     // likes and comments (only for people who unlocked)
