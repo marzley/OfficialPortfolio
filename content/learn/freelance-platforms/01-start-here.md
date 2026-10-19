@@ -20,7 +20,7 @@ For step-by-step setup of the two biggest, see [Upwork step by step](./?track=fr
 
 ## Fees, in plain words
 
-- Marketplaces take a **service fee** from your earnings (Fiverr is 20%; others vary and change: check each site).
+- Marketplaces take a **service fee** from your earnings (Fiverr is a flat 20%; Upwork charges 0–15% depending on the contract; others vary and change: check each site).
 - Some also charge for **bids** or “connects” to apply for jobs.
 - Vetted networks are usually **free for freelancers**: the client pays more.
 - Job boards are free to apply; the employer pays to post.
@@ -48,7 +48,7 @@ More detail: [Getting paid in Kenya](./?track=make-money-online&lesson=getting-p
 5. **Use a written scope** for every project (see [Discovery calls, quotes and contracts](./?track=freelancing&lesson=discovery-quotes-contracts)).
 
 :::warning Details change
-Fees, accepted countries and payment options change often. Confirm on each platform's official website before you rely on what's here.
+We last checked the key fees and payouts in **October 2026**. Fees, accepted countries and payment options change often. Confirm on each platform's official website before you rely on what's here.
 :::
 
 ## Summary

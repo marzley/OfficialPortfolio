@@ -18,7 +18,7 @@ Countries, payment options and minimum payouts change often. Confirm on each pla
 | | |
 |---|---|
 | Tasks | Surveys, short tasks, app installs and offers, watching content, social tasks, referrals |
-| How you're paid | PayPal and other options such as bank transfer or wallets; options vary by country; payout after a minimum balance |
+| How you're paid | PayPal, Payeer and crypto (options vary by country); payouts are processed weekly once you reach the minimum balance |
 | Kenya | Open to most countries and widely used in Kenya |
 | Realistic earnings | Low: typically a few dollars a month with regular use |
 | Best for | Beginners learning how rewards sites work |

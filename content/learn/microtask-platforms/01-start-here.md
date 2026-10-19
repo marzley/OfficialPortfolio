@@ -17,7 +17,7 @@ For the task *types* themselves (bounding boxes, search evaluation, RLHF and mor
 - Treat microtasks as **side income and a stepping stone** to skilled work (annotation, testing, writing, VA work).
 
 :::warning Details change often
-Minimum payouts, payment methods and accepted countries change regularly. Always confirm on the platform's **official website** before relying on what you read here, and never trust "updated" claims in WhatsApp or Telegram groups.
+We last checked the key facts in this subject (closures, rebrands, fees and payouts) in **October 2026**. Minimum payouts, payment methods and accepted countries change regularly. Always confirm on the platform's **official website** before relying on what you read here, and never trust "updated" claims in WhatsApp or Telegram groups.
 :::
 
 ## Getting paid in Kenya

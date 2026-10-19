@@ -13,7 +13,7 @@ You now know 55 real platforms. This lesson shows the scams that copy them, whic
 |---|---|---|
 | **Deposit-to-unlock “task apps”** | You earn small amounts liking videos or rating products, then must top up to unlock “premium” tasks or withdraw | Any payment to work or to withdraw |
 | **Telegram/WhatsApp “like and earn” groups** | A “mentor” pays you a few shillings, then moves you to paid “merchant tasks” | Recruitment in chats; growing deposits |
-| **Account selling and renting** | “Verified Remotasks/Outlier/MTurk accounts” for sale or rent | Breaks platform rules; sellers often vanish |
+| **Account selling and renting** | “Verified Remotasks/Outlier/MTurk accounts” for sale or rent (Remotasks left Kenya in 2024 and MTurk closed in 2026, so these are pure scams) | Breaks platform rules; sellers often vanish |
 | **Fake recruiters** | “Pay KSh 1,500 for training and placement on TELUS/Appen” | Real exams and applications are free |
 | **Recruitment schemes** | Earnings depend on signing up friends | Income from recruiting, not work |
 | **Fake look-alike apps** | Copies of real apps that steal logins | Wrong developer name; asks for M-Pesa PIN |

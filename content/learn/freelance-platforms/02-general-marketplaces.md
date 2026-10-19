@@ -18,7 +18,7 @@ Fees, accepted countries and payout options change often. Confirm on each platfo
 | | |
 |---|---|
 | Work | Writing, design, development, virtual assistance, marketing, data, admin and more |
-| Fees for you | A service fee on each payment (Upwork has moved to a variable fee: check the current rate) and paid “Connects” to apply for jobs |
+| Fees for you | A service fee of 0–15% per contract (Upwork's variable fee since May 2025, shown before you apply) and paid “Connects” to apply for jobs |
 | Getting paid | M-Pesa (directly in Kenya), Payoneer, bank or other methods in your account |
 | Kenya | Open to Kenyan freelancers; profile approval isn't guaranteed |
 | Competition | High |

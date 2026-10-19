@@ -114,8 +114,8 @@ Countries, payment options and minimum payouts change often. Confirm on each pla
 | | |
 |---|---|
 | Tasks | Short surveys on brands, health, media and society |
-| How you're paid | Mobile airtime, sometimes other rewards |
-| Kenya | Active in Kenya |
+| How you're paid | Airtime after completing a survey; GeoPoll also lists M-Pesa as an incentive in Kenya |
+| Kenya | Active in Kenya, with direct links to mobile networks |
 | Realistic earnings | Low (airtime) |
 | Best for | Anyone with a phone in Kenya |
 

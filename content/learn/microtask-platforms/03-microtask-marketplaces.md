@@ -43,30 +43,30 @@ Countries, payment options and minimum payouts change often. Confirm on each pla
 **Pros:** Steady tasks for good workers. **Cons:** Access isn't guaranteed; tasks come and go.
 **Watch out:** UHRS accounts “for sale” or “for rent” are against the rules and often scams.
 
-## 13. Amazon Mechanical Turk (MTurk)
+## 13. Amazon Mechanical Turk (MTurk): closed
 
-**What it is:** Amazon's original microtask marketplace (HITs from requesters worldwide).
+**What it is:** Amazon's original microtask marketplace (HITs from requesters worldwide). **Amazon closed it on 30 September 2026**, after 21 years.
 
 | | |
 |---|---|
 | Tasks | Surveys, data checking, transcription snippets, image tagging |
 | How you're paid | Amazon payments and bank transfers in supported countries |
-| Kenya | Registration from Kenya is usually not approved; Amazon limits accepted countries |
+| Kenya | No longer available anywhere: the platform has closed |
 | Realistic earnings | Low |
 | Best for | Workers in supported countries |
 
-**How to start:** Apply only with your real details; accept the decision.
-**Pros:** Huge task volume. **Cons:** Limited country access.
-**Watch out:** Buying an approved MTurk account breaks the rules and risks losing everything.
+**How to start:** You can't: use Clickworker, Prolific or the testing platforms instead.
+**Pros:** It shaped the whole microtask industry. **Cons:** Closed.
+**Watch out:** Anyone selling “MTurk accounts” or “MTurk tasks” now is a scammer.
 
 ## 14. SproutGigs (formerly Picoworkers)
 
-**What it is:** A marketplace for very small jobs posted by individuals and businesses.
+**What it is:** A marketplace for very small jobs posted by individuals and businesses. Picoworkers completed its rebrand to SproutGigs in 2025; old accounts moved over automatically.
 
 | | |
 |---|---|
 | Tasks | Sign-ups, app tests, social media tasks, data collection, simple research |
-| How you're paid | PayPal, crypto and other options; payouts after a minimum |
+| How you're paid | PayPal, crypto and other options; payouts after a minimum, with withdrawal fees (check the current rate) |
 | Kenya | Open to Kenya and many countries |
 | Realistic earnings | Low |
 | Best for | Beginners with spare minutes |
@@ -93,13 +93,13 @@ Countries, payment options and minimum payouts change often. Confirm on each pla
 
 ## 16. Toloka
 
-**What it is:** A crowdsourcing platform for AI data labelling and evaluation.
+**What it is:** A crowdsourcing platform for AI data labelling and evaluation. Toloka has been shifting towards expert AI work (see Mindrift in the next lesson), and reports in 2026 conflict on whether its open crowd tasks continue.
 
 | | |
 |---|---|
 | Tasks | Image and text labelling, search evaluation, field and survey tasks |
 | How you're paid | Payment methods offered in your account (vary by country) |
-| Kenya | Availability changes by country and project; check current status |
+| Kenya | Check the official site for whether open tasks are still offered in your country |
 | Realistic earnings | Low to medium |
 | Best for | Careful workers who pass training tasks |
 
@@ -141,7 +141,7 @@ Countries, payment options and minimum payouts change often. Confirm on each pla
 
 ## Summary
 
-- Clickworker and UHRS (through vendors) are the best-known legitimate marketplaces open to many countries.
+- Clickworker and UHRS (through vendors) are the best-known legitimate marketplaces open to many countries; Amazon Mechanical Turk closed in September 2026.
 - SproutGigs, Microworkers and RapidWorkers are easy to start but pay very little.
 - Refuse fake reviews, fake votes and fake accounts; never buy or rent accounts.
 

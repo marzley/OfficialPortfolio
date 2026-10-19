@@ -172,7 +172,7 @@ Countries, payment options and minimum payouts change often. Confirm on each pla
 **Watch out:** Real employers don't charge recruitment fees.
 
 :::note About Remotasks
-Remotasks, once popular in Kenya, stopped operating in Kenya and several other countries in 2024. Treat any offers of “Remotasks Kenya accounts” as scams or rule-breaking.
+Remotasks, once popular in Kenya, shut its Kenyan operations in March 2024, locking users out with little warning. Treat any offers of “Remotasks Kenya accounts” as scams or rule-breaking.
 :::
 
 ## Summary

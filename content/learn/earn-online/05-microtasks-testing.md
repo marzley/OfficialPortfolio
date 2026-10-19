@@ -20,7 +20,7 @@ These are the easiest online tasks to start: answering surveys, completing small
 
 **What it is.** Tiny tasks of seconds to minutes: categorising images, checking if a search result matches, verifying business details, short transcriptions, writing a sentence, tagging products.
 
-**Where:** **Clickworker** (clickworker.com), **Toloka** (toloka.ai), **Amazon Mechanical Turk** (mturk.com; acceptance outside the US is limited and often closed), **Appen** short projects, **OneForma**.
+**Where:** **Clickworker** (clickworker.com), **Toloka** (toloka.ai), (Amazon Mechanical Turk closed in September 2026), **Appen** short projects, **OneForma**.
 
 **How to start:**
 1. Sign up with your real details; complete qualification tests (they unlock better-paid tasks).
