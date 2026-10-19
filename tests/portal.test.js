@@ -738,7 +738,7 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
       r = await lget(boss, "admin");
       ok("pass sales show in the admin list", r.j.note_payments.some((p) => +p.track_id === 0 && /Monthly notes pass/.test(p.title)));
       ok("the sales report has 30 days, 12 weeks, best sellers and follow-ups", Object.keys(r.j.sales.days).length === 30 && Object.keys(r.j.sales.weeks).length === 12 && r.j.sales.total_30 >= 80 && r.j.sales.top_subjects.length >= 2 && Array.isArray(r.j.sales.follow_up), r.j.sales);
-      await lpost(boss, "notes_price_set", { small: 50, medium: 100, large: 200, pass: 300 });
+      await lpost(boss, "notes_price_set", { small: 50, medium: 100, large: 200, pass: 1000 });
     }
 
     // likes and comments (only for people who unlocked)

@@ -1583,7 +1583,7 @@
     // Course notes downloaded as PDF (paid with M-Pesa; reading online stays free)
     var np = d.notes_prices || {};
     var priceIn = function (k, def, label) { return h("input", { type: "number", min: "1", max: "100000", step: "1", value: String(np[k] || def), "aria-label": label, className: "notes-price-in" }); };
-    var pSmall = priceIn("small", 50, "Price for up to 5 topics, KSh"), pMed = priceIn("medium", 100, "Price for 6 to 19 topics, KSh"), pLarge = priceIn("large", 200, "Price for 20 topics or more, KSh"), pPass = priceIn("pass", 300, "Monthly pass price (every subject for 30 days), KSh");
+    var pSmall = priceIn("small", 50, "Price for up to 5 topics, KSh"), pMed = priceIn("medium", 100, "Price for 6 to 19 topics, KSh"), pLarge = priceIn("large", 200, "Price for 20 topics or more, KSh"), pPass = priceIn("pass", 1000, "Monthly pass price (every subject for 30 days), KSh");
     var npl = (d.note_payments || []).map(function (p) {
       return h("li", null, h("div", null, h("strong", { text: ksh(p.amount) + " · " + p.title + (+p.track_id === 0 ? "" : " notes PDF") }), h("span", { className: "portal-meta", text: p.phone + " · " + day(p.created_at) + (p.receipt ? " · M-Pesa " + p.receipt : "") + (+p.downloads ? " · " + p.downloads + " download" + (+p.downloads === 1 ? "" : "s") : "") })),
         h("span", { className: "pill pill-" + (p.status === "paid" ? "paid" : p.status === "pending" ? "review" : "unpaid"), text: p.status === "paid" ? "Paid" : p.status === "pending" ? "Waiting" : "Not paid" }));

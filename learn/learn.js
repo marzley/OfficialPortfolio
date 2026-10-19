@@ -87,7 +87,7 @@
     "prolog": "% Facts\nparent(kamau, wanjiku).\nparent(kamau, otieno).\nparent(wanjiku, amina).\n\n% Rules\ngrandparent(X, Z) :- parent(X, Y), parent(Y, Z).\nsibling(X, Y) :- parent(P, X), parent(P, Y), X \\= Y.\n\n% Queries (lines starting with ?-)\n?- grandparent(kamau, Who).\n?- sibling(wanjiku, S)."
   });
 
-  var state = { me: null, csrf: null, editor: false, progress: [], catalog: null, gsiLoaded: false, mpesa: false, notesPrices: { small: 50, medium: 100, large: 200, pass: 300, pass_days: 30 } };
+  var state = { me: null, csrf: null, editor: false, progress: [], catalog: null, gsiLoaded: false, mpesa: false, notesPrices: { small: 50, medium: 100, large: 200, pass: 1000, pass_days: 30 } };
   // The PDF price depends on how long the subject is: up to 5 topics, 6–19, or 20 and more
   function notesPrice(track) {
     var n = track && track.lessons ? track.lessons.length : 0, p = state.notesPrices;

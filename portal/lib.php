@@ -1342,7 +1342,7 @@ function settle_learn_payment(string $checkoutId, array $r): string {
 function notes_pdf_prices(): array {
     $get = fn(string $key, int $default) => max(1, min(100000, (int)setting($key, (string)$default)));
     return ['small' => $get('notes_pdf_price_small', 50), 'medium' => $get('notes_pdf_price_medium', 100), 'large' => $get('notes_pdf_price_large', 200),
-            'pass' => $get('notes_pass_price', 300), 'pass_days' => NOTES_PASS_DAYS];
+            'pass' => $get('notes_pass_price', 1000), 'pass_days' => NOTES_PASS_DAYS];
 }
 
 /** The monthly notes pass: every subject's PDF for this many days after payment. */
