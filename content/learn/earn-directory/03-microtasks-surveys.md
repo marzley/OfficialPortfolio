@@ -7,6 +7,11 @@ after: microtasks-ai-data-tasks
 
 This lesson covers microtasks that come from market research, universities, software companies and field data collectors. Many are open to people with only a smartphone, and some are done **offline in your own town**.
 
+
+:::tip Which platforms?
+This lesson explains the task types. For detailed reviews of 55 real platforms that offer them, see [Microtask platforms reviewed](./?track=microtask-platforms&lesson=microtask-platforms-start-here).
+:::
+
 ## Common features
 
 - **Eligibility matters:** many survey and testing sites screen by country, age, occupation and device. You won't qualify for everything.

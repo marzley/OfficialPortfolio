@@ -16,6 +16,10 @@ after: tutoring-and-microtasks
 
 ## Platforms
 
+:::tip Full reviews
+For detailed reviews of 55 platforms (Timebucks, ySense, Clickworker, GoTranscript, UserTesting, GeoPoll and more), see the [Microtask platforms reviewed](./?track=microtask-platforms&lesson=microtask-platforms-start-here) subject.
+:::
+
 > Availability depends on country and changes often. Check the official site, and never pay to join.
 
 | Platform | What you do | Notes |

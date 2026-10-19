@@ -9,6 +9,11 @@ after: earn-directory-start-here
 
 This lesson explains **each task type** in detail. Part 2 covers [surveys, testing, research and local tasks](./?track=earn-directory&lesson=microtasks-surveys-testing-local).
 
+
+:::tip Which platforms?
+This lesson explains the task types. For detailed reviews of 55 real platforms that offer them, see [Microtask platforms reviewed](./?track=microtask-platforms&lesson=microtask-platforms-start-here).
+:::
+
 ## Before you start: what all microtask work has in common
 
 - **Qualification tests** are normal: you read guidelines and pass a test before getting paid work.
