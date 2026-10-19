@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>How attacks happen: threat actors, the attack lifecycle…</title>
+    <meta name="description" content="Defenders who understand how attackers think can stop attacks earlier. This lesson explains who attacks, why , and how attacks unfold step by step." />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/threat-landscape-attack-lifecycle/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="How attacks happen: threat actors, the attack lifecycle…" />
+    <meta property="og:description" content="Defenders who understand how attackers think can stop attacks earlier. This lesson explains who attacks, why , and how attacks unfold step by step." />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/threat-landscape-attack-lifecycle/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="How attacks happen: threat actors, the attack lifecycle…" />
+    <meta name="twitter:description" content="Defenders who understand how attackers think can stop attacks earlier. This lesson explains who attacks, why , and how attacks unfold step by step." />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/threat-landscape-attack-lifecycle/#lesson","name":"How attacks happen: threat actors, the attack lifecycle and MITRE ATT&CK","description":"Defenders who understand how attackers think can stop attacks earlier. This lesson explains who attacks, why , and how attacks unfold step by step.","url":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/threat-landscape-attack-lifecycle/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/#course","name":"Advanced cybersecurity: defend, detect and respond like a professional","url":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Advanced cybersecurity: defend, detect and respond like a professional","item":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/"},{"@type":"ListItem","position":4,"name":"How attacks happen: threat actors, the attack lifecycle and MITRE ATT&CK","item":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/threat-landscape-attack-lifecycle/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/cybersecurity-advanced/">Advanced cybersecurity: defend, detect and respond like a professional</a> / <span>How attacks happen: threat actors, the attack lifecycle and MITRE ATT&amp;CK</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=cybersecurity-advanced&amp;lesson=threat-landscape-attack-lifecycle"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>How attacks happen: threat actors, the attack lifecycle and MITRE ATT&amp;CK</h1>
+<p>Defenders who understand how attackers think can stop attacks earlier. This lesson explains <strong>who</strong> attacks, <strong>why</strong>, and <strong>how</strong> attacks unfold step by step.</p>
+<h2>Threat actors</h2>
+<div class="static-table"><table><thead><tr><th>Actor</th><th>Motive</th><th>Typical targets</th></tr></thead><tbody><tr><td><strong>Cybercriminals</strong></td><td>Money</td><td>Businesses, banks, mobile money users (ransomware, fraud, data theft)</td></tr><tr><td><strong>Fraud gangs / social engineers</strong></td><td>Money</td><td>Individuals: SIM swap, fake M-Pesa messages, impersonation</td></tr><tr><td><strong>Hacktivists</strong></td><td>Politics or causes</td><td>Government and corporate websites (defacement, DDoS, leaks)</td></tr><tr><td><strong>Nation-state groups</strong></td><td>Espionage, disruption</td><td>Governments, critical infrastructure, telecoms</td></tr><tr><td><strong>Insiders</strong></td><td>Money, revenge, mistakes</td><td>Their own organisation</td></tr><tr><td><strong>Script kiddies</strong></td><td>Curiosity, fame</td><td>Easy, poorly protected targets</td></tr></tbody></table></div>
+<h2>Common attacks seen in Kenya and the region</h2>
+<ul><li><strong>Business email compromise (BEC):</strong> criminals take over or fake an email account and redirect supplier payments.</li><li><strong>Ransomware:</strong> files encrypted and data stolen; payment demanded.</li><li><strong>SIM swap and mobile money fraud:</strong> taking over a phone number to reset accounts.</li><li><strong>Phishing and smishing:</strong> fake bank, KRA, eCitizen or delivery messages.</li><li><strong>Website attacks:</strong> outdated WordPress plugins, weak admin passwords.</li><li><strong>Insider fraud:</strong> staff abusing access to systems.</li></ul>
+<h2>The attack lifecycle (cyber kill chain)</h2>
+<p>Lockheed Martin's <strong>Cyber Kill Chain</strong> describes attack stages:</p>
+<div class="static-table"><table><thead><tr><th>Stage</th><th>Attacker does</th><th>Defender opportunity</th></tr></thead><tbody><tr><td>1. Reconnaissance</td><td>Researches the target (staff names, emails, systems)</td><td>Limit public information; monitor for scanning</td></tr><tr><td>2. Weaponisation</td><td>Prepares a malicious file or link</td><td>Threat intelligence</td></tr><tr><td>3. Delivery</td><td>Sends phishing email, malicious link, exploit</td><td>Email filtering, user training</td></tr><tr><td>4. Exploitation</td><td>Gets code to run or tricks a user</td><td>Patching, secure configuration</td></tr><tr><td>5. Installation</td><td>Installs malware or a backdoor</td><td>Endpoint protection, application control</td></tr><tr><td>6. Command and control</td><td>Remote control of the victim system</td><td>Network monitoring, DNS filtering</td></tr><tr><td>7. Actions on objectives</td><td>Steals data, encrypts files, moves money</td><td>Data loss prevention, backups, detection</td></tr></tbody></table></div>
+<p><strong>Key idea:</strong> break any link and the attack fails. The earlier you detect, the cheaper the incident.</p>
+<h2>MITRE ATT&amp;CK: a map of real attacker behaviour</h2>
+<p><strong>MITRE ATT&amp;CK</strong> (attack.mitre.org) is a free knowledge base of tactics and techniques seen in real attacks:</p>
+<ul><li><strong>Tactics:</strong> the attacker's goal at each step (e.g. Initial Access, Persistence, Privilege Escalation, Credential Access, Lateral Movement, Exfiltration, Impact).</li><li><strong>Techniques:</strong> how they achieve it (e.g. <em>Phishing</em>, <em>Valid Accounts</em>, <em>Brute Force</em>, <em>Data Encrypted for Impact</em>), each with an ID such as T1566 (Phishing).</li></ul>
+<p>Defenders use ATT&amp;CK to:</p>
+<ul><li>Check which techniques they can <strong>detect</strong> and which they can't (coverage gaps)</li><li>Write <strong>detection rules</strong> for specific techniques</li><li>Describe incidents in a common language</li><li>Plan <strong>security tests</strong> that mimic real attackers</li></ul>
+<h2>Map an incident to ATT&amp;CK (run it)</h2>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">incident = [
+    (&quot;Staff member clicked a fake &#x27;invoice&#x27; email link&quot;, &quot;Initial Access&quot;, &quot;Phishing (T1566)&quot;),
+    (&quot;Attacker logged in with the stolen password&quot;, &quot;Initial Access / Persistence&quot;, &quot;Valid Accounts (T1078)&quot;),
+    (&quot;Created an email rule hiding replies from the bank&quot;, &quot;Defense Evasion&quot;, &quot;Email hiding rules (T1564.008)&quot;),
+    (&quot;Sent the finance team new &#x27;bank details&#x27; for a supplier&quot;, &quot;Impact&quot;, &quot;Financial theft (T1657)&quot;),
+]
+
+print(&quot;Business email compromise, step by step:\n&quot;)
+for i, (event, tactic, technique) in enumerate(incident, 1):
+    print(f&quot;{i}. {event}&quot;)
+    print(f&quot;   Tactic: {tactic} | Technique: {technique}&quot;)
+
+print(&quot;\nControls that would have broken the chain:&quot;)
+for c in [&quot;Phishing training and email filtering&quot;, &quot;MFA on email accounts&quot;, &quot;Alerts for new mailbox rules&quot;, &quot;Phone call-back to verify any change of bank details&quot;]:
+    print(&quot; -&quot;, c)</code></pre></figure>
+<h2>Defence in depth</h2>
+<p>No single control stops everything. Layer them: training, email filtering, MFA, patching, endpoint protection, network segmentation, monitoring, backups and an incident response plan. If one layer fails, the next can still stop or detect the attack.</p>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A SACCO's finance officer receives an email from a "regular supplier" with new bank account details for payment. What should the SACCO's process be?</span><em>Show answer</em></summary><div class="callout-body"><p>Never change payment details based on email alone. Call the supplier on a phone number already on file (not one in the email), confirm the change, require approval by a second person, and watch for urgency and pressure. This simple control stops most business email compromise fraud.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Threat actors include criminals, fraud gangs, hacktivists, nation-states, insiders and script kiddies.</li><li>The kill chain shows attack stages; breaking any stage stops the attack.</li><li>MITRE ATT&amp;CK maps real tactics and techniques; defenders use it for detection and testing.</li><li>Use defence in depth: layered controls.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What is the first stage of the cyber kill chain? (one word)</p><details><summary>Show answer</summary><p>reconnaissance</p></details></li><li><p>Which free knowledge base maps attacker tactics and techniques? (two words: MITRE ___)</p><details><summary>Show answer</summary><p>att&amp;ck</p></details></li><li><p>Should you change a supplier's bank details based only on an email? (yes or no)</p><details><summary>Show answer</summary><p>no</p></details></li></ol></section></div><p class="static-meta">Lesson 2 of 13 in <a href="/learn/cybersecurity-advanced/">Advanced cybersecurity: defend, detect and respond like a professional</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=cybersecurity-advanced">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/cybersecurity-advanced/advanced-cyber-start-here/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Start here: the advanced path, security careers, and the law and ethics you must follow</a><a class="btn btn-solid btn-sm" href="/learn/cybersecurity-advanced/cryptography-in-depth/">Cryptography in depth: hashing, salting, symmetric and public-key encryption, TLS and certificates <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

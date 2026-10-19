@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Secure web development: the OWASP Top 10, injection,…</title>
+    <meta name="description" content="Websites and apps are the front door of almost every organisation. This lesson goes deeper than the web security basics: how the most common flaws…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/web-application-security/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Secure web development: the OWASP Top 10, injection,…" />
+    <meta property="og:description" content="Websites and apps are the front door of almost every organisation. This lesson goes deeper than the web security basics: how the most common flaws…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/web-application-security/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Secure web development: the OWASP Top 10, injection,…" />
+    <meta name="twitter:description" content="Websites and apps are the front door of almost every organisation. This lesson goes deeper than the web security basics: how the most common flaws…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/web-application-security/#lesson","name":"Secure web development: the OWASP Top 10, injection, XSS, secure coding and testing your own apps","description":"Websites and apps are the front door of almost every organisation. This lesson goes deeper than the web security basics: how the most common flaws…","url":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/web-application-security/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/#course","name":"Advanced cybersecurity: defend, detect and respond like a professional","url":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Advanced cybersecurity: defend, detect and respond like a professional","item":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/"},{"@type":"ListItem","position":4,"name":"Secure web development: the OWASP Top 10, injection, XSS, secure coding and testing your own apps","item":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/web-application-security/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/cybersecurity-advanced/">Advanced cybersecurity: defend, detect and respond like a professional</a> / <span>Secure web development: the OWASP Top 10, injection, XSS, secure coding and testing your own apps</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=cybersecurity-advanced&amp;lesson=web-application-security"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Secure web development: the OWASP Top 10, injection, XSS, secure coding and testing your own apps</h1>
+<p>Websites and apps are the front door of almost every organisation. This lesson goes deeper than the <a href="/learn/cybersecurity/web-security/">web security basics</a>: how the most common flaws happen in code, and how developers prevent them.</p>
+<h2>The OWASP Top 10</h2>
+<p><strong>OWASP</strong> (Open Worldwide Application Security Project) is a free, community-run foundation. Its <strong>Top 10</strong> lists the most critical web application risks. The 2021 edition:</p>
+<div class="static-table"><table><thead><tr><th>#</th><th>Risk</th><th>In plain words</th></tr></thead><tbody><tr><td>A01</td><td>Broken access control</td><td>Users can see or do things they shouldn't</td></tr><tr><td>A02</td><td>Cryptographic failures</td><td>Sensitive data not encrypted, weak algorithms</td></tr><tr><td>A03</td><td>Injection</td><td>Untrusted input treated as code (SQL, commands, XSS)</td></tr><tr><td>A04</td><td>Insecure design</td><td>Security not planned from the start</td></tr><tr><td>A05</td><td>Security misconfiguration</td><td>Default passwords, debug mode on, open storage</td></tr><tr><td>A06</td><td>Vulnerable and outdated components</td><td>Old libraries and plugins with known flaws</td></tr><tr><td>A07</td><td>Identification and authentication failures</td><td>Weak login, session problems</td></tr><tr><td>A08</td><td>Software and data integrity failures</td><td>Untrusted updates, insecure pipelines</td></tr><tr><td>A09</td><td>Security logging and monitoring failures</td><td>Attacks happen and nobody notices</td></tr><tr><td>A10</td><td>Server-side request forgery (SSRF)</td><td>Server tricked into fetching internal URLs</td></tr></tbody></table></div>
+<aside class="callout callout-note"><p class="callout-title">Note</p><div class="callout-body"><p>OWASP updates the list every few years. Check owasp.org for the latest edition; the core lessons (validate input, check access, patch components) stay the same.</p></div></aside>
+<h2>SQL injection: see why parameters matter (run it)</h2>
+<p>This lab uses a tiny <strong>local</strong> database in your browser. It shows how gluing user input into SQL changes the query's meaning, and how parameterised queries stop it.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import sqlite3
+
+db = sqlite3.connect(&quot;:memory:&quot;)
+db.execute(&quot;CREATE TABLE staff (username TEXT, salary INTEGER)&quot;)
+db.executemany(&quot;INSERT INTO staff VALUES (?, ?)&quot;,
+               [(&quot;wanjiku&quot;, 85000), (&quot;otieno&quot;, 92000), (&quot;akinyi&quot;, 78000)])
+
+user_input = &quot;nobody&#x27; OR &#x27;1&#x27;=&#x27;1&quot;
+
+# UNSAFE: input glued into the SQL text
+unsafe_sql = &quot;SELECT username, salary FROM staff WHERE username = &#x27;&quot; + user_input + &quot;&#x27;&quot;
+print(&quot;Unsafe query:&quot;, unsafe_sql)
+print(&quot;Rows returned:&quot;, len(db.execute(unsafe_sql).fetchall()))
+
+# SAFE: a parameterised query treats the input only as data
+safe_rows = db.execute(&quot;SELECT username, salary FROM staff WHERE username = ?&quot;,
+                       (user_input,)).fetchall()
+print(&quot;Rows returned with parameters:&quot;, len(safe_rows))</code></pre></figure>
+<p>The unsafe version returns all 3 rows because <code>OR &#x27;1&#x27;=&#x27;1&#x27;</code> is always true. The parameterised version returns 0 rows: the database looks for a user literally named <code>nobody&#x27; OR &#x27;1&#x27;=&#x27;1</code>.</p>
+<p><strong>Prevention:</strong> parameterised queries or prepared statements (PDO in PHP, <code>?</code> placeholders in Python), ORMs used correctly, least-privilege database accounts, and input validation.</p>
+<h2>Cross-site scripting (XSS)</h2>
+<p>XSS happens when a site shows user input as HTML, so an attacker's script runs in other users' browsers (stealing sessions, changing pages).</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import html
+
+comment = &#x27;&lt;script&gt;alert(&quot;hacked&quot;)&lt;/script&gt;Nice article!&#x27;
+print(&quot;Raw (dangerous if put into HTML):&quot;, comment)
+print(&quot;Escaped (safe to display):       &quot;, html.escape(comment))</code></pre></figure>
+<p><strong>Prevention:</strong></p>
+<ul><li><strong>Output encoding/escaping</strong> for the context (HTML, attributes, JavaScript, URLs). Modern frameworks (React, Vue, Laravel Blade, Django templates) escape by default; avoid bypasses such as <code>innerHTML</code> or <code>dangerouslySetInnerHTML</code> with user data.</li><li>A <strong>Content Security Policy (CSP)</strong> header to limit which scripts can run.</li><li><code>HttpOnly</code> cookies so scripts can't read session cookies.</li></ul>
+<h2>Other common flaws</h2>
+<div class="static-table"><table><thead><tr><th>Flaw</th><th>Prevention</th></tr></thead><tbody><tr><td><strong>CSRF</strong> (forcing a logged-in user's browser to submit actions)</td><td>CSRF tokens, <code>SameSite</code> cookies</td></tr><tr><td><strong>Command injection</strong></td><td>Never pass user input to shell commands; use safe library functions</td></tr><tr><td><strong>Insecure file uploads</strong></td><td>Check type and size, rename files, store outside the web root, never execute uploads</td></tr><tr><td><strong>SSRF</strong></td><td>Allow-list destinations, block internal addresses</td></tr><tr><td><strong>Insecure direct object references</strong></td><td>Check ownership on every request</td></tr><tr><td><strong>Secrets in code</strong></td><td>Environment variables or a secrets manager; scan repositories</td></tr></tbody></table></div>
+<h2>Secure development lifecycle</h2>
+<ol><li><strong>Plan:</strong> threat modelling ("what could go wrong?" STRIDE is a popular method: Spoofing, Tampering, Repudiation, Information disclosure, Denial of service, Elevation of privilege).</li><li><strong>Code:</strong> secure coding guidelines, code review, frameworks with safe defaults.</li><li><strong>Test:</strong> SAST (static analysis of code), DAST (scanning the running app), dependency scanning (Dependabot, npm audit, pip-audit).</li><li><strong>Deploy:</strong> security headers, HTTPS, no debug mode, secrets management.</li><li><strong>Operate:</strong> logging, monitoring, patching, a vulnerability disclosure contact (<code>security.txt</code>).</li></ol>
+<h2>Security headers checklist</h2>
+<div class="static-table"><table><thead><tr><th>Header</th><th>Purpose</th></tr></thead><tbody><tr><td><code>Strict-Transport-Security</code></td><td>Always use HTTPS</td></tr><tr><td><code>Content-Security-Policy</code></td><td>Limit scripts and resources</td></tr><tr><td><code>X-Content-Type-Options: nosniff</code></td><td>Stop MIME sniffing</td></tr><tr><td><code>X-Frame-Options</code> or CSP <code>frame-ancestors</code></td><td>Stop clickjacking</td></tr><tr><td><code>Referrer-Policy</code></td><td>Limit leaked URLs</td></tr></tbody></table></div>
+<aside class="callout callout-warning"><p class="callout-title">Test only your own apps</p><div class="callout-body"><p>Use OWASP Juice Shop, DVWA or your own projects running locally. Tools like OWASP ZAP and Burp Suite are legal to use on systems you own or are authorised to test, and illegal to point at other people's sites without permission.</p></div></aside>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A developer says "we validate input in JavaScript before the form submits, so the server doesn't need to check it." What's wrong?</span><em>Show answer</em></summary><div class="callout-body"><p>Client-side checks can be bypassed easily (by editing requests or calling the API directly). They help usability, but the server must validate input, use parameterised queries, encode output and check authorisation on every request.</p></div></details>
+<h2>Summary</h2>
+<ul><li>The OWASP Top 10 lists the most critical web risks; broken access control tops the 2021 list.</li><li>Parameterised queries stop SQL injection; output encoding and CSP stop XSS.</li><li>Build security into every stage: threat modelling, secure code, SAST/DAST, dependency scanning, secure deployment.</li><li>Test only your own or authorised apps.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>What stops SQL injection? (one word: ___ queries)</p><details><summary>Show answer</summary><p>parameterised</p></details></li><li><p>Which attack runs an attacker's script in other users' browsers? (acronym)</p><details><summary>Show answer</summary><p>xss</p></details></li><li><p>Which header limits which scripts a page may run? (acronym)</p><details><summary>Show answer</summary><p>csp</p></details></li></ol></section></div><p class="static-meta">Lesson 5 of 13 in <a href="/learn/cybersecurity-advanced/">Advanced cybersecurity: defend, detect and respond like a professional</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=cybersecurity-advanced">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/cybersecurity-advanced/identity-authentication/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Identity and authentication: MFA, passkeys, OAuth and OpenID Connect, sessions and access control</a><a class="btn btn-solid btn-sm" href="/learn/cybersecurity-advanced/network-defence-zero-trust/">Network defence: firewalls, segmentation, IDS/IPS, VPNs, zero trust and detecting brute-force attacks <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

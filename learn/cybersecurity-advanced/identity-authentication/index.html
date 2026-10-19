@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Identity and authentication: MFA, passkeys, OAuth and…</title>
+    <meta name="description" content="Most breaches involve stolen or weak credentials . &quot;Identity is the new perimeter&quot;: protecting who can log in, and what they can do, is one of the…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/identity-authentication/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Identity and authentication: MFA, passkeys, OAuth and…" />
+    <meta property="og:description" content="Most breaches involve stolen or weak credentials . &quot;Identity is the new perimeter&quot;: protecting who can log in, and what they can do, is one of the…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/identity-authentication/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Identity and authentication: MFA, passkeys, OAuth and…" />
+    <meta name="twitter:description" content="Most breaches involve stolen or weak credentials . &quot;Identity is the new perimeter&quot;: protecting who can log in, and what they can do, is one of the…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/identity-authentication/#lesson","name":"Identity and authentication: MFA, passkeys, OAuth and OpenID Connect, sessions and access control","description":"Most breaches involve stolen or weak credentials . \"Identity is the new perimeter\": protecting who can log in, and what they can do, is one of the…","url":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/identity-authentication/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/#course","name":"Advanced cybersecurity: defend, detect and respond like a professional","url":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Advanced cybersecurity: defend, detect and respond like a professional","item":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/"},{"@type":"ListItem","position":4,"name":"Identity and authentication: MFA, passkeys, OAuth and OpenID Connect, sessions and access control","item":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/identity-authentication/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/cybersecurity-advanced/">Advanced cybersecurity: defend, detect and respond like a professional</a> / <span>Identity and authentication: MFA, passkeys, OAuth and OpenID Connect, sessions and access control</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=cybersecurity-advanced&amp;lesson=identity-authentication"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Identity and authentication: MFA, passkeys, OAuth and OpenID Connect, sessions and access control</h1>
+<p>Most breaches involve <strong>stolen or weak credentials</strong>. "Identity is the new perimeter": protecting who can log in, and what they can do, is one of the highest-value security jobs.</p>
+<h2>Authentication vs authorisation</h2>
+<ul><li><strong>Authentication (AuthN):</strong> proving who you are (password, fingerprint, security key).</li><li><strong>Authorisation (AuthZ):</strong> what you're allowed to do (view, edit, approve payments).</li></ul>
+<h2>Authentication factors</h2>
+<div class="static-table"><table><thead><tr><th>Factor</th><th>Examples</th></tr></thead><tbody><tr><td>Something you <strong>know</strong></td><td>Password, PIN</td></tr><tr><td>Something you <strong>have</strong></td><td>Phone app code, security key, smart card</td></tr><tr><td>Something you <strong>are</strong></td><td>Fingerprint, face</td></tr></tbody></table></div>
+<p><strong>MFA</strong> combines two or more factors. Not all MFA is equal:</p>
+<div class="static-table"><table><thead><tr><th>Method</th><th>Strength</th><th>Notes</th></tr></thead><tbody><tr><td>SMS codes</td><td>Weakest MFA</td><td>Vulnerable to SIM swap and interception, but better than nothing</td></tr><tr><td>Authenticator app (TOTP)</td><td>Good</td><td>Codes from Google/Microsoft Authenticator and similar</td></tr><tr><td>Push notifications</td><td>Good, with number matching</td><td>Plain "Approve?" pushes invite "MFA fatigue" attacks</td></tr><tr><td><strong>Passkeys / security keys (FIDO2, WebAuthn)</strong></td><td>Strongest</td><td>Phishing-resistant: they only work on the real website</td></tr></tbody></table></div>
+<h2>How authenticator codes work (run it)</h2>
+<p>Time-based one-time passwords (TOTP) combine a shared secret with the current time:</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import hmac, hashlib, struct, time, base64
+
+def totp(secret_b32, for_time=None, digits=6, step=30):
+    key = base64.b32decode(secret_b32)
+    counter = int((for_time or time.time()) // step)
+    mac = hmac.new(key, struct.pack(&quot;&gt;Q&quot;, counter), hashlib.sha1).digest()
+    offset = mac[-1] &amp; 0x0F
+    code = (struct.unpack(&quot;&gt;I&quot;, mac[offset:offset + 4])[0] &amp; 0x7FFFFFFF) % 10 ** digits
+    return str(code).zfill(digits)
+
+secret = &quot;JBSWY3DPEHPK3PXP&quot;   # a well-known demo secret, never use it for real accounts
+print(&quot;Code now:            &quot;, totp(secret))
+print(&quot;Code 30 seconds later:&quot;, totp(secret, time.time() + 30))</code></pre></figure>
+<p>The phone and server share the secret once (via the QR code) and then generate matching codes independently every 30 seconds.</p>
+<h2>Passkeys: the future of login</h2>
+<p>Passkeys use public-key cryptography: your device keeps a private key, the website stores only the public key. Nothing reusable is sent, and a fake website can't use it. Encourage passkeys where supported (Google, Microsoft, Apple and many banks support them).</p>
+<h2>OAuth 2.0 and OpenID Connect (OIDC)</h2>
+<ul><li><strong>OAuth 2.0:</strong> lets an app access something on your behalf without your password (e.g. "Allow this app to read your Google Calendar").</li><li><strong>OpenID Connect:</strong> built on OAuth, adds login ("Sign in with Google"), returning an <strong>ID token</strong> about the user.</li></ul>
+<p><strong>Developer must-dos:</strong> use well-tested libraries, validate tokens (signature, issuer, audience, expiry), use the Authorization Code flow with PKCE for apps, and keep client secrets on the server only.</p>
+<h2>Sessions and cookies</h2>
+<p>After login, websites track you with a <strong>session</strong>:</p>
+<ul><li>Generate long, random session IDs; regenerate them after login.</li><li>Cookies: <code>Secure</code> (HTTPS only), <code>HttpOnly</code> (not readable by JavaScript), <code>SameSite=Lax</code> or <code>Strict</code> (helps stop CSRF).</li><li>Expire idle sessions; offer "sign out everywhere".</li><li>Protect against brute force: rate limits, account lockouts or delays, CAPTCHAs after failures.</li></ul>
+<h2>Authorisation models</h2>
+<div class="static-table"><table><thead><tr><th>Model</th><th>Idea</th><th>Example</th></tr></thead><tbody><tr><td><strong>RBAC</strong> (role-based)</td><td>Permissions attached to roles</td><td>Cashier, manager, admin</td></tr><tr><td><strong>ABAC</strong> (attribute-based)</td><td>Rules using attributes</td><td>"Teachers can see marks for their own classes"</td></tr><tr><td><strong>Least privilege</strong></td><td>Only what's needed</td><td>Interns can't approve payments</td></tr><tr><td><strong>Separation of duties</strong></td><td>No single person completes risky actions alone</td><td>One person creates a payment, another approves</td></tr></tbody></table></div>
+<p><strong>Check authorisation on the server for every request.</strong> Hiding a button is not security; broken access control is the top risk in the OWASP Top 10.</p>
+<h2>Identity management in organisations</h2>
+<ul><li><strong>Single sign-on (SSO)</strong> with an identity provider (Microsoft Entra ID, Google Workspace, Okta).</li><li><strong>Joiner–mover–leaver process:</strong> give access on day one, change it when roles change, remove it the day someone leaves.</li><li><strong>Privileged access management:</strong> extra protection and logging for admin accounts.</li><li><strong>Regular access reviews.</strong></li></ul>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A school portal lets teachers edit marks. A student discovers that changing the URL from /marks/edit?class=4A to /marks/edit?class=4B lets them open another class's marks page. What kind of flaw is this and how is it fixed?</span><em>Show answer</em></summary><div class="callout-body"><p>Broken access control (an insecure direct object reference). The server must check on every request that the logged-in user is allowed to view or edit that specific class's marks, using the user's role and assignments, not trusting the URL or hidden form values.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Authentication proves identity; authorisation decides access.</li><li>Prefer phishing-resistant MFA (passkeys, security keys); SMS is the weakest MFA.</li><li>Use OAuth/OIDC libraries correctly; secure session cookies and rate-limit logins.</li><li>Enforce least privilege, separation of duties and server-side authorisation checks; manage joiners, movers and leavers.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Proving who you are is authentication; deciding what you can do is ___ (one word)</p><details><summary>Show answer</summary><p>authorisation</p></details></li><li><p>Which MFA type is phishing-resistant? (one word)</p><details><summary>Show answer</summary><p>passkeys</p></details></li><li><p>Which cookie flag stops JavaScript from reading the cookie? (one word)</p><details><summary>Show answer</summary><p>httponly</p></details></li></ol></section></div><p class="static-meta">Lesson 4 of 13 in <a href="/learn/cybersecurity-advanced/">Advanced cybersecurity: defend, detect and respond like a professional</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=cybersecurity-advanced">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/cybersecurity-advanced/cryptography-in-depth/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Cryptography in depth: hashing, salting, symmetric and public-key encryption, TLS and certificates</a><a class="btn btn-solid btn-sm" href="/learn/cybersecurity-advanced/web-application-security/">Secure web development: the OWASP Top 10, injection, XSS, secure coding and testing your own apps <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

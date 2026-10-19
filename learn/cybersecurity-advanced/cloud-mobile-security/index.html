@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cloud and mobile security: shared responsibility, cloud…</title>
+    <meta name="description" content="Most organisations now run on cloud services and reach customers through phones. Both bring new risks, and most cloud breaches come from…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/cloud-mobile-security/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Cloud and mobile security: shared responsibility, cloud…" />
+    <meta property="og:description" content="Most organisations now run on cloud services and reach customers through phones. Both bring new risks, and most cloud breaches come from…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/cloud-mobile-security/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Cloud and mobile security: shared responsibility, cloud…" />
+    <meta name="twitter:description" content="Most organisations now run on cloud services and reach customers through phones. Both bring new risks, and most cloud breaches come from…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/cloud-mobile-security/#lesson","name":"Cloud and mobile security: shared responsibility, cloud misconfigurations, IAM policies and securing mobile apps","description":"Most organisations now run on cloud services and reach customers through phones. Both bring new risks, and most cloud breaches come from…","url":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/cloud-mobile-security/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/#course","name":"Advanced cybersecurity: defend, detect and respond like a professional","url":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Advanced cybersecurity: defend, detect and respond like a professional","item":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/"},{"@type":"ListItem","position":4,"name":"Cloud and mobile security: shared responsibility, cloud misconfigurations, IAM policies and securing mobile apps","item":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/cloud-mobile-security/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/cybersecurity-advanced/">Advanced cybersecurity: defend, detect and respond like a professional</a> / <span>Cloud and mobile security: shared responsibility, cloud misconfigurations, IAM policies and securing mobile apps</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=cybersecurity-advanced&amp;lesson=cloud-mobile-security"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Cloud and mobile security: shared responsibility, cloud misconfigurations, IAM policies and securing mobile apps</h1>
+<p>Most organisations now run on cloud services and reach customers through phones. Both bring new risks, and most cloud breaches come from <strong>misconfiguration</strong>, not clever hacking. For the cloud setup side, see <a href="/learn/devops-cloud/cloud-security/">Cloud security in the DevOps subject</a>.</p>
+<h2>The shared responsibility model</h2>
+<div class="static-table"><table><thead><tr><th>Who secures it</th><th>IaaS (virtual machines)</th><th>PaaS (managed app platforms)</th><th>SaaS (Microsoft 365, Google Workspace)</th></tr></thead><tbody><tr><td>Physical data centres, hardware</td><td>Provider</td><td>Provider</td><td>Provider</td></tr><tr><td>Operating system patching</td><td><strong>You</strong></td><td>Provider</td><td>Provider</td></tr><tr><td>Application code</td><td><strong>You</strong></td><td><strong>You</strong></td><td>Provider</td></tr><tr><td>Data, user accounts, access settings</td><td><strong>You</strong></td><td><strong>You</strong></td><td><strong>You</strong></td></tr></tbody></table></div>
+<p>Whatever the service, <strong>you</strong> always own your data, your users and who has access.</p>
+<h2>Top cloud risks and fixes</h2>
+<div class="static-table"><table><thead><tr><th>Risk</th><th>Fix</th></tr></thead><tbody><tr><td>Public storage buckets exposing files</td><td>Block public access by default; review sharing settings</td></tr><tr><td>Over-permissive IAM roles (<code>&quot;*&quot;</code> everywhere)</td><td>Least privilege; review unused permissions</td></tr><tr><td>No MFA on the root/owner account</td><td>Enforce MFA, lock root credentials away, use separate admin accounts</td></tr><tr><td>Leaked access keys in code or GitHub</td><td>Secrets managers, short-lived credentials, secret scanning, rotate keys</td></tr><tr><td>Logging turned off</td><td>Enable CloudTrail / Azure activity logs / Google Cloud audit logs, send them to a SIEM</td></tr><tr><td>Open security groups (SSH or databases to 0.0.0.0/0)</td><td>Restrict by IP, use private networks and bastions or managed access</td></tr><tr><td>Unencrypted data</td><td>Turn on encryption at rest (usually a setting) and TLS in transit</td></tr></tbody></table></div>
+<p><strong>Cloud Security Posture Management (CSPM)</strong> tools (AWS Security Hub, Microsoft Defender for Cloud, Google Security Command Center, or open-source Prowler) continuously check accounts against best-practice benchmarks such as the <strong>CIS Benchmarks</strong>.</p>
+<h2>Lab: spot risky IAM policy statements (run it)</h2>
+<p>Cloud permissions are written as JSON policies. Wildcards (<code>*</code>) are a common red flag.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">import json
+
+policy = json.loads(&quot;&quot;&quot;
+{
+  &quot;Statement&quot;: [
+    {&quot;Effect&quot;: &quot;Allow&quot;, &quot;Action&quot;: &quot;s3:GetObject&quot;, &quot;Resource&quot;: &quot;arn:aws:s3:::school-reports/*&quot;},
+    {&quot;Effect&quot;: &quot;Allow&quot;, &quot;Action&quot;: &quot;*&quot;, &quot;Resource&quot;: &quot;*&quot;},
+    {&quot;Effect&quot;: &quot;Allow&quot;, &quot;Action&quot;: &quot;iam:*&quot;, &quot;Resource&quot;: &quot;*&quot;},
+    {&quot;Effect&quot;: &quot;Allow&quot;, &quot;Action&quot;: [&quot;ec2:StartInstances&quot;, &quot;ec2:StopInstances&quot;], &quot;Resource&quot;: &quot;arn:aws:ec2:*:*:instance/web-01&quot;}
+  ]
+}
+&quot;&quot;&quot;)
+
+for i, st in enumerate(policy[&quot;Statement&quot;], 1):
+    actions = st[&quot;Action&quot;] if isinstance(st[&quot;Action&quot;], list) else [st[&quot;Action&quot;]]
+    problems = []
+    if &quot;*&quot; in actions:
+        problems.append(&quot;allows ALL actions&quot;)
+    elif any(a.endswith(&quot;:*&quot;) for a in actions):
+        problems.append(&quot;allows every action in a service&quot;)
+    if st[&quot;Resource&quot;] == &quot;*&quot;:
+        problems.append(&quot;applies to ALL resources&quot;)
+    print(f&quot;Statement {i}:&quot;, &quot;; &quot;.join(problems) if problems else &quot;looks scoped&quot;)</code></pre></figure>
+<p>Statements 2 and 3 are dangerous: full admin, and full control of identities (anyone with <code>iam:*</code> can make themselves an admin). Statements 1 and 4 are limited to specific actions and resources.</p>
+<h2>Containers and Kubernetes, briefly</h2>
+<ul><li>Use minimal, trusted base images; scan images (Trivy, Grype).</li><li>Don't run containers as root; don't bake secrets into images.</li><li>Kubernetes: RBAC, network policies, keep the API server private, and keep clusters updated.</li></ul>
+<h2>Mobile security</h2>
+<p>Phones hold banking, M-Pesa, email and work data, which makes them high-value targets.</p>
+<p><strong>For users and organisations:</strong></p>
+<ul><li>Install apps only from official stores; be very wary of APK files shared on WhatsApp or websites (a common way fake "loan" and "update" apps spread malware).</li><li>Review app permissions: a torch app doesn't need your contacts or SMS.</li><li>Keep the OS updated; replace phones that no longer get security updates.</li><li>Use screen locks, biometrics, and remote wipe ("Find My Device" / "Find My").</li><li>Organisations: <strong>mobile device management (MDM)</strong> to enforce PINs, encryption and work profiles.</li></ul>
+<p><strong>For developers:</strong> the <strong>OWASP Mobile Application Security Verification Standard (MASVS)</strong> and <strong>Mobile Top 10</strong> list key requirements:</p>
+<ul><li>Store sensitive data in the platform's secure storage (Android Keystore, iOS Keychain), not plain files or logs.</li><li>Use HTTPS everywhere; consider certificate pinning for high-risk apps.</li><li>Never put API secrets inside the app: anything in an app can be extracted. Keep secrets on the server.</li><li>Enforce authorisation on the server; the app's checks can be bypassed.</li><li>Protect against tampering on high-value apps (root/jailbreak detection, integrity checks) as an extra layer, not the only defence.</li></ul>
+<aside class="callout callout-kenya"><p class="callout-title">In Kenya</p><div class="callout-body"><p>Fake loan apps that harvest contacts and send shaming messages have been a real problem in Kenya. The Data Protection Act and ODPC enforcement apply to apps collecting Kenyans' data, and digital lenders must be licensed by the Central Bank of Kenya. As a developer, collect only the permissions and data you truly need.</p></div></aside>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> A startup's developer committed an AWS access key to a public GitHub repository, then deleted it in the next commit. Are they safe?</span><em>Show answer</em></summary><div class="callout-body"><p>No. The key is still in the repository history, and bots scan GitHub for keys within minutes. They should immediately deactivate and rotate the key, review CloudTrail for any use of it (new instances, users, data access), remove it from history if possible, and switch to a secrets manager or short-lived credentials with secret scanning turned on.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Shared responsibility: the provider secures the cloud; you secure your data, identities and configuration.</li><li>Misconfigurations (public storage, wildcard permissions, leaked keys, no logging) cause most cloud breaches; CSPM tools help.</li><li>Mobile users: official stores, minimal permissions, updates, MDM.</li><li>Mobile developers: follow OWASP MASVS, use secure storage, keep secrets on the server.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>In the cloud, who is always responsible for your data and access settings? (one word)</p><details><summary>Show answer</summary><p>you</p></details></li><li><p>Which character in an IAM policy is a common red flag? (symbol name or symbol)</p><details><summary>Show answer</summary><p>*</p></details></li><li><p>Which OWASP standard covers mobile app security? (acronym)</p><details><summary>Show answer</summary><p>masvs</p></details></li></ol></section></div><p class="static-meta">Lesson 11 of 13 in <a href="/learn/cybersecurity-advanced/">Advanced cybersecurity: defend, detect and respond like a professional</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=cybersecurity-advanced">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/cybersecurity-advanced/ethical-penetration-testing/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Ethical penetration testing: permission, scope, methodology, legal practice labs, bug bounties and report writing</a><a class="btn btn-solid btn-sm" href="/learn/cybersecurity-advanced/governance-risk-compliance/">Governance, risk and compliance (GRC): risk registers, policies, ISO 27001, NIST CSF 2.0 and Kenyan law <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

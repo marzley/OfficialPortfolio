@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Security monitoring: logs, SIEM, the SOC, alert triage…</title>
+    <meta name="description" content="Prevention eventually fails. Monitoring is how organisations notice an attack early, while it can still be stopped. This is the daily work of a SOC…" />
+    <link rel="canonical" href="https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/siem-soc-monitoring/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b1b35" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Marzley Tech Learning Hub" />
+    <meta property="og:title" content="Security monitoring: logs, SIEM, the SOC, alert triage…" />
+    <meta property="og:description" content="Prevention eventually fails. Monitoring is how organisations notice an attack early, while it can still be stopped. This is the daily work of a SOC…" />
+    <meta property="og:url" content="https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/siem-soc-monitoring/" />
+    <meta property="og:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Security monitoring: logs, SIEM, the SOC, alert triage…" />
+    <meta name="twitter:description" content="Prevention eventually fails. Monitoring is how organisations notice an attack early, while it can still be stopped. This is the daily work of a SOC…" />
+    <meta name="twitter:image" content="https://marzleytechsolutions.co.ke/img/og/training.jpg" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","@id":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/siem-soc-monitoring/#lesson","name":"Security monitoring: logs, SIEM, the SOC, alert triage and writing detection rules","description":"Prevention eventually fails. Monitoring is how organisations notice an attack early, while it can still be stopped. This is the daily work of a SOC…","url":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/siem-soc-monitoring/","learningResourceType":"Lesson","isAccessibleForFree":true,"inLanguage":"en","educationalUse":"self-study","isPartOf":{"@type":"Course","@id":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/#course","name":"Advanced cybersecurity: defend, detect and respond like a professional","url":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/"},"author":{"@type":"Person","@id":"https://marzleytechsolutions.co.ke/#kelvin","name":"Kelvin Wanyoike","url":"https://marzleytechsolutions.co.ke/kelvin-wanyoike"},"publisher":{"@type":"Organization","@id":"https://marzleytechsolutions.co.ke/#business","name":"Marzley Tech Solutions"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://marzleytechsolutions.co.ke/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://marzleytechsolutions.co.ke/learn/"},{"@type":"ListItem","position":3,"name":"Advanced cybersecurity: defend, detect and respond like a professional","item":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/"},{"@type":"ListItem","position":4,"name":"Security monitoring: logs, SIEM, the SOC, alert triage and writing detection rules","item":"https://marzleytechsolutions.co.ke/learn/cybersecurity-advanced/siem-soc-monitoring/"}]}]}</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon-32.png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/icons.min.css?v=67e6280a90" />
+    <link rel="stylesheet" href="/css/home.min.css?v=40e9c465ea" />
+    <link rel="stylesheet" href="/learn/learn.css?v=645b6158b8" />
+    <script src="/js/theme-init.js?v=47e6e7558c"></script>
+</head>
+<body class="learn-body static-learn">
+    <a class="skip-link" href="#learn-main">Skip to content</a>
+    <header class="learn-top">
+        <div class="learn-top-in">
+            <a class="brand" href="/"><img src="/img/brand/logo-96.webp" alt="" width="36" height="36" /><span>Marzley<span class="accent">Tech</span></span></a>
+            <a class="learn-home" href="/learn/">Learn</a>
+            <nav class="learn-nav" aria-label="Learning hub"><a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a><a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a><a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a><a href="/learn/?page=notes"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notes</a></nav>
+            <div class="learn-actions"><a class="icon-btn search-btn" href="/learn/?page=search" title="Search lessons"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search lessons</span></a></div>
+        </div>
+    </header>
+    <main id="learn-main" class="learn-main static-main" tabindex="-1">
+        <p class="crumbs"><a href="/">Home</a> / <a href="/learn/">Learn</a> / <a href="/learn/cybersecurity-advanced/">Advanced cybersecurity: defend, detect and respond like a professional</a> / <span>Security monitoring: logs, SIEM, the SOC, alert triage and writing detection rules</span></p>
+<article class="lesson static-lesson"><aside class="static-live"><p><strong>This is the reading version.</strong> Open the interactive lesson to run every code example, answer the questions with instant marking, watch the video and save your progress. It’s free.</p><p><a class="btn btn-solid" href="/learn/?track=cybersecurity-advanced&amp;lesson=siem-soc-monitoring"><i class="fa-solid fa-play" aria-hidden="true"></i> Open the interactive lesson</a></p></aside><div class="lesson-body"><h1>Security monitoring: logs, SIEM, the SOC, alert triage and writing detection rules</h1>
+<p>Prevention eventually fails. Monitoring is how organisations notice an attack early, while it can still be stopped. This is the daily work of a <strong>SOC analyst</strong>, the most common entry-level security job.</p>
+<h2>What to log</h2>
+<div class="static-table"><table><thead><tr><th>Source</th><th>Useful events</th></tr></thead><tbody><tr><td>Identity (Entra ID, Google Workspace, Active Directory)</td><td>Logins, failures, MFA changes, new admins</td></tr><tr><td>Endpoints (Windows, Linux, EDR)</td><td>New processes, PowerShell, new services, antivirus alerts</td></tr><tr><td>Network (firewall, DNS, proxy, VPN)</td><td>Connections, blocked traffic, unusual domains</td></tr><tr><td>Cloud (AWS CloudTrail, Azure activity logs)</td><td>New users, keys, public storage, configuration changes</td></tr><tr><td>Applications</td><td>Logins, errors, admin actions, payments</td></tr></tbody></table></div>
+<p>Good logs record <strong>who, what, when, where (IP/device) and result</strong>, with accurate time (sync clocks with NTP). Keep logs long enough to investigate (often 90 days to a year or more) and protect them from tampering.</p>
+<h2>SIEM</h2>
+<p>A <strong>SIEM</strong> (Security Information and Event Management) collects logs from everywhere, normalises them, correlates them and raises alerts.</p>
+<ul><li>Commercial: Microsoft Sentinel, Splunk, Google Security Operations, IBM QRadar.</li><li>Free/open-source: <strong>Wazuh</strong> (great for home labs), Elastic Security, Security Onion.</li><li><strong>SOAR</strong> tools automate responses (e.g. disable an account, block an IP) once an alert is confirmed.</li><li><strong>EDR/XDR</strong> tools watch endpoints in detail and can isolate infected devices.</li></ul>
+<h2>The SOC</h2>
+<p>A <strong>Security Operations Centre</strong> monitors and responds, often 24/7.</p>
+<div class="static-table"><table><thead><tr><th>Tier</th><th>Role</th></tr></thead><tbody><tr><td>Tier 1</td><td>Triage alerts: real or false positive? Escalate when needed</td></tr><tr><td>Tier 2</td><td>Deeper investigation and response</td></tr><tr><td>Tier 3</td><td>Threat hunting, advanced analysis, detection engineering</td></tr></tbody></table></div>
+<h2>Alert triage</h2>
+<p>For each alert ask:</p>
+<ol><li><strong>What happened?</strong> Read the raw events, not just the alert title.</li><li><strong>Is it expected?</strong> Check with the user or asset owner, change tickets, known admin activity.</li><li><strong>What's the scope?</strong> Other users, devices or IPs involved?</li><li><strong>How bad?</strong> Critical asset? Data accessed?</li><li><strong>Decide:</strong> close as false positive (and tune the rule), or escalate to incident response.</li><li><strong>Document</strong> what you checked and why you decided.</li></ol>
+<div class="static-table"><table><thead><tr><th>Term</th><th>Meaning</th></tr></thead><tbody><tr><td>True positive</td><td>Real malicious activity correctly alerted</td></tr><tr><td>False positive</td><td>Alert, but harmless (too many cause "alert fatigue")</td></tr><tr><td>False negative</td><td>Attack missed, no alert (the most dangerous)</td></tr></tbody></table></div>
+<h2>Lab: detect "impossible travel" logins (run it)</h2>
+<p>A detection rule: the same user logging in from two countries too far apart to travel between in the time available.</p>
+<figure class="static-code"><figcaption>Python · runs live in the interactive lesson</figcaption><pre><code class="language-python">from datetime import datetime
+
+logins = [
+    (&quot;akinyi&quot;, &quot;2026-10-19 08:05&quot;, &quot;Kenya&quot;),
+    (&quot;akinyi&quot;, &quot;2026-10-19 08:40&quot;, &quot;Netherlands&quot;),
+    (&quot;mwangi&quot;, &quot;2026-10-19 09:00&quot;, &quot;Kenya&quot;),
+    (&quot;mwangi&quot;, &quot;2026-10-19 17:30&quot;, &quot;Uganda&quot;),
+    (&quot;akinyi&quot;, &quot;2026-10-19 12:00&quot;, &quot;Kenya&quot;),
+]
+MIN_HOURS_BETWEEN_COUNTRIES = 4   # simplified rule
+
+last = {}
+for user, when, country in sorted(logins, key=lambda r: r[1]):
+    t = datetime.strptime(when, &quot;%Y-%m-%d %H:%M&quot;)
+    if user in last:
+        prev_t, prev_country = last[user]
+        hours = (t - prev_t).total_seconds() / 3600
+        if country != prev_country and hours &lt; MIN_HOURS_BETWEEN_COUNTRIES:
+            print(f&quot;ALERT {user}: {prev_country} -&gt; {country} in {hours:.1f} h&quot;)
+    last[user] = (t, country)
+print(&quot;Check complete&quot;)</code></pre></figure>
+<p>It alerts on akinyi (Kenya to the Netherlands in 0.6 hours) and again when akinyi appears back in Kenya at 12:00, 3.3 hours after the Netherlands login. Mwangi's Uganda login 8.5 hours later is plausible travel, so no alert. In real life an analyst would check whether the Netherlands login came from a VPN before deciding.</p>
+<h2>Detection rules</h2>
+<p>Rules are written in the SIEM's language, for example <strong>KQL</strong> (Microsoft Sentinel), <strong>SPL</strong> (Splunk) or the vendor-neutral <strong>Sigma</strong> format. A Sigma-style rule describing the brute-force idea:</p>
+<figure class="static-code"><figcaption>TEXT</figcaption><pre><code class="language-text">title: Many failed logins from one source
+logsource:
+  product: linux
+  service: sshd
+detection:
+  selection:
+    message|contains: &#x27;Failed password&#x27;
+  condition: selection | count() by source_ip &gt; 5
+level: medium</code></pre></figure>
+<p>Good detections are mapped to MITRE ATT&amp;CK techniques, tested, tuned to reduce false positives, and documented with triage steps.</p>
+<h2>Threat hunting</h2>
+<p>Instead of waiting for alerts, hunters form a hypothesis ("attackers may be using stolen VPN accounts at night") and search the logs to prove or disprove it. Findings become new detection rules.</p>
+<aside class="callout callout-career"><p class="callout-title">Careers</p><div class="callout-body"><p>Build a home SOC lab: install Wazuh (or Elastic) in a VM, send logs from a Windows and a Linux VM, generate harmless test events (failed logins, new users) and write up how you detected them. That write-up is a strong portfolio piece for SOC analyst applications.</p></div></aside>
+<details class="callout callout-think"><summary><span><b>Think about it:</b> At 3 a.m. the SIEM alerts that the finance manager's account logged in from a new country and created an inbox rule forwarding all emails to an outside address. Is this likely a false positive? What should happen?</span><em>Show answer</em></summary><div class="callout-body"><p>Very likely a true positive: a new-country login plus a forwarding rule is a classic business email compromise pattern. Escalate as an incident: disable or reset the account and revoke sessions, remove the rule, check MFA settings, review what was accessed or sent, and warn finance to verify any payment requests by phone.</p></div></details>
+<h2>Summary</h2>
+<ul><li>Log identity, endpoint, network, cloud and application events with accurate timestamps.</li><li>A SIEM collects and correlates logs; SOAR automates responses; EDR watches endpoints.</li><li>SOC analysts triage alerts, documenting each decision; tune rules to cut false positives.</li><li>Detection rules (KQL, SPL, Sigma) and threat hunting find attacks early.</li></ul>
+<section class="static-quiz"><h2>Check yourself</h2><ol><li><p>Which tool collects and correlates logs to raise alerts? (acronym)</p><details><summary>Show answer</summary><p>siem</p></details></li><li><p>An alert on harmless activity is a false ___ (one word)</p><details><summary>Show answer</summary><p>positive</p></details></li><li><p>Name a free SIEM-style tool good for home labs (one word)</p><details><summary>Show answer</summary><p>wazuh</p></details></li></ol></section></div><p class="static-meta">Lesson 7 of 13 in <a href="/learn/cybersecurity-advanced/">Advanced cybersecurity: defend, detect and respond like a professional</a> · Written by <a href="/kelvin-wanyoike" rel="author">Kelvin Wanyoike</a> · <a href="/learn/?book=cybersecurity-advanced">Course notes</a></p><nav class="pager" aria-label="Lessons"><a class="btn btn-line btn-sm" href="/learn/cybersecurity-advanced/network-defence-zero-trust/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Network defence: firewalls, segmentation, IDS/IPS, VPNs, zero trust and detecting brute-force attacks</a><a class="btn btn-solid btn-sm" href="/learn/cybersecurity-advanced/incident-response-forensics/">Incident response and digital forensics: the IR lifecycle, playbooks, evidence, timelines and reporting in Kenya <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></nav></article>
+    </main>
+    <footer class="learn-foot">
+        <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>
