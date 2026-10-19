@@ -800,3 +800,32 @@ html.js .learn-static { display: none; }
 #code-form { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
 .me-note { padding: 10px 12px; border-radius: 10px; background: var(--bg); font-size: 14px; }
 .me-note i { color: var(--blue); }
+
+/* ---------- certificates and badges ---------- */
+.cert-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.cert-card { display: grid; grid-template-columns: auto 1fr; gap: 12px 14px; align-items: center; padding: 14px; border-radius: 14px; background: var(--bg); border: 1px solid var(--line); border-left: 4px solid var(--amber); }
+.cert-seal { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--navy); color: var(--amber); font-size: 20px; box-shadow: 0 0 0 3px var(--amber); }
+.cert-info { display: grid; gap: 2px; min-width: 0; }
+.cert-info strong { color: var(--heading); overflow-wrap: anywhere; }
+.cert-info .muted { font-size: 14px; }
+.cert-code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .02em; }
+.cert-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
+@media (min-width: 760px) { .cert-card { grid-template-columns: auto 1fr auto; } .cert-actions { grid-column: auto; justify-content: flex-end; } }
+.cert-next, .streak { margin: 12px 0 0; font-size: 15px; color: var(--fg-muted); }
+.cert-next i, .streak i { color: var(--amber-text); }
+.streak { margin: 0 0 12px; }
+.cert-hint { margin: 10px 0 0; font-size: 15px; color: var(--fg-muted); }
+.cert-hint i { color: var(--amber-text); margin-right: 4px; }
+.cert-pop .pay-ok-ico { color: var(--amber); }
+.cert-pop-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.me-badges { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.me-badge { display: grid; justify-items: center; align-content: start; gap: 4px; padding: 14px 10px; border-radius: 14px; background: var(--bg); text-align: center; border: 1px solid transparent; }
+.me-badge strong { color: var(--heading); font-size: 15px; }
+.me-badge > span:not(.mb-ico):not(.bar) { font-size: 13px; color: var(--fg-muted); line-height: 1.35; }
+.mb-ico { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--line); color: var(--fg-faint); font-size: 20px; margin-bottom: 4px; }
+.me-badge .bar { width: 80%; margin-top: 6px; }
+.me-badge small { font-size: 12px; color: var(--fg-muted); }
+.me-badge em { font-style: normal; font-size: 13px; font-weight: 700; color: var(--green); }
+.me-badge.is-earned { border-color: var(--amber); background: var(--card); }
+.me-badge.is-earned .mb-ico { background: var(--navy); color: var(--amber); box-shadow: 0 0 0 3px var(--amber); }
+@media (max-width: 420px) { .me-badges { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

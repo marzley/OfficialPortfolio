@@ -42,3 +42,14 @@ CREATE TABLE IF NOT EXISTS passwords (
     created_at DATETIME NOT NULL,
     updated_at DATETIME NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- v12: a certificate for each subject a learner finishes (every published lesson completed)
+CREATE TABLE IF NOT EXISTS learn_certificates (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    learner_id INT UNSIGNED NOT NULL,
+    track_id INT UNSIGNED NOT NULL,
+    code VARCHAR(20) NOT NULL UNIQUE,       -- MLC-XXXXX-XXXXX, checked at /portal/verify.php
+    lessons INT UNSIGNED NOT NULL DEFAULT 0,
+    issued_at DATETIME NOT NULL,
+    UNIQUE KEY learn_certificates_once (learner_id, track_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

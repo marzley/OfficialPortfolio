@@ -10,6 +10,10 @@ $code = strtoupper(trim((string)($_GET['code'] ?? '')));
 $cert = null;
 if (preg_match('/^MTC-[A-Z0-9]{5}-[A-Z0-9]{5}$/', $code)) {
     $cert = q('SELECT c.code, c.issued_at, cl.name, co.title FROM certificates c JOIN clients cl ON cl.id = c.client_id JOIN courses co ON co.id = c.course_id WHERE c.code = ?', [$code])->fetch() ?: null;
+} elseif (preg_match('/^MLC-[A-Z0-9]{5}-[A-Z0-9]{5}$/', $code)) {
+    // Learning hub: a subject finished online (every lesson completed)
+    $cert = q('SELECT c.code, c.issued_at, c.lessons, c.learner_id, l.name, t.title, t.slug FROM learn_certificates c JOIN learners l ON l.id = c.learner_id JOIN learn_tracks t ON t.id = c.track_id WHERE c.code = ?', [$code])->fetch() ?: null;
+    if ($cert && trim((string)$cert['name']) === '') $cert['name'] = 'Learner L-' . str_pad((string)$cert['learner_id'], 5, '0', STR_PAD_LEFT);
 }
 ?><!DOCTYPE html>
 <html lang="en">
@@ -31,7 +35,8 @@ if (preg_match('/^MTC-[A-Z0-9]{5}-[A-Z0-9]{5}$/', $code)) {
                 <p class="verify-ok">✓ This certificate is genuine.</p>
                 <dl class="verify-list">
                     <dt>Awarded to</dt><dd><?= $e($cert['name']) ?></dd>
-                    <dt>Course</dt><dd><?= $e($cert['title']) ?></dd>
+                    <dt><?= isset($cert['lessons']) ? 'Subject' : 'Course' ?></dt><dd><?php if (isset($cert['slug'])): ?><a href="../learn/<?= $e($cert['slug']) ?>/"><?= $e($cert['title']) ?></a><?php else: ?><?= $e($cert['title']) ?><?php endif; ?></dd>
+                    <?php if (isset($cert['lessons'])): ?><dt>Completed</dt><dd>All <?= (int)$cert['lessons'] ?> lessons, in the Marzley Tech learning hub</dd><?php endif; ?>
                     <dt>Date</dt><dd><?= $e(date('j F Y', strtotime($cert['issued_at']))) ?></dd>
                     <dt>Code</dt><dd><?= $e($cert['code']) ?></dd>
                 </dl>
@@ -39,7 +44,7 @@ if (preg_match('/^MTC-[A-Z0-9]{5}-[A-Z0-9]{5}$/', $code)) {
                 <?php if ($code !== ''): ?><p class="portal-error">No certificate was found with code <?= $e($code) ?>.</p><?php endif; ?>
                 <form method="get" class="verify-form">
                     <label for="code">Certificate code</label>
-                    <input id="code" name="code" value="<?= $e($code) ?>" placeholder="MTC-XXXXX-XXXXX" required />
+                    <input id="code" name="code" value="<?= $e($code) ?>" placeholder="MTC-XXXXX-XXXXX or MLC-XXXXX-XXXXX" required />
                     <button type="submit" class="btn btn-solid">Check</button>
                 </form>
             <?php endif; ?>

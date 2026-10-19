@@ -62,7 +62,7 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   const cid = one("SELECT id FROM clients WHERE email = 'client@example.com'").id;
 
   // ---------- database upgrade ----------
-  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "11");
+  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "12");
 
   // ---------- sequential invoice numbers ----------
   r = await admin("invoice_save", { client_id: cid, description: "Website build", amount: 10000, status: "unpaid" });
@@ -796,6 +796,35 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
       ok("the dashboard needs an account", r.s === 401);
       r = await lpost(stu, "review_delete", { id: myRv });
       ok("deleting a comment takes back its points", r.s === 200 && !one(`SELECT COUNT(*) AS n FROM learn_points WHERE ref = 'r${myRv}'`).n);
+      // certificates: finishing every lesson of a subject issues one (with points, an email and a public check page)
+      sql("INSERT INTO learn_tracks (slug, title, lang, summary, position, published) VALUES ('cert-test', 'Certificate test subject', 'python', '', 999, 1)");
+      const ctId = one("SELECT id FROM learn_tracks WHERE slug = 'cert-test'").id;
+      for (let i = 1; i <= 4; i++) sql(`INSERT INTO learn_lessons (track_id, slug, title, position, body, exercise, starter, expected, published, updated_at) VALUES (${ctId}, 'c${i}', 'Cert lesson ${i}', ${i}, 'x', '', '', '', ${i === 4 ? 0 : 1}, '2026-01-01 00:00:00')`);
+      const certLs = sel(`SELECT id FROM learn_lessons WHERE track_id = ${ctId} AND published = 1 ORDER BY position`).map((x) => x.id);
+      r = await lpost(stu, "progress", { lesson_id: certLs[0] });
+      ok("no certificate until every lesson is done", r.j.certificate === null && r.j.points === 2);
+      await lpost(stu, "progress", { lesson_id: certLs[1] });
+      clearMail();
+      r = await lpost(stu, "progress", { lesson_id: certLs[2] });
+      const cert = r.j.certificate;
+      ok("the last lesson issues the certificate (hidden lessons don’t count) and gives 25 more points", !!cert && /^MLC-[A-Z0-9]{5}-[A-Z0-9]{5}$/.test(cert.code) && cert.lessons === 3 && cert.title === "Certificate test subject" && r.j.points === 27 && /verify\.php\?code=MLC-/.test(cert.verify_url), r.j);
+      ok("the learner gets an email with the code", fs.readFileSync(WORK + "/mail.txt", "utf8").includes(cert.code));
+      r = await lpost(stu, "progress", { lesson_id: certLs[2] });
+      ok("a subject's certificate is only issued once", r.j.certificate === null && one(`SELECT COUNT(*) AS n FROM learn_certificates WHERE track_id = ${ctId}`).n == 1);
+      let vp = await (await fetch(BASE + "/portal/verify.php?code=" + cert.code)).text();
+      ok("anyone can check the certificate", /genuine/.test(vp) && vp.includes("Achieng Otieno") && vp.includes("Certificate test subject") && /All 3 lessons/.test(vp));
+      vp = await (await fetch(BASE + "/portal/verify.php?code=MLC-AAAAA-AAAAA")).text();
+      ok("a made-up code isn’t genuine", !/genuine/.test(vp) && /No certificate was found/.test(vp));
+      // a subject finished before certificates existed gets its certificate when the dashboard opens
+      for (const id of certLs) sql(`INSERT INTO learn_progress (learner_id, lesson_id, created_at) VALUES ((SELECT id FROM learners WHERE email = 'kamau@example.com'), ${id}, '2026-01-01 00:00:00')`);
+      r = await lget(stu2, "dashboard");
+      ok("earlier finishers get their certificate on the dashboard", r.j.certificates.length === 1 && r.j.certificates[0].title === "Certificate test subject");
+      r = await lget(stu, "dashboard");
+      const badge = (id) => r.j.badges.find((b) => b.id === id);
+      ok("the dashboard lists certificates and badges", r.j.certificates.some((c) => c.code === cert.code) && badge("first-lesson").earned && badge("cert-1").earned && !badge("cert-3").earned && badge("cert-3").value === 1 && badge("coder-10").earned && typeof r.j.streak.best === "number", r.j.badges);
+      r = await lget(boss, "admin");
+      ok("the owner sees learner certificates", r.j.stats.certificates === 2 && r.j.certificates.some((c) => c.code === cert.code && c.email === "student@example.com"));
+      sql(`DELETE FROM learn_lessons WHERE track_id = ${ctId}`); sql(`DELETE FROM learn_tracks WHERE id = ${ctId}`);
       // profile: name and phone change, email doesn't
       r = await lpost(stu, "profile", { name: "Achieng Otieno", phone: "12345" });
       ok("a wrong phone number is refused", r.s === 400);

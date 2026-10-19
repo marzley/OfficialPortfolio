@@ -5,7 +5,7 @@ if (!defined('MARZLEY_PORTAL')) {
     exit;
 }
 
-const SCHEMA_VERSION = 11;
+const SCHEMA_VERSION = 12;
 const STAFF_PERMS = ['projects' => 'Projects & files', 'clients' => 'People', 'support' => 'Support', 'courses' => 'Courses', 'money' => 'Invoices, payments & quotes', 'leads' => 'Leads'];
 const PROJECT_STATUSES = ['planning', 'design', 'build', 'review', 'live', 'on_hold'];
 const INVOICE_STATUSES = ['unpaid', 'paid', 'cancelled'];
@@ -117,6 +117,8 @@ function migrate(PDO $pdo): void {
         "CREATE TABLE IF NOT EXISTS learn_lesson_likes (id $id, lesson_id $uint NOT NULL, learner_id $uint NOT NULL, created_at DATETIME NOT NULL, UNIQUE (lesson_id, learner_id))$end",
         "CREATE TABLE IF NOT EXISTS learn_reviews (id $id, lesson_id $uint NOT NULL, learner_id $uint NOT NULL, parent_id $uint NULL, rating $uint NULL, body TEXT NOT NULL, is_staff $uint NOT NULL DEFAULT 0, hidden $uint NOT NULL DEFAULT 0, created_at DATETIME NOT NULL)$end",
         "CREATE TABLE IF NOT EXISTS learn_progress (id $id, learner_id $uint NOT NULL, lesson_id $uint NOT NULL, created_at DATETIME NOT NULL, UNIQUE (learner_id, lesson_id))$end",
+        // v12: a certificate for each subject a learner finishes (every published lesson completed)
+        "CREATE TABLE IF NOT EXISTS learn_certificates (id $id, learner_id $uint NOT NULL, track_id $uint NOT NULL, code VARCHAR(20) NOT NULL UNIQUE, lessons $uint NOT NULL DEFAULT 0, issued_at DATETIME NOT NULL, UNIQUE (learner_id, track_id))$end",
         // v11: passwords (optional): sign in with a username or email and a password, besides Google and email codes
         "CREATE TABLE IF NOT EXISTS passwords (id $id, email VARCHAR(190) NOT NULL UNIQUE, username VARCHAR(40) NULL UNIQUE, hash VARCHAR(255) NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL)$end",
         // v10: learner points (each action pays once) and recently opened lessons
@@ -1375,7 +1377,7 @@ function settle_note_payment(string $checkoutId, array $r): string {
 // ---------- learner points, profile photos and recent lessons ----------
 
 /** Points for each action. Each one pays once (per lesson, section, video, comment or download). */
-const LEARN_POINTS = ['signup' => 10, 'understood' => 1, 'complete' => 2, 'video' => 5, 'comment' => 3, 'like' => 2, 'reply' => 2, 'code' => 2];
+const LEARN_POINTS = ['signup' => 10, 'understood' => 1, 'complete' => 2, 'video' => 5, 'comment' => 3, 'like' => 2, 'reply' => 2, 'code' => 2, 'certificate' => 25];
 /** Most a learner can collect from one kind of action in a day, so points can't be farmed. */
 const LEARN_POINTS_DAILY = ['code' => 25, 'comment' => 10, 'reply' => 10];
 
@@ -1441,6 +1443,131 @@ function learning_summary(string $email): ?array {
     return ['points' => learner_points((int)$l['id']), 'avatar' => avatar_url($l),
             'completed' => (int)q('SELECT COUNT(*) FROM learn_progress WHERE learner_id = ?', [$l['id']])->fetchColumn(),
             'last' => $last ?: null];
+}
+
+// ---------- certificates and badges (learning hub) ----------
+
+/** The public check page for any certificate code (training courses and learning hub subjects). */
+function certificate_verify_url(string $code): string {
+    return rtrim(config()['site_url'] ?? 'https://marzleytechsolutions.co.ke', '/') . '/portal/verify.php?code=' . rawurlencode($code);
+}
+
+function new_learn_certificate_code(): string {
+    $alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    do {
+        $code = '';
+        for ($i = 0; $i < 10; $i++) $code .= $alphabet[random_int(0, strlen($alphabet) - 1)];
+        $code = 'MLC-' . substr($code, 0, 5) . '-' . substr($code, 5);
+    } while (q('SELECT id FROM learn_certificates WHERE code = ?', [$code])->fetch());
+    return $code;
+}
+
+/**
+ * Issues the certificate for a subject once every published lesson in it is complete.
+ * Returns the new certificate, or null if it isn't earned yet or was issued before.
+ */
+function learn_certificate_check(int $learnerId, int $trackId): ?array {
+    $t = q('SELECT id, slug, title FROM learn_tracks WHERE id = ? AND published = 1', [$trackId])->fetch();
+    if (!$t || q('SELECT id FROM learn_certificates WHERE learner_id = ? AND track_id = ?', [$learnerId, $trackId])->fetch()) return null;
+    $total = (int)q('SELECT COUNT(*) FROM learn_lessons WHERE track_id = ? AND published = 1', [$trackId])->fetchColumn();
+    if ($total < 3) return null;
+    $done = (int)q('SELECT COUNT(*) FROM learn_progress p JOIN learn_lessons ls ON ls.id = p.lesson_id WHERE p.learner_id = ? AND ls.track_id = ? AND ls.published = 1', [$learnerId, $trackId])->fetchColumn();
+    if ($done < $total) return null;
+    $code = new_learn_certificate_code();
+    try {
+        q('INSERT INTO learn_certificates (learner_id, track_id, code, lessons, issued_at) VALUES (?, ?, ?, ?, ?)', [$learnerId, $trackId, $code, $total, now()]);
+    } catch (PDOException $e) { return null; }   // finished twice at once: the first one won
+    award_points($learnerId, 'certificate', (string)$trackId, 'Earned the certificate for ' . $t['title'], '?page=me#me-certs');
+    $l = q('SELECT name, email FROM learners WHERE id = ?', [$learnerId])->fetch();
+    if ($l) {
+        $site = rtrim(config()['site_url'] ?? 'https://marzleytechsolutions.co.ke', '/');
+        send_mail($l['email'], 'Your certificate: ' . $t['title'],
+            'Congratulations' . ($l['name'] !== '' ? ', ' . strtok($l['name'], ' ') : '') . "!\n\nYou completed all $total lessons of “{$t['title']}” in the Marzley Tech learning hub, and your certificate is ready.\n\n" .
+            "Download it (PDF) from your dashboard: $site/learn/?page=me#me-certs\n\nCertificate code: $code\nAnyone can check it here: " . certificate_verify_url($code) .
+            "\n\nKeep learning!\nMarzley Tech Solutions · +254 745 789 590", false);
+    }
+    return learn_certificate_row(q('SELECT * FROM learn_certificates WHERE code = ?', [$code])->fetch());
+}
+
+/** Issues any certificates already earned (subjects finished before certificates existed, or lessons added and finished later). */
+function learn_certificates_sync(int $learnerId): void {
+    foreach (q('SELECT DISTINCT ls.track_id FROM learn_progress p JOIN learn_lessons ls ON ls.id = p.lesson_id WHERE p.learner_id = ?', [$learnerId])->fetchAll() as $r) {
+        learn_certificate_check($learnerId, (int)$r['track_id']);
+    }
+}
+
+function learn_certificate_row(array $c): array {
+    $t = q('SELECT slug, title FROM learn_tracks WHERE id = ?', [$c['track_id']])->fetch() ?: ['slug' => '', 'title' => 'A subject'];
+    return ['code' => $c['code'], 'track' => $t['slug'], 'title' => $t['title'], 'lessons' => (int)$c['lessons'], 'issued_at' => $c['issued_at'], 'verify_url' => certificate_verify_url($c['code'])];
+}
+
+function learn_certificates(int $learnerId): array {
+    return array_map('learn_certificate_row', q('SELECT * FROM learn_certificates WHERE learner_id = ? ORDER BY issued_at DESC, id DESC', [$learnerId])->fetchAll());
+}
+
+/** Longest and current run of days in a row with any learning activity. */
+function learn_streaks(int $learnerId): array {
+    $days = [];
+    foreach (q('SELECT created_at FROM learn_points WHERE learner_id = ? UNION ALL SELECT created_at FROM learn_progress WHERE learner_id = ?', [$learnerId, $learnerId])->fetchAll() as $r) {
+        $days[substr((string)$r['created_at'], 0, 10)] = true;
+    }
+    ksort($days);
+    $best = 0; $run = 0; $prev = null;
+    foreach (array_keys($days) as $d) {
+        $t = strtotime($d . ' 12:00:00');
+        $run = ($prev !== null && abs($t - $prev - 86400) < 7200) ? $run + 1 : 1;
+        $best = max($best, $run);
+        $prev = $t;
+    }
+    // The current run counts if the last active day was today or yesterday
+    $current = ($prev !== null && $prev >= strtotime(date('Y-m-d', time() - 86400) . ' 12:00:00')) ? $run : 0;
+    return ['best' => $best, 'current' => $current, 'days' => count($days)];
+}
+
+/** Badges are worked out from what the learner has done, so they never go out of step. */
+function learn_badges(int $learnerId): array {
+    $count = [];
+    foreach (q('SELECT kind, COUNT(*) AS n FROM learn_points WHERE learner_id = ? GROUP BY kind', [$learnerId])->fetchAll() as $r) $count[$r['kind']] = (int)$r['n'];
+    $lessons = (int)q('SELECT COUNT(*) FROM learn_progress WHERE learner_id = ?', [$learnerId])->fetchColumn();
+    $subjects = (int)q('SELECT COUNT(DISTINCT ls.track_id) FROM learn_progress p JOIN learn_lessons ls ON ls.id = p.lesson_id WHERE p.learner_id = ?', [$learnerId])->fetchColumn();
+    $certs = (int)q('SELECT COUNT(*) FROM learn_certificates WHERE learner_id = ?', [$learnerId])->fetchColumn();
+    $points = learner_points($learnerId);
+    $streak = learn_streaks($learnerId);
+    $me = q('SELECT name, phone, avatar FROM learners WHERE id = ?', [$learnerId])->fetch() ?: [];
+    $profile = (int)(trim((string)($me['name'] ?? '')) !== '') + (int)(($me['phone'] ?? '') !== '') + (int)(($me['avatar'] ?? '') !== '');
+    $defs = [
+        // [id, name, icon, group, what it's for, value, goal]
+        ['first-lesson', 'First step', 'fa-shoe-prints', 'Lessons', 'Complete your first lesson', $lessons, 1],
+        ['lessons-10', 'Getting going', 'fa-person-walking', 'Lessons', 'Complete 10 lessons', $lessons, 10],
+        ['lessons-50', 'Dedicated learner', 'fa-person-running', 'Lessons', 'Complete 50 lessons', $lessons, 50],
+        ['lessons-100', 'Century', 'fa-medal', 'Lessons', 'Complete 100 lessons', $lessons, 100],
+        ['lessons-250', 'Scholar', 'fa-graduation-cap', 'Lessons', 'Complete 250 lessons', $lessons, 250],
+        ['cert-1', 'Certified', 'fa-certificate', 'Certificates', 'Earn your first subject certificate', $certs, 1],
+        ['cert-3', 'Multi-skilled', 'fa-award', 'Certificates', 'Earn 3 certificates', $certs, 3],
+        ['cert-5', 'All-rounder', 'fa-trophy', 'Certificates', 'Earn 5 certificates', $certs, 5],
+        ['cert-10', 'Master of many', 'fa-crown', 'Certificates', 'Earn 10 certificates', $certs, 10],
+        ['explorer-3', 'Explorer', 'fa-compass', 'Subjects', 'Complete lessons in 3 different subjects', $subjects, 3],
+        ['explorer-10', 'Globetrotter', 'fa-earth-africa', 'Subjects', 'Complete lessons in 10 different subjects', $subjects, 10],
+        ['streak-3', 'On a roll', 'fa-fire', 'Streaks', 'Learn 3 days in a row', $streak['best'], 3],
+        ['streak-7', 'Week warrior', 'fa-fire-flame-curved', 'Streaks', 'Learn 7 days in a row', $streak['best'], 7],
+        ['streak-30', 'Unstoppable', 'fa-bolt', 'Streaks', 'Learn 30 days in a row', $streak['best'], 30],
+        ['coder-10', 'Coder', 'fa-code', 'Practice', 'Run code 10 times', $count['code'] ?? 0, 10],
+        ['coder-100', 'Hacker at heart', 'fa-terminal', 'Practice', 'Run code 100 times', $count['code'] ?? 0, 100],
+        ['understood-50', 'Deep thinker', 'fa-brain', 'Practice', 'Mark 50 sections “I understand”', $count['understood'] ?? 0, 50],
+        ['video-5', 'Watcher', 'fa-circle-play', 'Practice', 'Watch 5 videos to the end', $count['video'] ?? 0, 5],
+        ['voice', 'Voice', 'fa-comment', 'Community', 'Post your first comment or review', $count['comment'] ?? 0, 1],
+        ['helper-5', 'Helper', 'fa-handshake-angle', 'Community', 'Reply to other learners 5 times', $count['reply'] ?? 0, 5],
+        ['points-100', 'Rising star', 'fa-star', 'Points', 'Collect 100 points', $points, 100],
+        ['points-500', 'Shining star', 'fa-star-half-stroke', 'Points', 'Collect 500 points', $points, 500],
+        ['points-1000', 'Superstar', 'fa-gem', 'Points', 'Collect 1,000 points', $points, 1000],
+        ['points-2500', 'Legend', 'fa-dragon', 'Points', 'Collect 2,500 points', $points, 2500],
+        ['profile', 'All set up', 'fa-id-card', 'Profile', 'Add your name, phone number and photo', $profile, 3],
+    ];
+    $out = [];
+    foreach ($defs as [$id, $name, $icon, $group, $desc, $value, $goal]) {
+        $out[] = ['id' => $id, 'name' => $name, 'icon' => $icon, 'group' => $group, 'desc' => $desc, 'value' => min($value, $goal), 'goal' => $goal, 'earned' => $value >= $goal];
+    }
+    return ['badges' => $out, 'streak' => $streak];
 }
 
 // ---------- passwords (optional, for the portal and the learning hub) ----------

@@ -1451,7 +1451,8 @@
     if (!learnData) { panel.appendChild(h("p", { className: "portal-meta", text: "Loading…" })); return; }
     var d = learnData, st = d.stats;
     var cards = [["Learners", st.learners, "fa-user-graduate", st.new_learners_30 + " new in 30 days"], ["Video income", ksh(st.revenue), "fa-sack-dollar", ksh(st.revenue_30) + " in 30 days"],
-      ["Videos unlocked", st.unlocks, "fa-lock-open", (d.videos || []).length + " videos"], ["Notes PDF income", ksh(st.notes_revenue), "fa-file-pdf", st.notes_sold + " sold · " + ksh(st.notes_revenue_30) + " in 30 days"], ["Lessons completed", st.lessons_done, "fa-circle-check", (d.lessons || []).length + " lessons · " + (d.notes || []).length + " notes"]];
+      ["Videos unlocked", st.unlocks, "fa-lock-open", (d.videos || []).length + " videos"], ["Notes PDF income", ksh(st.notes_revenue), "fa-file-pdf", st.notes_sold + " sold · " + ksh(st.notes_revenue_30) + " in 30 days"], ["Lessons completed", st.lessons_done, "fa-circle-check", (d.lessons || []).length + " lessons · " + (d.notes || []).length + " notes"],
+      ["Certificates earned", st.certificates || 0, "fa-certificate", "Subjects finished by learners"]];
     panel.appendChild(h("section", { className: "admin-panel" },
       h("div", { className: "admin-panel-head" }, h("h2", { text: "Learning hub" }), h("a", { className: "btn btn-ghost", href: "../learn/", target: "_blank", rel: "noopener" }, h("i", { className: "fa-solid fa-arrow-up-right-from-square", "aria-hidden": "true" }), " Open the hub")),
       h("p", { className: "portal-meta", text: "Free tutorials with live code and free notes for everyone; videos unlocked per person with M-Pesa. Learners sign up themselves with Google or an email code." }),
@@ -1561,6 +1562,14 @@
         h("label", null, h("span", { text: "Up to 5 topics (KSh) " }), pSmall), h("label", null, h("span", { text: "6–19 topics (KSh) " }), pMed),
         h("label", null, h("span", { text: "20+ topics (KSh) " }), pLarge), h("button", { type: "submit", className: "btn btn-solid", text: "Save prices" })),
       npl.length ? h("ul", { className: "admin-list" }, npl) : h("p", { className: "portal-empty", text: "No PDF sales yet." })));
+    // Certificates learners earned by completing every lesson of a subject
+    var cl = (d.certificates || []).map(function (c) {
+      return h("li", null, h("div", null, h("strong", { text: (c.name || c.email) + " · " + c.title }), h("span", { className: "portal-meta", text: c.email + " · all " + c.lessons + " lessons · " + day(c.issued_at) })),
+        h("a", { className: "btn btn-ghost btn-sm", href: "verify.php?code=" + encodeURIComponent(c.code), target: "_blank", rel: "noopener", text: c.code }));
+    });
+    panel.appendChild(h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: "Learner certificates" })),
+      h("p", { className: "portal-meta", text: "A certificate is issued automatically when a signed-in learner completes every lesson in a subject (they also get 25 points and an email). Anyone can check a code on the certificate check page." }),
+      cl.length ? h("ul", { className: "admin-list" }, cl) : h("p", { className: "portal-empty", text: "No certificates yet." })));
   }
 
   // ---------- client dashboard ----------

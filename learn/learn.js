@@ -637,14 +637,18 @@
     var link = side.querySelector('[data-lesson="' + id + '"]');
     if (link) link.classList.add("done");
     updateUser();
-    if (state.me) api("progress", { lesson_id: id }).then(function (r) { gotPoints(r, "lesson completed"); }).catch(function () {});
+    if (state.me) api("progress", { lesson_id: id }).then(function (r) {
+      gotPoints(r, r.certificate ? "lesson completed + certificate" : "lesson completed");
+      if (r.certificate) celebrateCert(r.certificate);
+    }).catch(function () {});
   }
 
   // ---------- points (signed-in learners) ----------
   var POINT_RULES = [
     ["fa-user-plus", "Creating your account", 10], ["fa-circle-check", "Each section you mark “I understand”", 1], ["fa-flag-checkered", "Each lesson you complete", 2],
     ["fa-circle-play", "Watching a video to the end", 5], ["fa-comment", "Each comment or review", 3], ["fa-reply", "Replying to a comment", 2], ["fa-thumbs-up", "Liking a lesson or video", 2],
-    ["fa-code", "Each time you run code", 2], ["fa-file-pdf", "Downloading a notes PDF: 20 (KSh 200 subjects), 10 (KSh 100) or 5 (KSh 50)", "5–20"]
+    ["fa-code", "Each time you run code", 2], ["fa-file-pdf", "Downloading a notes PDF: 20 (KSh 200 subjects), 10 (KSh 100) or 5 (KSh 50)", "5–20"],
+    ["fa-certificate", "Earning a subject certificate (complete every lesson in a subject)", 25]
   ];
   function firstName(n) { return String(n || "").trim().split(/\s+/)[0] || ""; }
   function avatarHtml(url, name, cls) {
@@ -980,7 +984,7 @@
           (next ? '<a class="btn btn-solid btn-sm" href="./?track=' + esc(track.slug) + "&amp;lesson=" + esc(next.slug) + '">' + esc(next.title) + ' <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>' : "<span></span>") + "</nav>";
         main.innerHTML = '<article class="lesson"><p class="crumbs"><a href="./">Learn</a> / <a href="./?track=' + esc(track.slug) + '">' + esc(track.title) + "</a></p>" + pager.replace('class="pager" aria-label="Lessons"', 'class="pager pager-top" aria-label="Previous and next lesson"') +
           '<div class="lesson-body">' + md.html + "</div>" + moreBox(track, l) + (l.exercise ? '<section class="exercise" id="exercise" aria-labelledby="ex-title"><h2 id="ex-title"><i class="fa-solid fa-dumbbell" aria-hidden="true"></i> Exercise</h2><div class="ex-task">' + markdown(l.exercise).html + '</div><div id="ex-host"></div><p class="ex-result" id="ex-result" role="status" aria-live="polite"></p></section>' :
-          '<p class="done-row"><button type="button" class="btn btn-line btn-sm" id="mark-done">' + (isDone(l.id) ? '<i class="fa-solid fa-check" aria-hidden="true"></i> Completed' : "Mark as completed") + "</button></p>") + pager + '<section class="lesson-social" id="reviews" aria-label="Likes and reviews"></section></article>';
+          '<p class="done-row"><button type="button" class="btn btn-line btn-sm" id="mark-done">' + (isDone(l.id) ? '<i class="fa-solid fa-check" aria-hidden="true"></i> Completed' : "Mark as completed") + "</button></p>" + certHint(track)) + pager + '<section class="lesson-social" id="reviews" aria-label="Likes and reviews"></section></article>';
         md.blocks.forEach(function (b, n) { codeBlock(main.querySelector('[data-try="' + n + '"]'), { lang: b.lang, code: b.code }); });
         lessonVideos(track, l, main.querySelector(".lesson-body"));
         enhanceLesson(main.querySelector(".lesson"), l);
@@ -994,7 +998,7 @@
         if (l.exercise) exercise(l, track);
         lessonSocial(l, $("#reviews"));
         var md2 = $("#mark-done");
-        if (md2) md2.addEventListener("click", function () { markDone(l.id); md2.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i> Completed'; });
+        if (md2) md2.addEventListener("click", function () { markDone(l.id); md2.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i> Completed'; var h = $("#cert-hint"); if (h) h.outerHTML = certHint(track); });
         main.focus({ preventScroll: true });
       });
     }).catch(function (e) { errorBox(e.message); });
@@ -1612,8 +1616,8 @@
       (n.summary ? "<p>" + esc(n.summary) + "</p>" : "") + '<p class="meta">PDF · ' + fmtSize(n.size) + " · Free</p></div></a>";
   }
   // ---------- my dashboard: points, continue learning, progress, activity and profile ----------
-  var KIND_ICONS = { signup: "fa-user-plus", understood: "fa-circle-check", complete: "fa-flag-checkered", video: "fa-circle-play", comment: "fa-comment", reply: "fa-reply", like: "fa-thumbs-up", code: "fa-code", notes: "fa-file-pdf", replied: "fa-comments" };
-  var KIND_NAMES = { signup: "Account", understood: "Sections understood", complete: "Lessons completed", video: "Videos watched", comment: "Comments", reply: "Replies", like: "Likes", code: "Code runs", notes: "Notes PDFs" };
+  var KIND_ICONS = { signup: "fa-user-plus", understood: "fa-circle-check", complete: "fa-flag-checkered", video: "fa-circle-play", comment: "fa-comment", reply: "fa-reply", like: "fa-thumbs-up", code: "fa-code", notes: "fa-file-pdf", replied: "fa-comments", certificate: "fa-certificate" };
+  var KIND_NAMES = { signup: "Account", understood: "Sections understood", complete: "Lessons completed", video: "Videos watched", comment: "Comments", reply: "Replies", like: "Likes", code: "Code runs", notes: "Notes PDFs", certificate: "Certificates" };
   function pageMe() {
     setNav("");
     showSide(false);
@@ -1646,6 +1650,8 @@
         '<div class="me-total"><strong id="me-points">' + d.points + '</strong><span>points</span></div></header>' +
         // Continue learning
         (lastLesson ? '<section class="me-card me-continue"><div><p class="eyebrow">Continue learning</p><h2>' + esc(last.title) + '</h2><p class="muted">' + esc(last.track_title) + " · " + (isDone(last.lesson_id) ? "completed" : "in progress") + " · opened " + esc(timeAgo(last.visited_at)) + '</p></div><a class="btn btn-solid" href="' + lessonUrl(trackOf[last.lesson_id], lastLesson) + '"><i class="fa-solid fa-play" aria-hidden="true"></i> Continue</a></section>' : "") +
+        certsHtml(d.certificates || [], started) +
+        badgesHtml(d.badges || [], d.streak) +
         // Points breakdown
         '<section class="me-card"><div class="sec-head"><h2>Your points</h2><a href="#me-rules">How to earn points</a></div><div class="me-kinds">' +
         Object.keys(KIND_NAMES).map(function (k) {
@@ -1727,6 +1733,140 @@
         api("avatar_remove", {}).then(function () { me.avatar = null; updateUser(); pageMe(); }).catch(function (err) { $("#me-msg").textContent = err.message; });
       });
     }).catch(function (e) { errorBox(e.message); });
+  }
+  // ---------- certificates (one per finished subject) and badges ----------
+  var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  function certDate(at) { var d = new Date(String(at).replace(" ", "T")); return isNaN(d) ? String(at).slice(0, 10) : d.getDate() + " " + MONTHS[d.getMonth()] + " " + d.getFullYear(); }
+  function linkedinUrl(c) {
+    var d = new Date(String(c.issued_at).replace(" ", "T"));
+    return "https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=" + encodeURIComponent(c.title) + "&organizationName=" + encodeURIComponent("Marzley Tech Solutions") +
+      (isNaN(d) ? "" : "&issueYear=" + d.getFullYear() + "&issueMonth=" + (d.getMonth() + 1)) + "&certUrl=" + encodeURIComponent(c.verify_url) + "&certId=" + encodeURIComponent(c.code);
+  }
+  function certCard(c) {
+    return '<li class="cert-card"><span class="cert-seal" aria-hidden="true"><i class="' + (TRACK_ICONS[c.track] || "fa-solid fa-certificate") + '"></i></span><div class="cert-info"><strong>' + esc(c.title) + '</strong>' +
+      '<span class="muted">All ' + c.lessons + " lessons · " + esc(certDate(c.issued_at)) + ' · <span class="cert-code">' + esc(c.code) + "</span></span></div>" +
+      '<div class="cert-actions"><button type="button" class="btn btn-solid btn-sm" data-cert-pdf="' + esc(c.code) + '"><i class="fa-solid fa-download" aria-hidden="true"></i> PDF</button>' +
+      '<a class="btn btn-line btn-sm" href="' + esc(linkedinUrl(c)) + '" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin" aria-hidden="true"></i> Add to LinkedIn</a>' +
+      '<button type="button" class="btn btn-line btn-sm" data-cert-copy="' + esc(c.verify_url) + '"><i class="fa-solid fa-copy" aria-hidden="true"></i> Copy check link</button></div></li>';
+  }
+  function certsHtml(certs, started) {
+    state.certs = certs;
+    var close = started.filter(function (x) { return x.next && x.t.lessons.length >= 3; }).sort(function (a, b) { return (b.done / b.t.lessons.length) - (a.done / a.t.lessons.length); })[0];
+    return '<section class="me-card" id="me-certs"><div class="sec-head"><h2><i class="fa-solid fa-certificate" aria-hidden="true"></i> Your certificates</h2><span class="muted">' + certs.length + " earned</span></div>" +
+      (certs.length ? '<ul class="cert-list">' + certs.map(certCard).join("") + "</ul>" : '<p class="muted">Complete every lesson in a subject to earn a free certificate with your name, a code anyone can check, and a QR code. You can download it as a PDF and add it to LinkedIn.</p>') +
+      (close ? '<p class="cert-next"><i class="fa-solid fa-flag-checkered" aria-hidden="true"></i> Closest: <strong>' + esc(close.t.title) + "</strong>, " + (close.t.lessons.length - close.done) + " lesson" + (close.t.lessons.length - close.done === 1 ? "" : "s") + ' to go. <a href="./?track=' + esc(close.t.slug) + "&amp;lesson=" + esc(close.next.slug) + '">Continue</a></p>' : "") + '<p class="u-msg" id="cert-msg" role="status" aria-live="polite"></p></section>';
+  }
+  function badgesHtml(badges, streak) {
+    if (!badges.length) return "";
+    var got = badges.filter(function (b) { return b.earned; }).length;
+    return '<section class="me-card" id="me-badges"><div class="sec-head"><h2><i class="fa-solid fa-award" aria-hidden="true"></i> Your badges</h2><span class="muted">' + got + " of " + badges.length + "</span></div>" +
+      (streak ? '<p class="streak"><i class="fa-solid fa-fire" aria-hidden="true"></i> ' + (streak.current ? "<strong>" + streak.current + "-day streak.</strong> Learn today to keep it going." : "Learn on two days in a row to start a streak.") + " Best: " + streak.best + " day" + (streak.best === 1 ? "" : "s") + ".</p>" : "") +
+      '<ul class="me-badges">' + badges.map(function (b) {
+        var pct = Math.round(100 * b.value / b.goal);
+        return '<li class="me-badge' + (b.earned ? " is-earned" : "") + '"><span class="mb-ico" aria-hidden="true"><i class="fa-solid ' + esc(b.icon) + '"></i></span><strong>' + esc(b.name) + "</strong><span>" + esc(b.desc) + "</span>" +
+          (b.earned ? '<em><i class="fa-solid fa-check" aria-hidden="true"></i> Earned</em>' : '<span class="bar" role="progressbar" aria-label="' + esc(b.name) + '" aria-valuemin="0" aria-valuemax="' + b.goal + '" aria-valuenow="' + b.value + '"><span style="width:' + pct + '%"></span></span><small>' + b.value + " / " + b.goal + "</small>") + "</li>";
+      }).join("") + "</ul></section>";
+  }
+  /** Under each lesson: how far through the subject you are, and the certificate at the end. */
+  function certHint(track) {
+    var n = track.lessons.length;
+    if (n < 3) return "";
+    var done = track.lessons.filter(function (l) { return isDone(l.id); }).length;
+    var txt = done >= n ? (state.me ? '<i class="fa-solid fa-trophy" aria-hidden="true"></i> Subject complete! <a href="./?page=me#me-certs">Get your certificate</a>' : '<i class="fa-solid fa-trophy" aria-hidden="true"></i> Subject complete! <button type="button" class="linklike" data-signin>Sign in</button> to get your free certificate.')
+      : '<i class="fa-solid fa-certificate" aria-hidden="true"></i> ' + done + " of " + n + " lessons done. Complete them all to earn a free certificate" + (state.me ? "." : ' (<button type="button" class="linklike" data-signin>sign in</button> so your progress counts).');
+    return '<p class="cert-hint" id="cert-hint">' + txt + "</p>";
+  }
+  function celebrateCert(c) {
+    state.certs = (state.certs || []).filter(function (x) { return x.code !== c.code; }).concat([c]);
+    var d = openPay('<div class="pay-center cert-pop"><span class="pay-ok-ico" aria-hidden="true"><i class="fa-solid fa-trophy"></i></span><h2 id="pay-title">Certificate earned!</h2>' +
+      "<p>You completed all " + c.lessons + " lessons of <strong>" + esc(c.title) + "</strong>. Well done" + (state.me && firstName(state.me.name) ? ", " + esc(firstName(state.me.name)) : "") + "!</p>" +
+      '<p class="muted">Certificate code <strong>' + esc(c.code) + "</strong> · +25 points</p>" +
+      '<p class="cert-pop-actions"><button type="button" class="btn btn-solid" data-cert-pdf="' + esc(c.code) + '"><i class="fa-solid fa-download" aria-hidden="true"></i> Download PDF</button>' +
+      '<a class="btn btn-line" href="' + esc(linkedinUrl(c)) + '" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin" aria-hidden="true"></i> Add to LinkedIn</a></p>' +
+      '<p><a href="./?page=me#me-certs">See all your certificates and badges</a></p><p class="u-msg" id="cert-msg" role="status" aria-live="polite"></p></div>');
+    return d;
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-cert-pdf],[data-cert-copy],[data-signin]");
+    if (!b) return;
+    if (b.hasAttribute("data-signin")) { openSignin(); return; }
+    if (b.hasAttribute("data-cert-copy")) {
+      var url = b.getAttribute("data-cert-copy"), done = function () { b.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i> Copied'; };
+      if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, function () { prompt("Copy this link:", url); }); else prompt("Copy this link:", url);
+      return;
+    }
+    var c = (state.certs || []).filter(function (x) { return x.code === b.getAttribute("data-cert-pdf"); })[0];
+    if (c) certificatePdf(c, b);
+  });
+  var logoData = null;
+  function brandLogo() {
+    if (!logoData) logoData = fetch("../img/brand/icon-192.png").then(function (r) { if (!r.ok) throw new Error("logo"); return r.blob(); }).then(function (blob) {
+      return new Promise(function (res, rej) { var fr = new FileReader(); fr.onload = function () { res(fr.result); }; fr.onerror = rej; fr.readAsDataURL(blob); });
+    }).catch(function () { logoData = null; return null; });
+    return logoData;
+  }
+  /** A landscape A4 certificate made in the browser: name, subject, date, code and a QR code to the check page. */
+  function certificatePdf(c, btn) {
+    var me = state.me || {}, name = String(me.name || "").trim();
+    var msg = function (t) { var m = $("#cert-msg") || $("#me-msg"); if (m) m.textContent = t; else alert(t); };
+    if (!name) {
+      msg("Add your name in “Your profile” first, so it can go on your certificate.");
+      if (payDlg && payDlg.open) closePay();
+      var p = $("#me-profile"); if (p) { p.scrollIntoView({ block: "start" }); $("#me-name").focus(); } else go("./?page=me#me-profile");
+      return;
+    }
+    var old = btn.innerHTML;
+    btn.disabled = true; btn.innerHTML = '<span class="spinner" aria-hidden="true"></span> Making PDF…';
+    Promise.all([loadPdfMake(), brandLogo()]).then(function (r) {
+      var vfs = r[0], logo = r[1], navy = "#0b1b35", gold = "#d99a00", grey = "#475569";
+      var doc = {
+        pageSize: "A4", pageOrientation: "landscape", pageMargins: [70, 92, 70, 40],
+        info: { title: "Certificate: " + c.title, author: "Marzley Tech Solutions", subject: "Certificate " + c.code },
+        background: function () {
+          return { canvas: [
+            { type: "rect", x: 18, y: 18, w: 805.89, h: 559.28, lineWidth: 10, lineColor: navy },
+            { type: "rect", x: 34, y: 34, w: 773.89, h: 527.28, lineWidth: 2, lineColor: gold }
+          ] };
+        },
+        content: [
+          logo ? { image: logo, width: 62, alignment: "center", margin: [0, 0, 0, 6] } : { text: "" },
+          { text: "MARZLEY TECH SOLUTIONS", alignment: "center", color: gold, bold: true, fontSize: 11, characterSpacing: 3 },
+          { text: "Certificate of Completion", alignment: "center", color: navy, bold: true, fontSize: 34, margin: [0, 8, 0, 14] },
+          { text: "This certifies that", alignment: "center", color: grey, fontSize: 13 },
+          { text: name, alignment: "center", color: navy, bold: true, fontSize: 30, margin: [0, 6, 0, 2] },
+          { canvas: [{ type: "line", x1: 230, y1: 0, x2: 471, y2: 0, lineWidth: 2, lineColor: gold }], margin: [0, 0, 0, 12] },
+          { text: "has completed all " + c.lessons + " lessons of the online subject", alignment: "center", color: grey, fontSize: 13 },
+          { text: c.title, alignment: "center", color: navy, bold: true, fontSize: c.title.length > 70 ? 15 : 19, margin: [40, 6, 40, 4] },
+          { text: "in the Marzley Tech learning hub", alignment: "center", color: grey, fontSize: 12, margin: [0, 0, 0, 22] },
+          { columns: [
+            { width: "*", stack: [{ text: "Kelvin G. Wanyoike", bold: true, color: navy, fontSize: 13 }, { text: "Founder & trainer, Marzley Tech Solutions", color: grey, fontSize: 10 }], margin: [0, 26, 0, 0] },
+            { width: "*", stack: [{ text: certDate(c.issued_at), bold: true, color: navy, fontSize: 13, alignment: "center" }, { text: "Date", color: grey, fontSize: 10, alignment: "center" }], margin: [0, 26, 0, 0] },
+            { width: "auto", columns: [
+              { width: "auto", stack: [{ text: c.code, bold: true, color: navy, fontSize: 12, alignment: "right" }, { text: "Scan or visit to check:", color: grey, fontSize: 9, alignment: "right" }, { text: c.verify_url.replace(/^https?:\/\//, ""), color: grey, fontSize: 8, alignment: "right" }], margin: [0, 24, 8, 0] },
+              { qr: c.verify_url, fit: 78, foreground: navy }
+            ] }
+          ] }
+        ],
+        defaultStyle: { font: "Roboto" }
+      };
+      var fonts = { Roboto: { normal: "Roboto-Regular.ttf", bold: "Roboto-Medium.ttf", italics: "Roboto-Italic.ttf", bolditalics: "Roboto-MediumItalic.ttf" } };
+      var file = "Certificate-" + c.title.replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) + "-" + c.code + ".pdf";
+      return new Promise(function (res, rej) {
+        try { window.pdfMake.createPdf(doc, null, fonts, vfs).getBlob(function (blob) {
+          if (!blob || !blob.size) return rej(new Error("The PDF came out empty."));
+          var url = URL.createObjectURL(blob), a = document.createElement("a");
+          a.href = url; a.download = file; document.body.appendChild(a); a.click(); a.remove();
+          setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+          res(file);
+        }); } catch (e) { rej(e); }
+      });
+    }).then(function (file) {
+      btn.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i> Downloaded';
+      msg(file + " has been downloaded.");
+    }).catch(function (e) {
+      btn.innerHTML = old;
+      msg("The certificate couldn’t be made: " + (e && e.message ? e.message : "please try again."));
+    }).then(function () { btn.disabled = false; });
   }
   function pwSection(me) {
     var pw = me.password || {}, needCur = pw.has_password && !pw.fresh;

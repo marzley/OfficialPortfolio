@@ -265,6 +265,7 @@ switch ($action) {
     case 'dashboard':
         $l = need_learner();
         $id = (int)$l['id'];
+        learn_certificates_sync($id);
         $by = [];
         foreach (q('SELECT kind, COUNT(*) AS n, SUM(points) AS p FROM learn_points WHERE learner_id = ? GROUP BY kind', [$id])->fetchAll() as $r) $by[$r['kind']] = ['count' => (int)$r['n'], 'points' => (int)$r['p']];
         $activity = array_map(fn($r) => ['kind' => $r['kind'], 'points' => (int)$r['points'], 'text' => $r['detail'], 'link' => $r['link'], 'at' => $r['created_at']],
@@ -279,7 +280,8 @@ switch ($action) {
         usort($activity, fn($a, $b) => strcmp($b['at'], $a['at']));
         $recent = q('SELECT v.lesson_id, v.visited_at, ls.title, ls.slug, t.slug AS track, t.title AS track_title FROM learn_visits v JOIN learn_lessons ls ON ls.id = v.lesson_id JOIN learn_tracks t ON t.id = ls.track_id
                      WHERE v.learner_id = ? AND ls.published = 1 ORDER BY v.visited_at DESC LIMIT 8', [$id])->fetchAll();
-        out(['points' => learner_points($id), 'by_kind' => $by, 'activity' => array_slice($activity, 0, 60), 'recent' => $recent,
+        $badges = learn_badges($id);
+        out(['points' => learner_points($id), 'by_kind' => $by, 'certificates' => learn_certificates($id), 'badges' => $badges['badges'], 'streak' => $badges['streak'], 'activity' => array_slice($activity, 0, 60), 'recent' => $recent,
              'rules' => LEARN_POINTS, 'daily' => LEARN_POINTS_DAILY]);
 
     // ---------- tutorials (free) ----------
@@ -304,13 +306,16 @@ switch ($action) {
     case 'progress':
         $l = need_learner();
         $id = (int)(body()['lesson_id'] ?? 0);
-        $ls = q('SELECT ls.id, ls.title, ls.slug, t.slug AS track FROM learn_lessons ls JOIN learn_tracks t ON t.id = ls.track_id WHERE ls.id = ?', [$id])->fetch();
+        $ls = q('SELECT ls.id, ls.title, ls.slug, t.slug AS track, ls.track_id FROM learn_lessons ls JOIN learn_tracks t ON t.id = ls.track_id WHERE ls.id = ?', [$id])->fetch();
         if (!$ls) fail(404, 'Lesson not found.');
         if (!q('SELECT id FROM learn_progress WHERE learner_id = ? AND lesson_id = ?', [$l['id'], $id])->fetch()) {
             q('INSERT INTO learn_progress (learner_id, lesson_id, created_at) VALUES (?, ?, ?)', [$l['id'], $id, now()]);
         }
         $got = award_points((int)$l['id'], 'complete', (string)$id, 'Completed “' . $ls['title'] . '”', "?track={$ls['track']}&lesson={$ls['slug']}");
-        out(['ok' => true, 'points' => $got]);
+        // Finishing the last lesson of a subject earns its certificate (and its points)
+        $cert = learn_certificate_check((int)$l['id'], (int)$ls['track_id']);
+        if ($cert) $got += LEARN_POINTS['certificate'];
+        out(['ok' => true, 'points' => $got, 'certificate' => $cert]);
 
     // ---------- notes and books (free) ----------
 
@@ -621,7 +626,9 @@ switch ($action) {
                 'lessons_done' => (int)q('SELECT COUNT(*) AS n FROM learn_progress')->fetch()['n'],
                 'lesson_likes' => (int)q('SELECT COUNT(*) AS n FROM learn_lesson_likes')->fetch()['n'],
                 'reviews' => (int)q('SELECT COUNT(*) AS n FROM learn_reviews WHERE parent_id IS NULL')->fetch()['n'],
+                'certificates' => (int)q('SELECT COUNT(*) AS n FROM learn_certificates')->fetch()['n'],
             ],
+            'certificates' => q('SELECT c.code, c.lessons, c.issued_at, l.name, l.email, t.title FROM learn_certificates c JOIN learners l ON l.id = c.learner_id JOIN learn_tracks t ON t.id = c.track_id ORDER BY c.id DESC LIMIT 100')->fetchAll(),
         ]);
 
     case 'track_save':
