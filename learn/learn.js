@@ -1994,39 +1994,100 @@
     return logoData;
   }
   /** A landscape A4 certificate made in the browser: name, subject, date, code and a QR code to the check page. */
-  var CERT_NAVY = "#0b1b35", CERT_GOLD = "#d99a00", CERT_GREY = "#475569";
+  var CERT_NAVY = "#0b1b35", CERT_GOLD = "#c9971c", CERT_GOLD_DARK = "#9a7212", CERT_GREY = "#4b5563", CERT_PAPER = "#fffdf7";
+  var CERT_W = 841.89, CERT_H = 595.28;
+  var certRosette = null;
+  /** A fine guilloche rosette, like the pattern on a banknote, drawn faintly behind the text. */
+  function rosette(cx, cy, R, r, d, steps) {
+    var pts = [], turns = r / gcd(R, r);
+    for (var i = 0; i <= steps; i++) {
+      var t = i / steps * Math.PI * 2 * turns;
+      pts.push({ x: cx + (R - r) * Math.cos(t) + d * Math.cos((R - r) / r * t), y: cy + (R - r) * Math.sin(t) - d * Math.sin((R - r) / r * t) });
+    }
+    return pts;
+  }
+  function gcd(a, b) { return b ? gcd(b, a % b) : a; }
   function certBackground() {
+    var W = CERT_W, H = CERT_H, navy = CERT_NAVY, gold = CERT_GOLD;
+    if (!certRosette) certRosette = [rosette(W / 2, 292, 150, 42, 70, 1400), rosette(W / 2, 292, 115, 25, 52, 1100)];
+    var tri = function (pts, color) { return { type: "polyline", closePath: true, points: pts.map(function (p) { return { x: p[0], y: p[1] }; }), color: color }; };
     return { canvas: [
-      { type: "rect", x: 18, y: 18, w: 805.89, h: 559.28, lineWidth: 10, lineColor: CERT_NAVY },
-      { type: "rect", x: 34, y: 34, w: 773.89, h: 527.28, lineWidth: 2, lineColor: CERT_GOLD }
+      { type: "rect", x: 0, y: 0, w: W, h: H, color: navy },
+      { type: "rect", x: 14, y: 14, w: W - 28, h: H - 28, color: CERT_PAPER },
+      { type: "polyline", points: certRosette[0], lineWidth: 0.35, lineColor: "#f1e7cc" },
+      { type: "polyline", points: certRosette[1], lineWidth: 0.35, lineColor: "#f4ecd9" },
+      { type: "rect", x: 24, y: 24, w: W - 48, h: H - 48, lineWidth: 1.4, lineColor: gold },
+      { type: "rect", x: 29, y: 29, w: W - 58, h: H - 58, lineWidth: 0.5, lineColor: gold },
+      // corner accents: navy wedge with a gold edge, top left and bottom right
+      tri([[14, 14], [176, 14], [14, 124]], gold),
+      tri([[14, 14], [164, 14], [14, 116]], navy),
+      tri([[W - 14, H - 14], [W - 176, H - 14], [W - 14, H - 124]], gold),
+      tri([[W - 14, H - 14], [W - 164, H - 14], [W - 14, H - 116]], navy),
+      // small gold corner marks, top right and bottom left
+      { type: "polyline", points: [{ x: W - 70, y: 38 }, { x: W - 38, y: 38 }, { x: W - 38, y: 70 }], lineWidth: 1.6, lineColor: gold },
+      { type: "polyline", points: [{ x: 38, y: H - 70 }, { x: 38, y: H - 38 }, { x: 70, y: H - 38 }], lineWidth: 1.6, lineColor: gold }
     ] };
   }
+  /** The round gold seal with ribbons, centred at x, y. */
+  function certSeal(x, y, year) {
+    var gold = CERT_GOLD, dark = CERT_GOLD_DARK, navy = CERT_NAVY, star = [];
+    for (var i = 0; i < 48; i++) { var a = i / 48 * Math.PI * 2, r = i % 2 ? 41 : 45; star.push({ x: x + r * Math.cos(a), y: y + r * Math.sin(a) }); }
+    var ribbon = function (dx) { var s = dx < 0 ? -1 : 1; return { type: "polyline", closePath: true, color: dark, points: [{ x: x + dx, y: y + 20 }, { x: x + dx + s * 16, y: y + 20 }, { x: x + dx + s * 20, y: y + 60 }, { x: x + dx + s * 9, y: y + 52 }, { x: x + dx, y: y + 63 }] }; };
+    return [
+      { canvas: [ribbon(-14), ribbon(14), { type: "polyline", closePath: true, points: star, color: gold },
+        { type: "ellipse", x: x, y: y, r1: 37, r2: 37, color: navy },
+        { type: "ellipse", x: x, y: y, r1: 33, r2: 33, lineWidth: 0.8, lineColor: gold }], absolutePosition: { x: 0, y: 0 } },
+      certAt(x - 40, y - 19, 80, { text: "MARZLEY TECH", fontSize: 5.5, bold: true, color: gold, characterSpacing: 0.6 }),
+      certAt(x - 40, y - 8, 80, { text: "CERTIFIED", font: "Cinzel", bold: true, fontSize: 11, color: "#ffffff" }),
+      certAt(x - 40, y + 7, 80, { text: year, fontSize: 8, bold: true, color: gold, characterSpacing: 1 })
+    ];
+  }
+  /** Text placed at a fixed spot, centred in a box of the given width. */
+  function certAt(x, y, w, node) { return { absolutePosition: { x: x, y: y }, columns: [Object.assign({ width: w, alignment: "center" }, node)] }; }
   /** One certificate page (pdfmake content) for this certificate and name. */
   function certPage(c, name, logo) {
-    var navy = CERT_NAVY, gold = CERT_GOLD, grey = CERT_GREY;
+    var W = CERT_W, navy = CERT_NAVY, gold = CERT_GOLD, grey = CERT_GREY;
+    var script = name.length > 30 ? 34 : name.length > 22 ? 40 : 46;
+    var title = c.title.length > 60 ? 13 : c.title.length > 34 ? 16 : 21;
+    var issued = certDate(c.issued_at), year = (issued.match(/\d{4}/) || [""])[0];
+    var flank = function (w) { return { width: w, canvas: [{ type: "line", x1: 0, y1: 8, x2: w, y2: 8, lineWidth: 0.8, lineColor: gold }] }; };
+    var line = function (x1, x2, y) { return { canvas: [{ type: "line", x1: x1, y1: y, x2: x2, y2: y, lineWidth: 0.8, lineColor: navy }], absolutePosition: { x: 0, y: 0 } }; };
+    var verify = c.verify_url.replace(/^https?:\/\//, "");
     return [
-          logo ? { image: logo, width: 62, alignment: "center", margin: [0, 0, 0, 6] } : { text: "" },
-          { text: "MARZLEY TECH SOLUTIONS", alignment: "center", color: gold, bold: true, fontSize: 11, characterSpacing: 3 },
-          { text: "Certificate of Completion", alignment: "center", color: navy, bold: true, fontSize: 34, margin: [0, 8, 0, 14] },
-          { text: "This certifies that", alignment: "center", color: grey, fontSize: 13 },
-          { text: name, alignment: "center", color: navy, bold: true, fontSize: 30, margin: [0, 6, 0, 2] },
-          { canvas: [{ type: "line", x1: 230, y1: 0, x2: 471, y2: 0, lineWidth: 2, lineColor: gold }], margin: [0, 0, 0, 12] },
-          { text: "has completed all " + c.lessons + " lessons of the online subject", alignment: "center", color: grey, fontSize: 13 },
-          { text: c.title, alignment: "center", color: navy, bold: true, fontSize: c.title.length > 70 ? 15 : 19, margin: [40, 6, 40, 4] },
-          { text: "in the Marzley Tech learning hub", alignment: "center", color: grey, fontSize: 12, margin: [0, 0, 0, 22] },
-          { columns: [
-            { width: "*", stack: [{ text: "Kelvin G. Wanyoike", bold: true, color: navy, fontSize: 13 }, { text: "Founder & trainer, Marzley Tech Solutions", color: grey, fontSize: 10 }], margin: [0, 26, 0, 0] },
-            { width: "*", stack: [{ text: certDate(c.issued_at), bold: true, color: navy, fontSize: 13, alignment: "center" }, { text: "Date", color: grey, fontSize: 10, alignment: "center" }], margin: [0, 26, 0, 0] },
-            { width: "auto", columns: [
-              { width: "auto", stack: [{ text: c.code, bold: true, color: navy, fontSize: 12, alignment: "right" }, { text: "Scan or visit to check:", color: grey, fontSize: 9, alignment: "right" }, { text: c.verify_url.replace(/^https?:\/\//, ""), color: grey, fontSize: 8, alignment: "right" }], margin: [0, 24, 8, 0] },
-              { qr: c.verify_url, fit: 78, foreground: navy }
-            ] }
-          ] }
-        ];
+      logo ? { image: logo, width: 50, alignment: "center", margin: [0, 0, 0, 6] } : { text: "", margin: [0, 50, 0, 6] },
+      { text: "MARZLEY TECH SOLUTIONS", alignment: "center", color: gold, bold: true, fontSize: 9.5, characterSpacing: 4 },
+      { text: "CERTIFICATE", alignment: "center", font: "Cinzel", bold: true, color: navy, fontSize: 46, characterSpacing: 6, margin: [0, 6, 0, 0] },
+      { columns: [{ width: "*", text: "" }, flank(70), { width: "auto", text: "OF COMPLETION", font: "Cinzel", color: gold, fontSize: 14, characterSpacing: 5, margin: [12, 0, 8, 0] }, flank(70), { width: "*", text: "" }], margin: [0, 2, 0, 16] },
+      { text: "This certificate is proudly presented to", alignment: "center", italics: true, color: grey, fontSize: 12 },
+      { text: name, alignment: "center", font: "GreatVibes", color: navy, fontSize: script, margin: [60, 2, 60, 0] },
+      { canvas: [
+        { type: "line", x1: 120, y1: 4, x2: 330, y2: 4, lineWidth: 1, lineColor: gold },
+        { type: "polyline", closePath: true, color: gold, points: [{ x: 351, y: 0 }, { x: 355, y: 4 }, { x: 351, y: 8 }, { x: 347, y: 4 }] },
+        { type: "line", x1: 372, y1: 4, x2: 582, y2: 4, lineWidth: 1, lineColor: gold }], margin: [0, 0, 0, 10] },
+      { text: "for successfully completing all " + c.lessons + " lessons of the online course", alignment: "center", color: grey, fontSize: 12 },
+      { text: c.title, alignment: "center", font: "Cinzel", bold: true, color: navy, fontSize: title, margin: [90, 6, 90, 3] },
+      { text: "at the Marzley Tech Learning Hub", alignment: "center", color: grey, fontSize: 11 },
+      // signature, seal and date along the bottom
+      certAt(90, 448, 210, { text: "Kelvin G. Wanyoike", font: "GreatVibes", fontSize: 26, color: navy }),
+      line(90, 300, 486),
+      certAt(90, 492, 210, { text: "KELVIN G. WANYOIKE", bold: true, fontSize: 9.5, color: navy, characterSpacing: 1.5 }),
+      certAt(90, 505, 210, { text: "Founder & Trainer, Marzley Tech Solutions", fontSize: 8.5, color: grey }),
+      certSeal(W / 2, 470, year),
+      certAt(520, 462, 170, { text: issued, bold: true, fontSize: 13, color: navy }),
+      line(520, 690, 486),
+      certAt(520, 492, 170, { text: "DATE OF ISSUE", bold: true, fontSize: 9.5, color: navy, characterSpacing: 1.5 }),
+      { qr: c.verify_url, fit: 76, foreground: navy, background: CERT_PAPER, absolutePosition: { x: 708, y: 426 } },
+      certAt(698, 500, 90, { text: "Scan to verify", fontSize: 7.5, color: grey }),
+      certAt(150, 544, W - 300, { text: [{ text: "Certificate ID ", color: grey }, { text: c.code, bold: true, color: navy }, { text: "   ·   Check it at " + verify, color: grey }], fontSize: 8 })
+    ];
   }
   /** Saves a pdfmake document as a download; resolves with the file name. */
   function savePdf(doc, vfs, file) {
     var fonts = { Roboto: { normal: "Roboto-Regular.ttf", bold: "Roboto-Medium.ttf", italics: "Roboto-Italic.ttf", bolditalics: "Roboto-MediumItalic.ttf" } };
+    if (vfs["Cinzel-Bold.ttf"]) {
+      fonts.Cinzel = { normal: "Cinzel-Medium.ttf", bold: "Cinzel-Bold.ttf", italics: "Cinzel-Medium.ttf", bolditalics: "Cinzel-Bold.ttf" };
+      fonts.GreatVibes = { normal: "GreatVibes.ttf", bold: "GreatVibes.ttf", italics: "GreatVibes.ttf", bolditalics: "GreatVibes.ttf" };
+    }
     return new Promise(function (res, rej) {
       try { window.pdfMake.createPdf(doc, null, fonts, vfs).getBlob(function (blob) {
         if (!blob || !blob.size) return rej(new Error("The PDF came out empty."));
@@ -2048,8 +2109,8 @@
     }
     var old = btn.innerHTML;
     btn.disabled = true; btn.innerHTML = '<span class="spinner" aria-hidden="true"></span> Making PDF…';
-    Promise.all([loadPdfMake(), brandLogo()]).then(function (r) {
-      var doc = { pageSize: "A4", pageOrientation: "landscape", pageMargins: [70, 92, 70, 40],
+    Promise.all([loadCertPdf(), brandLogo()]).then(function (r) {
+      var doc = { pageSize: "A4", pageOrientation: "landscape", pageMargins: [40, 52, 40, 40],
         info: { title: "Certificate: " + c.title, author: "Marzley Tech Solutions", subject: "Certificate " + c.code },
         background: certBackground, content: certPage(c, name, r[1]), defaultStyle: { font: "Roboto" } };
       return savePdf(doc, r[0], "Certificate-" + c.title.replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) + "-" + c.code + ".pdf");
@@ -2158,10 +2219,10 @@
       var bulk = $("#bulk-certs");
       if (bulk) bulk.addEventListener("click", function () {
         bulk.disabled = true; bulk.innerHTML = '<span class="spinner" aria-hidden="true"></span> Making ' + certs.length + " certificates…";
-        Promise.all([loadPdfMake(), brandLogo()]).then(function (r) {
+        Promise.all([loadCertPdf(), brandLogo()]).then(function (r) {
           var content = [];
           certs.forEach(function (m, i) { var page = certPage(m.certificate, m.name || m.email, r[1]); if (i < certs.length - 1) page.push({ text: "", pageBreak: "after" }); content = content.concat(page); });
-          return savePdf({ pageSize: "A4", pageOrientation: "landscape", pageMargins: [70, 92, 70, 40], info: { title: c.name + " certificates", author: "Marzley Tech Solutions" }, background: certBackground, content: content, defaultStyle: { font: "Roboto" } },
+          return savePdf({ pageSize: "A4", pageOrientation: "landscape", pageMargins: [40, 52, 40, 40], info: { title: c.name + " certificates", author: "Marzley Tech Solutions" }, background: certBackground, content: content, defaultStyle: { font: "Roboto" } },
             r[0], c.name.replace(/[^A-Za-z0-9]+/g, "-") + "-certificates.pdf");
         }).then(function (file) { $("#class-msg").textContent = file + " has been downloaded (" + certs.length + " page" + (certs.length === 1 ? "" : "s") + ")."; })
           .catch(function (e) { $("#class-msg").textContent = "The certificates couldn't be made: " + e.message; })
@@ -2598,26 +2659,40 @@
       s.onerror = function () { s.remove(); rej(new Error("The PDF maker could not load. Check your connection and try again.")); };
       document.head.appendChild(s);
     }), 60000, slow);
+    var fonts = Promise.all(PDF_FONT_FILES.map(fetchPdfFont)).then(function (pairs) { var vfs = {}; pairs.forEach(function (p) { vfs[p[0]] = p[1]; }); return vfs; });
+    pdfMakeReady = Promise.all([script, fonts]).then(function (r) { return r[1]; });
+    pdfMakeReady.catch(function () { pdfMakeReady = null; });
+    return pdfMakeReady;
+  }
+  /** Downloads one font for pdfmake; resolves with [file name, base64]. */
+  function fetchPdfFont(f) {
+    var base = "../vendor/pdfmake/", slow = "The PDF maker is taking too long to load. Check your connection and try again.";
     var toB64 = function (bytes) {
       var out = "", step = 0x8000;
       for (var i = 0; i < bytes.length; i += step) out += String.fromCharCode.apply(null, bytes.subarray(i, i + step));
       return btoa(out);
     };
-    var fonts = Promise.all(PDF_FONT_FILES.map(function (f) {
-      var ctl = window.AbortController ? new AbortController() : null;
-      var get = fetch(base + f + "?v=" + PDF_ASSET_V, ctl ? { signal: ctl.signal } : undefined)
-        .then(function (r) { if (!r.ok) throw new Error("A font for the PDF could not load (error " + r.status + ")."); return r.arrayBuffer(); })
-        .then(function (buf) {
-          // A real TrueType font starts with 00 01 00 00 (or "true"); anything else is an error page
-          var b = new Uint8Array(buf), sig = b.length > 4 ? (b[0] << 24 | b[1] << 16 | b[2] << 8 | b[3]) >>> 0 : 0;
-          if (b.length < 10000 || (sig !== 0x00010000 && sig !== 0x74727565 && sig !== 0x4f54544f)) throw new Error("A font for the PDF didn’t download properly. Refresh the page and try again.");
-          return [f, toB64(b)];
-        });
-      return withTimeout(get, 60000, slow).catch(function (e) { if (ctl) ctl.abort(); throw e; });
-    })).then(function (pairs) { var vfs = {}; pairs.forEach(function (p) { vfs[p[0]] = p[1]; }); return vfs; });
-    pdfMakeReady = Promise.all([script, fonts]).then(function (r) { return r[1]; });
-    pdfMakeReady.catch(function () { pdfMakeReady = null; });
-    return pdfMakeReady;
+    var ctl = window.AbortController ? new AbortController() : null;
+    var get = fetch(base + f + "?v=" + PDF_ASSET_V, ctl ? { signal: ctl.signal } : undefined)
+      .then(function (r) { if (!r.ok) throw new Error("A font for the PDF could not load (error " + r.status + ")."); return r.arrayBuffer(); })
+      .then(function (buf) {
+        // A real TrueType font starts with 00 01 00 00 (or "true"); anything else is an error page
+        var b = new Uint8Array(buf), sig = b.length > 4 ? (b[0] << 24 | b[1] << 16 | b[2] << 8 | b[3]) >>> 0 : 0;
+        if (b.length < 10000 || (sig !== 0x00010000 && sig !== 0x74727565 && sig !== 0x4f54544f)) throw new Error("A font for the PDF didn’t download properly. Refresh the page and try again.");
+        return [f, toB64(b)];
+      });
+    return withTimeout(get, 60000, slow).catch(function (e) { if (ctl) ctl.abort(); throw e; });
+  }
+  /** pdfmake plus the certificate fonts (Cinzel for headings, Great Vibes script), loaded only for certificates. */
+  var certFontsReady = null;
+  function loadCertPdf() {
+    if (!certFontsReady) {
+      certFontsReady = Promise.all(["Cinzel-Medium.ttf", "Cinzel-Bold.ttf", "GreatVibes.ttf"].map(fetchPdfFont));
+      certFontsReady.catch(function () { certFontsReady = null; });
+    }
+    return Promise.all([loadPdfMake(), certFontsReady]).then(function (r) {
+      var vfs = Object.assign({}, r[0]); r[1].forEach(function (p) { vfs[p[0]] = p[1]; }); return vfs;
+    });
   }
 
   function makeNotesPdf(track, token, info) {
