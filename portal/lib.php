@@ -5,7 +5,7 @@ if (!defined('MARZLEY_PORTAL')) {
     exit;
 }
 
-const SCHEMA_VERSION = 16;
+const SCHEMA_VERSION = 17;
 const STAFF_PERMS = ['projects' => 'Projects & files', 'clients' => 'People', 'support' => 'Support', 'courses' => 'Courses', 'money' => 'Invoices, payments & quotes', 'leads' => 'Leads'];
 const PROJECT_STATUSES = ['planning', 'design', 'build', 'review', 'live', 'on_hold'];
 const INVOICE_STATUSES = ['unpaid', 'paid', 'cancelled'];
@@ -117,6 +117,8 @@ function migrate(PDO $pdo): void {
         "CREATE TABLE IF NOT EXISTS learn_lesson_likes (id $id, lesson_id $uint NOT NULL, learner_id $uint NOT NULL, created_at DATETIME NOT NULL, UNIQUE (lesson_id, learner_id))$end",
         "CREATE TABLE IF NOT EXISTS learn_reviews (id $id, lesson_id $uint NOT NULL, learner_id $uint NOT NULL, parent_id $uint NULL, rating $uint NULL, body TEXT NOT NULL, is_staff $uint NOT NULL DEFAULT 0, hidden $uint NOT NULL DEFAULT 0, created_at DATETIME NOT NULL)$end",
         "CREATE TABLE IF NOT EXISTS learn_progress (id $id, learner_id $uint NOT NULL, lesson_id $uint NOT NULL, created_at DATETIME NOT NULL, UNIQUE (learner_id, lesson_id))$end",
+        // v17: Google reviews copied into the portal to show on the home page
+        "CREATE TABLE IF NOT EXISTS google_reviews (id $id, author VARCHAR(120) NOT NULL, rating $uint NOT NULL, body TEXT NOT NULL, review_date DATE NULL, published $uint NOT NULL DEFAULT 1, created_at DATETIME NOT NULL)$end",
         // v16: coupon codes for notes PDFs, passes and bundles
         "CREATE TABLE IF NOT EXISTS learn_coupons (id $id, code VARCHAR(30) NOT NULL UNIQUE, percent $uint NOT NULL, applies VARCHAR(10) NOT NULL DEFAULT 'all', max_uses $uint NOT NULL DEFAULT 0, expires_on DATE NULL, active $uint NOT NULL DEFAULT 1, note VARCHAR(120) NOT NULL DEFAULT '', created_at DATETIME NOT NULL)$end",
         // v15: classes (a tutor shares a join link; members' progress and certificates show to the tutor)
@@ -173,6 +175,7 @@ function migrate(PDO $pdo): void {
         ['learn_note_payments', 'pass_days', "$uint NOT NULL DEFAULT 0"], // v14: monthly notes pass (track_id 0 = every subject, for this many days)
         ['learn_note_payments', 'bundle', "VARCHAR(40) NOT NULL DEFAULT ''"], // v16: a bundle of subjects bought together (track_id 0)
         ['learn_note_payments', 'coupon', "VARCHAR(30) NOT NULL DEFAULT ''"], // v16: coupon code used, if any
+        ['learn_note_payments', 'product', "VARCHAR(12) NOT NULL DEFAULT 'notes'"], // v17: 'notes' PDF or 'revision' pack
     ];
     foreach ($columns as [$table, $col, $def]) {
         try { $pdo->exec("ALTER TABLE $table ADD COLUMN $col $def"); } catch (PDOException $e) { /* already there */ }
@@ -1347,7 +1350,35 @@ function notes_pdf_prices(): array {
     $get = fn(string $key, int $default) => max(1, min(100000, (int)setting($key, (string)$default)));
     return ['small' => $get('notes_pdf_price_small', 50), 'medium' => $get('notes_pdf_price_medium', 100), 'large' => $get('notes_pdf_price_large', 200),
             'pass' => $get('notes_pass_price', 1000), 'pass_days' => NOTES_PASS_DAYS,
-            'pass90' => $get('notes_pass90_price', 2500), 'pass90_days' => 90];
+            'pass90' => $get('notes_pass90_price', 2500), 'pass90_days' => 90, 'revision' => $get('revision_pack_price', 100)];
+}
+
+/** The Google Business Profile summary shown with the Google reviews (entered in the portal). */
+function google_profile(): array {
+    $r = (string)setting('google_rating', '');
+    return ['rating' => $r === '' ? null : (float)$r, 'count' => (int)setting('google_review_count', '0'),
+        'read_url' => (string)setting('google_read_url', ''), 'write_url' => (string)setting('google_write_url', '')];
+}
+
+/** TVET and CBET revision packs: every practice question of a subject in one printable PDF, answers at the back. */
+const REVISION_TRACKS = ['it-basics', 'digital-literacy', 'computer-maintenance', 'networking', 'linux', 'cybersecurity', 'ms-word', 'excel', 'powerpoint',
+    'html', 'css', 'javascript', 'web-design', 'php', 'sql', 'python', 'java', 'c-programming', 'cpp', 'csharp', 'algorithms', 'git', 'hosting',
+    'app-dev-basics', 'kotlin-android', 'flutter', 'graphic-design', 'data-analytics', 'artificial-intelligence'];
+const REVISION_MIN_QUESTIONS = 20;
+
+/** Subjects with a revision pack, with how many questions each has (cached for an hour). */
+function revision_packs(): array {
+    $file = private_dir() . '/revision_packs.json';
+    if (is_readable($file) && filemtime($file) > time() - 3600 && ($c = json_decode((string)file_get_contents($file), true)) !== null) return $c;
+    $out = [];
+    foreach (REVISION_TRACKS as $slug) {
+        $t = q('SELECT id, slug, title FROM learn_tracks WHERE slug = ? AND published = 1', [$slug])->fetch();
+        if (!$t) continue;
+        $n = count(learn_quiz_bank((int)$t['id']));
+        if ($n >= REVISION_MIN_QUESTIONS) $out[] = ['slug' => $t['slug'], 'title' => $t['title'], 'questions' => $n];
+    }
+    @file_put_contents($file, json_encode($out), LOCK_EX);
+    return $out;
 }
 
 /** Pass plans: every subject's PDF for 30 days, or 90 days at a lower price per month. */

@@ -62,7 +62,7 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   const cid = one("SELECT id FROM clients WHERE email = 'client@example.com'").id;
 
   // ---------- database upgrade ----------
-  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "16");
+  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "17");
 
   // ---------- sequential invoice numbers ----------
   r = await admin("invoice_save", { client_id: cid, description: "Website build", amount: 10000, status: "unpaid" });
@@ -436,6 +436,25 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   ok("approved review appears on the website", r.s === 200 && tj.reviews.length === 1 && tj.reviews[0].comment === "Our orders doubled!" && tj.reviews[0].rating === 5, tj);
   const low = one("SELECT id FROM feedback WHERE rating <= 3 LIMIT 1");
   if (low) { r = await admin3("feedback_publish", { id: low.id, published: true }); ok("low ratings can't be published", r.s === 400); }
+
+  // Google reviews copied into the portal for the home page
+  r = await client("google_review_add", { author: "Jane W.", rating: 5, body: "Great work" });
+  ok("only the team can add Google reviews", r.s === 403 || r.s === 401);
+  r = await admin3("google_review_add", { author: "Jane W.", rating: 7, body: "Great work" });
+  ok("Google review stars must be 1 to 5", r.s === 400);
+  r = await admin3("google_review_add", { author: "Jane W.", rating: 5, body: "Kelvin built our school website fast.", review_date: "2026-11-01" });
+  await admin3("google_review_add", { author: "Otieno K.", rating: 4, body: "Good support after launch." });
+  r = await admin3("google_profile_save", { rating: "4.9", count: "12", read_url: "https://evil.example.com/x" });
+  ok("the Google review links must be Google links", r.s === 400);
+  r = await admin3("google_profile_save", { rating: "4.9", count: "12", read_url: "https://maps.app.goo.gl/abc123", write_url: "https://g.page/r/abc/review" });
+  tj = await (await fetch(BASE + "/portal/testimonials.php")).json();
+  ok("the home page gets the Google rating, links and reviews", r.s === 200 && tj.google.rating === 4.9 && tj.google.count === 12 && tj.google.write_url === "https://g.page/r/abc/review" && tj.google.reviews.length === 2 && tj.google.reviews[0].name === "Jane W.", tj.google);
+  const gid = one("SELECT id FROM google_reviews WHERE author = 'Otieno K.'").id;
+  await admin3("google_review_toggle", { id: gid, published: false });
+  tj = await (await fetch(BASE + "/portal/testimonials.php")).json();
+  ok("a hidden Google review leaves the home page", tj.google.reviews.length === 1);
+  await admin3("google_review_delete", { id: gid });
+  ok("a Google review can be deleted", !one(`SELECT id FROM google_reviews WHERE id = ${gid}`));
 
   // mailing list
   clearMail();
@@ -819,6 +838,42 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
       r = await lget(boss, "admin");
       const tv = (r.j.coupons || []).find((c) => c.code === "TVET20");
       ok("the admin lists coupons with how often they were used", tv && +tv.used === 1 && r.j.note_payments.some((p) => p.coupon === "TVET20") && r.j.note_payments.some((p) => p.bundle === "web-basics"));
+
+      // TVET revision packs: every practice question of a subject in one PDF, a separate product from the notes PDF
+      fs.rmSync(WORK + "/private/portal_ratelimit", { recursive: true, force: true });
+      r = await lget(guest, "revision_list");
+      const rpack = (r.j.packs || []).find((p) => p.slug === "html");
+      ok("revision packs are listed with their question counts", r.s === 200 && rpack && rpack.questions >= 20 && r.j.price === 100, r.j);
+      r = await lpost(cbuy, "notes_pay", { track: "kiswahili", phone: "0700111222", product: "revision" });
+      ok("subjects without a pack can't be bought as one", r.s === 404);
+      r = await lpost(cbuy, "notes_pay", { track: "html", phone: "0700111222", product: "revision" });
+      const revCo = r.j.checkout_id;
+      ok("a revision pack charges the pack price", r.s === 200 && JSON.parse(fs.readFileSync(WORK + "/fake/stk-last.json", "utf8")).body.Amount === 100, r.j);
+      await callback(revCo, 100, "NOTESREV01");
+      await sleep(300);
+      r = await lget(cbuy, "notes_pay_status", "&checkout=" + revCo);
+      const revTok = r.j.token;
+      ok("once paid, the browser gets a revision token", r.j.status === "paid" && r.j.product === "revision" && /^[a-f0-9]{48}$/.test(revTok), r.j);
+      r = await lget(guest, "revision_questions", "&track=html&token=" + revTok);
+      ok("the revision token gives the questions with answers", r.s === 200 && r.j.questions.length === rpack.questions && r.j.questions[0].q && r.j.questions[0].a.length > 0 && r.j.phone === "254700***222", r.j.questions && r.j.questions[0]);
+      r = await lget(guest, "revision_questions", "&track=css&token=" + revTok);
+      ok("a revision token only opens its own subject", r.s === 403);
+      r = await lget(guest, "notes_access", "&track=html&token=" + revTok);
+      ok("a revision token doesn't open the notes PDF", r.s === 403);
+      r = await lget(guest, "revision_questions", "&track=html&token=" + tok);
+      ok("a notes token doesn't open the revision pack", r.s === 403);
+      r = await lpost(rec, "notes_recover", { track: "rev:html", phone: "0700111222", receipt: "NOTESREV01" });
+      ok("“already paid” recovers a revision pack", r.s === 200 && r.j.token === revTok && r.j.product === "revision");
+      r = await lpost(rec, "notes_recover", { track: "html", phone: "0700111222", receipt: "NOTESREV01" });
+      ok("a revision receipt doesn't recover the notes PDF", r.s === 404);
+      await lpost(boss, "notes_price_set", { small: 50, medium: 100, large: 200, revision: 150 });
+      r = await lget(guest, "revision_list");
+      ok("the pack price is set in the portal", r.j.price === 150);
+      await lpost(boss, "coupon_save", { code: "REV50", percent: 50, applies: "revision" });
+      r = await lpost(guest, "coupon_check", { coupon: "REV50", kind: "revision", track: "html" });
+      ok("coupons can apply to revision packs", r.s === 200 && r.j.price === 75, r.j);
+      r = await lpost(guest, "coupon_check", { coupon: "REV50", kind: "notes", track: "html" });
+      ok("a revision-only coupon can't be used on notes", r.s === 400);
 
       // WhatsApp updates link
       r = await lpost(boss, "whatsapp_updates_save", { url: "https://evil.example.com/x" });

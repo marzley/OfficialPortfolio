@@ -2303,6 +2303,7 @@
     setTitle("Notes and books", "Course notes for every subject, from the basics up: read free online or download the whole subject as a PDF. Plus free programming notes and books.");
     main.innerHTML = '<section class="list-page"><h1>Notes &amp; books</h1><p class="lead">Complete course notes for every subject, from the basics all the way up. Read them free online, no account needed, or download a whole subject as a PDF with M-Pesa: ' + esc(kes(state.notesPrices.small)) + ' for short subjects (up to 5 topics), ' + esc(kes(state.notesPrices.medium)) + ' for 6 to 19 topics and ' + esc(kes(state.notesPrices.large)) + ' for 20 topics or more.</p>' +
       '<div class="pass-banner"><i class="fa-solid fa-ticket" aria-hidden="true"></i><div><strong>Notes pass: every subject\'s PDF</strong><span>' + esc(kes(state.notesPrices.pass)) + " for " + state.notesPrices.pass_days + " days, or " + esc(kes(state.notesPrices.pass90)) + ' for 90 days.</span></div><button type="button" class="btn btn-solid btn-sm" id="pass-buy">' + (passToken() ? "You have a pass" : "Get a pass") + "</button></div>" +
+      '<a class="pass-banner rev-banner" href="./?page=revision"><i class="fa-solid fa-list-check" aria-hidden="true"></i><div><strong>New: TVET &amp; CBET revision packs</strong><span>Every practice question of a subject in one printable PDF, with answers at the back. ' + esc(kes(state.notesPrices.revision || 100)) + ' per subject.</span></div><span class="btn btn-line btn-sm">See the packs</span></a>' +
       ((state.notesBundles || []).length ? '<h2 class="notes-h">Subject bundles <span class="muted small">(save 20%)</span></h2><div class="bundle-grid">' + state.notesBundles.map(function (b) {
         var owned = !!bundleToken(b.slug);
         return '<div class="bundle-card"><strong>' + esc(b.title) + '</strong><span class="muted">' + b.tracks.map(function (t) { return esc(t.title); }).join(" · ") + '</span><p><b>' + esc(kes(b.price)) + '</b> <s class="muted">' + esc(kes(b.full)) + '</s></p><button type="button" class="btn ' + (owned ? "btn-line" : "btn-solid") + ' btn-sm" data-bundle="' + esc(b.slug) + '">' + (owned ? "Unlocked on this device" : "Get the bundle") + "</button></div>";
@@ -2362,6 +2363,13 @@
           '<nav class="book-toc" aria-label="Contents"><h2>Contents</h2><ol>' + toc + "</ol></nav>" + parts +
           '<footer class="book-foot">© Marzley Tech Solutions · Free learning hub: marzleytechsolutions.co.ke/learn · Questions? WhatsApp 0745 789 590</footer></article>';
         bookPdfSetup(track);
+        revisionPacks().then(function (packs) {
+          var pack = packs.filter(function (p) { return p.slug === track.slug; })[0], tools = main.querySelector(".book-tools");
+          if (!pack || !tools) return;
+          var b = el('<button type="button" class="btn btn-line btn-sm" id="book-rev"><i class="fa-solid fa-list-check" aria-hidden="true"></i> Revision pack · ' + pack.questions + " questions</button>");
+          tools.insertBefore(b, tools.children[1] || null);
+          b.addEventListener("click", function () { startRevision(pack); });
+        }).catch(function () {});
       });
     }).catch(function (e) { errorBox(e.message); });
   }
@@ -2519,7 +2527,11 @@
       busy = true;
       api("notes_pay_status", undefined, "&checkout=" + encodeURIComponent(checkout) + (manual ? "&check=1" : "")).then(function (s) {
         busy = false;
-        if (s.status === "paid" && s.token && s.pass) {
+        if (s.status === "paid" && s.token && s.product === "revision") {
+          stopPayPoll();
+          store.set(revTokenKey(track.slug), s.token);
+          makeRevisionPdf(track, s.token);
+        } else if (s.status === "paid" && s.token && s.pass) {
           stopPayPoll();
           store.set("notes-pass", s.token);
           if (track) makeNotesPdf(track, s.token, null);
@@ -2538,7 +2550,7 @@
         } else if (s.status === "failed") {
           stopPayPoll();
           var why = "The payment didn’t go through (it may have been cancelled or timed out). You can try again.";
-          if (mode === "pass") passPayForm(track, why); else if (mode) bundlePayForm(mode, track, why); else payForm(track, why);
+          if (mode === "pass") passPayForm(track, why); else if (mode && mode.revision) revisionPayForm(track, why); else if (mode) bundlePayForm(mode, track, why); else payForm(track, why);
         } else if (manual) {
           $("#pay-wait", d).innerHTML = '<span class="spinner" aria-hidden="true"></span> Not received yet. Enter your PIN on the M-Pesa prompt, then tap Check Now.';
         }
@@ -2611,25 +2623,147 @@
 
   /** "Already paid": number + M-Pesa receipt brings the token back. mode: undefined (one subject), "pass", or a bundle object. */
   function recoverForm(track, mode) {
-    var isPass = mode === "pass", bundle = mode && mode !== "pass" ? mode : null;
-    var what = isPass ? "the notes pass" : bundle ? "the " + bundle.title + " bundle" : "the " + track.title + " notes PDF";
+    var isPass = mode === "pass", isRev = !!(mode && mode.revision), bundle = mode && mode !== "pass" && !isRev ? mode : null;
+    var what = isPass ? "the notes pass" : isRev ? "the " + track.title + " revision pack" : bundle ? "the " + bundle.title + " bundle" : "the " + track.title + " notes PDF";
     var d = openPay('<h2 id="pay-title" class="pay-title">' + (isPass ? "Activate your pass" : bundle ? "Unlock your bundle" : "Get your PDF") + '</h2><p class="pay-sub">Enter the number you paid with and the M-Pesa receipt code from your confirmation SMS.</p>' +
       '<form id="rec-form" class="pay-form" novalidate><label for="rec-phone">M-PESA PHONE NUMBER</label><div class="pay-phone"><span>+254</span><input id="rec-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="712345678" value="' + esc((store.get("phone") || "").replace(/^(\+?254|0)/, "")) + '" required /></div>' +
       '<label for="rec-code">M-PESA RECEIPT CODE</label><input id="rec-code" class="pay-input" autocapitalize="characters" placeholder="e.g. SJK4H2L9XA" maxlength="20" required />' +
       '<p class="form-msg pay-err" id="rec-msg" role="status" aria-live="polite"></p><button type="submit" class="btn pay-btn" id="rec-go">Unlock</button></form>' +
       '<button type="button" class="pay-link" id="rec-back">Back</button><p class="pay-note">Still stuck? <a href="https://wa.me/254745789590?text=' + encodeURIComponent("Hello Marzley, I paid for " + what + " but it didn't unlock.") + '" target="_blank" rel="noopener noreferrer">WhatsApp us</a> your M-Pesa message.</p>');
-    $("#rec-back", d).addEventListener("click", function () { if (isPass) passPayForm(track); else if (bundle) bundlePayForm(bundle, track); else payForm(track); });
+    $("#rec-back", d).addEventListener("click", function () { if (isPass) passPayForm(track); else if (isRev) revisionPayForm(track); else if (bundle) bundlePayForm(bundle, track); else payForm(track); });
     $("#rec-form", d).addEventListener("submit", function (e) {
       e.preventDefault();
       var go = $("#rec-go", d);
       go.disabled = true; go.textContent = "Checking…";
-      api("notes_recover", { track: isPass ? "pass" : bundle ? "bundle:" + bundle.slug : track.slug, phone: phoneValue(d, "#rec-phone"), receipt: $("#rec-code", d).value }).then(function (r) {
+      api("notes_recover", { track: isPass ? "pass" : isRev ? "rev:" + track.slug : bundle ? "bundle:" + bundle.slug : track.slug, phone: phoneValue(d, "#rec-phone"), receipt: $("#rec-code", d).value }).then(function (r) {
+        if (isRev) { store.set(revTokenKey(track.slug), r.token); return makeRevisionPdf(track, r.token); }
         if (isPass) store.set("notes-pass", r.token);
         else if (bundle) store.set("notes-bundle:" + bundle.slug, r.token);
         else { store.set(pdfTokenKey(track.slug), r.token); var lbl = $("#book-pdf-label"); if (lbl) lbl.textContent = "Download PDF"; }
         if (track && (!bundle || bundle.tracks.some(function (t) { return t.slug === track.slug; }))) makeNotesPdf(track, r.token, null);
         else { closePay(); pageNotes(); }
       }).catch(function (er) { go.disabled = false; go.textContent = "Unlock"; $("#rec-msg", d).textContent = er.message; });
+    });
+  }
+
+  // ---------- TVET and CBET revision packs: a subject's practice questions in one PDF, answers at the back ----------
+  var revisionList = null;
+  function revisionPacks() {
+    if (!revisionList) {
+      revisionList = api("revision_list").then(function (r) { if (r.price) state.notesPrices.revision = r.price; return r.packs || []; });
+      revisionList.catch(function () { revisionList = null; });
+    }
+    return revisionList;
+  }
+  function revTokenKey(slug) { return "revision:" + slug; }
+  function pageRevision() {
+    setNav("notes");
+    showSide(false);
+    setTitle("TVET and CBET revision packs", "Practice questions for TVET and CBET learners: every question of a subject in one printable PDF, with answers at the back. IT, networking, Excel, programming and more.");
+    main.innerHTML = '<p class="learn-loading"><span class="spinner" aria-hidden="true"></span> Loading the revision packs…</p>';
+    revisionPacks().then(function (packs) {
+      var price = state.notesPrices.revision || 100;
+      main.innerHTML = '<section class="list-page rev-page"><p class="crumbs"><a href="./?page=notes">Notes</a></p><h1>TVET &amp; CBET revision packs</h1>' +
+        '<p class="lead">Preparing for a written assessment? Each pack puts every practice question from a subject\'s lessons into one printable PDF: questions first, grouped by topic, with space to write, and all the answers at the back. ' + esc(kes(price)) + " per subject, paid with M-Pesa.</p>" +
+        '<ol class="rev-how"><li><strong>Answer first.</strong> Work through a topic without looking at the answers.</li><li><strong>Mark yourself</strong> with the answers at the back.</li><li><strong>Revise what you missed</strong> in the free online lesson, then try again.</li></ol>' +
+        '<div class="bundle-grid rev-grid">' + packs.map(function (p) {
+          var owned = !!store.get(revTokenKey(p.slug));
+          return '<div class="bundle-card"><strong>' + esc(p.title) + '</strong><span class="muted">' + p.questions + ' practice questions with answers</span><p><b>' + esc(kes(price)) + '</b></p><span class="rev-acts"><button type="button" class="btn ' + (owned ? "btn-line" : "btn-solid") + ' btn-sm" data-rev="' + esc(p.slug) + '">' + (owned ? "Download again" : "Get the pack") + '</button><a class="linklike" href="./?book=' + esc(p.slug) + '">Read the notes free</a></span></div>';
+        }).join("") + "</div>" +
+        '<p class="muted small rev-note">These are practice questions written for the Marzley Tech lessons to help you revise. They are not official TVET CDACC or KNEC papers, so also use your trainer\'s notes and past assessments.</p></section>';
+      main.querySelectorAll("[data-rev]").forEach(function (b) {
+        b.addEventListener("click", function () { startRevision(packs.filter(function (p) { return p.slug === b.getAttribute("data-rev"); })[0]); });
+      });
+    }).catch(function (e) { errorBox(e.message); });
+  }
+  function startRevision(pack) {
+    var token = store.get(revTokenKey(pack.slug));
+    if (token) return makeRevisionPdf(pack, token);
+    revisionPayForm(pack);
+  }
+  function revisionPayForm(pack, err) {
+    var base = state.notesPrices.revision || 100, price = base;
+    if (!state.mpesa) {
+      openPay('<h2 id="pay-title">' + esc(pack.title) + ' revision pack</h2><p class="muted">Online payment is being set up. WhatsApp us and we’ll send you the pack.</p>' +
+        '<p><a class="btn btn-solid pay-btn" href="https://wa.me/254745789590?text=' + encodeURIComponent("Hello Marzley, I'd like the " + pack.title + " revision pack.") + '" target="_blank" rel="noopener noreferrer">WhatsApp us</a></p>');
+      return;
+    }
+    var d = openPay('<h2 id="pay-title" class="pay-title">' + esc(pack.title) + ' revision pack</h2><p class="pay-sub"><strong>' + pack.questions + ' practice questions</strong> grouped by topic, with answers at the back, as a printable PDF. <strong id="pay-amount">' + esc(kes(price)) + "</strong>.</p>" +
+      '<form id="pay-form" class="pay-form" novalidate>' + phoneField() + couponField() +
+      '<p class="form-msg pay-err" id="pay-msg" role="status" aria-live="polite">' + esc(err || "") + '</p><button type="submit" class="btn pay-btn" id="pay-go">Pay ' + esc(kes(price)) + '</button></form>' +
+      '<button type="button" class="pay-link" id="pay-cancel">Cancel</button><button type="button" class="pay-small" id="pay-recover">Already paid but didn’t get your pack?</button>' +
+      '<p class="pay-note">The PDF is for your personal use and you can download it again on this device.</p>');
+    var ctx = { check: { kind: "revision", track: pack.slug } };
+    wireCoupon(d, ctx, base, function (p) { price = p; $("#pay-amount", d).textContent = kes(p); $("#pay-go", d).textContent = "Pay " + kes(p); });
+    $("#pay-cancel", d).addEventListener("click", closePay);
+    $("#pay-recover", d).addEventListener("click", function () { recoverForm(pack, { revision: true }); });
+    setTimeout(function () { var i = $("#pay-phone", d); if (i && !i.value) i.focus(); }, 50);
+    $("#pay-form", d).addEventListener("submit", function (e) {
+      e.preventDefault();
+      var phone = phoneValue(d, "#pay-phone");
+      if (!/^(0[17]\d{8}|254[17]\d{8})$/.test(phone)) { $("#pay-msg", d).textContent = "Enter your M-Pesa number, for example 712 345 678."; return; }
+      var go = $("#pay-go", d);
+      go.disabled = true; go.textContent = "Sending request…";
+      store.set("phone", phone);
+      api("notes_pay", { track: pack.slug, phone: phone, coupon: ctx.coupon, product: "revision" }).then(function (r) { payWaiting(pack, r.checkout_id, r.amount || price, { revision: true }); })
+        .catch(function (er) { go.disabled = false; go.textContent = "Pay " + kes(price); $("#pay-msg", d).textContent = er.message; });
+    });
+  }
+  /** Inline text for the PDF: `code` gets a grey background, **bold** stays bold, *emphasis* is italic. */
+  function revText(s) {
+    return String(s).split(/(`[^`]+`|\*\*[^*]+\*\*|\*[^*\s][^*]*\*)/).filter(function (x) { return x; }).map(function (x) {
+      if (/^`[^`]+`$/.test(x)) return { text: x.slice(1, -1), background: "#e8edf4" };
+      if (/^\*\*[^*]+\*\*$/.test(x)) return { text: x.slice(2, -2), bold: true };
+      if (/^\*[^*\s][^*]*\*$/.test(x)) return { text: x.slice(1, -1), italics: true };
+      return { text: x };
+    });
+  }
+  function makeRevisionPdf(pack, token) {
+    var d = openPay('<div class="pay-center"><span class="pay-ok-ico" aria-hidden="true"><i class="fa-solid fa-circle-check"></i></span><h2 id="pay-title">Preparing your revision pack</h2>' +
+      '<p class="pay-wait" role="status" aria-live="polite"><span class="spinner" aria-hidden="true"></span> <span id="pdf-step">Getting the questions…</span></p><p class="pay-note">This takes a few seconds. Please keep this page open.</p></div>');
+    var step = function (t) { var x = $("#pdf-step", d); if (x) x.textContent = t; };
+    Promise.all([api("revision_questions", undefined, "&track=" + encodeURIComponent(pack.slug) + "&token=" + encodeURIComponent(token) + "&dl=1"), loadPdfMake()]).then(function (r) {
+      var info = r[0], vfs = r[1], navy = "#0b1b35", gold = "#c9971c", grey = "#4b5563";
+      step("Building the pages…");
+      var content = [
+        { text: "TVET & CBET REVISION", color: gold, bold: true, fontSize: 11, characterSpacing: 3, margin: [0, 120, 0, 8] },
+        { text: info.title, color: navy, bold: true, fontSize: 32, margin: [0, 0, 0, 6] },
+        { text: "Revision pack: " + info.questions.length + " practice questions with answers", color: grey, fontSize: 14, margin: [0, 0, 0, 26] },
+        { canvas: [{ type: "rect", x: 0, y: 0, w: 495, h: 3, color: gold }], margin: [0, 0, 0, 22] },
+        { text: "How to use this pack", bold: true, color: navy, fontSize: 13, margin: [0, 0, 0, 6] },
+        { ol: ["Answer each topic's questions on your own first, in the spaces provided.", "Mark yourself with the answers at the back of the pack.", "For anything you missed, revise the free online lesson at marzleytechsolutions.co.ke/learn, then try again."], color: "#1f2937", fontSize: 11.5, lineHeight: 1.35, margin: [0, 0, 0, 20] },
+        { text: "These practice questions were written for the Marzley Tech lessons to help you revise. They are not official TVET CDACC or KNEC papers.", italics: true, color: grey, fontSize: 10, margin: [0, 0, 0, 30] },
+        { text: "Licensed to " + info.phone + (info.receipt ? " · M-Pesa " + info.receipt : "") + " · for personal use", color: grey, fontSize: 9 },
+        { text: "Marzley Tech Solutions · marzleytechsolutions.co.ke · WhatsApp 0745 789 590", color: grey, fontSize: 9, pageBreak: "after" }
+      ];
+      var topic = null, n = 0, answers = [];
+      info.questions.forEach(function (q) {
+        if (q.lesson !== topic) {
+          topic = q.lesson;
+          content.push({ text: topic, style: "topic", headlineLevel: 1 });
+        }
+        n++;
+        content.push({ columns: [{ width: 24, text: n + ".", bold: true, color: navy }, { width: "*", text: revText(q.q) }], columnGap: 4, fontSize: 11, margin: [0, 4, 0, 2], unbreakable: true });
+        content.push({ canvas: [{ type: "line", x1: 28, y1: 0, x2: 495, y2: 0, lineWidth: 0.5, lineColor: "#cbd5e1" }], margin: [0, 14, 0, 8] });
+        answers.push({ columns: [{ width: 24, text: n + ".", bold: true, color: navy }, { width: "*", text: revText(q.a[0]).map(function (x) { return Object.assign({ bold: true }, x); }).concat(q.a.length > 1 ? [{ text: "   also accepted: " + q.a.slice(1).join(", "), color: grey, fontSize: 9.5 }] : []) }], columnGap: 4, fontSize: 10.5, margin: [0, 2, 0, 3] });
+      });
+      content.push({ text: "Answers", style: "topic", pageBreak: "before", fontSize: 20 });
+      content = content.concat(answers);
+      var doc = { pageSize: "A4", pageMargins: [50, 56, 50, 56],
+        info: { title: info.title + " revision pack", author: "Marzley Tech Solutions", subject: "TVET and CBET revision" },
+        header: function (page) { return page === 1 ? null : { text: info.title + " · revision pack", alignment: "right", color: grey, fontSize: 8.5, margin: [50, 24, 50, 0] }; },
+        footer: function (page, pages) { return { columns: [{ text: "Marzley Tech Learning Hub · licensed to " + info.phone, color: grey, fontSize: 8 }, { text: "Page " + page + " of " + pages, alignment: "right", color: grey, fontSize: 8 }], margin: [50, 16, 50, 0] }; },
+        pageBreakBefore: function (node, following) { return node.headlineLevel === 1 && following.length === 0; },
+        styles: { topic: { bold: true, color: navy, fontSize: 15, margin: [0, 16, 0, 6] } },
+        content: content, defaultStyle: { font: "Roboto", color: "#111827" } };
+      return savePdf(doc, vfs, "Marzley-Tech-" + info.title.replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "") + "-revision-pack.pdf");
+    }).then(function (file) {
+      openPay('<div class="pay-center"><span class="pay-ok-ico" aria-hidden="true"><i class="fa-solid fa-circle-check"></i></span><h2 id="pay-title">Your revision pack is ready</h2><p class="pay-sub">' + esc(file) + ' has been downloaded. You can download it again on this device any time.</p><button type="button" class="btn pay-btn" id="rev-ok">Done</button></div>');
+      $("#rev-ok").addEventListener("click", function () { closePay(); if (new URLSearchParams(location.search).get("page") === "revision") pageRevision(); });
+    }).catch(function (e) {
+      if (e && e.status === 403) { try { localStorage.removeItem("learn:" + revTokenKey(pack.slug)); } catch (x) {} return revisionPayForm(pack); }
+      openPay('<h2 id="pay-title" class="pay-title">Couldn’t make the PDF</h2><p class="pay-sub">' + esc(e && e.message ? e.message : "Please try again.") + '</p><button type="button" class="btn pay-btn" id="rev-retry">Try again</button>');
+      $("#rev-retry").addEventListener("click", function () { makeRevisionPdf(pack, token); });
     });
   }
 
@@ -3216,6 +3350,7 @@
     if (page === "practice") return pagePractice(p.get("lang"));
     if (page === "videos") return pageVideos();
     if (page === "notes") return pageNotes();
+    if (page === "revision") return pageRevision();
     if (page === "search") return pageSearch(p.get("q") || "");
     if (page === "me") return pageMe();
     if (page === "classes") return pageClasses();

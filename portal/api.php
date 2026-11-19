@@ -158,6 +158,8 @@ switch ($action) {
                 $extra['chat_questions'] = q('SELECT * FROM chat_questions ORDER BY last_at DESC LIMIT 200')->fetchAll();
                 $extra['subscribers'] = q('SELECT id, email, name, source, status, created_at FROM subscribers ORDER BY id DESC LIMIT 500')->fetchAll();
                 $extra['campaigns'] = q('SELECT * FROM campaigns ORDER BY id DESC LIMIT 20')->fetchAll();
+                $extra['google_reviews'] = q('SELECT * FROM google_reviews ORDER BY review_date DESC, id DESC')->fetchAll();
+                $extra['google_profile'] = google_profile();
             }
             if ($u['role'] === 'admin') {
                 $extra['audit'] = q('SELECT * FROM audit_log ORDER BY id DESC LIMIT 300')->fetchAll();
@@ -891,6 +893,49 @@ switch ($action) {
         $d = body();
         if (!empty($d['remove'])) remove_avatar($l['id']); else save_avatar($l['id'], (string)($d['image'] ?? ''));
         out(['ok' => true, 'avatar' => avatar_url(q('SELECT id, avatar FROM learners WHERE id = ?', [$l['id']])->fetch())]);
+
+    case 'google_review_add':
+        // A real review copied from the Google Business Profile, to show on the home page
+        require_perm('leads');
+        $d = body();
+        $author = trim((string)($d['author'] ?? ''));
+        $text = trim((string)($d['body'] ?? ''));
+        $rating = (int)($d['rating'] ?? 0);
+        $date = trim((string)($d['review_date'] ?? ''));
+        if ($author === '' || mb_strlen($author) > 120) fail(400, 'Enter the reviewer’s name as it shows on Google.');
+        if ($rating < 1 || $rating > 5) fail(400, 'Choose 1 to 5 stars.');
+        if ($text === '' || mb_strlen($text) > 2000) fail(400, 'Paste the review text (up to 2,000 characters).');
+        if ($date !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) fail(400, 'Use a date like 2026-11-19, or leave it empty.');
+        q('INSERT INTO google_reviews (author, rating, body, review_date, published, created_at) VALUES (?, ?, ?, ?, 1, ?)', [$author, $rating, $text, $date ?: null, now()]);
+        out(['ok' => true]);
+
+    case 'google_review_toggle':
+        require_perm('leads');
+        $d = body();
+        q('UPDATE google_reviews SET published = ? WHERE id = ?', [empty($d['published']) ? 0 : 1, (int)($d['id'] ?? 0)]);
+        out(['ok' => true]);
+
+    case 'google_review_delete':
+        require_perm('leads');
+        q('DELETE FROM google_reviews WHERE id = ?', [(int)(body()['id'] ?? 0)]);
+        out(['ok' => true]);
+
+    case 'google_profile_save':
+        // Overall rating, review count and the two Google links shown with the reviews
+        require_perm('leads');
+        $d = body();
+        $rating = trim((string)($d['rating'] ?? ''));
+        $count = trim((string)($d['count'] ?? ''));
+        if ($rating !== '' && (!is_numeric($rating) || $rating < 1 || $rating > 5)) fail(400, 'The overall rating is a number from 1 to 5, like 4.9.');
+        if ($count !== '' && (!ctype_digit($count) || (int)$count > 100000)) fail(400, 'The number of reviews is a whole number.');
+        foreach (['read_url' => 'Read reviews', 'write_url' => 'Write a review'] as $k => $label) {
+            $u = trim((string)($d[$k] ?? ''));
+            if ($u !== '' && !preg_match('#^https://(g\.page|maps\.app\.goo\.gl|goo\.gl|www\.google\.com|google\.com|maps\.google\.com|search\.google\.com|business\.google\.com)/\S*$#', $u)) fail(400, "The “{$label}” link must be a Google link (g.page, maps.app.goo.gl or google.com).");
+            set_setting('google_' . $k, $u);
+        }
+        set_setting('google_rating', $rating === '' ? '' : (string)round((float)$rating, 1));
+        set_setting('google_review_count', $count);
+        out(['ok' => true]);
 
     case 'feedback_publish':
         require_perm('leads');

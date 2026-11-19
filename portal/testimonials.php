@@ -10,8 +10,11 @@ require __DIR__ . '/lib.php';
 try {
     $rows = q('SELECT c.name, p.title, f.rating, f.comment, f.submitted_at FROM feedback f JOIN clients c ON c.id = f.client_id JOIN projects p ON p.id = f.project_id
         WHERE f.published = 1 AND f.publish_ok = 1 AND f.rating >= 4 ORDER BY f.submitted_at DESC LIMIT 12')->fetchAll();
+    $google = q('SELECT author, rating, body, review_date FROM google_reviews WHERE published = 1 ORDER BY review_date DESC, id DESC LIMIT 6')->fetchAll();
+    $profile = google_profile();
 } catch (Throwable $e) {
-    $rows = [];
+    $rows = []; $google = []; $profile = null;
 }
 echo json_encode(['reviews' => array_map(fn($r) => ['name' => $r['name'], 'project' => $r['title'], 'rating' => (int)$r['rating'],
-    'comment' => $r['comment'], 'date' => substr((string)$r['submitted_at'], 0, 10)], $rows)], JSON_UNESCAPED_UNICODE);
+    'comment' => $r['comment'], 'date' => substr((string)$r['submitted_at'], 0, 10)], $rows),
+    'google' => $profile ? $profile + ['reviews' => array_map(fn($r) => ['name' => $r['author'], 'rating' => (int)$r['rating'], 'comment' => $r['body'], 'date' => (string)$r['review_date']], $google)] : null], JSON_UNESCAPED_UNICODE);

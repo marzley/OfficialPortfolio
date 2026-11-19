@@ -10,7 +10,7 @@ install_error_alerts('learning hub');
 start_session();
 $action = $_GET['action'] ?? '';
 $method = $_SERVER['REQUEST_METHOD'];
-const LEARN_GET = ['me', 'dashboard', 'avatar', 'catalog', 'lesson', 'lesson_social', 'videos', 'video', 'notes', 'note', 'poster', 'stream', 'unlock_status', 'final_test', 'leaderboard', 'email_off', 'classes', 'class_get', 'class_info', 'notes_pay_status', 'notes_access', 'admin'];
+const LEARN_GET = ['me', 'dashboard', 'avatar', 'catalog', 'lesson', 'lesson_social', 'videos', 'video', 'notes', 'note', 'poster', 'stream', 'unlock_status', 'final_test', 'leaderboard', 'email_off', 'classes', 'class_get', 'class_info', 'notes_pay_status', 'notes_access', 'revision_list', 'revision_questions', 'admin'];
 const VIDEO_TYPES = ['mp4' => 'video/mp4', 'm4v' => 'video/mp4', 'webm' => 'video/webm'];
 const VIDEO_MAX = 2048 * 1024 * 1024;   // 2 GB
 const NOTE_MAX = 100 * 1024 * 1024;     // 100 MB
@@ -475,12 +475,15 @@ switch ($action) {
         if (!$t) fail(404, 'Those notes were not found.');
         $msisdn = normalise_phone((string)($d['phone'] ?? ''));
         if (!$msisdn) fail(400, 'Enter your M-Pesa number, for example 0712 345 678.');
+        // A revision pack (practice questions with answers) is a separate product from the notes PDF
+        $rev = ($d['product'] ?? 'notes') === 'revision';
+        if ($rev && !in_array($t['slug'], array_column(revision_packs(), 'slug'), true)) fail(404, 'There is no revision pack for this subject yet.');
         if (!rate_ok('notes_pay', 6, 900)) fail(429, 'Too many payment prompts. Please wait a few minutes and try again.');
-        $cp = coupon_apply((string)($d['coupon'] ?? ''), 'notes', notes_pdf_track_price((int)$t['id']));
+        $cp = coupon_apply((string)($d['coupon'] ?? ''), $rev ? 'revision' : 'notes', $rev ? notes_pdf_prices()['revision'] : notes_pdf_track_price((int)$t['id']));
         $price = $cp['price'];
-        $checkout = stk_push($msisdn, $price, 'NOTES' . $t['id'], 'Notes PDF');
-        q('INSERT INTO learn_note_payments (checkout_id, track_id, amount, phone, token, status, coupon, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-            [$checkout, $t['id'], $price, $msisdn, bin2hex(random_bytes(24)), 'pending', $cp['code'], now()]);
+        $checkout = stk_push($msisdn, $price, ($rev ? 'REV' : 'NOTES') . $t['id'], $rev ? 'Revision pack' : 'Notes PDF');
+        q('INSERT INTO learn_note_payments (checkout_id, track_id, amount, phone, token, status, coupon, product, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [$checkout, $t['id'], $price, $msisdn, bin2hex(random_bytes(24)), 'pending', $cp['code'], $rev ? 'revision' : 'notes', now()]);
         $_SESSION['note_checkouts'] = array_slice(array_merge($_SESSION['note_checkouts'] ?? [], [$checkout]), -20);
         out(['ok' => true, 'checkout_id' => $checkout, 'amount' => $price, 'status' => 'pending']);
 
@@ -529,6 +532,10 @@ switch ($action) {
             $plan = notes_pass_plans()[(string)($d['plan'] ?? '30')] ?? null;
             if (!$plan) fail(400, 'Choose a pass.');
             $base = $plan['price'];
+        } elseif ($kind === 'revision') {
+            $t = q('SELECT slug FROM learn_tracks WHERE slug = ? AND published = 1', [(string)($d['track'] ?? '')])->fetch();
+            if (!$t || !in_array($t['slug'], array_column(revision_packs(), 'slug'), true)) fail(404, 'There is no revision pack for this subject yet.');
+            $base = notes_pdf_prices()['revision'];
         } elseif ($kind === 'bundle') {
             $b = notes_bundles()[(string)($d['bundle'] ?? '')] ?? null;
             if (!$b) fail(404, 'That bundle was not found.');
@@ -554,7 +561,19 @@ switch ($action) {
             }
         }
         if ($status === 'mismatch') $status = 'failed';
-        out(['status' => $status] + ($status === 'paid' ? ['token' => $np['token'], 'track' => $np['slug'], 'pass' => (int)$np['track_id'] === 0 && $np['bundle'] === '', 'bundle' => $np['bundle'] !== '' ? $np['bundle'] : null] : []));
+        out(['status' => $status] + ($status === 'paid' ? ['token' => $np['token'], 'track' => $np['slug'], 'pass' => (int)$np['track_id'] === 0 && $np['bundle'] === '', 'bundle' => $np['bundle'] !== '' ? $np['bundle'] : null, 'product' => $np['product']] : []));
+
+    case 'revision_list':
+        out(['packs' => revision_packs(), 'price' => notes_pdf_prices()['revision']]);
+
+    case 'revision_questions':
+        // The questions for a paid revision pack (the browser builds the PDF from them)
+        $token = (string)($_GET['token'] ?? '');
+        $np = preg_match('/^[a-f0-9]{48}$/', $token) ? q("SELECT p.*, t.slug, t.title FROM learn_note_payments p JOIN learn_tracks t ON t.id = p.track_id WHERE p.token = ? AND p.status = 'paid' AND p.product = 'revision'", [$token])->fetch() : null;
+        if (!$np || $np['slug'] !== (string)($_GET['track'] ?? '')) fail(403, 'This revision pack is not unlocked yet.');
+        if (!empty($_GET['dl'])) q('UPDATE learn_note_payments SET downloads = downloads + 1 WHERE id = ?', [$np['id']]);
+        out(['ok' => true, 'title' => $np['title'], 'questions' => array_map(fn($x) => ['q' => $x['q'], 'a' => $x['a'], 'lesson' => $x['lesson']], learn_quiz_bank((int)$np['track_id'])),
+            'receipt' => $np['receipt'], 'phone' => substr($np['phone'], 0, 6) . '***' . substr($np['phone'], -3), 'paid_at' => $np['paid_at']]);
 
     case 'notes_access':
         $token = (string)($_GET['token'] ?? '');
@@ -564,6 +583,8 @@ switch ($action) {
         $isPass = $np && (int)$np['track_id'] === 0 && !$isBundle;
         $inBundle = $isBundle && $want && in_array($want['slug'], NOTES_BUNDLES[$np['bundle']][1] ?? [], true);
         if (!$np || !$want || (!$isPass && !$inBundle && $np['slug'] !== $want['slug'])) fail(403, 'This download is not unlocked yet.');
+        // Notes tokens don't open revision packs, and revision tokens don't open notes
+        if ($np['product'] !== (($_GET['product'] ?? 'notes') === 'revision' ? 'revision' : 'notes')) fail(403, 'This download is not unlocked yet.');
         if ($isPass && notes_pass_expiry($np) < now()) fail(403, 'Your monthly notes pass has expired. Buy a new one, or pay for just this subject.');
         if (!empty($_GET['dl'])) {
             q('UPDATE learn_note_payments SET downloads = downloads + 1 WHERE id = ?', [$np['id']]);
@@ -575,6 +596,8 @@ switch ($action) {
         $d = body();
         if (!rate_ok('notes_recover', 10, 3600)) fail(429, 'Too many tries. Please wait an hour, or WhatsApp us on 0745 789 590.');
         $tr = (string)($d['track'] ?? '');
+        $product = str_starts_with($tr, 'rev:') ? 'revision' : 'notes';
+        if ($product === 'revision') $tr = substr($tr, 4);
         $bundle = str_starts_with($tr, 'bundle:') ? substr($tr, 7) : '';
         if ($bundle !== '' && !isset(NOTES_BUNDLES[$bundle])) fail(404, 'That bundle was not found.');
         $t = ($tr === 'pass' || $bundle !== '') ? ['id' => 0, 'slug' => $tr] : q('SELECT id, slug FROM learn_tracks WHERE slug = ?', [$tr])->fetch();
@@ -586,22 +609,22 @@ switch ($action) {
         foreach (q("SELECT checkout_id FROM learn_note_payments WHERE track_id = ? AND phone = ? AND status = 'pending' AND created_at > ?", [$t['id'], $msisdn, date('Y-m-d H:i:s', time() - 7 * 86400)])->fetchAll() as $p) {
             if ($r = mpesa_result($p['checkout_id'])) settle_note_payment($p['checkout_id'], $r);
         }
-        $np = q("SELECT token FROM learn_note_payments WHERE track_id = ? AND bundle = ? AND phone = ? AND receipt = ? AND status = 'paid'", [$t['id'], $bundle, $msisdn, $receipt])->fetch();
+        $np = q("SELECT token FROM learn_note_payments WHERE track_id = ? AND bundle = ? AND product = ? AND phone = ? AND receipt = ? AND status = 'paid'", [$t['id'], $bundle, $product, $msisdn, $receipt])->fetch();
         if (!$np) fail(404, 'We couldn’t match that payment to these notes yet. Check the number and receipt code, or WhatsApp us your M-Pesa message on 0745 789 590 and we’ll sort it out.');
         audit('notes_pdf_recovered', "Track {$t['id']} receipt $receipt", 'visitor');
-        out(['ok' => true, 'token' => $np['token'], 'track' => $t['slug']]);
+        out(['ok' => true, 'token' => $np['token'], 'track' => $t['slug'], 'product' => $product]);
 
     case 'notes_price_set':
         need_editor();
         $d = body();
         $set = [];
-        foreach (['small', 'medium', 'large', 'pass', 'pass90'] as $size) {
-            if (($size === 'pass' || $size === 'pass90') && !isset($d[$size])) continue;
+        foreach (['small', 'medium', 'large', 'pass', 'pass90', 'revision'] as $size) {
+            if (in_array($size, ['pass', 'pass90', 'revision'], true) && !isset($d[$size])) continue;
             $price = (int)($d[$size] ?? 0);
             if ($price < 1 || $price > 100000) fail(400, 'Enter prices between KSh 1 and KSh 100,000.');
             $set[$size] = $price;
         }
-        foreach ($set as $size => $price) set_setting($size === 'pass' ? 'notes_pass_price' : ($size === 'pass90' ? 'notes_pass90_price' : 'notes_pdf_price_' . $size), (string)$price);
+        foreach ($set as $size => $price) set_setting(['pass' => 'notes_pass_price', 'pass90' => 'notes_pass90_price', 'revision' => 'revision_pack_price'][$size] ?? 'notes_pdf_price_' . $size, (string)$price);
         audit('notes_pdf_price', "KSh {$set['small']} / {$set['medium']} / {$set['large']}" . (isset($set['pass']) ? " / pass {$set['pass']}" : ''));
         out(['ok' => true]);
 
@@ -610,7 +633,7 @@ switch ($action) {
         $d = body();
         $code = strtoupper(preg_replace('/[^A-Z0-9]/i', '', (string)($d['code'] ?? '')));
         $pct = (int)($d['percent'] ?? 0);
-        $applies = in_array($d['applies'] ?? '', ['all', 'notes', 'pass', 'bundle'], true) ? $d['applies'] : 'all';
+        $applies = in_array($d['applies'] ?? '', ['all', 'notes', 'pass', 'bundle', 'revision'], true) ? $d['applies'] : 'all';
         $exp = trim((string)($d['expires_on'] ?? ''));
         if (strlen($code) < 3 || strlen($code) > 30) fail(400, 'Use a code of 3 to 30 letters and numbers, for example TVET20.');
         if ($pct < 1 || $pct > 90) fail(400, 'Choose a discount between 1% and 90%.');
@@ -870,7 +893,7 @@ switch ($action) {
             'videos' => $videos,
             'notes' => q('SELECT id, title, summary, track_id, original_name, size, downloads, published, created_at FROM learn_notes ORDER BY created_at DESC')->fetchAll(),
             'comments' => $comments, 'payments' => $payments, 'notes_prices' => notes_pdf_prices(),
-            'note_payments' => q('SELECT p.id, p.amount, p.phone, p.status, p.receipt, p.downloads, p.created_at, p.paid_at, p.track_id, p.pass_days, p.bundle, p.coupon, COALESCE(t.title, \'Monthly notes pass (all subjects)\') AS title FROM learn_note_payments p LEFT JOIN learn_tracks t ON t.id = p.track_id ORDER BY p.id DESC LIMIT 100')->fetchAll(),
+            'note_payments' => q('SELECT p.id, p.amount, p.phone, p.status, p.receipt, p.downloads, p.created_at, p.paid_at, p.track_id, p.pass_days, p.bundle, p.coupon, p.product, COALESCE(t.title, \'Monthly notes pass (all subjects)\') AS title FROM learn_note_payments p LEFT JOIN learn_tracks t ON t.id = p.track_id ORDER BY p.id DESC LIMIT 100')->fetchAll(),
             'reviews' => q('SELECT r.id, r.lesson_id, r.parent_id, r.rating, r.body, r.is_staff, r.hidden, r.created_at, l.name, l.email, s.title AS lesson, s.slug, t.slug AS track, t.title AS track_title
                 FROM learn_reviews r JOIN learners l ON l.id = r.learner_id JOIN learn_lessons s ON s.id = r.lesson_id JOIN learn_tracks t ON t.id = s.track_id ORDER BY r.id DESC LIMIT 300')->fetchAll(),
             'top_lessons' => q('SELECT s.title, t.title AS track_title, COUNT(k.id) AS likes FROM learn_lesson_likes k JOIN learn_lessons s ON s.id = k.lesson_id JOIN learn_tracks t ON t.id = s.track_id GROUP BY s.id, s.title, t.title ORDER BY likes DESC LIMIT 10')->fetchAll(),

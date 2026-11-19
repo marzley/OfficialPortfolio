@@ -1956,7 +1956,75 @@
         fig.appendChild(cap);
         quoteBox.insertBefore(fig, quoteBox.firstChild);
       });
+      showGoogleReviews(d.google);
     }).catch(function () {});
+  }
+  /* Google reviews (copied in the portal from the Google Business Profile): rating, links and the latest reviews */
+  function showGoogleReviews(g) {
+    if (!g || !quoteBox) return;
+    var reviews = g.reviews || [];
+    if (!reviews.length && !g.write_url) return;
+    var bar = document.createElement("div");
+    bar.className = "google-bar";
+    var lead = document.createElement("p");
+    lead.className = "google-score";
+    lead.innerHTML = '<i class="fa-brands fa-google" aria-hidden="true"></i> ';
+    if (g.rating) {
+      var num = document.createElement("strong");
+      num.textContent = g.rating.toFixed(1);
+      var stars = document.createElement("span");
+      stars.className = "google-stars";
+      stars.setAttribute("aria-label", g.rating.toFixed(1) + " out of 5 stars on Google");
+      stars.textContent = "★★★★★";
+      stars.style.setProperty("--fill", Math.round(g.rating / 5 * 100) + "%");
+      lead.appendChild(num);
+      lead.appendChild(stars);
+      lead.appendChild(document.createTextNode(g.count ? g.count + " Google review" + (g.count === 1 ? "" : "s") : "on Google"));
+    } else lead.appendChild(document.createTextNode("Reviews on Google"));
+    bar.appendChild(lead);
+    var acts = document.createElement("p");
+    acts.className = "google-acts";
+    [[g.read_url, "Read all reviews", "btn btn-ghost btn-sm"], [g.write_url, "Write a review", "btn btn-solid btn-sm"]].forEach(function (x) {
+      if (!x[0]) return;
+      var a = document.createElement("a");
+      a.className = x[2];
+      a.href = x[0];
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.textContent = x[1];
+      acts.appendChild(a);
+    });
+    bar.appendChild(acts);
+    quoteBox.parentNode.insertBefore(bar, quoteBox);
+    reviews.slice().reverse().forEach(function (rv) {
+      var fig = document.createElement("figure");
+      fig.className = "quote quote-google";
+      var top = document.createElement("p");
+      top.className = "quote-stars";
+      top.setAttribute("aria-label", rv.rating + " out of 5 stars");
+      top.textContent = "★★★★★".slice(0, rv.rating);
+      var bq = document.createElement("blockquote");
+      bq.textContent = rv.comment;
+      var cap = document.createElement("figcaption");
+      var ini = document.createElement("span");
+      ini.className = "avatar-initials";
+      ini.setAttribute("aria-hidden", "true");
+      ini.textContent = String(rv.name).split(/\s+/).map(function (w) { return w.charAt(0); }).join("").slice(0, 2).toUpperCase();
+      var who = document.createElement("div");
+      var nm = document.createElement("strong");
+      nm.textContent = rv.name;
+      var sub = document.createElement("span");
+      sub.innerHTML = '<i class="fa-brands fa-google" aria-hidden="true"></i> ';
+      sub.appendChild(document.createTextNode("Google review" + (rv.date ? " · " + new Date(rv.date + "T00:00:00").toLocaleDateString("en-GB", { month: "short", year: "numeric" }) : "")));
+      who.appendChild(nm);
+      who.appendChild(sub);
+      cap.appendChild(ini);
+      cap.appendChild(who);
+      fig.appendChild(top);
+      fig.appendChild(bq);
+      fig.appendChild(cap);
+      quoteBox.insertBefore(fig, quoteBox.firstChild);
+    });
   }
 
   /* ---------- newsletter sign-up (footer) ---------- */

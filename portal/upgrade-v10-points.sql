@@ -105,3 +105,16 @@ CREATE TABLE IF NOT EXISTS learn_coupons (
 -- Each line may say "Duplicate column" if already added: harmless.
 ALTER TABLE learn_note_payments ADD COLUMN bundle VARCHAR(40) NOT NULL DEFAULT '';
 ALTER TABLE learn_note_payments ADD COLUMN coupon VARCHAR(30) NOT NULL DEFAULT '';
+
+-- v17: Google reviews shown on the home page, and TVET revision packs (a second product on notes payments)
+CREATE TABLE IF NOT EXISTS google_reviews (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    author VARCHAR(120) NOT NULL,
+    rating INT UNSIGNED NOT NULL,
+    body TEXT NOT NULL,
+    review_date DATE NULL,
+    published INT UNSIGNED NOT NULL DEFAULT 1,
+    created_at DATETIME NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- May say "Duplicate column" if already added: harmless.
+ALTER TABLE learn_note_payments ADD COLUMN product VARCHAR(12) NOT NULL DEFAULT 'notes';

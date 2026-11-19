@@ -835,6 +835,34 @@
       h("p", { className: "portal-meta", text: "4–5 star ratings with a comment. Tick “Show on website” and the review appears in the testimonials, marked “Verified client”. Only possible when the client agreed." }),
       fb.length ? fl : h("p", { className: "portal-empty", text: "Reviews appear here after projects go live and clients rate them." })));
 
+    // Google reviews: copied from the Google Business Profile to show on the home page
+    var gp = data.google_profile || {};
+    var gRating = h("input", { type: "number", min: "1", max: "5", step: "0.1", value: gp.rating == null ? "" : String(gp.rating), placeholder: "4.9", "aria-label": "Overall Google rating", className: "notes-price-in" });
+    var gCount = h("input", { type: "number", min: "0", step: "1", value: gp.count ? String(gp.count) : "", placeholder: "12", "aria-label": "Number of Google reviews", className: "notes-price-in" });
+    var gRead = h("input", { type: "url", value: gp.read_url || "", placeholder: "https://maps.app.goo.gl/…", "aria-label": "Link to read your reviews on Google", style: "min-width:260px" });
+    var gWrite = h("input", { type: "url", value: gp.write_url || "", placeholder: "https://g.page/r/…/review", "aria-label": "Link to write a Google review", style: "min-width:260px" });
+    var grAuthor = h("input", { type: "text", maxlength: "120", placeholder: "Name as on Google", "aria-label": "Reviewer name", required: true });
+    var grStars = select([["5", "★★★★★"], ["4", "★★★★"], ["3", "★★★"], ["2", "★★"], ["1", "★"]], "5");
+    var grDate = h("input", { type: "date", "aria-label": "Review date (optional)" });
+    var grBody = h("textarea", { rows: "3", maxlength: "2000", placeholder: "Paste the review text exactly as it is on Google", "aria-label": "Review text", required: true });
+    var grl = (data.google_reviews || []).map(function (g) {
+      return h("li", null, h("div", null, h("strong", { text: "★★★★★".slice(0, +g.rating) + " " + g.author + (g.review_date ? " · " + day(g.review_date) : "") }), h("span", { className: "lead-msg", text: "“" + g.body + "”" })),
+        h("span", { className: "row-actions" },
+          h("label", { className: "check" }, h("input", { type: "checkbox", checked: +g.published === 1, onchange: function (e) { save("google_review_toggle", { id: g.id, published: e.target.checked }); } }), h("span", { text: " Show on website" })),
+          h("button", { type: "button", className: "linklike danger", onclick: function () { if (confirm("Delete this review from the website?")) save("google_review_delete", { id: g.id }); }, text: "Delete" })));
+    });
+    panel.appendChild(h("section", { className: "admin-panel", "aria-labelledby": "grev-title" },
+      h("div", { className: "admin-panel-head" }, h("h2", { id: "grev-title", text: "Google reviews on the website" })),
+      h("p", { className: "portal-meta", text: "Copy real reviews from your Google Business Profile and they show on the home page with your rating and buttons to read all reviews and write one. Only add reviews exactly as they are on Google. In Google Business Profile, “Ask for reviews” gives you the write-a-review link; the read link is your profile’s Google Maps link." }),
+      h("form", { className: "inline-form", onsubmit: function (e) { e.preventDefault(); save("google_profile_save", { rating: gRating.value, count: gCount.value, read_url: gRead.value.trim(), write_url: gWrite.value.trim() }); } },
+        h("label", null, h("span", { text: "Overall rating " }), gRating), h("label", null, h("span", { text: "Number of reviews " }), gCount),
+        h("label", null, h("span", { text: "Read reviews link " }), gRead), h("label", null, h("span", { text: "Write a review link " }), gWrite),
+        h("button", { type: "submit", className: "btn btn-solid", text: "Save" })),
+      h("form", { className: "inline-form", onsubmit: function (e) { e.preventDefault(); save("google_review_add", { author: grAuthor.value, rating: Number(grStars.value), review_date: grDate.value, body: grBody.value }, e.target); } },
+        h("label", null, h("span", { text: "Name " }), grAuthor), h("label", null, h("span", { text: "Stars " }), grStars), h("label", null, h("span", { text: "Date " }), grDate),
+        h("label", { style: "flex-basis:100%" }, h("span", { text: "Review " }), grBody), h("button", { type: "submit", className: "btn btn-solid", text: "Add review" })),
+      grl.length ? h("ul", { className: "admin-list" }, grl) : h("p", { className: "portal-empty", text: "No Google reviews added yet." })));
+
     // Mailing list
     var subs = data.subscribers || [];
     var active = subs.filter(function (x) { return x.status === "subscribed"; }).length;
@@ -1583,27 +1611,27 @@
     // Course notes downloaded as PDF (paid with M-Pesa; reading online stays free)
     var np = d.notes_prices || {};
     var priceIn = function (k, def, label) { return h("input", { type: "number", min: "1", max: "100000", step: "1", value: String(np[k] || def), "aria-label": label, className: "notes-price-in" }); };
-    var pSmall = priceIn("small", 50, "Price for up to 5 topics, KSh"), pMed = priceIn("medium", 100, "Price for 6 to 19 topics, KSh"), pLarge = priceIn("large", 200, "Price for 20 topics or more, KSh"), pPass = priceIn("pass", 1000, "Monthly pass price (every subject for 30 days), KSh"), pPass90 = priceIn("pass90", 2500, "3-month pass price (every subject for 90 days), KSh");
+    var pSmall = priceIn("small", 50, "Price for up to 5 topics, KSh"), pMed = priceIn("medium", 100, "Price for 6 to 19 topics, KSh"), pLarge = priceIn("large", 200, "Price for 20 topics or more, KSh"), pPass = priceIn("pass", 1000, "Monthly pass price (every subject for 30 days), KSh"), pPass90 = priceIn("pass90", 2500, "3-month pass price (every subject for 90 days), KSh"), pRev = priceIn("revision", 100, "TVET revision pack price (one subject), KSh");
     var bundleNames = {};
     (d.notes_bundles || []).forEach(function (b) { bundleNames[b.slug] = b.title; });
     var npl = (d.note_payments || []).map(function (p) {
-      return h("li", null, h("div", null, h("strong", { text: ksh(p.amount) + " · " + (+p.track_id !== 0 ? p.title + " notes PDF" : p.bundle ? "Bundle: " + (bundleNames[p.bundle] || p.bundle) : (+p.pass_days > 30 ? "3-month notes pass (all subjects)" : p.title)) }), h("span", { className: "portal-meta", text: p.phone + " · " + day(p.created_at) + (p.coupon ? " · coupon " + p.coupon : "") + (p.receipt ? " · M-Pesa " + p.receipt : "") + (+p.downloads ? " · " + p.downloads + " download" + (+p.downloads === 1 ? "" : "s") : "") })),
+      return h("li", null, h("div", null, h("strong", { text: ksh(p.amount) + " · " + (+p.track_id !== 0 ? p.title + (p.product === "revision" ? " revision pack" : " notes PDF") : p.bundle ? "Bundle: " + (bundleNames[p.bundle] || p.bundle) : (+p.pass_days > 30 ? "3-month notes pass (all subjects)" : p.title)) }), h("span", { className: "portal-meta", text: p.phone + " · " + day(p.created_at) + (p.coupon ? " · coupon " + p.coupon : "") + (p.receipt ? " · M-Pesa " + p.receipt : "") + (+p.downloads ? " · " + p.downloads + " download" + (+p.downloads === 1 ? "" : "s") : "") })),
         h("span", { className: "pill pill-" + (p.status === "paid" ? "paid" : p.status === "pending" ? "review" : "unpaid"), text: p.status === "paid" ? "Paid" : p.status === "pending" ? "Waiting" : "Not paid" }));
     });
     panel.appendChild(h("section", { className: "admin-panel" }, h("div", { className: "admin-panel-head" }, h("h2", { text: "Course notes PDF sales" })),
       h("p", { className: "portal-meta", text: "Everyone can read the course notes online for free. Downloading a whole subject as a PDF is paid with M-Pesa, priced by how many topics the subject has, with a pass that unlocks every subject's PDF for 30 or 90 days, or with a subject bundle (three related subjects at 20% off). Printing the notes page is turned off." }),
-      h("form", { className: "inline-form", onsubmit: function (e) { e.preventDefault(); lsave("notes_price_set", { small: Number(pSmall.value), medium: Number(pMed.value), large: Number(pLarge.value), pass: Number(pPass.value), pass90: Number(pPass90.value) }, "PDF prices saved."); } },
+      h("form", { className: "inline-form", onsubmit: function (e) { e.preventDefault(); lsave("notes_price_set", { small: Number(pSmall.value), medium: Number(pMed.value), large: Number(pLarge.value), pass: Number(pPass.value), pass90: Number(pPass90.value), revision: Number(pRev.value) }, "PDF prices saved."); } },
         h("label", null, h("span", { text: "Up to 5 topics (KSh) " }), pSmall), h("label", null, h("span", { text: "6–19 topics (KSh) " }), pMed),
-        h("label", null, h("span", { text: "20+ topics (KSh) " }), pLarge), h("label", null, h("span", { text: "Monthly pass, all subjects (KSh) " }), pPass), h("label", null, h("span", { text: "3-month pass (KSh) " }), pPass90), h("button", { type: "submit", className: "btn btn-solid", text: "Save prices" })),
+        h("label", null, h("span", { text: "20+ topics (KSh) " }), pLarge), h("label", null, h("span", { text: "Monthly pass, all subjects (KSh) " }), pPass), h("label", null, h("span", { text: "3-month pass (KSh) " }), pPass90), h("label", null, h("span", { text: "Revision pack (KSh) " }), pRev), h("button", { type: "submit", className: "btn btn-solid", text: "Save prices" })),
       npl.length ? h("ul", { className: "admin-list" }, npl) : h("p", { className: "portal-empty", text: "No PDF sales yet." })));
     // Coupon codes for notes PDFs, passes and bundles
     var cCode = h("input", { type: "text", maxlength: "30", placeholder: "e.g. TVET20", "aria-label": "Coupon code", required: true, oninput: function () { var at = this.selectionStart; this.value = this.value.toUpperCase(); this.setSelectionRange(at, at); } });
     var cPct = h("input", { type: "number", min: "1", max: "90", step: "1", value: "20", "aria-label": "Discount percent", className: "notes-price-in" });
-    var cApplies = select([["all", "Everything"], ["notes", "Single subject PDFs"], ["pass", "Notes passes"], ["bundle", "Subject bundles"]], "all");
+    var cApplies = select([["all", "Everything"], ["notes", "Single subject PDFs"], ["pass", "Notes passes"], ["bundle", "Subject bundles"], ["revision", "Revision packs"]], "all");
     var cMax = h("input", { type: "number", min: "0", step: "1", value: "0", "aria-label": "Maximum uses (0 = no limit)", className: "notes-price-in" });
     var cExp = h("input", { type: "date", "aria-label": "Last day the code works (optional)" });
     var cNote = h("input", { type: "text", maxlength: "120", placeholder: "Who it's for (optional)", "aria-label": "Note" });
-    var APPLIES = { all: "everything", notes: "single PDFs", pass: "passes", bundle: "bundles" };
+    var APPLIES = { all: "everything", notes: "single PDFs", pass: "passes", bundle: "bundles", revision: "revision packs" };
     var col = (d.coupons || []).map(function (c) {
       var expired = c.expires_on && c.expires_on < new Date().toISOString().slice(0, 10), full = +c.max_uses && +c.used >= +c.max_uses;
       return h("li", null, h("div", null, h("strong", { text: c.code + " · " + c.percent + "% off " + APPLIES[c.applies] }),
