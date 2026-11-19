@@ -64,6 +64,26 @@ What they do:
   *Website to monitor*, emails you when one is down twice in a row and when it's back, and
   records uptime for the monthly care reports.
 
+### Automations (they run with the jobs above; nothing extra to add)
+Portal → **Growth** → **Automations** lists each one with an on/off switch and how many messages
+it sent in the last 30 days. Every message goes once only, never as a series.
+- **Review requests** (daily): a rating reminder a week after a project goes live; a Google review
+  request a week after a 4–5 star rating (uses the "Write a review" link from *Google reviews on
+  the website*, or `googleReviewUrl` in `data/site.json`).
+- **Instant lead replies**: website enquiries get a thank-you straight away; leads still "new"
+  2 days later get one follow-up and appear in your morning summary.
+- **Quote follow-ups** (daily): one reminder 5 days after you send a quote.
+- **Failed payment rescue** (hourly, SMS for notes buyers, email for video buyers).
+- **Notes pass reminders** (daily, SMS): 3 days before a pass ends.
+- **Next steps** in the certificate email: the revision pack and the next subject.
+- **Care reports** (on the 1st): last month's uptime, speed and support for every client whose
+  website you monitor. To send them now: `php portal/cron.php care`.
+- **Weekly chat questions** (Mondays). To send now: `php portal/cron.php chat`.
+- **Social post drafts**: ready-to-paste posts in the morning email when a blog post or new
+  lessons go live.
+
+The SMS ones need section 7 (SMS alerts); until then they are skipped.
+
 ### Off-site backups (strongly recommended)
 Backups on the same server are lost if the server is lost. Copy them off-site every night:
 - [ ] Sign up at https://www.backblaze.com/cloud-storage (the first 10 GB are free; after that

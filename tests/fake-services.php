@@ -28,6 +28,14 @@ if (str_starts_with($path, '/paystack/')) {
     }
 }
 
+// Africa's Talking SMS stand-in: records each message (one JSON line per SMS)
+if ($path === '/version1/messaging') {
+    file_put_contents("$dir/sms.log", json_encode(['to' => $_POST['to'] ?? '', 'message' => $_POST['message'] ?? '']) . "\n", FILE_APPEND);
+    http_response_code(201);
+    echo '{"SMSMessageData":{"Recipients":[{"status":"Success"}]}}';
+    return;
+}
+
 // Safaricom Daraja stand-in: token, STK push (records the request) and STK query
 if ($path === '/oauth/v1/generate') { echo json_encode(['access_token' => 'fake-token', 'expires_in' => '3599']); return; }
 if ($path === '/mpesa/stkpush/v1/processrequest') {

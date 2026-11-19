@@ -5,7 +5,7 @@ if (!defined('MARZLEY_PORTAL')) {
     exit;
 }
 
-const SCHEMA_VERSION = 17;
+const SCHEMA_VERSION = 18;
 const STAFF_PERMS = ['projects' => 'Projects & files', 'clients' => 'People', 'support' => 'Support', 'courses' => 'Courses', 'money' => 'Invoices, payments & quotes', 'leads' => 'Leads'];
 const PROJECT_STATUSES = ['planning', 'design', 'build', 'review', 'live', 'on_hold'];
 const INVOICE_STATUSES = ['unpaid', 'paid', 'cancelled'];
@@ -176,6 +176,7 @@ function migrate(PDO $pdo): void {
         ['learn_note_payments', 'bundle', "VARCHAR(40) NOT NULL DEFAULT ''"], // v16: a bundle of subjects bought together (track_id 0)
         ['learn_note_payments', 'coupon', "VARCHAR(30) NOT NULL DEFAULT ''"], // v16: coupon code used, if any
         ['learn_note_payments', 'product', "VARCHAR(12) NOT NULL DEFAULT 'notes'"], // v17: 'notes' PDF or 'revision' pack
+        ['quotes', 'sent_at', 'DATETIME NULL'], // v18: when the quote was sent (for the follow-up)
     ];
     foreach ($columns as [$table, $col, $def]) {
         try { $pdo->exec("ALTER TABLE $table ADD COLUMN $col $def"); } catch (PDOException $e) { /* already there */ }
@@ -987,6 +988,70 @@ function request_feedback(int $projectId): void {
         "Marzley Tech: {$p['title']} is live! Rate us in 30 seconds: $link");
 }
 
+// ---------- automations (each one can be switched off in the portal: Growth > Automations) ----------
+
+/** key => [name, what it does, reminder kinds it records]. */
+const AUTOMATIONS = [
+    'review_requests' => ['Review requests', 'A week after a project goes live, clients who haven’t rated it get one reminder. Clients who gave 4–5 stars get one request to post it on Google a week later.', ['feedback']],
+    'lead_replies' => ['Instant lead replies', 'Website enquiries get an instant thank-you with your prices, work and WhatsApp. If a lead is still “new” after 2 days, they get one follow-up and you get a reminder.', ['lead_reply', 'lead_followup']],
+    'pay_rescue' => ['Failed payment rescue', 'When a learner’s M-Pesa payment for notes, a pass, a pack or a video fails or isn’t finished, they get one message within a few hours with a link to try again (at most one a day).', ['pay_rescue']],
+    'quote_followups' => ['Quote follow-ups', 'A quote that hasn’t been accepted 5 days after you send it: the client gets one reminder and you get a note to call them.', ['quote']],
+    'pass_reminders' => ['Notes pass reminders', 'Three days before a notes pass ends, the buyer gets an SMS with a link to renew.', ['pass_expiry']],
+    'next_steps' => ['Next steps after a certificate', 'The certificate email suggests the subject’s revision pack and the next subject to study.', ['next_steps']],
+    'care_reports' => ['Monthly care reports', 'On the 1st, clients whose websites you monitor get last month’s uptime, speed, support and upcoming renewals.', ['care_report']],
+    'chat_digest' => ['Weekly chat questions', 'Every Monday you get the questions the website chat couldn’t answer, so you can add answers or write posts.', ['chat_digest']],
+    'social_drafts' => ['Social post drafts', 'When a blog post or new lessons go live, the morning email includes ready-to-paste posts for Google, Facebook and WhatsApp.', ['social_post', 'social_lessons']],
+];
+
+function automation_on(string $key): bool { return setting('auto_' . $key, '1') !== '0'; }
+
+/** Do something once: returns false if this kind/ref/stage was already recorded. */
+function once(string $kind, int $refId, string $stage): bool {
+    if (q('SELECT id FROM reminders WHERE kind = ? AND ref_id = ? AND stage = ?', [$kind, $refId, $stage])->fetch()) return false;
+    try {
+        q('INSERT INTO reminders (kind, ref_id, stage, sent_at) VALUES (?, ?, ?, ?)', [$kind, $refId, $stage, now()]);
+    } catch (PDOException $e) { return false; }   // recorded at the same moment by another run
+    return true;
+}
+
+function sms_ready(): bool { $s = config()['sms'] ?? null; return !empty($s['username']) && !empty($s['api_key']); }
+
+function site_url(string $path = ''): string { return rtrim(config()['site_url'] ?? 'https://marzleytechsolutions.co.ke', '/') . '/' . ltrim($path, '/'); }
+
+/** The link clients use to write a Google review (portal setting first, then data/site.json). */
+function google_write_url(): string {
+    return google_profile()['write_url'] ?: trim((string)(site_json()['googleReviewUrl'] ?? ''));
+}
+
+/** What to study after finishing a subject. */
+const NEXT_SUBJECTS = [
+    'html' => 'css', 'css' => 'javascript', 'javascript' => 'react', 'react' => 'react-native', 'web-design' => 'html', 'php' => 'sql',
+    'python' => 'sql', 'sql' => 'data-analytics', 'data-analytics' => 'artificial-intelligence', 'digital-literacy' => 'it-basics',
+    'it-basics' => 'ms-word', 'ms-word' => 'excel', 'excel' => 'powerpoint', 'powerpoint' => 'google-workspace', 'computer-maintenance' => 'networking',
+    'networking' => 'linux', 'linux' => 'cybersecurity', 'cybersecurity' => 'cybersecurity-advanced', 'app-dev-basics' => 'dart-flutter',
+    'dart-flutter' => 'flutter', 'java' => 'kotlin-android', 'c-programming' => 'cpp', 'git' => 'devops-cloud', 'graphic-design' => 'web-design',
+    'freelancing' => 'freelance-platforms', 'microtask-platforms' => 'freelancing', 'ai-tools' => 'ai-by-task', 'typescript' => 'react',
+];
+
+/** "What next" lines for the certificate email: the revision pack and the next subject (if not finished yet). */
+function learn_next_steps(int $learnerId, string $slug): string {
+    if (!automation_on('next_steps')) return '';
+    $lines = [];
+    $pack = array_values(array_filter(revision_packs(), fn($p) => $p['slug'] === $slug))[0] ?? null;
+    if ($pack) $lines[] = "- Revise for assessments: the {$pack['title']} revision pack has all {$pack['questions']} practice questions with answers in one PDF: " . site_url('learn/?page=revision');
+    $next = NEXT_SUBJECTS[$slug] ?? '';
+    $t = $next !== '' ? q('SELECT id, slug, title FROM learn_tracks WHERE slug = ? AND published = 1', [$next])->fetch() : null;
+    if ($t && !q('SELECT id FROM learn_certificates WHERE learner_id = ? AND track_id = ?', [$learnerId, $t['id']])->fetch())
+        $lines[] = "- Your next subject: {$t['title']} (free): " . site_url('learn/?track=' . $t['slug']);
+    if (!$lines) return '';
+    once('next_steps', $learnerId, $slug);
+    return "
+
+What next?
+" . implode("
+", $lines);
+}
+
 /** Public site settings (data/site.json), e.g. the Google review link. */
 function site_json(): array {
     $d = json_decode((string)@file_get_contents(site_root() . '/data/site.json'), true);
@@ -1138,7 +1203,8 @@ function send_sms(string $phone, string $text): bool {
     $to = normalise_phone($phone);
     if (empty($s['username']) || empty($s['api_key']) || !$to) return false;
     if (is_staging()) $text = '[TEST] ' . $text;
-    $url = $s['username'] === 'sandbox' ? 'https://api.sandbox.africastalking.com/version1/messaging' : 'https://api.africastalking.com/version1/messaging';
+    $url = !empty($s['base']) ? rtrim($s['base'], '/') . '/version1/messaging'   // tests
+        : ($s['username'] === 'sandbox' ? 'https://api.sandbox.africastalking.com/version1/messaging' : 'https://api.africastalking.com/version1/messaging');
     $fields = ['username' => $s['username'], 'to' => '+' . $to, 'message' => mb_substr($text, 0, 459)];
     if (!empty($s['sender_id'])) $fields['from'] = $s['sender_id'];
     $ch = curl_init($url);
@@ -1586,7 +1652,7 @@ function learn_certificate_check(int $learnerId, int $trackId): ?array {
         send_mail($l['email'], 'Your certificate: ' . $t['title'],
             'Congratulations' . ($l['name'] !== '' ? ', ' . strtok($l['name'], ' ') : '') . "!\n\nYou completed all $total lessons of “{$t['title']}” in the Marzley Tech learning hub, and your certificate is ready.\n\n" .
             "Download it (PDF) from your dashboard: $site/learn/?page=me#me-certs\n\nCertificate code: $code\nAnyone can check it here: " . certificate_verify_url($code) .
-            "\n\nKeep learning!\nMarzley Tech Solutions · +254 745 789 590", false);
+            learn_next_steps($learnerId, $t['slug']) . "\n\nKeep learning!\nMarzley Tech Solutions · +254 745 789 590", false);
     }
     return learn_certificate_row(q('SELECT * FROM learn_certificates WHERE code = ?', [$code])->fetch());
 }

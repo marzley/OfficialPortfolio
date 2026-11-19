@@ -62,7 +62,7 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
   const cid = one("SELECT id FROM clients WHERE email = 'client@example.com'").id;
 
   // ---------- database upgrade ----------
-  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "17");
+  ok("database upgraded to the latest version", one("SELECT v FROM settings WHERE k = 'schema_version'").v === "18");
 
   // ---------- sequential invoice numbers ----------
   r = await admin("invoice_save", { client_id: cid, description: "Website build", amount: 10000, status: "unpaid" });
@@ -885,6 +885,76 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
       ok("the hub gets the WhatsApp updates link", r.j.whatsapp_updates === "https://whatsapp.com/channel/0029VaTest");
       await lpost(boss, "whatsapp_updates_save", { url: "" });
       await lpost(boss, "notes_price_set", { small: 50, medium: 100, large: 200, pass: 1000, pass90: 2500 });
+
+      // ---------- automations ----------
+      const smsLog = () => { try { return fs.readFileSync(WORK + "/fake/sms.log", "utf8"); } catch (e) { return ""; } };
+      const mailTxt = () => fs.readFileSync(WORK + "/mail.txt", "utf8");
+      fs.rmSync(WORK + "/private/portal_ratelimit", { recursive: true, force: true });
+      r = await boss("data");
+      ok("the portal lists the automations with on/off switches", (r.j.automations || []).length === 9 && r.j.automations.every((a) => a.on === true) && r.j.sms_ready === true, r.j.automations);
+      // instant lead reply, then one follow-up after 2 days
+      clearMail();
+      const lf = new FormData(); lf.append("name", "Grace Wambui"); lf.append("email", "grace@example.com"); lf.append("message", "Website for my salon"); lf.append("_source", "Contact form");
+      await fetch(BASE + "/portal/lead.php", { method: "POST", body: lf });
+      ok("a website enquiry gets an instant thank-you", subjects().includes("Thanks, we got your message") && mailTxt().includes("grace@example.com"), subjects());
+      r = await boss("automation_set", { key: "lead_replies", on: false });
+      clearMail();
+      const lf2 = new FormData(); lf2.append("name", "Tom Mutua"); lf2.append("email", "tom@example.com"); lf2.append("message", "App idea"); lf2.append("_source", "Contact form");
+      await fetch(BASE + "/portal/lead.php", { method: "POST", body: lf2 });
+      ok("an automation switched off doesn't run", r.s === 200 && !subjects().includes("Thanks, we got your message"), subjects());
+      await boss("automation_set", { key: "lead_replies", on: true });
+      r = await boss("automation_set", { key: "nope", on: true });
+      ok("unknown automations are refused", r.s === 404);
+      sql("UPDATE leads SET created_at = datetime('now', '-3 days') WHERE email IN ('grace@example.com', 'tom@example.com')");
+      // a quote sent 6 days ago, not accepted
+      sql(`INSERT INTO quotes (token, client_name, client_email, client_phone, title, items, total, deposit_percent, notes, status, sent_at, created_at) VALUES ('${crypto.randomBytes(16).toString("hex")}', 'Lucy Akinyi', 'lucy@example.com', '0722333444', 'Shop website', '[]', 45000, 50, '', 'sent', datetime('now', '-6 days'), datetime('now', '-7 days'))`);
+      // a project live for 8 days: one client hasn't rated, one gave 5 stars a week ago
+      const fbp = one("SELECT id, client_id FROM projects LIMIT 1");
+      sql(`INSERT INTO feedback (project_id, client_id, token, created_at) VALUES (${fbp.id}, ${fbp.client_id}, 'fbunrated${Date.now()}', datetime('now', '-8 days'))`);
+      sql(`INSERT INTO feedback (project_id, client_id, token, rating, comment, publish_ok, published, created_at, submitted_at) VALUES (${fbp.id}, ${fbp.client_id}, 'fbrated${Date.now()}', 5, 'Great', 1, 0, datetime('now', '-9 days'), datetime('now', '-8 days'))`);
+      // a notes pass ending in about 2.5 days
+      sql(`INSERT INTO learn_note_payments (checkout_id, track_id, amount, phone, token, status, pass_days, receipt, paid_amount, created_at, paid_at) VALUES ('ws_pass_end', 0, 1000, '254711000999', '${"a".repeat(48)}', 'paid', 30, 'PASSEND001', 1000, datetime('now', '+3 hours', '-27 days', '-12 hours'), datetime('now', '+3 hours', '-27 days', '-12 hours'))`);
+      // three new lessons since the last check
+      sql("INSERT OR REPLACE INTO settings (k, v) VALUES ('social_lessons_seen', (SELECT MAX(id) - 3 FROM learn_lessons))");
+      clearMail();
+      fs.rmSync(WORK + "/fake/sms.log", { force: true });
+      cron("daily");
+      // Grace got the instant reply, so she gets the follow-up; Tom came in while it was switched off, so he doesn't
+      ok("a lead still “new” after 2 days gets one follow-up", subjects().filter((x) => x === "Following up on your enquiry").length === 1 && /Hello Grace/.test(mailTxt()), subjects());
+      ok("a quote not accepted after 5 days gets a reminder", subjects().includes("Your quote: Shop website") && smsLog().includes("checking in on your quote"), subjects());
+      ok("an unrated project gets one rating reminder", subjects().some((x) => /^Quick favour: how did we do/.test(x)), subjects());
+      ok("a happy client is asked for a Google review", subjects().includes("Would you share your review on Google?") && mailTxt().includes("https://g.page/r/abc/review"), subjects());
+      ok("a notes pass ending soon gets an SMS reminder", /notes pass ends on/.test(smsLog()) && smsLog().includes("254711000999"), smsLog());
+      ok("the morning summary lists leads and quotes to call, and ready-to-post updates", /Leads still “new” after 2 days/.test(mailTxt()) && /Grace Wambui/.test(mailTxt()) && /Quotes not accepted after 5 days/.test(mailTxt()) && /NEW LESSONS:/.test(mailTxt()));
+      clearMail();
+      fs.rmSync(WORK + "/fake/sms.log", { force: true });
+      cron("daily");
+      ok("automated messages are only sent once", !subjects().some((x) => /Following up|Your quote: Shop|Quick favour|share your review on Google/.test(x)) && !/notes pass ends/.test(smsLog()), subjects());
+      // failed payment rescue (hourly): one SMS with a link to try again
+      sql(`INSERT INTO learn_note_payments (checkout_id, track_id, amount, phone, token, status, product, created_at) VALUES ('ws_rescue1', (SELECT id FROM learn_tracks WHERE slug = 'python'), 150, '254733555666', '${"b".repeat(48)}', 'failed', 'revision', datetime('now', '+3 hours', '-2 hours'))`);
+      sql(`INSERT INTO learn_note_payments (checkout_id, track_id, amount, phone, token, status, created_at) VALUES ('ws_rescue2', (SELECT id FROM learn_tracks WHERE slug = 'css'), 150, '254733555666', '${"c".repeat(48)}', 'pending', datetime('now', '+3 hours', '-90 minutes'))`);
+      cron("monitor");
+      const rescued = smsLog().split("\n").filter((x) => x.includes("254733555666"));
+      ok("a failed payment gets one “try again” SMS (one per phone a day)", rescued.length === 1 && /didn't go through/.test(rescued[0]) && /revision pack|notes PDF/.test(rescued[0]), smsLog());
+      cron("monitor");
+      ok("the rescue SMS isn't repeated", smsLog().split("\n").filter((x) => x.includes("254733555666")).length === 1);
+      // monthly care report (normally on the 1st)
+      const mon = one("SELECT id, client_id FROM domains WHERE monitor_url <> '' LIMIT 1");
+      for (const okv of [1, 1, 1, 0]) sql(`INSERT INTO site_checks (domain_id, ok, ms, code, checked_at) VALUES (${mon.id}, ${okv}, 400, ${okv ? 200 : 0}, datetime('now', 'start of month', '-5 days'))`);
+      clearMail();
+      cron("care");
+      ok("care report: last month's uptime goes to the client", subjects().some((x) => /^Your website report for /.test(x)) && /Uptime: 75%/.test(mailTxt()), subjects());
+      clearMail();
+      cron("care");
+      ok("the care report goes once a month", !subjects().some((x) => /^Your website report/.test(x)));
+      // weekly chat questions
+      sql("INSERT INTO chat_questions (question, times, first_at, last_at) VALUES ('Do you build Android apps?', 3, datetime('now'), datetime('now'))");
+      clearMail();
+      cron("chat");
+      ok("the weekly chat questions email lists what visitors asked", subjects().some((x) => /^This week’s chat questions/.test(x)) && mailTxt().includes("Do you build Android apps? (3×)"));
+      // certificate email: the subject's revision pack and the next subject
+      const nextSteps = execFileSync("php", ["-r", 'define("MARZLEY_PORTAL", 1); define("MARZLEY_NO_EXIT", 1); require "portal/lib.php"; echo learn_next_steps(999999, "html");'], { cwd: ROOT, env: process.env }).toString();
+      ok("the certificate email suggests the revision pack and the next subject", /revision pack/.test(nextSteps) && /Your next subject: CSS/i.test(nextSteps), nextSteps);
     }
 
     // likes and comments (only for people who unlocked)

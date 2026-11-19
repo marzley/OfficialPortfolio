@@ -118,3 +118,6 @@ CREATE TABLE IF NOT EXISTS google_reviews (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 -- May say "Duplicate column" if already added: harmless.
 ALTER TABLE learn_note_payments ADD COLUMN product VARCHAR(12) NOT NULL DEFAULT 'notes';
+
+-- v18: when a quote was sent (for the automatic 5-day follow-up). May say "Duplicate column": harmless.
+ALTER TABLE quotes ADD COLUMN sent_at DATETIME NULL;

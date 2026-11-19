@@ -835,6 +835,19 @@
       h("p", { className: "portal-meta", text: "4–5 star ratings with a comment. Tick “Show on website” and the review appears in the testimonials, marked “Verified client”. Only possible when the client agreed." }),
       fb.length ? fl : h("p", { className: "portal-empty", text: "Reviews appear here after projects go live and clients rate them." })));
 
+    // Automations: what runs by itself, with an on/off switch each
+    var autos = data.automations || [];
+    var NEEDS_SMS = { pay_rescue: "Learners who bought notes are reached by SMS: needs SMS set up (videos use email).", pass_reminders: "Sent by SMS: needs SMS set up." };
+    panel.appendChild(h("section", { className: "admin-panel", "aria-labelledby": "auto-title" },
+      h("div", { className: "admin-panel-head" }, h("h2", { id: "auto-title", text: "Automations" })),
+      h("p", { className: "portal-meta", text: "These run on their own from the daily and hourly scheduled jobs. Each message goes once only, never as a series. Switch any of them off here." + (data.sms_ready ? "" : " SMS isn’t set up yet, so SMS-only messages are skipped (see GO-LIVE.md, SMS alerts).") }),
+      autos.length ? h("ul", { className: "admin-list auto-list" }, autos.map(function (a) {
+        return h("li", null,
+          h("div", null, h("strong", { text: a.name }), h("span", { className: "lead-msg", text: a.about }),
+            h("span", { className: "portal-meta", text: (a.sent_30 ? a.sent_30 + " sent in the last 30 days" : "Nothing sent in the last 30 days") + (NEEDS_SMS[a.key] && !data.sms_ready ? " · " + NEEDS_SMS[a.key] : "") })),
+          h("label", { className: "check" }, h("input", { type: "checkbox", checked: !!a.on, onchange: function (e) { save("automation_set", { key: a.key, on: e.target.checked }); } }), h("span", { text: a.on ? " On" : " Off" })));
+      })) : h("p", { className: "portal-empty", text: "Automations load for the owner and staff with leads access." })));
+
     // Google reviews: copied from the Google Business Profile to show on the home page
     var gp = data.google_profile || {};
     var gRating = h("input", { type: "number", min: "1", max: "5", step: "0.1", value: gp.rating == null ? "" : String(gp.rating), placeholder: "4.9", "aria-label": "Overall Google rating", className: "notes-price-in" });

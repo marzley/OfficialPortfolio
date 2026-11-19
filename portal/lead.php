@@ -70,6 +70,14 @@ try {
         q('INSERT INTO leads (name, email, phone, source, message, status, value, notes, referred_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?)',
             [$name, $email, $phone, $source, $message, 'new', '', $referredBy, now(), now()]);
         audit('lead_received', "$source: $name", 'website');
+        // Instant thank-you, so nobody waits in silence (the morning job follows up after 2 days)
+        $leadId = (int)q('SELECT MAX(id) FROM leads WHERE name = ? AND created_at >= ?', [$name, date('Y-m-d H:i:s', time() - 60)])->fetchColumn();
+        if ($leadId && automation_on('lead_replies')) {
+            $first = strtok($name, ' ') ?: 'there';
+            $replied = $email !== '' && send_mail($email, 'Thanks, we got your message', "Hello $first,\n\nThank you for contacting Marzley Tech Solutions. We’ve received your message and Kelvin will get back to you " . ($isCallback ? 'with a call ' : '') . "soon, usually the same day.\n\nWhile you wait:\n- Our work: " . site_url('work') . "\n- Prices: " . site_url('pricing') . "\n- Chat with us on WhatsApp: https://wa.me/254745789590\n\nKelvin Wanyoike · Marzley Tech Solutions · +254 745 789 590", false);
+            if (!$replied && $phone !== '') $replied = send_sms($phone, "Hello $first, thanks for contacting Marzley Tech! We got your message and will get back to you soon. WhatsApp: wa.me/254745789590");
+            if ($replied) once('lead_reply', $leadId, 'sent');
+        }
     }
     $saved = true;
 } catch (Throwable $e) {

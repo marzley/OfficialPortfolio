@@ -160,6 +160,12 @@ switch ($action) {
                 $extra['campaigns'] = q('SELECT * FROM campaigns ORDER BY id DESC LIMIT 20')->fetchAll();
                 $extra['google_reviews'] = q('SELECT * FROM google_reviews ORDER BY review_date DESC, id DESC')->fetchAll();
                 $extra['google_profile'] = google_profile();
+                $extra['automations'] = array_map(function ($k, $a) {
+                    $marks = implode(',', array_fill(0, count($a[2]), '?'));
+                    return ['key' => $k, 'name' => $a[0], 'about' => $a[1], 'on' => automation_on($k),
+                        'sent_30' => (int)q("SELECT COUNT(*) FROM reminders WHERE kind IN ($marks) AND sent_at >= ?", array_merge($a[2], [date('Y-m-d H:i:s', time() - 30 * 86400)]))->fetchColumn()];
+                }, array_keys(AUTOMATIONS), AUTOMATIONS);
+                $extra['sms_ready'] = sms_ready();
             }
             if ($u['role'] === 'admin') {
                 $extra['audit'] = q('SELECT * FROM audit_log ORDER BY id DESC LIMIT 300')->fetchAll();
@@ -715,7 +721,7 @@ switch ($action) {
         send_mail($qt['client_email'], "Your quote from Marzley Tech Solutions: {$qt['title']}", "Hello {$qt['client_name']},\n\nThank you for talking to us. Here is your quote for “{$qt['title']}”: KSh " . number_format((int)$qt['total']) .
             ".\n\nView and accept it here: $link\n\nAny questions? Reply to this email or WhatsApp +254 745 789 590.", false);
         if ($qt['client_phone'] !== '') send_sms($qt['client_phone'], "Marzley Tech: your quote for {$qt['title']} (KSh " . number_format((int)$qt['total']) . "): $link");
-        q("UPDATE quotes SET status = 'sent' WHERE id = ?", [$qt['id']]);
+        q("UPDATE quotes SET status = 'sent', sent_at = ? WHERE id = ?", [now(), $qt['id']]);
         out(['ok' => true, 'link' => $link]);
 
     // ---------- domains and hosting ----------
@@ -893,6 +899,15 @@ switch ($action) {
         $d = body();
         if (!empty($d['remove'])) remove_avatar($l['id']); else save_avatar($l['id'], (string)($d['image'] ?? ''));
         out(['ok' => true, 'avatar' => avatar_url(q('SELECT id, avatar FROM learners WHERE id = ?', [$l['id']])->fetch())]);
+
+    case 'automation_set':
+        require_perm('leads');
+        $d = body();
+        $k = (string)($d['key'] ?? '');
+        if (!isset(AUTOMATIONS[$k])) fail(404, 'Unknown automation.');
+        set_setting('auto_' . $k, empty($d['on']) ? '0' : '1');
+        audit('automation_' . (empty($d['on']) ? 'off' : 'on'), AUTOMATIONS[$k][0]);
+        out(['ok' => true]);
 
     case 'google_review_add':
         // A real review copied from the Google Business Profile, to show on the home page

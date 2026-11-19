@@ -12,6 +12,9 @@
 //         copies them off-site if offsite_backup is set, and deletes backups older than backup_keep_days.
 // monitor: checks every client website you monitor and emails you when one goes down or comes back.
 // weekly: (also runs with daily on Mondays) a short progress email to learners active in the last 30 days.
+// Automations (switch each off in the portal under Growth > Automations): review requests, lead follow-ups,
+// quote follow-ups, notes pass reminders, monthly care reports, the weekly chat questions email and
+// social post drafts run with daily; failed payment rescue runs with monitor (hourly).
 if (PHP_SAPI !== 'cli') {
     http_response_code(404);
     exit;
@@ -25,12 +28,6 @@ config();
 $job = $argv[1] ?? 'daily';
 $log = function (string $line) { echo date('H:i:s') . "  $line\n"; };
 
-/** Send a reminder once: returns false if this stage was already sent. */
-function once(string $kind, int $refId, string $stage): bool {
-    if (q('SELECT id FROM reminders WHERE kind = ? AND ref_id = ? AND stage = ?', [$kind, $refId, $stage])->fetch()) return false;
-    q('INSERT INTO reminders (kind, ref_id, stage, sent_at) VALUES (?, ?, ?, ?)', [$kind, $refId, $stage, now()]);
-    return true;
-}
 
 function days_between(string $from, string $to): int {
     return (int)((strtotime($to . ' 00:00:00') - strtotime($from . ' 00:00:00')) / 86400);
@@ -140,19 +137,199 @@ function run_daily(callable $log): void {
         if ($last && $last['author'] === 'client' && strtotime($last['created_at']) < time() - 86400) $waiting[] = "“{$t['subject']}” from {$t['name']}";
     }
 
+    // 7. Automations
+    $auto = run_daily_automations($log);
+    $summary = array_merge($summary, $auto['done']);
+
     // 6. One morning summary for the team, only when there is something to act on
-    if ($overdue || $waiting || $summary || $expiring) {
+    if ($overdue || $waiting || $summary || $expiring || $auto['leads'] || $auto['quotes'] || $auto['social']) {
         $text = "Good morning. Here is today's summary from the client portal.\n";
         if ($overdue) $text .= "\nOverdue invoices:\n- " . implode("\n- ", $overdue) . "\n";
         if ($waiting) $text .= "\nSupport requests waiting more than a day for your reply:\n- " . implode("\n- ", $waiting) . "\n";
         if ($expiring) $text .= "\nDomains and hosting expiring within 30 days:\n- " . implode("\n- ", $expiring) . "\n";
         $newLeads = (int)q("SELECT COUNT(*) AS n FROM leads WHERE status = 'new'")->fetch()['n'];
         if ($newLeads) $text .= "\nNew leads waiting for a reply: $newLeads (Leads tab)\n";
+        if ($auto['leads']) $text .= "\nLeads still “new” after 2 days (they got a follow-up email; give them a call):\n- " . implode("\n- ", $auto['leads']) . "\n";
+        if ($auto['quotes']) $text .= "\nQuotes not accepted after 5 days (the client got a reminder; give them a call):\n- " . implode("\n- ", $auto['quotes']) . "\n";
+        if ($auto['social']) $text .= "\nReady-to-post updates (copy and paste):\n\n" . implode("\n\n", $auto['social']) . "\n";
         if ($summary) $text .= "\nDone automatically this morning:\n- " . implode("\n- ", $summary) . "\n";
         notify_admins('Portal summary for ' . date('j M'), $text);
     }
     set_setting('last_cron', now());
     $log('daily: ' . count($summary) . ' actions, ' . count($overdue) . ' overdue, ' . count($waiting) . ' waiting');
+}
+
+/** The daily automations. Returns what was done, plus lists for the morning summary. */
+function run_daily_automations(callable $log): array {
+    $done = []; $leads = []; $quotes = []; $social = [];
+    $ago = fn(int $days) => date('Y-m-d H:i:s', time() - $days * 86400);
+
+    // Review requests: one rating reminder a week after going live; one Google request a week after a 4–5 star rating
+    if (automation_on('review_requests')) {
+        foreach (q('SELECT f.*, p.title FROM feedback f JOIN projects p ON p.id = f.project_id WHERE f.created_at <= ? AND f.created_at >= ?', [$ago(7), $ago(60)])->fetchAll() as $f) {
+            if ($f['submitted_at'] === null) {
+                if (!once('feedback', (int)$f['id'], 'rate_reminder')) continue;
+                $link = portal_url() . 'feedback.php?t=' . $f['token'];
+                notify_client((int)$f['client_id'], "Quick favour: how did we do on “{$f['title']}”?", "A week ago “{$f['title']}” went live. If you have 30 seconds, we’d love to know how we did:\n$link\n\nThank you!", "Marzley Tech: how did we do on {$f['title']}? Rate us in 30 seconds: $link");
+                $done[] = "Asked the client of “{$f['title']}” to rate the project";
+            } elseif ((int)$f['rating'] >= 4 && strtotime($f['submitted_at']) <= time() - 7 * 86400 && ($g = google_write_url()) !== '') {
+                if (!once('feedback', (int)$f['id'], 'google')) continue;
+                notify_client((int)$f['client_id'], 'Would you share your review on Google?', "Thank you again for your kind rating of “{$f['title']}”. Reviews on Google help other businesses find us, and it only takes a minute:\n$g\n\nWe won’t ask again. Thank you!", "Marzley Tech: thank you for your rating! Would you share it on Google? $g");
+                $done[] = "Asked the client of “{$f['title']}” for a Google review";
+            }
+        }
+    }
+
+    // Lead follow-ups: still "new" 2 days after the instant reply
+    if (automation_on('lead_replies')) {
+        foreach (q("SELECT l.* FROM leads l JOIN reminders r ON r.kind = 'lead_reply' AND r.ref_id = l.id WHERE l.status = 'new' AND l.created_at <= ? AND l.created_at >= ?", [$ago(2), $ago(10)])->fetchAll() as $l) {
+            if (!once('lead_followup', (int)$l['id'], '1')) continue;
+            $first = strtok($l['name'], ' ') ?: 'there';
+            if ($l['email'] !== '') send_mail($l['email'], 'Following up on your enquiry', "Hello $first,\n\nJust following up on your message to Marzley Tech Solutions. If we haven’t connected yet, reply to this email or WhatsApp us on +254 745 789 590 and we’ll get you sorted: a quote, a call or a quick question answered.\n\nOur work: " . site_url('work') . "\nPrices: " . site_url('pricing') . "\n\nWe won’t email you about this again.\nKelvin Wanyoike · Marzley Tech Solutions", false);
+            elseif ($l['phone'] !== '') send_sms($l['phone'], "Hello $first, following up on your message to Marzley Tech. Reply or WhatsApp 0745 789 590 for a quote or a quick answer.");
+            $leads[] = $l['name'] . ($l['phone'] !== '' ? " ({$l['phone']})" : '') . ' · ' . $l['source'];
+        }
+    }
+
+    // Quote follow-ups: sent 5+ days ago, still not accepted, still valid
+    if (automation_on('quote_followups')) {
+        foreach (q("SELECT * FROM quotes WHERE status = 'sent' AND sent_at IS NOT NULL AND sent_at <= ? AND sent_at >= ? AND (valid_until IS NULL OR valid_until >= ?)", [$ago(5), $ago(30), date('Y-m-d')])->fetchAll() as $qt) {
+            if (!once('quote', (int)$qt['id'], 'followup')) continue;
+            $link = portal_url() . 'quote.php?t=' . $qt['token'];
+            $first = strtok($qt['client_name'], ' ') ?: 'there';
+            send_mail($qt['client_email'], "Your quote: {$qt['title']}", "Hello $first,\n\nJust checking in on your quote for “{$qt['title']}” (KSh " . number_format((int)$qt['total']) . ").\n\nView or accept it here: $link\n\nHappy to adjust anything, answer questions or jump on a call: reply here or WhatsApp +254 745 789 590.\n\nKelvin Wanyoike · Marzley Tech Solutions", false);
+            if ($qt['client_phone'] !== '') send_sms($qt['client_phone'], "Marzley Tech: checking in on your quote for {$qt['title']}. View or accept: $link");
+            $quotes[] = "{$qt['client_name']} · {$qt['title']} · KSh " . number_format((int)$qt['total']) . ($qt['client_phone'] !== '' ? " · {$qt['client_phone']}" : '');
+        }
+    }
+
+    // Notes pass reminders: 3 days before the pass ends (SMS)
+    if (automation_on('pass_reminders') && sms_ready()) {
+        foreach (q("SELECT * FROM learn_note_payments WHERE status = 'paid' AND track_id = 0 AND bundle = '' AND pass_days > 0 AND paid_at >= ?", [$ago(120)])->fetchAll() as $p) {
+            $ends = strtotime(notes_pass_expiry($p));
+            if ($ends < time() + 2 * 86400 || $ends > time() + 3 * 86400) continue;
+            if (!once('pass_expiry', (int)$p['id'], 'd3')) continue;
+            send_sms($p['phone'], 'Marzley Tech: your notes pass ends on ' . date('j M', $ends) . '. Renew to keep downloading every subject’s PDF: ' . site_url('learn/?page=notes'));
+            $done[] = 'Reminded a notes pass buyer that their pass ends on ' . date('j M', $ends);
+        }
+    }
+
+    // Monthly care reports (on the 1st, for last month)
+    if (automation_on('care_reports') && date('j') === '1') $done = array_merge($done, run_care_reports($log));
+
+    // Weekly chat questions (Mondays)
+    if (automation_on('chat_digest') && date('N') === '1' && run_chat_digest()) $done[] = 'Sent the weekly chat questions email';
+
+    // Social post drafts for new blog posts and new lessons
+    if (automation_on('social_drafts')) $social = social_drafts();
+    return ['done' => $done, 'leads' => $leads, 'quotes' => $quotes, 'social' => $social];
+}
+
+/** The questions the website chat couldn't answer in the last 7 days, emailed to the team once a week. */
+function run_chat_digest(): bool {
+    $qs = q('SELECT question, times FROM chat_questions WHERE last_at >= ? ORDER BY times DESC, last_at DESC LIMIT 15', [date('Y-m-d H:i:s', time() - 7 * 86400)])->fetchAll();
+    if (!$qs || !once('chat_digest', 0, date('o-\WW'))) return false;
+    notify_admins('This week’s chat questions (' . count($qs) . ')', "Questions visitors asked the website chat in the last 7 days that it couldn’t answer well:\n\n- " .
+        implode("\n- ", array_map(fn($r) => $r['question'] . ($r['times'] > 1 ? " ({$r['times']}×)" : ''), $qs)) .
+        "\n\nAdd answers to data/knowledge.json so the chat can answer next time, or turn a common question into a blog post. The full list is in the portal under Growth.");
+    return true;
+}
+
+/** Last month's report for each client with a monitored website. */
+function run_care_reports(callable $log): array {
+    $from = date('Y-m-01', strtotime('first day of last month'));
+    $to = date('Y-m-01');
+    $month = date('F Y', strtotime($from));
+    $done = [];
+    foreach (q("SELECT DISTINCT client_id FROM domains WHERE monitor_url <> ''")->fetchAll() as $c) {
+        $cid = (int)$c['client_id'];
+        $lines = [];
+        foreach (q("SELECT id, name, monitor_url FROM domains WHERE client_id = ? AND monitor_url <> ''", [$cid])->fetchAll() as $d) {
+            $s = q('SELECT COUNT(*) AS checks, SUM(ok) AS ok, ROUND(AVG(ms)) AS ms FROM site_checks WHERE domain_id = ? AND checked_at >= ? AND checked_at < ?', [$d['id'], $from, $to])->fetch();
+            if (!(int)$s['checks']) continue;
+            $up = round(100 * (int)$s['ok'] / (int)$s['checks'], 2);
+            $failed = (int)$s['checks'] - (int)$s['ok'];
+            $lines[] = "{$d['name']}\n  Uptime: $up% (" . number_format((int)$s['checks']) . ' checks' . ($failed ? ", $failed failed" : ', none failed') . ")\n  Average response time: " . number_format((float)$s['ms'] / 1000, 2) . ' seconds';
+        }
+        if (!$lines || !once('care_report', $cid, substr($from, 0, 7))) continue;
+        $opened = (int)q('SELECT COUNT(*) FROM tickets WHERE client_id = ? AND created_at >= ? AND created_at < ?', [$cid, $from, $to])->fetchColumn();
+        $closed = (int)q("SELECT COUNT(*) FROM tickets WHERE client_id = ? AND status = 'closed' AND updated_at >= ? AND updated_at < ?", [$cid, $from, $to])->fetchColumn();
+        $renew = q("SELECT name, kind, expires_on FROM domains WHERE client_id = ? AND expires_on BETWEEN ? AND ? ORDER BY expires_on", [$cid, date('Y-m-d'), date('Y-m-d', strtotime('+60 days'))])->fetchAll();
+        $text = "Here is your website report for $month.\n\n" . implode("\n\n", $lines) .
+            "\n\nSupport: $opened request" . ($opened === 1 ? '' : 's') . " opened, $closed resolved." .
+            ($renew ? "\n\nComing up for renewal:\n- " . implode("\n- ", array_map(fn($r) => "{$r['name']} ({$r['kind']}) on " . date('j M Y', strtotime($r['expires_on'])), $renew)) : '') .
+            "\n\nWe check your website every hour and get an alert if it goes down. Need a change or have a question? Open a support request in your portal or WhatsApp +254 745 789 590.";
+        notify_client($cid, "Your website report for $month", $text);
+        $done[] = "Sent the $month care report to client #$cid";
+    }
+    $log('care reports: ' . count($done));
+    return $done;
+}
+
+/** Ready-to-paste posts for blog posts published in the last 3 days and lessons added since the last run (each only once). */
+function social_drafts(): array {
+    $out = [];
+    $feed = @simplexml_load_file(site_root() . '/feed.xml');
+    if ($feed && isset($feed->channel->item)) {
+        foreach ($feed->channel->item as $it) {
+            $when = strtotime((string)$it->pubDate);
+            if (!$when || $when < time() - 3 * 86400 || $when > time() + 86400) continue;
+            $title = trim((string)$it->title); $link = trim((string)$it->link); $desc = trim((string)$it->description);
+            if (!once('social_post', crc32($link) & 0x7fffffff, 'post')) continue;
+            $out[] = "NEW POST: $title\n" .
+                "Google Business (Add update, button Learn more):\n$desc\n$link\n\n" .
+                "Facebook:\n$title 👇\n\n$desc\n\nRead it here: $link\n\n#Kenya #MarzleyTech\n\n" .
+                "WhatsApp Channel / Status:\nNew on our blog: $title\n$link";
+        }
+    }
+    // New lessons: those with an id above the highest one already seen (the first run only remembers where we are)
+    $max = (int)q('SELECT MAX(id) FROM learn_lessons')->fetchColumn();
+    $seen = setting('social_lessons_seen');
+    set_setting('social_lessons_seen', (string)$max);
+    $rows = $seen === null ? [] : q('SELECT t.id, t.slug, t.title, COUNT(*) AS n FROM learn_lessons l JOIN learn_tracks t ON t.id = l.track_id WHERE l.published = 1 AND l.id > ? GROUP BY t.id, t.slug, t.title', [(int)$seen])->fetchAll();
+    // A big import adds hundreds at once: that isn't news
+    if ($rows && array_sum(array_column($rows, 'n')) <= 60) {
+        foreach ($rows as $r) {
+            if (!once('social_lessons', (int)$r['id'], date('Y-m-d'))) continue;
+            $link = site_url('learn/?track=' . $r['slug']);
+            $out[] = "NEW LESSONS: {$r['title']}\nFacebook / WhatsApp:\n📚 {$r['n']} new free lesson" . ($r['n'] == 1 ? '' : 's') . " in {$r['title']} on the Marzley Tech learning hub. Learn on your phone, practise as you go and get a certificate.\n$link";
+        }
+    }
+    return $out;
+}
+
+/** Hourly: one "try again" message for M-Pesa payments that failed or weren't finished (at most one per phone a day). */
+function run_payment_rescue(callable $log): void {
+    if (!automation_on('pay_rescue')) return;
+    $sent = 0;
+    $recent = array_flip(q("SELECT p.phone FROM reminders r JOIN learn_note_payments p ON p.id = r.ref_id WHERE r.kind = 'pay_rescue' AND r.stage = 'notes' AND r.sent_at >= ?", [date('Y-m-d H:i:s', time() - 86400)])->fetchAll(PDO::FETCH_COLUMN));
+    if (sms_ready()) {
+        $rows = q("SELECT p.*, t.slug, t.title FROM learn_note_payments p LEFT JOIN learn_tracks t ON t.id = p.track_id
+            WHERE p.status IN ('failed', 'pending') AND p.created_at BETWEEN ? AND ?", [date('Y-m-d H:i:s', time() - 6 * 3600), date('Y-m-d H:i:s', time() - 3600)])->fetchAll();
+        foreach ($rows as $p) {
+            if (isset($recent[$p['phone']])) continue;
+            // Paid since (perhaps on a second try)? Then there is nothing to rescue
+            if (q("SELECT id FROM learn_note_payments WHERE phone = ? AND status = 'paid' AND created_at >= ?", [$p['phone'], $p['created_at']])->fetch()) continue;
+            if (!once('pay_rescue', (int)$p['id'], 'notes')) continue;
+            if ((int)$p['track_id'] === 0) [$what, $link] = $p['bundle'] !== '' ? ['your notes bundle', site_url('learn/?page=notes')] : ['your notes pass', site_url('learn/?page=notes')];
+            elseif ($p['product'] === 'revision') [$what, $link] = ["the {$p['title']} revision pack", site_url('learn/?page=revision')];
+            else [$what, $link] = ["the {$p['title']} notes PDF", site_url('learn/?book=' . $p['slug'])];
+            send_sms($p['phone'], "Marzley Tech: your M-Pesa payment for $what didn't go through. Try again here: $link (already paid? use \"Already paid\" with your M-Pesa code). Help: WhatsApp 0745789590");
+            $recent[$p['phone']] = 1;
+            $sent++;
+        }
+    }
+    // Video unlocks: the learner has an account, so email them
+    foreach (q("SELECT p.*, v.title, l.email, l.name FROM learn_payments p JOIN learn_videos v ON v.id = p.video_id JOIN learners l ON l.id = p.learner_id
+        WHERE p.status IN ('failed', 'pending') AND p.created_at BETWEEN ? AND ?", [date('Y-m-d H:i:s', time() - 6 * 3600), date('Y-m-d H:i:s', time() - 3600)])->fetchAll() as $p) {
+        if (q('SELECT id FROM learn_unlocks WHERE video_id = ? AND learner_id = ?', [$p['video_id'], $p['learner_id']])->fetch()) continue;
+        if (q("SELECT r.id FROM reminders r JOIN learn_payments x ON x.id = r.ref_id WHERE r.kind = 'pay_rescue' AND r.stage = 'video' AND x.learner_id = ? AND r.sent_at >= ?", [$p['learner_id'], date('Y-m-d H:i:s', time() - 86400)])->fetch()) continue;
+        if (!once('pay_rescue', (int)$p['id'], 'video')) continue;
+        send_mail($p['email'], "Your video “{$p['title']}” is still waiting", 'Hello' . ($p['name'] !== '' ? ' ' . strtok($p['name'], ' ') : '') . ",\n\nYour M-Pesa payment to unlock “{$p['title']}” didn't go through (it may have been cancelled or timed out). You can try again here:\n" . site_url('learn/?video=' . $p['video_id']) .
+            "\n\nAlready paid? Open the video and tap “Already paid” with your M-Pesa code. Need help? WhatsApp +254 745 789 590.\n\nMarzley Tech Solutions", false);
+        $sent++;
+    }
+    if ($sent) $log("payment rescue: $sent");
 }
 
 function sql_value(PDO $pdo, $v): string {
@@ -270,6 +447,8 @@ function run_monitor(callable $log): void {
     }
     // Keep 13 months of checks for the care reports
     q('DELETE FROM site_checks WHERE checked_at < ?', [date('Y-m-d', strtotime('-13 months'))]);
+    // One "try again" message for payments that failed in the last few hours
+    run_payment_rescue($log);
     // Newsletter emails still waiting to go out
     $mailed = send_campaign_queue(300);
     if ($mailed) $log("newsletter: sent $mailed");
@@ -282,7 +461,9 @@ try {
     elseif ($job === 'daily') { run_daily($log); if (date('N') === '1') run_weekly_learning($log); }
     elseif ($job === 'weekly') run_weekly_learning($log);
     elseif ($job === 'backup') run_backup($log);
-    else { fwrite(STDERR, "Usage: php cron.php daily|backup|monitor|weekly\n"); exit(2); }
+    elseif ($job === 'care') run_care_reports($log);                       // send last month's care reports now
+    elseif ($job === 'chat') $log(run_chat_digest() ? 'chat questions: sent' : 'chat questions: nothing to send');
+    else { fwrite(STDERR, "Usage: php cron.php daily|backup|monitor|weekly|care|chat\n"); exit(2); }
 } catch (Throwable $e) {
     report_error("scheduled job '$job'", $e->getMessage());
     fwrite(STDERR, $e->getMessage() . "\n");
