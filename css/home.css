@@ -387,6 +387,18 @@ a {
   object-position: 50% 30%;
 }
 
+/* photo slideshow: each photo stays 5 seconds, then fades into the next */
+.hero-photo .hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.hero-photo .hero-slide.is-on {
+  opacity: 1;
+}
+
 .hero-photo figcaption {
   position: absolute;
   left: 12px;

@@ -1636,6 +1636,22 @@
     });
   }
 
+  /* ---------- hero photo slideshow (5 s each; stops when motion is reduced, pauses on hover) ---------- */
+  document.querySelectorAll("[data-slides]").forEach(function (box) {
+    var slides = box.querySelectorAll(".hero-slide"), at = 0, paused = false;
+    if (slides.length < 2) return;
+    // load the other photos once the page is ready, so each one is there before it fades in
+    window.addEventListener("load", function () { slides.forEach(function (s) { s.loading = "eager"; }); });
+    box.addEventListener("mouseenter", function () { paused = true; });
+    box.addEventListener("mouseleave", function () { paused = false; });
+    setInterval(function () {
+      if (paused || motionOff() || document.hidden) return;
+      slides[at].classList.remove("is-on");
+      at = (at + 1) % slides.length;
+      slides[at].classList.add("is-on");
+    }, 5000);
+  });
+
   /* ---------- 3D tilt with glare ---------- */
   var tiltQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
   document.querySelectorAll("[data-tilt]").forEach(function (el) {
