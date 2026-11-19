@@ -496,7 +496,7 @@ def build_author(html, posts, cases):
         "worksFor": {"@id": SITE + "#business"},
         "knowsAbout": ["Web development", "Mobile app development", "Search engine optimisation", "M-Pesa integration",
                        "Digital skills facilitation", "ICT training"],
-        "sameAs": ["https://www.linkedin.com/in/kelvin-wanyoike-marzley", "https://github.com/marzley", "https://www.youtube.com/@Marzley_Tech_Solutions", "https://www.tiktok.com/@marzleytech", "https://www.facebook.com/marzleytechsolutions", "https://www.instagram.com/marzleytech"],
+        "sameAs": ["https://www.linkedin.com/in/kelvin-wanyoike-marzley", "https://github.com/marzley", "https://www.youtube.com/@Marzley_Tech_Solutions", "https://www.tiktok.com/@marzleytech", "https://www.facebook.com/profile.php?id=61595784875157", "https://www.instagram.com/marzleytech"],
         "subjectOf": [{"@type": "CreativeWork", "name": c["title"], "url": SITE + c["slug"]} for c in cases],
     }
     nodes = [profile, person, breadcrumbs(("About", "about"), ("Kelvin Wanyoike", slug))]
