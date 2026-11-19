@@ -357,7 +357,12 @@ def build_post(html, post, posts, kind="blog"):
     if not case and not post.get("image") and og_image(post["slug"]):
         hero += ('                        <figure class="post-hero"><img src="%s" alt="" width="1200" height="630" loading="eager" /></figure>\n'
                  % og_image(post["slug"]))
-    if post.get("image"):
+    face = re.sub(r"(\.[a-z]+)$", r"-face.webp", post.get("image") or "")
+    if (post.get("image") or "").startswith("img/kelvin/") and (ROOT / face).exists():
+        # Photos of Kelvin show as a round portrait, not a wide banner
+        hero += ('                        <figure class="post-hero post-hero--person"><img src="%s" alt="%s" width="400" height="400" loading="eager" /></figure>\n'
+                 % (e(face), e(post.get("image_alt") or "Kelvin Wanyoike")))
+    elif post.get("image"):
         size = ""
         try:
             from PIL import Image
