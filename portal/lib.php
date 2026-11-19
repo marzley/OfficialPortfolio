@@ -31,7 +31,7 @@ function config(): array {
         'environment' => 'production',          // 'staging' adds a banner, "[STAGING]" email subjects and uses the M-Pesa sandbox
         'admin_idle_minutes' => 30, 'client_idle_minutes' => 240,
         'backup_dir' => private_dir() . '/portal-backups', 'backup_keep_days' => 14,
-        'smtp' => null, 'sms' => null,
+        'smtp' => null, 'sms' => null, 'whatsapp' => null,
         'business_name' => 'Marzley Tech Solutions', 'kra_pin' => '', 'etims' => false,
         'open_signup' => true,                  // anyone can create a client account (Google or email code)
     ];
@@ -830,7 +830,7 @@ function settle_site_payment(string $checkoutId, array $r): string {
     $subject = "Payment received: KSh " . number_format($amount) . " from $who";
     notify_admins($subject, "$what paid on the website.\n\nName: $who\nPhone: $phone\nAmount: KSh " . number_format($amount) . "\nM-Pesa code: $receipt\n\n" .
         "It's on the Leads board (marked Won). To attach it to a client's account, open Invoices → Website payments.");
-    if (!empty(config()['sms_alert_phone'])) send_sms(config()['sms_alert_phone'], "Marzley: $subject ($phone) ref $receipt");
+    if (!empty(config()['sms_alert_phone'])) send_phone(config()['sms_alert_phone'], "Marzley: $subject ($phone) ref $receipt", 'team_alert', ["$subject ($phone) ref $receipt"]);
     if ($sp['referred_by'] !== '') referral_due($sp['referred_by'], $who, $phone, null, $lead ? (int)$lead['id'] : null, (int)$sp['id']);
     return 'paid';
 }
@@ -996,7 +996,7 @@ const AUTOMATIONS = [
     'lead_replies' => ['Instant lead replies', 'Website enquiries get an instant thank-you with your prices, work and WhatsApp. If a lead is still “new” after 2 days, they get one follow-up and you get a reminder.', ['lead_reply', 'lead_followup']],
     'pay_rescue' => ['Failed payment rescue', 'When a learner’s M-Pesa payment for notes, a pass, a pack or a video fails or isn’t finished, they get one message within a few hours with a link to try again (at most one a day).', ['pay_rescue']],
     'quote_followups' => ['Quote follow-ups', 'A quote that hasn’t been accepted 5 days after you send it: the client gets one reminder and you get a note to call them.', ['quote']],
-    'pass_reminders' => ['Notes pass reminders', 'Three days before a notes pass ends, the buyer gets an SMS with a link to renew.', ['pass_expiry']],
+    'pass_reminders' => ['Notes pass reminders', 'Three days before a notes pass ends, the buyer gets a WhatsApp message (or SMS) with a link to renew.', ['pass_expiry']],
     'next_steps' => ['Next steps after a certificate', 'The certificate email suggests the subject’s revision pack and the next subject to study.', ['next_steps']],
     'care_reports' => ['Monthly care reports', 'On the 1st, clients whose websites you monitor get last month’s uptime, speed, support and upcoming renewals.', ['care_report']],
     'chat_digest' => ['Weekly chat questions', 'Every Monday you get the questions the website chat couldn’t answer, so you can add answers or write posts.', ['chat_digest']],
@@ -1222,12 +1222,69 @@ function send_sms(string $phone, string $text): bool {
 
 function portal_url(): string { return rtrim(config()['site_url'] ?? 'https://marzleytechsolutions.co.ke', '/') . '/portal/'; }
 
-/** Email a client, and also text them when an SMS version is given and SMS is set up. */
-function notify_client(int $clientId, string $subject, string $text, ?string $sms = null): void {
+/** Email a client, and also send a phone message (WhatsApp or SMS) when a short version is given. */
+function notify_client(int $clientId, string $subject, string $text, ?string $sms = null, string $kind = 'update', ?array $vars = null): void {
     $c = q('SELECT name, email, phone FROM clients WHERE id = ?', [$clientId])->fetch();
     if (!$c) return;
     send_mail($c['email'], $subject, "Hello {$c['name']},\n\n$text");
-    if ($sms !== null && $c['phone'] !== '') send_sms($c['phone'], $sms);
+    // "{first}" in the template values becomes the client's first name
+    if ($sms !== null && $c['phone'] !== '') send_phone($c['phone'], $sms, $kind, array_map(fn($v) => $v === '{first}' ? first_name_of($c['name']) : $v, $vars ?? ['{first}', $sms]));
+}
+
+function first_name_of(string $name): string { return strtok(trim($name), ' ') ?: 'there'; }
+
+// ---------- WhatsApp (Meta WhatsApp Cloud API), with SMS as the fallback ----------
+// Messages a business starts must use templates approved in WhatsApp Manager. Each kind below is one
+// template: create it with exactly this name, category and text (GO-LIVE.md, WhatsApp). {{n}} are the values.
+const WHATSAPP_TEMPLATES = [
+    'update' => ['marzley_update', 'UTILITY', "Hello {{1}}, you have an update from Marzley Tech Solutions:\n\n{{2}}\n\nReply here if you have any questions."],
+    'team_alert' => ['marzley_team_alert', 'UTILITY', 'Marzley portal alert: {{1}}. Open the portal for the details.'],
+    'quote' => ['marzley_quote', 'UTILITY', 'Hello {{1}}, your quote for {{2}} is KSh {{3}}. View and accept it here: {{4}} Any questions? Just reply to this message.'],
+    'quote_reminder' => ['marzley_quote_reminder', 'UTILITY', 'Hello {{1}}, just checking in on your quote for {{2}}. View or accept it here: {{3}} Happy to answer any questions here.'],
+    'lead_thanks' => ['marzley_lead_thanks', 'UTILITY', 'Hello {{1}}, thanks for contacting Marzley Tech Solutions! We got your message and Kelvin will get back to you soon, usually the same day. You can reply here any time.'],
+    'lead_followup' => ['marzley_lead_followup', 'MARKETING', 'Hello {{1}}, just following up on your message to Marzley Tech Solutions. Reply here for a quote, a call or a quick answer.'],
+    'payment_retry' => ['marzley_payment_retry', 'UTILITY', 'Your M-Pesa payment for {{1}} didn’t go through. You can try again here: {{2}} Already paid? Tap “Already paid” and enter your M-Pesa code. Reply here if you need help.'],
+    'pass_ending' => ['marzley_pass_ending', 'UTILITY', 'Your Marzley Tech notes pass ends on {{1}}. Renew it here to keep downloading every subject’s PDF: {{2}} Thank you for learning with us.'],
+    'rate_project' => ['marzley_rate_project', 'UTILITY', 'Hello {{1}}, {{2}} went live recently. How did we do? Rate us in 30 seconds: {{3}} Thank you!'],
+    'google_review' => ['marzley_google_review', 'MARKETING', 'Hello {{1}}, thank you for your kind rating! Would you share it on Google? It only takes a minute: {{2}} We won’t ask again.'],
+    'signin_code' => ['marzley_signin_code', 'AUTHENTICATION', '{{1}} is your verification code. (Meta writes this text; add a Copy code button.)'],
+];
+
+function whatsapp_ready(): bool { $w = config()['whatsapp'] ?? null; return !empty($w['token']) && !empty($w['phone_number_id']); }
+function phone_ready(): bool { return whatsapp_ready() || sms_ready(); }
+/** 'whatsapp' (WhatsApp first, SMS if it fails) or 'sms' (SMS only); set in the portal. */
+function phone_channel(): string { return setting('phone_channel', 'whatsapp') === 'sms' ? 'sms' : 'whatsapp'; }
+
+/** Sends one approved template. Returns false (and logs why) if WhatsApp isn't set up or Meta refuses it. */
+function send_whatsapp(string $phone, string $kind, array $vars): bool {
+    $w = config()['whatsapp'] ?? null;
+    $to = normalise_phone($phone);
+    $t = WHATSAPP_TEMPLATES[$kind] ?? null;
+    if (!whatsapp_ready() || !$to || !$t) return false;
+    if (isset($w['templates']) && !in_array($kind, (array)$w['templates'], true)) return false;   // only the ones approved so far
+    $clean = fn($v) => mb_substr(trim(preg_replace('/\s+/u', ' ', (string)$v)), 0, 1000) ?: '-';   // template values can't hold new lines
+    $params = array_map(fn($v) => ['type' => 'text', 'text' => $clean($v)], $vars);
+    $components = [['type' => 'body', 'parameters' => $params]];
+    if ($t[1] === 'AUTHENTICATION') $components[] = ['type' => 'button', 'sub_type' => 'url', 'index' => '0', 'parameters' => [['type' => 'text', 'text' => $clean($vars[0] ?? '')]]];
+    $body = ['messaging_product' => 'whatsapp', 'to' => $to, 'type' => 'template',
+        'template' => ['name' => $t[0], 'language' => ['code' => $w['language'] ?? 'en'], 'components' => $components]];
+    $base = rtrim($w['base'] ?? 'https://graph.facebook.com', '/') . '/' . ($w['api_version'] ?? 'v23.0');
+    $ch = curl_init("$base/{$w['phone_number_id']}/messages");
+    curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 20, CURLOPT_POST => true, CURLOPT_POSTFIELDS => json_encode($body),
+        CURLOPT_HTTPHEADER => ['Authorization: Bearer ' . $w['token'], 'Content-Type: application/json']]);
+    $raw = curl_exec($ch);
+    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    if ($code < 200 || $code >= 300) { error_log("portal whatsapp ($t[0]): HTTP $code " . substr((string)$raw, 0, 300)); return false; }
+    return true;
+}
+
+/** A phone message: WhatsApp template first (unless the portal says SMS only), then SMS. $text is the SMS version. */
+function send_phone(string $phone, string $text, string $kind = 'update', ?array $vars = null): bool {
+    $vars ??= ['there', $text];
+    if ($kind === 'update') $vars[1] = preg_replace('/^Marzley( Tech)?:\s*/', '', (string)($vars[1] ?? $text));   // the template already says who it's from
+    if (phone_channel() === 'whatsapp' && send_whatsapp($phone, $kind, $vars)) return true;
+    return send_sms($phone, $text);
 }
 
 function notify_admins(string $subject, string $text): void {

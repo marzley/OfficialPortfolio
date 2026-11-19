@@ -166,6 +166,8 @@ switch ($action) {
                         'sent_30' => (int)q("SELECT COUNT(*) FROM reminders WHERE kind IN ($marks) AND sent_at >= ?", array_merge($a[2], [date('Y-m-d H:i:s', time() - 30 * 86400)]))->fetchColumn()];
                 }, array_keys(AUTOMATIONS), AUTOMATIONS);
                 $extra['sms_ready'] = sms_ready();
+                $extra['whatsapp_ready'] = whatsapp_ready();
+                $extra['phone_channel'] = phone_channel();
             }
             if ($u['role'] === 'admin') {
                 $extra['audit'] = q('SELECT * FROM audit_log ORDER BY id DESC LIMIT 300')->fetchAll();
@@ -173,7 +175,7 @@ switch ($action) {
                 $extra['system'] = [
                     'last_cron' => setting('last_cron'), 'last_backup' => setting('last_backup'), 'last_offsite' => setting('last_offsite'), 'last_monitor' => setting('last_monitor'),
                     'offsite' => !empty($cfg['offsite_backup']['bucket']), 'paystack' => (bool)paystack(),
-                    'sms' => !empty($cfg['sms']['api_key']), 'smtp' => !empty($cfg['smtp']['host']), 'mpesa' => (bool)mpesa_config(),
+                    'sms' => !empty($cfg['sms']['api_key']), 'whatsapp' => whatsapp_ready(), 'smtp' => !empty($cfg['smtp']['host']), 'mpesa' => (bool)mpesa_config(),
                     'staging' => is_staging(), 'idle_minutes' => (int)$cfg['admin_idle_minutes'],
                 ];
             }
@@ -720,7 +722,7 @@ switch ($action) {
         $link = portal_url() . 'quote.php?t=' . $qt['token'];
         send_mail($qt['client_email'], "Your quote from Marzley Tech Solutions: {$qt['title']}", "Hello {$qt['client_name']},\n\nThank you for talking to us. Here is your quote for “{$qt['title']}”: KSh " . number_format((int)$qt['total']) .
             ".\n\nView and accept it here: $link\n\nAny questions? Reply to this email or WhatsApp +254 745 789 590.", false);
-        if ($qt['client_phone'] !== '') send_sms($qt['client_phone'], "Marzley Tech: your quote for {$qt['title']} (KSh " . number_format((int)$qt['total']) . "): $link");
+        if ($qt['client_phone'] !== '') send_phone($qt['client_phone'], "Marzley Tech: your quote for {$qt['title']} (KSh " . number_format((int)$qt['total']) . "): $link", 'quote', [first_name_of($qt['client_name']), $qt['title'], number_format((int)$qt['total']), $link]);
         q("UPDATE quotes SET status = 'sent', sent_at = ? WHERE id = ?", [now(), $qt['id']]);
         out(['ok' => true, 'link' => $link]);
 
@@ -775,7 +777,7 @@ switch ($action) {
             q('INSERT INTO login_codes (client_id, email, code_hash, attempts, expires_at, created_at) VALUES (?, ?, ?, 0, ?, ?)',
                 [$client['id'], '', hash('sha256', $client['id'] . ':' . $code), date('Y-m-d H:i:s', time() + 600), now()]);
             if ($isEmail) send_mail($client['email'], "Your sign-in code: $code", "Hello {$client['name']},\n\n$text\n\nIf you didn't ask for it, you can ignore this email.", false);
-            else { if (!send_sms($client['phone'], $text)) send_mail($client['email'], "Your sign-in code: $code", "Hello {$client['name']},\n\n$text", false); }
+            else { if (!send_phone($client['phone'], $text, 'signin_code', [$code])) send_mail($client['email'], "Your sign-in code: $code", "Hello {$client['name']},\n\n$text", false); }
             audit('code_sent', $isEmail ? 'email' : 'phone', $client['email']);
         } elseif ($isEmail && $open) {
             // A new person: the account is created once they prove the email is theirs
@@ -842,7 +844,8 @@ switch ($action) {
         if (!$r) fail(404, 'Nothing due.');
         $note = str_in($d, 'note', 300, false);
         q("UPDATE referrals SET status = 'paid', note = ?, paid_at = ? WHERE id = ?", [$note, now(), $r['id']]);
-        send_sms($r['referrer_phone'], "Marzley Tech: thank you for referring {$r['referred_name']}! We've sent your KSh " . number_format((int)$r['amount']) . " reward." . ($note ? " Ref $note." : ''));
+        $rtext = "Marzley Tech: thank you for referring {$r['referred_name']}! We've sent your KSh " . number_format((int)$r['amount']) . " reward." . ($note ? " Ref $note." : '');
+        send_phone($r['referrer_phone'], $rtext, 'update', [first_name_of((string)$r['referrer_name']), $rtext]);
         out(['ok' => true]);
 
     case 'referral_void':
@@ -899,6 +902,14 @@ switch ($action) {
         $d = body();
         if (!empty($d['remove'])) remove_avatar($l['id']); else save_avatar($l['id'], (string)($d['image'] ?? ''));
         out(['ok' => true, 'avatar' => avatar_url(q('SELECT id, avatar FROM learners WHERE id = ?', [$l['id']])->fetch())]);
+
+    case 'phone_channel_set':
+        require_perm('leads');
+        $ch = (string)(body()['channel'] ?? '');
+        if (!in_array($ch, ['whatsapp', 'sms'], true)) fail(400, 'Choose WhatsApp or SMS.');
+        set_setting('phone_channel', $ch);
+        audit('phone_channel', $ch);
+        out(['ok' => true]);
 
     case 'automation_set':
         require_perm('leads');

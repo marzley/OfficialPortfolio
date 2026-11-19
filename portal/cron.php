@@ -170,11 +170,11 @@ function run_daily_automations(callable $log): array {
             if ($f['submitted_at'] === null) {
                 if (!once('feedback', (int)$f['id'], 'rate_reminder')) continue;
                 $link = portal_url() . 'feedback.php?t=' . $f['token'];
-                notify_client((int)$f['client_id'], "Quick favour: how did we do on “{$f['title']}”?", "A week ago “{$f['title']}” went live. If you have 30 seconds, we’d love to know how we did:\n$link\n\nThank you!", "Marzley Tech: how did we do on {$f['title']}? Rate us in 30 seconds: $link");
+                notify_client((int)$f['client_id'], "Quick favour: how did we do on “{$f['title']}”?", "A week ago “{$f['title']}” went live. If you have 30 seconds, we’d love to know how we did:\n$link\n\nThank you!", "Marzley Tech: how did we do on {$f['title']}? Rate us in 30 seconds: $link", 'rate_project', ['{first}', $f['title'], $link]);
                 $done[] = "Asked the client of “{$f['title']}” to rate the project";
             } elseif ((int)$f['rating'] >= 4 && strtotime($f['submitted_at']) <= time() - 7 * 86400 && ($g = google_write_url()) !== '') {
                 if (!once('feedback', (int)$f['id'], 'google')) continue;
-                notify_client((int)$f['client_id'], 'Would you share your review on Google?', "Thank you again for your kind rating of “{$f['title']}”. Reviews on Google help other businesses find us, and it only takes a minute:\n$g\n\nWe won’t ask again. Thank you!", "Marzley Tech: thank you for your rating! Would you share it on Google? $g");
+                notify_client((int)$f['client_id'], 'Would you share your review on Google?', "Thank you again for your kind rating of “{$f['title']}”. Reviews on Google help other businesses find us, and it only takes a minute:\n$g\n\nWe won’t ask again. Thank you!", "Marzley Tech: thank you for your rating! Would you share it on Google? $g", 'google_review', ['{first}', $g]);
                 $done[] = "Asked the client of “{$f['title']}” for a Google review";
             }
         }
@@ -186,7 +186,7 @@ function run_daily_automations(callable $log): array {
             if (!once('lead_followup', (int)$l['id'], '1')) continue;
             $first = strtok($l['name'], ' ') ?: 'there';
             if ($l['email'] !== '') send_mail($l['email'], 'Following up on your enquiry', "Hello $first,\n\nJust following up on your message to Marzley Tech Solutions. If we haven’t connected yet, reply to this email or WhatsApp us on +254 745 789 590 and we’ll get you sorted: a quote, a call or a quick question answered.\n\nOur work: " . site_url('work') . "\nPrices: " . site_url('pricing') . "\n\nWe won’t email you about this again.\nKelvin Wanyoike · Marzley Tech Solutions", false);
-            elseif ($l['phone'] !== '') send_sms($l['phone'], "Hello $first, following up on your message to Marzley Tech. Reply or WhatsApp 0745 789 590 for a quote or a quick answer.");
+            elseif ($l['phone'] !== '') send_phone($l['phone'], "Hello $first, following up on your message to Marzley Tech. Reply or WhatsApp 0745 789 590 for a quote or a quick answer.", 'lead_followup', [$first]);
             $leads[] = $l['name'] . ($l['phone'] !== '' ? " ({$l['phone']})" : '') . ' · ' . $l['source'];
         }
     }
@@ -198,18 +198,18 @@ function run_daily_automations(callable $log): array {
             $link = portal_url() . 'quote.php?t=' . $qt['token'];
             $first = strtok($qt['client_name'], ' ') ?: 'there';
             send_mail($qt['client_email'], "Your quote: {$qt['title']}", "Hello $first,\n\nJust checking in on your quote for “{$qt['title']}” (KSh " . number_format((int)$qt['total']) . ").\n\nView or accept it here: $link\n\nHappy to adjust anything, answer questions or jump on a call: reply here or WhatsApp +254 745 789 590.\n\nKelvin Wanyoike · Marzley Tech Solutions", false);
-            if ($qt['client_phone'] !== '') send_sms($qt['client_phone'], "Marzley Tech: checking in on your quote for {$qt['title']}. View or accept: $link");
+            if ($qt['client_phone'] !== '') send_phone($qt['client_phone'], "Marzley Tech: checking in on your quote for {$qt['title']}. View or accept: $link", 'quote_reminder', [$first, $qt['title'], $link]);
             $quotes[] = "{$qt['client_name']} · {$qt['title']} · KSh " . number_format((int)$qt['total']) . ($qt['client_phone'] !== '' ? " · {$qt['client_phone']}" : '');
         }
     }
 
     // Notes pass reminders: 3 days before the pass ends (SMS)
-    if (automation_on('pass_reminders') && sms_ready()) {
+    if (automation_on('pass_reminders') && phone_ready()) {
         foreach (q("SELECT * FROM learn_note_payments WHERE status = 'paid' AND track_id = 0 AND bundle = '' AND pass_days > 0 AND paid_at >= ?", [$ago(120)])->fetchAll() as $p) {
             $ends = strtotime(notes_pass_expiry($p));
             if ($ends < time() + 2 * 86400 || $ends > time() + 3 * 86400) continue;
             if (!once('pass_expiry', (int)$p['id'], 'd3')) continue;
-            send_sms($p['phone'], 'Marzley Tech: your notes pass ends on ' . date('j M', $ends) . '. Renew to keep downloading every subject’s PDF: ' . site_url('learn/?page=notes'));
+            send_phone($p['phone'], 'Marzley Tech: your notes pass ends on ' . date('j M', $ends) . '. Renew to keep downloading every subject’s PDF: ' . site_url('learn/?page=notes'), 'pass_ending', [date('j M', $ends), site_url('learn/?page=notes')]);
             $done[] = 'Reminded a notes pass buyer that their pass ends on ' . date('j M', $ends);
         }
     }
@@ -303,7 +303,7 @@ function run_payment_rescue(callable $log): void {
     if (!automation_on('pay_rescue')) return;
     $sent = 0;
     $recent = array_flip(q("SELECT p.phone FROM reminders r JOIN learn_note_payments p ON p.id = r.ref_id WHERE r.kind = 'pay_rescue' AND r.stage = 'notes' AND r.sent_at >= ?", [date('Y-m-d H:i:s', time() - 86400)])->fetchAll(PDO::FETCH_COLUMN));
-    if (sms_ready()) {
+    if (phone_ready()) {
         $rows = q("SELECT p.*, t.slug, t.title FROM learn_note_payments p LEFT JOIN learn_tracks t ON t.id = p.track_id
             WHERE p.status IN ('failed', 'pending') AND p.created_at BETWEEN ? AND ?", [date('Y-m-d H:i:s', time() - 6 * 3600), date('Y-m-d H:i:s', time() - 3600)])->fetchAll();
         foreach ($rows as $p) {
@@ -314,7 +314,7 @@ function run_payment_rescue(callable $log): void {
             if ((int)$p['track_id'] === 0) [$what, $link] = $p['bundle'] !== '' ? ['your notes bundle', site_url('learn/?page=notes')] : ['your notes pass', site_url('learn/?page=notes')];
             elseif ($p['product'] === 'revision') [$what, $link] = ["the {$p['title']} revision pack", site_url('learn/?page=revision')];
             else [$what, $link] = ["the {$p['title']} notes PDF", site_url('learn/?book=' . $p['slug'])];
-            send_sms($p['phone'], "Marzley Tech: your M-Pesa payment for $what didn't go through. Try again here: $link (already paid? use \"Already paid\" with your M-Pesa code). Help: WhatsApp 0745789590");
+            send_phone($p['phone'], "Marzley Tech: your M-Pesa payment for $what didn't go through. Try again here: $link (already paid? use \"Already paid\" with your M-Pesa code). Help: WhatsApp 0745789590", 'payment_retry', [$what, $link]);
             $recent[$p['phone']] = 1;
             $sent++;
         }

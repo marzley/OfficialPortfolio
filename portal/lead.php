@@ -75,7 +75,7 @@ try {
         if ($leadId && automation_on('lead_replies')) {
             $first = strtok($name, ' ') ?: 'there';
             $replied = $email !== '' && send_mail($email, 'Thanks, we got your message', "Hello $first,\n\nThank you for contacting Marzley Tech Solutions. We’ve received your message and Kelvin will get back to you " . ($isCallback ? 'with a call ' : '') . "soon, usually the same day.\n\nWhile you wait:\n- Our work: " . site_url('work') . "\n- Prices: " . site_url('pricing') . "\n- Chat with us on WhatsApp: https://wa.me/254745789590\n\nKelvin Wanyoike · Marzley Tech Solutions · +254 745 789 590", false);
-            if (!$replied && $phone !== '') $replied = send_sms($phone, "Hello $first, thanks for contacting Marzley Tech! We got your message and will get back to you soon. WhatsApp: wa.me/254745789590");
+            if (!$replied && $phone !== '') $replied = send_phone($phone, "Hello $first, thanks for contacting Marzley Tech! We got your message and will get back to you soon. WhatsApp: wa.me/254745789590", 'lead_thanks', [$first]);
             if ($replied) once('lead_reply', $leadId, 'sent');
         }
     }
@@ -87,5 +87,5 @@ try {
 // Tell the team now (the morning summary also lists new leads)
 $mailed = false;
 foreach (config()['admin_emails'] ?: [BUSINESS_EMAIL] as $to) $mailed = send_mail($to, $subject, $body . "\nOpen the Leads board: " . portal_url(), false) || $mailed;
-if ($isCallback && !empty(config()['sms_alert_phone'])) send_sms(config()['sms_alert_phone'], "Call back $name on $phone (website)");
+if ($isCallback && !empty(config()['sms_alert_phone'])) send_phone(config()['sms_alert_phone'], "Call back $name on $phone (website)", 'team_alert', ["call back $name on $phone (website)"]);
 $reply($saved || $mailed ? 200 : 502, ['ok' => $saved || $mailed]);

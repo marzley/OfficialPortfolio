@@ -837,14 +837,20 @@
 
     // Automations: what runs by itself, with an on/off switch each
     var autos = data.automations || [];
-    var NEEDS_SMS = { pay_rescue: "Learners who bought notes are reached by SMS: needs SMS set up (videos use email).", pass_reminders: "Sent by SMS: needs SMS set up." };
+    var NEEDS_SMS = { pay_rescue: "Notes buyers are reached by WhatsApp or SMS: needs one of them set up (videos use email).", pass_reminders: "Sent by WhatsApp or SMS: needs one of them set up." };
+    var phoneReady = data.whatsapp_ready || data.sms_ready;
+    var chSel = select([["whatsapp", "WhatsApp first (SMS if WhatsApp fails)"], ["sms", "SMS only"]], data.phone_channel || "whatsapp");
+    chSel.setAttribute("aria-label", "Phone messages are sent by");
+    chSel.addEventListener("change", function () { save("phone_channel_set", { channel: chSel.value }); });
     panel.appendChild(h("section", { className: "admin-panel", "aria-labelledby": "auto-title" },
       h("div", { className: "admin-panel-head" }, h("h2", { id: "auto-title", text: "Automations" })),
-      h("p", { className: "portal-meta", text: "These run on their own from the daily and hourly scheduled jobs. Each message goes once only, never as a series. Switch any of them off here." + (data.sms_ready ? "" : " SMS isn’t set up yet, so SMS-only messages are skipped (see GO-LIVE.md, SMS alerts).") }),
+      h("p", { className: "portal-meta", text: "These run on their own from the daily and hourly scheduled jobs. Each message goes once only, never as a series. Switch any of them off here." }),
+      h("div", { className: "inline-form" }, h("label", null, h("span", { text: "Phone messages are sent by " }), chSel),
+        h("span", { className: "portal-meta", text: "WhatsApp: " + (data.whatsapp_ready ? "connected" : "not set up") + " · SMS: " + (data.sms_ready ? "connected" : "not set up") + (phoneReady ? "" : " · Phone messages are skipped until one is set up (GO-LIVE.md: WhatsApp, or SMS alerts).") })),
       autos.length ? h("ul", { className: "admin-list auto-list" }, autos.map(function (a) {
         return h("li", null,
           h("div", null, h("strong", { text: a.name }), h("span", { className: "lead-msg", text: a.about }),
-            h("span", { className: "portal-meta", text: (a.sent_30 ? a.sent_30 + " sent in the last 30 days" : "Nothing sent in the last 30 days") + (NEEDS_SMS[a.key] && !data.sms_ready ? " · " + NEEDS_SMS[a.key] : "") })),
+            h("span", { className: "portal-meta", text: (a.sent_30 ? a.sent_30 + " sent in the last 30 days" : "Nothing sent in the last 30 days") + (NEEDS_SMS[a.key] && !phoneReady ? " · " + NEEDS_SMS[a.key] : "") })),
           h("label", { className: "check" }, h("input", { type: "checkbox", checked: !!a.on, onchange: function (e) { save("automation_set", { key: a.key, on: e.target.checked }); } }), h("span", { text: a.on ? " On" : " Off" })));
       })) : h("p", { className: "portal-empty", text: "Automations load for the owner and staff with leads access." })));
 
@@ -1207,6 +1213,7 @@
       [!(data.domains || []).some(function (d) { return d.monitor_url; }) || fresh(sys.last_monitor, 2), "Website monitoring", (data.domains || []).some(function (d) { return d.monitor_url; }) ? (sys.last_monitor ? "Last check " + ago(sys.last_monitor) : "Add the hourly monitor cron job") : "No client websites monitored yet (Domains & hosting)"],
       [!!sys.paystack, "Card payments", sys.paystack ? "Paystack is connected" : "Off: add your Paystack secret key to accept cards on invoices"],
       [!!sys.smtp, "Email", sys.smtp ? "Sent through your mailbox (SMTP)" : "Using PHP mail(): add SMTP settings so emails don’t land in spam"],
+      [!!sys.whatsapp, "WhatsApp", sys.whatsapp ? "WhatsApp Cloud API is connected" : "Off: add the WhatsApp settings to send WhatsApp messages (GO-LIVE.md, 7a)"],
       [!!sys.sms, "SMS", sys.sms ? "Africa’s Talking is connected" : "Off: add Africa’s Talking keys to send SMS"],
       [!!sys.mpesa, "M-Pesa", sys.mpesa ? "Connected" : "Not configured"],
       [!sys.staging, "Environment", sys.staging ? "Staging (test) site" : "Live site"]

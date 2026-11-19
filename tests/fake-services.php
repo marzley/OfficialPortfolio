@@ -28,6 +28,14 @@ if (str_starts_with($path, '/paystack/')) {
     }
 }
 
+// WhatsApp Cloud API stand-in: records each template message; a file "wa-down" makes it refuse
+if (preg_match('#^/v[\d.]+/[^/]+/messages$#', $path)) {
+    if (($_SERVER['HTTP_AUTHORIZATION'] ?? '') !== 'Bearer wa-test' || file_exists("$dir/wa-down")) { http_response_code(400); echo '{"error":{"message":"(#132001) Template name does not exist in the translation"}}'; return; }
+    file_put_contents("$dir/wa.log", file_get_contents('php://input') . "\n", FILE_APPEND);
+    echo '{"messaging_product":"whatsapp","messages":[{"id":"wamid.fake"}]}';
+    return;
+}
+
 // Africa's Talking SMS stand-in: records each message (one JSON line per SMS)
 if ($path === '/version1/messaging') {
     file_put_contents("$dir/sms.log", json_encode(['to' => $_POST['to'] ?? '', 'message' => $_POST['message'] ?? '']) . "\n", FILE_APPEND);

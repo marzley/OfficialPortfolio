@@ -888,10 +888,43 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
 
       // ---------- automations ----------
       const smsLog = () => { try { return fs.readFileSync(WORK + "/fake/sms.log", "utf8"); } catch (e) { return ""; } };
+      const waLog = () => { try { return fs.readFileSync(WORK + "/fake/wa.log", "utf8"); } catch (e) { return ""; } };
+      const waMsgs = () => waLog().split("\n").filter(Boolean).map((x) => JSON.parse(x));
+      const waParams = (m) => m.template.components[0].parameters.map((p) => p.text);
       const mailTxt = () => fs.readFileSync(WORK + "/mail.txt", "utf8");
       fs.rmSync(WORK + "/private/portal_ratelimit", { recursive: true, force: true });
       r = await boss("data");
-      ok("the portal lists the automations with on/off switches", (r.j.automations || []).length === 9 && r.j.automations.every((a) => a.on === true) && r.j.sms_ready === true, r.j.automations);
+      ok("the portal lists the automations with on/off switches", (r.j.automations || []).length === 9 && r.j.automations.every((a) => a.on === true) && r.j.sms_ready === true && r.j.whatsapp_ready === true && r.j.phone_channel === "whatsapp", r.j.automations);
+      // WhatsApp first, SMS as the fallback, or SMS only
+      sql(`INSERT INTO quotes (token, client_name, client_email, client_phone, title, items, total, deposit_percent, notes, status, created_at) VALUES ('waquote${Date.now()}', 'Faith Njeri', 'faith@example.com', '0711 222 999', 'Clinic system', '[]', 120000, 50, '', 'draft', datetime('now'))`);
+      const wq = one("SELECT id FROM quotes WHERE title = 'Clinic system'").id;
+      fs.rmSync(WORK + "/fake/wa.log", { force: true }); fs.rmSync(WORK + "/fake/sms.log", { force: true });
+      r = await boss("quote_send", { id: wq });
+      let wm = waMsgs().pop();
+      ok("a quote goes out as a WhatsApp template with the right values", r.s === 200 && wm && wm.to === "254711222999" && wm.template.name === "marzley_quote" && JSON.stringify(waParams(wm).slice(0, 3)) === JSON.stringify(["Faith", "Clinic system", "120,000"]) && /quote\.php\?t=/.test(waParams(wm)[3]) && !smsLog(), wm);
+      ok("sending a quote records when it was sent", !!one(`SELECT sent_at FROM quotes WHERE id = ${wq}`).sent_at);
+      fs.writeFileSync(WORK + "/fake/wa-down", "1");
+      await boss("quote_send", { id: wq });
+      fs.rmSync(WORK + "/fake/wa-down", { force: true });
+      ok("if WhatsApp refuses a message, it goes by SMS instead", /your quote for Clinic system/.test(smsLog()));
+      r = await boss("phone_channel_set", { channel: "telegram" });
+      ok("only WhatsApp or SMS can be chosen", r.s === 400);
+      await boss("phone_channel_set", { channel: "sms" });
+      fs.rmSync(WORK + "/fake/wa.log", { force: true }); fs.rmSync(WORK + "/fake/sms.log", { force: true });
+      await boss("quote_send", { id: wq });
+      ok("“SMS only” skips WhatsApp", !waLog() && /your quote for Clinic system/.test(smsLog()));
+      await boss("phone_channel_set", { channel: "whatsapp" });
+      // replies on WhatsApp are emailed to the team
+      let wh = await fetch(BASE + "/portal/whatsapp-webhook.php?hub.mode=subscribe&hub.verify_token=verify-me&hub.challenge=12345");
+      ok("Meta can verify the WhatsApp webhook", wh.status === 200 && (await wh.text()) === "12345");
+      wh = await fetch(BASE + "/portal/whatsapp-webhook.php?hub.mode=subscribe&hub.verify_token=wrong&hub.challenge=12345");
+      ok("a wrong verify token is refused", wh.status === 403);
+      const reply = JSON.stringify({ entry: [{ changes: [{ value: { contacts: [{ wa_id: "254712000111", profile: { name: "Jane Doe" } }], messages: [{ from: "254712000111", type: "text", text: { body: "Yes please, call me tomorrow" } }] } }] }] });
+      wh = await fetch(BASE + "/portal/whatsapp-webhook.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: reply });
+      ok("unsigned webhook posts are refused", wh.status === 403);
+      clearMail();
+      wh = await fetch(BASE + "/portal/whatsapp-webhook.php", { method: "POST", headers: { "Content-Type": "application/json", "X-Hub-Signature-256": "sha256=" + crypto.createHmac("sha256", "wa-secret").update(reply).digest("hex") }, body: reply });
+      ok("a WhatsApp reply is emailed to the team with a link to answer", wh.status === 200 && subjects().includes("WhatsApp reply from Jane Doe (+254712000111)") && mailTxt().includes("Yes please, call me tomorrow") && mailTxt().includes("https://wa.me/254712000111"), subjects());
       // instant lead reply, then one follow-up after 2 days
       clearMail();
       const lf = new FormData(); lf.append("name", "Grace Wambui"); lf.append("email", "grace@example.com"); lf.append("message", "Website for my salon"); lf.append("_source", "Contact form");
@@ -917,27 +950,28 @@ const stk = (invoiceId, id, amount) => sql(`INSERT INTO invoice_payments (invoic
       // three new lessons since the last check
       sql("INSERT OR REPLACE INTO settings (k, v) VALUES ('social_lessons_seen', (SELECT MAX(id) - 3 FROM learn_lessons))");
       clearMail();
-      fs.rmSync(WORK + "/fake/sms.log", { force: true });
+      fs.rmSync(WORK + "/fake/sms.log", { force: true }); fs.rmSync(WORK + "/fake/wa.log", { force: true });
       cron("daily");
       // Grace got the instant reply, so she gets the follow-up; Tom came in while it was switched off, so he doesn't
       ok("a lead still “new” after 2 days gets one follow-up", subjects().filter((x) => x === "Following up on your enquiry").length === 1 && /Hello Grace/.test(mailTxt()), subjects());
-      ok("a quote not accepted after 5 days gets a reminder", subjects().includes("Your quote: Shop website") && smsLog().includes("checking in on your quote"), subjects());
+      ok("a quote not accepted after 5 days gets a reminder (email and WhatsApp)", subjects().includes("Your quote: Shop website") && waMsgs().some((m) => m.template.name === "marzley_quote_reminder" && waParams(m)[1] === "Shop website"), subjects());
       ok("an unrated project gets one rating reminder", subjects().some((x) => /^Quick favour: how did we do/.test(x)), subjects());
       ok("a happy client is asked for a Google review", subjects().includes("Would you share your review on Google?") && mailTxt().includes("https://g.page/r/abc/review"), subjects());
-      ok("a notes pass ending soon gets an SMS reminder", /notes pass ends on/.test(smsLog()) && smsLog().includes("254711000999"), smsLog());
+      ok("a notes pass ending soon gets a WhatsApp reminder", waMsgs().some((m) => m.template.name === "marzley_pass_ending" && m.to === "254711000999" && /learn\/\?page=notes/.test(waParams(m)[1])), waLog());
+      ok("review requests go by WhatsApp too", waMsgs().some((m) => m.template.name === "marzley_rate_project") && waMsgs().some((m) => m.template.name === "marzley_google_review" && waParams(m)[1] === "https://g.page/r/abc/review"));
       ok("the morning summary lists leads and quotes to call, and ready-to-post updates", /Leads still “new” after 2 days/.test(mailTxt()) && /Grace Wambui/.test(mailTxt()) && /Quotes not accepted after 5 days/.test(mailTxt()) && /NEW LESSONS:/.test(mailTxt()));
       clearMail();
-      fs.rmSync(WORK + "/fake/sms.log", { force: true });
+      fs.rmSync(WORK + "/fake/sms.log", { force: true }); fs.rmSync(WORK + "/fake/wa.log", { force: true });
       cron("daily");
-      ok("automated messages are only sent once", !subjects().some((x) => /Following up|Your quote: Shop|Quick favour|share your review on Google/.test(x)) && !/notes pass ends/.test(smsLog()), subjects());
+      ok("automated messages are only sent once", !subjects().some((x) => /Following up|Your quote: Shop|Quick favour|share your review on Google/.test(x)) && !waLog() && !smsLog(), subjects());
       // failed payment rescue (hourly): one SMS with a link to try again
       sql(`INSERT INTO learn_note_payments (checkout_id, track_id, amount, phone, token, status, product, created_at) VALUES ('ws_rescue1', (SELECT id FROM learn_tracks WHERE slug = 'python'), 150, '254733555666', '${"b".repeat(48)}', 'failed', 'revision', datetime('now', '+3 hours', '-2 hours'))`);
       sql(`INSERT INTO learn_note_payments (checkout_id, track_id, amount, phone, token, status, created_at) VALUES ('ws_rescue2', (SELECT id FROM learn_tracks WHERE slug = 'css'), 150, '254733555666', '${"c".repeat(48)}', 'pending', datetime('now', '+3 hours', '-90 minutes'))`);
       cron("monitor");
-      const rescued = smsLog().split("\n").filter((x) => x.includes("254733555666"));
-      ok("a failed payment gets one “try again” SMS (one per phone a day)", rescued.length === 1 && /didn't go through/.test(rescued[0]) && /revision pack|notes PDF/.test(rescued[0]), smsLog());
+      const rescued = waMsgs().filter((m) => m.to === "254733555666");
+      ok("a failed payment gets one “try again” WhatsApp message (one per phone a day)", rescued.length === 1 && rescued[0].template.name === "marzley_payment_retry" && /revision pack|notes PDF/.test(waParams(rescued[0])[0]), waLog());
       cron("monitor");
-      ok("the rescue SMS isn't repeated", smsLog().split("\n").filter((x) => x.includes("254733555666")).length === 1);
+      ok("the rescue message isn't repeated", waMsgs().filter((m) => m.to === "254733555666").length === 1);
       // monthly care report (normally on the 1st)
       const mon = one("SELECT id, client_id FROM domains WHERE monitor_url <> '' LIMIT 1");
       for (const okv of [1, 1, 1, 0]) sql(`INSERT INTO site_checks (domain_id, ok, ms, code, checked_at) VALUES (${mon.id}, ${okv}, 400, ${okv ? 200 : 0}, datetime('now', 'start of month', '-5 days'))`);

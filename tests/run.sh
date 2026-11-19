@@ -22,6 +22,7 @@ cat > "$WORK/portal-config.php" <<CFG
   'mail_from' => 'portal@marzleytechsolutions.co.ke',
   'kra_pin' => 'P051234567X',
   'sms' => ['username' => 'test', 'api_key' => 'test-key', 'base' => 'http://127.0.0.1:8898'],
+  'whatsapp' => ['token' => 'wa-test', 'phone_number_id' => '1234567890', 'base' => 'http://127.0.0.1:8898', 'verify_token' => 'verify-me', 'app_secret' => 'wa-secret'],
   'paystack' => ['secret_key' => 'sk_test_fake', 'base' => 'http://127.0.0.1:8898/paystack'],
   'chat' => ['api_key' => 'sk-ant-test', 'base_url' => 'http://127.0.0.1:8898', 'per_visitor_hour' => 5],
   'offsite_backup' => ['endpoint' => 'http://127.0.0.1:8898', 'region' => 'us-east-1', 'bucket' => 'test-bucket', 'key' => 'TESTKEY', 'secret' => 'TESTSECRET', 'prefix' => 'portal'],

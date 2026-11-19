@@ -153,6 +153,64 @@ Try changes here first, never on the live site.
 Clients then also get an SMS for: new invoices, payment received, project updates, reminders and
 approval nudges. Their phone number must be saved in *People*.
 
+## 7a. WhatsApp messages (recommended, instead of or alongside SMS)
+
+Reminders, quotes, payment retries and review requests can go by WhatsApp. If WhatsApp isn't set
+up, a template isn't approved yet or Meta refuses a message, the same message goes by SMS (if SMS
+is set up). Portal → **Growth** → **Automations** → *Phone messages are sent by*: WhatsApp first,
+or SMS only.
+
+This uses Meta's official **WhatsApp Cloud API**. Messages that you start (not replies) must use
+**templates that Meta approves first**, and Meta charges per template message by category
+(Utility is cheaper than Marketing; replying within 24 hours of a customer's message is free).
+Check the current prices on Meta's WhatsApp pricing page before you start.
+
+**The phone number.** Meta lets some businesses connect the number they already use in the
+WhatsApp Business app and keep using the app ("coexistence"). If Meta offers this when you add
+your number, use it. Otherwise use a separate number for the API: a number on the API can't also
+be used in the normal WhatsApp app.
+
+- [ ] Create or open your **Meta Business** account (business.facebook.com) and complete
+      **Business verification** (needed to message more people per day).
+- [ ] https://developers.facebook.com → **Create app** → type *Business* → add **WhatsApp**.
+- [ ] WhatsApp → **API Setup**: add and verify your phone number. Copy the **Phone number ID**.
+- [ ] Business settings → **System users** → add an *Admin* system user → **Assign assets** (the
+      app and the WhatsApp account) → **Generate token** with `whatsapp_business_messaging` and
+      `whatsapp_business_management`, set to never expire. Copy it (shown once).
+- [ ] WhatsApp Manager → **Payment methods**: add a card.
+- [ ] WhatsApp Manager → **Message templates** → create each template below, language
+      **English** (code `en`), with exactly this name, category and text (`{{1}}` etc. are filled in
+      by the portal; give Meta a sample value for each when it asks):
+
+| Name | Category | Text |
+|---|---|---|
+| `marzley_update` | Utility | Hello {{1}}, you have an update from Marzley Tech Solutions:<br><br>{{2}}<br><br>Reply here if you have any questions. |
+| `marzley_team_alert` | Utility | Marzley portal alert: {{1}}. Open the portal for the details. |
+| `marzley_quote` | Utility | Hello {{1}}, your quote for {{2}} is KSh {{3}}. View and accept it here: {{4}} Any questions? Just reply to this message. |
+| `marzley_quote_reminder` | Utility | Hello {{1}}, just checking in on your quote for {{2}}. View or accept it here: {{3}} Happy to answer any questions here. |
+| `marzley_lead_thanks` | Utility | Hello {{1}}, thanks for contacting Marzley Tech Solutions! We got your message and Kelvin will get back to you soon, usually the same day. You can reply here any time. |
+| `marzley_lead_followup` | Marketing | Hello {{1}}, just following up on your message to Marzley Tech Solutions. Reply here for a quote, a call or a quick answer. |
+| `marzley_payment_retry` | Utility | Your M-Pesa payment for {{1}} didn’t go through. You can try again here: {{2}} Already paid? Tap “Already paid” and enter your M-Pesa code. Reply here if you need help. |
+| `marzley_pass_ending` | Utility | Your Marzley Tech notes pass ends on {{1}}. Renew it here to keep downloading every subject’s PDF: {{2}} Thank you for learning with us. |
+| `marzley_rate_project` | Utility | Hello {{1}}, {{2}} went live recently. How did we do? Rate us in 30 seconds: {{3}} Thank you! |
+| `marzley_google_review` | Marketing | Hello {{1}}, thank you for your kind rating! Would you share it on Google? It only takes a minute: {{2}} We won’t ask again. |
+| `marzley_signin_code` | Authentication | (Meta writes the text.) Add a **Copy code** button. |
+
+Meta may move a template to another category when it reviews it; that's fine.
+
+- [ ] Replies: app → WhatsApp → **Configuration** → Webhook: Callback URL
+      `https://marzleytechsolutions.co.ke/portal/whatsapp-webhook.php`, Verify token = any long
+      random text (the same as `verify_token` below). Then subscribe to **messages**. Each reply
+      is emailed to you with a link to answer it on WhatsApp.
+- [ ] In `portal-config.php` (the app secret is under App settings → Basic):
+      ```
+      'whatsapp' => ['token' => 'YOUR_TOKEN', 'phone_number_id' => 'YOUR_PHONE_NUMBER_ID',
+                     'verify_token' => 'LONG_RANDOM_TEXT', 'app_secret' => 'YOUR_APP_SECRET'],
+      ```
+      While templates are still waiting for approval, you can add
+      `'templates' => ['update', 'quote']` (the kinds already approved) so the others go by SMS.
+- [ ] Test: send a quote to yourself from the portal. It should arrive on WhatsApp.
+
 ## 7b. Card payments (Paystack, optional)
 
 - [ ] Log in to https://dashboard.paystack.com (the account the website already uses).
