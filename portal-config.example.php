@@ -40,6 +40,15 @@ return [
     // 'sms' => ['username' => 'YOUR_AT_USERNAME', 'api_key' => 'YOUR_AT_API_KEY', 'sender_id' => ''],
     'sms' => null,
 
+    // WhatsApp messages (Meta WhatsApp Cloud API), tried before SMS. GO-LIVE.md section 7a.
+    // token: System user token (Business settings > System users > Generate token)
+    // phone_number_id: WhatsApp > API Setup (the long number under your phone number, not the phone number)
+    // verify_token: any long random text you make up; type the same text in WhatsApp > Configuration > Verify token
+    // app_secret: App settings > Basic > App secret (click Show)
+    // 'whatsapp' => ['token' => 'YOUR_SYSTEM_USER_TOKEN', 'phone_number_id' => 'YOUR_PHONE_NUMBER_ID',
+    //                'verify_token' => 'LONG_RANDOM_TEXT', 'app_secret' => 'YOUR_APP_SECRET', 'api_version' => 'v27.0'],
+    'whatsapp' => null,
+
     // Printed on invoices and receipts
     'business_name' => 'Marzley Tech Solutions',
     'kra_pin' => '',                   // e.g. P051234567X
