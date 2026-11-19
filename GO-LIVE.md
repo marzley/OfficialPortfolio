@@ -209,6 +209,13 @@ Meta may move a template to another category when it reviews it; that's fine.
       ```
       While templates are still waiting for approval, you can add
       `'templates' => ['update', 'quote']` (the kinds already approved) so the others go by SMS.
+- [ ] If the app dashboard shows a newer API version (App settings → Advanced → *Upgrade API
+      version*, e.g. v27.0), add `'api_version' => 'v27.0'` to the same `whatsapp` settings.
+- [ ] App settings → Advanced → Security: turn on **Require app secret** (the portal sends the
+      proof) and **Require 2-factor reauthorization**; put your email in *Update notification email*.
+      Leave the IP allowlists empty unless your host gives you a fixed server IP.
+- [ ] App settings → Basic: set the Privacy Policy URL to `https://marzleytechsolutions.co.ke/privacy`
+      and the Terms URL to `https://marzleytechsolutions.co.ke/terms`.
 - [ ] Test: send a quote to yourself from the portal. It should arrive on WhatsApp.
 
 ## 7b. Card payments (Paystack, optional)

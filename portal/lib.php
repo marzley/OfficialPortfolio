@@ -1269,7 +1269,9 @@ function send_whatsapp(string $phone, string $kind, array $vars): bool {
     $body = ['messaging_product' => 'whatsapp', 'to' => $to, 'type' => 'template',
         'template' => ['name' => $t[0], 'language' => ['code' => $w['language'] ?? 'en'], 'components' => $components]];
     $base = rtrim($w['base'] ?? 'https://graph.facebook.com', '/') . '/' . ($w['api_version'] ?? 'v23.0');
-    $ch = curl_init("$base/{$w['phone_number_id']}/messages");
+    // With the app secret set, every call carries a proof of it, so "Require app secret" can be switched on in Meta
+    $proof = !empty($w['app_secret']) ? '?appsecret_proof=' . hash_hmac('sha256', (string)$w['token'], (string)$w['app_secret']) : '';
+    $ch = curl_init("$base/{$w['phone_number_id']}/messages$proof");
     curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 20, CURLOPT_POST => true, CURLOPT_POSTFIELDS => json_encode($body),
         CURLOPT_HTTPHEADER => ['Authorization: Bearer ' . $w['token'], 'Content-Type: application/json']]);
     $raw = curl_exec($ch);
