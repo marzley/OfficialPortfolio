@@ -1909,6 +1909,8 @@
   /* ---------- Google Analytics events (only sent when the visitor accepted analytics) ---------- */
   function track(name, params) {
     try { if (window.__gaLoaded && window.gtag) window.gtag("event", name, params || {}); } catch (e) {}
+    // The same moments as Meta Pixel standard events, for Facebook and Instagram ads
+    try { if (window.__fbqLoaded && window.fbq) { var fbName = { generate_lead: "Lead", whatsapp_click: "Contact", call_click: "Contact" }[name]; if (fbName) window.fbq("track", fbName); } } catch (e) {}
   }
   document.addEventListener("click", function (e) {
     var a = e.target.closest ? e.target.closest("a, button") : null;
@@ -2084,20 +2086,35 @@
     window.gtag("js", new Date());
     window.gtag("config", id, { anonymize_ip: true });
   };
+  // Meta Pixel (Facebook and Instagram ads), the standard snippet without inline script, after consent only
+  var loadPixel = function (id) {
+    if (window.__fbqLoaded || !/^\d{10,20}$/.test(id)) return;
+    window.__fbqLoaded = true;
+    var n = window.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); };
+    if (!window._fbq) window._fbq = n;
+    n.push = n; n.loaded = true; n.version = "2.0"; n.queue = [];
+    var s = document.createElement("script");
+    s.async = true;
+    s.src = "https://connect.facebook.net/en_US/fbevents.js";
+    document.head.appendChild(s);
+    window.fbq("init", id);
+    window.fbq("track", "PageView");
+  };
   var readConsent = function () { try { return localStorage.getItem(CONSENT_KEY); } catch (e) { return null; } };
   var saveConsent = function (v) { try { localStorage.setItem(CONSENT_KEY, v); } catch (e) {} };
   if (window.fetch) {
     fetch("data/site.json", { cache: "no-cache" })
       .then(function (r) { return r.ok ? r.json() : {}; })
       .then(function (cfg) {
-        var id = (cfg.analyticsId || "").trim();
-        if (/^G-[A-Z0-9]+$/.test(id) && consentBox) {
+        var id = (cfg.analyticsId || "").trim(), pixel = String(cfg.metaPixelId || "").trim();
+        var loadTracking = function () { loadAnalytics(id); loadPixel(pixel); };
+        if ((/^G-[A-Z0-9]+$/.test(id) || /^\d{10,20}$/.test(pixel)) && consentBox) {
           if (cookieBtn) cookieBtn.hidden = false;
           var choice = readConsent();
-          if (choice === "yes") loadAnalytics(id);
+          if (choice === "yes") loadTracking();
           else if (choice !== "no") consentBox.hidden = false;
           document.getElementById("consent-yes").addEventListener("click", function () {
-            saveConsent("yes"); consentBox.hidden = true; loadAnalytics(id);
+            saveConsent("yes"); consentBox.hidden = true; loadTracking();
           });
           document.getElementById("consent-no").addEventListener("click", function () {
             saveConsent("no"); consentBox.hidden = true;
