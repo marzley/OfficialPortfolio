@@ -453,12 +453,27 @@
   }
 
   // ---------- C, C++, Lua, Ruby, Sass and Prolog: engines in a worker (learn/engines.js), stopped after 10 seconds ----------
+  var remoteCache = {};
   var engWorker = null, ENG_LIMIT = 10000, ENG_NAMES = { c: "C", cpp: "C++", lua: "Lua", ruby: "Ruby", sass: "Sass", prolog: "Prolog", regex: "Regex" };
   function startEngines() {
     var src = "self.__LEARN_ROOT = '" + ROOT + "'; importScripts('" + ROOT + "learn/engines.js?v=" + ENGINES_V + "');";
     return new Worker(URL.createObjectURL(new Blob([src], { type: "text/javascript" })));
   }
-  function runEngine(lang, code, stdin) {
+  // What the quick in-browser C/C++ interpreters can't do: send it straight to the full compiler
+  // (reading input, the standard library beyond printing and maths, classes, templates, const and so on).
+  function needsFullCompiler(lang, code, stdin) {
+    var src = code.replace(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, "");
+    if (lang === "c") return /\b(scanf|fgets|getchar|gets|getline|sscanf|qsort|bsearch|const|union|static|volatile|inline|_Bool|size_t|uint\d+_t|int\d+_t|bool|true|false)\b/.test(src) ||
+      /#include\s*<(?!stdio\.h>|stdlib\.h>|string\.h>|math\.h>)/.test(src) || /%z[ud]/.test(src) || /#define\s+\w+\(/.test(src);
+    if (lang === "cpp") return (/\bcin\b|getline/.test(src) && !stdin) ||
+      /#include\s*<(?!iostream>|cmath>|cstdio>|cstdlib>|cstring>|iomanip>)/.test(src) ||
+      /\b(class|template|auto|nullptr|constexpr|virtual|override|operator|typename|try|catch|throw|new|delete|struct\s+\w+\s*:\s*public)\b/.test(src) ||
+      /\b(vector|string|map|set|pair|unique_ptr|shared_ptr|function)\s*</.test(src) || /\bstd::(?!cout\b|cin\b|endl\b)\w+/.test(src) ||
+      /\[\s*[&=]?\s*\]\s*\(/.test(src) || /&\s*\w+\s*[,)]/.test(src) || /:\s*\w+\s*\)\s*\{?/.test(src.replace(/\?[^:;]*:/g, ""));
+    return false;
+  }
+  function runEngine(lang, code, stdin, quickOnly) {
+    if (!quickOnly && (lang === "c" || lang === "cpp") && needsFullCompiler(lang, code, stdin)) return runRemote(lang, code, stdin, null, remoteCache);
     out.textContent = "";
     var w, timer = null, first = !engWorker;
     try { w = engWorker || (engWorker = startEngines()); } catch (e) { return showError("Error", "This language can't run in this browser. Try a recent Chrome, Edge or Firefox."); }
@@ -478,16 +493,15 @@
       clearTimeout(timer);
       w["__" + lang] = true;
       out.textContent = "";
-      // The quick in-browser C/C++ interpreters don't cover everything: fall back to the full online compiler
-      // (JSCPP's parser doesn't know classes, references, auto or range-for, so its parse errors fall back too;
-      // real mistakes then get the full compiler's clearer message.)
-      if ((lang === "c" || lang === "cpp") && d.err && !d.out && (/cannot find library|not supported|unsupported|can't assign|not implemented|unknown type|undefined identifier|is not defined/i.test(d.err) || (lang === "cpp" && /Parsing Failure/i.test(d.err)))) {
-        return runRemote(lang, code, "This code needs the full compiler, so it's running on Compiler Explorer (godbolt.org)…");
-      }
+      // The quick in-browser C/C++ interpreters don't cover everything: any error they report is checked
+      // by the full compiler, which either runs the code or gives the clearer message for a real mistake.
+      // If the full compiler can't be reached, the interpreter's own message is shown.
+      if ((lang === "c" || lang === "cpp") && d.err && !quickOnly) return runRemote(lang, code, stdin, d, remoteCache);
       if (lang === "sass" && d.out) {
         print("Compiled CSS:\n", "muted"); print(d.out);
       } else if (d.out) print(d.out);
       if (d.err) print(d.err, "err");
+      if (d.err && quickOnly) print("\nThe online compilers couldn't be reached and the quick in-browser interpreter doesn't support everything in this code. Check your internet connection, then tap Run again.\n", "muted");
       if (!d.out && !d.err) print("(no output)", "muted");
       send(d.err && !d.out ? { type: "output", text: "", ok: false, error: d.err.trim().split("\n")[0], detail: d.err } : { type: "output", text: d.out || "", ok: !d.err, error: d.err ? d.err.trim().split("\n")[0] : "", detail: d.err || "" });
     };
@@ -495,24 +509,41 @@
     if (!first) go();
   }
 
-  // ---------- C#, Java, Go, Rust and Kotlin: compiled and run by Compiler Explorer (godbolt.org), a free online service ----------
+  // ---------- C#, Java, Go, Rust, Kotlin (and C/C++ beyond the quick interpreters): full compilers online ----------
+  // Compiler Explorer (godbolt.org) first; if it can't be reached or has a problem, Wandbox (wandbox.org).
+  // Both are free services, so the code is sent to them. The page keeps their compiler lists on the
+  // learner's device for a week (sent in with each run), so a run doesn't wait for the list.
   var CE = "https://godbolt.org/api/", CE_LANG = { csharp: "csharp", java: "java", go: "go", rust: "rust", kotlin: "kotlin", c: "c", cpp: "c++" },
     CE_NAMES = { csharp: "C#", java: "Java", go: "Go", rust: "Rust", kotlin: "Kotlin", c: "C", cpp: "C++" },
-    CE_OPEN = { csharp: "https://dotnetfiddle.net/", java: "https://www.onlinegdb.com/online_java_compiler", go: "https://go.dev/play/", rust: "https://play.rust-lang.org/", kotlin: "https://play.kotlinlang.org/", c: "https://www.onlinegdb.com/online_c_compiler", cpp: "https://www.onlinegdb.com/online_c++_compiler" },
-    ceCompiler = {};
-  function ceJson(url, body) {
-    return fetch(url, body ? { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify(body) } : { headers: { "Accept": "application/json" } })
-      .then(function (r) { if (!r.ok) throw new Error("The online compiler replied with an error (" + r.status + ")."); return r.json(); });
+    WB = "https://wandbox.org/api/", WB_LANG = { c: "C", cpp: "C++", java: "Java", go: "Go", rust: "Rust", csharp: "C#" },
+    ceCompiler = {}, wbCompiler = {};
+  function jsonFetch(url, body, ms) {
+    var ctl = window.AbortController ? new AbortController() : null;
+    var t = ctl ? setTimeout(function () { ctl.abort(); }, ms || 30000) : null;
+    var opts = body ? { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify(body) } : { headers: { "Accept": "application/json" } };
+    if (ctl) opts.signal = ctl.signal;
+    return fetch(url, opts).then(function (r) {
+      if (t) clearTimeout(t);
+      if (!r.ok) { var e = new Error("The online compiler replied with an error (" + r.status + ")."); e.server = true; throw e; }
+      return r.json();
+    }, function (e) { if (t) clearTimeout(t); var x = new Error(e && e.name === "AbortError" ? "The online compiler took too long to answer." : "Couldn't reach the online compiler."); x.network = true; throw x; });
   }
-  // All compilers for a language that can run code, newest stable first
-  function compilerList(lang) {
+  var num = function (v) { return String(v || "").split(/[^0-9]+/).filter(Boolean).slice(0, 3).map(function (x) { return ("000" + x).slice(-4); }).join("."); };
+  // All Compiler Explorer compilers for a language that can run code, newest stable first (GCC first for C and C++)
+  function compilerList(lang, cached) {
     if (ceCompiler[lang]) return Promise.resolve(ceCompiler[lang]);
-    return ceJson(CE + "compilers/" + CE_LANG[lang] + "?fields=id,name,semver,supportsExecute").then(function (list) {
-      var ok = (list || []).filter(function (c) { return c.supportsExecute !== false && !/nightly|trunk|beta|snapshot|alpha|\brc\b|dev|experimental|native/i.test(c.name + " " + c.id); });
-      var num = function (v) { return String(v || "").split(/[^0-9]+/).filter(Boolean).slice(0, 3).map(function (x) { return ("000" + x).slice(-4); }).join("."); };
-      ok.sort(function (a, b) { return num(b.semver) < num(a.semver) ? -1 : num(b.semver) > num(a.semver) ? 1 : 0; });
+    if (cached && cached.ids && cached.ids.length) return Promise.resolve(ceCompiler[lang] = { ids: cached.ids, good: cached.good || 0 });
+    return jsonFetch(CE + "compilers/" + CE_LANG[lang] + "?fields=id,name,semver,supportsExecute", null, 20000).then(function (list) {
+      var ok = (list || []).filter(function (c) { return c.supportsExecute !== false && !/nightly|trunk|beta|snapshot|alpha|\brc\b|dev|experimental|native|arm|risc|mips|power|wasm|avr|msp|s390|loong|cross/i.test(c.name + " " + c.id); });
+      ok.sort(function (a, b) {
+        var ga = /gcc/i.test(a.name) ? 1 : 0, gb = /gcc/i.test(b.name) ? 1 : 0;
+        if ((lang === "c" || lang === "cpp") && ga !== gb) return gb - ga;
+        return num(b.semver) < num(a.semver) ? -1 : num(b.semver) > num(a.semver) ? 1 : 0;
+      });
       if (!ok.length) throw new Error("No compiler is available for this language right now.");
-      return (ceCompiler[lang] = { ids: ok.map(function (c) { return c.id; }), good: 0 });
+      ceCompiler[lang] = { ids: ok.slice(0, 8).map(function (c) { return c.id; }), good: 0 };
+      send({ type: "cache", key: "ce:" + lang, value: ceCompiler[lang] });
+      return ceCompiler[lang];
     });
   }
   function ceText(x) { return (x || []).map(function (l) { return l.text; }).join("\n"); }
@@ -522,59 +553,105 @@
     if (ex.didExecute === false && !(ex.buildResult && ex.buildResult.code)) return true;
     if (/Exception in thread|Error occurred during initialization of VM|Could not find or load main class|Internal compiler error/i.test(stderr)) {
       var frames = stderr.split("\n").filter(function (l) { return /^\s*at /.test(l); });
-      // No stack frame points at the learner's file: the failure is in the runtime itself
       return frames.length > 0 && !frames.some(function (l) { return /example|Main|Kt\.|Program|\.kt:|\.java:(?!.*java\.base)/.test(l) && !/java\.base|jdk\.internal|kotlin\.|sun\./.test(l); });
     }
     return false;
   }
-  function runRemote(lang, code, note) {
-    out.textContent = "";
-    print((note || "Compiling and running on Compiler Explorer (godbolt.org)…") + "\n", "muted");
-    var done = false, timer = setTimeout(function () { if (!done) { done = true; fail("The online compiler took too long to answer."); } }, 60000);
-    var fail = function (why) {
-      out.textContent = "";
-      print(why + "\n\n", "err");
-      print("You can still run your code: copy it (the copy button above) and paste it into " + CE_OPEN[lang] + "\n", "muted");
-      send({ type: "output", text: "", ok: false, error: why });
-    };
+  /** Compiler Explorer: resolves with { buildErr, stdout, stderr, timedOut, code }. */
+  function viaGodbolt(lang, code, stdin, cached) {
     var attempt = function (c, n) {
       var id = c.ids[(c.good + n) % c.ids.length];
-      return ceJson(CE + "compiler/" + encodeURIComponent(id) + "/compile", {
+      return jsonFetch(CE + "compiler/" + encodeURIComponent(id) + "/compile", {
         source: code, lang: CE_LANG[lang], allowStoreCodeDebug: false,
-        options: { userArguments: "", executeParameters: { args: [], stdin: "" }, compilerOptions: { executorRequest: true, skipAsm: true }, filters: { execute: true }, tools: [], libraries: [] }
-      }).then(function (r) {
+        options: { userArguments: "", executeParameters: { args: [], stdin: stdin || "" }, compilerOptions: { executorRequest: true, skipAsm: true }, filters: { execute: true }, tools: [], libraries: [] }
+      }, 40000).then(function (r) {
         var ex = r.execResult || r, stdout = ceText(ex.stdout), stderr = ceText(ex.stderr);
-        if (infraFailure(lang, ex, stdout, stderr) && n + 1 < Math.min(4, c.ids.length)) {
-          if (!done) { out.textContent = ""; print("That compiler version had a problem, trying another one…\n", "muted"); }
+        if (infraFailure(lang, ex, stdout, stderr) && n + 1 < Math.min(3, c.ids.length)) {
+          print("That compiler version had a problem, trying another one…\n", "muted");
           return attempt(c, n + 1);
         }
-        c.good = (c.good + n) % c.ids.length;
-        return r;
+        if (c.good !== (c.good + n) % c.ids.length) { c.good = (c.good + n) % c.ids.length; send({ type: "cache", key: "ce:" + lang, value: c }); }
+        var build = ex.buildResult || r.buildResult || {};
+        return { buildErr: build.code ? (ceText(build.stderr) || ceText(build.stdout)) : "", stdout: stdout, stderr: stderr, timedOut: !!ex.timedOut, code: ex.code };
+      }, function (e) {
+        // A compiler that has been retired since the list was saved: forget the list and fetch it again
+        if (e.server && n === 0 && cached) { ceCompiler[lang] = null; send({ type: "cache", key: "ce:" + lang, value: null }); return compilerList(lang, null).then(function (c2) { return attempt(c2, 0); }); }
+        throw e;
       });
     };
-    compilerList(lang).then(function (c) { return attempt(c, 0); }).then(function (r) {
-      if (done) return; done = true; clearTimeout(timer);
-      var ex = r.execResult || r, build = ex.buildResult || r.buildResult || {};
-      out.textContent = "";
-      var stdout = ceText(ex.stdout), stderr = ceText(ex.stderr);
-      var buildErr = build.code ? (ceText(build.stderr) || ceText(build.stdout)) : "";
-      if (buildErr) { print("Your code didn't compile:\n", "err"); print(buildErr + "\n", "err"); return send({ type: "output", text: "", ok: false, error: buildErr.split("\n")[0], detail: buildErr }); }
-      if (stdout) print(stdout + "\n");
-      if (stderr) print(stderr + "\n", "err");
-      if (ex.timedOut) print("Your program took too long and was stopped.\n", "err");
-      if (!stdout && !stderr) print("(no output)", "muted");
-      send({ type: "output", text: stdout, ok: !stderr && !ex.timedOut && !(ex.code > 0), error: stderr ? stderr.split("\n")[0] : (ex.timedOut ? "took too long" : ""), detail: stderr || (ex.timedOut ? "Your program took too long and was stopped." : "") });
-    }).catch(function (e) {
-      if (done) return; done = true; clearTimeout(timer);
-      fail(/Failed to fetch|NetworkError|Load failed/i.test(String(e && e.message)) ? "Couldn't reach the online compiler. Check your internet connection." : String(e && e.message || e));
+    return compilerList(lang, cached).then(function (c) { return attempt(c, 0); });
+  }
+  /** Wandbox: the same result shape. */
+  function viaWandbox(lang, code, stdin, cached) {
+    if (!WB_LANG[lang]) return Promise.reject(new Error("No backup compiler for " + CE_NAMES[lang] + "."));
+    var pick = wbCompiler[lang] ? Promise.resolve(wbCompiler[lang]) : cached ? Promise.resolve(wbCompiler[lang] = cached) :
+      jsonFetch(WB + "list.json", null, 20000).then(function (list) {
+        var ok = (list || []).filter(function (c) { return c.language === WB_LANG[lang] && !/head|dev|snapshot|nightly/i.test(c.name + " " + c.version); });
+        ok.sort(function (a, b) {
+          var ga = /^gcc/.test(a.name) ? 1 : 0, gb = /^gcc/.test(b.name) ? 1 : 0;
+          if ((lang === "c" || lang === "cpp") && ga !== gb) return gb - ga;
+          return num(b.version) < num(a.version) ? -1 : num(b.version) > num(a.version) ? 1 : 0;
+        });
+        if (!ok.length) throw new Error("No backup compiler is available for this language right now.");
+        wbCompiler[lang] = ok[0].name;
+        send({ type: "cache", key: "wb:" + lang, value: ok[0].name });
+        return ok[0].name;
+      });
+    return pick.then(function (name) {
+      return jsonFetch(WB + "compile.json", { compiler: name, code: code, stdin: stdin || "", save: false }, 40000);
+    }).then(function (r) {
+      var status = String(r.status == null ? "" : r.status), compileErr = r.compiler_error || "";
+      var built = r.program_output != null || r.program_error != null;
+      return { buildErr: !built && status !== "0" ? (compileErr || r.compiler_output || "Your code didn't compile.") : "", stdout: (r.program_output || "").replace(/\n$/, ""), stderr: (r.program_error || "").replace(/\n$/, ""),
+        timedOut: /SIGKILL|SIGXCPU|time/i.test(String(r.signal || "")), code: status === "" ? 0 : Number(status) };
     });
+  }
+  function runRemote(lang, code, stdin, interp, cache) {
+    cache = cache || {};
+    out.textContent = "";
+    print((interp ? "Checking with the full " + CE_NAMES[lang] + " compiler…" : "Compiling and running your " + CE_NAMES[lang] + " code…") + "\n", "muted");
+    var show = function (r, where) {
+      out.textContent = "";
+      if (r.buildErr) { print("Your code didn't compile:\n", "err"); print(r.buildErr + "\n", "err"); return send({ type: "output", text: "", ok: false, error: r.buildErr.split("\n")[0], detail: r.buildErr }); }
+      if (r.stdout) print(r.stdout + "\n");
+      if (r.stderr) print(r.stderr + "\n", "err");
+      if (r.timedOut) print("Your program took too long and was stopped. Check for a loop that never ends.\n", "err");
+      if (!r.stdout && !r.stderr) print("(no output)", "muted");
+      print("\nRan on " + where + ".", "muted small");
+      send({ type: "output", text: r.stdout, ok: !r.stderr && !r.timedOut && !(r.code > 0), error: r.stderr ? r.stderr.split("\n")[0] : (r.timedOut ? "took too long" : ""), detail: r.stderr || (r.timedOut ? "Your program took too long and was stopped." : "") });
+    };
+    viaGodbolt(lang, code, stdin, cache["ce:" + lang]).then(function (r) { show(r, "Compiler Explorer (godbolt.org)"); }, function (e1) {
+      print("Compiler Explorer didn't answer, trying the backup compiler…\n", "muted");
+      return viaWandbox(lang, code, stdin, cache["wb:" + lang]).then(function (r) { show(r, "Wandbox (wandbox.org)"); }, function (e2) {
+        out.textContent = "";
+        // The quick interpreter's own answer is better than nothing
+        if (interp) {
+          if (interp.out) print(interp.out);
+          print(interp.err, "err");
+          print("\nThe full compiler couldn't be reached to double-check this, so this is the quick in-browser interpreter's message.\n", "muted");
+          return send({ type: "output", text: interp.out || "", ok: false, error: interp.err.trim().split("\n")[0], detail: interp.err });
+        }
+        // C and C++: the in-browser interpreter may still manage it
+        if (lang === "c" || lang === "cpp") { out.textContent = ""; print("The online compilers couldn't be reached, so trying the quick in-browser interpreter…\n", "muted"); return runEngine(lang, code, stdin, true); }
+        var why = (e1 && e1.network) || (e2 && e2.network) ? "Couldn't reach the online compilers. Check your internet connection, then tap Run again." : "The online compilers are busy right now. Wait a moment, then tap Run again.";
+        print(why + "\n", "err");
+        print("Your code is saved on this device, so nothing is lost.\n", "muted");
+        send({ type: "output", text: "", ok: false, error: why });
+      });
+    });
+  }
+  // The page asks for a compiler list in advance, so the first Run doesn't wait for it
+  function warm(lang, cache) {
+    if (CE_LANG[lang]) compilerList(lang, (cache || {})["ce:" + lang]).catch(function () {});
   }
 
   window.addEventListener("message", function (e) {
     var d = e.data || {};
+    if (d.type === "warm") return warm(d.lang, d.cache);
     if (d.type !== "run" || typeof d.code !== "string") return;
+    if (d.cache) remoteCache = d.cache;
     if (ENG_NAMES[d.lang]) return runEngine(d.lang, d.code, d.stdin);
-    if (CE_LANG[d.lang]) return runRemote(d.lang, d.code);
+    if (CE_LANG[d.lang]) return runRemote(d.lang, d.code, d.stdin, null, remoteCache);
     if (d.lang === "python") runPython(d.code);
     else if (d.lang === "sql") runSql(d.code);
     else if (d.lang === "php") runPhp(d.code);

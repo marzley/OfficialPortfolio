@@ -266,8 +266,33 @@
     this.frameLang = kind;
     return this.ready;
   };
+  // Online compiler lists, kept on this device for a week so a run doesn't wait for them (the sandboxed
+  // runner can't use storage itself: it sends them here and gets them back with each run)
+  var REMOTE_LANGS = { c: 1, cpp: 1, csharp: 1, java: 1, go: 1, rust: 1, kotlin: 1 };
+  function remoteCache(lang) {
+    var c = {};
+    ["ce:", "wb:"].forEach(function (k) {
+      try { var v = JSON.parse(store.get("cc-" + k + lang) || "null"); if (v && v.t > Date.now() - 7 * 86400000) c[k + lang] = v.v; } catch (e) {}
+    });
+    return c;
+  }
+  window.addEventListener("message", function (e) {
+    var d = e.data || {};
+    if (d.type !== "cache" || !/^(ce|wb):[a-z]+$/.test(String(d.key))) return;
+    // Only from one of our own runner frames
+    if (!Array.prototype.some.call(document.querySelectorAll("iframe.run-frame"), function (f) { return f.contentWindow === e.source; })) return;
+    store.set("cc-" + d.key, d.value == null ? "" : JSON.stringify({ t: Date.now(), v: d.value }));
+  });
+  /** Starts the runner and fetches the compiler list in advance, so the first Run is quicker. */
+  Runner.prototype.warm = function (lang) {
+    if (!REMOTE_LANGS[lang]) return;
+    var self = this;
+    (this.frameLang === lang && this.frame ? this.ready : this.fresh(lang)).then(function () {
+      if (self.frame) self.frame.contentWindow.postMessage({ type: "warm", lang: lang, cache: remoteCache(lang) }, "*");
+    });
+  };
   /** Run code; resolves with { text, ok, error } once the frame reports its output. */
-  Runner.prototype.run = function (lang, code) {
+  Runner.prototype.run = function (lang, code, stdin) {
     var self = this;
     lang = runLang(lang, code);
     var web = lang === "html" || lang === "css" || lang === "javascript" || lang === "typescript" || lang === "react" || lang === "markdown";
@@ -284,14 +309,14 @@
           resolve({ text: String(e.data.text || ""), ok: !!e.data.ok, error: e.data.error || "", detail: e.data.detail || "" });
         };
         window.addEventListener("message", onMsg);
-        self.frame.contentWindow.postMessage({ type: "run", lang: lang, code: code }, "*");
+        self.frame.contentWindow.postMessage({ type: "run", lang: lang, code: code, stdin: stdin || "", cache: REMOTE_LANGS[lang] ? remoteCache(lang) : undefined }, "*");
         setTimeout(function () {
           if (done) return;
           window.removeEventListener("message", onMsg);
           // The frame is stuck: throw it away so the next run starts a fresh one
           if (self.frame) { self.frame.remove(); self.frame = null; self.frameLang = null; }
           resolve({ text: "", ok: false, error: "timeout" });
-        }, lang === "python" || lang === "php" || lang === "ruby" ? 90000 : lang === "sql" || ONLINE_LANGS[lang] ? 45000 : { c: 1, cpp: 1, lua: 1, sass: 1, prolog: 1, regex: 1 }[lang] ? 70000 : 15000);
+        }, lang === "python" || lang === "php" || lang === "ruby" || REMOTE_LANGS[lang] ? 120000 : lang === "sql" ? 45000 : { lua: 1, sass: 1, prolog: 1, regex: 1 }[lang] ? 70000 : 15000);
       });
     });
   };
@@ -1418,16 +1443,24 @@
       PRACTICE[lang].examples.map(function (x, i) { return '<option value="' + i + '">' + esc(x[0]) + "</option>"; }).join("") + "</select>" +
       '<button type="button" class="try-reset" id="p-reset" title="Start again"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i><span class="sr-only">Start again</span></button>' +
       '<button type="button" class="try-reset" id="p-copy" title="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i><span class="sr-only">Copy code</span></button>' +
-      '<button type="button" class="btn btn-solid btn-sm" id="p-run"><i class="fa-solid fa-play" aria-hidden="true"></i> Run <kbd>Ctrl</kbd>+<kbd>Enter</kbd></button></div></div><div class="pane-editor" id="p-editor"></div></div>' +
+      '<button type="button" class="btn btn-solid btn-sm" id="p-run"><i class="fa-solid fa-play" aria-hidden="true"></i> Run <kbd>Ctrl</kbd>+<kbd>Enter</kbd></button></div></div><div class="pane-editor" id="p-editor"></div>' +
+      (REMOTE_LANGS[lang] ? '<details class="p-stdin"' + (store.get("stdin:" + lang) ? " open" : "") + '><summary>Input for your program <span class="muted small">(what ' + ({ c: "scanf", cpp: "cin", java: "Scanner", csharp: "Console.ReadLine", go: "fmt.Scan", rust: "stdin", kotlin: "readLine" }[lang]) + ' reads)</span></summary><label class="sr-only" for="p-stdin">Input for your program</label><textarea id="p-stdin" rows="3" spellcheck="false" placeholder="One value per line, e.g.&#10;5&#10;Wanjiku"></textarea></details>' : "") +
+      "</div>" +
       '<div class="pane"><div class="pane-bar"><span>Output</span></div><div class="pane-output" id="p-out"></div></div></div>' +
       '<div class="practice-help" id="p-help" hidden aria-live="polite"></div>' + practiceDetails(lang) + '</section>';
     var ed = makeEditor($("#p-editor"), store.get("code:" + lang) || STARTERS[lang], lang);
     var runner = new Runner($("#p-out"));
+    var stdinBox = $("#p-stdin");
+    if (stdinBox) { stdinBox.value = store.get("stdin:" + lang) || ""; stdinBox.addEventListener("input", function () { store.set("stdin:" + lang, stdinBox.value); }); }
     var run = function () {
       var code = ed.getValue();
       store.set("code:" + lang, code); $("#p-run").disabled = true;
       earn("code", {}, "code run");
-      runner.run(lang, code).then(function (r) { $("#p-run").disabled = false; renderHelp($("#p-help"), runLang(lang, code), code, r, ed); });
+      // A program that reads input but has none yet: open the input box so the learner sees where it goes
+      if (stdinBox && !stdinBox.value && /\b(scanf|cin|Scanner|ReadLine|readLine|fmt\.Scan|read_line|getline|fgets|getchar)\b/.test(code)) stdinBox.closest("details").open = true;
+      // On a phone the output is below the editor: bring it into view
+      if (window.innerWidth < 900) { var o = $("#p-out"); if (o) o.scrollIntoView({ behavior: "smooth", block: "start" }); }
+      runner.run(lang, code, stdinBox ? stdinBox.value : "").then(function (r) { $("#p-run").disabled = false; renderHelp($("#p-help"), runLang(lang, code), code, r, ed); });
     };
     $("#p-run").addEventListener("click", run);
     $("#p-reset").addEventListener("click", function () { if (confirm("Start again with the example code?")) ed.setValue(STARTERS[lang]); });
@@ -1444,6 +1477,7 @@
     var t = setInterval(function () { store.set("code:" + lang, ed.getValue()); }, 5000);
     cleanup.push(function () { clearInterval(t); store.set("code:" + lang, ed.getValue()); });
     if (lang !== "python" && lang !== "php" && lang !== "ruby" && !ONLINE_LANGS[lang]) run();
+    runner.warm(lang);
   }
   function practiceDetails(lang) {
     var info = PRACTICE[lang], track = info.track;
@@ -1451,9 +1485,9 @@
     var note = { python: "Python runs fully in your browser. The first run downloads it once (about 10 MB).", php: "PHP 8.3 runs fully in your browser. The first run downloads it once (about 4 MB). Databases, sessions and email need a real server.",
       sql: "SQL runs on a sample shop database with Customers, Products and Orders. Try SELECT * FROM Products;", typescript: "Types are removed before running, so type mistakes are not reported here. Use VS Code to see them.",
       react: "React 18 and ReactDOM are ready to use. Hooks: React.useState, React.useEffect.", json: "Only data is allowed in JSON: no comments, no trailing commas.", markdown: "The output shows the formatted page, like GitHub shows a README.",
-      c: "C runs instantly in your browser with a small C interpreter (PicoC). If your code uses something it doesn't support, it is sent to Compiler Explorer (godbolt.org), a free online compiler.", cpp: "Simple C++ (cout, loops, functions, arrays) runs instantly in your browser. Code that needs string, vector or other libraries is sent to Compiler Explorer (godbolt.org), a free online compiler.",
+      c: "Simple C runs instantly in your browser. Code that reads input or uses more of the C library (const, structs with qsort, stdbool and so on) runs on a full GCC compiler online (Compiler Explorer, with Wandbox as a backup), so your code is sent to them. If your program uses scanf, type its input in the box under the editor.", cpp: "Simple C++ (cout, loops, functions, arrays) runs instantly in your browser. Code with string, vector, classes or other libraries runs on a full GCC compiler online (Compiler Explorer, with Wandbox as a backup), so your code is sent to them. If your program uses cin, type its input in the box under the editor.",
       lua: "Lua runs fully in your browser.", ruby: "Ruby 3.3 runs fully in your browser. The first run downloads it once (about 5 MB).", sass: "The output shows the CSS that your Sass compiles to.",
-      regex: "Uses JavaScript regular expressions, the same ones websites use for form checks.", prolog: "Prolog runs in your browser (Tau Prolog). Put questions on lines starting with ?-" }[lang] || (ONLINE_LANGS[lang] ? LANGS[lang] + " is compiled and run by Compiler Explorer (godbolt.org), a free online service, so your code is sent to it. It needs an internet connection and takes a few seconds." : "Your code runs in a safe sandbox: it can't touch this website, your cookies or your accounts.");
+      regex: "Uses JavaScript regular expressions, the same ones websites use for form checks.", prolog: "Prolog runs in your browser (Tau Prolog). Put questions on lines starting with ?-" }[lang] || (ONLINE_LANGS[lang] ? LANGS[lang] + " is compiled and run online by Compiler Explorer (godbolt.org), with Wandbox (wandbox.org) as a backup, so your code is sent to them. It needs an internet connection and usually takes a few seconds. If your program reads input, type it in the box under the editor." : "Your code runs in a safe sandbox: it can't touch this website, your cookies or your accounts.");
     return '<section class="practice-info" aria-labelledby="pi-title"><div class="pi-main"><h2 id="pi-title">About ' + esc(LANGS[lang]) + '</h2><p>' + esc(info.about) + '</p>' +
       '<p class="pi-uses">' + info.uses.map(function (u) { return '<span class="tag">' + esc(u) + "</span>"; }).join(" ") + '</p><p class="muted small">' + esc(note) + ' Your code is saved on this device.</p></div>' +
       '<div class="pi-tips"><h3>Quick tips</h3><ul>' + info.tips.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul>" +
