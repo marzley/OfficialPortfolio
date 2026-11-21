@@ -85,6 +85,8 @@ CASES.forEach(([label, lang, code, raw, title, line, fixLabel]) => {
     if (fixLabel) ok(h && h.fixes.some((f) => fixLabel.test(f.label)), where + ": a fix says " + fixLabel + " (got " + (h && h.fixes.map((f) => f.label).join(" / ")) + ")");
   });
 });
+// a lone quote mark inside the guide's sentences must stay (it was once removed: "end with on the same line")
+ok(/end with " on the same line/.test(explain("c", CASES[1][2], CASES[1][3], "plain").why), "the guide's sentences keep their quote marks");
 const cascade = explain("c", CASES[2][2], CASES[2][3], "colour");
 ok(cascade.more.length === 3, "the cascade lists the other errors under the first");
 // characters pasted from Word, WhatsApp or a web page

@@ -786,7 +786,7 @@
       .replace(/\b([Aa]) dict\b/g, "$1 dictionary (dict)").replace(/\b([Aa]) NoneType\b/g, function (a, x) { return x === "A" ? "None" : "None"; })
       .replace(/\b([Aa]) bool\b/g, "$1 True/False value (bool)");
   }
-  function fill(s, m) { return String(s || "").replace(/\$(\d)/g, function (_, i) { return m[i] !== undefined ? m[i] : ""; }).replace(/\s+"?"\s/g, " ").replace(/""/g, "").trim(); }
+  function fill(s, m) { return String(s || "").replace(/\$(\d)/g, function (_, i) { return m[i] !== undefined ? m[i] : ""; }).replace(/\s""\s/g, " ").replace(/""/g, "").trim(); }
   var groupsOf = function (m) { return [m[0]].concat(m.slice(1).filter(function (g) { return g !== undefined; })); };
   function runFix(fn, g, x) {
     try { var f = fn(g, x); return f && typeof f.code === "string" && f.code !== x.code ? f : null; } catch (e) { return null; }
