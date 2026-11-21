@@ -16,9 +16,9 @@
   var LINE_PATTERNS = [
     /File "<exec>", line (\d+)/g,                      // Python
     /on line (\d+)/g,                                  // PHP
-    /(?:<source>|prog\.(?:c|cc|cpp|cxx)|example\.(?:c|cpp)):(\d+):\d+/g, // C, C++ (Compiler Explorer, Wandbox), Rust
-    /<source>\((\d+),\d+\)|prog\.cs\((\d+),\d+\)/g,   // C#
-    /(?:example|prog|Main)\.(?:java|kt|go|rs):(\d+)/g, // Java, Kotlin, Go, Rust
+    /(?:<source>|[\w.\-\/\\]*\.(?:c|cc|cpp|cxx|h|hpp)):(\d+):\d+/g,   // C, C++ (Compiler Explorer, Wandbox), Rust
+    /(?:<source>|[\w.\-\/\\]*\.cs)\((\d+),\d+\)/g,    // C#
+    /(?:<source>|[\w.\-\/\\]*\.(?:java|kt|kts|go|rs)):(\d+)/g, // Java, Kotlin, Go, Rust
     /\.go:(\d+):\d+/g,
     /panicked at [^:\n]*:(\d+):\d+/g,                  // Rust panics
     /file\.c:(\d+):\d+/g,                              // C (PicoC)
@@ -48,13 +48,13 @@
   function diagnostics(raw) {
     var out = [], lines = String(raw || "").split("\n"), m;
     lines.forEach(function (l, i) {
-      if ((m = /^(?:<source>|prog\.\w+|(?:\.\/)?example\.\w+|Main\.\w+):(\d+)(?::\d+)?:\s*(error|warning|fatal error):\s*(.*)$/.exec(l))) out.push({ line: +m[1], kind: m[2] === "warning" ? "warning" : "error", text: m[3], at: i });
-      else if ((m = /^(?:<source>|prog\.cs)\((\d+),\d+\):\s*(error|warning)\s+(CS\d+:\s*.*)$/.exec(l))) out.push({ line: +m[1], kind: m[2], text: m[3].replace(/\s*\[[^\]]*\]\s*$/, ""), at: i });
+      if ((m = /^(?:<source>|[\w.\-\/\\]*\.(?:c|cc|cpp|cxx|h|hpp|java|kt|kts|go|rs)):(\d+)(?::\d+)?:\s*(error|warning|fatal error):\s*(.*)$/.exec(l))) out.push({ line: +m[1], kind: m[2] === "warning" ? "warning" : "error", text: m[3], at: i });
+      else if ((m = /^(?:<source>|[\w.\-\/\\]*\.cs)\((\d+),\d+\):\s*(error|warning)\s+(CS\d+:\s*.*)$/.exec(l))) out.push({ line: +m[1], kind: m[2], text: m[3].replace(/\s*\[[^\]]*\]\s*$/, ""), at: i });
       else if ((m = /^(error|warning)(?:\[E\d+\])?:\s*(.*)$/.exec(l))) {
         var at = /-->\s*\S+?:(\d+):\d+/.exec(lines[i + 1] || "");
         if (at && !/^aborting due to|^\d+ warnings? emitted/.test(m[2])) out.push({ line: +at[1], kind: m[1], text: m[2], at: i });
       }
-      else if ((m = /^(?:\.\/)?(?:example|prog)\.go:(\d+):\d+:\s*(.*)$/.exec(l))) out.push({ line: +m[1], kind: "error", text: m[2], at: i });
+      else if ((m = /^(?:\S*\/)?[\w.\-]+\.go:(\d+):\d+:\s*(.*)$/.exec(l))) out.push({ line: +m[1], kind: "error", text: m[2], at: i });
     });
     return out;
   }
@@ -633,7 +633,7 @@
       "In Java, ' ' holds one character; text (a String) needs \" \".", "Change the single quotes to double quotes.", "System.out.println(\"hello\");", fixCharQuotes],
     ["java", /variable (\w+) might not have been initialized/i, "$1 has no value yet",
       "Java won't use a variable before it's given a value.", "Give $1 a starting value, e.g. int $1 = 0;"],
-    ["java kotlin", /NoSuchElementException/i, "Your program needs input",
+    ["java kotlin", /NoSuchElementException|ReadAfterEOFException|Unexpected EOF/i, "Your program needs input",
       "It tried to read a value (Scanner / readLine), but the Input box is empty or has fewer values than it reads.", INPUT_HELP],
     ["java", /InputMismatchException/i, "The input isn't the right type",
       "nextInt() or nextDouble() got something that isn't a number.", "Check the values in the Input box are numbers, in the order the program reads them."],
@@ -700,12 +700,20 @@
     ["rust", /attempt to divide by zero/i, "Division by zero", "A number was divided by 0.", "Check the number isn't 0 before dividing."],
     ["rust", /attempt to (add|subtract|multiply) with overflow/i, "The number got too big (or below zero)",
       "The result didn't fit in the variable's type (for example a u32 below zero).", "Use a bigger type (i64) or a signed type, or check the values first."],
+    ["rust", /\bcrab1\b|unknown crate '(?:core|std|alloc)'|can't find crate for .(?:core|std|alloc).|E0463/i, "The online Rust compiler had a problem",
+      "This is not a mistake in your code. The online compiler used for this run is an experimental one that can't build normal Rust programs.", "Tap Run again: the page switches to another compiler. If it keeps happening, tell us on WhatsApp so we can fix it.", "", null, "noline"],
     ["rust", /error(?:\[E\d+\])?:/i, "The Rust compiler found a problem", "Read the message below: Rust explains the problem and often suggests the fix.", "Use the suggestion under help:, then run again.", "", fixRustHelp],
 
     // ----- Kotlin -----
     ["kotlin", /Unresolved reference:? '?(\w+)'?/i, "\"$1\" can't be found", "Kotlin doesn't know $1.", "Check the spelling and declare it with val or var first.", "", fixName(1)],
     ["kotlin", /Val cannot be reassigned|'val' cannot be reassigned/i, "A val can't change", "val values are fixed.", "Use var for values that change.", "var total = 0\ntotal += 5", fixValToVar],
     ["kotlin", /Type mismatch|Argument type mismatch|type mismatch/i, "Type mismatch", "A value's type doesn't match what's expected.", "Convert it, e.g. text.toInt(), number.toString()."],
+    ["kotlin", /expecting a top level declaration/i, "Something is outside a function or class",
+      "Kotlin expected a function, class or val here but found something else. Usually there is an extra } above, or a { is missing.", "Check the braces above this line: every { needs one }.", "fun main() {\n    println(\"Habari\")\n}"],
+    ["kotlin", /'return' expression required|missing return|A 'return'/i, "Missing return", "A function with a body { } that promises a value must return one on every path.", "Add return value at the end (and in every if/else branch).", "fun double(n: Int): Int {\n    return n * 2\n}"],
+    ["kotlin", /only safe \(\?\.\) or non-null asserted|nullable receiver|Smart cast to .* is impossible/i, "This value could be null",
+      "The value has a type with ? (like String?), so it might be empty.", "Use ?. to read it safely, ?: to give a default, or check it first with if (x != null).", "val name: String? = readLine()\nprintln(name ?: \"Guest\")"],
+    ["kotlin", /Variable '(\w+)' must be initialized|must be initialized/i, "$1 has no value yet", "A variable must be given a value before it is used.", "Give it a starting value, e.g. var $1 = 0"],
     ["kotlin", /Expecting '\)'|Expecting '\}'|Expecting an element|Missing '\}'/i, "A bracket isn't closed", "A ( or { wasn't closed.", "Add the missing ) or }."],
     ["kotlin", /NullPointerException/i, "Your program needs input (or used null)",
       "readLine()!! found nothing to read, or a value was null.", INPUT_HELP],
@@ -740,6 +748,8 @@
     // ----- A program that ended with an error code (and nothing more specific above) -----
     ["c cpp csharp java go rust kotlin", /^exit code (\d+)$/im, "Your program ended with code $1",
       "main returned $1 (or exit($1) was called). Programs return 0 when everything went well.", "If that wasn't on purpose, end main with return 0;"],
+    ["*", /internal compiler error|compiler is broken/i, "The online compiler had a problem",
+      "This is not a mistake in your code: the compiler itself failed.", "Tap Run again (the page may switch to another compiler). If it keeps happening, tell us on WhatsApp.", "", null, "noline"],
     // ----- Online compilers that couldn't be reached -----
     ["*", /Couldn't reach the online compilers|online compilers are busy/i, "The online compiler couldn't be reached",
       "C#, Java, Go, Rust and Kotlin (and bigger C and C++ programs) are compiled online, which needs an internet connection.", "Check your connection, then tap Run again. Your code is saved on this device."],
@@ -791,6 +801,17 @@
     return null;
   }
 
+  // A broken or experimental compiler (not a mistake in the learner's code) is recognised anywhere in the output
+  function matchBroken(lang, text) {
+    for (var i = 0; i < RULES.length; i++) {
+      var rule = RULES[i];
+      if (rule[7] !== "noline" || (rule[0] !== "*" && (" " + rule[0] + " ").indexOf(" " + lang + " ") < 0)) continue;
+      var m = rule[1].exec(text);
+      if (m) return { rule: rule, g: groupsOf(m) };
+    }
+    return null;
+  }
+
   function explain(lang, code, r) {
     var raw = stripAnsi((r && (r.detail || r.error)) || "");
     if (!raw || !r || r.ok || r.stopped) return null;
@@ -810,7 +831,9 @@
     if (line && /^(javascript|typescript|react)$/.test(lang) && /\(line \d+\)/.test(raw)) line -= 1;
     var total = code.split("\n").length;
     if (line < 1 || line > total) line = 0;
-    var found = matchRule(lang, block) || (block !== raw ? matchRule(lang, raw) : null);
+    var found = matchBroken(lang, raw) || matchRule(lang, block) || (block !== raw ? matchRule(lang, raw) : null);
+    var broken = !!(found && found.rule[7] === "noline");
+    if (broken) line = 0;                                         // not about a line of the learner's code
     var py = lang === "python" ? plainTypes : function (t) { return t; };
     var hit = found ? { title: py(fill(found.rule[2], found.g)), why: py(fill(found.rule[3], found.g)), fix: py(fill(found.rule[4], found.g)), example: found.rule[5] || "" }
       : { title: "Your code has an error", why: "Read the message below: it usually names the problem and the line.", fix: "Fix one error at a time, starting with the first one, then run again.", example: "" };
@@ -827,6 +850,7 @@
     hit.raw = raw;
     hit.fixes = fixes;
     hit.more = errs.slice(1).filter(function (d) { return d.line >= 1 && d.line <= total; }).slice(0, 6).map(function (d) { return { line: d.line, text: d.text.replace(/\s*\[-W[\w=-]+\]$/, "") }; });
+    if (broken) hit.more = [];
     return hit;
   }
 

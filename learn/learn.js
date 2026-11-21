@@ -436,7 +436,7 @@
   function remoteCache(lang) {
     var c = {};
     ["ce:", "wb:"].forEach(function (k) {
-      try { var v = JSON.parse(store.get("cc-" + k + lang) || "null"); if (v && v.t > Date.now() - 7 * 86400000) c[k + lang] = v.v; } catch (e) {}
+      try { var v = JSON.parse(store.get("cc2-" + k + lang) || "null"); if (v && v.t > Date.now() - 7 * 86400000) c[k + lang] = v.v; } catch (e) {}
     });
     return c;
   }
@@ -485,7 +485,7 @@
         src.postMessage({ type: "files", req: d.req, error: "Couldn't download " + (label || "the tools for this language") + ". Check your internet connection, then tap Run again." }, "*");
       });
     } else if (d.type === "cache" && /^(ce|wb):[a-z]+$/.test(String(d.key))) {
-      store.set("cc-" + d.key, d.value == null ? "" : JSON.stringify({ t: Date.now(), v: d.value }));
+      store.set("cc2-" + d.key, d.value == null ? "" : JSON.stringify({ t: Date.now(), v: d.value }));
     }
   });
 

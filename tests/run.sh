@@ -40,6 +40,7 @@ SERVER=$!
 trap 'kill $FAKE $SERVER 2>/dev/null; rm -rf "$WORK"' EXIT
 for i in 1 2 3 4 5 6 7 8 9 10; do curl -s -o /dev/null http://127.0.0.1:8899/portal/up.php && break; sleep 0.3; done
 node tests/chat-match.test.js
+node tests/runner-logic.test.js
 if ! node tests/portal.test.js "$WORK"; then
   echo "--- server errors ---"
   grep -iE "error|warning|fatal|exception" "$WORK/server.log" "$WORK/fake.log" | tail -30 || true

@@ -524,26 +524,43 @@
     }, function (e) { if (t) clearTimeout(t); var x = new Error(e && e.name === "AbortError" ? "The online compiler took too long to answer." : "Couldn't reach the online compiler."); x.network = true; throw x; });
   }
   var num = function (v) { return String(v || "").split(/[^0-9]+/).filter(Boolean).slice(0, 3).map(function (x) { return ("000" + x).slice(-4); }).join("."); };
-  // All Compiler Explorer compilers for a language that can run code, newest stable first (GCC first for C and C++)
+  // Compiler Explorer lists many compilers per language: experimental ones, other platforms, old and unfinished
+  // versions. Only the standard compiler's newest stable versions should run learners' code. (An experimental
+  // GCC Rust front end, "gccrs", has a higher version number than rustc and can't build normal Rust programs.)
+  var CE_SKIP = /nightly|trunk|beta|snapshot|alpha|\brc\b|dev|experimental|native|arm|risc|mips|power|wasm|avr|msp|s390|loong|cross/i;
+  var CE_AVOID = /gccrs|mrustc|cg[_ -]?(gcc|clif)|clif|cranelift|miri|gccgo|tinygo|llgo|\btip\b|\bea\b|early|loom|valhalla|panama|leyden|lilliput|graal|j9\b|\bmono\b|ikvm|ppc|sparc|m68k|hexagon|xtensa|vax|bpf|cuda|nvptx|amdgcn|z80|6502|emscripten|wasi/i;
+  var CE_PREFER = { rust: /^rustc\s*\d/i, go: /(^|\s)gc\s*\d/i, java: /^(java|jdk|openjdk)\b\D*\d/i, csharp: /\.net|dotnet/i, kotlin: /^kotlinc\s*\d/i };
+  /** The compilers to use for a language, best first (GCC first for C and C++). */
+  function chooseCompilers(lang, list) {
+    var ok = (list || []).filter(function (c) { return c && c.id && c.supportsExecute !== false && !CE_SKIP.test(c.name + " " + c.id); });
+    var real = ok.filter(function (c) { return !CE_AVOID.test(c.name + " " + c.id); });
+    if (real.length) ok = real;
+    if (CE_PREFER[lang]) { var own = ok.filter(function (c) { return CE_PREFER[lang].test(c.name || ""); }); if (own.length) ok = own; }
+    ok.sort(function (a, b) {
+      var ga = /gcc/i.test(a.name) ? 1 : 0, gb = /gcc/i.test(b.name) ? 1 : 0;
+      if ((lang === "c" || lang === "cpp") && ga !== gb) return gb - ga;
+      return num(b.semver) < num(a.semver) ? -1 : num(b.semver) > num(a.semver) ? 1 : 0;
+    });
+    return ok;
+  }
+  // The compilers for a language; the page keeps the list on the learner's device for a week
   function compilerList(lang, cached) {
     if (ceCompiler[lang]) return Promise.resolve(ceCompiler[lang]);
-    if (cached && cached.ids && cached.ids.length) return Promise.resolve(ceCompiler[lang] = { ids: cached.ids, good: cached.good || 0 });
+    if (cached && cached.ids && cached.ids.length) return Promise.resolve(ceCompiler[lang] = { ids: cached.ids, names: cached.names || [], good: cached.good || 0 });
     return jsonFetch(CE + "compilers/" + CE_LANG[lang] + "?fields=id,name,semver,supportsExecute", null, 20000).then(function (list) {
-      var ok = (list || []).filter(function (c) { return c.supportsExecute !== false && !/nightly|trunk|beta|snapshot|alpha|\brc\b|dev|experimental|native|arm|risc|mips|power|wasm|avr|msp|s390|loong|cross/i.test(c.name + " " + c.id); });
-      ok.sort(function (a, b) {
-        var ga = /gcc/i.test(a.name) ? 1 : 0, gb = /gcc/i.test(b.name) ? 1 : 0;
-        if ((lang === "c" || lang === "cpp") && ga !== gb) return gb - ga;
-        return num(b.semver) < num(a.semver) ? -1 : num(b.semver) > num(a.semver) ? 1 : 0;
-      });
+      var ok = chooseCompilers(lang, list).slice(0, 8);
       if (!ok.length) throw new Error("No compiler is available for this language right now.");
-      ceCompiler[lang] = { ids: ok.slice(0, 8).map(function (c) { return c.id; }), good: 0 };
+      ceCompiler[lang] = { ids: ok.map(function (c) { return c.id; }), names: ok.map(function (c) { return c.name || c.id; }), good: 0 };
       send({ type: "cache", key: "ce:" + lang, value: ceCompiler[lang] });
       return ceCompiler[lang];
     });
   }
   function ceText(x) { return stripAnsi((x || []).map(function (l) { return l.text; }).join("\n")); }
   // A crash inside the compiler's own runtime (not the learner's code): try another compiler version
-  function infraFailure(lang, ex, stdout, stderr) {
+  // Signs that the compiler itself is broken or isn't the standard one (not a mistake in the learner's code)
+  var BROKEN = /\bcrab1\b|unknown crate '(core|std|alloc)'|can't find crate for .(core|std|alloc).|E0463|internal compiler error|compiler is broken|cannot find GOROOT|cannot find package "(fmt|os|strings|errors)"|Could not load file or assembly|You must install \.NET|NoClassDefFoundError: kotlin/i;
+  function infraFailure(lang, ex, stdout, stderr, built) {
+    if (built && BROKEN.test(built)) return true;
     if (stdout) return false;
     if (ex.didExecute === false && !(ex.buildResult && ex.buildResult.code)) return true;
     if (/Exception in thread|Error occurred during initialization of VM|Could not find or load main class|Internal compiler error/i.test(stderr)) {
@@ -555,19 +572,23 @@
   /** Compiler Explorer: resolves with { buildErr, stdout, stderr, timedOut, code }. */
   function viaGodbolt(lang, code, stdin, cached, note) {
     var attempt = function (c, n) {
-      var id = c.ids[(c.good + n) % c.ids.length];
+      var at = (c.good + n) % c.ids.length, id = c.ids[at];
       return jsonFetch(CE + "compiler/" + encodeURIComponent(id) + "/compile", {
         source: code, lang: CE_LANG[lang], allowStoreCodeDebug: false,
         options: { userArguments: lang === "c" || lang === "cpp" ? "-Wall" : "", executeParameters: { args: [], stdin: stdin || "" }, compilerOptions: { executorRequest: true, skipAsm: true }, filters: { execute: true }, tools: [], libraries: [] }
       }, 40000).then(function (r) {
         var ex = r.execResult || r, stdout = ceText(ex.stdout), stderr = ceText(ex.stderr);
-        if (infraFailure(lang, ex, stdout, stderr) && n + 1 < Math.min(3, c.ids.length)) {
+        var made = ex.buildResult || r.buildResult || {};
+        var built = made.code ? ceText(made.stderr) + "\n" + ceText(made.stdout) : "", bad = infraFailure(lang, ex, stdout, stderr, built);
+        if (bad && n + 1 < Math.min(3, c.ids.length)) {
           if (note) note("That compiler version had a problem, trying another one…");
           return attempt(c, n + 1);
         }
+        // Still broken after trying others: that is not the learner's code, so don't show it as their error. The backup compiler gets a go.
+        if (bad && (BROKEN.test(built) || (ex.didExecute === false && !made.code))) { var broken = new Error("The online compiler had a problem."); broken.infra = true; throw broken; }
         if (c.good !== (c.good + n) % c.ids.length) { c.good = (c.good + n) % c.ids.length; send({ type: "cache", key: "ce:" + lang, value: c }); }
         var build = ex.buildResult || r.buildResult || {};
-        return { buildErr: build.code ? (ceText(build.stderr) || ceText(build.stdout)) : "", warnings: build.code ? "" : ceText(build.stderr), stdout: stdout, stderr: stderr, timedOut: !!ex.timedOut, code: ex.code, signal: (/\b(SIG[A-Z]+)\b/.exec(stderr + " " + (ex.signal || "")) || [])[1] || "" };
+        return { buildErr: build.code ? (ceText(build.stderr) || ceText(build.stdout)) : "", warnings: build.code ? "" : ceText(build.stderr), stdout: stdout, stderr: stderr, timedOut: !!ex.timedOut, code: ex.code, compiler: (c.names || [])[at] || "", signal: (/\b(SIG[A-Z]+)\b/.exec(stderr + " " + (ex.signal || "")) || [])[1] || "" };
       }, function (e) {
         // A compiler that has been retired since the list was saved: forget the list and fetch it again
         if (e.server && n === 0 && cached) { ceCompiler[lang] = null; send({ type: "cache", key: "ce:" + lang, value: null }); return compilerList(lang, null).then(function (c2) { return attempt(c2, 0); }); }
@@ -593,14 +614,14 @@
         return ok[0].name;
       });
     return pick.then(function (name) {
-      return jsonFetch(WB + "compile.json", { compiler: name, code: code, stdin: stdin || "", options: lang === "c" || lang === "cpp" ? "warning" : "", save: false }, 40000);
+      return jsonFetch(WB + "compile.json", { compiler: name, code: code, stdin: stdin || "", options: lang === "c" || lang === "cpp" ? "warning" : "", save: false }, 40000).then(function (r) { r.__compiler = name; return r; });
     }).then(function (r) {
       var status = String(r.status == null ? "" : r.status), compileErr = stripAnsi(r.compiler_error);
       r.compiler_output = stripAnsi(r.compiler_output); r.program_output = r.program_output == null ? r.program_output : stripAnsi(r.program_output); r.program_error = r.program_error == null ? r.program_error : stripAnsi(r.program_error);
       var built = r.program_output != null || r.program_error != null;
       return { buildErr: !built && status !== "0" ? (compileErr || r.compiler_output || "Your code didn't compile.") : "", stdout: (r.program_output || "").replace(/\n$/, ""), stderr: (r.program_error || "").replace(/\n$/, ""),
         timedOut: /SIGKILL|SIGXCPU|time/i.test(String(r.signal || "")), code: status === "" ? 0 : Number(status),
-        warnings: built || status === "0" ? compileErr : "", signal: String(r.signal || "") };
+        warnings: built || status === "0" ? compileErr : "", signal: String(r.signal || ""), compiler: r.__compiler || "" };
     });
   }
   var SIGNALS = { 134: "SIGABRT", 136: "SIGFPE", 139: "SIGSEGV", 137: "SIGKILL" };
@@ -627,14 +648,14 @@
       var sig = r.signal || SIGNALS[r.code] || (r.code < 0 ? SIGNALS[128 - r.code] : "") || "";
       if (r.code && !r.timedOut) run.write("\nProgram exited with code " + r.code + (sig ? " (" + sig + ")" : "") + ".\n", "muted");
       if (!r.stdout && !r.stderr && !r.code) run.write("(no output)\n", "muted");
-      run.write("\nRan on " + where + " in " + ((Date.now() - t0) / 1000).toFixed(1) + " s.", "note");
+      run.write("\nRan on " + where + (r.compiler ? " with " + r.compiler : "") + " in " + ((Date.now() - t0) / 1000).toFixed(1) + " s.", "note");
       var bad = !!r.stderr || r.timedOut || !!r.code;
       run.finish({ ok: !bad, text: r.stdout, error: r.stderr ? r.stderr.split("\n")[0] : r.timedOut ? "took too long" : r.code ? "exit code " + r.code + (sig ? " " + sig : "") : "",
         detail: (r.stderr || "") + (r.timedOut ? "\nYour program took too long and was stopped." : "") + (r.code ? "\nexit code " + r.code + (sig ? " " + sig : "") : ""), warnings: r.warnings || "", exit: r.code || 0, signal: sig, where: where });
     };
     viaGodbolt(lang, code, stdin, cache["ce:" + lang], function (t) { run.status(t); }).then(function (r) { show(r, "Compiler Explorer (godbolt.org)"); }, function (e1) {
       if (run.ended) return;
-      run.status("Compiler Explorer didn't answer, trying the backup compiler…");
+      run.status(e1 && e1.infra ? "That compiler had a problem, trying the backup compiler…" : "Compiler Explorer didn't answer, trying the backup compiler…");
       return viaWandbox(lang, code, stdin, cache["wb:" + lang]).then(function (r) { show(r, "Wandbox (wandbox.org)"); }, function (e2) {
         clearTimeout(slow);
         if (run.ended) return;
