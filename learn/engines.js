@@ -1,4 +1,4 @@
-/* Marzley Learn: language engines that run inside a Web Worker (started by runner.js), so code that
+/* Marzley Learn: language engines that run inside a Web Worker (started by console.js), so code that
  * never ends can be stopped. Each engine returns { out, err }. Loaded with importScripts(). */
 (function () {
   "use strict";
@@ -144,13 +144,15 @@
 
   self.onmessage = function (e) {
     var d = e.data || {};
+    // Files for an engine, sent by the console frame before the first run (served to importScripts and fetch)
+    if (d.files) { if (self.__addFiles) self.__addFiles(d.files); return; }
     out = ""; err = "";
     var engine = ENGINES[d.lang];
-    if (!engine) { self.postMessage({ done: true, out: "", err: "Unknown language" }); return; }
-    var finish = function () { self.postMessage({ done: true, out: out, err: err }); };
+    if (!engine) { self.postMessage({ t: "done", done: true, out: "", err: "Unknown language" }); return; }
+    var finish = function () { self.postMessage({ t: "done", done: true, out: out, err: err }); };
     try {
       Promise.resolve(engine(d.code, d.stdin)).then(finish, function (x) { err += String(x && x.message || x) + "\n"; finish(); });
     } catch (x) { err += String(x && x.message || x) + "\n"; finish(); }
   };
-  self.postMessage({ ready: true });
+  self.postMessage({ t: "ready", ready: true });
 })();

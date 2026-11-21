@@ -240,35 +240,199 @@
     return { html: out.join("\n"), blocks: blocks, quizzes: quizzes };
   }
 
-  // ---------- running code (in the sandboxed frame) ----------
+  // ---------- running code ----------
+  // Web pages (HTML, CSS, JavaScript, TypeScript, React, Markdown) run in a sandboxed frame inside the code
+  // box. Every other language runs in one hidden, sandboxed "console" frame shared by all code boxes
+  // (learn/console.js), so a language loads once per visit; its output is shown here.
   function runLang(lang, code) { return lang === "javascript" && /^\s*</.test(code) ? "html" : lang; }
-  function Runner(box) {
-    this.box = box;
-    this.frame = null;
-    this.frameLang = null;
-    this.ready = null;
-  }
-  Runner.prototype.fresh = function (kind) {
-    if (this.frame) this.frame.remove();
+  var WEB_LANGS = { html: 1, css: 1, javascript: 1, typescript: 1, react: 1, markdown: 1 };
+  var REMOTE_LANGS = { c: 1, cpp: 1, csharp: 1, java: 1, go: 1, rust: 1, kotlin: 1 };
+  var ONLINE_LANGS = { csharp: 1, java: 1, go: 1, rust: 1, kotlin: 1 };
+  // The files a language needs on this device ("dir/" = every file in it)
+  var LANG_FILES = { python: ["vendor/pyodide/"], sql: ["vendor/sqljs/"], php: ["vendor/php/"], c: ["learn/engines.js", "vendor/langs/picoc.js"], cpp: ["learn/engines.js", "vendor/langs/jscpp.js"],
+    lua: ["learn/engines.js", "vendor/langs/fengari.js"], ruby: ["learn/engines.js", "vendor/langs/ruby-wasi.js", "vendor/langs/ruby.wasm"], sass: ["learn/engines.js", "vendor/langs/sass.js"],
+    prolog: ["learn/engines.js", "vendor/langs/tau-prolog.js"], regex: ["learn/engines.js"], json: [], typescript: ["vendor/sucrase/sucrase.min.js"],
+    react: ["vendor/sucrase/sucrase.min.js", "vendor/react/"], markdown: ["vendor/marked/marked.min.js"] };
+  var RT_LABELS = [["vendor/pyodide/", "Python"], ["vendor/php/", "PHP"], ["vendor/sqljs/", "SQL"], ["vendor/langs/ruby", "Ruby"], ["vendor/langs/sass", "Sass"], ["vendor/langs/picoc", "C"],
+    ["vendor/langs/jscpp", "C++"], ["vendor/langs/fengari", "Lua"], ["vendor/langs/tau", "Prolog"], ["vendor/sucrase/", "TypeScript"], ["vendor/react/", "React"], ["vendor/marked/", "Markdown"], ["learn/", "the code runner"]];
+  var mb = function (n) { return (n / 1048576).toFixed(n < 1048576 ? 2 : 1).replace(/\.0$/, "") + " MB"; };
+
+  /** Language runtimes kept on this device (Cache Storage), listed with fingerprints in learn/runtimes.json.
+   * A file downloads once and again only when it changes. The runner frames can't keep anything
+   * (they're sandboxed), so they ask the page for files. */
+  var RT = (function () {
+    var NAME = "marzley-runtimes";
+    var SAFE = /^(vendor\/(pyodide|php|sqljs|langs|sucrase|react|marked)\/[\w.-]+|learn\/(console|engines)\.js)$/;
+    var TYPES = { js: "text/javascript", wasm: "application/wasm", json: "application/json", zip: "application/zip" };
+    var tag = document.querySelector("script[data-rt]");
+    var ver = tag ? tag.getAttribute("data-rt") : "";
+    var list = null, box = null, busy = {};
+    function manifest() {
+      if (!list) list = fetch("runtimes.json" + (ver ? "?v=" + ver : ""), { credentials: "same-origin" })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (m) { return m && m.files ? m : { files: {} }; })
+        .catch(function () { list = null; return { files: {} }; });
+      return list;
+    }
+    function store() {
+      if (!box) box = (window.caches && window.isSecureContext ? caches.open(NAME) : Promise.reject(new Error("no cache"))).catch(function () { return null; });
+      return box;
+    }
+    function expand(paths, m) {
+      var out = [];
+      (paths || []).forEach(function (p) {
+        if (typeof p !== "string") return;
+        if (p.slice(-1) === "/") Object.keys(m.files).forEach(function (k) { if (k.indexOf(p) === 0 && k.indexOf("/", p.length) < 0) out.push(k); });
+        else out.push(p);
+      });
+      return out.filter(function (p, i) { return SAFE.test(p) && out.indexOf(p) === i; });
+    }
+    function key(p, m) { var f = m.files[p]; return new URL("../" + p + (f ? "?h=" + f.h : ""), location.href).href; }
+    function typed(blob, p) { var t = TYPES[p.split(".").pop()] || "application/octet-stream"; return blob.type === t ? blob : new Blob([blob], { type: t }); }
+    function download(p, m, c, onBytes) {
+      if (busy[p]) return busy[p];
+      var size = (m.files[p] || {}).s || 0, url = key(p, m);
+      var job = busy[p] = fetch(url, { credentials: "same-origin" }).then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        if (!r.body || !r.body.getReader) return r.blob();
+        var reader = r.body.getReader(), chunks = [], got = 0;
+        var pump = function () {
+          return reader.read().then(function (x) {
+            if (x.done) return new Blob(chunks);
+            chunks.push(x.value); got += x.value.length; onBytes(got);
+            return pump();
+          });
+        };
+        return pump();
+      }).then(function (blob) {
+        if (!blob.size) throw new Error("empty");
+        blob = typed(blob, p);
+        // Keep it for next time (if the device is out of space, it still works this time). A size that
+        // doesn't match the list (a half-finished upload of the site) is used this time but not kept.
+        if (c && m.files[p] && blob.size === size) c.put(url, new Response(blob, { headers: { "Content-Type": blob.type } })).catch(function () {});
+        return blob;
+      });
+      job.then(function () { delete busy[p]; }, function () { delete busy[p]; });
+      return job;
+    }
+    /** { path: Blob } for these paths; onProgress(done, total, label) while something downloads. */
+    function get(paths, onProgress) {
+      return manifest().then(function (m) {
+        var want = expand(paths, m);
+        return store().then(function (c) {
+          return Promise.all(want.map(function (p) { return c && m.files[p] ? c.match(key(p, m)).catch(function () { return null; }) : null; })).then(function (hits) {
+            var total = 0, got = {}, label = "";
+            want.forEach(function (p, i) {
+              if (hits[i]) return;
+              total += (m.files[p] || {}).s || 0;
+              if (!label) RT_LABELS.some(function (x) { return p.indexOf(x[0]) === 0 && (label = x[1]); });
+            });
+            var report = function () { var n = 0; for (var k in got) n += got[k]; if (onProgress && total) onProgress(n, total, label); };
+            report();
+            return Promise.all(want.map(function (p, i) {
+              return (hits[i] ? hits[i].blob().then(function (b) { return typed(b, p); }) : download(p, m, c, function (n) { got[p] = n; report(); })).then(function (b) { return [p, b]; });
+            }));
+          });
+        }).then(function (pairs) { var map = {}; pairs.forEach(function (x) { map[x[0]] = x[1]; }); return map; });
+      });
+    }
+    /** Resolves true when every file is already on this device (so starting the language costs no data). */
+    function has(paths) {
+      if (!paths || !paths.length) return Promise.resolve(true);
+      return manifest().then(function (m) {
+        var want = expand(paths, m);
+        return store().then(function (c) {
+          if (!c || !want.length) return false;
+          return Promise.all(want.map(function (p) { return m.files[p] ? c.match(key(p, m)) : null; })).then(function (r) { return r.every(Boolean); });
+        });
+      }).catch(function () { return false; });
+    }
+    function size(paths) {
+      return manifest().then(function (m) { var n = 0; expand(paths, m).forEach(function (p) { n += (m.files[p] || {}).s || 0; }); return n; });
+    }
+    /** Removes old versions of files (once per visit, when the page is idle). */
+    function prune() {
+      manifest().then(function (m) {
+        if (!Object.keys(m.files).length) return;
+        var keep = {};
+        Object.keys(m.files).forEach(function (p) { keep[key(p, m)] = 1; });
+        return store().then(function (c) {
+          return c && c.keys().then(function (reqs) { reqs.forEach(function (r) { if (!keep[r.url]) c.delete(r); }); });
+        });
+      }).catch(function () {});
+    }
+    return { get: get, has: has, size: size, prune: prune };
+  })();
+  setTimeout(function () { (window.requestIdleCallback || setTimeout)(RT.prune); }, 15000);
+
+  // ---------- the console frame (one per visit, shared by every code box) ----------
+  var Host = { frame: null, win: null, ready: null, runs: {}, queue: [], active: null, seq: 0, timer: null };
+  function host() {
+    if (Host.ready) return Host.ready;
     var f = document.createElement("iframe");
-    f.className = "run-frame";
-    f.title = "Output";
-    f.setAttribute("sandbox", "allow-scripts allow-modals");
-    f.setAttribute("loading", "eager");
-    f.src = "runner.html?theme=" + (isDark() ? "dark" : "light");
-    var self = this;
-    this.ready = new Promise(function (resolve) {
-      var onMsg = function (e) { if (e.source === f.contentWindow && e.data && e.data.type === "ready") { window.removeEventListener("message", onMsg); resolve(); } };
-      window.addEventListener("message", onMsg);
-    });
-    this.box.appendChild(f);
-    this.frame = f;
-    this.frameLang = kind;
-    return this.ready;
-  };
+    f.className = "run-host";
+    f.setAttribute("sandbox", "allow-scripts");
+    f.setAttribute("aria-hidden", "true");
+    f.setAttribute("tabindex", "-1");
+    f.title = "Code runner";
+    f.src = "runner.html?mode=console&vfs=1";
+    Host.ready = new Promise(function (resolve, reject) { Host.onready = resolve; Host.onfail = reject; });
+    Host.ready.catch(function () {});
+    Host.frame = f;
+    document.body.appendChild(f);
+    clearTimeout(Host.timer);
+    Host.timer = setTimeout(function () { if (!Host.win) resetHost("The code runner couldn't start. Check your internet connection, then tap Run again."); }, 30000);
+    return Host.ready;
+  }
+  /** Throws the console frame away (it stopped answering): runs in progress end with this message. */
+  function resetHost(msg) {
+    if (Host.frame) Host.frame.remove();
+    if (Host.onfail) Host.onfail(new Error(msg));
+    Host.frame = Host.win = Host.ready = null;
+    var all = Host.queue.slice();
+    if (Host.active) all.unshift(Host.active);
+    Host.queue = []; Host.active = null;
+    all.forEach(function (r) { delete Host.runs[r.id]; r.done({ ok: false, error: msg, setup: true }); });
+  }
+  function pump() {
+    if (Host.active || !Host.queue.length) return;
+    var r = Host.active = Host.queue.shift();
+    r.alive = Date.now();
+    host().then(function () {
+      if (Host.active !== r) return;
+      r.t0 = performance.now();
+      Host.win.postMessage({ type: "run", id: r.id, lang: r.lang, code: r.code, stdin: r.stdin, inputs: r.inputs, seed: r.seed, cache: REMOTE_LANGS[r.lang] ? remoteCache(r.lang) : undefined }, "*");
+    }, function () {});
+  }
+  // A run that hears nothing for a long time (no output, no download): the frame is stuck, start a new one
+  setInterval(function () {
+    var r = Host.active;
+    if (r && r.alive && Date.now() - r.alive > (REMOTE_LANGS[r.lang] ? 110000 : 45000)) resetHost("The code runner stopped responding. Tap Run to try again.");
+  }, 5000);
+  /** Sends one run to the console frame. on: { out, status, table, html, done } */
+  function hostRun(opts) {
+    var r = Object.assign({ id: ++Host.seq }, opts);
+    Host.runs[r.id] = r;
+    var finish = r.done;
+    r.done = function (res) { delete Host.runs[r.id]; finish(res); };
+    Host.queue.push(r);
+    if (Host.active && r.status) r.status("Waiting for another program on this page to finish…");
+    pump();
+    return r;
+  }
+  function hostStop(r) {
+    var i = Host.queue.indexOf(r);
+    if (i >= 0) { Host.queue.splice(i, 1); delete Host.runs[r.id]; return; }
+    if (Host.active === r && Host.win) Host.win.postMessage({ type: "stop", id: r.id }, "*");
+  }
+  function hostWarm(lang) {
+    var go = function () { host().then(function () { Host.win.postMessage({ type: "warm", lang: lang, cache: REMOTE_LANGS[lang] ? remoteCache(lang) : undefined }, "*"); }, function () {}); };
+    if (ONLINE_LANGS[lang]) return go();
+    if (LANG_FILES[lang] && !WEB_LANGS[lang]) RT.has(LANG_FILES[lang].concat(["learn/console.js"])).then(function (ok) { if (ok) go(); });
+  }
+
   // Online compiler lists, kept on this device for a week so a run doesn't wait for them (the sandboxed
   // runner can't use storage itself: it sends them here and gets them back with each run)
-  var REMOTE_LANGS = { c: 1, cpp: 1, csharp: 1, java: 1, go: 1, rust: 1, kotlin: 1 };
   function remoteCache(lang) {
     var c = {};
     ["ce:", "wb:"].forEach(function (k) {
@@ -276,49 +440,303 @@
     });
     return c;
   }
+  var pageFrames = [];
+  function fromRunner(src) {
+    if (Host.frame && src === Host.frame.contentWindow) return true;
+    pageFrames = pageFrames.filter(function (f) { return f.el.isConnected; });
+    return pageFrames.some(function (f) { return f.el.contentWindow === src; });
+  }
   window.addEventListener("message", function (e) {
     var d = e.data || {};
-    if (d.type !== "cache" || !/^(ce|wb):[a-z]+$/.test(String(d.key))) return;
-    // Only from one of our own runner frames
-    if (!Array.prototype.some.call(document.querySelectorAll("iframe.run-frame"), function (f) { return f.contentWindow === e.source; })) return;
-    store.set("cc-" + d.key, d.value == null ? "" : JSON.stringify({ t: Date.now(), v: d.value }));
+    if (!d || typeof d.type !== "string") return;
+    // The console frame
+    if (Host.frame && e.source === Host.frame.contentWindow) {
+      if (d.type === "ready") { Host.win = e.source; clearTimeout(Host.timer); if (Host.onready) Host.onready(); return; }
+      if (d.type === "failed") return resetHost("The code runner couldn't start. Check your internet connection, then tap Run again.");
+      var r = Host.runs[d.id];
+      if (r) {
+        r.alive = Date.now();
+        if (d.type === "out" && r.out) r.out(d.parts || []);
+        else if (d.type === "status" && r.status) r.status(String(d.text || ""));
+        else if (d.type === "table" && r.table) r.table(d);
+        else if (d.type === "html" && r.html) r.html(String(d.html || ""));
+        else if (d.type === "done") {
+          if (Host.active === r) Host.active = null;
+          d.ms = r.t0 ? performance.now() - r.t0 : 0;
+          r.done(d);
+          pump();
+        }
+        return;
+      }
+      if (d.type === "done" && Host.active && Host.active.id === d.id) { Host.active = null; pump(); }
+    }
+    if (!fromRunner(e.source)) return;
+    if (d.type === "ready") {
+      pageFrames.forEach(function (f) { if (f.el.contentWindow === e.source && f.onready) f.onready(); });
+    } else if (d.type === "need" && Array.isArray(d.paths)) {
+      // A runner asks for files: from this device, or downloaded once (with progress in the code box)
+      var run = Host.runs[d.run], src = e.source;
+      var progress = run && run.progress ? function (n, total, label) { run.alive = Date.now(); run.progress(n, total, label); } : null;
+      RT.get(d.paths, progress).then(function (files) {
+        src.postMessage({ type: "files", req: d.req, files: files }, "*");
+      }, function () {
+        var label = "";
+        RT_LABELS.some(function (x) { return String(d.paths[0] || "").indexOf(x[0]) === 0 && (label = x[1]); });
+        src.postMessage({ type: "files", req: d.req, error: "Couldn't download " + (label || "the tools for this language") + ". Check your internet connection, then tap Run again." }, "*");
+      });
+    } else if (d.type === "cache" && /^(ce|wb):[a-z]+$/.test(String(d.key))) {
+      store.set("cc-" + d.key, d.value == null ? "" : JSON.stringify({ t: Date.now(), v: d.value }));
+    }
   });
-  /** Starts the runner and fetches the compiler list in advance, so the first Run is quicker. */
-  Runner.prototype.warm = function (lang) {
-    if (!REMOTE_LANGS[lang]) return;
+
+  // ---------- the output of a console run, drawn on this page ----------
+  function Console() {
+    this.el = el('<div class="run-console" tabindex="0" role="log" aria-label="Output"></div>');
+    this.statusEl = null; this.inputEl = null; this.stick = true;
     var self = this;
-    (this.frameLang === lang && this.frame ? this.ready : this.fresh(lang)).then(function () {
-      if (self.frame) self.frame.contentWindow.postMessage({ type: "warm", lang: lang, cache: remoteCache(lang) }, "*");
+    this.el.addEventListener("scroll", function () { self.stick = self.el.scrollTop + self.el.clientHeight >= self.el.scrollHeight - 24; });
+  }
+  Console.prototype.clear = function () { this.cancelInput(); this.el.textContent = ""; this.statusEl = null; this.stick = true; };
+  Console.prototype.scroll = function () { if (this.stick) this.el.scrollTop = this.el.scrollHeight; };
+  Console.prototype.write = function (parts) {
+    var self = this;
+    parts.forEach(function (p) {
+      var text = String(p[0] || ""), kind = String(p[1] || "");
+      if (!text) return;
+      var last = self.statusEl ? self.statusEl.previousSibling : self.el.lastChild;
+      if (last && last.nodeType === 1 && last.tagName === "SPAN" && last.getAttribute("data-k") === kind && last.firstChild) last.firstChild.appendData(text);
+      else {
+        var s = document.createElement("span");
+        s.setAttribute("data-k", kind);
+        if (kind) s.className = "con-" + kind;
+        s.textContent = text;
+        self.el.insertBefore(s, self.statusEl);
+      }
+    });
+    this.scroll();
+  };
+  Console.prototype.text = function () {
+    var t = "";
+    Array.prototype.forEach.call(this.el.childNodes, function (n) { if (n.nodeType === 1 && /con-status|con-ask/.test(n.className)) return; t += n.nodeType === 1 && n.tagName === "TABLE" ? n.innerText + "\n" : n.textContent; });
+    return t;
+  };
+  /** A line that says what's happening ("Starting Python…"); empty text removes it. */
+  Console.prototype.status = function (text, progress) {
+    if (!text) { if (this.statusEl) this.statusEl.remove(); this.statusEl = null; return; }
+    if (!this.statusEl) { this.statusEl = el('<div class="con-status" role="status"><span class="con-spin" aria-hidden="true"></span><span class="con-st"></span></div>'); this.el.appendChild(this.statusEl); }
+    this.statusEl.querySelector(".con-st").textContent = text;
+    var bar = this.statusEl.querySelector("progress");
+    if (progress) {
+      if (!bar) { bar = document.createElement("progress"); bar.max = 1; this.statusEl.appendChild(bar); }
+      bar.value = progress;
+    } else if (bar) bar.remove();
+    this.scroll();
+  };
+  Console.prototype.progress = function (n, total, label) {
+    this.status("Downloading " + label + "… " + mb(n) + " of " + mb(total) + ". It stays on this device, so this happens only once.", Math.max(0.02, n / total));
+  };
+  Console.prototype.table = function (d) {
+    var t = document.createElement("table");
+    var tr = t.createTHead().insertRow();
+    (d.columns || []).forEach(function (c) { var th = document.createElement("th"); th.textContent = c; tr.appendChild(th); });
+    var body = t.createTBody();
+    (d.values || []).forEach(function (row) {
+      var r = body.insertRow();
+      row.forEach(function (v) { var td = r.insertCell(); td.textContent = v === null ? "NULL" : String(v); if (v === null) td.className = "con-null"; });
+    });
+    var wrap = document.createElement("div");
+    wrap.className = "con-table";
+    wrap.appendChild(t);
+    this.el.insertBefore(wrap, this.statusEl);
+    this.write([["Number of records: " + (d.values || []).length + (d.more ? " (showing the first 1,000)" : "") + "\n", "muted"]]);
+  };
+  /** PHP that prints HTML: shown as a page (in a frame with no scripts) and as source. */
+  Console.prototype.html = function (html) {
+    var wrap = el('<div class="con-html"><p class="con-muted">Rendered HTML:</p><iframe sandbox="" title="PHP output as a page"></iframe><p class="con-muted">Source:</p></div>');
+    wrap.querySelector("iframe").srcdoc = html;
+    this.el.insertBefore(wrap, this.statusEl);
+    this.write([[html + (/\n$/.test(html) ? "" : "\n"), ""]]);
+  };
+  /** An answer box right in the output, like a terminal. Resolves with the text, or null to end the input. */
+  Console.prototype.ask = function (focus) {
+    var self = this;
+    this.cancelInput();
+    return new Promise(function (resolve) {
+      var box = el('<span class="con-ask"><input type="text" class="con-input" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="send" aria-label="Your program is waiting for input: type here and press Enter" />' +
+        '<span class="con-ask-hint">Type your answer and press Enter <button type="button" class="linklike con-eof" title="End the input (like Ctrl+D)">End input</button></span></span>');
+      var input = box.querySelector("input");
+      var answer = function (v) { self.inputEl = null; box.remove(); resolve(v); };
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") { e.preventDefault(); e.stopPropagation(); answer(input.value); }
+        else if (e.key === "d" && e.ctrlKey) { e.preventDefault(); answer(null); }
+      });
+      box.querySelector(".con-eof").addEventListener("click", function () { answer(null); });
+      self.inputEl = { box: box, cancel: function () { box.remove(); self.inputEl = null; resolve(undefined); } };
+      self.el.insertBefore(box, self.statusEl);
+      self.scroll();
+      // Only take the focus when the page isn't busy scrolling elsewhere (no jumping on phones)
+      var r = self.el.getBoundingClientRect();
+      if (focus !== false && r.bottom > 0 && r.top < window.innerHeight) input.focus({ preventScroll: true });
     });
   };
-  /** Run code; resolves with { text, ok, error } once the frame reports its output. */
-  Runner.prototype.run = function (lang, code, stdin) {
-    var self = this;
+  Console.prototype.cancelInput = function () { if (this.inputEl) this.inputEl.cancel(); };
+
+  // ---------- a code box's runner ----------
+  /** One per code box. run() resolves with { text, ok, error, detail, warnings, stopped, ms } when the
+   * program ends (after any input the learner typed). onstate(state, info) follows it: "running",
+   * "input" (waiting for the learner) and "idle". */
+  function Runner(box) {
+    this.box = box;
+    this.frame = null; this.spare = null;
+    this.con = null; this.session = null;
+    this.onstate = null;
+  }
+  Runner.prototype.state = function (s, info) { if (this.onstate) this.onstate(s, info || {}); };
+  /** opts.auto: started by the page, not the learner (don't take the keyboard focus) */
+  Runner.prototype.run = function (lang, code, stdin, opts) {
     lang = runLang(lang, code);
-    var web = lang === "html" || lang === "css" || lang === "javascript" || lang === "typescript" || lang === "react" || lang === "markdown";
-    // Web code replaces the frame's page, so it gets a new frame each run. Python and SQL keep theirs (loaded once).
-    var ready = web || this.frameLang !== lang || !this.frame ? this.fresh(lang) : this.ready;
+    this.stop(true);
     this.box.hidden = false;
-    return ready.then(function () {
-      return new Promise(function (resolve) {
-        var done = false;
+    return WEB_LANGS[lang] ? this.runPage(lang, code) : this.runConsole(lang, code, stdin, opts || {});
+  };
+  Runner.prototype.runConsole = function (lang, code, stdin, opts) {
+    var self = this;
+    if (this.frame) { this.frame.el.remove(); this.frame = null; }
+    if (!this.con) this.con = new Console();
+    if (this.con.el.parentNode !== this.box) this.box.appendChild(this.con.el);
+    var con = this.con;
+    con.clear();
+    var s = this.session = { lang: lang, inputs: [], seed: Math.floor(Math.random() * 2147483647), over: false, r: null };
+    this.state("running");
+    return new Promise(function (resolve) {
+      s.resolve = function (res) { if (!s.over) { s.over = true; resolve(res); } };
+      var send = function () {
+        var replay = s.inputs.length > 0, fresh = replay;
+        // Draw a replay's output in one go, so the screen doesn't flash
+        var first = function () { if (fresh) { fresh = false; con.clear(); } };
+        s.r = hostRun({ lang: lang, code: code, stdin: stdin || "", inputs: s.inputs.slice(), seed: s.seed,
+          out: function (parts) { if (s.over) return; first(); con.write(parts); },
+          status: function (t) { if (!s.over) con.status(t); },
+          progress: function (n, total, label) { if (!s.over) con.progress(n, total, label); },
+          table: function (d) { if (!s.over) { first(); con.table(d); } },
+          html: function (h) { if (!s.over) { first(); con.html(h); } },
+          done: function (d) {
+            if (s.over) return;
+            first();
+            con.status("");
+            if (d.input) {
+              // The program is waiting for the learner to type something
+              self.state("input");
+              return con.ask(!opts.auto || s.inputs.length > 0).then(function (v) {
+                if (s.over || v === undefined) return;
+                s.inputs.push(v);
+                self.state("running");
+                send();
+              });
+            }
+            if (d.setup && !d.stopped) con.write([[String(d.error || "") + "\n", "err"]]);
+            var res = { text: String(d.text || ""), ok: !!d.ok, error: d.error || "", detail: d.detail || "", warnings: d.warnings || "", exit: d.exit || 0, signal: d.signal || "",
+              where: d.where || "", compile: !!d.compile, offline: !!d.offline, stopped: !!d.stopped, setup: !!d.setup, timeout: !!d.timeout, ms: d.ms || 0, inputs: s.inputs.slice() };
+            self.session = null;
+            s.resolve(res);
+            self.state("idle", res);
+          } });
+      };
+      send();
+    });
+  };
+  function makeFrame(box, hidden) {
+    var f = { el: document.createElement("iframe") };
+    f.el.className = "run-frame";
+    f.el.title = "Output";
+    f.el.setAttribute("sandbox", "allow-scripts allow-modals");
+    f.el.setAttribute("loading", "eager");
+    f.el.src = "runner.html?vfs=1&theme=" + (isDark() ? "dark" : "light");
+    if (hidden) f.el.style.display = "none";
+    f.ready = new Promise(function (resolve) { f.onready = resolve; });
+    pageFrames.push(f);
+    box.appendChild(f.el);
+    return f;
+  }
+  /** Loads a page frame in the background, so the next Run of a web page shows at once. */
+  Runner.prototype.prewarm = function () { if (!this.spare) this.spare = makeFrame(this.box, true); };
+  Runner.prototype.runPage = function (lang, code) {
+    var self = this;
+    if (this.con && this.con.el.parentNode) this.con.el.remove();
+    var old = this.frame, f = this.spare || makeFrame(this.box);
+    this.spare = null;
+    f.el.style.display = "";
+    if (old) old.el.remove();
+    this.frame = f;
+    var s = this.session = { over: false, page: true };
+    this.state("running");
+    var t0 = performance.now();
+    return new Promise(function (resolve) {
+      s.resolve = function (res) { if (!s.over) { s.over = true; resolve(res); } };
+      // The frame itself couldn't load (no connection): say so instead of waiting for ever
+      var noFrame = setTimeout(function () {
+        if (s.over) return;
+        if (self.frame === f) { f.el.remove(); self.frame = null; }
+        if (!self.con) self.con = new Console();
+        self.con.clear();
+        self.box.appendChild(self.con.el);
+        self.con.write([["The code runner couldn't load. Check your internet connection, then tap Run again.\n", "err"]]);
+        self.session = null;
+        var res = { text: "", ok: false, error: "The code runner couldn't load. Check your internet connection, then tap Run again.", setup: true, ms: performance.now() - t0 };
+        s.resolve(res);
+        self.state("idle", res);
+      }, 20000);
+      f.ready.then(function () {
+        clearTimeout(noFrame);
+        if (s.over) return;
         var onMsg = function (e) {
-          if (!self.frame || e.source !== self.frame.contentWindow || !e.data || e.data.type !== "output") return;
+          if (e.source !== f.el.contentWindow || !e.data || e.data.type !== "output") return;
+          finish({ text: String(e.data.text || ""), ok: !!e.data.ok, error: e.data.error || "", detail: e.data.detail || "" });
+        };
+        var finish = function (res) {
           window.removeEventListener("message", onMsg);
-          done = true;
-          resolve({ text: String(e.data.text || ""), ok: !!e.data.ok, error: e.data.error || "", detail: e.data.detail || "" });
+          clearTimeout(t);
+          if (s.over) return;
+          res.ms = performance.now() - t0;
+          self.session = null;
+          s.resolve(res);
+          self.state("idle", res);
+          setTimeout(function () { if (self.box.isConnected) self.prewarm(); }, 300);
         };
         window.addEventListener("message", onMsg);
-        self.frame.contentWindow.postMessage({ type: "run", lang: lang, code: code, stdin: stdin || "", cache: REMOTE_LANGS[lang] ? remoteCache(lang) : undefined }, "*");
-        setTimeout(function () {
-          if (done) return;
-          window.removeEventListener("message", onMsg);
-          // The frame is stuck: throw it away so the next run starts a fresh one
-          if (self.frame) { self.frame.remove(); self.frame = null; self.frameLang = null; }
-          resolve({ text: "", ok: false, error: "timeout" });
-        }, lang === "python" || lang === "php" || lang === "ruby" || REMOTE_LANGS[lang] ? 120000 : lang === "sql" ? 45000 : { lua: 1, sass: 1, prolog: 1, regex: 1 }[lang] ? 70000 : 15000);
+        s.cancel = function () { window.removeEventListener("message", onMsg); clearTimeout(t); };
+        f.el.contentWindow.postMessage({ type: "run", lang: lang, code: code }, "*");
+        // A page that never reports back (an endless loop the guard couldn't catch): replace the frame
+        var t = setTimeout(function () {
+          if (self.frame === f) { f.el.remove(); self.frame = null; }
+          finish({ text: "", ok: false, error: "timeout" });
+        }, lang === "typescript" || lang === "react" || lang === "markdown" ? 60000 : 15000);
       });
     });
+  };
+  /** Stops the program (quiet: no "Stopped" state, used when starting the next run). */
+  Runner.prototype.stop = function (quiet) {
+    var s = this.session;
+    this.session = null;
+    if (!s || s.over) return;
+    if (s.r) hostStop(s.r);
+    if (s.cancel) s.cancel();
+    if (this.con) { this.con.cancelInput(); this.con.status(""); if (!quiet) this.con.write([["\nStopped.\n", "muted"]]); }
+    if (s.page && !quiet) {
+      // A web page can't be paused: replace it with a note
+      if (this.frame) { this.frame.el.remove(); this.frame = null; }
+      if (!this.con) this.con = new Console();
+      this.con.clear();
+      this.box.appendChild(this.con.el);
+      this.con.write([["Stopped.\n", "muted"]]);
+    }
+    s.resolve({ text: "", ok: false, stopped: true, error: "Stopped" });
+    if (!quiet) this.state("idle", { stopped: true });
+  };
+  /** Gets a language ready in advance (only when it is already on this device, so no data is used). */
+  Runner.prototype.warm = function (lang) {
+    if (WEB_LANGS[lang]) { if (!this.frame) this.prewarm(); }
+    else hostWarm(lang);
   };
 
   function makeEditor(host, code, lang) {
@@ -343,64 +761,138 @@
 
   // ---------- "What went wrong" helper under the output (learn/help.js does the explaining) ----------
   function clearMarks(ed) {
-    if (ed && ed.__errLine != null && ed.removeLineClass) { ed.removeLineClass(ed.__errLine, "background", "cm-err-line"); ed.__errLine = null; }
+    if (!ed || !ed.removeLineClass) return;
+    (ed.__marks || []).forEach(function (m) { try { ed.removeLineClass(m[0], "background", m[1]); } catch (e) {} });
+    (ed.__widgets || []).forEach(function (w) { try { w.clear(); } catch (e) {} });
+    ed.__marks = []; ed.__widgets = [];
   }
-  function renderHelp(box, lang, code, r, ed) {
+  function markLine(ed, n, cls) {
+    if (!ed || !ed.addLineClass || !n || n > ed.lineCount()) return;
+    ed.addLineClass(n - 1, "background", cls);
+    (ed.__marks = ed.__marks || []).push([n - 1, cls]);
+  }
+  /** Changes only the part of the code that differs, so Undo (Ctrl+Z) puts it back. */
+  function applyCode(ed, next) {
+    var cur = ed.getValue();
+    if (cur === next) return;
+    if (!ed.replaceRange || !ed.posFromIndex) return ed.setValue(next);
+    var p = 0, n = Math.min(cur.length, next.length);
+    while (p < n && cur.charCodeAt(p) === next.charCodeAt(p)) p++;
+    var q = 0;
+    while (q < n - p && cur.charCodeAt(cur.length - 1 - q) === next.charCodeAt(next.length - 1 - q)) q++;
+    ed.replaceRange(next.slice(p, next.length - q), ed.posFromIndex(p), ed.posFromIndex(cur.length - q), "+fix");
+  }
+  function goLine(ed, n) {
+    if (!ed || !ed.setCursor || !n) return;
+    ed.focus();
+    ed.setCursor({ line: n - 1, ch: (ed.getLine(n - 1) || "").length });
+    ed.scrollIntoView({ line: n - 1, ch: 0 }, 80);
+  }
+  var fixButtons = function (fixes) {
+    return (fixes || []).length ? '<p class="help-fixes">' + fixes.map(function (f, i) { return '<button type="button" class="btn btn-solid btn-sm help-fix" data-fix="' + i + '"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> ' + esc(f.label) + "</button>"; }).join("") + "</p>" : "";
+  };
+  /** Explains an error (or tips for code that ran) under the output. ctx: { stdin, rerun } */
+  function renderHelp(box, lang, code, r, ed, ctx) {
     if (!box) return;
+    ctx = ctx || {};
     clearMarks(ed);
     box.innerHTML = "";
     box.hidden = true;
     var H = window.MarzleyHelp;
-    if (!H) return;
-    var hit = r && !r.ok ? H.explain(lang, code, r) : null;
-    var tips = (lang === "html" || lang === "css") ? H.lint(lang, code) : [];
+    if (!H || !r || r.stopped) return;
+    var hit = !r.ok ? H.explain(lang, code, r) : null;
+    var tips = H.tips ? H.tips(lang, code, r, ctx) : (lang === "html" || lang === "css") ? H.lint(lang, code) : [];
     if (!hit && !tips.length) return;
-    var html = "";
+    var html = "", actions = [];
+    var applyFix = function (f) {
+      if (!f || !ed) return;
+      applyCode(ed, f.code);
+      clearMarks(ed);
+      if (f.line) goLine(ed, f.line);
+      box.innerHTML = '<div class="help-card help-ok"><p class="help-title"><i class="fa-solid fa-check" aria-hidden="true"></i> Fixed: ' + esc(f.label) + '.</p><p class="muted small">Press Ctrl+Z to undo. ' + (ctx.rerun ? "Running your code again…" : "Run your code again to check.") + "</p></div>";
+      box.hidden = false;
+      if (ctx.rerun) setTimeout(ctx.rerun, 120);
+    };
     if (hit) {
-      if (hit.line && ed && ed.addLineClass) { ed.addLineClass(hit.line - 1, "background", "cm-err-line"); ed.__errLine = hit.line - 1; }
+      if (hit.line) {
+        markLine(ed, hit.line, "cm-err-line");
+        // A short note right under the line with the mistake
+        if (ed && ed.addLineWidget) {
+          var note = el('<div class="cm-err-note"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i> <span>' + esc(hit.title) + "</span>" +
+            ((hit.fixes || []).length ? ' <button type="button" class="cm-note-btn cm-note-fix"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Fix it</button>' : "") +
+            ' <button type="button" class="cm-note-btn cm-note-why">Why?</button></div>');
+          var nf = note.querySelector(".cm-note-fix");
+          if (nf) nf.addEventListener("click", function () { applyFix(hit.fixes[0]); });
+          note.querySelector(".cm-note-why").addEventListener("click", function () { box.scrollIntoView({ behavior: "smooth", block: "start" }); });
+          (ed.__widgets = ed.__widgets || []).push(ed.addLineWidget(hit.line - 1, note, { coverGutter: false, noHScroll: true }));
+        }
+      }
+      (hit.more || []).forEach(function (m) { if (m.line !== hit.line) markLine(ed, m.line, "cm-err-line2"); });
+      actions = actions.concat(hit.fixes || []);
       html += '<div class="help-card help-err"><p class="help-title"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i> ' + esc(hit.title) + "</p>" +
         (hit.line ? '<p class="help-line"><button type="button" class="linklike help-go" data-line="' + hit.line + '">Line ' + hit.line + "</button>" + (hit.lineText ? ": <code>" + esc(hit.lineText.slice(0, 120)) + "</code>" : "") + "</p>" : "") +
         '<p><strong>What went wrong:</strong> ' + esc(hit.why) + '</p><p><strong>How to fix it:</strong> ' + esc(hit.fix) + "</p>" +
+        fixButtons(hit.fixes) +
         (hit.example ? '<p class="help-ex-label">Example:</p><pre class="help-ex"><code>' + esc(hit.example) + "</code></pre>" : "") +
-        '<details class="help-raw"><summary>Full error message</summary><pre>' + esc(hit.raw.slice(0, 3000)) + "</pre></details></div>";
+        ((hit.more || []).length ? '<p class="help-more-label">' + (hit.more.length === 1 ? "One more error" : hit.more.length + " more errors") + ' (fix the first one, then run again: the others often go away):</p><ul class="help-more">' +
+          hit.more.map(function (m) { return '<li><button type="button" class="linklike help-go" data-line="' + m.line + '">Line ' + m.line + "</button>: " + esc(m.text.slice(0, 160)) + "</li>"; }).join("") + "</ul>" : "") +
+        '<details class="help-raw"><summary>Full error message</summary><pre>' + esc(hit.raw.slice(0, 4000)) + "</pre></details></div>";
     }
     if (tips.length) {
-      html += '<div class="help-card help-tips"><p class="help-title"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> ' + (hit ? "Also check" : "Tips to improve your code") + "</p><ul>" +
-        tips.map(function (t) { return "<li>" + (t.line ? '<button type="button" class="linklike help-go" data-line="' + t.line + '">Line ' + t.line + "</button>: " : "") + "<strong>" + esc(t.title) + ".</strong> " + esc(t.fix) + "</li>"; }).join("") + "</ul></div>";
+      tips.forEach(function (t) { if (t.line && !hit) markLine(ed, t.line, "cm-warn-line"); });
+      html += '<div class="help-card help-tips"><p class="help-title"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> ' + (hit ? "Also check" : r.ok ? "Your code ran. Worth checking:" : "Tips to improve your code") + "</p><ul>" +
+        tips.map(function (t) {
+          var own = (t.fixes || []).filter(Boolean), at = actions.length;
+          actions = actions.concat(own);
+          return "<li>" + (t.line ? '<button type="button" class="linklike help-go" data-line="' + t.line + '">Line ' + t.line + "</button>: " : "") + "<strong>" + esc(t.title) + ".</strong> " + esc(t.fix || "") +
+            (t.input && ctx.stdinBox ? ' <button type="button" class="linklike help-stdin">Open the Input box</button>' : "") +
+            own.map(function (f, i) { return ' <button type="button" class="btn btn-line btn-sm help-fix" data-fix="' + (at + i) + '"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> ' + esc(f.label) + "</button>"; }).join("") + "</li>";
+        }).join("") + "</ul></div>";
     }
     box.innerHTML = html;
     box.hidden = false;
     box.querySelectorAll(".help-go").forEach(function (b) {
-      b.addEventListener("click", function () {
-        var n = Number(b.getAttribute("data-line")) - 1;
-        if (ed && ed.setCursor) { ed.focus(); ed.setCursor({ line: n, ch: 0 }); ed.scrollIntoView({ line: n, ch: 0 }, 80); }
-      });
+      b.addEventListener("click", function () { goLine(ed, Number(b.getAttribute("data-line"))); });
     });
+    box.querySelectorAll(".help-fix").forEach(function (b) {
+      b.addEventListener("click", function () { applyFix(actions[Number(b.getAttribute("data-fix"))]); });
+    });
+    var sb = box.querySelector(".help-stdin");
+    if (sb) sb.addEventListener("click", function () { var d = ctx.stdinBox.closest("details"); if (d) d.open = true; ctx.stdinBox.focus(); });
   }
 
-  /** An editor + Run button + output. opts: { lang, code, title, check } */
+  /** An editor + Run button + output. opts: { lang, code, title } */
   function codeBlock(host, opts) {
     var lang = opts.lang;
     var wrap = el('<div class="try"><div class="try-bar"><span class="try-lang">' + esc(opts.title || ("Try it · " + (LANGS[runLang(lang, opts.code)] || lang))) + '</span>' +
       '<div class="try-btns"><button type="button" class="try-reset" title="Reset the code"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i><span class="sr-only">Reset</span></button>' +
       '<a class="try-open" title="Open in the practice editor" href="./?page=practice&amp;lang=' + esc(lang) + '"><i class="fa-solid fa-up-right-from-square" aria-hidden="true"></i><span class="sr-only">Open in practice</span></a>' +
-      '<button type="button" class="btn btn-solid btn-sm try-run"><i class="fa-solid fa-play" aria-hidden="true"></i> Run</button></div></div>' +
+      '<button type="button" class="btn btn-solid btn-sm try-run">' + RUN_LABEL + '</button></div></div>' +
       '<div class="try-body"><div class="try-editor"></div><div class="try-output" hidden></div></div><div class="try-help" hidden aria-live="polite"></div></div>');
     host.appendChild(wrap);
     var ed = makeEditor(wrap.querySelector(".try-editor"), opts.code, lang);
     var runner = new Runner(wrap.querySelector(".try-output"));
     var runBtn = wrap.querySelector(".try-run");
+    runner.onstate = function (st) { setRunButton(runBtn, st === "running"); };
     var run = function () {
-      runBtn.disabled = true;
       var code = ed.getValue();
       earn("code", { lesson_id: state.lessonId || undefined }, "code run");
-      return runner.run(lang, code).then(function (r) { runBtn.disabled = false; renderHelp(wrap.querySelector(".try-help"), runLang(lang, code), code, r, ed); return r; });
+      renderHelp(wrap.querySelector(".try-help"), runLang(lang, code), code, null, ed);
+      return runner.run(lang, code).then(function (r) { if (!r.stopped) renderHelp(wrap.querySelector(".try-help"), runLang(lang, code), code, r, ed, { rerun: run }); return r; });
     };
-    runBtn.addEventListener("click", run);
+    runBtn.addEventListener("click", function () { if (runBtn.classList.contains("is-stop")) runner.stop(); else run(); });
     wrap.querySelector(".try-reset").addEventListener("click", function () { ed.setValue(opts.code); });
     wrap.querySelector(".try-open").addEventListener("click", function () { store.set("code:" + lang, ed.getValue()); });
     wrap.addEventListener("keydown", function (e) { if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); run(); } });
-    return { editor: ed, run: run, el: wrap };
+    cleanup.push(function () { runner.stop(true); });
+    return { editor: ed, run: run, el: wrap, runner: runner };
+  }
+  var RUN_LABEL = '<i class="fa-solid fa-play" aria-hidden="true"></i> Run';
+  function setRunButton(btn, running) {
+    if (!btn) return;
+    btn.classList.toggle("is-stop", running);
+    btn.innerHTML = running ? '<i class="fa-solid fa-stop" aria-hidden="true"></i> Stop' : btn.getAttribute("data-run") || RUN_LABEL;
+    btn.setAttribute("aria-label", running ? "Stop the program" : "Run the code");
   }
 
   // ---------- quizzes (```quiz blocks: Q: / A: answer | other accepted answer / H: hint) ----------
@@ -1284,6 +1776,21 @@
   }
 
   function norm(s) { return String(s).replace(/\r/g, "").split("\n").map(function (x) { return x.trim().replace(/\s+/g, " "); }).filter(Boolean).join("\n").toLowerCase(); }
+  /** Which expected line is missing from the output, the closest line the program printed, and how they differ. */
+  function outputHint(expected, got) {
+    var lines = function (t) { return String(t || "").replace(/\r/g, "").split("\n").map(function (x) { return x.trim(); }).filter(Boolean); };
+    var n = function (x) { return x.toLowerCase().replace(/\s+/g, " "); };
+    var want = lines(expected), have = lines(got), all = n(have.join("\n"));
+    var w = want.filter(function (x) { return all.indexOf(n(x)) < 0; })[0] || want[0] || "";
+    if (!have.length) return "Your program didn't print anything. It should print: <code>" + esc(w) + "</code>";
+    var lev = window.MarzleyHelp && window.MarzleyHelp.lev, best = have[0], bd = 1e9;
+    if (lev) have.forEach(function (h) { var d = lev(n(h), n(w)); if (d < bd) { bd = d; best = h; } });
+    var why = "";
+    if (best.replace(/\s+/g, "").toLowerCase() === w.replace(/\s+/g, "").toLowerCase()) why = " Only the spaces are different.";
+    else if (best.replace(/[^\w\s]/g, "").toLowerCase() === w.replace(/[^\w\s]/g, "").toLowerCase()) why = " Check the punctuation (: , . ! and so on).";
+    else if (best.replace(/\d+(\.\d+)?/g, "#") === w.replace(/\d+(\.\d+)?/g, "#")) why = " The words match but a number is different: check the calculation.";
+    return "The output should include <code>" + esc(w) + "</code>. The closest line your program printed is <code>" + esc(best) + "</code>." + why;
+  }
   function exercise(l, track) {
     var saved = store.get("ex:" + l.id);
     var block = codeBlock($("#ex-host"), { lang: track.lang, code: saved != null ? saved : (l.starter || ""), title: "Your answer · " + (LANGS[track.lang] || track.lang) });
@@ -1300,6 +1807,7 @@
       result.textContent = "Checking…";
       block.run().then(function (r) {
         check.disabled = false;
+        if (r.stopped) { result.textContent = ""; return; }
         var problems = [];
         var codeN = code.toLowerCase().replace(/\s+/g, " ");
         String(l.must_contain || "").split("\n").map(function (x) { return x.trim(); }).filter(Boolean).forEach(function (tok) {
@@ -1307,7 +1815,7 @@
         });
         if (!r.ok && r.error && r.error !== "timeout") problems.unshift("Your code has an error: " + esc(r.error.split("\n").slice(-1)[0]));
         if (r.error === "timeout") problems.unshift("Your code took too long to run. Check for a loop that never ends.");
-        if (l.expected && norm(r.text).indexOf(norm(l.expected)) < 0) problems.push("The output should include: <code>" + esc(l.expected) + "</code>");
+        if (l.expected && norm(r.text).indexOf(norm(l.expected)) < 0) problems.push(outputHint(l.expected, r.text));
         if (problems.length) {
           result.innerHTML = '<span class="bad"><i class="fa-solid fa-circle-xmark" aria-hidden="true"></i> Not yet. ' + problems[0] + "</span>";
         } else {
@@ -1340,7 +1848,7 @@
         ["Array methods", "const prices = [120, 450, 80, 300];\nconsole.log(prices.filter(p => p > 100));\nconsole.log(prices.map(p => p * 2));\nconsole.log(prices.reduce((a, b) => a + b, 0));"],
         ["Change the page", "<h1 id=\"title\">Hello</h1>\n<button onclick=\"document.getElementById('title').textContent = 'Clicked!'\">Click me</button>"]] },
     python: { track: "python", about: "Python is easy to read and used for automation, data analysis, AI, web back ends and teaching programming.", uses: ["Data and AI", "Automation scripts", "Web back ends"],
-      tips: ["Indentation (4 spaces) matters.", "f-strings: f\"Total: {total}\".", "input() asks the user for a value in a pop-up."],
+      tips: ["Indentation (4 spaces) matters.", "f-strings: f\"Total: {total}\".", "input() shows an answer box in the output: type and press Enter."],
       examples: [["Loop and f-strings", null], ["Lists and dictionaries", "stock = {\"unga\": 12, \"sugar\": 0, \"milk\": 40}\nfor item, qty in stock.items():\n    status = \"in stock\" if qty > 0 else \"SOLD OUT\"\n    print(f\"{item}: {status}\")"],
         ["Functions", "def grade(marks):\n    if marks >= 70: return \"A\"\n    if marks >= 50: return \"C\"\n    return \"E\"\n\nfor m in [82, 55, 31]:\n    print(m, grade(m))"],
         ["Ask for input", "name = input(\"What is your name? \")\nprint(\"Karibu,\", name)"]] },
@@ -1430,66 +1938,199 @@
     ["Programming", ["python", "php", "c", "cpp", "csharp", "java", "go", "rust", "kotlin", "lua", "ruby", "prolog"]],
     ["Data", ["sql", "regex"]]
   ];
-  var ONLINE_LANGS = { csharp: 1, java: 1, go: 1, rust: 1, kotlin: 1 };
+
+  var FILE_NAMES = { html: "index.html", css: "index.html", javascript: "script.js", typescript: "main.ts", react: "App.jsx", json: "data.json", markdown: "README.md", python: "main.py", php: "index.php",
+    c: "main.c", cpp: "main.cpp", csharp: "Program.cs", java: "Main.java", go: "main.go", rust: "main.rs", kotlin: "Main.kt", lua: "main.lua", ruby: "main.rb", sass: "style.scss", regex: "pattern.txt", prolog: "main.pl", sql: "query.sql" };
+  var READS_INPUT = /\b(scanf|cin|Scanner|ReadLine|readLine|readln|fmt\.Scan|read_line|getline|fgets|getchar)\b/;
+  var SYMBOLS = ["Tab", "(", ")", "{", "}", "[", "]", ";", ":", "\"", "'", "=", "<", ">", "+", "-", "*", "/", "_", "#", ".", ",", "!", "&", "|", "$", "%"];
+  // Short links to share code: #code=<compressed text>, so nothing is stored on a server
+  function b64url(bytes) { var s = ""; for (var i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]); return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
+  function unb64url(t) { var s = atob(t.replace(/-/g, "+").replace(/_/g, "/")), b = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) b[i] = s.charCodeAt(i); return b; }
+  function packCode(code) {
+    var bytes = new TextEncoder().encode(code);
+    if (!window.CompressionStream) return Promise.resolve("p" + b64url(bytes));
+    return new Response(new Blob([bytes]).stream().pipeThrough(new CompressionStream("deflate-raw"))).arrayBuffer().then(function (buf) { return "z" + b64url(new Uint8Array(buf)); });
+  }
+  function unpackCode(t) {
+    try {
+      var bytes = unb64url(t.slice(1));
+      if (t.charAt(0) === "z") return new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).text();
+      return Promise.resolve(new TextDecoder().decode(bytes));
+    } catch (e) { return Promise.reject(e); }
+  }
+  var toastTimer = null;
+  function toast(msg) {
+    var t = $("#points-toast");
+    if (!t) { t = el('<div class="points-toast" id="points-toast" role="status" aria-live="polite"></div>'); document.body.appendChild(t); }
+    t.textContent = msg;
+    t.classList.add("on");
+    clearTimeout(toastTimer); clearTimeout(pointsTimer);
+    toastTimer = setTimeout(function () { t.classList.remove("on"); }, 2600);
+  }
+  var RUN_PRACTICE = '<i class="fa-solid fa-play" aria-hidden="true"></i> Run<span class="kbd-hint"> <kbd>Ctrl</kbd>+<kbd>Enter</kbd></span>';
+  var secs = function (ms) { return ms < 1000 ? (ms / 1000).toFixed(2) + " s" : (ms / 1000).toFixed(1) + " s"; };
 
   function pagePractice(lang) {
     setNav("practice");
     showSide(false);
     lang = LANGS[lang] ? lang : store.get("practice-lang") || "python";
-    setTitle(LANGS[lang] + " online editor", "Free online " + LANGS[lang] + " editor: write code and run it in your browser.");
-    main.innerHTML = '<section class="practice"><div class="practice-head"><h1>Practice</h1><div class="lang-pick" role="tablist" aria-label="Language">' +
+    store.set("practice-lang", lang);
+    setTitle(LANGS[lang] + " online compiler and editor", "Free online " + LANGS[lang] + " compiler and editor: write code, run it in your browser and get help with mistakes.");
+    var stdinWord = { c: "scanf", cpp: "cin", java: "Scanner", csharp: "Console.ReadLine", go: "fmt.Scan", rust: "stdin", kotlin: "readLine" }[lang];
+    main.innerHTML = '<section class="practice"><div class="practice-head"><h1>Practice <span class="practice-sub">Online compiler and editor</span></h1><div class="lang-pick" role="tablist" aria-label="Language">' +
       PRACTICE_GROUPS.map(function (g) { return '<span class="lang-group">' + g[0] + "</span>" + g[1].map(function (k) { return '<button type="button" role="tab" data-lang="' + k + '" aria-selected="' + (k === lang) + '">' + LANGS[k] + "</button>"; }).join(""); }).join("") +
-      '</div></div><div class="practice-grid"><div class="pane"><div class="pane-bar"><span>Code</span><div><label class="sr-only" for="p-example">Load an example</label><select id="p-example" class="ex-select"><option value="">Examples…</option>' +
+      '</div></div><div class="practice-grid"><div class="pane pane-code"><div class="pane-bar"><span class="pane-file"><i class="fa-regular fa-file-code" aria-hidden="true"></i> ' + esc(FILE_NAMES[lang]) + '</span><div class="pane-tools">' +
+      '<label class="sr-only" for="p-example">Load an example</label><select id="p-example" class="ex-select"><option value="">Examples…</option>' +
       PRACTICE[lang].examples.map(function (x, i) { return '<option value="' + i + '">' + esc(x[0]) + "</option>"; }).join("") + "</select>" +
       '<button type="button" class="try-reset" id="p-reset" title="Start again"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i><span class="sr-only">Start again</span></button>' +
       '<button type="button" class="try-reset" id="p-copy" title="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i><span class="sr-only">Copy code</span></button>' +
-      '<button type="button" class="btn btn-solid btn-sm" id="p-run"><i class="fa-solid fa-play" aria-hidden="true"></i> Run <kbd>Ctrl</kbd>+<kbd>Enter</kbd></button></div></div><div class="pane-editor" id="p-editor"></div>' +
-      (REMOTE_LANGS[lang] ? '<details class="p-stdin"' + (store.get("stdin:" + lang) ? " open" : "") + '><summary>Input for your program <span class="muted small">(what ' + ({ c: "scanf", cpp: "cin", java: "Scanner", csharp: "Console.ReadLine", go: "fmt.Scan", rust: "stdin", kotlin: "readLine" }[lang]) + ' reads)</span></summary><label class="sr-only" for="p-stdin">Input for your program</label><textarea id="p-stdin" rows="3" spellcheck="false" placeholder="One value per line, e.g.&#10;5&#10;Wanjiku"></textarea></details>' : "") +
+      '<button type="button" class="try-reset" id="p-download" title="Download ' + esc(FILE_NAMES[lang]) + '"><i class="fa-solid fa-download" aria-hidden="true"></i><span class="sr-only">Download</span></button>' +
+      '<button type="button" class="try-reset" id="p-share" title="Share a link to this code"><i class="fa-solid fa-share-nodes" aria-hidden="true"></i><span class="sr-only">Share</span></button>' +
+      '</div><button type="button" class="btn btn-solid btn-sm p-run" id="p-run" data-run="' + esc(RUN_PRACTICE) + '">' + RUN_PRACTICE + '</button></div>' +
+      '<div class="pane-editor" id="p-editor"></div>' +
+      '<div class="sym-bar" role="toolbar" aria-label="Type a symbol">' + SYMBOLS.map(function (x) { return '<button type="button" data-sym="' + esc(x) + '">' + esc(x) + "</button>"; }).join("") + "</div>" +
+      (REMOTE_LANGS[lang] ? '<details class="p-stdin"' + (store.get("stdin:" + lang) ? " open" : "") + '><summary>Input for your program <span class="muted small">(what ' + stdinWord + ' reads)</span></summary><label class="sr-only" for="p-stdin">Input for your program</label><textarea id="p-stdin" rows="3" spellcheck="false" placeholder="One value per line, e.g.&#10;5&#10;Wanjiku"></textarea></details>' : "") +
       "</div>" +
-      '<div class="pane"><div class="pane-bar"><span>Output</span></div><div class="pane-output" id="p-out"></div></div></div>' +
+      '<div class="pane pane-out"><div class="pane-bar"><span>Output</span><span class="run-status" id="p-status" role="status" aria-live="polite"></span><div class="pane-tools">' +
+      '<button type="button" class="try-reset" id="p-clear" title="Clear the output"><i class="fa-solid fa-eraser" aria-hidden="true"></i><span class="sr-only">Clear the output</span></button>' +
+      '<button type="button" class="try-reset" id="p-copyout" title="Copy the output"><i class="fa-regular fa-clipboard" aria-hidden="true"></i><span class="sr-only">Copy the output</span></button></div></div>' +
+      '<div class="pane-output" id="p-out"><div class="out-empty" id="p-empty"></div></div></div></div>' +
       '<div class="practice-help" id="p-help" hidden aria-live="polite"></div>' + practiceDetails(lang) + '</section>';
     var ed = makeEditor($("#p-editor"), store.get("code:" + lang) || STARTERS[lang], lang);
-    var runner = new Runner($("#p-out"));
+    var out = $("#p-out"), runBtn = $("#p-run"), statusEl = $("#p-status"), empty = $("#p-empty");
+    var runner = new Runner(out);
     var stdinBox = $("#p-stdin");
     if (stdinBox) { stdinBox.value = store.get("stdin:" + lang) || ""; stdinBox.addEventListener("input", function () { store.set("stdin:" + lang, stdinBox.value); }); }
-    var run = function () {
-      var code = ed.getValue();
-      store.set("code:" + lang, code); $("#p-run").disabled = true;
-      earn("code", {}, "code run");
-      // A program that reads input but has none yet: open the input box so the learner sees where it goes
-      if (stdinBox && !stdinBox.value && /\b(scanf|cin|Scanner|ReadLine|readLine|fmt\.Scan|read_line|getline|fgets|getchar)\b/.test(code)) stdinBox.closest("details").open = true;
-      // On a phone the output is below the editor: bring it into view
-      if (window.innerWidth < 900) { var o = $("#p-out"); if (o) o.scrollIntoView({ behavior: "smooth", block: "start" }); }
-      runner.run(lang, code, stdinBox ? stdinBox.value : "").then(function (r) { $("#p-run").disabled = false; renderHelp($("#p-help"), runLang(lang, code), code, r, ed); });
+    var status = function (text, kind) { statusEl.textContent = text || ""; statusEl.className = "run-status" + (kind ? " is-" + kind : ""); };
+    // Before the first run: say how this language runs (and whether it is already on this device)
+    var files = LANG_FILES[lang], online = ONLINE_LANGS[lang];
+    var firstRun = function () {
+      if (WEB_LANGS[lang] || lang === "json") return Promise.resolve(true);
+      return RT.has((files || []).concat(["learn/console.js"]));
     };
-    $("#p-run").addEventListener("click", run);
+    var ready = firstRun().then(function (here) {
+      if (online) { empty.innerHTML = "<p><strong>Press Run</strong><span class=\"kbd-hint\"> (or Ctrl+Enter)</span> to compile and run your " + esc(LANGS[lang]) + " code online.</p>"; status("Runs on an online compiler"); return false; }
+      if (here) { status(WEB_LANGS[lang] ? "Runs in your browser" : "Ready on this device"); return true; }
+      return RT.size((files || []).concat(["learn/console.js"])).then(function (n) {
+        empty.innerHTML = "<p><strong>Press Run</strong><span class=\"kbd-hint\"> (or Ctrl+Enter)</span> to run your code.</p><p class=\"muted\">" + esc(LANGS[lang]) + " runs in your browser. The first run downloads it once" + (n ? " (" + mb(n) + ")" : "") + " and keeps it on this device, so later runs start straight away.</p>";
+        status(n ? "Downloads once (" + mb(n) + ")" : "");
+        return false;
+      });
+    });
+    runner.onstate = function (st, info) {
+      setRunButton(runBtn, st === "running");
+      if (st === "running") status("Running…", "run");
+      else if (st === "input") status("Waiting for your answer below", "input");
+      else if (info.stopped) status("Stopped", "bad");
+      else if (info.ok) status("Done in " + secs(info.ms || 0), "ok");
+      else status(info.compile ? "Didn't compile" : info.offline ? "Couldn't connect" : info.timeout ? "Stopped: took too long" : "Finished with an error", "bad");
+    };
+    var run = function (auto) {
+      var code = ed.getValue();
+      store.set("code:" + lang, code);
+      if (auto !== true) earn("code", {}, "code run");
+      if (empty.isConnected) empty.remove();
+      // A program that reads input but has none yet: open the input box so the learner sees where it goes
+      if (stdinBox && !stdinBox.value && READS_INPUT.test(code)) stdinBox.closest("details").open = true;
+      // On a phone the output is below the editor: bring it into view
+      if (window.innerWidth < 900 && auto !== true) out.scrollIntoView({ behavior: "smooth", block: "start" });
+      renderHelp($("#p-help"), runLang(lang, code), code, null, ed);
+      var input = stdinBox ? stdinBox.value : "";
+      return runner.run(lang, code, input, { auto: auto === true }).then(function (r) {
+        if (!r.stopped) renderHelp($("#p-help"), runLang(lang, code), code, r, ed, { stdin: stdinBox ? input : undefined, stdinBox: stdinBox, rerun: run });
+        return r;
+      });
+    };
+    runBtn.addEventListener("click", function () { if (runBtn.classList.contains("is-stop")) runner.stop(); else run(); });
     $("#p-reset").addEventListener("click", function () { if (confirm("Start again with the example code?")) ed.setValue(STARTERS[lang]); });
-    $("#p-copy").addEventListener("click", function () { if (navigator.clipboard) navigator.clipboard.writeText(ed.getValue()); });
+    $("#p-copy").addEventListener("click", function () { if (navigator.clipboard) navigator.clipboard.writeText(ed.getValue()).then(function () { toast("Code copied"); }); });
+    $("#p-download").addEventListener("click", function () {
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([ed.getValue()], { type: "text/plain" }));
+      a.download = FILE_NAMES[lang];
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+    });
+    $("#p-share").addEventListener("click", function () {
+      packCode(ed.getValue()).then(function (packed) {
+        var url = location.origin + location.pathname + "?page=practice&lang=" + lang + "#code=" + packed;
+        var done = function () { toast(url.length > 6000 ? "Link copied (it's long: some apps may cut it)" : "Link copied: anyone with it sees this code"); };
+        if (navigator.share && window.innerWidth < 900) navigator.share({ title: LANGS[lang] + " code", url: url }).catch(function () {});
+        else if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, function () { prompt("Copy this link:", url); });
+        else prompt("Copy this link:", url);
+      });
+    });
+    $("#p-clear").addEventListener("click", function () {
+      runner.stop(true);
+      if (runner.con) runner.con.clear();
+      if (runner.frame) { runner.frame.el.remove(); runner.frame = null; }
+      renderHelp($("#p-help"), lang, "", null, ed);
+      setRunButton(runBtn, false);
+      status("");
+    });
+    $("#p-copyout").addEventListener("click", function () {
+      var t = runner.con && runner.con.el.isConnected ? runner.con.text() : "";
+      if (!t) return toast(runner.frame ? "Select the text in the output to copy it" : "There's no output yet");
+      if (navigator.clipboard) navigator.clipboard.writeText(t).then(function () { toast("Output copied"); });
+    });
+    // The symbol bar (phones): types into the editor without closing the keyboard
+    main.querySelectorAll(".sym-bar button").forEach(function (b) {
+      b.addEventListener("mousedown", function (e) { e.preventDefault(); });
+      b.addEventListener("click", function () {
+        var t = b.getAttribute("data-sym");
+        if (ed.replaceSelection) { ed.replaceSelection(t === "Tab" ? (lang === "python" ? "    " : "  ") : t); ed.focus(); }
+      });
+    });
     $("#p-example").addEventListener("change", function () {
       var ex = PRACTICE[lang].examples[this.value];
       if (ex) { ed.setValue(ex[1] == null ? STARTERS[lang] : ex[1]); run(); }
       this.value = "";
     });
-    main.querySelector(".practice").addEventListener("keydown", function (e) { if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); run(); } });
-    main.querySelectorAll(".lang-pick button").forEach(function (b) {
-      b.addEventListener("click", function () { store.set("code:" + lang, ed.getValue()); store.set("practice-lang", b.getAttribute("data-lang")); go("./?page=practice&lang=" + b.getAttribute("data-lang")); });
+    main.querySelector(".practice").addEventListener("keydown", function (e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); if (!runBtn.classList.contains("is-stop") || runner.session && runner.session.page) run(); }
+      else if ((e.ctrlKey || e.metaKey) && (e.key === "s" || e.key === "S")) { e.preventDefault(); store.set("code:" + lang, ed.getValue()); toast("Saved on this device"); }
+      else if (e.key === "Escape" && runner.session && !e.target.classList.contains("con-input")) runner.stop();
     });
+    main.querySelectorAll(".lang-pick button").forEach(function (b) {
+      b.addEventListener("click", function () { store.set("code:" + lang, ed.getValue()); go("./?page=practice&lang=" + b.getAttribute("data-lang")); });
+    });
+    var cur = main.querySelector('.lang-pick [aria-selected="true"]');
+    if (cur && cur.scrollIntoView && window.innerWidth < 900) cur.scrollIntoView({ block: "nearest", inline: "center" });
     var t = setInterval(function () { store.set("code:" + lang, ed.getValue()); }, 5000);
-    cleanup.push(function () { clearInterval(t); store.set("code:" + lang, ed.getValue()); });
-    if (lang !== "python" && lang !== "php" && lang !== "ruby" && !ONLINE_LANGS[lang]) run();
-    runner.warm(lang);
+    cleanup.push(function () { clearInterval(t); store.set("code:" + lang, ed.getValue()); runner.stop(true); });
+    // Code shared with a link
+    var shared = /#code=([pz][\w-]+)/.exec(location.hash);
+    var opening = shared ? unpackCode(shared[1]).then(function (code) {
+      var mine = ed.getValue();
+      ed.setValue(code);
+      history.replaceState(null, "", location.pathname + location.search);
+      if (mine && mine !== code && mine !== STARTERS[lang]) {
+        store.set("code-before-share:" + lang, mine);
+        var note = el('<p class="share-note"><i class="fa-solid fa-link" aria-hidden="true"></i> You opened shared code. <button type="button" class="linklike">Go back to your own code</button></p>');
+        note.querySelector("button").addEventListener("click", function () { ed.setValue(store.get("code-before-share:" + lang) || mine); note.remove(); });
+        main.querySelector(".practice-grid").before(note);
+      }
+    }, function () { toast("That shared link is incomplete"); }) : Promise.resolve();
+    // Run the code straight away when that costs nothing (no download, no online compiler), and get the language ready
+    Promise.all([ready, opening]).then(function (x) {
+      if (x[0] && !(REMOTE_LANGS[lang] && READS_INPUT.test(ed.getValue()) && !(stdinBox && stdinBox.value))) run(true);
+      else runner.warm(lang);
+    });
   }
   function practiceDetails(lang) {
     var info = PRACTICE[lang], track = info.track;
-    if (ONLINE_LANGS[lang]) info = Object.assign({}, info, { online: true });
-    var note = { python: "Python runs fully in your browser. The first run downloads it once (about 10 MB).", php: "PHP 8.3 runs fully in your browser. The first run downloads it once (about 4 MB). Databases, sessions and email need a real server.",
+    var note = { python: "Python 3.12 runs fully in your browser. The first run downloads it once (about 14 MB) and keeps it on this device. When your program asks a question with input(), an answer box appears in the output.",
+      php: "PHP 8.3 runs fully in your browser. The first run downloads it once and keeps it on this device. Databases, sessions and email need a real server.",
       sql: "SQL runs on a sample shop database with Customers, Products and Orders. Try SELECT * FROM Products;", typescript: "Types are removed before running, so type mistakes are not reported here. Use VS Code to see them.",
       react: "React 18 and ReactDOM are ready to use. Hooks: React.useState, React.useEffect.", json: "Only data is allowed in JSON: no comments, no trailing commas.", markdown: "The output shows the formatted page, like GitHub shows a README.",
-      c: "Simple C runs instantly in your browser. Code that reads input or uses more of the C library (const, structs with qsort, stdbool and so on) runs on a full GCC compiler online (Compiler Explorer, with Wandbox as a backup), so your code is sent to them. If your program uses scanf, type its input in the box under the editor.", cpp: "Simple C++ (cout, loops, functions, arrays) runs instantly in your browser. Code with string, vector, classes or other libraries runs on a full GCC compiler online (Compiler Explorer, with Wandbox as a backup), so your code is sent to them. If your program uses cin, type its input in the box under the editor.",
-      lua: "Lua runs fully in your browser.", ruby: "Ruby 3.3 runs fully in your browser. The first run downloads it once (about 5 MB).", sass: "The output shows the CSS that your Sass compiles to.",
-      regex: "Uses JavaScript regular expressions, the same ones websites use for form checks.", prolog: "Prolog runs in your browser (Tau Prolog). Put questions on lines starting with ?-" }[lang] || (ONLINE_LANGS[lang] ? LANGS[lang] + " is compiled and run online by Compiler Explorer (godbolt.org), with Wandbox (wandbox.org) as a backup, so your code is sent to them. It needs an internet connection and usually takes a few seconds. If your program reads input, type it in the box under the editor." : "Your code runs in a safe sandbox: it can't touch this website, your cookies or your accounts.");
+      c: "Simple C runs instantly in your browser. Code that reads input or uses more of the C library runs on a full GCC compiler online (Compiler Explorer, with Wandbox as a backup), so your code is sent to them. If your program uses scanf, type its input in the box under the editor.",
+      cpp: "Simple C++ (cout, loops, functions, arrays) runs instantly in your browser. Code with string, vector, classes or other libraries runs on a full GCC compiler online (Compiler Explorer, with Wandbox as a backup), so your code is sent to them. If your program uses cin, type its input in the box under the editor.",
+      lua: "Lua runs fully in your browser.", ruby: "Ruby 3.3 runs fully in your browser. The first run downloads it once (about 16 MB) and keeps it on this device.", sass: "The output shows the CSS that your Sass compiles to.",
+      regex: "Uses JavaScript regular expressions, the same ones websites use for form checks.", prolog: "Prolog runs in your browser (Tau Prolog). Put questions on lines starting with ?-" }[lang] ||
+      (ONLINE_LANGS[lang] ? LANGS[lang] + " is compiled and run online by Compiler Explorer (godbolt.org), with Wandbox (wandbox.org) as a backup, so your code is sent to them. It needs an internet connection and usually takes a few seconds. If your program reads input, type it in the box under the editor." : "Your code runs in a safe sandbox: it can't touch this website, your cookies or your accounts.");
     return '<section class="practice-info" aria-labelledby="pi-title"><div class="pi-main"><h2 id="pi-title">About ' + esc(LANGS[lang]) + '</h2><p>' + esc(info.about) + '</p>' +
-      '<p class="pi-uses">' + info.uses.map(function (u) { return '<span class="tag">' + esc(u) + "</span>"; }).join(" ") + '</p><p class="muted small">' + esc(note) + ' Your code is saved on this device.</p></div>' +
+      '<p class="pi-uses">' + info.uses.map(function (u) { return '<span class="tag">' + esc(u) + "</span>"; }).join(" ") + '</p><p class="muted small">' + esc(note) + ' Your code is saved on this device.</p>' +
+      '<p class="muted small">Made a mistake? The guide under the output explains it in plain words, shows the line, and can often fix it with one tap. Shortcuts: Ctrl+Enter runs, Ctrl+S saves, Esc stops.</p></div>' +
       '<div class="pi-tips"><h3>Quick tips</h3><ul>' + info.tips.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul>" +
       '<p><a class="btn btn-line btn-sm" href="./?track=' + esc(track) + '"><i class="fa-solid fa-book-open" aria-hidden="true"></i> ' + (track === lang ? "Learn " + esc(LANGS[lang]) + " step by step" : "Related lessons") + "</a></p></div></section>";
   }

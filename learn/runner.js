@@ -1,18 +1,85 @@
-/* Marzley Learn code runner. Runs inside a sandboxed frame (no access to the site, cookies or
- * accounts). The page sends {type: "run", lang, code}; we reply with {type: "output", text, ok}. */
+/* Marzley Learn code runner. Always shown inside a sandboxed frame: it has no access to the website,
+ * cookies or accounts. Two kinds of frame use it:
+ *  - page frames (the default): HTML, CSS, JavaScript, TypeScript, React and Markdown become this frame's
+ *    page. The hub sends {type: "run", lang, code}; we reply {type: "output", text, ok, error}.
+ *  - the console frame (?mode=console): one hidden frame that runs Python, SQL, PHP, C, C++, Java and the
+ *    other console languages for every code box on the page (learn/console.js). The hub shows the output.
+ * Big files (language runtimes) come from the hub, which keeps them on the learner's device. A sandboxed
+ * frame can't use the browser's cache, so it would otherwise download them again on every visit. */
 (function () {
   "use strict";
   var params = new URLSearchParams(location.search);
   if (params.get("theme") === "dark") document.body.classList.add("dark");
-  var out = document.getElementById("out");
+  var ROOT = new URL("/", location.href).href;
+  var VFS = params.get("vfs") === "1";                        // the hub can send us files from its store
   var send = function (msg) { try { parent.postMessage(msg, "*"); } catch (e) {} };
-  var esc = function (s) { return String(s).replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); };
+  var script = document.querySelector("script[data-engines]");
+  var version = function (name) { return script ? script.getAttribute("data-" + name) || "1" : "1"; };
+
+  // ---------- files from the hub's store on this device ----------
+  var waiting = {}, seq = 0, blobUrls = {};
+  /** Resolves with { files: { path: Blob } } or { error }, or null when the hub can't send files
+   * (then load them from the network). Paths are relative to the site root; "dir/" means every file in it. */
+  function getFiles(paths, run) {
+    if (!VFS) return Promise.resolve(null);
+    return new Promise(function (resolve) {
+      var req = ++seq;
+      waiting[req] = resolve;
+      send({ type: "need", req: req, paths: paths, run: run || 0 });
+    });
+  }
+  window.addEventListener("message", function (e) {
+    var d = e.data || {};
+    if (e.source !== parent || d.type !== "files" || !waiting[d.req]) return;
+    var done = waiting[d.req];
+    delete waiting[d.req];
+    done(d.error ? { error: d.error } : { files: d.files || {} });
+  });
+  /** A URL to load one file from: a blob: URL of the stored copy, or the file on the server. */
+  function fileUrl(path, run, v) {
+    if (blobUrls[path]) return Promise.resolve(blobUrls[path]);
+    return getFiles([path], run).then(function (r) {
+      if (r && r.error) throw new Error(r.error);
+      var b = r && r.files[path];
+      return b ? (blobUrls[path] = URL.createObjectURL(b)) : ROOT + path + (v ? "?v=" + v : "");
+    });
+  }
+  var loaded = {};
+  function loadScript(path, v) {
+    if (!loaded[path]) loaded[path] = fileUrl(path, 0, v).then(function (src) {
+      return new Promise(function (resolve, reject) {
+        var s = document.createElement("script");
+        s.src = src;
+        s.onload = resolve;
+        s.onerror = function () { reject(new Error("Could not load the tools for this language. Check your connection and try again.")); };
+        document.head.appendChild(s);
+      });
+    }).catch(function (e) { delete loaded[path]; throw e; });
+    return loaded[path];
+  }
+
+  // ---------- the console frame: learn/console.js does the work ----------
+  if (params.get("mode") === "console") {
+    window.__runner = { ROOT: ROOT, VFS: VFS, send: send, getFiles: getFiles, version: version };
+    loadScript("learn/console.js", version("console")).catch(function () {
+      document.getElementById("out").textContent = "The code runner could not start.";
+      send({ type: "failed" });
+    });
+    return;
+  }
+  var out = document.getElementById("out");
   var print = function (text, cls) {
     var span = document.createElement("span");
     if (cls) span.className = cls;
     span.textContent = text;
     out.appendChild(span);
   };
+  function showError(title, msg) {
+    out.textContent = "";
+    print(title + "\n", "err");
+    print(msg + "\n", "err");
+    send({ type: "output", text: "", ok: false, error: msg });
+  }
 
   // ---------- HTML, CSS and JavaScript: the code becomes this page ----------
   var CONSOLE = "<script>(function(){var lines=[];function fmt(a){return Array.prototype.map.call(a,function(x){" +
@@ -155,193 +222,6 @@
     document.close();
   }
 
-  // ---------- Python (Pyodide, loaded once) ----------
-  var pyReady = null;
-  function loadPython() {
-    if (pyReady) return pyReady;
-    pyReady = new Promise(function (resolve, reject) {
-      var s = document.createElement("script");
-      s.src = "/vendor/pyodide/pyodide.js";
-      s.onload = function () { window.loadPyodide({ indexURL: "/vendor/pyodide/" }).then(resolve, reject); };
-      s.onerror = function () { reject(new Error("Python could not load. Check your connection and try again.")); };
-      document.head.appendChild(s);
-    });
-    return pyReady;
-  }
-  // Stops Python code that runs for more than 10 seconds (usually a loop that never ends), so the
-  // learner's browser tab never freezes. It checks the clock every few hundred lines of their code.
-  var PY_GUARD = [
-    "import sys, time",
-    "class CodeTookTooLong(Exception): pass",
-    "def __mz_guard():",
-    "    state = {'n': 0, 'end': time.monotonic() + 10}",
-    "    def local(frame, event, arg):",
-    "        state['n'] += 1",
-    "        if state['n'] % 200 == 0 and time.monotonic() > state['end']:",
-    "            state['end'] = time.monotonic() + 1",
-    "            raise CodeTookTooLong('Your code ran for more than 10 seconds and was stopped. Check for a loop that never ends.')",
-    "        return local",
-    "    def glob(frame, event, arg):",
-    "        return local if frame.f_code.co_filename == '<exec>' else None",
-    "    def reset(): state['end'] = time.monotonic() + 10",
-    "    return glob, reset",
-    "__mz_tracer, __mz_guard_reset = __mz_guard()",
-    "def __mz_guard_off(): sys.settrace(None)",
-    "sys.settrace(__mz_tracer)"
-  ].join("\n");
-  function runPython(code) {
-    out.textContent = "";
-    print("Starting Python… (the first run takes a few seconds)\n", "muted");
-    loadPython().then(function (py) {
-      out.textContent = "";
-      var text = [], lines = 0, MAX = 2000;
-      var emit = function (t, cls) {
-        lines++;
-        if (lines > MAX) { if (lines === MAX + 1) print("(Output stopped after " + MAX.toLocaleString() + " lines.)\n", "muted"); return; }
-        text.push(t); print(t + "\n", cls);
-      };
-      py.setStdout({ batched: function (t) { emit(t); } });
-      py.setStderr({ batched: function (t) { emit(t, "err"); } });
-      // Time spent typing an answer doesn't count towards the time limit
-      py.setStdin({ stdin: function () { var v = prompt("Input for your program:"); try { py.globals.get("__mz_guard_reset")(); } catch (e) {} return v === null ? "" : v; } });
-      try {
-        py.runPython(PY_GUARD);
-        py.runPython(code);
-        py.runPython("__mz_guard_off()");
-        if (!text.length) print("(no output)", "muted");
-        send({ type: "output", text: text.join("\n"), ok: true });
-      } catch (e) {
-        try { py.runPython("__mz_guard_off()"); } catch (e2) {}
-        var stopped = /CodeTookTooLong: (.*)/.exec(String(e.message || e));
-        var all = String(e.message || e).split("\n"), first = -1;
-        all.forEach(function (l, i) { if (first < 0 && /File "<exec>"/.test(l)) first = i; });
-        // Show only the part of the traceback about the learner's own code
-        if (first > 0) all = ["Traceback (most recent call last):"].concat(all.slice(first));
-        var msg = stopped ? stopped[1] : all.filter(function (l) { return l && !/^\s*File "\/lib\//.test(l) && !/_pyodide/.test(l); }).join("\n");
-        print(msg.trim() + "\n", "err");
-        send({ type: "output", text: text.join("\n"), ok: false, error: msg, detail: msg });
-      }
-    }).catch(function (e) { out.textContent = ""; print(e.message, "err"); send({ type: "output", text: "", ok: false, error: e.message }); });
-  }
-
-  // ---------- SQL (sql.js) on a small sample shop database ----------
-  var SAMPLE = [
-    "CREATE TABLE Customers (CustomerID INTEGER PRIMARY KEY, Name TEXT, City TEXT, Phone TEXT);",
-    "INSERT INTO Customers VALUES (1,'Wanjiku Mwangi','Nairobi','0712000001'),(2,'Otieno Odhiambo','Kisumu','0712000002'),(3,'Achieng Atieno','Kisumu','0712000003'),(4,'Kamau Njoroge','Nakuru','0712000004'),(5,'Amina Hassan','Mombasa','0712000005'),(6,'Kiprop Kiptoo','Eldoret','0712000006'),(7,'Njeri Wambui','Nairobi','0712000007');",
-    "CREATE TABLE Products (ProductID INTEGER PRIMARY KEY, Name TEXT, Category TEXT, Price INTEGER);",
-    "INSERT INTO Products VALUES (1,'Laptop bag','Accessories',2500),(2,'USB flash 32GB','Storage',900),(3,'Wireless mouse','Accessories',1200),(4,'Phone charger','Electronics',800),(5,'Bluetooth speaker','Electronics',3500),(6,'External hard disk 1TB','Storage',6500);",
-    "CREATE TABLE Orders (OrderID INTEGER PRIMARY KEY, CustomerID INTEGER, ProductID INTEGER, Quantity INTEGER, OrderDate TEXT);",
-    "INSERT INTO Orders VALUES (1,1,5,1,'2026-08-02'),(2,2,2,3,'2026-08-05'),(3,1,3,2,'2026-08-11'),(4,4,6,1,'2026-08-15'),(5,5,1,1,'2026-08-20'),(6,7,4,2,'2026-09-01'),(7,3,2,1,'2026-09-03');"
-  ].join("\n");
-  // Runs the SQL and collects the results, at most 1,000 rows per statement. Used inside a worker
-  // (so a query that never ends can be stopped) and, if workers aren't available, on this page.
-  function execSql(SQL, sample, code) {
-    var db = new SQL.Database(), results = [], MAX = 1000;
-    try {
-      db.run(sample);
-      var it = db.iterateStatements(code);
-      for (var st = it.next(); !st.done; st = it.next()) {
-        var stmt = st.value, cols = stmt.getColumnNames(), rows = [], more = false;
-        while (stmt.step()) {
-          if (rows.length >= MAX) { more = true; break; }
-          rows.push(stmt.get());
-        }
-        if (!cols.length && stmt.getColumnNames) cols = stmt.getColumnNames();
-        stmt.free();
-        if (cols.length) results.push({ columns: cols, values: rows, more: more });
-      }
-      return { ok: true, results: results };
-    } catch (e) {
-      return { ok: false, results: results, error: String(e && e.message || e) };
-    } finally { db.close(); }
-  }
-  var SQL_BASE = new URL("/vendor/sqljs/", location.href).href;
-  var SQL_LIMIT = 8000;
-  var sqlWorker = null, sqlLocal = null;
-  function startSqlWorker() {
-    var body = "var SQLP=null;" + execSql.toString() +
-      "self.onmessage=function(e){var base=e.data.base;if(!SQLP){importScripts(base+'sql-wasm.js');SQLP=initSqlJs({locateFile:function(f){return base+f;}});}" +
-      "SQLP.then(function(SQL){self.postMessage(execSql(SQL,e.data.sample,e.data.code));},function(err){self.postMessage({ok:false,results:[],error:'SQL could not load. Check your connection and try again.'});});};";
-    return new Worker(URL.createObjectURL(new Blob([body], { type: "text/javascript" })));
-  }
-  function loadSqlHere() {
-    if (sqlLocal) return sqlLocal;
-    sqlLocal = new Promise(function (resolve, reject) {
-      var s = document.createElement("script");
-      s.src = SQL_BASE + "sql-wasm.js";
-      s.onload = function () { window.initSqlJs({ locateFile: function (f) { return SQL_BASE + f; } }).then(resolve, reject); };
-      s.onerror = function () { reject(new Error("SQL could not load. Check your connection and try again.")); };
-      document.head.appendChild(s);
-    });
-    return sqlLocal;
-  }
-  function sqlResult(code) {
-    if (sqlWorker !== false) {
-      try { if (!sqlWorker) sqlWorker = startSqlWorker(); } catch (e) { sqlWorker = false; }
-    }
-    if (!sqlWorker) return loadSqlHere().then(function (SQL) { return execSql(SQL, SAMPLE, code); });
-    var w = sqlWorker;
-    return new Promise(function (resolve) {
-      var timer = null;
-      var started = function () {
-        // The first run also downloads SQL, so the time limit starts once it has loaded (or after 20 s at most)
-        timer = setTimeout(function () {
-          w.terminate(); if (sqlWorker === w) sqlWorker = null;
-          resolve({ ok: false, results: [], error: "Your query ran for more than " + SQL_LIMIT / 1000 + " seconds and was stopped. Check for a recursive query that never ends." });
-        }, SQL_LIMIT + (w.__warm ? 0 : 20000));
-      };
-      w.onmessage = function (e) { clearTimeout(timer); w.__warm = true; resolve(e.data); };
-      w.onerror = function (e) {
-        clearTimeout(timer); e.preventDefault(); w.terminate(); sqlWorker = false;
-        loadSqlHere().then(function (SQL) { resolve(execSql(SQL, SAMPLE, code)); }, function (err) { resolve({ ok: false, results: [], error: err.message }); });
-      };
-      w.postMessage({ base: SQL_BASE, sample: SAMPLE, code: code });
-      started();
-    });
-  }
-  function runSql(code) {
-    out.textContent = "";
-    print("Running…\n", "muted");
-    sqlResult(code).then(function (r) {
-      out.textContent = "";
-      var text = [];
-      if (r.ok && !r.results.length) print("Done. (The statement returned no rows.)\n", "muted");
-      r.results.forEach(function (res) {
-        var t = "<table><thead><tr>" + res.columns.map(function (c) { return "<th>" + esc(c) + "</th>"; }).join("") + "</tr></thead><tbody>" +
-          res.values.map(function (row) { return "<tr>" + row.map(function (v) { return "<td>" + esc(v === null ? "NULL" : v) + "</td>"; }).join("") + "</tr>"; }).join("") + "</tbody></table>";
-        var wrap = document.createElement("div");
-        wrap.innerHTML = t;
-        out.appendChild(wrap);
-        print("Number of records: " + res.values.length + (res.more ? " (showing the first 1,000)" : "") + "\n", "muted");
-        text.push(res.columns.join(","));
-        res.values.forEach(function (row) { text.push(row.join(",")); });
-      });
-      if (!r.ok) print("Error: " + r.error + "\n", "err");
-      send(r.ok ? { type: "output", text: text.join("\n"), ok: true } : { type: "output", text: "", ok: false, error: r.error });
-    }).catch(function (e) { out.textContent = ""; print(e.message, "err"); send({ type: "output", text: "", ok: false, error: e.message }); });
-  }
-
-  // ---------- Helpers for the extra languages ----------
-  var ROOT = new URL("/", location.href).href;
-  var ENGINES_V = (document.querySelector("script[data-engines]") || { getAttribute: function () { return "1"; } }).getAttribute("data-engines");
-  var loaded = {};
-  function loadScript(path) {
-    if (!loaded[path]) loaded[path] = new Promise(function (resolve, reject) {
-      var s = document.createElement("script");
-      s.src = ROOT + path;
-      s.onload = resolve;
-      s.onerror = function () { reject(new Error("Could not load the tools for this language. Check your connection and try again.")); };
-      document.head.appendChild(s);
-    });
-    return loaded[path];
-  }
-  function showError(title, msg) {
-    out.textContent = "";
-    print(title + "\n", "err");
-    print(msg + "\n", "err");
-    send({ type: "output", text: "", ok: false, error: msg });
-  }
-
   // ---------- TypeScript: types are checked by your editor in real projects; here we strip them and run the JavaScript ----------
   function runTypeScript(code) {
     loadScript("vendor/sucrase/sucrase.min.js").then(function () {
@@ -354,13 +234,14 @@
 
   // ---------- React (JSX): React 18 from this site, the JSX is compiled in the browser ----------
   function runReact(code) {
-    loadScript("vendor/sucrase/sucrase.min.js").then(function () {
+    var lib = ["vendor/react/react.production.min.js", "vendor/react/react-dom.production.min.js"];
+    Promise.all([loadScript("vendor/sucrase/sucrase.min.js"), fileUrl(lib[0]), fileUrl(lib[1])]).then(function (urls) {
       var js;
       try { js = window.sucrase.transform(code, { transforms: ["jsx", "typescript"], production: true }).code; }
       catch (e) { return showError("JSX error", String(e.message || e)); }
       var html = "<!DOCTYPE html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>" + GUARD + CONSOLE +
         "<style>body{font:15px/1.5 system-ui,sans-serif;margin:12px}</style>" +
-        "<script src='" + ROOT + "vendor/react/react.production.min.js'><\/script><script src='" + ROOT + "vendor/react/react-dom.production.min.js'><\/script></head>" +
+        "<script src='" + urls[1] + "'><\/script><script src='" + urls[2] + "'><\/script></head>" +
         "<body><div id='root'></div><script>\n" + safeGuard(js).replace(/<\/script/gi, "<\\/script") + "\n<\/script></body></html>";
       document.open(); document.write(html); document.close();
     }).catch(function (e) { showError("Error", e.message); });
@@ -379,286 +260,12 @@
     }).catch(function (e) { showError("Error", e.message); });
   }
 
-  // ---------- JSON: checks it, shows where the mistake is, and formats it ----------
-  function runJson(code) {
-    out.textContent = "";
-    try {
-      var data = JSON.parse(code);
-      var count = function (v) { return Array.isArray(v) ? v.length + " items" : v && typeof v === "object" ? Object.keys(v).length + " keys" : typeof v; };
-      print("✔ Valid JSON (" + (Array.isArray(data) ? "array, " : data && typeof data === "object" ? "object, " : "") + count(data) + ")\n\n", "muted");
-      var pretty = JSON.stringify(data, null, 2);
-      print(pretty + "\n");
-      send({ type: "output", text: pretty, ok: true });
-    } catch (e) {
-      var msg = String(e.message || e), m = /position (\d+)/.exec(msg), where = "";
-      if (m) {
-        var pos = Number(m[1]), before = code.slice(0, pos), line = before.split("\n").length, col = pos - before.lastIndexOf("\n");
-        where = " (line " + line + ", column " + col + ")";
-        var src = code.split("\n")[line - 1] || "";
-        print("✘ Invalid JSON" + where + "\n", "err");
-        print(src + "\n" + " ".repeat(Math.max(0, col - 1)) + "^\n\n", "err");
-      } else print("✘ Invalid JSON\n", "err");
-      print(msg + "\n\nCommon mistakes: a comma after the last item, single quotes instead of double quotes, or keys without quotes.\n", "muted");
-      send({ type: "output", text: "", ok: false, error: msg });
-    }
-  }
-
-  // ---------- PHP 8.3 (WebAssembly) in a worker, so long-running code can be stopped ----------
-  var phpWorker = null, PHP_LIMIT = 10000;
-  function startPhpWorker() {
-    // The PHP build expects a browser page, so give it the few window/document pieces it touches
-    var src = "self.window = self; self.document = { currentScript: null, body: null, documentElement: { style: {} }, addEventListener() {}, removeEventListener() {}, querySelector() { return null; }, getElementById() { return null; } };" +
-      "self.__PHP_BASE = '" + ROOT + "vendor/php/php.js'; importScripts(self.__PHP_BASE);" +
-      "let php = null, out = [];" +
-      "self.onmessage = async (e) => {" +
-      "  try {" +
-      "    if (!php) { php = self.createPhp(); php.addEventListener('output', ev => out.push(['o', ev.detail.join('')])); php.addEventListener('error', ev => out.push(['e', ev.detail.join('')])); await php.binary; self.postMessage({ ready: true }); }" +
-      "    else await php.refresh();" +
-      "    out = []; const code = await php.run(e.data.code); self.postMessage({ done: true, out, code });" +
-      "  } catch (err) { self.postMessage({ done: true, out, fail: String(err && err.message || err) }); }" +
-      "};";
-    return new Worker(URL.createObjectURL(new Blob([src], { type: "text/javascript" })));
-  }
-  function runPhp(code) {
-    out.textContent = "";
-    var w;
-    try { w = phpWorker || (phpWorker = startPhpWorker()); } catch (e) { return showError("Error", "PHP can't run in this browser. Try a recent Chrome, Edge or Firefox."); }
-    var warm = !!w.__warm, timer = null;
-    if (!warm) print("Starting PHP… (the first run downloads it once, about 4 MB)\n", "muted");
-    var arm = function () { clearTimeout(timer); timer = setTimeout(function () { w.terminate(); phpWorker = null; out.textContent = ""; print("Your code ran for more than 10 seconds and was stopped. Check for a loop that never ends.\n", "err"); send({ type: "output", text: "", ok: false, error: "Your code ran for more than 10 seconds and was stopped." }); }, PHP_LIMIT); };
-    if (warm) arm(); else timer = setTimeout(arm, 60000);
-    w.onmessage = function (e) {
-      var d = e.data || {};
-      if (d.ready) { w.__warm = true; arm(); return; }
-      if (!d.done) return;
-      clearTimeout(timer);
-      out.textContent = "";
-      var text = "", errs = "";
-      (d.out || []).forEach(function (p) { if (p[0] === "o") text += p[1]; else errs += p[1]; });
-      var html = /<\/?(html|body|p|h[1-6]|div|table|ul|ol|br|b|strong)[\s>\/]/i.test(text);
-      if (html) {
-        var box = document.createElement("div"); box.className = "php-html";
-        var fr = document.createElement("iframe"); fr.setAttribute("sandbox", ""); fr.srcdoc = text; fr.style.cssText = "width:100%;min-height:260px;border:1px solid #cbd5e1;border-radius:8px;background:#fff";
-        print("Rendered HTML:\n", "muted"); box.appendChild(fr); out.appendChild(box); print("\nSource:\n", "muted"); print(text + "\n");
-      } else if (text) print(text + (/\n$/.test(text) ? "" : "\n"));
-      var problem = errs || d.fail || "";
-      if (/(Parse|Fatal) error|Warning:|Uncaught/.test(text) && !problem) problem = (text.match(/(Parse error|Fatal error|Warning):[^\n]*/) || [""])[0];
-      if (errs) print(errs + "\n", "err");
-      if (d.fail) print(d.fail + "\n", "err");
-      if (!text && !errs && !d.fail) print("(no output)", "muted");
-      send(problem ? { type: "output", text: text, ok: false, error: problem, detail: (errs + "\n" + (d.fail || "") + "\n" + ((text.match(/(Parse error|Fatal error|Warning|Deprecated|Notice):[^\n]*/g) || []).join("\n"))).trim() } : { type: "output", text: text, ok: true });
-    };
-    w.onerror = function (e) { clearTimeout(timer); e.preventDefault && e.preventDefault(); w.terminate(); phpWorker = null; showError("Error", "PHP could not start. Check your connection and try again."); };
-    w.postMessage({ code: code });
-  }
-
-  // ---------- C, C++, Lua, Ruby, Sass and Prolog: engines in a worker (learn/engines.js), stopped after 10 seconds ----------
-  var remoteCache = {};
-  var engWorker = null, ENG_LIMIT = 10000, ENG_NAMES = { c: "C", cpp: "C++", lua: "Lua", ruby: "Ruby", sass: "Sass", prolog: "Prolog", regex: "Regex" };
-  function startEngines() {
-    var src = "self.__LEARN_ROOT = '" + ROOT + "'; importScripts('" + ROOT + "learn/engines.js?v=" + ENGINES_V + "');";
-    return new Worker(URL.createObjectURL(new Blob([src], { type: "text/javascript" })));
-  }
-  // What the quick in-browser C/C++ interpreters can't do: send it straight to the full compiler
-  // (reading input, the standard library beyond printing and maths, classes, templates, const and so on).
-  function needsFullCompiler(lang, code, stdin) {
-    var src = code.replace(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, "");
-    if (lang === "c") return /\b(scanf|fgets|getchar|gets|getline|sscanf|qsort|bsearch|const|union|static|volatile|inline|_Bool|size_t|uint\d+_t|int\d+_t|bool|true|false)\b/.test(src) ||
-      /#include\s*<(?!stdio\.h>|stdlib\.h>|string\.h>|math\.h>)/.test(src) || /%z[ud]/.test(src) || /#define\s+\w+\(/.test(src);
-    if (lang === "cpp") return (/\bcin\b|getline/.test(src) && !stdin) ||
-      /#include\s*<(?!iostream>|cmath>|cstdio>|cstdlib>|cstring>|iomanip>)/.test(src) ||
-      /\b(class|template|auto|nullptr|constexpr|virtual|override|operator|typename|try|catch|throw|new|delete|struct\s+\w+\s*:\s*public)\b/.test(src) ||
-      /\b(vector|string|map|set|pair|unique_ptr|shared_ptr|function)\s*</.test(src) || /\bstd::(?!cout\b|cin\b|endl\b)\w+/.test(src) ||
-      /\[\s*[&=]?\s*\]\s*\(/.test(src) || /&\s*\w+\s*[,)]/.test(src) || /:\s*\w+\s*\)\s*\{?/.test(src.replace(/\?[^:;]*:/g, ""));
-    return false;
-  }
-  function runEngine(lang, code, stdin, quickOnly) {
-    if (!quickOnly && (lang === "c" || lang === "cpp") && needsFullCompiler(lang, code, stdin)) return runRemote(lang, code, stdin, null, remoteCache);
-    out.textContent = "";
-    var w, timer = null, first = !engWorker;
-    try { w = engWorker || (engWorker = startEngines()); } catch (e) { return showError("Error", "This language can't run in this browser. Try a recent Chrome, Edge or Firefox."); }
-    print(first || !w["__" + lang] ? "Starting " + ENG_NAMES[lang] + "…" + (lang === "ruby" ? " (the first run downloads it once, about 5 MB)" : "") + "\n" : "Running…\n", "muted");
-    var stop = function () {
-      w.terminate(); engWorker = null; out.textContent = "";
-      print("Your code ran for more than 10 seconds and was stopped. Check for a loop that never ends.\n", "err");
-      send({ type: "output", text: "", ok: false, error: "Your code ran for more than 10 seconds and was stopped." });
-    };
-    // First use downloads the engine, so allow longer before the 10-second limit starts
-    timer = setTimeout(stop, ENG_LIMIT + (w["__" + lang] ? 0 : 50000));
-    var go = function () { w.postMessage({ lang: lang, code: code, stdin: stdin || "" }); };
-    w.onmessage = function (e) {
-      var d = e.data || {};
-      if (d.ready) { go(); return; }
-      if (!d.done) return;
-      clearTimeout(timer);
-      w["__" + lang] = true;
-      out.textContent = "";
-      // The quick in-browser C/C++ interpreters don't cover everything: any error they report is checked
-      // by the full compiler, which either runs the code or gives the clearer message for a real mistake.
-      // If the full compiler can't be reached, the interpreter's own message is shown.
-      if ((lang === "c" || lang === "cpp") && d.err && !quickOnly) return runRemote(lang, code, stdin, d, remoteCache);
-      if (lang === "sass" && d.out) {
-        print("Compiled CSS:\n", "muted"); print(d.out);
-      } else if (d.out) print(d.out);
-      if (d.err) print(d.err, "err");
-      if (d.err && quickOnly) print("\nThe online compilers couldn't be reached and the quick in-browser interpreter doesn't support everything in this code. Check your internet connection, then tap Run again.\n", "muted");
-      if (!d.out && !d.err) print("(no output)", "muted");
-      send(d.err && !d.out ? { type: "output", text: "", ok: false, error: d.err.trim().split("\n")[0], detail: d.err } : { type: "output", text: d.out || "", ok: !d.err, error: d.err ? d.err.trim().split("\n")[0] : "", detail: d.err || "" });
-    };
-    w.onerror = function (e) { clearTimeout(timer); if (e.preventDefault) e.preventDefault(); w.terminate(); engWorker = null; showError("Error", "The " + ENG_NAMES[lang] + " engine could not start. Check your connection and try again."); };
-    if (!first) go();
-  }
-
-  // ---------- C#, Java, Go, Rust, Kotlin (and C/C++ beyond the quick interpreters): full compilers online ----------
-  // Compiler Explorer (godbolt.org) first; if it can't be reached or has a problem, Wandbox (wandbox.org).
-  // Both are free services, so the code is sent to them. The page keeps their compiler lists on the
-  // learner's device for a week (sent in with each run), so a run doesn't wait for the list.
-  var CE = "https://godbolt.org/api/", CE_LANG = { csharp: "csharp", java: "java", go: "go", rust: "rust", kotlin: "kotlin", c: "c", cpp: "c++" },
-    CE_NAMES = { csharp: "C#", java: "Java", go: "Go", rust: "Rust", kotlin: "Kotlin", c: "C", cpp: "C++" },
-    WB = "https://wandbox.org/api/", WB_LANG = { c: "C", cpp: "C++", java: "Java", go: "Go", rust: "Rust", csharp: "C#" },
-    ceCompiler = {}, wbCompiler = {};
-  function jsonFetch(url, body, ms) {
-    var ctl = window.AbortController ? new AbortController() : null;
-    var t = ctl ? setTimeout(function () { ctl.abort(); }, ms || 30000) : null;
-    var opts = body ? { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify(body) } : { headers: { "Accept": "application/json" } };
-    if (ctl) opts.signal = ctl.signal;
-    return fetch(url, opts).then(function (r) {
-      if (t) clearTimeout(t);
-      if (!r.ok) { var e = new Error("The online compiler replied with an error (" + r.status + ")."); e.server = true; throw e; }
-      return r.json();
-    }, function (e) { if (t) clearTimeout(t); var x = new Error(e && e.name === "AbortError" ? "The online compiler took too long to answer." : "Couldn't reach the online compiler."); x.network = true; throw x; });
-  }
-  var num = function (v) { return String(v || "").split(/[^0-9]+/).filter(Boolean).slice(0, 3).map(function (x) { return ("000" + x).slice(-4); }).join("."); };
-  // All Compiler Explorer compilers for a language that can run code, newest stable first (GCC first for C and C++)
-  function compilerList(lang, cached) {
-    if (ceCompiler[lang]) return Promise.resolve(ceCompiler[lang]);
-    if (cached && cached.ids && cached.ids.length) return Promise.resolve(ceCompiler[lang] = { ids: cached.ids, good: cached.good || 0 });
-    return jsonFetch(CE + "compilers/" + CE_LANG[lang] + "?fields=id,name,semver,supportsExecute", null, 20000).then(function (list) {
-      var ok = (list || []).filter(function (c) { return c.supportsExecute !== false && !/nightly|trunk|beta|snapshot|alpha|\brc\b|dev|experimental|native|arm|risc|mips|power|wasm|avr|msp|s390|loong|cross/i.test(c.name + " " + c.id); });
-      ok.sort(function (a, b) {
-        var ga = /gcc/i.test(a.name) ? 1 : 0, gb = /gcc/i.test(b.name) ? 1 : 0;
-        if ((lang === "c" || lang === "cpp") && ga !== gb) return gb - ga;
-        return num(b.semver) < num(a.semver) ? -1 : num(b.semver) > num(a.semver) ? 1 : 0;
-      });
-      if (!ok.length) throw new Error("No compiler is available for this language right now.");
-      ceCompiler[lang] = { ids: ok.slice(0, 8).map(function (c) { return c.id; }), good: 0 };
-      send({ type: "cache", key: "ce:" + lang, value: ceCompiler[lang] });
-      return ceCompiler[lang];
-    });
-  }
-  function ceText(x) { return (x || []).map(function (l) { return l.text; }).join("\n"); }
-  // A crash inside the compiler's own runtime (not the learner's code): try another compiler version
-  function infraFailure(lang, ex, stdout, stderr) {
-    if (stdout) return false;
-    if (ex.didExecute === false && !(ex.buildResult && ex.buildResult.code)) return true;
-    if (/Exception in thread|Error occurred during initialization of VM|Could not find or load main class|Internal compiler error/i.test(stderr)) {
-      var frames = stderr.split("\n").filter(function (l) { return /^\s*at /.test(l); });
-      return frames.length > 0 && !frames.some(function (l) { return /example|Main|Kt\.|Program|\.kt:|\.java:(?!.*java\.base)/.test(l) && !/java\.base|jdk\.internal|kotlin\.|sun\./.test(l); });
-    }
-    return false;
-  }
-  /** Compiler Explorer: resolves with { buildErr, stdout, stderr, timedOut, code }. */
-  function viaGodbolt(lang, code, stdin, cached) {
-    var attempt = function (c, n) {
-      var id = c.ids[(c.good + n) % c.ids.length];
-      return jsonFetch(CE + "compiler/" + encodeURIComponent(id) + "/compile", {
-        source: code, lang: CE_LANG[lang], allowStoreCodeDebug: false,
-        options: { userArguments: "", executeParameters: { args: [], stdin: stdin || "" }, compilerOptions: { executorRequest: true, skipAsm: true }, filters: { execute: true }, tools: [], libraries: [] }
-      }, 40000).then(function (r) {
-        var ex = r.execResult || r, stdout = ceText(ex.stdout), stderr = ceText(ex.stderr);
-        if (infraFailure(lang, ex, stdout, stderr) && n + 1 < Math.min(3, c.ids.length)) {
-          print("That compiler version had a problem, trying another one…\n", "muted");
-          return attempt(c, n + 1);
-        }
-        if (c.good !== (c.good + n) % c.ids.length) { c.good = (c.good + n) % c.ids.length; send({ type: "cache", key: "ce:" + lang, value: c }); }
-        var build = ex.buildResult || r.buildResult || {};
-        return { buildErr: build.code ? (ceText(build.stderr) || ceText(build.stdout)) : "", stdout: stdout, stderr: stderr, timedOut: !!ex.timedOut, code: ex.code };
-      }, function (e) {
-        // A compiler that has been retired since the list was saved: forget the list and fetch it again
-        if (e.server && n === 0 && cached) { ceCompiler[lang] = null; send({ type: "cache", key: "ce:" + lang, value: null }); return compilerList(lang, null).then(function (c2) { return attempt(c2, 0); }); }
-        throw e;
-      });
-    };
-    return compilerList(lang, cached).then(function (c) { return attempt(c, 0); });
-  }
-  /** Wandbox: the same result shape. */
-  function viaWandbox(lang, code, stdin, cached) {
-    if (!WB_LANG[lang]) return Promise.reject(new Error("No backup compiler for " + CE_NAMES[lang] + "."));
-    var pick = wbCompiler[lang] ? Promise.resolve(wbCompiler[lang]) : cached ? Promise.resolve(wbCompiler[lang] = cached) :
-      jsonFetch(WB + "list.json", null, 20000).then(function (list) {
-        var ok = (list || []).filter(function (c) { return c.language === WB_LANG[lang] && !/head|dev|snapshot|nightly/i.test(c.name + " " + c.version); });
-        ok.sort(function (a, b) {
-          var ga = /^gcc/.test(a.name) ? 1 : 0, gb = /^gcc/.test(b.name) ? 1 : 0;
-          if ((lang === "c" || lang === "cpp") && ga !== gb) return gb - ga;
-          return num(b.version) < num(a.version) ? -1 : num(b.version) > num(a.version) ? 1 : 0;
-        });
-        if (!ok.length) throw new Error("No backup compiler is available for this language right now.");
-        wbCompiler[lang] = ok[0].name;
-        send({ type: "cache", key: "wb:" + lang, value: ok[0].name });
-        return ok[0].name;
-      });
-    return pick.then(function (name) {
-      return jsonFetch(WB + "compile.json", { compiler: name, code: code, stdin: stdin || "", save: false }, 40000);
-    }).then(function (r) {
-      var status = String(r.status == null ? "" : r.status), compileErr = r.compiler_error || "";
-      var built = r.program_output != null || r.program_error != null;
-      return { buildErr: !built && status !== "0" ? (compileErr || r.compiler_output || "Your code didn't compile.") : "", stdout: (r.program_output || "").replace(/\n$/, ""), stderr: (r.program_error || "").replace(/\n$/, ""),
-        timedOut: /SIGKILL|SIGXCPU|time/i.test(String(r.signal || "")), code: status === "" ? 0 : Number(status) };
-    });
-  }
-  function runRemote(lang, code, stdin, interp, cache) {
-    cache = cache || {};
-    out.textContent = "";
-    print((interp ? "Checking with the full " + CE_NAMES[lang] + " compiler…" : "Compiling and running your " + CE_NAMES[lang] + " code…") + "\n", "muted");
-    var show = function (r, where) {
-      out.textContent = "";
-      if (r.buildErr) { print("Your code didn't compile:\n", "err"); print(r.buildErr + "\n", "err"); return send({ type: "output", text: "", ok: false, error: r.buildErr.split("\n")[0], detail: r.buildErr }); }
-      if (r.stdout) print(r.stdout + "\n");
-      if (r.stderr) print(r.stderr + "\n", "err");
-      if (r.timedOut) print("Your program took too long and was stopped. Check for a loop that never ends.\n", "err");
-      if (!r.stdout && !r.stderr) print("(no output)", "muted");
-      print("\nRan on " + where + ".", "muted small");
-      send({ type: "output", text: r.stdout, ok: !r.stderr && !r.timedOut && !(r.code > 0), error: r.stderr ? r.stderr.split("\n")[0] : (r.timedOut ? "took too long" : ""), detail: r.stderr || (r.timedOut ? "Your program took too long and was stopped." : "") });
-    };
-    viaGodbolt(lang, code, stdin, cache["ce:" + lang]).then(function (r) { show(r, "Compiler Explorer (godbolt.org)"); }, function (e1) {
-      print("Compiler Explorer didn't answer, trying the backup compiler…\n", "muted");
-      return viaWandbox(lang, code, stdin, cache["wb:" + lang]).then(function (r) { show(r, "Wandbox (wandbox.org)"); }, function (e2) {
-        out.textContent = "";
-        // The quick interpreter's own answer is better than nothing
-        if (interp) {
-          if (interp.out) print(interp.out);
-          print(interp.err, "err");
-          print("\nThe full compiler couldn't be reached to double-check this, so this is the quick in-browser interpreter's message.\n", "muted");
-          return send({ type: "output", text: interp.out || "", ok: false, error: interp.err.trim().split("\n")[0], detail: interp.err });
-        }
-        // C and C++: the in-browser interpreter may still manage it
-        if (lang === "c" || lang === "cpp") { out.textContent = ""; print("The online compilers couldn't be reached, so trying the quick in-browser interpreter…\n", "muted"); return runEngine(lang, code, stdin, true); }
-        var why = (e1 && e1.network) || (e2 && e2.network) ? "Couldn't reach the online compilers. Check your internet connection, then tap Run again." : "The online compilers are busy right now. Wait a moment, then tap Run again.";
-        print(why + "\n", "err");
-        print("Your code is saved on this device, so nothing is lost.\n", "muted");
-        send({ type: "output", text: "", ok: false, error: why });
-      });
-    });
-  }
-  // The page asks for a compiler list in advance, so the first Run doesn't wait for it
-  function warm(lang, cache) {
-    if (CE_LANG[lang]) compilerList(lang, (cache || {})["ce:" + lang]).catch(function () {});
-  }
-
   window.addEventListener("message", function (e) {
     var d = e.data || {};
-    if (d.type === "warm") return warm(d.lang, d.cache);
-    if (d.type !== "run" || typeof d.code !== "string") return;
-    if (d.cache) remoteCache = d.cache;
-    if (ENG_NAMES[d.lang]) return runEngine(d.lang, d.code, d.stdin);
-    if (CE_LANG[d.lang]) return runRemote(d.lang, d.code, d.stdin, null, remoteCache);
-    if (d.lang === "python") runPython(d.code);
-    else if (d.lang === "sql") runSql(d.code);
-    else if (d.lang === "php") runPhp(d.code);
-    else if (d.lang === "typescript") runTypeScript(d.code);
+    if (e.source !== parent || d.type !== "run" || typeof d.code !== "string") return;
+    if (d.lang === "typescript") runTypeScript(d.code);
     else if (d.lang === "react") runReact(d.code);
     else if (d.lang === "markdown") runMarkdown(d.code);
-    else if (d.lang === "json") runJson(d.code);
     else runWeb(d.lang, d.code);
   });
   send({ type: "ready" });

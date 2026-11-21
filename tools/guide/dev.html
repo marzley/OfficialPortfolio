@@ -437,36 +437,39 @@ object-src 'none'; base-uri 'self'; form-action 'self' https://formspree.io; fra
 
 <section class="sec" id="a14">
   <div class="sec-head"><div><p class="num">Section 14</p><h2>Code runner and language engines</h2></div><img src="logo-256.webp" alt="" /></div>
-  <p class="lead">Learner code never runs in the page itself. It runs in <code>learn/runner.html</code>, an iframe with <code>sandbox="allow-scripts allow-modals"</code> (no same-origin, so no cookies, storage or site access) and its own CSP.</p>
+  <p class="lead">Learner code never runs in the page itself. It runs in <code>learn/runner.html</code>, always inside a sandboxed iframe (no same-origin, so no cookies, storage or site access) with its own CSP. There are two kinds of runner frame.</p>
   <div class="diagram">
     <div class="row">
-      <div class="box bl"><b>learn.js · Runner</b>creates the iframe, <code>postMessage({type:"run", lang, code})</code>, waits for <code>{type:"output", text, ok, error, detail}</code>, frame timeout, then error helper</div>
+      <div class="box bl"><b>learn.js · Runner (one per code box)</b><code>run(lang, code, stdin)</code> → <code>{text, ok, error, detail, warnings, ms}</code>; Run/Stop state; draws console output itself</div>
       <div class="harrow">⇄</div>
-      <div class="box n"><b>runner.js (sandbox)</b>dispatches by language</div>
+      <div class="box n"><b>RT store (learn.js)</b>Cache Storage <code>marzley-runtimes</code>, keyed by <code>learn/runtimes.json</code> fingerprints; answers <code>{type:"need"}</code> with Blobs</div>
     </div>
     <div class="arrow">▼</div>
     <div class="row">
-      <div class="box a"><b>document.write</b>HTML, CSS, JS (+ loop guard), TypeScript &amp; React (Sucrase), Markdown (marked)</div>
-      <div class="box a"><b>Main thread</b>Python (Pyodide, trace guard), SQL (sql.js in worker), JSON</div>
-      <div class="box g"><b>Workers</b>PHP (php-wasm) · engines.js: C, C++, Lua, Ruby, Sass, Prolog, Regex. Terminated after 10 s</div>
-      <div class="box bl"><b>Online</b>Compiler Explorer API: C#, Java, Go, Rust, Kotlin (+ C/C++ fallback)</div>
+      <div class="box a"><b>Page frames (runner.js)</b>visible, one per run: HTML, CSS, JS (+ loop guard), TypeScript &amp; React (Sucrase), Markdown (marked). A spare frame loads in the background so the next run shows at once</div>
+      <div class="box g"><b>Console frame (console.js)</b>one hidden frame per visit, shared by every code box: Python, SQL, PHP and the engines each in a Web Worker that stays loaded; JSON</div>
+      <div class="box bl"><b>Online</b>Compiler Explorer, then Wandbox: C#, Java, Go, Rust, Kotlin (+ C/C++ beyond the quick interpreters)</div>
     </div>
   </div>
+  <p><b>Why the store:</b> a sandboxed frame gets a one-off network partition, so the browser's HTTP cache never reuses its downloads: without the store, Python (13 MB) downloaded on every visit. The hub fetches each file once (with progress in the code box), keeps it in Cache Storage under <code>path?h=fingerprint</code> and posts Blobs to the frame; a small shim in each worker serves them to <code>fetch()</code> and <code>importScripts()</code>. <code>tools/build_pages.py</code> writes <code>learn/runtimes.json</code> and stamps its version into <code>learn/index.html</code> (<code>data-rt</code>). Old versions are pruned; the service worker leaves <code>vendor/</code> runtimes and this cache alone. Only files listed in the manifest under <code>vendor/(pyodide|php|sqljs|langs|sucrase|react|marked)/</code> and <code>learn/console.js|engines.js</code> are ever sent.</p>
+  <p><b>Protocol (console frame):</b> hub → <code>run {id, lang, code, stdin, inputs, seed, cache}</code>, <code>stop {id}</code>, <code>warm {lang}</code>; frame → <code>out {parts:[[text, kind]]}</code>, <code>status</code>, <code>table</code>, <code>html</code> (PHP pages, shown in a <code>sandbox=""</code> srcdoc frame), <code>done {ok, text, error, detail, warnings, input}</code>, <code>cache</code>, <code>need</code>. Runs are queued one at a time.</p>
+  <p><b>Python input():</b> no SharedArrayBuffer is available, so when a program asks for input with none left, the worker stops it and the hub shows an answer box in the output; the program then runs again from the start with the answers so far (same <code>random.seed</code>, so random numbers stay the same). A program that swallows the stop with a bare <code>except:</code> is ended after 0.7 s.</p>
   <table>
     <tr><th>Language</th><th>Engine (vendor/)</th><th>Runaway protection</th></tr>
     <tr><td>JavaScript / HTML</td><td>browser; <code>guardLoops()</code> injects <code>__lp()</code> into every for/while/do</td><td>loop stopped after 3 s; console capped at 1,000 lines</td></tr>
     <tr><td>TypeScript, React</td><td>Sucrase (<code>sucrase/</code>) + React 18 UMD (<code>react/</code>)</td><td>same loop guard</td></tr>
-    <tr><td>Python</td><td>Pyodide (<code>pyodide/</code>), ~3 MB gzipped, loaded once</td><td><code>sys.settrace</code> guard, 10 s; output capped at 2,000 lines</td></tr>
-    <tr><td>SQL</td><td>sql.js in a blob worker with a sample shop DB</td><td>worker terminated after 8 s; 1,000 rows per statement</td></tr>
-    <tr><td>PHP 8.3</td><td>php-wasm (<code>php/php.js</code> + wasm), classic worker with window/document shims</td><td>worker terminated after 10 s; <code>refresh()</code> between runs</td></tr>
-    <tr><td>C · C++</td><td>PicoC (wasm) · JSCPP; unsupported features fall back online</td><td>engines worker, 10 s</td></tr>
+    <tr><td>Python 3.12</td><td>Pyodide (<code>pyodide/</code>) in a worker, fresh globals each run</td><td>worker ended after 10 s (Stop ends it at once); output capped at 5,000 lines</td></tr>
+    <tr><td>SQL</td><td>sql.js in a worker with a sample shop DB</td><td>worker ended after 8 s; 1,000 rows per statement</td></tr>
+    <tr><td>PHP 8.3</td><td>php-wasm (<code>php/php.js</code> + wasm), worker with window/document shims</td><td>worker ended after 10 s; <code>refresh()</code> between runs</td></tr>
+    <tr><td>C · C++</td><td>PicoC (wasm) · JSCPP; anything they can't do goes to the full compiler</td><td>engines worker, 10 s</td></tr>
     <tr><td>Lua · Ruby</td><td>Fengari · ruby.wasm 3.3 (WASI shim)</td><td>engines worker, 10 s</td></tr>
     <tr><td>Sass · Prolog · Regex</td><td>dart-sass · Tau Prolog (+ lists) · JS RegExp</td><td>engines worker, 10 s</td></tr>
-    <tr><td>C#, Java, Go, Rust, Kotlin</td><td>Compiler Explorer <code>/api/compilers/&lt;lang&gt;</code> + <code>/api/compiler/&lt;id&gt;/compile</code> (executorRequest)</td><td>server-side limits; runtime crashes retried on up to 4 compiler versions</td></tr>
+    <tr><td>C#, Java, Go, Rust, Kotlin</td><td>Compiler Explorer <code>/api/compilers/&lt;lang&gt;</code> + <code>/api/compiler/&lt;id&gt;/compile</code> (C/C++ with <code>-Wall</code>), then Wandbox <code>compile.json</code></td><td>server-side limits; runtime crashes retried on other compiler versions</td></tr>
   </table>
-  <div class="note"><b>Why workers are “classic”:</b> the sandbox has an opaque origin, where module workers fail; blob classic workers + <code>importScripts()</code> work, and wasm fetches need CORS headers on <code>vendor/</code>. The runner page's CSP is the only place that allows eval and wasm.</div>
+  <div class="note"><b>Why workers are “classic”:</b> the sandbox has an opaque origin, where module workers fail; blob classic workers + <code>importScripts()</code> work. The runner page's CSP is the only place that allows eval and wasm.</div>
   <h3 id="a15">15 · Error helper</h3>
-  <p><code>learn/help.js</code> exposes <code>MarzleyHelp.explain(lang, code, result)</code> and <code>lint(lang, code)</code>. The runner sends the full error in <code>detail</code>; <code>explain()</code> matches 100 ordered rules <code>[langs, regex, title, why, fix, example]</code> (with <code>$1</code> capture substitution), finds the line with per-tool patterns (<code>File "&lt;exec&gt;", line N</code>, <code>on line N</code>, <code>&lt;source&gt;:N:M</code>, <code>file.c:N:M</code>, <code>(line N)</code> minus the script offset …), and <code>renderHelp()</code> in learn.js highlights the line (<code>cm-err-line</code>) and shows the card. <code>lint()</code> gives HTML/CSS tips (unclosed tags, missing alt, missing ; or }, British spellings, unitless numbers).</p>
+  <p><code>learn/help.js</code> exposes <code>MarzleyHelp.explain(lang, code, result)</code>, <code>tips(lang, code, result, {stdin})</code> and <code>lint(lang, code)</code>. Rules are <code>[langs, regex, title, why, fix, example, quickFix]</code>; a quick fix returns the whole corrected code and the hub applies only the characters that differ (so Ctrl+Z undoes it), then runs again. Compiler output is split into diagnostics so the first error is explained, the others listed and marked; C/C++ warnings (<code>-Wall</code>) and Rust warnings become tips; Python 3.12 and GCC “did you mean” hints and Rust's <code>help:</code> lines are used as fixes. The exercise checker shows the expected line next to the closest line the program printed.</p>
+  <p>The runner sends the full error in <code>detail</code>; <code>explain()</code> matches the ordered rules (with <code>$1</code> capture substitution), finds the line with per-tool patterns (<code>File "&lt;exec&gt;", line N</code>, <code>on line N</code>, <code>&lt;source&gt;:N:M</code>, <code>file.c:N:M</code>, <code>(line N)</code> minus the script offset …), and <code>renderHelp()</code> in learn.js highlights the line (<code>cm-err-line</code>) and shows the card. <code>lint()</code> gives HTML/CSS tips (unclosed tags, missing alt, missing ; or }, British spellings, unitless numbers).</p>
 </section>
 
 <section class="sec" id="a16">

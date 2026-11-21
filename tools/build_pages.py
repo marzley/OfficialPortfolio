@@ -913,10 +913,13 @@ def version_assets():
     # The portal and learning hub pages load their own scripts and styles. Stamp them too,
     # so a new upload never runs old cached JavaScript against new HTML (or the other way round).
     runner = ROOT / "learn" / "runner.html"
-    engines = ROOT / "learn" / "engines.js"
-    if runner.exists() and engines.exists():
+    if runner.exists():
         text = runner.read_text(encoding="utf-8")
-        new = re.sub(r'data-engines="[^"]*"', 'data-engines="%s"' % hashlib.sha1(engines.read_bytes()).hexdigest()[:10], text)
+        new = text
+        for attr, name in (("data-engines", "engines.js"), ("data-console", "console.js")):
+            f = ROOT / "learn" / name
+            if f.exists():
+                new = re.sub(r'%s="[^"]*"' % attr, '%s="%s"' % (attr, hashlib.sha1(f.read_bytes()).hexdigest()[:10]), new)
         if new != text:
             runner.write_text(new, encoding="utf-8", newline="")
     for page in ("portal/index.html", "learn/index.html", "learn/runner.html"):
@@ -936,6 +939,36 @@ def version_assets():
         new = re.sub(r'(src|href)="((?:\.\./)?[A-Za-z0-9_./-]+\.(?:js|css))(?:\?v=[0-9a-f]+)?"', stamp, text)
         if new != text:
             f.write_text(new, encoding="utf-8", newline="")
+
+
+RUNTIME_DIRS = ["vendor/pyodide", "vendor/php", "vendor/sqljs", "vendor/langs", "vendor/sucrase", "vendor/react", "vendor/marked"]
+RUNTIME_FILES = ["learn/console.js", "learn/engines.js"]
+
+
+def write_runtimes():
+    """learn/runtimes.json: every file the code runner can load (language runtimes such as Python, PHP and
+    SQL, and the runner's own scripts), with a fingerprint and size. The learning hub keeps these files on
+    the learner's device and downloads a file again only when its fingerprint changes. The sandboxed
+    runner frame can't use the browser's cache, so without this they would download on every visit."""
+    import hashlib
+    import json
+    files = {}
+    paths = [f for d in RUNTIME_DIRS for f in sorted((ROOT / d).iterdir())] + [ROOT / f for f in RUNTIME_FILES]
+    for f in paths:
+        if f.is_file() and f.suffix in (".js", ".wasm", ".zip", ".json", ".data"):
+            data = f.read_bytes()
+            files[f.relative_to(ROOT).as_posix()] = {"h": hashlib.sha1(data).hexdigest()[:12], "s": len(data)}
+    text = json.dumps({"files": files}, separators=(",", ":"), sort_keys=True) + "\n"
+    out = ROOT / "learn" / "runtimes.json"
+    if not out.exists() or out.read_text(encoding="utf-8") != text:
+        out.write_text(text, encoding="utf-8", newline="")
+        print("wrote learn/runtimes.json (%d files)" % len(files))
+    # The hub loads the list with this version, so a new list is never hidden by an old cached copy
+    page = ROOT / "learn" / "index.html"
+    html = page.read_text(encoding="utf-8")
+    new = re.sub(r'data-rt="[^"]*"', 'data-rt="%s"' % hashlib.sha1(text.encode()).hexdigest()[:10], html)
+    if new != html:
+        page.write_text(new, encoding="utf-8", newline="")
 
 
 def subset_icons():
@@ -977,6 +1010,7 @@ def main():
     inline_css()
     learn_seo()
     learn_search_index(posts)
+    write_runtimes()
     version_assets()
     import learn_static                              # after version_assets: the static pages reuse the stamped stylesheets
     print("static learn pages: %d lessons, %d subjects" % learn_static.build())

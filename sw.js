@@ -3,7 +3,7 @@
  * long, show the saved copy of that page, or the offline page if there is none.
  * Styles, scripts and images: use the saved copy when the network fails.
  * Change VERSION whenever offline.html or this file changes. */
-var VERSION = "marzley-v4";
+var VERSION = "marzley-v5";
 var OFFLINE_URL = "offline.html";
 var PAGE_TIMEOUT = 10000;
 var PRECACHE = [
@@ -25,7 +25,8 @@ self.addEventListener("install", function (event) {
 self.addEventListener("activate", function (event) {
   event.waitUntil(
     caches.keys().then(function (keys) {
-      return Promise.all(keys.filter(function (k) { return k !== VERSION; }).map(function (k) { return caches.delete(k); }));
+      // Only this worker's own old copies: the learning hub's language store (marzley-runtimes) stays
+      return Promise.all(keys.filter(function (k) { return /^marzley-v\d+$/.test(k) && k !== VERSION; }).map(function (k) { return caches.delete(k); }));
     }).then(function () { return self.clients.claim(); })
   );
 });
@@ -52,8 +53,9 @@ self.addEventListener("fetch", function (event) {
   if (/\.(php|apk)$/.test(url.pathname)) return;
   // The client portal holds private data: never save any of it
   if (url.pathname.indexOf("/portal/") === 0) return;
-  // The Python and SQL runtimes are large; the browser's own cache keeps them
-  if (/^\/vendor\/(pyodide|sqljs)\//.test(url.pathname)) return;
+  // Language runtimes for the code runner (Python, PHP, SQL, Ruby…) are large: the learning hub keeps
+  // them in its own store on the device (learn.js), so don't save a second copy here
+  if (/^\/vendor\/(pyodide|sqljs|php|langs|sucrase|react|marked)\//.test(url.pathname)) return;
 
   if (request.mode === "navigate") {
     var network = fetch(request);
