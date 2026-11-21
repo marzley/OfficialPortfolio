@@ -247,6 +247,7 @@ def fit(title, extra):
 
 def page(head_assets, title, desc, canonical, ld, crumbs, main, lang="en"):
     nav = ('<nav class="learn-nav" aria-label="Learning hub">'
+           '<a href="/learn/"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a>'
            '<a href="/learn/?page=tutorials"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Tutorials</a>'
            '<a href="/learn/?page=practice"><i class="fa-solid fa-code" aria-hidden="true"></i> Practice</a>'
            '<a href="/learn/?page=videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Videos</a>'

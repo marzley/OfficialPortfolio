@@ -1347,7 +1347,7 @@
 
   // ---------- pages ----------
   function pageHome() {
-    setNav("");
+    setNav("home");
     showSide(false);
     setTitle("");
     var me = state.me, fn = me ? firstName(me.name) : "";
@@ -1939,6 +1939,32 @@
     ["Data", ["sql", "regex"]]
   ];
 
+  // The language picker on the Practice page: a switch for the three groups, and a row of language tiles for the group that is open.
+  // Each tile has a coloured badge: [label, background, text colour]. Every text colour passes the 4.5:1 contrast rule.
+  var LANG_BADGE = {
+    html: ["HTML", "#c2410c"], css: ["CSS", "#1d4ed8"], javascript: ["JS", "#facc15", "#0b1b35"], typescript: ["TS", "#2f6db5"], react: ["JSX", "#67e8f9", "#0b1b35"],
+    sass: ["Sass", "#a21caf"], json: ["{ }", "#0f766e"], markdown: ["MD", "#334155"],
+    python: ["Py", "#306998"], php: ["PHP", "#6d5bb5"], c: ["C", "#4452a8"], cpp: ["C++", "#00599c"], csharp: ["C#", "#68217a"], java: ["Java", "#b45309"],
+    go: ["Go", "#00add8", "#0b1b35"], rust: ["Rs", "#b7410e"], kotlin: ["Kt", "#7048e8"], lua: ["Lua", "#1f2a7a"], ruby: ["Rb", "#b91c1c"], prolog: ["Pl", "#be123c"],
+    sql: ["SQL", "#0369a1"], regex: [".*", "#15803d"]
+  };
+  function languagePicker(lang) {
+    var open = 0;
+    PRACTICE_GROUPS.forEach(function (g, i) { if (g[1].indexOf(lang) >= 0) open = i; });
+    var cats = '<div class="lang-cats" role="tablist" aria-label="Type of language">' + PRACTICE_GROUPS.map(function (g, i) {
+      return '<button type="button" class="lang-cat' + (g[1].indexOf(lang) >= 0 ? " has-current" : "") + '" role="tab" id="lang-tab-' + i + '" aria-controls="lang-panel-' + i + '" aria-selected="' + (i === open) + '" tabindex="' + (i === open ? 0 : -1) + '">' +
+        g[0] + '<span class="lang-cat-n" aria-hidden="true">' + g[1].length + "</span></button>";
+    }).join("") + "</div>";
+    var card = '<div class="lang-card">' + PRACTICE_GROUPS.map(function (g, i) {
+      return '<div class="lang-panel" role="tabpanel" id="lang-panel-' + i + '" aria-labelledby="lang-tab-' + i + '"' + (i === open ? "" : " hidden") + ">" + g[1].map(function (k) {
+        var b = LANG_BADGE[k], uses = PRACTICE[k] && PRACTICE[k].uses ? ": " + PRACTICE[k].uses.join(", ") : "";
+        return '<a class="lang-tile" href="./?page=practice&amp;lang=' + k + '" data-lang="' + k + '"' + (k === lang ? ' aria-current="page"' : "") + ' title="' + esc(LANGS[k] + uses) + '">' +
+          '<span class="lang-badge" aria-hidden="true" style="--c:' + b[1] + (b[2] ? ";--t:" + b[2] : "") + '">' + esc(b[0]) + '</span><span class="lang-name">' + esc(LANGS[k]) + "</span></a>";
+      }).join("") + "</div>";
+    }).join("") + "</div>";
+    return { cats: cats, card: card };
+  }
+
   var FILE_NAMES = { html: "index.html", css: "index.html", javascript: "script.js", typescript: "main.ts", react: "App.jsx", json: "data.json", markdown: "README.md", python: "main.py", php: "index.php",
     c: "main.c", cpp: "main.cpp", csharp: "Program.cs", java: "Main.java", go: "main.go", rust: "main.rs", kotlin: "Main.kt", lua: "main.lua", ruby: "main.rb", sass: "style.scss", regex: "pattern.txt", prolog: "main.pl", sql: "query.sql" };
   var READS_INPUT = /\b(scanf|cin|Scanner|ReadLine|readLine|readln|fmt\.Scan|read_line|getline|fgets|getchar)\b/;
@@ -1977,9 +2003,9 @@
     store.set("practice-lang", lang);
     setTitle(LANGS[lang] + " online compiler and editor", "Free online " + LANGS[lang] + " compiler and editor: write code, run it in your browser and get help with mistakes.");
     var stdinWord = { c: "scanf", cpp: "cin", java: "Scanner", csharp: "Console.ReadLine", go: "fmt.Scan", rust: "stdin", kotlin: "readLine" }[lang];
-    main.innerHTML = '<section class="practice"><div class="practice-head"><h1>Practice <span class="practice-sub">Online compiler and editor</span></h1><div class="lang-pick" role="tablist" aria-label="Language">' +
-      PRACTICE_GROUPS.map(function (g) { return '<span class="lang-group">' + g[0] + "</span>" + g[1].map(function (k) { return '<button type="button" role="tab" data-lang="' + k + '" aria-selected="' + (k === lang) + '">' + LANGS[k] + "</button>"; }).join(""); }).join("") +
-      '</div></div><div class="practice-grid"><div class="pane pane-code"><div class="pane-bar"><span class="pane-file"><i class="fa-regular fa-file-code" aria-hidden="true"></i> ' + esc(FILE_NAMES[lang]) + '</span><div class="pane-tools">' +
+    var picker = languagePicker(lang);
+    main.innerHTML = '<section class="practice"><div class="practice-head"><h1>Practice <span class="practice-sub">Online compiler and editor</span></h1>' + picker.cats + "</div>" + picker.card +
+      '<div class="practice-grid"><div class="pane pane-code"><div class="pane-bar"><span class="pane-file"><i class="fa-regular fa-file-code" aria-hidden="true"></i> ' + esc(FILE_NAMES[lang]) + '</span><div class="pane-tools">' +
       '<label class="sr-only" for="p-example">Load an example</label><select id="p-example" class="ex-select"><option value="">Examples…</option>' +
       PRACTICE[lang].examples.map(function (x, i) { return '<option value="' + i + '">' + esc(x[0]) + "</option>"; }).join("") + "</select>" +
       '<button type="button" class="try-reset" id="p-reset" title="Start again"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i><span class="sr-only">Start again</span></button>' +
@@ -2093,11 +2119,42 @@
       else if ((e.ctrlKey || e.metaKey) && (e.key === "s" || e.key === "S")) { e.preventDefault(); store.set("code:" + lang, ed.getValue()); toast("Saved on this device"); }
       else if (e.key === "Escape" && runner.session && !e.target.classList.contains("con-input")) runner.stop();
     });
-    main.querySelectorAll(".lang-pick button").forEach(function (b) {
-      b.addEventListener("click", function () { store.set("code:" + lang, ed.getValue()); go("./?page=practice&lang=" + b.getAttribute("data-lang")); });
+    // Language picker: the group switch, the fades at the ends of the row, and the tile you are on kept in view.
+    // The tiles are real links, so the page's own link handling opens the language (your code is saved when the page is left).
+    var pickCard = main.querySelector(".lang-card"), pickTabs = [].slice.call(main.querySelectorAll(".lang-cat")), pickPanels = [].slice.call(main.querySelectorAll(".lang-panel"));
+    function pickFades() {
+      var p = pickCard.querySelector(".lang-panel:not([hidden])");
+      if (!p) return;
+      pickCard.classList.toggle("fade-l", p.scrollLeft > 4);
+      pickCard.classList.toggle("fade-r", p.scrollLeft + p.clientWidth < p.scrollWidth - 4);
+    }
+    function pickShow(i, focus) {
+      pickTabs.forEach(function (t, j) { t.setAttribute("aria-selected", String(j === i)); t.tabIndex = j === i ? 0 : -1; });
+      pickPanels.forEach(function (p, j) { p.hidden = j !== i; });
+      var here = pickPanels[i].querySelector("[aria-current]");
+      pickPanels[i].scrollLeft = here ? Math.max(0, here.offsetLeft - (pickPanels[i].clientWidth - here.offsetWidth) / 2) : 0;
+      pickFades();
+      if (focus) pickTabs[i].focus();
+    }
+    pickTabs.forEach(function (t, i) { t.addEventListener("click", function () { pickShow(i); }); });
+    main.querySelector(".lang-cats").addEventListener("keydown", function (e) {
+      var i = pickTabs.indexOf(document.activeElement), n = -1;
+      if (i < 0) return;
+      if (e.key === "ArrowRight") n = (i + 1) % pickTabs.length;
+      else if (e.key === "ArrowLeft") n = (i + pickTabs.length - 1) % pickTabs.length;
+      else if (e.key === "Home") n = 0;
+      else if (e.key === "End") n = pickTabs.length - 1;
+      if (n < 0) return;
+      e.preventDefault();
+      pickShow(n, true);
     });
-    var cur = main.querySelector('.lang-pick [aria-selected="true"]');
-    if (cur && cur.scrollIntoView && window.innerWidth < 900) cur.scrollIntoView({ block: "nearest", inline: "center" });
+    pickPanels.forEach(function (p) { p.addEventListener("scroll", pickFades, { passive: true }); });
+    window.addEventListener("resize", pickFades);
+    cleanup.push(function () { window.removeEventListener("resize", pickFades); });
+    main.querySelectorAll(".lang-tile").forEach(function (a) {
+      a.addEventListener("click", function (e) { if (a.hasAttribute("aria-current")) e.preventDefault(); });   // already on this language: nothing to reload
+    });
+    pickShow(pickTabs.map(function (t) { return t.getAttribute("aria-selected") === "true"; }).indexOf(true));
     var t = setInterval(function () { store.set("code:" + lang, ed.getValue()); }, 5000);
     cleanup.push(function () { clearInterval(t); store.set("code:" + lang, ed.getValue()); runner.stop(true); });
     // Code shared with a link
