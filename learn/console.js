@@ -14,6 +14,10 @@
   "use strict";
   var R = window.__runner, ROOT = R.ROOT, send = R.send;
   var LIMIT = 10000;                       // how long a program may run (ms)
+  // Compilers (and some programs) print terminal colour and cursor codes such as ESC[01;31m. A page can't
+  // show them, so they would appear as strange boxes and letters: remove them.
+  var ANSI = /\x1b\[[0-?]*[ -\/]*[@-~]|\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)|\x1b[@-Z\\-_]/g;
+  var stripAnsi = function (t) { return String(t == null ? "" : t).replace(ANSI, "").replace(/\x1b/g, ""); };
   var MAX_LINES = 5000, MAX_CHARS = 300000;
   var NAMES = { python: "Python", sql: "SQL", php: "PHP", json: "JSON", c: "C", cpp: "C++", lua: "Lua", ruby: "Ruby", sass: "Sass", prolog: "Prolog", regex: "Regex", csharp: "C#", java: "Java", go: "Go", rust: "Rust", kotlin: "Kotlin" };
 
@@ -21,11 +25,18 @@
   var current = null;
   function Run(d) {
     this.id = d.id; this.lang = d.lang; this.out = ""; this.lines = 0; this.chars = 0; this.cut = false;
-    this.parts = []; this.timer = null; this.limit = null; this.ended = false; this.kill = null;
+    this.parts = []; this.timer = null; this.limit = null; this.ended = false; this.kill = null; this.esc = "";
   }
   Run.prototype.write = function (text, kind) {
     if (this.ended || !text) return;
     kind = kind || "";
+    if (text.indexOf("\x1b") >= 0 || this.esc) {
+      text = (this.esc || "") + text;
+      var half = /\x1b(?:\[[0-?]*[ -\/]*|\][^\x07\x1b]*)?$/.exec(text);
+      this.esc = half ? half[0] : "";
+      text = stripAnsi(half ? text.slice(0, half.index) : text);
+      if (!text) return;
+    }
     if (kind !== "note") {
       if (this.cut) return;
       var n = (text.match(/\n/g) || []).length, cut = "";
@@ -73,6 +84,7 @@
     this.ended = true;
     r.type = "done"; r.id = this.id;
     if (r.text == null) r.text = this.out;
+    ["text", "error", "detail", "warnings"].forEach(function (k) { if (r[k]) r[k] = stripAnsi(r[k]); });
     send(r);
     if (current === this) current = null;
   };
@@ -136,11 +148,15 @@
           var d = e.data || {};
           if (d.t === "ready") return resolve(w);
           if (d.t === "fail") return reject(new Error(d.error || self.name + " could not start."));
+          if (self.w !== w) return;            // a late message from a worker that has been ended
           if (self.on) self.on(d);
         };
         w.onerror = function (e) {
           if (e && e.preventDefault) e.preventDefault();
           reject(new Error(self.name + " could not start. Check your connection and try again."));
+          // A worker that was ended on purpose (a program stuck in a loop) can still report an error a moment later:
+          // that must not stop the next run, which uses a different worker
+          if (self.w !== w) return;
           if (self.on) self.on({ t: "crash", error: String(e && e.message || "") });
         };
         if (blobs) w.postMessage({ files: blobs });
@@ -525,7 +541,7 @@
       return ceCompiler[lang];
     });
   }
-  function ceText(x) { return (x || []).map(function (l) { return l.text; }).join("\n"); }
+  function ceText(x) { return stripAnsi((x || []).map(function (l) { return l.text; }).join("\n")); }
   // A crash inside the compiler's own runtime (not the learner's code): try another compiler version
   function infraFailure(lang, ex, stdout, stderr) {
     if (stdout) return false;
@@ -579,7 +595,8 @@
     return pick.then(function (name) {
       return jsonFetch(WB + "compile.json", { compiler: name, code: code, stdin: stdin || "", options: lang === "c" || lang === "cpp" ? "warning" : "", save: false }, 40000);
     }).then(function (r) {
-      var status = String(r.status == null ? "" : r.status), compileErr = r.compiler_error || "";
+      var status = String(r.status == null ? "" : r.status), compileErr = stripAnsi(r.compiler_error);
+      r.compiler_output = stripAnsi(r.compiler_output); r.program_output = r.program_output == null ? r.program_output : stripAnsi(r.program_output); r.program_error = r.program_error == null ? r.program_error : stripAnsi(r.program_error);
       var built = r.program_output != null || r.program_error != null;
       return { buildErr: !built && status !== "0" ? (compileErr || r.compiler_output || "Your code didn't compile.") : "", stdout: (r.program_output || "").replace(/\n$/, ""), stderr: (r.program_error || "").replace(/\n$/, ""),
         timedOut: /SIGKILL|SIGXCPU|time/i.test(String(r.signal || "")), code: status === "" ? 0 : Number(status),

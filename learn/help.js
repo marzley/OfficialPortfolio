@@ -8,6 +8,10 @@
 (function () {
   "use strict";
 
+  // Terminal colour and cursor codes (ESC[01;31m …) that compilers print: the guide reads text without them
+  var ANSI = /\x1b\[[0-?]*[ -\/]*[@-~]|\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)|\x1b[@-Z\\-_]/g;
+  var stripAnsi = function (t) { return String(t == null ? "" : t).replace(ANSI, "").replace(/\x1b/g, ""); };
+
   // Where each tool reports the line number in its messages
   var LINE_PATTERNS = [
     /File "<exec>", line (\d+)/g,                      // Python
@@ -143,12 +147,31 @@
     }
     return 0;
   }
-  var CURLY = /[“”„″‘’‚′]/;
-  function straightQuotes(code) {
-    var next = String(code).replace(/[“”„″]/g, '"').replace(/[‘’‚′]/g, "'");
+  // Characters that look like code but aren't: curly quotes, non-breaking spaces, zero-width characters and
+  // full-width brackets (copied from Word, WhatsApp, Google Docs or a web page). They make compilers report
+  // strange errors, so the guide can swap them for the real ones.
+  var CURLY = /[\u201C\u201D\u201E\u2033\u2018\u2019\u201A\u2032]/;
+  var ODD = /[\u00A0\u00AD\u1680\u2000-\u200F\u2028-\u202F\u205F-\u2064\u3000\uFEFF\uFF01-\uFF5E]/;
+  function cleanChars(code) {
+    var next = String(code).replace(/[\u201C\u201D\u201E\u2033]/g, '"').replace(/[\u2018\u2019\u201A\u2032]/g, "'")
+      .replace(/[\u00A0\u1680\u2000-\u200A\u202F\u205F\u3000]/g, " ")
+      .replace(/[\u00AD\u200B-\u200F\u2028-\u202E\u2060-\u2064\uFEFF]/g, "")
+      .replace(/[\uFF01-\uFF5E]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); });
+    // Dashes and symbols are only changed outside of "text" (they may be meant there)
+    next = next.split("\n").map(function (line) {
+      return line.replace(/[\u2010-\u2015\u2212\u00D7\u00F7\u2026]/g, function (c, at) {
+        var before = line.slice(0, at).replace(/\\./g, "");
+        if ((before.match(/"/g) || []).length % 2) return c;
+        var n = c.charCodeAt(0);
+        return n === 0xD7 ? "*" : n === 0xF7 ? "/" : n === 0x2026 ? "..." : "-";
+      });
+    }).join("\n");
     return next === code ? null : next;
   }
-  var fixQuotes = function (m, x) { var c = straightQuotes(x.code); return c && { label: "Change the curly quotes “ ” to straight quotes \" \"", code: c }; };
+  var fixQuotes = function (m, x) {
+    var c = cleanChars(x.code);
+    return c && { label: CURLY.test(x.code) && !ODD.test(x.code) ? "Change the curly quotes “ ” to straight quotes \" \"" : "Replace the odd characters (copied from another program) with normal ones", code: c };
+  };
   var fixSemi = function (before) {
     return function (m, x) {
       var n = semiLine(x.code, x.line, x.col, before);
@@ -381,6 +404,14 @@
     var line = splitLines(x.code)[x.line - 1] || "";
     return /\}\s*$/.test(line) ? { label: "Add ; after the } on line " + x.line, code: withLine(x.code, x.line, line.replace(/\}\s*$/, "};")), line: x.line } : null;
   };
+  // A missing closing quote: on a #define, or before the ) of a call such as printf("Hi\n);
+  var fixCloseQuote = function (m, x) {
+    var line = splitLines(x.code)[x.line - 1];
+    if (line == null || ((line.replace(/\\./g, "").match(/"/g) || []).length % 2) === 0) return null;
+    var next = line.replace(/^(\s*#\s*define\s+\w+(?:\([^)]*\))?\s+"[^"]*?)(\s*(?:\/\/.*)?)$/, "$1\"$2");
+    if (next === line) next = line.replace(/^(.*?"(?:[^"\\]|\\.)*?)(\)+\s*;?\s*(?:\/\/.*)?)$/, "$1\"$2");
+    return next !== line && { label: "Add the closing \" on line " + x.line, code: withLine(x.code, x.line, next), line: x.line };
+  };
   var fixCloseBrace = function (m, x) { return { label: "Add the missing } at the end", code: String(x.code).replace(/\s*$/, "") + "\n}\n" }; };
   var fixArrows = function (from, to) {
     return function (m, x) {
@@ -404,8 +435,8 @@
     ["*", /ran for more than|took too long|was stopped|^timeout$/i, "Your code never finished",
       "A loop kept running without end, so it was stopped.", "Check the loop's condition changes each time round, e.g. i increases until the condition becomes false. Also check while (true) loops have a break.",
       "let i = 0;\nwhile (i < 5) {\n  console.log(i);\n  i++;   // without this, i stays 0 forever\n}"],
-    ["*", /[\u201C\u201D\u2018\u2019]|stray '\\3\d\d' in program|illegal character: '\\u201[89cd]'|invalid character '[\u201C\u201D\u2018\u2019]'/i, "Curly quotes in your code",
-      "Your code has “ ” or ‘ ’ quotes (usually copied from Word, WhatsApp or a website). Code only understands straight quotes \" and '.", "Replace them with straight quotes: tap the fix button below.", "", fixQuotes],
+    ["*", /[“”‘’]|stray '\\\d+' in program|illegal character: '\\u[0-9a-f]{4}'|invalid character '.'|invalid non-printable character|Unexpected character|illegal character|\\U0000[0-9a-f]{4}/i, "A character the computer can't read",
+      "Your code has a character that looks normal but isn't: often a curly quote “ ” (or a non-breaking space) copied from Word, WhatsApp or a website. Code only understands straight quotes \" and ' and normal spaces.", "Tap the fix button to replace them, or retype that line by hand.", "", fixQuotes],
 
     // ----- Python -----
     ["python", /IndentationError: expected an indented block/i, "Missing indentation",
@@ -552,7 +583,13 @@
     ["c cpp", /cannot find library: (\w+)|fatal error: ([\w.\/]+): No such file/i, "Library not available",
       "The #include file isn't available.", "Check the spelling of the #include line (e.g. <iostream>, <stdio.h>)."],
     ["c cpp", /missing terminating (["']) character/i, "A text or character isn't closed",
-      "A string must start and end with \" on the same line (a single character uses ').", "Add the closing $1.", "printf(\"Hello\\n\");"],
+      "A string must start and end with \" on the same line (a single character uses '). One missing quote makes the compiler report many strange errors further down.", "Add the closing $1, then run again: the other errors usually disappear.", "#define FILE_NAME \"students.dat\"\nprintf(\"Hello\\n\");", fixCloseQuote],
+    ["c cpp", /expected '\{' before '?(\S+?)'?$/im, "A { is missing before \"$1\"",
+      "The compiler expected the start of a block, {, just before $1. Usually the line above is missing its {, or has something extra (a ; after the ) of a function, if or for).", "Look at the line above $1: add the missing {, remove a stray ;, or fix a typo there. If that line already has a { and the error stays, retype the line by hand (a symbol copied from another program can look like { without being one), and check any quote or bracket you closed earlier.", "void greet() {\n    printf(\"Habari\\n\");\n}"],
+    ["c cpp", /two or more data types in declaration specifiers/i, "Two types in one declaration",
+      "The compiler thinks this line starts a second type inside the same declaration. That usually means something just before it is wrong: a missing ; or } above, or a struct, enum or typedef whose { } isn't written correctly.", "Check the line(s) above for a missing ; or }, then run again: this error often disappears with the first one.", "typedef struct {\n    int id;\n    char name[50];\n} Student;"],
+    ["c cpp", /expected identifier or '\(' before '?(\S+?)'?( token)?$/im, "Something is out of place before \"$1\"",
+      "A name or ( was expected here. This usually follows an earlier mistake: a missing ; or }, a { that was never opened, or a stray character.", "Fix the first error in the list, then run again: the others often go away."],
     ["c cpp", /expected declaration or statement at end of input|expected '\}' at end of input/i, "Missing }",
       "A { was opened but never closed, so the compiler reached the end of your code.", "Add the missing } (each { needs a matching }).", "", fixCloseBrace],
     ["c cpp", /expected '\)'|expected '\}'|expected '\]'/i, "A bracket isn't closed",
@@ -718,6 +755,7 @@
 
   // Compiler warnings (the code ran, but something looks wrong): [pattern, title, fix, quick fix]
   var WARNINGS = [
+    [/missing terminating (["']) character/i, "A closing quote is missing", "A text must end with the same quote it started with (on the same line). Add the closing $1: one missing quote makes the compiler report strange errors later.", fixCloseQuote],
     [/implicit declaration of function '(\w+)'(?!;)/i, "$1() needs its #include line", "Add the right #include at the top (stdio.h for printf and scanf, string.h for strlen, math.h for sqrt).", fixInclude],
     [/format '%(\w+)' expects argument of type '(\w+) \*', but argument \d+ has type '\w+'/i, "scanf needs & before the variable", "Write scanf(\"%$1\", &variable): the & tells scanf where to store the value.", fixScanfAmp],
     [/format '%(\w+)' expects argument of type '([\w ]+)', but argument \d+ has type '([\w ]+)'/i, "%$1 doesn't match a $3", "Use the right code for the value: %d for int, %f for float/double, %c for char, %s for text, %ld for long."],
@@ -754,16 +792,20 @@
   }
 
   function explain(lang, code, r) {
-    var raw = String((r && (r.detail || r.error)) || "");
+    var raw = stripAnsi((r && (r.detail || r.error)) || "");
     if (!raw || !r || r.ok || r.stopped) return null;
     code = String(code || "");
     var lines = raw.split("\n"), diags = diagnostics(raw), errs = diags.filter(function (d) { return d.kind === "error"; });
     var block = raw, line = 0;
     if (errs.length) {
-      // The first error, with the notes under it, up to the next error or warning
-      var at = errs[0].at, next = diags.filter(function (d) { return d.at > at; })[0];
+      // The first error, with the notes under it, up to the next error or warning. A closing quote that is
+      // missing earlier in the code makes the compiler report confusing errors after it: explain that first.
+      var main = diags.filter(function (d) { return d.kind === "warning" && d.at < errs[0].at && /missing terminating/.test(d.text); })[0] || errs[0];
+      var at = main.at, next = diags.filter(function (d) { return d.at > at; })[0];
       block = lines.slice(at, next ? next.at : lines.length).join("\n");
-      line = errs[0].line;
+      line = main.line;
+      errs = diags.filter(function (d) { return d.kind === "error" && d !== main; });
+      errs.unshift(main);
     } else line = findLine(raw, /^(python|ruby)$/.test(lang));
     if (line && /^(javascript|typescript|react)$/.test(lang) && /\(line \d+\)/.test(raw)) line -= 1;
     var total = code.split("\n").length;
@@ -779,7 +821,7 @@
       try { made = found.rule[6](found.g, x); } catch (e) {}
       (Array.isArray(made) ? made : [made]).forEach(function (f) { if (f && typeof f.code === "string" && f.code !== code) fixes.push(f); });
     }
-    if (CURLY.test(code) && !fixes.some(function (q) { return /curly/.test(q.label); })) { var q = runFix(fixQuotes, [], x); if (q) fixes.push(q); }
+    if ((CURLY.test(code) || ODD.test(code)) && !fixes.some(function (q) { return /curly|odd characters/.test(q.label); })) { var q = runFix(fixQuotes, [], x); if (q) fixes.push(q); }
     hit.line = line;
     hit.lineText = line ? code.split("\n")[line - 1].trim() : "";
     hit.raw = raw;
@@ -793,7 +835,7 @@
   function tips(lang, code, r, ctx) {
     var out = [];
     code = String(code || "");
-    var w = String((r && r.warnings) || "");
+    var w = stripAnsi((r && r.warnings) || "");
     if (w) diagnostics(w).filter(function (d) { return d.kind === "warning"; }).forEach(function (d) {
       if (out.length >= 4 || out.some(function (t) { return t.line === d.line && t.raw === d.text; })) return;
       for (var i = 0; i < WARNINGS.length; i++) {

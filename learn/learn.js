@@ -2011,7 +2011,9 @@
     var ready = firstRun().then(function (here) {
       if (online) { empty.innerHTML = "<p><strong>Press Run</strong><span class=\"kbd-hint\"> (or Ctrl+Enter)</span> to compile and run your " + esc(LANGS[lang]) + " code online.</p>"; status("Runs on an online compiler"); return false; }
       if (here) { status(WEB_LANGS[lang] ? "Runs in your browser" : "Ready on this device"); return true; }
-      return RT.size((files || []).concat(["learn/console.js"])).then(function (n) {
+      return RT.size(files || []).then(function (n) {
+        // A small language (SQL, C, Lua…) just downloads and runs; a big one (Python, PHP, Ruby) waits for Run
+        if (n < 1258291) { status(n ? "Downloads once (" + mb(n) + ")" : ""); return true; }
         empty.innerHTML = "<p><strong>Press Run</strong><span class=\"kbd-hint\"> (or Ctrl+Enter)</span> to run your code.</p><p class=\"muted\">" + esc(LANGS[lang]) + " runs in your browser. The first run downloads it once" + (n ? " (" + mb(n) + ")" : "") + " and keeps it on this device, so later runs start straight away.</p>";
         status(n ? "Downloads once (" + mb(n) + ")" : "");
         return false;
@@ -2020,7 +2022,7 @@
     runner.onstate = function (st, info) {
       setRunButton(runBtn, st === "running");
       if (st === "running") status("Running…", "run");
-      else if (st === "input") status("Waiting for your answer below", "input");
+      else if (st === "input") status("Waiting for your answer", "input");
       else if (info.stopped) status("Stopped", "bad");
       else if (info.ok) status("Done in " + secs(info.ms || 0), "ok");
       else status(info.compile ? "Didn't compile" : info.offline ? "Couldn't connect" : info.timeout ? "Stopped: took too long" : "Finished with an error", "bad");
@@ -2119,7 +2121,7 @@
   }
   function practiceDetails(lang) {
     var info = PRACTICE[lang], track = info.track;
-    var note = { python: "Python 3.12 runs fully in your browser. The first run downloads it once (about 14 MB) and keeps it on this device. When your program asks a question with input(), an answer box appears in the output.",
+    var note = { python: "Python 3.12 runs fully in your browser. The first run downloads it once (about 13 MB) and keeps it on this device. When your program asks a question with input(), an answer box appears in the output.",
       php: "PHP 8.3 runs fully in your browser. The first run downloads it once and keeps it on this device. Databases, sessions and email need a real server.",
       sql: "SQL runs on a sample shop database with Customers, Products and Orders. Try SELECT * FROM Products;", typescript: "Types are removed before running, so type mistakes are not reported here. Use VS Code to see them.",
       react: "React 18 and ReactDOM are ready to use. Hooks: React.useState, React.useEffect.", json: "Only data is allowed in JSON: no comments, no trailing commas.", markdown: "The output shows the formatted page, like GitHub shows a README.",
