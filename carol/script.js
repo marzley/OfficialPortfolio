@@ -11,7 +11,7 @@ const CFG = {
   from:  'Your Most Unserious Boyfriend',
   // Put his WhatsApp number here in international format, no "+" (e.g. '2547XXXXXXXX')
   // so her "I said YES" message goes straight to him. Leave '' to let her pick the contact.
-  whatsapp: '',
+  whatsapp: '2547545789590',
 };
 
 /* ------------------------------ helpers ------------------------------ */
