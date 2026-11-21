@@ -1461,6 +1461,15 @@
   window.addEventListener("scroll", onProgress, { passive: true });
   window.addEventListener("resize", onProgress);
   onProgress();
+  if (toTop) {
+    toTop.addEventListener("click", function (e) {
+      e.preventDefault();
+      var calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      window.scrollTo({ top: 0, behavior: calm ? "auto" : "smooth" });
+      var first = document.querySelector(".site-header a[href]");
+      if (first && first.focus) first.focus({ preventScroll: true });   // keyboard users carry on from the top
+    });
+  }
 
   /* ---------- user guide: preview first, then download ---------- */
   var guideModal = null;

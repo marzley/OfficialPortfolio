@@ -4399,19 +4399,28 @@ body:not(.subpage) .work-list > li:nth-child(n + 7) {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: var(--heading);
-  color: var(--bg);
-  box-shadow: var(--shadow);
+  background: var(--amber);   /* amber: the old navy button was the same colour as the footer and disappeared on it */
+  color: var(--navy);
+  box-shadow: 0 6px 18px rgba(11, 27, 53, 0.3);
   opacity: 0;
   visibility: hidden;
   transform: translateY(10px);
-  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s, background 0.15s;
 }
 
 .to-top.is-visible {
   opacity: 1;
   visibility: visible;
   transform: none;
+}
+
+.to-top:hover {
+  background: #ffc733;
+}
+
+.to-top:focus-visible {
+  outline: 3px solid var(--heading);
+  outline-offset: 3px;
 }
 
 @media (max-width: 700px) {

@@ -179,8 +179,8 @@ def make_page(html, slug, title, description, main_html, ld_nodes, current, on_p
                       lambda m: m.group(1) + "    " + ld + m.group(2), html, count=1, flags=re.S)
     assert n == 1
 
-    html = html.replace("<body>", '<body class="subpage">', 1)
-    html = html.replace('<header class="site-header">', '<header class="site-header" id="top">', 1)
+    # #top must be the real top of the page: the header is position: fixed, so a link to it never scrolls anywhere
+    html = html.replace("<body>", '<body class="subpage" id="top">', 1)
     html = html.replace('<a class="brand" href="#top" aria-label="MarzleyTech: back to top">',
                         '<a class="brand" href="./" aria-label="MarzleyTech home">', 1)
     html = html.replace('<a href="./" class="is-current" aria-current="page">Home</a>', '<a href="./">Home</a>', 1)

@@ -631,7 +631,7 @@ html.js .learn-static { display: none; }
 @media print { .lesson-social { display: none !important; } }
 
 /* Static (pre-rendered) course and lesson pages: /learn/<subject>/ and /learn/<subject>/<lesson>/ */
-.static-main { max-width: 900px; margin: 0 auto; padding: 24px clamp(16px, 4vw, 32px) 64px; display: block; }
+.static-main { width: 100%; box-sizing: border-box; max-width: 900px; margin: 0 auto; padding: 24px clamp(16px, 4vw, 32px) 64px; display: block; }   /* width: 100%, or a long line of code made the page wider than a phone and cut the text off */
 .static-learn .learn-top-in .learn-nav { margin-left: 8px; }
 .static-course h1, .static-lesson h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.15; color: var(--heading); margin: 8px 0 12px; }
 .static-meta { color: var(--fg-muted); font-size: 14px; margin: 18px 0; }
@@ -1096,4 +1096,11 @@ a.rev-banner:hover, a.rev-banner:focus-visible { border-color: var(--amber); }
     .pane-code .pane-bar .ex-select { flex: 1; min-width: 0; max-width: none; margin-right: 0; }
     .pane-editor .CodeMirror { min-height: 240px; }
     .out-empty { min-height: 200px; }
+}
+
+/* ---------- back to top (the button's look is in home.css; this is what the Learn pages change) ---------- */
+.learn-body .to-top { border: 0; padding: 0; cursor: pointer; }
+body.side-open .to-top { visibility: hidden; }
+@media (max-width: 760px) {
+    .learn-body .to-top { right: 14px; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); }   /* above the bottom bar */
 }

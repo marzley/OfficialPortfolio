@@ -294,6 +294,7 @@ def page(head_assets, title, desc, canonical, ld, crumbs, main, lang="en"):
     <footer class="learn-foot">
         <p>Marzley Tech Solutions · <a href="/">Website</a> · <a href="/learn/">Learning hub</a> · <a href="/training">Training courses</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="https://wa.me/254745789590" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="/privacy">Privacy</a></p>
     </footer>
+    <button type="button" class="to-top" aria-label="Back to top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i></button>
 </body>
 </html>
 """.format(lang=lang, title=e(title), desc=e(desc), canonical=e(canonical), site=SITE, ld=json.dumps(ld, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/"),
@@ -316,6 +317,9 @@ def head_assets():
     m = re.search(r'<script src="\.\./js/theme-init\.js([^"]*)"', text)
     if m:
         tags.append('    <script src="/js/theme-init.js%s"></script>' % m.group(1))
+    m = re.search(r'<script src="\.\./js/totop\.js([^"]*)"', text)
+    if m:
+        tags.append('    <script src="/js/totop.js%s" defer></script>' % m.group(1))
     return "\n".join(tags)
 
 
