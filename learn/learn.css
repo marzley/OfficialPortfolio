@@ -632,6 +632,7 @@ html.js .learn-static { display: none; }
 
 /* Static (pre-rendered) course and lesson pages: /learn/<subject>/ and /learn/<subject>/<lesson>/ */
 .static-main { width: 100%; box-sizing: border-box; max-width: 900px; margin: 0 auto; padding: 24px clamp(16px, 4vw, 32px) 64px; display: block; }   /* width: 100%, or a long line of code made the page wider than a phone and cut the text off */
+.lesson, .lesson-body, .static-main { overflow-wrap: anywhere; }   /* a long word or snippet with no spaces (a URL, a formula, JSON) wraps instead of running off a phone screen; code blocks (pre) keep scrolling */
 .static-learn .learn-top-in .learn-nav { margin-left: 8px; }
 .static-course h1, .static-lesson h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.15; color: var(--heading); margin: 8px 0 12px; }
 .static-meta { color: var(--fg-muted); font-size: 14px; margin: 18px 0; }
@@ -712,7 +713,7 @@ html.js .learn-static { display: none; }
 .callout-think summary { display: flex; align-items: center; gap: 10px; padding: 12px 16px; cursor: pointer; list-style: none; color: var(--heading); }
 .callout-think summary::-webkit-details-marker { display: none; }
 .callout-think summary i { color: #7c3aed; }
-.callout-think summary span { flex: 1; }
+.callout-think summary span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
 .callout-think summary em { font-style: normal; font-size: 13px; font-weight: 700; color: var(--blue); white-space: nowrap; }
 .callout-think[open] summary em { visibility: hidden; }
 .callout-think .callout-body { padding: 0 16px 14px 42px; }
